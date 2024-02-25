@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest-All</AnalysisLevel>
+    <PackageId>pauldeen79.ClassFramework.CsharpExpressionCreator</PackageId>
+    <RepositoryUrl>https://github.com/pauldeen79/ClassFramework</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

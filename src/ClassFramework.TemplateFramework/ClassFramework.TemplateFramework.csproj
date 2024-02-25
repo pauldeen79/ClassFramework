@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>pauldeen79.ClassFramework.TemplateFramework</PackageId>
+    <RepositoryUrl>https://github.com/pauldeen79/ClassFramework</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
