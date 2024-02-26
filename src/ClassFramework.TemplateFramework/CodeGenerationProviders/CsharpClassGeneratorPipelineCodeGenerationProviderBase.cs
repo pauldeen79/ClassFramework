@@ -374,7 +374,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
             .Build();
 
-    private IEnumerable<NamespaceMappingBuilder> CreateNamespaceMappings()
+    protected virtual IEnumerable<NamespaceMappingBuilder> CreateNamespaceMappings()
     {
         // From models to domain entities
         yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models").WithTargetNamespace(CoreNamespace);
@@ -399,7 +399,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         }
     }
 
-    private TypenameMappingBuilder[] CreateTypenameMappings()
+    protected virtual IEnumerable<TypenameMappingBuilder> CreateTypenameMappings()
         => GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface
                 && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models", StringComparison.Ordinal) == true
@@ -434,8 +434,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(IReadOnlyCollection<>).WithoutGenerics()).WithTargetTypeName(typeof(IReadOnlyCollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList().AsReadOnly()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(IList<>).WithoutGenerics()).WithTargetTypeName(typeof(IList<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(ICollection<>).WithoutGenerics()).WithTargetTypeName(typeof(ICollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
-            })
-            .ToArray();
+            });
 
     private string ReplaceStart(string fullNamespace, string baseNamespace, bool appendDot)
     {
