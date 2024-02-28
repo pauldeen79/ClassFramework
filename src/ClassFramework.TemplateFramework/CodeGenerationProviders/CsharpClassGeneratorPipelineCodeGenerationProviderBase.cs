@@ -216,6 +216,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Select(x => _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture)).GetValueOrThrow().Build())
             .ToArray();
 
+    protected TypeBase[] GetNonCoreModels(string @namespace)
+        => GetType().Assembly.GetTypes()
+            .Where(x => x.IsInterface && x.Namespace == @namespace && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
+            .Select(x => _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture)).GetValueOrThrow().Build())
+            .ToArray();
+
     protected TypeBase[] GetAbstractionsInterfaces()
         => GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
@@ -405,6 +411,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models", StringComparison.Ordinal) == true
                 && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
                 && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Domains"
+                && !SkipNamespaceOnTypenameMappings(x.Namespace)
                 && x.FullName is not null)
             .SelectMany(x =>
                 new[]
@@ -435,6 +442,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(IList<>).WithoutGenerics()).WithTargetTypeName(typeof(IList<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(ICollection<>).WithoutGenerics()).WithTargetTypeName(typeof(ICollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
             });
+
+    protected virtual bool SkipNamespaceOnTypenameMappings(string @namespace) => false;
 
     private string ReplaceStart(string fullNamespace, string baseNamespace, bool appendDot)
     {

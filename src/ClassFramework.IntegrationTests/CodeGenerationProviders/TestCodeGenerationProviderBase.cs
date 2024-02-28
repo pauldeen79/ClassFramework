@@ -31,4 +31,15 @@ public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipel
     //protected override bool AddFullConstructor => false;
     //protected override bool AddPublicParameterlessConstructor => true;
     //protected override bool AddCopyConstructor => false;
+
+    protected TypeBase[] GetPipelineModels()
+        => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.Pipelines");
+
+    protected TypeBase[] GetTemplateFrameworkModels()
+        => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework");
+
+    protected override bool SkipNamespaceOnTypenameMappings(string @namespace)
+        => base.SkipNamespaceOnTypenameMappings(@namespace)
+        && !@namespace.In($"{CodeGenerationRootNamespace}.Models.Pipelines",
+                           $"{CodeGenerationRootNamespace}.Models.TemplateFramework");
 }

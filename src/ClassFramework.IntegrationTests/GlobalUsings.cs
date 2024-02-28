@@ -22,6 +22,7 @@ global using ClassFramework.Pipelines.OverrideEntity;
 global using ClassFramework.Pipelines.Reflection;
 global using ClassFramework.TemplateFramework.CodeGenerationProviders;
 global using ClassFramework.TemplateFramework.Extensions;
+global using CrossCutting.Common.Extensions;
 global using CrossCutting.ProcessingPipeline;
 global using CrossCutting.Utilities.Parsers.Extensions;
 global using FluentAssertions;
