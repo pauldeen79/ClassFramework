@@ -7,7 +7,7 @@ public class UsingsViewModel : CsharpClassGeneratorViewModelBase<UsingsModel>
     {
     }
 
-    private readonly static string[] DefaultUsings =
+    private static readonly string[] DefaultUsings =
     [
         "System",
         "System.Collections.Generic",
