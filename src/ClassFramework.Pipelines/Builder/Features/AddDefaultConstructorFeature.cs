@@ -107,6 +107,12 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
             }
         }
 
+        if (context.Context.Settings.EnableNullableReferenceTypes)
+        {
+            //Warning CS8618 Non-nullable field '_{name}' must contain a non-null value when exiting constructor. Consider declaring the field as nullable.
+            ctor.AddSuppressWarningCodes("CS8618");
+        }
+
         return Result.Success(ctor);
     }
 
