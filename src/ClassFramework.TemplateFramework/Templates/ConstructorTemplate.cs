@@ -30,13 +30,7 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
         }
         else
         {
-            builder.AppendLine();
-            builder.Append(Model.CreateIndentation(1));
-            builder.AppendLine("{");
-            RenderChildTemplatesByModel(Model.CodeStatements, builder);
-            builder.Append(Model.CreateIndentation(1));
-            builder.AppendLine("}");
-
+            builder.RenderMethodBody(Model.CreateIndentation(1), () => RenderChildTemplatesByModel(Model.CodeStatements, builder));
             builder.RenderSuppressions(Model.SuppressWarningCodes, "restore", Model.CreateIndentation(1));
         }
     }

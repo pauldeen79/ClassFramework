@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.TemplateFramework.Extensions;
+﻿using System.Reflection;
+
+namespace ClassFramework.TemplateFramework.Extensions;
 
 public static class StringBuilderExtensions
 {
@@ -30,10 +32,23 @@ public static class StringBuilderExtensions
     public static void RenderSuppressions(this StringBuilder builder, IReadOnlyCollection<string> suppressWarningCodes, string verb, string indentation)
     {
         suppressWarningCodes = suppressWarningCodes.IsNotNull(nameof(suppressWarningCodes));
+
         foreach (var suppression in suppressWarningCodes)
         {
             builder.Append(indentation);
             builder.AppendLine($"#pragma warning {verb} {suppression}");
         }
+    }
+
+    public static void RenderMethodBody(this StringBuilder builder, string indentation, Action innerAction)
+    {
+        innerAction = innerAction.IsNotNull(nameof(innerAction));
+
+        builder.AppendLine();
+        builder.Append(indentation);
+        builder.AppendLine("{");
+        innerAction();
+        builder.Append(indentation);
+        builder.AppendLine("}");
     }
 }
