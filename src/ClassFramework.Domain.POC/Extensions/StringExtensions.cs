@@ -163,7 +163,7 @@ public static class StringExtensions
         }
 
         var t = Type.GetType(instance);
-        if (t == null)
+        if (t is null)
         {
             return false;
         }
