@@ -9,6 +9,15 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
 
         RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
 
+        if (!Model.OmitCode)
+        {
+            foreach (var suppression in Model.SuppressWarningCodes)
+            {
+                builder.Append(Model.CreateIndentation(1));
+                builder.AppendLine($"#pragma warning disable {suppression}");
+            }
+        }
+
         builder.Append(Model.CreateIndentation(1));
         builder.Append(Model.Modifiers);
         builder.Append(Model.Name);
@@ -31,6 +40,12 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
             RenderChildTemplatesByModel(Model.GetCodeStatementModels(), builder);
             builder.Append(Model.CreateIndentation(1));
             builder.AppendLine("}");
+
+            foreach (var suppression in Model.SuppressWarningCodes)
+            {
+                builder.Append(Model.CreateIndentation(1));
+                builder.AppendLine($"#pragma warning disable {suppression}");
+            }
         }
     }
 }

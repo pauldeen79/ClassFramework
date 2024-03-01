@@ -13,8 +13,7 @@ public class ConstructorViewModel : MethodViewModelBase<Constructor>
         {   
             var parentModel = GetParentModel();
 
-            var nameContainer = parentModel as IType;
-            if (nameContainer is null)
+            if (parentModel is not IType nameContainer)
             {
                 throw new NotSupportedException($"Type {parentModel?.GetType().FullName ?? "NULL"} is not supported for constructors. Only class implementing IType are supported.");
             }

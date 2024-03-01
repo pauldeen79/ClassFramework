@@ -9,8 +9,17 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IString
 
         RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
 
+        if (!Model.OmitCode)
+        {
+            foreach (var suppression in Model.SuppressWarningCodes)
+            {
+                builder.Append(Model.CreateIndentation(1));
+                builder.AppendLine($"#pragma warning disable {suppression}");
+            }
+        }
+
         builder.Append(Model.CreateIndentation(1));
-        
+
         if (Model.ShouldRenderModifiers)
         {
             builder.Append(Model.Modifiers);
@@ -45,6 +54,12 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IString
             RenderChildTemplatesByModel(Model.GetCodeStatementModels(), builder);
             builder.Append(Model.CreateIndentation(1));
             builder.AppendLine("}");
+
+            foreach (var suppression in Model.SuppressWarningCodes)
+            {
+                builder.Append(Model.CreateIndentation(1));
+                builder.AppendLine($"#pragma warning disable {suppression}");
+            }
         }
     }
 }
