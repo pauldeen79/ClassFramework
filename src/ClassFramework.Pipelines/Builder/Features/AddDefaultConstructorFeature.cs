@@ -79,8 +79,8 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
                 (x =>
                     context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)
                     && !x.TypeName.FixTypeName().IsCollectionTypeName()
+                    && !x.IsValueType
                     && !x.IsNullable
-                    && x.HasNonDefaultDefaultValue()
                 )
                 .Select(x => GenerateDefaultValueStatement(x, context))
                 .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
@@ -105,12 +105,6 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
                 ctor.AddStringCodeStatements($"{setDefaultValuesMethodNameResult.Value}();");
                 context.Model.AddMethods(new MethodBuilder().WithName(setDefaultValuesMethodNameResult.Value!).WithPartial().WithVisibility(Visibility.Private));
             }
-        }
-
-        if (context.Context.Settings.EnableNullableReferenceTypes)
-        {
-            //Warning CS8618 Non-nullable field '_{name}' must contain a non-null value when exiting constructor. Consider declaring the field as nullable.
-            ctor.AddSuppressWarningCodes("CS8618");
         }
 
         return Result.Success(ctor);
