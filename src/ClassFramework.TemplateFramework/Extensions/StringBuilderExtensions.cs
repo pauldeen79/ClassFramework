@@ -26,4 +26,14 @@ public static class StringBuilderExtensions
 
         return builder.Append(value);
     }
+
+    public static void RenderSuppressions(this StringBuilder builder, IReadOnlyCollection<string> suppressWarningCodes, string verb, string indentation)
+    {
+        suppressWarningCodes = suppressWarningCodes.IsNotNull(nameof(suppressWarningCodes));
+        foreach (var suppression in suppressWarningCodes)
+        {
+            builder.Append(indentation);
+            builder.AppendLine($"#pragma warning {verb} {suppression}");
+        }
+    }
 }

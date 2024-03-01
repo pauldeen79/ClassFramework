@@ -11,11 +11,7 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
 
         if (!Model.OmitCode)
         {
-            foreach (var suppression in Model.SuppressWarningCodes)
-            {
-                builder.Append(Model.CreateIndentation(1));
-                builder.AppendLine($"#pragma warning disable {suppression}");
-            }
+            builder.RenderSuppressions(Model.SuppressWarningCodes, "disable", Model.CreateIndentation(1));
         }
 
         builder.Append(Model.CreateIndentation(1));
@@ -41,11 +37,7 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
             builder.Append(Model.CreateIndentation(1));
             builder.AppendLine("}");
 
-            foreach (var suppression in Model.SuppressWarningCodes)
-            {
-                builder.Append(Model.CreateIndentation(1));
-                builder.AppendLine($"#pragma warning disable {suppression}");
-            }
+            builder.RenderSuppressions(Model.SuppressWarningCodes, "restore", Model.CreateIndentation(1));
         }
     }
 }
