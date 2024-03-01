@@ -59,7 +59,7 @@ public static class PipelineContextExtensions
 
     private static string CreateImmutableClassCtorParameterNames<TModel>(
         PipelineContext<TModel, EntityContext> context)
-        => string.Join(", ", context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, context.Context.MapTypeName).Select(x => x.Name.GetCsharpFriendlyName()));
+        => string.Join(", ", context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, x => context.Context.MapTypeName(x)).Select(x => x.Name.GetCsharpFriendlyName()));
 
     private static Result<string> GetConstructionMethodParameters<TModel>(PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {

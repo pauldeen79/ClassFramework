@@ -68,4 +68,11 @@ public class BuilderContext : ContextBase<IType>
 
         return !isInterfaced;
     }
+
+    public string MapForBuilder(string typeName, PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser)
+    {
+        var dummyProperty = new PropertyBuilder().WithName("Dummy").WithTypeName(typeName).Build();
+        var parentChildContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, dummyProperty, Settings);
+        return dummyProperty.GetBuilderArgumentTypeName(Settings, FormatProvider, parentChildContext, typeName, formattableStringParser).GetValueOrThrow();
+    }
 }

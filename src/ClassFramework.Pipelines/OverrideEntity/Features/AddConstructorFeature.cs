@@ -47,7 +47,7 @@ public class AddConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, Over
         return Result.Success(new ConstructorBuilder()
             .WithProtected(context.Context.Settings.EnableInheritance && context.Context.Settings.IsAbstract)
             .WithChainCall($"base({parameters})")
-            .AddParameters(context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, context.Context.MapTypeName))
+            .AddParameters(context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, x => context.Context.MapTypeName(x)))
             );
     }
 }

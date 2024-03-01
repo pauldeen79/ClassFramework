@@ -2,17 +2,22 @@
 
 public static class StringExtensions
 {
-    public static string MapTypeName(this string typeName, PipelineSettings settings, string newCollectionTypeName)
+    public static string MapTypeName(this string typeName, PipelineSettings settings, string newCollectionTypeName, Func<string, PipelineSettings, string, string>? innerDelegate = null)
     {
         settings = settings.IsNotNull(nameof(settings));
         newCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
+
+        if (innerDelegate is null)
+        {
+            innerDelegate = (n, s, c) => MapTypeName(n, s, c);
+        }
 
         if (typeName.IsCollectionTypeName())
         {
             // i.e. IEnumerable<TSource> => IEnumerable<TTarget> (including collection typename mapping, when available)
             return typeName
                 .FixCollectionTypeName(newCollectionTypeName) // note that this always converts to a generic type :)
-                .ReplaceGenericTypeName(MapTypeName(typeName.GetCollectionItemType(), settings, newCollectionTypeName)); // so we can safely use ReplaceGenericTypeName here
+                .ReplaceGenericTypeName(innerDelegate(typeName.GetCollectionItemType(), settings, newCollectionTypeName)); // so we can safely use ReplaceGenericTypeName here
         }
 
         var genericArguments = typeName.FixTypeName().GetProcessedGenericArguments();
@@ -26,10 +31,10 @@ public static class StringExtensions
                     mappedGenericArgumentsBuilder.Append(",");
                 }
 
-                mappedGenericArgumentsBuilder.Append(MapTypeName(item, settings, newCollectionTypeName));
+                mappedGenericArgumentsBuilder.Append(innerDelegate(item, settings, newCollectionTypeName));
             }
 
-            return $"{MapTypeName(typeName.RemoveGenerics(), settings, newCollectionTypeName)}<{mappedGenericArgumentsBuilder}>";
+            return $"{innerDelegate(typeName.RemoveGenerics(), settings, newCollectionTypeName)}<{mappedGenericArgumentsBuilder}>";
         }
 
         var typeNameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);

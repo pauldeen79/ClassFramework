@@ -61,7 +61,7 @@ public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
 
         return Result.Success(new ConstructorBuilder()
             .WithProtected(context.Context.Settings.EnableInheritance && context.Context.Settings.IsAbstract)
-            .AddParameters(context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, context.Context.MapTypeName))
+            .AddParameters(context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, x => context.Context.MapTypeName(x)))
             .AddStringCodeStatements
             (
                 context.Context.SourceModel.Properties
