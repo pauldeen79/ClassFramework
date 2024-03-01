@@ -7,7 +7,7 @@ public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, ISt
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
+        RenderChildTemplatesByModel(Model.Attributes, builder);
 
         builder.Append(Model.CreateIndentation(1));
 
@@ -24,7 +24,7 @@ public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, ISt
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("{");
 
-        RenderChildTemplatesByModel(Model.GetCodeBodyModels(), builder);
+        RenderChildTemplatesByModel(Model.CodeBodyItems, builder);
 
         builder.Append(Model.CreateIndentation(1));
         builder.Append("}");

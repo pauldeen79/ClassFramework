@@ -13,6 +13,6 @@ public class EnumerationViewModel : AttributeContainerViewModelBase<Enumeration>
     public string Name
         => GetModel().Name.Sanitize().GetCsharpFriendlyName();
 
-    public IEnumerable<EnumerationMember> GetMemberModels()
+    public IEnumerable<EnumerationMember> Members
         => GetModel().Members;
 }

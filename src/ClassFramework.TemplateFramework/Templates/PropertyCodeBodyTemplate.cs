@@ -19,7 +19,7 @@ public class PropertyCodeBodyTemplate : CsharpClassGeneratorBase<PropertyCodeBod
             builder.AppendLine();
             builder.Append(Model.CreateIndentation(2));
             builder.AppendLine("{");
-            RenderChildTemplatesByModel(Model.CodeStatementModels, builder);
+            RenderChildTemplatesByModel(Model.CodeStatements, builder);
             builder.Append(Model.CreateIndentation(2));
             builder.AppendLine("}");
         }

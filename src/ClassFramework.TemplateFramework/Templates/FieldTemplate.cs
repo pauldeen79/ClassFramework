@@ -7,7 +7,7 @@ public class FieldTemplate : CsharpClassGeneratorBase<FieldViewModel>, IStringBu
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
+        RenderChildTemplatesByModel(Model.Attributes, builder);
 
         builder.Append(Model.CreateIndentation(1));
         builder.Append(Model.Modifiers);

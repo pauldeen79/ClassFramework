@@ -13,9 +13,9 @@ public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<I
     public CodeGenerationHeaderModel GetCodeGenerationHeaderModel()
         => new CodeGenerationHeaderModel(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion);
 
-    public UsingsModel GetUsingsModel()
+    public UsingsModel Usings
         => new UsingsModel(GetModel());
 
-    public IEnumerable<TypeBase> GetTypeBaseModels(IEnumerable<TypeBase> @namespace)
+    public IEnumerable<TypeBase> GetTypes(IEnumerable<TypeBase> @namespace)
         => @namespace.OrderBy(typeBase => typeBase.Name);
 }

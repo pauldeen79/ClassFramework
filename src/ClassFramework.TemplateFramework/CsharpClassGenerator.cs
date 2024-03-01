@@ -42,7 +42,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
         RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment);
         if (!Model.Settings.EnableGlobalUsings)
         {
-            RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment);
+            RenderChildTemplateByModel(Model.Usings, generationEnvironment);
         }
     }
 
@@ -56,7 +56,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
                 singleStringBuilder.AppendLine("{"); // open namespace
             }
 
-            RenderChildTemplatesByModel(Model.GetTypeBaseModels(@namespace), generationEnvironment);
+            RenderChildTemplatesByModel(Model.GetTypes(@namespace), generationEnvironment);
 
             if (singleStringBuilder is not null && !string.IsNullOrEmpty(@namespace.Key))
             {

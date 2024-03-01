@@ -15,6 +15,6 @@ public class PropertyCodeBodyViewModel : CsharpClassGeneratorViewModelBase<Prope
     public bool OmitCode
         => GetModel().OmitCode;
 
-    public IEnumerable<CodeStatementBase> CodeStatementModels
+    public IEnumerable<CodeStatementBase> CodeStatements
         => GetModel().CodeStatementModels;
 }

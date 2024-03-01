@@ -7,7 +7,7 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IString
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
+        RenderChildTemplatesByModel(Model.Attributes, builder);
 
         if (!Model.OmitCode)
         {
@@ -37,7 +37,7 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IString
             builder.Append("this ");
         }
 
-        RenderChildTemplatesByModel(Model.GetParameterModels(), builder);
+        RenderChildTemplatesByModel(Model.Parameters, builder);
 
         builder.Append(")");
         builder.Append(Model.GenericTypeArgumentConstraints);
@@ -51,7 +51,7 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IString
             builder.AppendLine();
             builder.Append(Model.CreateIndentation(1));
             builder.AppendLine("{");
-            RenderChildTemplatesByModel(Model.GetCodeStatementModels(), builder);
+            RenderChildTemplatesByModel(Model.CodeStatements, builder);
             builder.Append(Model.CreateIndentation(1));
             builder.AppendLine("}");
 

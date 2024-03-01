@@ -7,7 +7,7 @@ public class ParameterTemplate : CsharpClassGeneratorBase<ParameterViewModel>, I
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
+        RenderChildTemplatesByModel(Model.Attributes, builder);
 
         builder.Append(Model.Prefix);
         builder.Append(Model.TypeName);

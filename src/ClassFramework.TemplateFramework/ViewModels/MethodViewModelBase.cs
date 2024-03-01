@@ -14,10 +14,10 @@ public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T
     public IReadOnlyCollection<string> SuppressWarningCodes
         => GetModel().SuppressWarningCodes;
 
-    public IEnumerable<CodeStatementBase> GetCodeStatementModels()
+    public IEnumerable<CodeStatementBase> CodeStatements
         => GetModel().CodeStatements;
 
-    public IEnumerable<object> GetParameterModels()
+    public IEnumerable<object> Parameters
         => GetModel().Parameters
             .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new SpaceAndCommaModel()] : new object[] { item });
 }

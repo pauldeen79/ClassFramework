@@ -7,7 +7,7 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
+        RenderChildTemplatesByModel(Model.Attributes, builder);
 
         if (!Model.OmitCode)
         {
@@ -23,7 +23,7 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
         builder.Append(Model.Name);
         builder.Append("(");
 
-        RenderChildTemplatesByModel(Model.GetParameterModels(), builder);
+        RenderChildTemplatesByModel(Model.Parameters, builder);
 
         builder.Append(")");
         builder.Append(Model.ChainCall);
@@ -37,7 +37,7 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
             builder.AppendLine();
             builder.Append(Model.CreateIndentation(1));
             builder.AppendLine("{");
-            RenderChildTemplatesByModel(Model.GetCodeStatementModels(), builder);
+            RenderChildTemplatesByModel(Model.CodeStatements, builder);
             builder.Append(Model.CreateIndentation(1));
             builder.AppendLine("}");
 
