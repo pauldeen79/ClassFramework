@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.TemplateFram
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.TemplateFramework.Tests", "src\ClassFramework.TemplateFramework.Tests\ClassFramework.TemplateFramework.Tests.csproj", "{19E6F1FC-59B9-4289-96E7-822482792543}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.CodeGeneration", "src\ClassFramework.IntegrationTests\ClassFramework.CodeGeneration.csproj", "{5635C1A7-A52F-4F04-B9C9-1E8070717DF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.CodeGeneration", "src\ClassFramework.CodeGeneration\ClassFramework.CodeGeneration.csproj", "{5635C1A7-A52F-4F04-B9C9-1E8070717DF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
