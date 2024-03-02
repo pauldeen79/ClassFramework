@@ -1,8 +1,10 @@
-﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
+﻿using CrossCutting.Common.Extensions;
 
-public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
+namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
+
+public abstract class TestCSharpClassBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
 {
-    protected ClassFrameworkCSharpClassBase(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
+    protected TestCSharpClassBase(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
     {
     }
 
@@ -20,4 +22,11 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;
     protected override bool CreateCodeGenerationHeader => false;
+
+    protected TypeBase[] GetTemplateFrameworkModels()
+        => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework");
+
+    protected override bool SkipNamespaceOnTypenameMappings(string @namespace)
+        => @namespace == $"{CodeGenerationRootNamespace}.Models.TemplateFramework";
+
 }
