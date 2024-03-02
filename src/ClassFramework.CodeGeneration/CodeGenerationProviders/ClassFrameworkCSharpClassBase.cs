@@ -44,6 +44,9 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
         => @namespace.In($"{CodeGenerationRootNamespace}.Models.Pipelines",
                          $"{CodeGenerationRootNamespace}.Models.TemplateFramework");
 
+    protected override ClassBuilder PostProcessClassBuilder(ClassBuilder builder)
+        => builder.AddAttributes(new AttributeBuilder().WithName(typeof(ExcludeFromCodeCoverageAttribute)));
+
     protected override IEnumerable<TypenameMappingBuilder> CreateTypenameMappings()
         => base.CreateTypenameMappings().Concat(
         [

@@ -108,6 +108,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Select(x => x.GetInterfaces().First(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models"))
             .Distinct();
 
+    protected virtual ClassBuilder PostProcessClassBuilder(ClassBuilder builder) => builder;
+
     /// <summary>
     /// Gets the base typename, based on a derived class.
     /// </summary>
@@ -284,7 +286,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
             .Build();
         _ = _entityPipeline.Process(builder, new EntityContext(typeBase, entitySettings, CultureInfo.InvariantCulture)).GetValueOrThrow();
-        return builder.BuildTyped();
+        return PostProcessClassBuilder(builder).BuildTyped();
     }
 
     protected ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
@@ -502,7 +504,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Process(builder, new EntityContext(typeBase, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}"), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
-        return builder.Build();
+        return PostProcessClassBuilder(builder).Build();
     }
 
     private TypeBase CreateBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
@@ -512,7 +514,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Process(builder, new BuilderContext(typeBase, CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
-        return builder.Build();
+        return PostProcessClassBuilder(builder).Build();
     }
 
     private TypeBase CreateBuilderExtensionsClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
@@ -532,7 +534,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Process(builder, new BuilderContext(typeBase, CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ToBuilder().WithIsForAbstractBuilder().Build(), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
-        return builder.Build();
+        return PostProcessClassBuilder(builder).Build();
     }
 
     private bool? GetOverrideAddNullChecks()
@@ -567,6 +569,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Process(builder, new OverrideEntityContext(typeBase, CreateOverrideEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: true), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
-        return builder.Build();
+        return PostProcessClassBuilder(builder).Build();
     }
 }

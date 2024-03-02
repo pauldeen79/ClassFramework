@@ -9,6 +9,8 @@ public class AbstractionsInterfaces : ClassFrameworkCSharpClassBase
 
     public override IEnumerable<TypeBase> Model => GetInterfaces(GetAbstractionsInterfaces(), "ClassFramework.Domain.Abstractions");
 
+    protected override ClassBuilder PostProcessClassBuilder(ClassBuilder builder) => builder;
+
     public override string Path => "ClassFramework.Domain/Abstractions";
 
     protected override bool EnableEntityInheritance => true;
