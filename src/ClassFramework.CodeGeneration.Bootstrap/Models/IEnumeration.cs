@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.CodeGeneration.Models;
+﻿namespace ClassFramework.CodeGeneration.Bootstrap.Models;
 
 internal interface IEnumeration : IAttributesContainer, IMetadataContainer, INameContainer, IVisibilityContainer
 {

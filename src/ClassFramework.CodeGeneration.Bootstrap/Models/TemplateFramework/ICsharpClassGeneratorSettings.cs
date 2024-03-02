@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.CodeGeneration.Models.TemplateFramework;
+﻿namespace ClassFramework.CodeGeneration.Bootstrap.Models.TemplateFramework;
 
 internal interface ICsharpClassGeneratorSettings
 {

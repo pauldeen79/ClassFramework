@@ -1,10 +1,11 @@
-﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
+﻿namespace ClassFramework.CodeGeneration.Bootstrap.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
 {
     public override bool RecurseOnDeleteGeneratedFiles => false;
     public override string DefaultFileName => string.Empty; // not used because we're using multiple files, but it's abstract so we need to fill it
+    protected override string CodeGenerationRootNamespace => "ClassFramework.CodeGeneration.Bootstrap";
 
     protected override bool CreateCodeGenerationHeader => true;
     protected override bool EnableNullableContext => true;

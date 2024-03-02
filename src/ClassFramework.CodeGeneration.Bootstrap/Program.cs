@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.CodeGeneration;
+﻿namespace ClassFramework.CodeGeneration.Bootstrap;
 
 [ExcludeFromCodeCoverage]
 internal static class Program

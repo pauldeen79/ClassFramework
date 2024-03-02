@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.CodeGeneration.Models.Domains;
+﻿namespace ClassFramework.CodeGeneration.Bootstrap.Models.Domains;
 
 internal enum ArgumentValidationType
 {

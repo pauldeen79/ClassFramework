@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.CodeGeneration.Models;
+﻿namespace ClassFramework.CodeGeneration.Bootstrap.Models;
 
 internal interface IMethod : IMetadataContainer, IExtendedVisibilityContainer, INameContainer, IAttributesContainer, ICodeStatementsContainer, IParametersContainer, IExplicitInterfaceNameContainer, IParentTypeContainer, IGenericTypeArgumentsContainer, ISuppressWarningCodesContainer
 {

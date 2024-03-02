@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.CodeGeneration;
+﻿namespace ClassFramework.CodeGeneration.Bootstrap;
 
 internal static class Constants
 {

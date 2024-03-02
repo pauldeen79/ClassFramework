@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
+﻿namespace ClassFramework.CodeGeneration.Bootstrap.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 public class OverrideCodeStatementBuilders : ClassFrameworkCSharpClassBase

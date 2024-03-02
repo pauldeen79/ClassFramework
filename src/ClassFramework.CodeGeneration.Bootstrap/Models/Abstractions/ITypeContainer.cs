@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.CodeGeneration.Models.Abstractions;
+﻿namespace ClassFramework.CodeGeneration.Bootstrap.Models.Abstractions;
 
 internal interface ITypeContainer
 {

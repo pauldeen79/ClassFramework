@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.CodeGeneration.Models.Types;
+﻿namespace ClassFramework.CodeGeneration.Bootstrap.Models.Types;
 
 internal interface IStruct : ITypeBase, IValueType, IConcreteType
 {

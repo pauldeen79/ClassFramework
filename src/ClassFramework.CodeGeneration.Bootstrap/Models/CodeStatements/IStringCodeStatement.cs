@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.CodeGeneration.Models.CodeStatements;
+﻿namespace ClassFramework.CodeGeneration.Bootstrap.Models.CodeStatements;
 
 internal interface IStringCodeStatement : ICodeStatementBase
 {

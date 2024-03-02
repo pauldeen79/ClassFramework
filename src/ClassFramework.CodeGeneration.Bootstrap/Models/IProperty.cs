@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.CodeGeneration.Models;
+﻿namespace ClassFramework.CodeGeneration.Bootstrap.Models;
 
 internal interface IProperty : IMetadataContainer, IExtendedVisibilityContainer, INameContainer, IAttributesContainer, ITypeContainer, IDefaultValueContainer, IExplicitInterfaceNameContainer, IParentTypeContainer
 {

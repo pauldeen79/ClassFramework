@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.CodeGeneration.Models.Pipelines;
+﻿namespace ClassFramework.CodeGeneration.Bootstrap.Models.Pipelines;
 
 internal interface ITypenameMapping : IMetadataContainer
 {
