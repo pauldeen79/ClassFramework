@@ -41,7 +41,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithEncoding(Encoding)
             .WithCultureInfo(CultureInfo.InvariantCulture)
             .WithGenerateMultipleFiles()
-            .WithCreateCodeGenerationHeader()
+            .WithCreateCodeGenerationHeader(CreateCodeGenerationHeader)
             .WithEnableNullableContext()
             .WithFilenameSuffix(FilenameSuffix)
             .WithEnvironmentVersion(EnvironmentVersion)
@@ -82,6 +82,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool AddCopyConstructor => true;
     protected virtual bool SetDefaultValues => true;
     protected virtual string FilenameSuffix => ".template.generated";
+    protected virtual bool CreateCodeGenerationHeader => true;
     protected virtual Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => new Func<IParentTypeContainer, IType, bool>((parentNameContainer, typeBase)
         => parentNameContainer is not null
         && typeBase is not null

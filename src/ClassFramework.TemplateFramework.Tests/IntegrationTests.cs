@@ -20,6 +20,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped(_ => templateFactory)
             .AddScoped(_ => templateProviderPluginFactory)
             .AddScoped<TestCodeGenerationProvider>()
+            .AddScoped<TestPipelineCodeGenerationProvider>()
             .BuildServiceProvider();
         _scope = _serviceProvider.CreateScope();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
@@ -126,6 +127,47 @@ namespace MyNamespace
 ");
     }
 
+    [Fact]
+    public void Can_Generate_Code_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TestPipelineCodeGenerationProvider>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+#nullable enable
+    public interface IMyEntity
+    {
+        string MySingleProperty
+        {
+            get;
+            set;
+        }
+
+        System.Collections.Generic.IEnumerable<string> MyCollectionProperty
+        {
+            get;
+            set;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
     public void Dispose()
     {
         _scope.Dispose();
@@ -166,5 +208,28 @@ namespace MyNamespace
             .WithCultureInfo(CultureInfo.InvariantCulture)
             .WithEnableNullableContext()
             .Build();
+    }
+
+    private sealed class TestPipelineCodeGenerationProvider : CsharpClassGeneratorPipelineCodeGenerationProviderBase
+    {
+        public TestPipelineCodeGenerationProvider(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
+        {
+        }
+
+        public override string Path => string.Empty;
+        public override bool RecurseOnDeleteGeneratedFiles => false;
+        public override string LastGeneratedFilesFilename => string.Empty;
+        public override Encoding Encoding => Encoding.UTF8;
+        protected override bool CreateCodeGenerationHeader => false;
+
+        public override IEnumerable<TypeBase> Model => new[]
+        {
+            new InterfaceBuilder().WithName("IMyEntity").WithNamespace("MyNamespace").AddProperties(new PropertyBuilder().WithName("MySingleProperty").WithType(typeof(string)), new PropertyBuilder().WithName("MyCollectionProperty").WithType(typeof(IEnumerable<string>))).Build()
+        };
+
+        protected override string ProjectName => "UnitTest";
+        protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
+        protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
+        protected override Type BuilderCollectionType => typeof(List<>);
     }
 }
