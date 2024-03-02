@@ -32,9 +32,9 @@ jobs:
       - name: Restore
         run: dotnet restore ClassFramework.sln
       - name: Build code generation
-        run: dotnet build src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj -c Release
+        run: dotnet build src/ClassFramework.CodeGeneration.Bootstrap/ClassFramework.CodeGeneration.Bootstrap.csproj -c Release
       - name: Run code generation
-        run: dotnet src/ClassFramework.CodeGeneration/bin/Release/net8.0/ClassFramework.CodeGeneration.dll
+        run: dotnet src/ClassFramework.CodeGeneration.Bootstrap/bin/Release/net8.0/ClassFramework.CodeGeneration.Bootstrap.dll
       - name: Build
         run: dotnet build ClassFramework.sln -c Release --no-restore
       - name: Test
@@ -87,8 +87,8 @@ jobs:
           echo Version: $VERSION
           VERSION="${VERSION//v}"
           echo Clean Version: $VERSION
-          dotnet build src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj -c Release
-          dotnet src/ClassFramework.CodeGeneration/bin/Release/net8.0/ClassFramework.CodeGeneration.dll
+          dotnet build src/ClassFramework.CodeGeneration.Bootstrap/ClassFramework.CodeGeneration.Bootstrap.csproj -c Release
+          dotnet src/ClassFramework.CodeGeneration.Bootstrap/bin/Release/net8.0/ClassFramework.CodeGeneration.Bootstrap.dll
           dotnet pack ClassFramework.sln -v normal -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -p:Version=$VERSION -o nupkg
       - name: Push to GitHub Feed
         run: |
