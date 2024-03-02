@@ -15,23 +15,6 @@ public static class StringExtensions
                 .ReplaceGenericTypeName(MapTypeName(typeName.GetCollectionItemType(), settings, newCollectionTypeName)); // so we can safely use ReplaceGenericTypeName here
         }
 
-        var genericArguments = typeName.FixTypeName().GetProcessedGenericArguments();
-        if (!string.IsNullOrEmpty(genericArguments))
-        {
-            var mappedGenericArgumentsBuilder = new StringBuilder();
-            foreach (var item in genericArguments.Split(',').Select(x => x.Trim()))
-            {
-                if (mappedGenericArgumentsBuilder.Length > 0)
-                {
-                    mappedGenericArgumentsBuilder.Append(",");
-                }
-
-                mappedGenericArgumentsBuilder.Append(MapTypeName(item, settings, newCollectionTypeName));
-            }
-
-            return $"{MapTypeName(typeName.RemoveGenerics(), settings, newCollectionTypeName)}<{mappedGenericArgumentsBuilder}>";
-        }
-
         var typeNameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
         if (typeNameMapping is not null)
         {
