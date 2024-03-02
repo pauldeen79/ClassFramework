@@ -8,7 +8,7 @@ public class AbstractionsInterfaces : TestCodeGenerationProviderBase
 
     public override IEnumerable<TypeBase> Model => GetInterfaces(GetAbstractionsInterfaces(), "ClassFramework.Domain.Abstractions");
 
-    public override string Path => "ClassFramework.Domain.POC/Abstractions";
+    public override string Path => "ClassFramework.Domain/Abstractions";
 
     protected override bool EnableEntityInheritance => true;
 }

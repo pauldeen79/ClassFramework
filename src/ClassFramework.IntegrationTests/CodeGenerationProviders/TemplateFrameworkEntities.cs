@@ -8,5 +8,5 @@ public class TemplateFrameworkEntities : TestCodeGenerationProviderBase
 
     public override IEnumerable<TypeBase> Model => GetImmutableClasses(GetTemplateFrameworkModels(), "ClassFramework.TemplateFramework");
 
-    public override string Path => "ClassFramework.Domain.POC/TemplateFramework";
+    public override string Path => "ClassFramework.TemplateFramework";
 }

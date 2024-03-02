@@ -8,5 +8,5 @@ public class PipelineEntities : TestCodeGenerationProviderBase
 
     public override IEnumerable<TypeBase> Model => GetImmutableClasses(GetPipelineModels(), "ClassFramework.Pipelines");
 
-    public override string Path => "ClassFramework.Domain.POC/Pipelines";
+    public override string Path => "ClassFramework.Domain.Pipelines";
 }

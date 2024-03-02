@@ -6,7 +6,7 @@ public class OverrideTypeEntities : TestCodeGenerationProviderBase
     {
     }
 
-    public override string Path => "ClassFramework.Domain.POC/Types";
+    public override string Path => "ClassFramework.Domain/Types";
 
     protected override bool EnableEntityInheritance => true;
     protected override Class? BaseClass => CreateBaseclass(typeof(ITypeBase), "ClassFramework.Domain");

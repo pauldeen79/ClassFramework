@@ -8,5 +8,5 @@ public class TemplateFrameworkBuilders : TestCodeGenerationProviderBase
 
     public override IEnumerable<TypeBase> Model => GetBuilders(GetTemplateFrameworkModels(), "ClassFramework.TemplateFramework.Builders", "ClassFramework.TemplateFramework");
 
-    public override string Path => "ClassFramework.Domain.POC/TemplateFramework/Builders";
+    public override string Path => "ClassFramework.TemplateFramework/Builders";
 }

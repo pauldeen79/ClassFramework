@@ -6,7 +6,7 @@ public class OverrideCodeStatementEntities : TestCodeGenerationProviderBase
     {
     }
 
-    public override string Path => "ClassFramework.Domain.POC/CodeStatements";
+    public override string Path => "ClassFramework.Domain/CodeStatements";
 
     protected override bool EnableEntityInheritance => true;
     protected override Class? BaseClass => CreateBaseclass(typeof(ICodeStatementBase), "ClassFramework.Domain");

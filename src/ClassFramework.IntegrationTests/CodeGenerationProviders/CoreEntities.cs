@@ -8,5 +8,5 @@ public class CoreEntities : TestCodeGenerationProviderBase
 
     public override IEnumerable<TypeBase> Model => GetImmutableClasses(GetCoreModels(), "ClassFramework.Domain");
 
-    public override string Path => "ClassFramework.Domain.POC";
+    public override string Path => "ClassFramework.Domain";
 }

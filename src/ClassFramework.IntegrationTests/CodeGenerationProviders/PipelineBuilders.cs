@@ -8,5 +8,5 @@ public class PipelineBuilders : TestCodeGenerationProviderBase
 
     public override IEnumerable<TypeBase> Model => GetBuilders(GetPipelineModels(), "ClassFramework.Pipelines.Builders", "ClassFramework.Pipelines");
 
-    public override string Path => "ClassFramework.Domain.POC/Pipelines/Builders";
+    public override string Path => "ClassFramework.Domain.Pipelines/Builders";
 }

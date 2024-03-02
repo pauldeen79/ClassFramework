@@ -8,5 +8,5 @@ public class CoreBuilders : TestCodeGenerationProviderBase
 
     public override IEnumerable<TypeBase> Model => GetBuilders(GetCoreModels(), "ClassFramework.Domain.Builders", "ClassFramework.Domain");
 
-    public override string Path => "ClassFramework.Domain.POC/Builders";
+    public override string Path => "ClassFramework.Domain/Builders";
 }

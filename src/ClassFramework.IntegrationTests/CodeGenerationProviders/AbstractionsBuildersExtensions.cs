@@ -8,7 +8,7 @@ public class AbstractionsBuildersExtensions : TestCodeGenerationProviderBase
 
     public override IEnumerable<TypeBase> Model => GetBuilderExtensions(GetAbstractionsInterfaces(), "ClassFramework.Domain.Builders.Abstractions", "ClassFramework.Domain.Abstractions", "ClassFramework.Domain.Builders.Extensions");
 
-    public override string Path => "ClassFramework.Domain.POC/Builders/Extensions";
+    public override string Path => "ClassFramework.Domain/Builders/Extensions";
 
     protected override bool EnableEntityInheritance => true;
 }
