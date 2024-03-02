@@ -21,6 +21,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped(_ => templateProviderPluginFactory)
             .AddScoped<TestCodeGenerationProvider>()
             .AddScoped<TestPipelineCodeGenerationProvider>()
+            .AddScoped<CoreBuilders>()
+            .AddScoped<CoreEntities>()
             .BuildServiceProvider();
         _scope = _serviceProvider.CreateScope();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
@@ -168,6 +170,141 @@ namespace MyNamespace
 ");
     }
 
+    [Fact]
+    public void Can_Generate_Code_For_Entity_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<CoreEntities>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public partial class Literal
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Value
+        {
+            get;
+        }
+
+        public object? OriginalValue
+        {
+            get;
+        }
+
+        public Literal(string value, object? originalValue)
+        {
+            this.Value = value;
+            this.OriginalValue = originalValue;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public Test.Domain.Builders.LiteralBuilder ToBuilder()
+        {
+            return new Test.Domain.Builders.LiteralBuilder(this);
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Builder_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<CoreBuilders>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class LiteralBuilder
+    {
+        private string _value;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+            }
+        }
+
+        public object? OriginalValue
+        {
+            get;
+            set;
+        }
+
+        public LiteralBuilder(Test.Domain.Literal source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _value = source.Value;
+            OriginalValue = source.OriginalValue;
+        }
+
+        public LiteralBuilder()
+        {
+            _value = string.Empty;
+            SetDefaultValues();
+        }
+
+        public Test.Domain.Literal Build()
+        {
+            return new Test.Domain.Literal(Value, OriginalValue);
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.LiteralBuilder WithValue(string value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
+
+        public Test.Domain.Builders.LiteralBuilder WithOriginalValue(object? originalValue)
+        {
+            OriginalValue = originalValue;
+            return this;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
     public void Dispose()
     {
         _scope.Dispose();
@@ -220,7 +357,6 @@ namespace MyNamespace
         public override bool RecurseOnDeleteGeneratedFiles => false;
         public override string LastGeneratedFilesFilename => string.Empty;
         public override Encoding Encoding => Encoding.UTF8;
-        protected override bool CreateCodeGenerationHeader => false;
 
         public override IEnumerable<TypeBase> Model => new[]
         {
@@ -231,5 +367,6 @@ namespace MyNamespace
         protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
         protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
         protected override Type BuilderCollectionType => typeof(List<>);
+        protected override bool CreateCodeGenerationHeader => false;
     }
 }
