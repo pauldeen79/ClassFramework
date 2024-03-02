@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.IntegrationTests.Models.Domains;
+﻿namespace ClassFramework.CodeGeneration.Models.Domains;
 
 internal enum SubVisibility
 {

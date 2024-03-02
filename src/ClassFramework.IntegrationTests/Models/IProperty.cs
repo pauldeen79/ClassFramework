@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.IntegrationTests.Models;
+﻿namespace ClassFramework.CodeGeneration.Models;
 
 internal interface IProperty : Abstractions.IMetadataContainer, Abstractions.IExtendedVisibilityContainer, Abstractions.INameContainer, Abstractions.IAttributesContainer, Abstractions.ITypeContainer, Abstractions.IDefaultValueContainer, Abstractions.IExplicitInterfaceNameContainer, Abstractions.IParentTypeContainer
 {

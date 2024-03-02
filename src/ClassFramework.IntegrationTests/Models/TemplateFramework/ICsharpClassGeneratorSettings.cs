@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.IntegrationTests.Models.TemplateFramework;
+﻿namespace ClassFramework.CodeGeneration.Models.TemplateFramework;
 
 internal interface ICsharpClassGeneratorSettings
 {

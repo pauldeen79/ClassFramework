@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.IntegrationTests.Models.Pipelines;
+﻿namespace ClassFramework.CodeGeneration.Models.Pipelines;
 
 internal interface ITypenameMapping : Abstractions.IMetadataContainer
 {

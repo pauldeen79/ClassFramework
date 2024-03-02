@@ -1,8 +1,8 @@
-﻿namespace ClassFramework.IntegrationTests.CodeGenerationProviders;
+﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
-public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
+public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
 {
-    protected TestCodeGenerationProviderBase(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
+    protected ClassFrameworkCSharpClassBase(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
     {
     }
 
@@ -18,7 +18,7 @@ public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipel
     //protected override Type BuilderCollectionType => typeof(ObservableCollection<>);
 
     protected override string ProjectName => "ClassFramework";
-    protected override string CodeGenerationRootNamespace => "ClassFramework.IntegrationTests";
+    protected override string CodeGenerationRootNamespace => "ClassFramework.CodeGeneration";
     protected override string CoreNamespace => "ClassFramework.Domain";
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;

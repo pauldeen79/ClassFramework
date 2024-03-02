@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.IntegrationTests.Models;
+﻿namespace ClassFramework.CodeGeneration.Models;
 
 internal interface IMethod : Abstractions.IMetadataContainer, Abstractions.IExtendedVisibilityContainer, Abstractions.INameContainer, Abstractions.IAttributesContainer, Abstractions.ICodeStatementsContainer, Abstractions.IParametersContainer, Abstractions.IExplicitInterfaceNameContainer, Abstractions.IParentTypeContainer, Abstractions.IGenericTypeArgumentsContainer, Abstractions.ISuppressWarningCodesContainer
 {

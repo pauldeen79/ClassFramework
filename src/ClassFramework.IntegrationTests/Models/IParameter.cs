@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.IntegrationTests.Models;
+﻿namespace ClassFramework.CodeGeneration.Models;
 
 internal interface IParameter : Abstractions.ITypeContainer, Abstractions.IAttributesContainer, Abstractions.IMetadataContainer, Abstractions.INameContainer, Abstractions.IDefaultValueContainer
 {

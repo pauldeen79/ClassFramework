@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.IntegrationTests.Models.Types;
+﻿namespace ClassFramework.CodeGeneration.Models.Types;
 
 internal interface IInterface : ITypeBase
 {

@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.IntegrationTests.Models;
+﻿namespace ClassFramework.CodeGeneration.Models;
 
 internal interface IMetadata : Abstractions.INameContainer
 {
