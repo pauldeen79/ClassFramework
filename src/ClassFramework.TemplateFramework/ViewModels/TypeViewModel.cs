@@ -99,10 +99,12 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
             }
 
             lst.AddRange(Model!.Interfaces);
-
+            // False positive! it's fully unit tested.
+#pragma warning disable S2583 // Conditionally executed code should be reachable
             return lst.Count == 0
                 ? string.Empty
                 : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
+#pragma warning restore S2583 // Conditionally executed code should be reachable
         }
     }
 
