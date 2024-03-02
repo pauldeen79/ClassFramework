@@ -136,23 +136,6 @@ public static class StringExtensions
             : generics;
     }
 
-    public static string RemoveGenerics(this string value)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
-            return string.Empty;
-        }
-        //Bla<GenericArg1,...>
-
-        var open = value.IndexOf("<");
-        if (open == -1)
-        {
-            return value;
-        }
-
-        return value.Substring(0, open);
-    }
-
     public static string Sanitize(this string? token)
     {
         if (token is null)
