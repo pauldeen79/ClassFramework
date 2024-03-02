@@ -1,5 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration;
 
+[ExcludeFromCodeCoverage]
 public class ServiceProviderTemplateComponentRegistryPluginFactory : ITemplateComponentRegistryPluginFactory
 {
     public IAssemblyService AssemblyService { get; set; } = default!;

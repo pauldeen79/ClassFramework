@@ -1,5 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration;
 
+[ExcludeFromCodeCoverage]
 public class ServiceProviderCompiledTemplateFactory : ITemplateFactory
 {
     public IServiceProvider Provider { get; set; } = default!;
