@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace ClassFramework.TemplateFramework.Extensions;
+﻿namespace ClassFramework.TemplateFramework.Extensions;
 
 public static class StringBuilderExtensions
 {

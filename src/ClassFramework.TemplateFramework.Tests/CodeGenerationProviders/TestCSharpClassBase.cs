@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Extensions;
-
-namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
+﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
 public abstract class TestCSharpClassBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
 {
