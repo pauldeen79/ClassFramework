@@ -391,7 +391,7 @@ internal sealed class BuilderOmitter : ISpecimenBuilder
     public object Create(object request, ISpecimenContext context)
     {
         var propInfo = request as System.Reflection.PropertyInfo;
-        if (propInfo is not null && propInfo.DeclaringType?.Namespace?.StartsWith("ClassFramework.Domain.Builders", StringComparison.Ordinal) == true)
+        if (propInfo is not null && propInfo.DeclaringType?.Name.Contains("Builder", StringComparison.Ordinal) == true)
         {
             return new OmitSpecimen();
         }
