@@ -9,5 +9,5 @@ public class PipelineEntities : ClassFrameworkCSharpClassBase
 
     public override IEnumerable<TypeBase> Model => GetImmutableClasses(GetPipelineModels(), "ClassFramework.Pipelines");
 
-    public override string Path => "ClassFramework.Domain.Pipelines";
+    public override string Path => "ClassFramework.Pipelines";
 }

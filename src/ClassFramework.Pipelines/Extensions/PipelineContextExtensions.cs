@@ -43,7 +43,7 @@ public static class PipelineContextExtensions
     {
         context = context.IsNotNull(nameof(context));
 
-        if (baseClass && context.Context.Settings.AddValidationCode == ArgumentValidationType.Shared)
+        if (baseClass && context.Context.Settings.AddValidationCode() == ArgumentValidationType.Shared)
         {
             return $"base({CreateImmutableClassCtorParameterNames(context)})";
         }
