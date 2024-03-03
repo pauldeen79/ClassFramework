@@ -20,8 +20,10 @@ internal static class Program
             .AddTemplateFrameworkCodeGeneration()
             .AddCsharpExpressionCreator()
             .AddClassFrameworkTemplates()
-            .AddScoped<ITemplateFactory, ServiceProviderCompiledTemplateFactory>()
-            .AddScoped<ITemplateComponentRegistryPluginFactory, ServiceProviderTemplateComponentRegistryPluginFactory>();
+            .AddScoped<ITemplateFactory>(p => new ServiceProviderCompiledTemplateFactory(p))
+            //.AddScoped<ITemplateComponentRegistryPluginFactory, ServiceProviderTemplateComponentRegistryPluginFactory>()
+            .AddScoped<ITemplateComponentRegistryPluginFactory, EmptyTemplateComponentRegistryPluginFactory>()
+            ;
 
         var generators = typeof(Program).Assembly.GetExportedTypes()
             .Where(x => !x.IsAbstract && x.BaseType == typeof(ClassFrameworkCSharpClassBase))
