@@ -40,7 +40,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Entity.Features.AddP
             var sourceModel = CreateModelWithCustomTypeProperties();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForEntity(namespaceMappings: new[] { new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyMappedNamespace") });
+            var settings = CreateSettingsForEntity(namespaceMappings: [new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyMappedNamespace")]);
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act

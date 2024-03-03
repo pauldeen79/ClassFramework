@@ -476,10 +476,10 @@ namespace ClassFramework.TemplateFramework
         public override string LastGeneratedFilesFilename => string.Empty;
         public override Encoding Encoding => Encoding.UTF8;
 
-        public override IEnumerable<TypeBase> Model => new[]
-        {
+        public override IEnumerable<TypeBase> Model =>
+        [
             new InterfaceBuilder().WithName("IMyEntity").WithNamespace("MyNamespace").AddProperties(new PropertyBuilder().WithName("MySingleProperty").WithType(typeof(string)), new PropertyBuilder().WithName("MyCollectionProperty").WithType(typeof(IEnumerable<string>))).Build()
-        };
+        ];
 
         protected override string ProjectName => "UnitTest";
         protected override Type EntityCollectionType => typeof(IReadOnlyCollection<>);

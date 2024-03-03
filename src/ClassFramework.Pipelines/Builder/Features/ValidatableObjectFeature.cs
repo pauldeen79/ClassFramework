@@ -49,12 +49,11 @@ public class ValidatableObjectFeature : IPipelineFeature<IConcreteTypeBuilder, B
                 .AddStringCodeStatements
                 (
                     context.Context.SourceModel.Metadata.GetStringValues(MetadataNames.CustomBuilderValidationCode).WhenEmpty(() =>
-                    new[]
-                    {
+                    [
                         $"var results = new {typeof(List<>).ReplaceGenericTypeName(typeof(ValidationResult))}();",
                         $"{typeof(Validator).FullName}.{nameof(Validator.TryValidateObject)}(instance, new {typeof(ValidationContext).FullName}(instance), results, true);",
                         "return results;"
-                    })
+                    ])
                 )
             );
 

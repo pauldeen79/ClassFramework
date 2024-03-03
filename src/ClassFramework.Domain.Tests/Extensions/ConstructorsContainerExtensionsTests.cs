@@ -51,7 +51,7 @@ public class ConstructorsContainerExtensionsTests : TestBase
         {
             // Arrange
             var sut = Fixture.Freeze<IConstructorsContainer>();
-            sut.Constructors.Returns(new[] { new Constructor(string.Empty, Enumerable.Empty<Metadata>(), default, default, default, default, default, Domains.Visibility.Public, Enumerable.Empty<Attribute>(), Enumerable.Empty<CodeStatementBase>(), new[] { new Parameter(default, default, default, "System.String", default, default, Enumerable.Empty<Attribute>(), Enumerable.Empty<Metadata>(), "arg", default) }, Enumerable.Empty<string>()) });
+            sut.Constructors.Returns(new[] { new Constructor(string.Empty, Enumerable.Empty<Metadata>(), default, default, default, default, default, Domains.Visibility.Public, Enumerable.Empty<Attribute>(), Enumerable.Empty<CodeStatementBase>(), [new Parameter(default, default, default, "System.String", default, default, Enumerable.Empty<Attribute>(), Enumerable.Empty<Metadata>(), "arg", default)], Enumerable.Empty<string>()) });
 
             // Act
             var result = sut.HasPublicParameterlessConstructor();
