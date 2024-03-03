@@ -21,8 +21,10 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped(_ => templateProviderPluginFactory)
             .AddScoped<TestCodeGenerationProvider>()
             .AddScoped<TestPipelineCodeGenerationProvider>()
-            .AddScoped<CoreBuilders>()
-            .AddScoped<CoreEntities>()
+            .AddScoped<ImmutableCoreBuilders>()
+            .AddScoped<ImmutableCoreEntities>()
+            .AddScoped<ObservableCoreBuilders>()
+            .AddScoped<ObservableCoreEntities>()
             .AddScoped<TemplateFrameworkEntities>()
             .BuildServiceProvider();
         _scope = _serviceProvider.CreateScope();
@@ -172,11 +174,11 @@ namespace MyNamespace
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Entity_With_PipelineCodeGenerationProviderBase()
+    public void Can_Generate_Code_For_Immutable_Entity_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
-        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<CoreEntities>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreEntities>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
@@ -224,11 +226,11 @@ namespace Test.Domain
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Builder_With_PipelineCodeGenerationProviderBase()
+    public void Can_Generate_Code_For_Immutable_Builder_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
-        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<CoreBuilders>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreBuilders>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
@@ -299,6 +301,185 @@ namespace Test.Domain.Builders
         {
             OriginalValue = originalValue;
             return this;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+
+    [Fact]
+    public void Can_Generate_Code_For_Observable_Entity_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ObservableCoreEntities>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public partial class Literal : System.ComponentModel.INotifyPropertyChanged
+    {
+        private string _value;
+
+        private object? _originalValue;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+                HandlePropertyChanged(nameof(Value));
+            }
+        }
+
+        public object? OriginalValue
+        {
+            get
+            {
+                return _originalValue;
+            }
+            set
+            {
+                _originalValue = value;
+                HandlePropertyChanged(nameof(OriginalValue));
+            }
+        }
+
+        public Literal()
+        {
+            _value = string.Empty;
+            _originalValue = default(System.Object?);
+        }
+
+        public Test.Domain.Builders.LiteralBuilder ToBuilder()
+        {
+            return new Test.Domain.Builders.LiteralBuilder(this);
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Observable_Builder_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ObservableCoreBuilders>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class LiteralBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private string _value;
+
+        private object? _originalValue;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+                HandlePropertyChanged(nameof(Value));
+            }
+        }
+
+        public object? OriginalValue
+        {
+            get
+            {
+                return _originalValue;
+            }
+            set
+            {
+                _originalValue = value;
+                HandlePropertyChanged(nameof(OriginalValue));
+            }
+        }
+
+        public LiteralBuilder(Test.Domain.Literal source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _value = source.Value;
+            _originalValue = source.OriginalValue;
+        }
+
+        public LiteralBuilder()
+        {
+            _value = string.Empty;
+            SetDefaultValues();
+        }
+
+        public Test.Domain.Literal Build()
+        {
+            return new Test.Domain.Literal { Value = Value, OriginalValue = OriginalValue };
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.LiteralBuilder WithValue(string value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
+
+        public Test.Domain.Builders.LiteralBuilder WithOriginalValue(object? originalValue)
+        {
+            OriginalValue = originalValue;
+            return this;
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
 #nullable restore

@@ -15,9 +15,6 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
     protected override Type EntityCollectionType => typeof(IReadOnlyCollection<>);
     protected override Type EntityConcreteCollectionType => typeof(List<>);
     protected override Type BuilderCollectionType => typeof(List<>);
-    //protected override Type EntityCollectionType => typeof(ObservableCollection<>);
-    //protected override Type EntityConcreteCollectionType => typeof(ObservableCollection<>);
-    //protected override Type BuilderCollectionType => typeof(ObservableCollection<>);
 
     protected override string ProjectName => "ClassFramework";
     protected override string CodeGenerationRootNamespace => "ClassFramework.CodeGeneration";
@@ -26,12 +23,8 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
     protected override bool CopyInterfaces => true;
     //protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
     //protected override Domain.Domains.SubVisibility SetterVisibility => Domain.Domains.SubVisibility.Private;
-    //protected override bool AddBackingFields => true;
-    //protected override bool CreateAsObservable => true;
     //protected override string ToBuilderFormatString => string.Empty;
     //protected override string ToTypedBuilderFormatString => string.Empty;
-    //protected override bool AddFullConstructor => false;
-    //protected override bool AddPublicParameterlessConstructor => true;
     //protected override bool AddCopyConstructor => false;
 
     protected TypeBase[] GetPipelineModels()
