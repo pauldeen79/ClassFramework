@@ -56,8 +56,7 @@ public static class PipelineContextExtensions
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()));
 
-    private static string CreateImmutableClassCtorParameterNames<TModel>(
-        PipelineContext<TModel, EntityContext> context)
+    private static string CreateImmutableClassCtorParameterNames<TModel>(PipelineContext<TModel, EntityContext> context)
         => string.Join(", ", context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, context.Context.MapTypeName).Select(x => x.Name.GetCsharpFriendlyName()));
 
     private static Result<string> GetConstructionMethodParameters<TModel>(PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
