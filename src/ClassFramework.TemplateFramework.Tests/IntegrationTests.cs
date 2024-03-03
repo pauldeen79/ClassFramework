@@ -23,6 +23,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<TestPipelineCodeGenerationProvider>()
             .AddScoped<ImmutableCoreBuilders>()
             .AddScoped<ImmutableCoreEntities>()
+            .AddScoped<ImmutablePrivateSettersCoreBuilders>()
+            .AddScoped<ImmutablePrivateSettersCoreEntities>()
             .AddScoped<ObservableCoreBuilders>()
             .AddScoped<ObservableCoreEntities>()
             .AddScoped<TemplateFrameworkEntities>()
@@ -308,6 +310,142 @@ namespace Test.Domain.Builders
 ");
     }
 
+    [Fact]
+    public void Can_Generate_Code_For_Immutable_Entity_PrivateSetters_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutablePrivateSettersCoreEntities>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public partial class Literal
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Value
+        {
+            get;
+            private set;
+        }
+
+        public object? OriginalValue
+        {
+            get;
+            private set;
+        }
+
+        public Literal(string value, object? originalValue)
+        {
+            this.Value = value;
+            this.OriginalValue = originalValue;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public Test.Domain.Builders.LiteralBuilder ToBuilder()
+        {
+            return new Test.Domain.Builders.LiteralBuilder(this);
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Immutable_Builder_PrivateSetters_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutablePrivateSettersCoreBuilders>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class LiteralBuilder
+    {
+        private string _value;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+            }
+        }
+
+        public object? OriginalValue
+        {
+            get;
+            set;
+        }
+
+        public LiteralBuilder(Test.Domain.Literal source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _value = source.Value;
+            OriginalValue = source.OriginalValue;
+        }
+
+        public LiteralBuilder()
+        {
+            _value = string.Empty;
+            SetDefaultValues();
+        }
+
+        public Test.Domain.Literal Build()
+        {
+            return new Test.Domain.Literal(Value, OriginalValue);
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.LiteralBuilder WithValue(string value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
+
+        public Test.Domain.Builders.LiteralBuilder WithOriginalValue(object? originalValue)
+        {
+            OriginalValue = originalValue;
+            return this;
+        }
+    }
+#nullable restore
+}
+");
+    }
 
     [Fact]
     public void Can_Generate_Code_For_Observable_Entity_With_PipelineCodeGenerationProviderBase()
