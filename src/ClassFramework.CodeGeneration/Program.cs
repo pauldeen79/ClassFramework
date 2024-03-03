@@ -21,8 +21,6 @@ internal static class Program
             .AddTemplateFrameworkRuntime()
             .AddCsharpExpressionCreator()
             .AddClassFrameworkTemplates()
-            .AddScoped<ITemplateFactory>(p => new ServiceProviderCompiledTemplateFactory(p))
-            .AddScoped<ITemplateComponentRegistryPluginFactory, ServiceProviderTemplateComponentRegistryPluginFactory>()
             .AddScoped<IAssemblyInfoContextService, MyAssemblyInfoContextService>();
 
         var generators = typeof(Program).Assembly.GetExportedTypes()
