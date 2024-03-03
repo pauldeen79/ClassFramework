@@ -77,6 +77,36 @@ public class StringExtensionsTests : TestBase
         }
 
         [Fact]
+        public void Maps_GenericType_With_Mappable_Generic_Argument_Correctly_Using_NamespaceMapping()
+        {
+            // Arrange
+            var settings = new PipelineSettingsBuilder()
+                .AddNamespaceMappings(new NamespaceMappingBuilder().WithSourceNamespace("MyNamespace").WithTargetNamespace("MappedNamespace"))
+                .Build();
+
+            // Act
+            var result = $"System.Func<{TypeName}>".MapTypeName(settings, string.Empty);
+
+            // Assert
+            result.Should().Be("System.Func<MappedNamespace.MyClass>");
+        }
+
+        [Fact]
+        public void Maps_GenericType_With_Mappable_Generic_Argument_Using_TypeNameMapping()
+        {
+            // Arrange
+            var settings = new PipelineSettingsBuilder()
+                .AddTypenameMappings(new TypenameMappingBuilder().WithSourceTypeName("MyNamespace.MyClass").WithTargetTypeName("MappedNamespace.MappedClass"))
+                .Build();
+
+            // Act
+            var result = $"System.Func<{TypeName}>".MapTypeName(settings, string.Empty);
+
+            // Assert
+            result.Should().Be("System.Func<MappedNamespace.MappedClass>");
+        }
+
+        [Fact]
         public void Returns_Input_Value_When_No_Mappings_Are_Present_Without_New_Collection_TypeName()
         {
             // Arrange
