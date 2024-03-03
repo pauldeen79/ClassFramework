@@ -12,11 +12,11 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
     public override string LastGeneratedFilesFilename => string.Empty;
     public override Encoding Encoding => Encoding.UTF8;
 
-    protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
-    protected override Type RecordConcreteCollectionType => typeof(List<>);
+    protected override Type EntityCollectionType => typeof(IReadOnlyCollection<>);
+    protected override Type EntityConcreteCollectionType => typeof(List<>);
     protected override Type BuilderCollectionType => typeof(List<>);
-    //protected override Type RecordCollectionType => typeof(ObservableCollection<>);
-    //protected override Type RecordConcreteCollectionType => typeof(ObservableCollection<>);
+    //protected override Type EntityCollectionType => typeof(ObservableCollection<>);
+    //protected override Type EntityConcreteCollectionType => typeof(ObservableCollection<>);
     //protected override Type BuilderCollectionType => typeof(ObservableCollection<>);
 
     protected override string ProjectName => "ClassFramework";

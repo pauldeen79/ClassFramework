@@ -482,8 +482,8 @@ namespace ClassFramework.TemplateFramework
         };
 
         protected override string ProjectName => "UnitTest";
-        protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
-        protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
+        protected override Type EntityCollectionType => typeof(IReadOnlyCollection<>);
+        protected override Type EntityConcreteCollectionType => typeof(ReadOnlyCollection<>);
         protected override Type BuilderCollectionType => typeof(List<>);
         protected override bool CreateCodeGenerationHeader => false;
     }

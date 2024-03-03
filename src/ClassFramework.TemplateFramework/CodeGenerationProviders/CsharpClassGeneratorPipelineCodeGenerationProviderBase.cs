@@ -48,8 +48,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Build();
 
     protected abstract string ProjectName { get; }
-    protected abstract Type RecordCollectionType { get; }
-    protected abstract Type RecordConcreteCollectionType { get; }
+    protected abstract Type EntityCollectionType { get; }
+    protected abstract Type EntityConcreteCollectionType { get; }
     protected abstract Type BuilderCollectionType { get; }
 
     protected virtual string EnvironmentVersion => string.Empty;
@@ -147,7 +147,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(models);
         Guard.IsNotNull(interfacesNamespace);
 
-        return models.Select(x => CreateInterface(x, interfacesNamespace, RecordCollectionType.WithoutGenerics(), AddSetters)).ToArray();
+        return models.Select(x => CreateInterface(x, interfacesNamespace, EntityCollectionType.WithoutGenerics(), AddSetters)).ToArray();
     }
 
     protected TypeBase[] GetBuilders(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
@@ -209,7 +209,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(interfacesNamespace);
 
         return GetBuilders(models, buildersNamespace, entitiesNamespace)
-            .Select(x => CreateInterface(x, interfacesNamespace, RecordConcreteCollectionType.WithoutGenerics(), true, "I{Class.Name}"))
+            .Select(x => CreateInterface(x, interfacesNamespace, EntityConcreteCollectionType.WithoutGenerics(), true, "I{Class.Name}"))
             .ToArray();
     }
 
@@ -278,7 +278,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                         || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
                         || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.Abstractions.") && typeBase.Namespace == RootNamespace)
                     ))
-            .WithEntityNewCollectionTypeName(RecordCollectionType.WithoutGenerics())
+            .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
             .WithEnableNullableReferenceTypes()
             .AddTypenameMappings(CreateTypenameMappings())
             .AddNamespaceMappings(CreateNamespaceMappings())
@@ -326,13 +326,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithIsAbstract(IsAbstract)
                 .WithBaseClass(BaseClass?.ToBuilder())
                 .WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
-                .WithEntityNewCollectionTypeName(RecordCollectionType.WithoutGenerics())
+                .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
                 .WithEnableNullableReferenceTypes()
                 .AddTypenameMappings(CreateTypenameMappings())
                 .AddNamespaceMappings(CreateNamespaceMappings())
                 .WithValidateArguments(forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)))
                 .WithOriginalValidateArguments(ValidateArgumentsInConstructor)
-                .WithCollectionTypeName(RecordConcreteCollectionType.WithoutGenerics())
+                .WithCollectionTypeName(EntityConcreteCollectionType.WithoutGenerics())
                 .WithAddFullConstructor(AddFullConstructor)
                 .WithAddPublicParameterlessConstructor(AddPublicParameterlessConstructor)
                 .WithAddNullChecks(forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false))
@@ -353,7 +353,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithIsAbstract(IsAbstract)
             .WithBaseClass(BaseClass?.ToBuilder())
             .WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
-            .WithEntityNewCollectionTypeName(RecordCollectionType.WithoutGenerics())
+            .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
             .WithEnableNullableReferenceTypes()
             .AddTypenameMappings(CreateTypenameMappings())
             .AddNamespaceMappings(CreateNamespaceMappings())
