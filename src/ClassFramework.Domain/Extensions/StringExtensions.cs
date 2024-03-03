@@ -143,7 +143,7 @@ public static class StringExtensions
             return string.Empty;
         }
 
-        var open = value.IndexOf("<");
+        var open = value!.IndexOf("<");
         if (open == -1)
         {
             return string.Empty;
