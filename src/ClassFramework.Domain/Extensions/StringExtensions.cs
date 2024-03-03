@@ -136,7 +136,7 @@ public static class StringExtensions
             : generics;
     }
 
-    public static string GetProcessedGenericArguments(this string value, bool addBrackets = false)
+    public static string GetProcessedGenericArguments(this string? value, bool addBrackets = false)
     {
         if (string.IsNullOrEmpty(value))
         {
