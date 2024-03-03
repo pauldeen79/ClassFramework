@@ -18,12 +18,12 @@ internal static class Program
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
             .AddCsharpExpressionCreator()
             .AddClassFrameworkTemplates()
             .AddScoped<ITemplateFactory>(p => new ServiceProviderCompiledTemplateFactory(p))
-            //.AddScoped<ITemplateComponentRegistryPluginFactory, ServiceProviderTemplateComponentRegistryPluginFactory>()
-            .AddScoped<ITemplateComponentRegistryPluginFactory, EmptyTemplateComponentRegistryPluginFactory>()
-            ;
+            .AddScoped<ITemplateComponentRegistryPluginFactory, ServiceProviderTemplateComponentRegistryPluginFactory>()
+            .AddScoped<IAssemblyInfoContextService, MyAssemblyInfoContextService>();
 
         var generators = typeof(Program).Assembly.GetExportedTypes()
             .Where(x => !x.IsAbstract && x.BaseType == typeof(ClassFrameworkCSharpClassBase))

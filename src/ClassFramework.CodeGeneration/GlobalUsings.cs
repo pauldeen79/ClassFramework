@@ -35,4 +35,5 @@ global using TemplateFramework.Core.CodeGeneration.Extensions;
 global using TemplateFramework.Core.Extensions;
 global using TemplateFramework.Core.GenerationEnvironments;
 global using TemplateFramework.Runtime.Abstractions;
+global using TemplateFramework.Runtime.Extensions;
 global using TemplateFramework.TemplateProviders.ChildTemplateProvider.Extensions;
