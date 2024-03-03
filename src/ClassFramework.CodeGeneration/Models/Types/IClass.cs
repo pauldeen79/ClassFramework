@@ -1,5 +1,5 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Types;
 
-internal interface IClass : ITypeBase, IReferenceType, IConcreteType, IEnumsContainer, ISubClassesContainer
+internal interface IClass : ITypeBase, Abstractions.IReferenceType, Abstractions.IConcreteType, Abstractions.IEnumsContainer, Abstractions.ISubClassesContainer
 {
 }

@@ -16,8 +16,8 @@ public class BuilderContext : ContextBase<IType>
 
     protected override string NewCollectionTypeName => Settings.BuilderNewCollectionTypeName;
 
-    public string[] CreatePragmaWarningDisableStatements()
-        => NeedsPragmas()
+    public string[] CreatePragmaWarningDisableStatementsForBuildMethod()
+        => NeedsPragmasForBuildMethod()
             ?
             [
                 "#pragma warning disable CS8604 // Possible null reference argument.",
@@ -25,8 +25,8 @@ public class BuilderContext : ContextBase<IType>
             ]
             : Array.Empty<string>();
 
-    public string[] CreatePragmaWarningRestoreStatements()
-        => NeedsPragmas()
+    public string[] CreatePragmaWarningRestoreStatementsForBuildMethod()
+        => NeedsPragmasForBuildMethod()
             ?
             [
                 "#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.",
@@ -40,7 +40,7 @@ public class BuilderContext : ContextBase<IType>
         || Settings.OriginalValidateArguments == ArgumentValidationType.Shared)
         || Settings.AddBackingFields;
 
-    private bool NeedsPragmas()
+    private bool NeedsPragmasForBuildMethod()
         => Settings.EnableNullableReferenceTypes
         && !IsBuilderForAbstractEntity
         && !Settings.AddNullChecks;

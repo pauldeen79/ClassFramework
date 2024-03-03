@@ -3,15 +3,15 @@
 [ExcludeFromCodeCoverage]
 public class OverrideTypeEntities : ClassFrameworkCSharpClassBase
 {
-    public override string Path => $"{Constants.Paths.Domain}/Types";
+    public OverrideTypeEntities(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
+    {
+    }
+
+    public override string Path => "ClassFramework.Domain/Types";
 
     protected override bool EnableEntityInheritance => true;
-    protected override bool EnableBuilderInhericance => true;
-    protected override ModelFramework.Objects.Contracts.IClass? BaseClass => CreateBaseclass(typeof(ITypeBase), Constants.Namespaces.Domain);
+    protected override Class? BaseClass => CreateBaseclass(typeof(ITypeBase), "ClassFramework.Domain");
 
-    public override object CreateModel()
-        => GetImmutableClasses(GetOverrideModels(typeof(ITypeBase)), $"{Constants.Namespaces.Domain}.Types")
-            .OfType<ModelFramework.Objects.Contracts.IClass>()
-            .Select(x => FixOverrideEntity(x, "Type", $"{Constants.Namespaces.DomainBuilders}.Types"))
-            .ToArray();
+    public override IEnumerable<TypeBase> Model
+        => GetImmutableClasses(GetOverrideModels(typeof(ITypeBase)), "ClassFramework.Domain.Types");
 }

@@ -3,12 +3,15 @@
 [ExcludeFromCodeCoverage]
 public class AbstractionsInterfaces : ClassFrameworkCSharpClassBase
 {
-    public override string Path => $"{Constants.Paths.Domain}/Abstractions";
+    public AbstractionsInterfaces(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
+    {
+    }
 
-    public override object CreateModel()
-        => GetType().Assembly.GetTypes()
-            .Where(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
-            .Select(x => x.ToInterfaceBuilder().Chain(y => y.Properties.RemoveAll(z => z.ParentTypeFullName != x.FullName)))
-            .Select(CreateInterface)
-            .ToArray();
+    public override IEnumerable<TypeBase> Model => GetInterfaces(GetAbstractionsInterfaces(), "ClassFramework.Domain.Abstractions");
+
+    protected override ClassBuilder PostProcessClassBuilder(ClassBuilder builder) => builder;
+
+    public override string Path => "ClassFramework.Domain/Abstractions";
+
+    protected override bool EnableEntityInheritance => true;
 }

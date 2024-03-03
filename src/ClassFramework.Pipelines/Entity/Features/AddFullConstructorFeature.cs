@@ -66,7 +66,7 @@ public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             (
                 context.Context.SourceModel.Properties
                     .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
-                    .Where(property => context.Context.Settings.AddNullChecks && context.Context.Settings.AddValidationCode == ArgumentValidationType.None && property.Metadata.GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
+                    .Where(property => context.Context.Settings.AddNullChecks && context.Context.Settings.AddValidationCode() == ArgumentValidationType.None && property.Metadata.GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
                     .Select(property => context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
             .AddStringCodeStatements(initializationResults.Select(x => x.Value!))
@@ -77,8 +77,8 @@ public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
     private static IEnumerable<string> CreateValidationCode(PipelineContext<IConcreteTypeBuilder, EntityContext> context, bool baseClass)
     {
         var needValidation =
-            context.Context.Settings.AddValidationCode == ArgumentValidationType.DomainOnly
-            || (context.Context.Settings.AddValidationCode == ArgumentValidationType.Shared && baseClass);
+            context.Context.Settings.AddValidationCode() == ArgumentValidationType.DomainOnly
+            || (context.Context.Settings.AddValidationCode() == ArgumentValidationType.Shared && baseClass);
 
         if (!needValidation)
         {

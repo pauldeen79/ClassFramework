@@ -552,4 +552,20 @@ public class StringExtensionsTests
         // Assert
         result.Should().Be(expectedResult);
     }
+
+    [Theory]
+    [InlineData(null, false, "")]
+    [InlineData("", false, "")]
+    [InlineData("no typename", false, "")]
+    [InlineData("Func<blablabla", false, "")]
+    [InlineData("Func<blablabla>", false, "blablabla")]
+    [InlineData("Func<blablabla>", true, "<blablabla>")]
+    public void GetProcessedGenericArguments_Returns_Correct_Result(string? typeName, bool addBrackets, string expectedResult)
+    {
+        // Act
+        var result = typeName.GetProcessedGenericArguments(addBrackets);
+
+        // Assert
+        result.Should().Be(expectedResult);
+    }
 }

@@ -63,14 +63,14 @@ public class AddBuildMethodFeature : IPipelineFeature<IConcreteTypeBuilder, Buil
             .WithAbstract(context.Context.IsBuilderForAbstractEntity)
             .WithOverride(context.Context.IsBuilderForOverrideEntity)
             .WithReturnTypeName($"{GetBuilderBuildMethodReturnType(context.Context)}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
-            .AddStringCodeStatements(context.Context.CreatePragmaWarningDisableStatements())
+            .AddStringCodeStatements(context.Context.CreatePragmaWarningDisableStatementsForBuildMethod())
             .AddStringCodeStatements
             (
                 context.Context.IsBuilderForAbstractEntity
                     ? Array.Empty<string>()
                     : [$"return {instanciationResult.Value};"]
             )
-            .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatements()));
+            .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatementsForBuildMethod()));
 
         if (context.Context.IsBuilderForAbstractEntity)
         {

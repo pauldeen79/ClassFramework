@@ -7,10 +7,15 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IString
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
+        RenderChildTemplatesByModel(Model.Attributes, builder);
+
+        if (!Model.OmitCode)
+        {
+            builder.RenderSuppressions(Model.SuppressWarningCodes, "disable", Model.CreateIndentation(1));
+        }
 
         builder.Append(Model.CreateIndentation(1));
-        
+
         if (Model.ShouldRenderModifiers)
         {
             builder.Append(Model.Modifiers);
@@ -28,7 +33,7 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IString
             builder.Append("this ");
         }
 
-        RenderChildTemplatesByModel(Model.GetParameterModels(), builder);
+        RenderChildTemplatesByModel(Model.Parameters, builder);
 
         builder.Append(")");
         builder.Append(Model.GenericTypeArgumentConstraints);
@@ -39,12 +44,8 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IString
         }
         else
         {
-            builder.AppendLine();
-            builder.Append(Model.CreateIndentation(1));
-            builder.AppendLine("{");
-            RenderChildTemplatesByModel(Model.GetCodeStatementModels(), builder);
-            builder.Append(Model.CreateIndentation(1));
-            builder.AppendLine("}");
+            builder.RenderMethodBody(Model.CreateIndentation(1), () => RenderChildTemplatesByModel(Model.CodeStatements, builder));
+            builder.RenderSuppressions(Model.SuppressWarningCodes, "restore", Model.CreateIndentation(1));
         }
     }
 }

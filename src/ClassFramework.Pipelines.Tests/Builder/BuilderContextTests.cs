@@ -39,7 +39,7 @@ public class BuilderContextTests : TestBase
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act
-            var result = sut.CreatePragmaWarningDisableStatements();
+            var result = sut.CreatePragmaWarningDisableStatementsForBuildMethod();
 
             // Assert
             result.Should().BeEmpty();
@@ -53,7 +53,7 @@ public class BuilderContextTests : TestBase
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act
-            var result = sut.CreatePragmaWarningDisableStatements();
+            var result = sut.CreatePragmaWarningDisableStatementsForBuildMethod();
 
             // Assert
             result.Should().BeEquivalentTo
@@ -74,7 +74,7 @@ public class BuilderContextTests : TestBase
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act
-            var result = sut.CreatePragmaWarningRestoreStatements();
+            var result = sut.CreatePragmaWarningRestoreStatementsForBuildMethod();
 
             // Assert
             result.Should().BeEmpty();
@@ -88,7 +88,7 @@ public class BuilderContextTests : TestBase
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act
-            var result = sut.CreatePragmaWarningRestoreStatements();
+            var result = sut.CreatePragmaWarningRestoreStatementsForBuildMethod();
 
             // Assert
             result.Should().BeEquivalentTo

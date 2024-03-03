@@ -342,22 +342,22 @@ public abstract class TestBase : IDisposable
             .WithCopyInterfacePredicate(copyInterfacePredicate);
 
     protected static IEnumerable<NamespaceMappingBuilder> CreateNamespaceMappings(string sourceNamespace = "MySourceNamespace")
-        => new[]
-        {
+        =>
+        [
             new NamespaceMappingBuilder().WithSourceNamespace(sourceNamespace).WithTargetNamespace("MyNamespace")
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderNamespace).WithValue("MyNamespace.Builders"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderName).WithValue("{TypeName.ClassName}Builder"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomEntityNamespace).WithValue("MyNamespace"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()"))
-        };
+        ];
 
     protected static IEnumerable<TypenameMappingBuilder> CreateTypenameMappings()
-        => new[]
-        {
+        =>
+        [
             new TypenameMappingBuilder().WithSourceTypeName(typeof(List<>).WithoutGenerics()).WithTargetTypeName(typeof(List<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "new [Type]<[Generics]>([Expression])"), //"[Expression].ToList()"
             new TypenameMappingBuilder().WithSourceTypeName(typeof(IList<>).WithoutGenerics()).WithTargetTypeName(typeof(IList<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "[Expression].ToList()"),
-        };
+        ];
 
     protected virtual void Dispose(bool disposing)
     {
@@ -391,7 +391,7 @@ internal sealed class BuilderOmitter : ISpecimenBuilder
     public object Create(object request, ISpecimenContext context)
     {
         var propInfo = request as System.Reflection.PropertyInfo;
-        if (propInfo is not null && propInfo.DeclaringType?.Namespace?.StartsWith("ClassFramework.Domain.Builders", StringComparison.Ordinal) == true)
+        if (propInfo is not null && propInfo.DeclaringType?.Name.Contains("Builder", StringComparison.Ordinal) == true)
         {
             return new OmitSpecimen();
         }

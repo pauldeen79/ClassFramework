@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines;
 
-public record NamedResult<T>
+public class NamedResult<T>
 {
     public string Name { get; }
     public T Result { get; }

@@ -27,45 +27,51 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
     public IReadOnlyCollection<string> SuppressWarningCodes
         => GetModel().SuppressWarningCodes;
 
-    public CodeGenerationHeaderModel GetCodeGenerationHeaderModel()
+    public CodeGenerationHeaderModel CodeGenerationHeaders
         => new CodeGenerationHeaderModel(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion);
 
-    public UsingsModel GetUsingsModel()
+    public UsingsModel Usings()
         => new UsingsModel([GetModel()]);
 
-    public IEnumerable<object> GetMemberModels()
+    public IEnumerable<object> Members
     {
-        var items = new List<object?>();
-        var model = GetModel();
-
-        items.AddRange(model.Fields);
-        items.AddRange(model.Properties);
-
-        var constructorsContainer = Model as IConstructorsContainer;
-        if (constructorsContainer is not null)
+        get
         {
-            items.AddRange(constructorsContainer.Constructors);
+            var items = new List<object?>();
+            var model = GetModel();
+
+            items.AddRange(model.Fields);
+            items.AddRange(model.Properties);
+
+            var constructorsContainer = Model as IConstructorsContainer;
+            if (constructorsContainer is not null)
+            {
+                items.AddRange(constructorsContainer.Constructors);
+            }
+
+            items.AddRange(model.Methods);
+
+            if (model is IEnumsContainer enumsContainer)
+            {
+                items.AddRange(enumsContainer.Enums);
+            }
+
+            // Add separators (empty lines) between each item
+            return items.SelectMany((item, index) => index + 1 < items.Count ? [item!, new NewLineModel()] : new object[] { item! });
         }
-
-        items.AddRange(model.Methods);
-
-        if (model is IEnumsContainer enumsContainer)
-        {
-            items.AddRange(enumsContainer.Enums);
-        }
-
-        // Add separators (empty lines) between each item
-        return items.SelectMany((item, index) => index + 1 < items.Count ? [item!, new NewLineModel()] : new object[] { item! });
     }
 
-    public IEnumerable<object> GetSubClassModels()
+    public IEnumerable<object> SubClasses
     {
-        if (GetModel() is not ISubClassesContainer subClassesContainer)
+        get
         {
-            return Enumerable.Empty<object>();
-        }
+            if (GetModel() is not ISubClassesContainer subClassesContainer)
+            {
+                return Enumerable.Empty<object>();
+            }
 
-        return subClassesContainer.SubClasses.SelectMany(item => new object[] { new NewLineModel(), item });
+            return subClassesContainer.SubClasses.SelectMany(item => new object[] { new NewLineModel(), item });
+        }
     }
 
     public string ContainerType
@@ -93,7 +99,6 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
             }
 
             lst.AddRange(Model!.Interfaces);
-
             return lst.Count == 0
                 ? string.Empty
                 : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -10,7 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="pauldeen79.ModelFramework.CodeGeneration" Version="0.8.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="0.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ClassFramework.Pipelines\ClassFramework.Pipelines.csproj" />
+    <ProjectReference Include="..\ClassFramework.TemplateFramework\ClassFramework.TemplateFramework.csproj" />
   </ItemGroup>
 
 </Project>

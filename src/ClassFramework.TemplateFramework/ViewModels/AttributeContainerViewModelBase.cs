@@ -8,6 +8,5 @@ public abstract class AttributeContainerViewModelBase<T> : CsharpClassGeneratorV
     {
     }
 
-    public IEnumerable<Domain.Attribute> GetAttributeModels()
-        => GetModel().Attributes;
+    public IEnumerable<Domain.Attribute> Attributes => GetModel().Attributes;
 }

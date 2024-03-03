@@ -43,18 +43,17 @@ public class ValidatableObjectFeature : IPipelineFeature<IConcreteTypeBuilder, B
                 .WithName(nameof(IValidatableObject.Validate))
                 .WithReturnType(typeof(IEnumerable<ValidationResult>))
                 .AddParameter("validationContext", typeof(ValidationContext))
-                .AddStringCodeStatements(context.Context.CreatePragmaWarningDisableStatements())
+                .AddStringCodeStatements(context.Context.CreatePragmaWarningDisableStatementsForBuildMethod())
                 .AddStringCodeStatements($"var instance = {instanciationResult.Value};")
-                .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatements())
+                .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatementsForBuildMethod())
                 .AddStringCodeStatements
                 (
                     context.Context.SourceModel.Metadata.GetStringValues(MetadataNames.CustomBuilderValidationCode).WhenEmpty(() =>
-                    new[]
-                    {
+                    [
                         $"var results = new {typeof(List<>).ReplaceGenericTypeName(typeof(ValidationResult))}();",
                         $"{typeof(Validator).FullName}.{nameof(Validator.TryValidateObject)}(instance, new {typeof(ValidationContext).FullName}(instance), results, true);",
                         "return results;"
-                    })
+                    ])
                 )
             );
 

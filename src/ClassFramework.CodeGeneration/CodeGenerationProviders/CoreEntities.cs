@@ -3,19 +3,11 @@
 [ExcludeFromCodeCoverage]
 public class CoreEntities : ClassFrameworkCSharpClassBase
 {
-    public override string Path => Constants.Paths.Domain;
+    public CoreEntities(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
+    {
+    }
 
-    public override object CreateModel()
-        => GetImmutableClasses(GetCoreModels(), Constants.Namespaces.Domain)
-            .OfType<ModelFramework.Objects.Contracts.IClass>()
-            .Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)
-                .AddMethods(new[] { new ModelFramework.Objects.Builders.ClassMethodBuilder()
-                    .WithName("ToBuilder")
-                    .WithTypeName($"{Constants.Namespaces.DomainBuilders}.{x.Name}Builder")
-                    .AddLiteralCodeStatements($"return new {Constants.Namespaces.DomainBuilders}.{x.Name}Builder(this);") }.Where(x => !x.Name.EndsWith("Base"))
-                )
-                .Chain(x => { if (x.Name.EndsWith("Base")) { x.Methods.RemoveAll(x => x.Name == "ToBuilder"); } })
-                .BuildTyped()
-            )
-            .ToArray();
+    public override IEnumerable<TypeBase> Model => GetImmutableClasses(GetCoreModels(), "ClassFramework.Domain");
+
+    public override string Path => "ClassFramework.Domain";
 }

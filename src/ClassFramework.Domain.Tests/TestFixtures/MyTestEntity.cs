@@ -22,8 +22,8 @@ public record TestValidatable : System.ComponentModel.DataAnnotations.IValidatab
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        yield return new ValidationResult("Error1", new[] { "Member1" });
-        yield return new ValidationResult("Error2", new[] { "Member2" });
+        yield return new ValidationResult("Error1", ["Member1"]);
+        yield return new ValidationResult("Error2", ["Member2"]);
     }
 }
 

@@ -3,19 +3,11 @@
 [ExcludeFromCodeCoverage]
 public class TemplateFrameworkEntities : ClassFrameworkCSharpClassBase
 {
-    public override string Path => Constants.Paths.TemplateFramework;
-    protected override ModelFramework.Objects.Settings.ArgumentValidationType ValidateArgumentsInConstructor => ModelFramework.Objects.Settings.ArgumentValidationType.DomainOnly;
+    public TemplateFrameworkEntities(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
+    {
+    }
 
-    public override object CreateModel()
-        => GetImmutableClasses(GetTemplateFrameworkModels(), Constants.Namespaces.TemplateFramework)
-            .OfType<ModelFramework.Objects.Contracts.IClass>()
-            .Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)
-                .AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder()
-                    .WithName("ToBuilder")
-                    .WithTypeName($"{Constants.Namespaces.TemplateFrameworkBuilders}.{x.Name}Builder")
-                    .AddLiteralCodeStatements($"return new {Constants.Namespaces.TemplateFrameworkBuilders}.{x.Name}Builder(this);")
-                )
-                .BuildTyped()
-            )
-            .ToArray();
+    public override IEnumerable<TypeBase> Model => GetImmutableClasses(GetTemplateFrameworkModels(), "ClassFramework.TemplateFramework");
+
+    public override string Path => "ClassFramework.TemplateFramework";
 }

@@ -24,7 +24,7 @@ public class PipelineContextExtensionsTests : TestBase
         }
 
         [Fact]
-        public void Rerturns_Invalid_On_Interface()
+        public void Rrturns_Invalid_On_Interface()
         {
             // Arrange
             var model = new ClassBuilder();

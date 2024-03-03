@@ -41,15 +41,15 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithEncoding(Encoding)
             .WithCultureInfo(CultureInfo.InvariantCulture)
             .WithGenerateMultipleFiles()
-            .WithCreateCodeGenerationHeader()
+            .WithCreateCodeGenerationHeader(CreateCodeGenerationHeader)
             .WithEnableNullableContext()
             .WithFilenameSuffix(FilenameSuffix)
             .WithEnvironmentVersion(EnvironmentVersion)
             .Build();
 
     protected abstract string ProjectName { get; }
-    protected abstract Type RecordCollectionType { get; }
-    protected abstract Type RecordConcreteCollectionType { get; }
+    protected abstract Type EntityCollectionType { get; }
+    protected abstract Type EntityConcreteCollectionType { get; }
     protected abstract Type BuilderCollectionType { get; }
 
     protected virtual string EnvironmentVersion => string.Empty;
@@ -82,6 +82,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool AddCopyConstructor => true;
     protected virtual bool SetDefaultValues => true;
     protected virtual string FilenameSuffix => ".template.generated";
+    protected virtual bool CreateCodeGenerationHeader => true;
     protected virtual Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => new Func<IParentTypeContainer, IType, bool>((parentNameContainer, typeBase)
         => parentNameContainer is not null
         && typeBase is not null
@@ -107,6 +108,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Where(x => x.IsInterface && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models.") == true && x.GetInterfaces().Count(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models") == 1)
             .Select(x => x.GetInterfaces().First(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models"))
             .Distinct();
+
+    protected virtual ClassBuilder PostProcessClassBuilder(ClassBuilder builder) => builder;
 
     /// <summary>
     /// Gets the base typename, based on a derived class.
@@ -144,7 +147,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(models);
         Guard.IsNotNull(interfacesNamespace);
 
-        return models.Select(x => CreateInterface(x, interfacesNamespace, RecordCollectionType.WithoutGenerics(), AddSetters)).ToArray();
+        return models.Select(x => CreateInterface(x, interfacesNamespace, EntityCollectionType.WithoutGenerics(), AddSetters)).ToArray();
     }
 
     protected TypeBase[] GetBuilders(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
@@ -206,13 +209,19 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(interfacesNamespace);
 
         return GetBuilders(models, buildersNamespace, entitiesNamespace)
-            .Select(x => CreateInterface(x, interfacesNamespace, RecordConcreteCollectionType.WithoutGenerics(), true, "I{Class.Name}"))
+            .Select(x => CreateInterface(x, interfacesNamespace, EntityConcreteCollectionType.WithoutGenerics(), true, "I{Class.Name}"))
             .ToArray();
     }
 
     protected TypeBase[] GetCoreModels()
         => GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
+            .Select(x => _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture)).GetValueOrThrow().Build())
+            .ToArray();
+
+    protected TypeBase[] GetNonCoreModels(string @namespace)
+        => GetType().Assembly.GetTypes()
+            .Where(x => x.IsInterface && x.Namespace == @namespace && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
             .Select(x => _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture)).GetValueOrThrow().Build())
             .ToArray();
 
@@ -269,7 +278,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                         || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
                         || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.Abstractions.") && typeBase.Namespace == RootNamespace)
                     ))
-            .WithEntityNewCollectionTypeName(RecordCollectionType.WithoutGenerics())
+            .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
             .WithEnableNullableReferenceTypes()
             .AddTypenameMappings(CreateTypenameMappings())
             .AddNamespaceMappings(CreateNamespaceMappings())
@@ -278,7 +287,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
             .Build();
         _ = _entityPipeline.Process(builder, new EntityContext(typeBase, entitySettings, CultureInfo.InvariantCulture)).GetValueOrThrow();
-        return builder.BuildTyped();
+        return PostProcessClassBuilder(builder).BuildTyped();
     }
 
     protected ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
@@ -317,13 +326,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithIsAbstract(IsAbstract)
                 .WithBaseClass(BaseClass?.ToBuilder())
                 .WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
-                .WithEntityNewCollectionTypeName(RecordCollectionType.WithoutGenerics())
+                .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
                 .WithEnableNullableReferenceTypes()
                 .AddTypenameMappings(CreateTypenameMappings())
                 .AddNamespaceMappings(CreateNamespaceMappings())
                 .WithValidateArguments(forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)))
                 .WithOriginalValidateArguments(ValidateArgumentsInConstructor)
-                .WithCollectionTypeName(RecordConcreteCollectionType.WithoutGenerics())
+                .WithCollectionTypeName(EntityConcreteCollectionType.WithoutGenerics())
                 .WithAddFullConstructor(AddFullConstructor)
                 .WithAddPublicParameterlessConstructor(AddPublicParameterlessConstructor)
                 .WithAddNullChecks(forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false))
@@ -344,7 +353,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithIsAbstract(IsAbstract)
             .WithBaseClass(BaseClass?.ToBuilder())
             .WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
-            .WithEntityNewCollectionTypeName(RecordCollectionType.WithoutGenerics())
+            .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
             .WithEnableNullableReferenceTypes()
             .AddTypenameMappings(CreateTypenameMappings())
             .AddNamespaceMappings(CreateNamespaceMappings())
@@ -382,7 +391,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Abstractions").WithTargetNamespace($"{CoreNamespace}.Abstractions");
 
         // From domain entities to builders
-        yield return new NamespaceMappingBuilder().WithSourceNamespace(CoreNamespace).WithTargetNamespace(CoreNamespace);
         yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CoreNamespace}.Abstractions").WithTargetNamespace($"{CoreNamespace}.Abstractions")
             .AddMetadata
             (
@@ -405,6 +413,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models", StringComparison.Ordinal) == true
                 && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
                 && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Domains"
+                && !SkipNamespaceOnTypenameMappings(x.Namespace)
                 && x.FullName is not null)
             .SelectMany(x =>
                 new[]
@@ -420,13 +429,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                                 : "[Name][NullableSuffix].ToBuilder()").WithName(Pipelines.MetadataNames.CustomBuilderSourceExpression),
                                 //: $"builderFactory.Create<{CoreNamespace}.Builders.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}Builder>([Name])", Pipelines.MetadataNames.CustomBuilderSourceExpression),
                             new MetadataBuilder().WithValue(x.Namespace != $"{CodeGenerationRootNamespace}.Models" && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
-                                ? "[Name].BuildTyped()"
-                                : "[Name].Build()").WithName(Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
+                                ? "[Name][NullableSuffix].BuildTyped()"
+                                : "[Name][NullableSuffix].Build()").WithName(Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
                             //new MetadataBuilder().WithValue(new ParameterBuilder().WithName("builderFactory").WithTypeName($"{CoreNamespace}.Builders.Abstractions.IBuilderFactory").Build()).WithName(Pipelines.MetadataNames.CustomBuilderCopyConstructorParameter),
                         )
                 })
-            .Concat(new[]
-            {
+            .Concat(
+            [
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(bool).FullName!).WithTargetTypeName(typeof(bool).FullName!).AddMetadata(new MetadataBuilder().WithValue(true).WithName(Pipelines.MetadataNames.CustomBuilderWithDefaultPropertyValue)),
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(List<>).WithoutGenerics()).WithTargetTypeName(typeof(List<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(Collection<>).WithoutGenerics()).WithTargetTypeName(typeof(Collection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("new [Type]<[Generics]>([Expression].ToList())").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
@@ -434,7 +443,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(IReadOnlyCollection<>).WithoutGenerics()).WithTargetTypeName(typeof(IReadOnlyCollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList().AsReadOnly()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(IList<>).WithoutGenerics()).WithTargetTypeName(typeof(IList<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(ICollection<>).WithoutGenerics()).WithTargetTypeName(typeof(ICollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
-            });
+            ]);
+
+    protected virtual bool SkipNamespaceOnTypenameMappings(string @namespace) => false;
 
     private string ReplaceStart(string fullNamespace, string baseNamespace, bool appendDot)
     {
@@ -456,17 +467,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private PipelineSettings CreateBuilderPipelineSettings(string buildersNamespace, string entitiesNamespace)
         => new PipelineSettingsBuilder(CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()))
             .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
-            //.WithEnableNullableReferenceTypes()
-            //.AddNamespaceMappings(CreateNamespaceMappings())
-            //.AddTypenameMappings(CreateTypenameMappings())
             .WithBuilderNamespaceFormatString(buildersNamespace)
             .WithSetMethodNameFormatString(SetMethodNameFormatString)
             .WithAddMethodNameFormatString(AddMethodNameFormatString)
             .WithEnableBuilderInheritance(EnableBuilderInhericance)
-            //.WithIsAbstract(IsAbstract)
-            //.WithBaseClass(BaseClass?.ToBuilder())
             .WithBaseClassBuilderNameSpace(BaseClassBuilderNamespace)
-            //.WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
             .WithAddCopyConstructor(AddCopyConstructor)
             .WithSetDefaultValuesInEntityConstructor(SetDefaultValues)
             .Build();
@@ -474,17 +479,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private PipelineSettings CreateBuilderInterfacePipelineSettings(string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
         => new PipelineSettingsBuilder(CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()))
             .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
-            //.WithEnableNullableReferenceTypes()
-            //.AddNamespaceMappings(CreateNamespaceMappings())
-            //.AddTypenameMappings(CreateTypenameMappings())
             .WithBuilderNamespaceFormatString(buildersNamespace)
             .WithBuilderExtensionsNamespaceFormatString(buildersExtensionsNamespace)
             .WithSetMethodNameFormatString(SetMethodNameFormatString)
             .WithAddMethodNameFormatString(AddMethodNameFormatString)
             .WithEnableBuilderInheritance(EnableBuilderInhericance)
-            //.WithIsAbstract(IsAbstract)
-            //.WithBaseClass(BaseClass?.ToBuilder())
-            //.WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
             .Build();
 
     private TypeBase CreateImmutableClass(TypeBase typeBase, string entitiesNamespace)
@@ -494,7 +493,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Process(builder, new EntityContext(typeBase, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}"), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
-        return builder.Build();
+        return PostProcessClassBuilder(builder).Build();
     }
 
     private TypeBase CreateBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
@@ -504,7 +503,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Process(builder, new BuilderContext(typeBase, CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
-        return builder.Build();
+        return PostProcessClassBuilder(builder).Build();
     }
 
     private TypeBase CreateBuilderExtensionsClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
@@ -524,7 +523,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Process(builder, new BuilderContext(typeBase, CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ToBuilder().WithIsForAbstractBuilder().Build(), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
-        return builder.Build();
+        return PostProcessClassBuilder(builder).Build();
     }
 
     private bool? GetOverrideAddNullChecks()
@@ -559,6 +558,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Process(builder, new OverrideEntityContext(typeBase, CreateOverrideEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: true), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
-        return builder.Build();
+        return PostProcessClassBuilder(builder).Build();
     }
 }

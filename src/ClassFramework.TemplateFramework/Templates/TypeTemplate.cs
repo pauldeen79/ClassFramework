@@ -24,10 +24,10 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
             var filename = $"{Model.FilenamePrefix}{Model.Name}{Model.Settings.FilenameSuffix}.cs";
             var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
             generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
-            RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment);
+            RenderChildTemplateByModel(Model.CodeGenerationHeaders, generationEnvironment);
             if (!Model.Settings.EnableGlobalUsings)
             {
-                RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment);
+                RenderChildTemplateByModel(Model.Usings(), generationEnvironment);
             }
 
             if (Model.ShouldRenderNamespaceScope)
@@ -60,16 +60,16 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
         var indentedBuilder = new IndentedStringBuilder(generationEnvironment.Builder);
         PushIndent(indentedBuilder);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), generationEnvironment);
+        RenderChildTemplatesByModel(Model.Attributes, generationEnvironment);
 
         indentedBuilder.AppendLine($"{Model.Modifiers}{Model.ContainerType} {Model.Name}{Model.GenericTypeArguments}{Model.InheritedClasses}{Model.GenericTypeArgumentConstraints}");
         indentedBuilder.AppendLine("{"); // start class
 
         // Fields, Properties, Methods, Constructors, Enumerations
-        RenderChildTemplatesByModel(Model.GetMemberModels(), generationEnvironment);
+        RenderChildTemplatesByModel(Model.Members, generationEnvironment);
 
         // Subclasses
-        RenderChildTemplatesByModel(Model.GetSubClassModels(), generationEnvironment);
+        RenderChildTemplatesByModel(Model.SubClasses, generationEnvironment);
 
         indentedBuilder.AppendLine("}"); // end class
 

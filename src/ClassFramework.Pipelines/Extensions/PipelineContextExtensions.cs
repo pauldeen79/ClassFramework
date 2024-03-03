@@ -12,7 +12,6 @@ public static class PipelineContextExtensions
             return formattableStringParser.Parse(customEntityInstanciation, context.Context.FormatProvider, context);
         }
 
-
         if (context.Context.SourceModel is not IConstructorsContainer constructorsContainer)
         {
             return Result.Invalid<string>("Cannot create an instance of a type that does not have constructors");
@@ -43,7 +42,7 @@ public static class PipelineContextExtensions
     {
         context = context.IsNotNull(nameof(context));
 
-        if (baseClass && context.Context.Settings.AddValidationCode == ArgumentValidationType.Shared)
+        if (baseClass && context.Context.Settings.AddValidationCode() == ArgumentValidationType.Shared)
         {
             return $"base({CreateImmutableClassCtorParameterNames(context)})";
         }
@@ -57,8 +56,7 @@ public static class PipelineContextExtensions
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()));
 
-    private static string CreateImmutableClassCtorParameterNames<TModel>(
-        PipelineContext<TModel, EntityContext> context)
+    private static string CreateImmutableClassCtorParameterNames<TModel>(PipelineContext<TModel, EntityContext> context)
         => string.Join(", ", context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, context.Context.MapTypeName).Select(x => x.Name.GetCsharpFriendlyName()));
 
     private static Result<string> GetConstructionMethodParameters<TModel>(PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)

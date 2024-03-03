@@ -3,12 +3,11 @@
 [ExcludeFromCodeCoverage]
 public class TemplateFrameworkBuilders : ClassFrameworkCSharpClassBase
 {
-    public override string Path => Constants.Paths.TemplateFrameworkBuilders;
-    protected override ModelFramework.Objects.Settings.ArgumentValidationType ValidateArgumentsInConstructor => ModelFramework.Objects.Settings.ArgumentValidationType.DomainOnly;
+    public TemplateFrameworkBuilders(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
+    {
+    }
 
-    public override object CreateModel()
-        => GetImmutableBuilderClasses(
-            GetTemplateFrameworkModels(),
-            Constants.Namespaces.TemplateFramework,
-            Constants.Namespaces.TemplateFrameworkBuilders);
+    public override IEnumerable<TypeBase> Model => GetBuilders(GetTemplateFrameworkModels(), "ClassFramework.TemplateFramework.Builders", "ClassFramework.TemplateFramework");
+
+    public override string Path => "ClassFramework.TemplateFramework/Builders";
 }

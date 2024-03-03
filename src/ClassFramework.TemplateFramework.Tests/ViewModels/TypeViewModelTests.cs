@@ -224,7 +224,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.GetMemberModels())
+            sut.Invoking(x => _ = x.Members)
                .Should().Throw<ArgumentNullException>()
                .WithParameterName("Model");
         }
@@ -240,7 +240,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
                 .Build();
 
             // Act
-            var result = sut.GetMemberModels();
+            var result = sut.Members.ToArray();
 
             // Assert
             result.Should().AllBeOfType<Field>().And.ContainSingle();
@@ -257,7 +257,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
                 .Build();
 
             // Act
-            var result = sut.GetMemberModels();
+            var result = sut.Members.ToArray();
 
             // Assert
             result.Should().AllBeOfType<Property>().And.ContainSingle();
@@ -274,7 +274,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
                 .Build();
 
             // Act
-            var result = sut.GetMemberModels();
+            var result = sut.Members.ToArray();
 
             // Assert
             result.Should().AllBeOfType<Constructor>().And.ContainSingle();
@@ -291,7 +291,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
                 .Build();
 
             // Act
-            var result = sut.GetMemberModels();
+            var result = sut.Members.ToArray();
 
             // Assert
             result.Should().AllBeOfType<Method>().And.ContainSingle();
@@ -308,7 +308,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
                 .Build();
 
             // Act
-            var result = sut.GetMemberModels();
+            var result = sut.Members.ToArray();
 
             // Assert
             result.Should().AllBeOfType<Enumeration>().And.ContainSingle();
@@ -326,7 +326,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
                 .Build();
 
             // Act
-            var result = sut.GetMemberModels();
+            var result = sut.Members.ToArray();
 
             // Assert
             result.Select(x => x.GetType()).Should().BeEquivalentTo([typeof(Method), typeof(NewLineModel), typeof(Enumeration)]);
@@ -343,7 +343,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.GetSubClassModels())
+            sut.Invoking(x => _ = x.SubClasses.ToArray())
                .Should().Throw<ArgumentNullException>()
                .WithParameterName("Model");
         }
@@ -356,7 +356,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = new StructBuilder().WithName("MyStruct").Build();
 
             // Act
-            var result = sut.GetSubClassModels().ToArray();
+            var result = sut.SubClasses.ToArray();
 
             // Assert
             result.Should().BeEmpty();
@@ -370,7 +370,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = new ClassBuilder().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetSubClassModels().ToArray();
+            var result = sut.SubClasses.ToArray();
 
             // Assert
             result.Should().BeEmpty();
@@ -384,7 +384,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = new ClassBuilder().WithName("MyClass").AddSubClasses(new ClassBuilder().WithName("MySubClass")).Build();
 
             // Act
-            var result = sut.GetSubClassModels().ToArray();
+            var result = sut.SubClasses.ToArray();
 
             // Assert
             result.Select(x => x.GetType()).Should().BeEquivalentTo([typeof(NewLineModel), typeof(Class)]);

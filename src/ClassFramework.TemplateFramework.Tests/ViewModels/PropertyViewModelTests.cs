@@ -255,7 +255,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             sut.Context = context;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.GetCodeBodyModels().ToArray())
+            sut.Invoking(x => _ = x.CodeBodyItems.ToArray())
                .Should().Throw<ArgumentNullException>()
                .WithParameterName("Model");
         }
@@ -269,7 +269,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             sut.Context = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.GetCodeBodyModels().ToArray())
+            sut.Invoking(x => _ = x.CodeBodyItems.ToArray())
                .Should().Throw<ArgumentNullException>()
                .WithParameterName("Context");
         }
@@ -286,7 +286,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             sut.Context = context;
 
             // Act
-            var result = sut.GetCodeBodyModels().ToArray();
+            var result = sut.CodeBodyItems.ToArray();
 
             // Assert
             result.Select(x => x.Verb).Should().BeEquivalentTo("get");
@@ -304,7 +304,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             sut.Context = context;
 
             // Act
-            var result = sut.GetCodeBodyModels().ToArray();
+            var result = sut.CodeBodyItems.ToArray();
 
             // Assert
             result.Select(x => x.Verb).Should().BeEquivalentTo("set");
@@ -322,7 +322,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             sut.Context = context;
 
             // Act
-            var result = sut.GetCodeBodyModels().ToArray();
+            var result = sut.CodeBodyItems.ToArray();
 
             // Assert
             result.Select(x => x.Verb).Should().BeEquivalentTo("init");
@@ -340,7 +340,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             sut.Context = context;
 
             // Act
-            var result = sut.GetCodeBodyModels().ToArray();
+            var result = sut.CodeBodyItems.ToArray();
 
             // Assert
             result.Select(x => x.Verb).Should().BeEquivalentTo("get", "set");

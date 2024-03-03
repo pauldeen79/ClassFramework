@@ -7,7 +7,7 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
+        RenderChildTemplatesByModel(Model.Attributes, builder);
 
         builder.Append(Model.CreateIndentation(1));
         builder.Append(Model.Modifiers);
@@ -16,7 +16,7 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("{");
 
-        RenderChildTemplatesByModel(Model.GetMemberModels(), builder);
+        RenderChildTemplatesByModel(Model.Members, builder);
 
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("}");

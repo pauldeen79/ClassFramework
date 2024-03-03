@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models;
 
-internal interface IParameter : ITypeContainer, IAttributesContainer, IMetadataContainer, INameContainer, IDefaultValueContainer
+internal interface IParameter : Abstractions.ITypeContainer, Abstractions.IAttributesContainer, Abstractions.IMetadataContainer, Abstractions.INameContainer, Abstractions.IDefaultValueContainer
 {
     bool IsParamArray { get; }
     bool IsOut { get; }

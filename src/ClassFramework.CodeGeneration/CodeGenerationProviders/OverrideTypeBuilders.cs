@@ -3,25 +3,15 @@
 [ExcludeFromCodeCoverage]
 public class OverrideTypeBuilders : ClassFrameworkCSharpClassBase
 {
-    public override string Path => $"{Constants.Paths.DomainBuilders}/Types";
+    public OverrideTypeBuilders(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
+    {
+    }
+
+    public override string Path => "ClassFramework.Domain/Builders/Types";
 
     protected override bool EnableEntityInheritance => true;
-    protected override bool EnableBuilderInhericance => true;
-    protected override ModelFramework.Objects.Contracts.IClass? BaseClass => CreateBaseclass(typeof(ITypeBase), Constants.Namespaces.Domain);
-    protected override string BaseClassBuilderNamespace => Constants.Namespaces.DomainBuilders;
+    protected override Class? BaseClass => CreateBaseclass(typeof(ITypeBase), "ClassFramework.Domain");
 
-    // Do not generate 'With' methods. Do this on the interfaces instead.
-    protected override string SetMethodNameFormatString => string.Empty;
-    protected override string AddMethodNameFormatString => string.Empty;
-
-    public override object CreateModel()
-        => GetImmutableBuilderClasses(
-            GetOverrideModels(typeof(ITypeBase)),
-            $"{Constants.Namespaces.Domain}.Types",
-            $"{Constants.Namespaces.DomainBuilders}.Types")
-        .OfType<ModelFramework.Objects.Contracts.IClass>()
-        .Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)
-            .Chain(y => y.Methods.RemoveAll(z => IsInterfacedMethod(z.Name, y)))
-            .Build()
-        ).ToArray();
+    public override IEnumerable<TypeBase> Model
+        => GetBuilders(GetOverrideModels(typeof(ITypeBase)), "ClassFramework.Domain.Builders.Types", "ClassFramework.Domain.Types");
 }

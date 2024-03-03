@@ -3,16 +3,15 @@
 [ExcludeFromCodeCoverage]
 public class OverrideCodeStatementBuilders : ClassFrameworkCSharpClassBase
 {
-    public override string Path => $"{Constants.Paths.DomainBuilders}/CodeStatements";
+    public OverrideCodeStatementBuilders(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
+    {
+    }
+
+    public override string Path => "ClassFramework.Domain/Builders/CodeStatements";
 
     protected override bool EnableEntityInheritance => true;
-    protected override bool EnableBuilderInhericance => true;
-    protected override ModelFramework.Objects.Contracts.IClass? BaseClass => CreateBaseclass(typeof(ICodeStatementBase), Constants.Namespaces.Domain);
-    protected override string BaseClassBuilderNamespace => Constants.Namespaces.DomainBuilders;
+    protected override Class? BaseClass => CreateBaseclass(typeof(ICodeStatementBase), "ClassFramework.Domain");
 
-    public override object CreateModel()
-        => GetImmutableBuilderClasses(
-            GetOverrideModels(typeof(ICodeStatementBase)),
-            $"{Constants.Namespaces.Domain}.CodeStatements",
-            $"{Constants.Namespaces.DomainBuilders}.CodeStatements");
+    public override IEnumerable<TypeBase> Model
+        => GetBuilders(GetOverrideModels(typeof(ICodeStatementBase)), "ClassFramework.Domain.Builders.CodeStatements", "ClassFramework.Domain.CodeStatements");
 }

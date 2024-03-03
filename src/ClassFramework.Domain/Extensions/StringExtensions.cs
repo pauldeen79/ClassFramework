@@ -136,6 +136,32 @@ public static class StringExtensions
             : generics;
     }
 
+    public static string GetProcessedGenericArguments(this string? value, bool addBrackets = false)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        var open = value!.IndexOf("<");
+        if (open == -1)
+        {
+            return string.Empty;
+        }
+
+        var close = value.LastIndexOf(">");
+        if (close == -1)
+        {
+            return string.Empty;
+        }
+
+        var generics = value.Substring(open + 1, close - open - 1);
+
+        return addBrackets
+            ? $"<{generics}>"
+            : generics;
+    }
+
     public static string Sanitize(this string? token)
     {
         if (token is null)
@@ -163,7 +189,7 @@ public static class StringExtensions
         }
 
         var t = Type.GetType(instance);
-        if (t == null)
+        if (t is null)
         {
             return false;
         }

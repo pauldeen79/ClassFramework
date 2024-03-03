@@ -255,7 +255,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.Value.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
             var buildMethod = result.Value.Methods.Single(x => x.Name == "Build");
             buildMethod.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            var expected = "return new MyNamespace.MyClass { Property1 = Property1, Property2 = Property2, Property3 = Property3, Property4 = Property4, Property5 = Property5?.Build(), Property6 = Property6.Build(), Property7 = new System.Collections.Generic.List<MySourceNamespace.MyClass>(Property7.Select(x => x.Build())), Property8 = new System.Collections.Generic.List<MySourceNamespace.MyClass>(Property8.Select(x => x.Build())) };";
+            var expected = "return new MyNamespace.MyClass { Property1 = Property1, Property2 = Property2, Property3 = Property3, Property4 = Property4, Property5 = Property5.Build(), Property6 = Property6?.Build(), Property7 = new System.Collections.Generic.List<MySourceNamespace.MyClass>(Property7.Select(x => x.Build())), Property8 = new System.Collections.Generic.List<MySourceNamespace.MyClass>(Property8.Select(x => x.Build())) };";
             buildMethod.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo(expected);
 
             result.Value!.Constructors.Where(x => x.Parameters.Count == 1).Should().ContainSingle();
@@ -270,8 +270,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "Property2 = source.Property2;",
                 "_property3 = source.Property3;",
                 "Property4 = source.Property4;",
-                "_property5 = source.Property5?.ToBuilder();",
-                "Property6 = source.Property6.ToBuilder();",
+                "_property5 = source.Property5.ToBuilder();",
+                "Property6 = source.Property6?.ToBuilder();",
                 "if (source.Property7 is not null) foreach (var item in source.Property7.Select(x => x.ToBuilder())) _property7.Add(item);",
                 "foreach (var item in source.Property8.Select(x => x.ToBuilder())) Property8.Add(item);"
             );

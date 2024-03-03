@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Extensions;
 
-public class StringExtensionsTests : TestBase
+public class StringExtensionsTests
 {
-    public class MapTypeName : StringExtensionsTests
+    public class MapTypeName
     {
         private const string TypeName = "MyNamespace.MyClass";
 
@@ -74,6 +74,53 @@ public class StringExtensionsTests : TestBase
 
             // Assert
             result.Should().Be("MappedNamespace.MappedClass");
+        }
+
+        [Fact]
+        public void Maps_GenericType_With_Mappable_Generic_Argument_Correctly_Using_NamespaceMapping()
+        {
+            // Arrange
+            var settings = new PipelineSettingsBuilder()
+                .AddNamespaceMappings(new NamespaceMappingBuilder().WithSourceNamespace("MyNamespace").WithTargetNamespace("MappedNamespace"))
+                .Build();
+
+            // Act
+            var result = $"System.Func<{TypeName}>".MapTypeName(settings, string.Empty);
+
+            // Assert
+            result.Should().Be("System.Func<MappedNamespace.MyClass>");
+        }
+
+        [Fact]
+        public void Maps_GenericType_With_Mappable_Generic_Argument_Using_TypeNameMapping()
+        {
+            // Arrange
+            var settings = new PipelineSettingsBuilder()
+                .AddTypenameMappings(new TypenameMappingBuilder().WithSourceTypeName("MyNamespace.MyClass").WithTargetTypeName("MappedNamespace.MappedClass"))
+                .Build();
+
+            // Act
+            var result = $"System.Func<{TypeName}>".MapTypeName(settings, string.Empty);
+
+            // Assert
+            result.Should().Be("System.Func<MappedNamespace.MappedClass>");
+        }
+
+        [Fact]
+        public void Maps_GenericType_With_Multiple_Mappable_Generic_Arguments_Using_TypeNameMapping()
+        {
+            // Arrange
+            var settings = new PipelineSettingsBuilder()
+                .AddTypenameMappings(new TypenameMappingBuilder().WithSourceTypeName("MyNamespace.MyClass").WithTargetTypeName("MappedNamespace.MappedClass"))
+                .AddTypenameMappings(new TypenameMappingBuilder().WithSourceTypeName("MyNamespace.MySecondClass").WithTargetTypeName("MappedNamespace.MappedSecondClass"))
+                .Build();
+
+            // Act
+            // note that you have to use <x,y> instead of <x, y> else we think it's a fully qualified typename! e.g. System.String, blablabla
+            var result = $"System.Func<{TypeName},MyNamespace.MySecondClass>".MapTypeName(settings, string.Empty);
+
+            // Assert
+            result.Should().Be("System.Func<MappedNamespace.MappedClass,MappedNamespace.MappedSecondClass>");
         }
 
         [Fact]
