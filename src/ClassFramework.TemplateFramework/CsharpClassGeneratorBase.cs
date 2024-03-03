@@ -14,13 +14,8 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
         if (Model is not null && Model.Settings is null)
         {
             // Copy Settings from template context to ViewModel
-            var settings = value.GetCsharpClassGeneratorSettings();
-            if (settings is null)
-            {
-                throw new InvalidOperationException("Could not get Settings from context");
-            }
-
-            Model.Settings = settings;
+            Model.Settings = value.GetCsharpClassGeneratorSettings()
+                ?? throw new InvalidOperationException("Could not get Settings from context");
         }
     }
 
