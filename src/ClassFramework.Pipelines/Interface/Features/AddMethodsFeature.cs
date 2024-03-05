@@ -19,11 +19,29 @@ public class AddMethodsFeature : IPipelineFeature<InterfaceBuilder, InterfaceCon
 
         context.Model.AddMethods(context.Context.SourceModel.Methods
             .Where(x => context.Context.Settings.CopyMethodPredicate is null || context.Context.Settings.CopyMethodPredicate(x))
-            .Select(x => x.ToBuilder()));
+            .Select(x => x.ToBuilder()
+                .WithReturnTypeName(context.Context.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(context.Context.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x))))
+                .With(y => y.Parameters.ForEach(z => z.TypeName = context.Context.MapTypeName(z.TypeName)))
+            ));
 
         return Result.Continue<InterfaceBuilder>();
     }
 
     public IBuilder<IPipelineFeature<InterfaceBuilder, InterfaceContext>> ToBuilder()
         => new AddMethodsFeatureBuilder();
+}
+
+internal class TypeContainerWrapper : ITypeContainer
+{
+    public TypeContainerWrapper(Method method)
+    {
+        method = method.IsNotNull(nameof(method));
+        TypeName = method.ReturnTypeName;
+        IsNullable = method.ReturnTypeIsNullable;
+        IsValueType = method.ReturnTypeIsValueType;
+    }
+
+    public string TypeName { get; }
+    public bool IsNullable { get; }
+    public bool IsValueType { get; }
 }
