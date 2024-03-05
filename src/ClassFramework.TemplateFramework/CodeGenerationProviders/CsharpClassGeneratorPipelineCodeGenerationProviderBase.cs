@@ -58,6 +58,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual string CoreNamespace => $"{ProjectName}.Core";
     protected virtual bool CopyAttributes => false;
     protected virtual bool CopyInterfaces => false;
+    protected virtual bool CopyMethods => false;
     protected virtual bool AddNullChecks => true;
     protected virtual bool UseExceptionThrowIfNull => false;
     protected virtual bool CreateRecord => false;
@@ -83,6 +84,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool SetDefaultValues => true;
     protected virtual string FilenameSuffix => ".template.generated";
     protected virtual bool CreateCodeGenerationHeader => true;
+    protected virtual Predicate<Domain.Attribute>? CopyAttributePredicate => null;
+    protected virtual Predicate<string>? CopyInterfacePredicate => null;
+    protected virtual Predicate<Method>? CopyMethodPredicate => null;
     protected virtual Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => new Func<IParentTypeContainer, IType, bool>((parentNameContainer, typeBase)
         => parentNameContainer is not null
         && typeBase is not null
@@ -264,6 +268,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
             .WithCopyAttributes(CopyAttributes)
             .WithCopyInterfaces(CopyInterfaces)
+            .WithCopyMethods(CopyMethods)
+            .WithCopyAttributePredicate(CopyAttributePredicate)
+            .WithCopyInterfacePredicate(CopyInterfacePredicate)
+            .WithCopyMethodPredicate(CopyMethodPredicate)
             .WithEntityNameFormatString("{Class.NameNoInterfacePrefix}")
             .WithEntityNamespaceFormatString(@namespace)
             .WithEnableInheritance()
@@ -300,6 +308,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
             .WithCopyAttributes(CopyAttributes)
             .WithCopyInterfaces(CopyInterfaces)
+            .WithCopyMethods(CopyMethods)
+            .WithCopyAttributePredicate(CopyAttributePredicate)
+            .WithCopyInterfacePredicate(CopyInterfacePredicate)
+            .WithCopyMethodPredicate(CopyMethodPredicate)
             .AddNamespaceMappings(CreateNamespaceMappings())
             .AddTypenameMappings(CreateTypenameMappings())
             .Build();
@@ -310,34 +322,38 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         bool? overrideAddNullChecks = null,
         string entityNameFormatString = "{Class.NameNoInterfacePrefix}")
         => new PipelineSettingsBuilder()
-                .WithAddSetters(AddSetters)
-                .WithAddBackingFields(AddBackingFields)
-                .WithSetterVisibility(SetterVisibility)
-                .WithCreateAsObservable(CreateAsObservable)
-                .WithCreateRecord(CreateRecord)
-                .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
-                .WithCopyAttributes(CopyAttributes)
-                .WithCopyInterfaces(CopyInterfaces)
-                .WithEntityNameFormatString(entityNameFormatString)
-                .WithEntityNamespaceFormatString(entitiesNamespace)
-                .WithToBuilderFormatString(ToBuilderFormatString)
-                .WithToTypedBuilderFormatString(ToTypedBuilderFormatString)
-                .WithEnableInheritance(EnableEntityInheritance)
-                .WithIsAbstract(IsAbstract)
-                .WithBaseClass(BaseClass?.ToBuilder())
-                .WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
-                .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
-                .WithEnableNullableReferenceTypes()
-                .AddTypenameMappings(CreateTypenameMappings())
-                .AddNamespaceMappings(CreateNamespaceMappings())
-                .WithValidateArguments(forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)))
-                .WithOriginalValidateArguments(ValidateArgumentsInConstructor)
-                .WithCollectionTypeName(EntityConcreteCollectionType.WithoutGenerics())
-                .WithAddFullConstructor(AddFullConstructor)
-                .WithAddPublicParameterlessConstructor(AddPublicParameterlessConstructor)
-                .WithAddNullChecks(forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false))
-                .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
-                .Build();
+            .WithAddSetters(AddSetters)
+            .WithAddBackingFields(AddBackingFields)
+            .WithSetterVisibility(SetterVisibility)
+            .WithCreateAsObservable(CreateAsObservable)
+            .WithCreateRecord(CreateRecord)
+            .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+            .WithCopyAttributes(CopyAttributes)
+            .WithCopyInterfaces(CopyInterfaces)
+            .WithCopyMethods(CopyMethods)
+            .WithCopyAttributePredicate(CopyAttributePredicate)
+            .WithCopyInterfacePredicate(CopyInterfacePredicate)
+            .WithCopyMethodPredicate(CopyMethodPredicate)
+            .WithEntityNameFormatString(entityNameFormatString)
+            .WithEntityNamespaceFormatString(entitiesNamespace)
+            .WithToBuilderFormatString(ToBuilderFormatString)
+            .WithToTypedBuilderFormatString(ToTypedBuilderFormatString)
+            .WithEnableInheritance(EnableEntityInheritance)
+            .WithIsAbstract(IsAbstract)
+            .WithBaseClass(BaseClass?.ToBuilder())
+            .WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
+            .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
+            .WithEnableNullableReferenceTypes()
+            .AddTypenameMappings(CreateTypenameMappings())
+            .AddNamespaceMappings(CreateNamespaceMappings())
+            .WithValidateArguments(forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)))
+            .WithOriginalValidateArguments(ValidateArgumentsInConstructor)
+            .WithCollectionTypeName(EntityConcreteCollectionType.WithoutGenerics())
+            .WithAddFullConstructor(AddFullConstructor)
+            .WithAddPublicParameterlessConstructor(AddPublicParameterlessConstructor)
+            .WithAddNullChecks(forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false))
+            .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
+            .Build();
 
     private PipelineSettings CreateOverrideEntityPipelineSettings(
         string entitiesNamespace,
@@ -379,6 +395,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .AddNamespaceMappings(CreateNamespaceMappings())
             .WithCopyAttributes(CopyAttributes)
             .WithCopyInterfaces(CopyInterfaces)
+            .WithCopyMethods(CopyMethods)
+            .WithCopyAttributePredicate(CopyAttributePredicate)
+            .WithCopyInterfacePredicate(CopyInterfacePredicate)
+            .WithCopyMethodPredicate(CopyMethodPredicate)
             .WithAddSetters(addSetters)
             .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
             .Build();
