@@ -311,6 +311,50 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
+        [Fact]
+        public void Processes_TypeMapping_Correctly_SingleProperty()
+        {
+            // Arrange
+            var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("Filter").WithTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable")).BuildTyped();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateSettingsForBuilder().AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
+            var context = CreateContext(sourceModel, model, settings);
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Constructors.Should().ContainSingle();
+            var ctor = model.Constructors.Single();
+            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("Filter = default(ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder)!;", "SetDefaultValues();");
+        }
+
+        [Fact]
+        public void Processes_TypeMapping_Correctly_CollectionProperty()
+        {
+            // Arrange
+            var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("GroupByFields").WithTypeName(typeof(IReadOnlyCollection<string>).ReplaceGenericTypeName("ExpressionFramework.Domain.Expression"))).BuildTyped();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateSettingsForBuilder().AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
+            var context = CreateContext(sourceModel, model, settings);
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Constructors.Should().ContainSingle();
+            var ctor = model.Constructors.Single();
+            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("GroupByFields = new System.Collections.Generic.List<ExpressionFramework.Domain.Builders.ExpressionBuilder>();", "SetDefaultValues();");
+        }
+
         private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
             => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
