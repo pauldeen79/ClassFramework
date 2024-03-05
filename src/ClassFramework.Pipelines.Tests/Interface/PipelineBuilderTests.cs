@@ -33,6 +33,23 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         }
 
         [Fact]
+        public void Adds_Properties()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = sut.Process(Model, CreateContext());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().NotBeNull();
+            result.Value!.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
+            result.Value.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
+            result.Value.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.Collections.Generic.IReadOnlyCollection<System.String>");
+        }
+
+        [Fact]
         public void Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
         {
             // Arrange
