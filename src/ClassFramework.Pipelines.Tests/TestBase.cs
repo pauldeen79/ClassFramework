@@ -359,6 +359,33 @@ public abstract class TestBase : IDisposable
             new TypenameMappingBuilder().WithSourceTypeName(typeof(IList<>).WithoutGenerics()).WithTargetTypeName(typeof(IList<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "[Expression].ToList()"),
         ];
 
+    protected static TypenameMappingBuilder[] CreateExpressionFrameworkTypenameMappings()
+        =>
+        [
+            new TypenameMappingBuilder()
+                .WithSourceTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable")
+                .WithTargetTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable")
+                .AddMetadata
+                (
+                    new MetadataBuilder().WithValue("ExpressionFramework.Domain.Builders.Evaluatables").WithName(MetadataNames.CustomBuilderNamespace),
+                    new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(MetadataNames.CustomBuilderName),
+                    new MetadataBuilder().WithValue("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.[Name])").WithName(MetadataNames.CustomBuilderConstructorInitializeExpression),
+                    new MetadataBuilder().WithValue(new Literal("default(ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder)!", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
+                    new MetadataBuilder().WithValue("[Name][NullableSuffix].BuildTyped()").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
+                ),
+            new TypenameMappingBuilder()
+                .WithSourceTypeName("ExpressionFramework.Domain.Expression")
+                .WithTargetTypeName("ExpressionFramework.Domain.Expression")
+                .AddMetadata
+                (
+                    new MetadataBuilder().WithValue("ExpressionFramework.Domain.Builders").WithName(MetadataNames.CustomBuilderNamespace),
+                    new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(MetadataNames.CustomBuilderName),
+                    new MetadataBuilder().WithValue("ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(source.[Name])").WithName(MetadataNames.CustomBuilderConstructorInitializeExpression),
+                    new MetadataBuilder().WithValue(new Literal("default(ExpressionFramework.Domain.Builders.ExpressionBuilder)!", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
+                    new MetadataBuilder().WithValue($"[Name][NullableSuffix].Build()").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
+                ),
+        ];
+
     protected virtual void Dispose(bool disposing)
     {
         if (!disposedValue)

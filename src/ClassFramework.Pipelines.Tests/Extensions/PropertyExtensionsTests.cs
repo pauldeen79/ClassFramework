@@ -146,7 +146,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(settings: default!, formatProvider, new object(), string.Empty, string.Empty, formattableStringParser))
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(settings: default!, formatProvider, new object(), string.Empty, string.Empty, string.Empty, formattableStringParser))
                .Should().Throw<ArgumentNullException>().WithParameterName("settings");
         }
 
@@ -159,7 +159,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider: default!, new object(), string.Empty, string.Empty, formattableStringParser))
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider: default!, new object(), string.Empty, string.Empty, string.Empty, formattableStringParser))
                .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
         }
 
@@ -173,7 +173,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider, parentChildContext: default!, string.Empty, string.Empty, formattableStringParser))
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider, parentChildContext: default!, string.Empty, string.Empty, string.Empty, formattableStringParser))
                .Should().Throw<ArgumentNullException>().WithParameterName("parentChildContext");
         }
 
@@ -187,7 +187,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider, new object(), mappedTypeName: default!, string.Empty, formattableStringParser))
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider, new object(), mappedTypeName: default!, string.Empty, string.Empty, formattableStringParser))
                .Should().Throw<ArgumentNullException>().WithParameterName("mappedTypeName");
         }
 
@@ -201,7 +201,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider, new object(), string.Empty, newCollectionTypeName: default!, formattableStringParser))
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider, new object(), string.Empty, newCollectionTypeName: default!, string.Empty, formattableStringParser))
                .Should().Throw<ArgumentNullException>().WithParameterName("newCollectionTypeName");
         }
 
@@ -214,8 +214,22 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formatProvider = Fixture.Freeze<IFormatProvider>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider, new object(), string.Empty, string.Empty, formattableStringParser: null!))
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider, new object(), string.Empty, string.Empty, string.Empty, formattableStringParser: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
+        }
+
+        [Fact]
+        public void Throws_On_Null_MetadataName()
+        {
+            // Arrange
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var typeSettings = new PipelineSettingsBuilder().Build();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
+            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+
+            // Act & Assert
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider, new object(), string.Empty, string.Empty, metadataName: null!, formattableStringParser))
+               .Should().Throw<ArgumentNullException>().WithParameterName("metadataName");
         }
     }
 }

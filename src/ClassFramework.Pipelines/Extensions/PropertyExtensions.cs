@@ -72,6 +72,7 @@ public static class PropertyExtensions
         object parentChildContext,
         string mappedTypeName,
         string newCollectionTypeName,
+        string metadataName,
         IFormattableStringParser formattableStringParser)
     {
         settings = settings.IsNotNull(nameof(settings));
@@ -79,6 +80,7 @@ public static class PropertyExtensions
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
         newCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
+        metadataName = metadataName.IsNotNull(nameof(metadataName));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
         var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, settings, formatProvider, parentChildContext, mappedTypeName, formattableStringParser);
@@ -88,9 +90,21 @@ public static class PropertyExtensions
             return builderArgumentTypeResult;
         }
 
+        var customBuilderConstructorInitializeExpression = string.IsNullOrEmpty(metadataName)
+            ? string.Empty
+            : property.Metadata
+                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), settings)
+                .GetStringValue(metadataName);
+
+        var result = formattableStringParser.Parse(customBuilderConstructorInitializeExpression, formatProvider, parentChildContext);
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
+
         return Result.Success(builderArgumentTypeResult.Value!
             .FixCollectionTypeName(newCollectionTypeName)
-            .GetCollectionInitializeStatement()
+            .GetCollectionInitializeStatement(result.Value?.Replace("source.[Name]", "x").Replace("[Name]", property.Name) ?? string.Empty, property.GetBuilderMemberName(settings.AddNullChecks, settings.EnableNullableReferenceTypes, settings.ValidateArguments, settings.AddBackingFields, formatProvider.ToCultureInfo()))
             .GetCsharpFriendlyTypeName());
     }
 

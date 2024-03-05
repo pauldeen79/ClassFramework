@@ -397,11 +397,17 @@ public static class StringExtensions
             ? string.Empty
             : $"{instance}.";
 
-    public static string GetCollectionInitializeStatement(this string instance)
+    public static string GetCollectionInitializeStatement(this string instance, string customBuilderConstructorInitializeExpression, string propertyName)
     {
         if (instance.StartsWith(typeof(IEnumerable<>).WithoutGenerics()))
         {
             return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{instance.GetGenericArguments()}>()";
+        }
+
+        if (!string.IsNullOrEmpty(customBuilderConstructorInitializeExpression))
+        {
+            var expression = $"source.{propertyName}.Select(x => " + customBuilderConstructorInitializeExpression + ")";
+            return $"new {instance}({expression})";
         }
 
         return $"new {instance}()";
