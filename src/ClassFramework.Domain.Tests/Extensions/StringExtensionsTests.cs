@@ -531,7 +531,7 @@ public class StringExtensionsTests
     public void GetCollectionInitializeStatement_Returns_Correct_Result(string typeName, string expectedResult)
     {
         // Act
-        var result = typeName.GetCollectionInitializeStatement(string.Empty, string.Empty);
+        var result = typeName.GetCollectionInitializeStatement(string.Empty);
 
         // Assert
         result.Should().Be(expectedResult);

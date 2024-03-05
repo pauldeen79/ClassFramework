@@ -104,7 +104,7 @@ public static class PropertyExtensions
 
         return Result.Success(builderArgumentTypeResult.Value!
             .FixCollectionTypeName(newCollectionTypeName)
-            .GetCollectionInitializeStatement(result.Value?.Replace("source.[Name]", "x").Replace("[Name]", property.Name) ?? string.Empty, property.GetBuilderMemberName(settings.AddNullChecks, settings.EnableNullableReferenceTypes, settings.ValidateArguments, settings.AddBackingFields, formatProvider.ToCultureInfo()))
+            .GetCollectionInitializeStatement(result.Value?.Replace("source.[Name]", "x").Replace("[Name]", property.Name) ?? string.Empty).Replace("[Name]", property.Name)
             .GetCsharpFriendlyTypeName());
     }
 
