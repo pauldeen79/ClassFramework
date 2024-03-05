@@ -50,6 +50,21 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         }
 
         [Fact]
+        public void Adds_Methods()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = sut.Process(Model, CreateContext());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().NotBeNull();
+            result.Value!.Methods.Should().ContainSingle();
+        }
+
+        [Fact]
         public void Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
         {
             // Arrange

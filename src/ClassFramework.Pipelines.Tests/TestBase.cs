@@ -77,6 +77,7 @@ public abstract class TestBase : IDisposable
                     new PropertyBuilder().WithName("Property2").WithTypeName(typeof(List<>).ReplaceGenericTypeName(typeof(string))).WithHasSetter(true)
                 }.Where(_ => addProperties)
             )
+            .AddMethods(new MethodBuilder().WithName("MyMethod"))
             .BuildTyped();
 
     protected static IConcreteType CreateGenericModel(bool addProperties)
