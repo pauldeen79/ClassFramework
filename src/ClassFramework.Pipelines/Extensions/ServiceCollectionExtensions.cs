@@ -109,6 +109,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddAttributesFeatureBuilder>()
             .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddInterfacesFeatureBuilder>()
             .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddMetadataFeatureBuilder>()
+            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddMethodsFeatureBuilder>()
             .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddPropertiesFeatureBuilder>()
             .AddScoped<IInterfaceFeatureBuilder, Interface.Features.SetNameFeatureBuilder>()
         ;
