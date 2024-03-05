@@ -12,7 +12,14 @@ public class AddMethodsFeature : IPipelineFeature<InterfaceBuilder, InterfaceCon
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.AddMethods(context.Context.SourceModel.Methods.Select(x => x.ToBuilder()));
+        if (!context.Context.Settings.CopyMethods)
+        {
+            return Result.Continue<InterfaceBuilder>();
+        }
+
+        context.Model.AddMethods(context.Context.SourceModel.Methods
+            .Where(x => context.Context.Settings.CopyMethodPredicate is null || context.Context.Settings.CopyMethodPredicate(x))
+            .Select(x => x.ToBuilder()));
 
         return Result.Continue<InterfaceBuilder>();
     }

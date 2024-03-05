@@ -27,6 +27,8 @@ internal interface IPipelineSettings
     bool CopyAttributes { get; }
     Predicate<string>? CopyInterfacePredicate { get; }
     bool CopyInterfaces { get; }
+    Predicate<IMethod>? CopyMethodPredicate { get; }
+    bool CopyMethods { get; }
     bool CreateAsObservable { get; }
     bool CreateConstructors { get; }
     bool CreateRecord { get; }

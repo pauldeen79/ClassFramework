@@ -4,12 +4,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
 {
     public class Process : PipelineBuilderTests
     {
-        private InterfaceContext CreateContext(bool addProperties = true) => new InterfaceContext
+        private InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, Predicate<Method>? copyMethodPredicate = null) => new InterfaceContext
         (
             CreateInterfaceModel(addProperties),
             CreateSettingsForInterface
             (
-                allowGenerationWithoutProperties: false
+                allowGenerationWithoutProperties: false,
+                copyMethods: copyMethods,
+                copyMethodPredicate: copyMethodPredicate
             ).Build(),
             CultureInfo.InvariantCulture
         );
@@ -50,7 +52,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         }
 
         [Fact]
-        public void Adds_Methods()
+        public void Adds_Methods_When_CopyMethods_Is_Set_To_True()
         {
             // Arrange
             var sut = CreateSut().Build();
@@ -62,6 +64,51 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             result.Status.Should().Be(ResultStatus.Ok);
             result.Value.Should().NotBeNull();
             result.Value!.Methods.Should().ContainSingle();
+        }
+
+        [Fact]
+        public void Adds_FilteredMethods_When_CopyMethods_Is_Set_To_True()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = sut.Process(Model, CreateContext(copyMethodPredicate: _ => true));
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().NotBeNull();
+            result.Value!.Methods.Should().ContainSingle();
+        }
+
+        [Fact]
+        public void Adds_FilteredMethods_When_CopyMethods_Is_Set_To_True_Negative()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = sut.Process(Model, CreateContext(copyMethodPredicate: _ => false));
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().NotBeNull();
+            result.Value!.Methods.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Does_Not_Add_Methods_When_CopyMethods_Is_Set_To_False()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = sut.Process(Model, CreateContext(copyMethods: false));
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().NotBeNull();
+            result.Value!.Methods.Should().BeEmpty();
         }
 
         [Fact]

@@ -315,6 +315,7 @@ public abstract class TestBase : IDisposable
         bool addSetters = false,
         bool copyAttributes = false,
         bool copyInterfaces = false,
+        bool copyMethods = false,
         bool allowGenerationWithoutProperties = false,
         bool enableEntityInheritance = false,
         bool isAbstract = false,
@@ -325,7 +326,8 @@ public abstract class TestBase : IDisposable
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
         IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
-        Predicate<string>? copyInterfacePredicate = null)
+        Predicate<string>? copyInterfacePredicate = null,
+        Predicate<Method>? copyMethodPredicate = null)
         => new PipelineSettingsBuilder()
             .WithAddSetters(addSetters)
             .WithAllowGenerationWithoutProperties(allowGenerationWithoutProperties)
@@ -339,8 +341,10 @@ public abstract class TestBase : IDisposable
             .AddTypenameMappings(typenameMappings.DefaultWhenNull())
             .WithCopyAttributes(copyAttributes)
             .WithCopyInterfaces(copyInterfaces)
+            .WithCopyMethods(copyMethods)
             .WithCopyAttributePredicate(copyAttributePredicate)
-            .WithCopyInterfacePredicate(copyInterfacePredicate);
+            .WithCopyInterfacePredicate(copyInterfacePredicate)
+            .WithCopyMethodPredicate(copyMethodPredicate);
 
     protected static IEnumerable<NamespaceMappingBuilder> CreateNamespaceMappings(string sourceNamespace = "MySourceNamespace")
         =>
