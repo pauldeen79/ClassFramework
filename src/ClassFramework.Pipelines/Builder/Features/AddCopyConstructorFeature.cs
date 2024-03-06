@@ -1,6 +1,4 @@
-﻿using System.Runtime;
-
-namespace ClassFramework.Pipelines.Builder.Features;
+﻿namespace ClassFramework.Pipelines.Builder.Features;
 
 public class AddCopyConstructorFeatureBuilder : IBuilderFeatureBuilder
 {
@@ -203,14 +201,22 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
         => instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success("base(source)")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private static ConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
-        => new ConstructorBuilder()
+    {
+        var typeName = context.Context.SourceModel.GetFullName();
+
+        if (context.Context.Settings.InheritFromInterfaces)
+        {
+            typeName = context.Context.MapTypeName(typeName, MetadataNames.CustomEntityInterfaceTypeName);
+        }
+
+        return new ConstructorBuilder()
             .WithChainCall("base(source)")
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
             .AddParameters
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName($"{context.Context.SourceModel.GetFullName()}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+                    .WithTypeName($"{typeName}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
             )
             .AddParameters
             (
@@ -219,4 +225,5 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
                     .GetValues<Parameter>(MetadataNames.CustomBuilderCopyConstructorParameter)
                     .Select(x => x.ToBuilder())
             );
+    }
 }
