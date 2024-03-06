@@ -101,15 +101,15 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
 
     private static string GetBuilderTypeName(PipelineContext<IConcreteTypeBuilder, EntityContext> context, Result<string> builderInterfaceNamespaceResult, Result<string> concreteBuilderNamespaceResult, string builderConcreteName, string builderConcreteTypeName)
     {
-        if (context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null)
-        {
-            return $"{concreteBuilderNamespaceResult.Value}.{context.Context.Settings.BaseClass.Name}Builder";
-        }
-        else if (context.Context.Settings.InheritFromInterfaces)
+        if (context.Context.Settings.InheritFromInterfaces)
         {
             return $"{builderInterfaceNamespaceResult.Value}.I{builderConcreteName}Builder";
         }
-        else
+        else if (context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null)
+        {
+            return $"{concreteBuilderNamespaceResult.Value}.{context.Context.Settings.BaseClass.Name}Builder";
+        }
+        else 
         {
             return builderConcreteTypeName;
         }
