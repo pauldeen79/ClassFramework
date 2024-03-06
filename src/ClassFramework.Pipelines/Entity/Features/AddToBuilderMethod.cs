@@ -52,6 +52,13 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
         var name = results.First(x => x.Name == "Name").Result.Value!;
 
         var entityFullName = $"{ns.AppendWhenNotNullOrEmpty(".")}{name}";
+        /*if (context.Context.Settings.InheritFromInterfaces)
+        {
+            entityFullName = context.Context.MapTypeName(entityFullName, MetadataNames.CustomEntityInterfaceTypeName);
+            //ns = entityFullName.GetNamespaceWithDefault();
+            //name = entityFullName.GetClassName();
+        }*/
+
         if (context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null)
         {
             entityFullName = entityFullName.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
