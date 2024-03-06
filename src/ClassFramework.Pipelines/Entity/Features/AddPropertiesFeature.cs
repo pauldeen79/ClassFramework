@@ -53,7 +53,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
                 (
                     property =>new FieldBuilder()
                         .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
-                        .WithTypeName(context.Context.MapTypeName(property.TypeName)
+                        .WithTypeName(context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName)
                             .FixCollectionTypeName(context.Context.Settings.CollectionTypeName
                                 .WhenNullOrEmpty(context.Context.Settings.EntityNewCollectionTypeName)
                                 .WhenNullOrEmpty(typeof(List<>).WithoutGenerics()))

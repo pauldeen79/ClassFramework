@@ -21,7 +21,7 @@ public class AddInterfacesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
             context.Context.SourceModel.GetInterfaces()
                 .Select(x => x.FullName.FixTypeName())
                 .Where(x => context.Context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-                .Select(context.Context.MapTypeName)
+                .Select(n => context.Context.MapTypeName(n))
         );
 
         return Result.Continue<TypeBaseBuilder>();

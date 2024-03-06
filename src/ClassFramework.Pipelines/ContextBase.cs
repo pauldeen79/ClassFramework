@@ -25,8 +25,26 @@ public abstract class ContextBase<TModel>
         return $"if ({argumentName} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({argumentName}));";
     }
 
-    public string MapTypeName(string typeName)
-        => typeName.IsNotNull(nameof(typeName)).MapTypeName(Settings, NewCollectionTypeName);
+    public string MapTypeName(string typeName, string alternateTypeMetadataName = "")
+    {
+        typeName = typeName.IsNotNull(nameof(typeName));
+        var result = typeName.MapTypeName(Settings, NewCollectionTypeName);
+
+        if (Settings.CopyInterfaces && !string.IsNullOrEmpty(alternateTypeMetadataName))
+        {
+            var typenameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName() ? typeName.GetGenericArguments() : typeName));
+            if (typenameMapping is not null)
+            {
+                var alternateType = typenameMapping.Metadata.GetStringValue(alternateTypeMetadataName);
+                if (!string.IsNullOrEmpty(alternateType))
+                {
+                    return alternateType;
+                }
+            }
+        }
+
+        return result;
+    }
 
     public string MapNamespace(string? ns)
         => ns.MapNamespace(Settings);
