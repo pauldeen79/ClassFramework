@@ -18,7 +18,7 @@ public class AddMethodsFeature : IPipelineFeature<InterfaceBuilder, InterfaceCon
         }
 
         context.Model.AddMethods(context.Context.SourceModel.Methods
-            .Where(x => context.Context.Settings.CopyMethodPredicate is null || context.Context.Settings.CopyMethodPredicate(x))
+            .Where(x => context.Context.Settings.CopyMethodPredicate is null || context.Context.Settings.CopyMethodPredicate(context.Context.SourceModel, x))
             .Select(x => x.ToBuilder()
                 .WithReturnTypeName(context.Context.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(context.Context.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x))))
                 .With(y => y.Parameters.ForEach(z => z.TypeName = context.Context.MapTypeName(z.TypeName)))
@@ -31,7 +31,7 @@ public class AddMethodsFeature : IPipelineFeature<InterfaceBuilder, InterfaceCon
         => new AddMethodsFeatureBuilder();
 }
 
-internal class TypeContainerWrapper : ITypeContainer
+internal sealed class TypeContainerWrapper : ITypeContainer
 {
     public TypeContainerWrapper(Method method)
     {
