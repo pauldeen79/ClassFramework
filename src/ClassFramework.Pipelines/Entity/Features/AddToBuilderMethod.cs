@@ -103,6 +103,10 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
     {
         if (context.Context.Settings.InheritFromInterfaces)
         {
+            if (context.Context.SourceModel.Interfaces.Count > 0)
+            {
+                return $"{builderInterfaceNamespaceResult.Value}.{context.Context.SourceModel.Interfaces.First().GetClassName()}Builder";
+            }
             return $"{builderInterfaceNamespaceResult.Value}.I{builderConcreteName}Builder";
         }
         else if (context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null)
