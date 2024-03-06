@@ -4,7 +4,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
 {
     public class Process : PipelineBuilderTests
     {
-        private InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, Predicate<Method>? copyMethodPredicate = null) => new InterfaceContext
+        private InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, Func<IType, Method, bool>? copyMethodPredicate = null) => new InterfaceContext
         (
             CreateInterfaceModel(addProperties),
             CreateSettingsForInterface
@@ -73,7 +73,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext(copyMethodPredicate: _ => true));
+            var result = sut.Process(Model, CreateContext(copyMethodPredicate: (_, _) => true));
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -88,7 +88,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext(copyMethodPredicate: _ => false));
+            var result = sut.Process(Model, CreateContext(copyMethodPredicate: (_, _) => false));
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);

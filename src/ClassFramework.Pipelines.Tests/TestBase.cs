@@ -327,7 +327,7 @@ public abstract class TestBase : IDisposable
         IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null,
-        Predicate<Method>? copyMethodPredicate = null)
+        Func<IType, Method, bool>? copyMethodPredicate = null)
         => new PipelineSettingsBuilder()
             .WithAddSetters(addSetters)
             .WithAllowGenerationWithoutProperties(allowGenerationWithoutProperties)

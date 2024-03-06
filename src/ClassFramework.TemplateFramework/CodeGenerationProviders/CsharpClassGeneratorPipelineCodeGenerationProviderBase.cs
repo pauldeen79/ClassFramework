@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.TemplateFramework.CodeGenerationProviders;
+﻿using ClassFramework.Domain;
+
+namespace ClassFramework.TemplateFramework.CodeGenerationProviders;
 
 public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : CsharpClassGeneratorCodeGenerationProviderBase
 {
@@ -86,7 +88,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool CreateCodeGenerationHeader => true;
     protected virtual Predicate<Domain.Attribute>? CopyAttributePredicate => null;
     protected virtual Predicate<string>? CopyInterfacePredicate => null;
-    protected virtual Predicate<Method>? CopyMethodPredicate => null;
+    protected virtual Func<IType, Method, bool>? CopyMethodPredicate => null;
     protected virtual Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => new Func<IParentTypeContainer, IType, bool>((parentNameContainer, typeBase)
         => parentNameContainer is not null
         && typeBase is not null
