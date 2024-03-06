@@ -52,13 +52,6 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
         var name = results.First(x => x.Name == "Name").Result.Value!;
 
         var entityFullName = $"{ns.AppendWhenNotNullOrEmpty(".")}{name}";
-        /*if (context.Context.Settings.InheritFromInterfaces)
-        {
-            entityFullName = context.Context.MapTypeName(entityFullName, MetadataNames.CustomEntityInterfaceTypeName);
-            //ns = entityFullName.GetNamespaceWithDefault();
-            //name = entityFullName.GetClassName();
-        }*/
-
         if (context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null)
         {
             entityFullName = entityFullName.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
@@ -69,6 +62,7 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
             : entityFullName;
 
         var builderNamespaceResult = context.Context.SourceModel.Metadata.WithMappingMetadata(entityFullName.GetCollectionItemType().WhenNullOrEmpty(entityFullName), context.Context.Settings).GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders"));
+        var builderInterfaceNamespaceResult = context.Context.SourceModel.Metadata.WithMappingMetadata(entityFullName.GetCollectionItemType().WhenNullOrEmpty(entityFullName), context.Context.Settings).GetStringResult(MetadataNames.CustomBuilderInterfaceNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders"));
         var concreteBuilderNamespaceResult = context.Context.SourceModel.Metadata.WithMappingMetadata(entityConcreteFullName.GetCollectionItemType().WhenNullOrEmpty(entityConcreteFullName), context.Context.Settings).GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders"));
 
         var builderConcreteName = context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is null
@@ -77,9 +71,7 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
 
         var builderConcreteTypeName = $"{builderNamespaceResult.Value}.{builderConcreteName}Builder";
 
-        var builderTypeName = context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null
-            ? $"{concreteBuilderNamespaceResult.Value}.{context.Context.Settings.BaseClass.Name}Builder"
-            : builderConcreteTypeName;
+        var builderTypeName = GetBuilderTypeName(context, builderInterfaceNamespaceResult, concreteBuilderNamespaceResult, builderConcreteName, builderConcreteTypeName);
 
         var returnStatement = context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null && !string.IsNullOrEmpty(typedMethodName)
             ? $"return {typedMethodName}();"
@@ -105,6 +97,22 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
         }
 
         return Result.Continue<IConcreteTypeBuilder>();
+    }
+
+    private static string GetBuilderTypeName(PipelineContext<IConcreteTypeBuilder, EntityContext> context, Result<string> builderInterfaceNamespaceResult, Result<string> concreteBuilderNamespaceResult, string builderConcreteName, string builderConcreteTypeName)
+    {
+        if (context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null)
+        {
+            return $"{concreteBuilderNamespaceResult.Value}.{context.Context.Settings.BaseClass.Name}Builder";
+        }
+        else if (context.Context.Settings.InheritFromInterfaces)
+        {
+            return $"{builderInterfaceNamespaceResult.Value}.I{builderConcreteName}Builder";
+        }
+        else
+        {
+            return builderConcreteTypeName;
+        }
     }
 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, EntityContext>> ToBuilder()
