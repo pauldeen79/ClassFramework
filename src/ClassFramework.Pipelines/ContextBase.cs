@@ -30,7 +30,7 @@ public abstract class ContextBase<TModel>
         typeName = typeName.IsNotNull(nameof(typeName));
         var result = typeName.MapTypeName(Settings, NewCollectionTypeName);
 
-        if (Settings.CopyInterfaces && !string.IsNullOrEmpty(alternateTypeMetadataName))
+        if (Settings.InheritFromInterfaces && !string.IsNullOrEmpty(alternateTypeMetadataName))
         {
             var typenameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName() ? typeName.GetGenericArguments() : typeName));
             if (typenameMapping is not null)

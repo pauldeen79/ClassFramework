@@ -29,6 +29,7 @@ internal interface IPipelineSettings
     bool CopyInterfaces { get; }
     Func<IType, IMethod, bool>? CopyMethodPredicate { get; }
     bool CopyMethods { get; }
+    bool InheritFromInterfaces { get; }
     bool CreateAsObservable { get; }
     bool CreateConstructors { get; }
     bool CreateRecord { get; }

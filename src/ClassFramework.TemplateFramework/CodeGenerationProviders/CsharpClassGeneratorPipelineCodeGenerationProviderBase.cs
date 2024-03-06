@@ -59,6 +59,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool CopyAttributes => false;
     protected virtual bool CopyInterfaces => false;
     protected virtual bool CopyMethods => false;
+    protected virtual bool InheritFromInterfaces => false;
     protected virtual bool AddNullChecks => true;
     protected virtual bool UseExceptionThrowIfNull => false;
     protected virtual bool CreateRecord => false;
@@ -269,6 +270,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyAttributes(CopyAttributes)
             .WithCopyInterfaces(CopyInterfaces)
             .WithCopyMethods(CopyMethods)
+            .WithInheritFromInterfaces(InheritFromInterfaces)
             .WithCopyAttributePredicate(CopyAttributePredicate)
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
             .WithCopyMethodPredicate(CopyMethodPredicate)
@@ -309,6 +311,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyAttributes(CopyAttributes)
             .WithCopyInterfaces(CopyInterfaces)
             .WithCopyMethods(CopyMethods)
+            .WithInheritFromInterfaces(InheritFromInterfaces)
             .WithCopyAttributePredicate(CopyAttributePredicate)
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
             .WithCopyMethodPredicate(CopyMethodPredicate)
@@ -331,6 +334,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyAttributes(CopyAttributes)
             .WithCopyInterfaces(CopyInterfaces)
             .WithCopyMethods(CopyMethods)
+            .WithInheritFromInterfaces(InheritFromInterfaces)
             .WithCopyAttributePredicate(CopyAttributePredicate)
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
             .WithCopyMethodPredicate(CopyMethodPredicate)
@@ -396,6 +400,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyAttributes(CopyAttributes)
             .WithCopyInterfaces(CopyInterfaces)
             .WithCopyMethods(CopyMethods)
+            .WithInheritFromInterfaces(InheritFromInterfaces)
             .WithCopyAttributePredicate(CopyAttributePredicate)
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
             .WithCopyMethodPredicate(CopyMethodPredicate)

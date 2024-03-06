@@ -26,7 +26,7 @@ public class AddBuildMethodFeature : IPipelineFeature<IConcreteTypeBuilder, Buil
     {
         context = context.IsNotNull(nameof(context));
 
-        var returnType = context.Context.Settings.CopyInterfaces
+        var returnType = context.Context.Settings.InheritFromInterfaces
             ? context.Context.SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{context.Context.SourceModel.Name}") ?? context.Context.SourceModel.GetFullName()
             : context.Context.SourceModel.GetFullName();
 

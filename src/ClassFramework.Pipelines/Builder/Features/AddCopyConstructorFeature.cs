@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Builder.Features;
+﻿using System.Runtime;
+
+namespace ClassFramework.Pipelines.Builder.Features;
 
 public class AddCopyConstructorFeatureBuilder : IBuilderFeatureBuilder
 {
@@ -84,7 +86,10 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
         }
 
         var name = results.First(x => x.Name == "Name").Result.Value!;
-        name = FixEntityName(context, name);
+        name = FixEntityName(context, name, $"{results.First(x => x.Name == "Namespace").Result.Value.AppendWhenNotNullOrEmpty(".")}{name}");
+        var nsPlusPrefix = context.Context.Settings.InheritFromInterfaces
+            ? string.Empty
+            : results.First(x => x.Name == "Namespace").Result.Value.AppendWhenNotNullOrEmpty(".");
 
         return Result.Success(new ConstructorBuilder()
             .WithChainCall(CreateBuilderClassCopyConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
@@ -97,7 +102,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName($"{results.First(x => x.Name == "Namespace").Result.Value.AppendWhenNotNullOrEmpty(".")}{name}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+                    .WithTypeName($"{nsPlusPrefix}{name}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
             )
             .AddParameters
             (
@@ -111,12 +116,17 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
         );
     }
 
-    private static string FixEntityName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, string name)
+    private static string FixEntityName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, string name, string fullName)
     {
         if (context.Context.Settings.OriginalValidateArguments == ArgumentValidationType.Shared
             && !context.Context.Settings.EnableBuilderInheritance)
         {
             return $"{name}Base";
+        }
+
+        if (context.Context.Settings.InheritFromInterfaces)
+        {
+            return context.Context.MapTypeName(fullName, MetadataNames.CustomEntityInterfaceTypeName);
         }
 
         return name;
