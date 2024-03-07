@@ -13,5 +13,5 @@ public class OverrideTypeEntities : ClassFrameworkCSharpClassBase
     protected override Class? BaseClass => CreateBaseclass(typeof(ITypeBase), "ClassFramework.Domain");
 
     public override IEnumerable<TypeBase> Model
-        => GetImmutableClasses(GetOverrideModels(typeof(ITypeBase)), "ClassFramework.Domain.Types");
+        => GetEntities(GetOverrideModels(typeof(ITypeBase)), "ClassFramework.Domain.Types");
 }

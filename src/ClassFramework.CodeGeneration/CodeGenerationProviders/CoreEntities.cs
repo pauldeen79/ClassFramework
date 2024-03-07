@@ -7,7 +7,7 @@ public class CoreEntities : ClassFrameworkCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetImmutableClasses(GetCoreModels(), "ClassFramework.Domain");
+    public override IEnumerable<TypeBase> Model => GetEntities(GetCoreModels(), "ClassFramework.Domain");
 
     public override string Path => "ClassFramework.Domain";
 }
