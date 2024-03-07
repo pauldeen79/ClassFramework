@@ -142,6 +142,7 @@ public abstract class TestBase : IDisposable
         bool copyInterfaces = false,
         bool addCopyConstructor = false,
         bool setDefaultValues = true,
+        bool inheritFromInterfaces = false,
         string newCollectionTypeName = "System.Collections.Generic.List",
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
         IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
@@ -170,7 +171,8 @@ public abstract class TestBase : IDisposable
                 copyAttributes: copyAttributes,
                 copyInterfaces: copyInterfaces,
                 copyAttributePredicate: copyAttributePredicate,
-                copyInterfacePredicate: copyInterfacePredicate
+                copyInterfacePredicate: copyInterfacePredicate,
+                inheritFromInterfaces: inheritFromInterfaces
             )
             .WithBuilderNewCollectionTypeName(newCollectionTypeName)
             .WithEnableNullableReferenceTypes(enableNullableReferenceTypes)
@@ -214,6 +216,7 @@ public abstract class TestBase : IDisposable
         bool createRecord = false,
         bool addBackingFields = false,
         bool createAsObservable = false,
+        bool inheritFromInterfaces = false,
         SubVisibility setterVisibility = SubVisibility.InheritFromParent,
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
         IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
@@ -226,6 +229,7 @@ public abstract class TestBase : IDisposable
             .WithCreateRecord(createRecord)
             .WithAddBackingFields(addBackingFields)
             .WithCreateAsObservable(createAsObservable)
+            .WithInheritFromInterfaces(inheritFromInterfaces)
             .WithAddNullChecks(addNullChecks)
             .WithUseExceptionThrowIfNull(useExceptionThrowIfNull)
             .WithEnableInheritance(enableEntityInheritance)
