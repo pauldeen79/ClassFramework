@@ -147,6 +147,18 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         ).ToArray();
     }
 
+    protected TypeBase[] GetEntityInterfaces(TypeBase[] models, string entitiesNamespace, string interfacesNamespace)
+    {
+        Guard.IsNotNull(models);
+        Guard.IsNotNull(entitiesNamespace);
+        Guard.IsNotNull(interfacesNamespace);
+
+        return models
+            .Select(x => CreateImmutableClass(x, entitiesNamespace))
+            .Select(x => CreateInterface(x, interfacesNamespace, string.Empty, true, "I{Class.Name}"))
+            .ToArray();
+    }
+
     protected TypeBase[] GetInterfaces(TypeBase[] models, string interfacesNamespace)
     {
         Guard.IsNotNull(models);
