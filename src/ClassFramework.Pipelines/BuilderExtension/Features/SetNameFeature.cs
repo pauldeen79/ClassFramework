@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Features;
 
-public class SetNameFeatureBuilder : IBuilderInterfaceFeatureBuilder
+public class SetNameFeatureBuilder : IBuilderExtensionFeatureBuilder
 {
     private readonly IFormattableStringParser _formattableStringParser;
 

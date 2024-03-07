@@ -45,12 +45,12 @@ public static class ServiceCollectionExtensions
         => services
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<IConcreteTypeBuilder, BuilderExtensionContext>>().Build())
             .AddScoped<IPipelineBuilder<IConcreteTypeBuilder, BuilderExtensionContext>, BuilderExtension.PipelineBuilder>()
-            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderExtension.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
-            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderExtension.Features.AddExtensionMethodsForCollectionPropertiesFeatureBuilder>()
-            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderExtension.Features.AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder>()
-            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderExtension.Features.AddMetadataFeatureBuilder>()
-            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderExtension.Features.SetNameFeatureBuilder>()
-            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderExtension.Features.SetStaticFeatureBuilder>();
+            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
+            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.AddExtensionMethodsForCollectionPropertiesFeatureBuilder>()
+            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder>()
+            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.AddMetadataFeatureBuilder>()
+            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.SetNameFeatureBuilder>()
+            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.SetStaticFeatureBuilder>();
 
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services

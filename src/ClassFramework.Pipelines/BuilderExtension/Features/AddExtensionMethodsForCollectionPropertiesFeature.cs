@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Features;
 
-public class AddExtensionMethodsForCollectionPropertiesFeatureBuilder : IBuilderInterfaceFeatureBuilder
+public class AddExtensionMethodsForCollectionPropertiesFeatureBuilder : IBuilderExtensionFeatureBuilder
 {
     private readonly IFormattableStringParser _formattableStringParser;
 

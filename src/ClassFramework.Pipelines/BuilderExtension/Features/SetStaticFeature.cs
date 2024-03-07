@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Features;
 
-public class SetStaticFeatureBuilder : IBuilderInterfaceFeatureBuilder
+public class SetStaticFeatureBuilder : IBuilderExtensionFeatureBuilder
 {
     public IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext> Build()
         => new SetStaticFeature();

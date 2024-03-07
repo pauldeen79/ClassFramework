@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Features;
 
-public class AddMetadataFeatureBuilder : IBuilderInterfaceFeatureBuilder
+public class AddMetadataFeatureBuilder : IBuilderExtensionFeatureBuilder
 {
     public IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext> Build()
         => new AddMetadataFeature();
