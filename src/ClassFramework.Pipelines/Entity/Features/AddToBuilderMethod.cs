@@ -103,9 +103,9 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
     {
         if (context.Context.Settings.InheritFromInterfaces)
         {
-            if (context.Context.SourceModel.Interfaces.Count > 0)
+            if (context.Context.SourceModel.Interfaces.Count >= 2)
             {
-                return $"{builderInterfaceNamespaceResult.Value}.{context.Context.SourceModel.Interfaces.First().GetClassName()}Builder";
+                return $"{builderInterfaceNamespaceResult.Value}.{context.Context.SourceModel.Interfaces.ElementAt(1).GetClassName()}Builder";
             }
             return $"{builderInterfaceNamespaceResult.Value}.I{builderConcreteName}Builder";
         }
