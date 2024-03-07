@@ -79,6 +79,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual string AddMethodNameFormatString => "Add{Name}";
     protected virtual string ToBuilderFormatString => "ToBuilder";
     protected virtual string ToTypedBuilderFormatString => "ToTypedBuilder";
+    protected virtual string BuildMethodName => "Build";
+    protected virtual string BuildTypedMethodName => "BuildTyped";
     protected virtual bool AddFullConstructor => true;
     protected virtual bool AddPublicParameterlessConstructor => false;
     protected virtual bool AddCopyConstructor => true;
@@ -155,7 +157,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
         return models
             .Select(x => CreateImmutableClass(x, entitiesNamespace))
-            .Select(x => CreateInterface(x, interfacesNamespace, string.Empty, true, "I{Class.Name}"))
+            .Select(x => CreateInterface(x, interfacesNamespace, string.Empty, true, "I{Class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0))
             .ToArray();
     }
 
@@ -194,7 +196,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         {
             var interfaceBuilder = new InterfaceBuilder();
             _ = _interfacePipeline
-                .Process(interfaceBuilder, new InterfaceContext(x, CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, InheritanceComparisonDelegate, true), CultureInfo.InvariantCulture))
+                .Process(interfaceBuilder, new InterfaceContext(x, CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, InheritanceComparisonDelegate, null, true), CultureInfo.InvariantCulture))
                 .GetValueOrThrow();
 
             return CreateBuilderExtensionsClass(interfaceBuilder.Build(), buildersNamespace, entitiesNamespace, buildersExtensionsNamespace);
@@ -226,7 +228,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(interfacesNamespace);
 
         return GetBuilders(models, buildersNamespace, entitiesNamespace)
-            .Select(x => CreateInterface(x, interfacesNamespace, EntityConcreteCollectionType.WithoutGenerics(), true, "I{Class.Name}"))
+            .Select(x => CreateInterface(x, interfacesNamespace, EntityConcreteCollectionType.WithoutGenerics(), true, "I{Class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0))
             .ToArray();
     }
 
@@ -308,7 +310,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithAddNullChecks(AddNullChecks)
             .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
             .Build();
+
         _ = _entityPipeline.Process(builder, new EntityContext(typeBase, entitySettings, CultureInfo.InvariantCulture)).GetValueOrThrow();
+        
         return PostProcessClassBuilder(builder).BuildTyped();
     }
 
@@ -354,6 +358,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithEntityNamespaceFormatString(entitiesNamespace)
             .WithToBuilderFormatString(ToBuilderFormatString)
             .WithToTypedBuilderFormatString(ToTypedBuilderFormatString)
+            .WithBuildMethodName(BuildMethodName)
+            .WithBuildTypedMethodName(BuildTypedMethodName)
             .WithEnableInheritance(EnableEntityInheritance)
             .WithIsAbstract(IsAbstract)
             .WithBaseClass(BaseClass?.ToBuilder())
@@ -397,6 +403,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         string interfacesNamespace,
         string newCollectionTypeName,
         Func<IParentTypeContainer, IType, bool>? inheritanceComparisonDelegate,
+        Func<IType, Method, bool>? copyMethodPredicate,
         bool addSetters,
         string nameFormatString = "{Class.Name}")
         => new PipelineSettingsBuilder()
@@ -411,11 +418,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .AddNamespaceMappings(CreateNamespaceMappings())
             .WithCopyAttributes(CopyAttributes)
             .WithCopyInterfaces(CopyInterfaces)
-            .WithCopyMethods(CopyMethods)
+            .WithCopyMethods(CopyMethods || copyMethodPredicate != null)
             .WithInheritFromInterfaces(InheritFromInterfaces)
             .WithCopyAttributePredicate(CopyAttributePredicate)
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
-            .WithCopyMethodPredicate(CopyMethodPredicate)
+            .WithCopyMethodPredicate(copyMethodPredicate ?? CopyMethodPredicate)
             .WithAddSetters(addSetters)
             .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
             .Build();
@@ -581,11 +588,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         string interfacesNamespace,
         string newCollectionTypeName,
         bool addSetters,
-        string nameFormatString = "{Class.Name}")
+        string nameFormatString = "{Class.Name}",
+        Func<IType, Method, bool>? copyMethodPredicate = null)
     {
         var builder = new InterfaceBuilder();
         _ = _interfacePipeline
-            .Process(builder, new InterfaceContext(typeBase, CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, InheritanceComparisonDelegate, addSetters, nameFormatString), CultureInfo.InvariantCulture))
+            .Process(builder, new InterfaceContext(typeBase, CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, InheritanceComparisonDelegate, copyMethodPredicate, addSetters, nameFormatString), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
