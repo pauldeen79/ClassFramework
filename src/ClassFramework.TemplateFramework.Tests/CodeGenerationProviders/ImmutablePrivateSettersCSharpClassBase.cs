@@ -6,6 +6,6 @@ public abstract class ImmutablePrivateSettersCSharpClassBase : ImmutableCSharpCl
     {
     }
 
-    protected override Domain.Domains.SubVisibility SetterVisibility => Domain.Domains.SubVisibility.Private;
+    protected override SubVisibility SetterVisibility => SubVisibility.Private;
     protected override bool AddSetters => true;
 }

@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Domain.Tests.TestFixtures;
 
-public record TestValidatable : System.ComponentModel.DataAnnotations.IValidatableObject
+public record TestValidatable : IValidatableObject
 {
     public TestValidatable(int property)
     {
@@ -9,8 +9,8 @@ public record TestValidatable : System.ComponentModel.DataAnnotations.IValidatab
         /// System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
 
         // Convert validation exception to ArgumentException, for more DDD style validation:
-        var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
-        System.ComponentModel.DataAnnotations.Validator.TryValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this), results, true);
+        var results = new List<ValidationResult>();
+        Validator.TryValidateObject(this, new ValidationContext(this), results, true);
         var error = results.Find(x => !string.IsNullOrEmpty(x.ErrorMessage) && x.MemberNames.Any());
         if (error is not null)
         {
@@ -35,8 +35,8 @@ public class TestValidatableBuilder : IValidatableObject
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         var instance = new TestValidatable(Property);
-        var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
-        System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance), results, true);
+        var results = new List<ValidationResult>();
+        Validator.TryValidateObject(instance, new ValidationContext(instance), results, true);
         return results;
     }
 }
@@ -56,7 +56,7 @@ public partial record MyCustomEntity
     // When using validation with IValidatableObject interface:
     protected void Validate()
     {
-        System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        Validator.ValidateObject(this, new ValidationContext(this, null, null), true);
     }
 
     // When using domain driven style validation (just throw argument exceptions), use this:
@@ -89,7 +89,7 @@ public partial record MyTestEntity
     // When using validation with IValidatableObject interface:
     protected void Validate()
     {
-        System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        Validator.ValidateObject(this, new ValidationContext(this, null, null), true);
     }
 
     // When using domain driven style validation (just throw argument exceptions), use this:
@@ -121,7 +121,7 @@ public partial class MyTestEntityBuilder ///: System.ComponentModel.DataAnnotati
         }
         set
         {
-            System.ArgumentNullException.ThrowIfNull(value);
+            ArgumentNullException.ThrowIfNull(value);
             _property2 = value;
         }
     }

@@ -58,6 +58,6 @@ internal interface IPipelineSettings
     [Required]IReadOnlyCollection<ITypenameMapping> TypenameMappings { get; }
     bool UseBaseClassFromSourceModel { get; }
     bool UseExceptionThrowIfNull { get; }
-    Domains.ArgumentValidationType ValidateArguments { get; }
-    Domains.ArgumentValidationType OriginalValidateArguments { get; }
+    ArgumentValidationType ValidateArguments { get; }
+    ArgumentValidationType OriginalValidateArguments { get; }
 }
