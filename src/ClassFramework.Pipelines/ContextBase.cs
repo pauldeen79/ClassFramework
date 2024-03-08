@@ -28,20 +28,7 @@ public abstract class ContextBase<TModel>
     public string MapTypeName(string typeName, string alternateTypeMetadataName = "")
     {
         typeName = typeName.IsNotNull(nameof(typeName));
-        var result = typeName.MapTypeName(Settings, NewCollectionTypeName);
-
-        if (Settings.InheritFromInterfaces && !string.IsNullOrEmpty(alternateTypeMetadataName))
-        {
-            var typenameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName() ? typeName.GetGenericArguments() : typeName));
-            if (typenameMapping is not null)
-            {
-                var alternateType = typenameMapping.Metadata.GetStringValue(alternateTypeMetadataName);
-                if (!string.IsNullOrEmpty(alternateType))
-                {
-                    return alternateType;
-                }
-            }
-        }
+        var result = typeName.MapTypeName(Settings, NewCollectionTypeName, alternateTypeMetadataName);
 
         return result;
     }

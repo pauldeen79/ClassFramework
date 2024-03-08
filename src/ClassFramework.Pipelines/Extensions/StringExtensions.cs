@@ -2,17 +2,31 @@
 
 public static class StringExtensions
 {
-    public static string MapTypeName(this string typeName, PipelineSettings settings, string newCollectionTypeName)
+    public static string MapTypeName(this string typeName, PipelineSettings settings, string newCollectionTypeName = "", string alternateTypeMetadataName = "")
     {
         settings = settings.IsNotNull(nameof(settings));
         newCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
+        alternateTypeMetadataName = alternateTypeMetadataName.IsNotNull(nameof(alternateTypeMetadataName));
 
         if (typeName.IsCollectionTypeName())
         {
             // i.e. IEnumerable<TSource> => IEnumerable<TTarget> (including collection typename mapping, when available)
             return typeName
                 .FixCollectionTypeName(newCollectionTypeName) // note that this always converts to a generic type :)
-                .ReplaceGenericTypeName(MapTypeName(typeName.GetCollectionItemType(), settings, newCollectionTypeName)); // so we can safely use ReplaceGenericTypeName here
+                .ReplaceGenericTypeName(MapTypeName(typeName.GetCollectionItemType(), settings, newCollectionTypeName, alternateTypeMetadataName)); // so we can safely use ReplaceGenericTypeName here
+        }
+
+        if (settings.InheritFromInterfaces && !string.IsNullOrEmpty(alternateTypeMetadataName))
+        {
+            var typenameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName() ? typeName.GetGenericArguments() : typeName));
+            if (typenameMapping is not null)
+            {
+                var alternateType = typenameMapping.Metadata.GetStringValue(alternateTypeMetadataName);
+                if (!string.IsNullOrEmpty(alternateType))
+                {
+                    return alternateType;
+                }
+            }
         }
 
         var genericArguments = typeName.FixTypeName().GetProcessedGenericArguments();
@@ -26,10 +40,10 @@ public static class StringExtensions
                     mappedGenericArgumentsBuilder.Append(",");
                 }
 
-                mappedGenericArgumentsBuilder.Append(MapTypeName(item, settings, newCollectionTypeName));
+                mappedGenericArgumentsBuilder.Append(MapTypeName(item, settings, newCollectionTypeName, alternateTypeMetadataName));
             }
 
-            return $"{MapTypeName(typeName.FixTypeName().WithoutProcessedGenerics(), settings, newCollectionTypeName)}<{mappedGenericArgumentsBuilder}>";
+            return $"{MapTypeName(typeName.FixTypeName().WithoutProcessedGenerics(), settings, newCollectionTypeName, alternateTypeMetadataName)}<{mappedGenericArgumentsBuilder}>";
         }
 
         var typeNameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
