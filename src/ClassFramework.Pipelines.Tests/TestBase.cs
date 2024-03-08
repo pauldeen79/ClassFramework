@@ -379,7 +379,7 @@ public abstract class TestBase : IDisposable
                     new MetadataBuilder().WithValue("ExpressionFramework.Domain.Builders.Evaluatables").WithName(MetadataNames.CustomBuilderNamespace),
                     new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(MetadataNames.CustomBuilderName),
                     new MetadataBuilder().WithValue("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.[Name])").WithName(MetadataNames.CustomBuilderConstructorInitializeExpression),
-                    new MetadataBuilder().WithValue(new Literal("default(ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder)!", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
+                    new MetadataBuilder().WithValue(new Literal("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder()", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
                     new MetadataBuilder().WithValue("[Name][NullableSuffix].BuildTyped()").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
                 ),
             new TypenameMappingBuilder()
