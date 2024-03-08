@@ -29,6 +29,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableSharedValidationCoreEntities>()
             .AddScoped<ImmutableInheritFromInterfacesCoreBuilders>()
             .AddScoped<ImmutableInheritFromInterfacesCoreEntities>()
+            .AddScoped<ImmutableInheritFromInterfacesAbstractionsInterfaces>()
+            .AddScoped<ImmutableInheritFromInterfacesAbstractionsBuilderInterfaces>()
             .AddScoped<ObservableCoreBuilders>()
             .AddScoped<ObservableCoreEntities>()
             .AddScoped<TemplateFrameworkEntities>()
@@ -732,6 +734,92 @@ namespace Test.Domain.Builders
             OriginalValue = originalValue;
             return this;
         }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Immutable_EntityInterface_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableInheritFromInterfacesAbstractionsInterfaces>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Abstractions
+{
+#nullable enable
+    public interface ILiteral
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        string Value
+        {
+            get;
+        }
+
+        object? OriginalValue
+        {
+            get;
+        }
+
+        Test.Abstractions.Builders.ILiteralBuilder ToBuilder();
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Immutable_BuilderInterface_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableInheritFromInterfacesAbstractionsBuilderInterfaces>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Abstractions
+{
+#nullable enable
+    public interface ILiteralBuilder
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        string Value
+        {
+            get;
+            set;
+        }
+
+        object? OriginalValue
+        {
+            get;
+            set;
+        }
+
+        Test.Abstractions.ILiteral Build();
     }
 #nullable restore
 }
