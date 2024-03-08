@@ -31,6 +31,7 @@ public class AddMethodsFeature : IPipelineFeature<InterfaceBuilder, InterfaceCon
         => new AddMethodsFeatureBuilder();
 }
 
+[ExcludeFromCodeCoverage]
 internal sealed class TypeContainerWrapper : ITypeContainer
 {
     public TypeContainerWrapper(Method method)
