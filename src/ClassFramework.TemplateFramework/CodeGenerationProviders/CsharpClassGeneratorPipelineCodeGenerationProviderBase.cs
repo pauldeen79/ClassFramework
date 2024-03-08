@@ -53,7 +53,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected abstract Type BuilderCollectionType { get; }
 
     protected virtual string EnvironmentVersion => string.Empty;
-    protected virtual string RootNamespace => $"{ProjectName}.Domain";
+    protected virtual string RootNamespace => InheritFromInterfaces
+        ? $"{ProjectName}.Abstractions"
+        : CoreNamespace;
     protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
     protected virtual string CoreNamespace => $"{ProjectName}.Core";
     protected virtual bool CopyAttributes => false;
@@ -97,7 +99,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             || (BaseClass is not null && !BaseClass.Properties.Any(x => x.Name == (parentNameContainer as INameContainer)?.Name))
             || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
             || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
-            || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.Abstractions.") && typeBase.Namespace == RootNamespace)
+            || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace == RootNamespace)
         ));
 
     protected virtual string[] GetModelAbstractBaseTyped() => Array.Empty<string>();
@@ -300,7 +302,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                     && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
                         || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
                         || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
-                        || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.Abstractions.") && typeBase.Namespace == RootNamespace)
+                        || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace == RootNamespace)
                     ))
             .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
             .WithEnableNullableReferenceTypes()
