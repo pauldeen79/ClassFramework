@@ -31,6 +31,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableInheritFromInterfacesCoreEntities>()
             .AddScoped<ImmutableInheritFromInterfacesAbstractionsInterfaces>()
             .AddScoped<ImmutableInheritFromInterfacesAbstractionsBuilderInterfaces>()
+            .AddScoped<ImmutableNoToBuilderMethodCoreEntities>()
             .AddScoped<ObservableCoreBuilders>()
             .AddScoped<ObservableCoreEntities>()
             .AddScoped<TemplateFrameworkEntities>()
@@ -820,6 +821,53 @@ namespace Test.Abstractions
         }
 
         Test.Abstractions.ILiteral Build();
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Immutable_Entity_NoToBuilderMethod_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableNoToBuilderMethodCoreEntities>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public partial class Literal
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Value
+        {
+            get;
+        }
+
+        public object? OriginalValue
+        {
+            get;
+        }
+
+        public Literal(string value, object? originalValue)
+        {
+            this.Value = value;
+            this.OriginalValue = originalValue;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
     }
 #nullable restore
 }
