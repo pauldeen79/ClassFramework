@@ -680,7 +680,7 @@ using System.Text;
 namespace Test.Domain.Builders
 {
 #nullable enable
-    public partial class LiteralBuilder : Test.Domain.Builders.Abstractions.ILiteralBuilder
+    public partial class LiteralBuilder : Test.Abstractions.Builders.ILiteralBuilder
     {
         private string _value;
 
