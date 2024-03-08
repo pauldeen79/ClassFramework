@@ -13,37 +13,18 @@ public static class StringExtensions
             // i.e. IEnumerable<TSource> => IEnumerable<TTarget> (including collection typename mapping, when available)
             return typeName
                 .FixCollectionTypeName(newCollectionTypeName) // note that this always converts to a generic type :)
-                .ReplaceGenericTypeName(MapTypeName(typeName.GetCollectionItemType(), settings, newCollectionTypeName, alternateTypeMetadataName)); // so we can safely use ReplaceGenericTypeName here
+                .ReplaceGenericTypeName(typeName.GetCollectionItemType().MapTypeName(settings, newCollectionTypeName, alternateTypeMetadataName)); // so we can safely use ReplaceGenericTypeName here
         }
 
         if (settings.InheritFromInterfaces && !string.IsNullOrEmpty(alternateTypeMetadataName))
         {
-            var typenameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName() ? typeName.GetGenericArguments() : typeName));
-            if (typenameMapping is not null)
-            {
-                var alternateType = typenameMapping.Metadata.GetStringValue(alternateTypeMetadataName);
-                if (!string.IsNullOrEmpty(alternateType))
-                {
-                    return alternateType;
-                }
-            }
+            return MapTypeUsingAlternateTypeMetadata(typeName, settings, newCollectionTypeName, alternateTypeMetadataName);
         }
 
         var genericArguments = typeName.FixTypeName().GetProcessedGenericArguments();
         if (!string.IsNullOrEmpty(genericArguments))
         {
-            var mappedGenericArgumentsBuilder = new StringBuilder();
-            foreach (var item in genericArguments.Split(',').Select(x => x.Trim()))
-            {
-                if (mappedGenericArgumentsBuilder.Length > 0)
-                {
-                    mappedGenericArgumentsBuilder.Append(",");
-                }
-
-                mappedGenericArgumentsBuilder.Append(MapTypeName(item, settings, newCollectionTypeName, alternateTypeMetadataName));
-            }
-
-            return $"{MapTypeName(typeName.FixTypeName().WithoutProcessedGenerics(), settings, newCollectionTypeName, alternateTypeMetadataName)}<{mappedGenericArgumentsBuilder}>";
+            return MapTypeUsingGenerics(typeName, settings, newCollectionTypeName, alternateTypeMetadataName, genericArguments);
         }
 
         var typeNameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
@@ -65,6 +46,37 @@ public static class StringExtensions
         }
 
         return typeName;
+    }
+
+    private static string MapTypeUsingGenerics(string typeName, PipelineSettings settings, string newCollectionTypeName, string alternateTypeMetadataName, string genericArguments)
+    {
+        var mappedGenericArgumentsBuilder = new StringBuilder();
+        foreach (var item in genericArguments.Split(',').Select(x => x.Trim()))
+        {
+            if (mappedGenericArgumentsBuilder.Length > 0)
+            {
+                mappedGenericArgumentsBuilder.Append(",");
+            }
+
+            mappedGenericArgumentsBuilder.Append(item.MapTypeName(settings, newCollectionTypeName, alternateTypeMetadataName));
+        }
+
+        return $"{typeName.FixTypeName().WithoutProcessedGenerics().MapTypeName(settings, newCollectionTypeName, alternateTypeMetadataName)}<{mappedGenericArgumentsBuilder}>";
+    }
+
+    private static string MapTypeUsingAlternateTypeMetadata(string typeName, PipelineSettings settings, string newCollectionTypeName, string alternateTypeMetadataName)
+    {
+        var typenameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName() ? typeName.GetGenericArguments() : typeName));
+        if (typenameMapping is not null)
+        {
+            var alternateType = typenameMapping.Metadata.GetStringValue(alternateTypeMetadataName);
+            if (!string.IsNullOrEmpty(alternateType))
+            {
+                return alternateType;
+            }
+        }
+
+        return typeName.MapTypeName(settings, newCollectionTypeName, string.Empty);
     }
 
     public static string MapNamespace(this string? ns, PipelineSettings settings)
