@@ -230,7 +230,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(interfacesNamespace);
 
         return GetBuilders(models, buildersNamespace, entitiesNamespace)
-            .Select(x => CreateInterface(x, interfacesNamespace, EntityConcreteCollectionType.WithoutGenerics(), true, "I{Class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0))
+            .Select(x => CreateInterface(x, interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{Class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0))
             .ToArray();
     }
 
