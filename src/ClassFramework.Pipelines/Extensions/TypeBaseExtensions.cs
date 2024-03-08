@@ -104,7 +104,7 @@ public static class TypeBaseExtensions
             instance.IsMemberValidForBuilderClass(x, context.Context.Settings)
             && x.HasBackingFieldOnBuilder(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields)))
         {
-            var builderArgumentTypeResult = property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), formattableStringParser);
+            var builderArgumentTypeResult = property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser);
 
             if (!builderArgumentTypeResult.IsSuccessful())
             {

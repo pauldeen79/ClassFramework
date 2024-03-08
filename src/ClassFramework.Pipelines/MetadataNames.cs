@@ -116,4 +116,9 @@ public static class MetadataNames
     /// Metadata name for defining custom parameters for copy constructors. Value needs to be of type Parameter.
     /// </summary>
     public const string CustomBuilderCopyConstructorParameter = "ClassFramework.Builder.CopyConstructor.Parameter";
+
+    /// <summary>
+    /// Metadata name for defining custom interface typename on entities
+    /// </summary>
+    public const string CustomEntityInterfaceTypeName = "ClassFramework.Entity.Interface.TypeName";
 }

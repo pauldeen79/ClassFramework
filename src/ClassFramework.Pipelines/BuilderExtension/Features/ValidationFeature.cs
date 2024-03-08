@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Features;
 
-public class ValidationFeatureBuilder : IBuilderInterfaceFeatureBuilder
+public class ValidationFeatureBuilder : IBuilderExtensionFeatureBuilder
 {
     public IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext> Build() => new ValidationFeature();
 }

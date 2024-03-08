@@ -57,7 +57,7 @@ public static class PipelineContextExtensions
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()));
 
     private static string CreateImmutableClassCtorParameterNames<TModel>(PipelineContext<TModel, EntityContext> context)
-        => string.Join(", ", context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, context.Context.MapTypeName).Select(x => x.Name.GetCsharpFriendlyName()));
+        => string.Join(", ", context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, n => context.Context.MapTypeName(n)).Select(x => x.Name.GetCsharpFriendlyName()));
 
     private static Result<string> GetConstructionMethodParameters<TModel>(PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {
@@ -76,7 +76,7 @@ public static class PipelineContextExtensions
                         (
                             property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName),
                             context.Context.Settings
-                        ).GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, "[Name]"),
+                        ).GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, PlaceholderNames.NamePlaceholder),
                     context.Context.FormatProvider,
                     new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Context.Settings)
                 ),
@@ -103,12 +103,12 @@ public static class PipelineContextExtensions
 
     private static string? GetBuilderPropertyExpression(this string? value, Property sourceProperty, string collectionInitializer, string suffix)
     {
-        if (value is null || !value.Contains("[Name]"))
+        if (value is null || !value.Contains(PlaceholderNames.NamePlaceholder))
         {
             return value;
         }
 
-        if (value == "[Name]")
+        if (value == PlaceholderNames.NamePlaceholder)
         {
             return sourceProperty.Name;
         }
@@ -119,7 +119,7 @@ public static class PipelineContextExtensions
         }
         else
         {
-            return value!.Replace("[Name]", sourceProperty.Name).Replace("[NullableSuffix]", suffix);
+            return value!.Replace(PlaceholderNames.NamePlaceholder, sourceProperty.Name).Replace("[NullableSuffix]", suffix);
         }
     }
 
@@ -127,7 +127,7 @@ public static class PipelineContextExtensions
         => collectionInitializer
             .Replace("[Type]", sourceProperty.TypeName.FixTypeName().WithoutProcessedGenerics())
             .Replace("[Generics]", sourceProperty.TypeName.FixTypeName().GetGenericArguments())
-            .Replace("[Expression]", $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty)})");
+            .Replace("[Expression]", $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty)})");
 
     private static string GetBuilderPocoCloseSign(bool poco)
         => poco

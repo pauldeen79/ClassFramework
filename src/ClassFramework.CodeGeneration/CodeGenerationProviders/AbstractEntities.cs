@@ -7,7 +7,7 @@ public class AbstractEntities : ClassFrameworkCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetImmutableClasses(GetAbstractModels(), "ClassFramework.Domain");
+    public override IEnumerable<TypeBase> Model => GetEntities(GetAbstractModels(), "ClassFramework.Domain");
 
     public override string Path => "ClassFramework.Domain";
 

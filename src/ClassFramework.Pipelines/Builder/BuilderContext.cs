@@ -49,7 +49,7 @@ public class BuilderContext : ContextBase<IType>
     {
         property = property.IsNotNull(nameof(property));
 
-        if (!Settings.CopyInterfaces)
+        if (!Settings.CopyInterfaces || !Settings.InheritFromInterfaces)
         {
             return true;
         }

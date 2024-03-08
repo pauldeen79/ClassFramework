@@ -330,7 +330,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("Filter = default(ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder)!;", "SetDefaultValues();");
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("Filter = new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder();", "SetDefaultValues();");
         }
 
         [Fact]

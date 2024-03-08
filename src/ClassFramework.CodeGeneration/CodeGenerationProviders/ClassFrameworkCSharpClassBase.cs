@@ -13,7 +13,7 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
     public override Encoding Encoding => Encoding.UTF8;
 
     protected override Type EntityCollectionType => typeof(IReadOnlyCollection<>);
-    protected override Type EntityConcreteCollectionType => typeof(List<>);
+    protected override Type EntityConcreteCollectionType => typeof(ReadOnlyValueCollection<>);
     protected override Type BuilderCollectionType => typeof(List<>);
 
     protected override string ProjectName => "ClassFramework";
@@ -21,6 +21,7 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
     protected override string CoreNamespace => "ClassFramework.Domain";
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;
+    protected override bool CreateRecord => true;
     //protected override string ToBuilderFormatString => string.Empty;
     //protected override string ToTypedBuilderFormatString => string.Empty;
     //protected override bool AddCopyConstructor => false;

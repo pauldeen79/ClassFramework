@@ -25,8 +25,13 @@ public abstract class ContextBase<TModel>
         return $"if ({argumentName} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({argumentName}));";
     }
 
-    public string MapTypeName(string typeName)
-        => typeName.IsNotNull(nameof(typeName)).MapTypeName(Settings, NewCollectionTypeName);
+    public string MapTypeName(string typeName, string alternateTypeMetadataName = "")
+    {
+        typeName = typeName.IsNotNull(nameof(typeName));
+        var result = typeName.MapTypeName(Settings, NewCollectionTypeName, alternateTypeMetadataName);
+
+        return result;
+    }
 
     public string MapNamespace(string? ns)
         => ns.MapNamespace(Settings);

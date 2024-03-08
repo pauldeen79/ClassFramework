@@ -10,8 +10,36 @@ public class StringExtensionsTests
         public void Throws_On_Null_Settings()
         {
             // Act & Assert
-            TypeName.Invoking(x => x.MapTypeName(settings: null!, string.Empty))
+            TypeName.Invoking(x => x.MapTypeName(settings: null!))
                     .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+        }
+
+        [Fact]
+        public void Throws_On_Null_NewCollectionTypeName()
+        {
+            // Arrange
+            var settings = new PipelineSettingsBuilder()
+                .AddNamespaceMappings(new NamespaceMappingBuilder().WithSourceNamespace("MyNamespace").WithTargetNamespace("MappedNamespace"))
+                .Build();
+
+
+            // Act & Assert
+            TypeName.Invoking(x => x.MapTypeName(settings, newCollectionTypeName: null!))
+                    .Should().Throw<ArgumentNullException>().WithParameterName("newCollectionTypeName");
+        }
+
+        [Fact]
+        public void Throws_On_Null_AlternateTypeMetadataName()
+        {
+            // Arrange
+            var settings = new PipelineSettingsBuilder()
+                .AddNamespaceMappings(new NamespaceMappingBuilder().WithSourceNamespace("MyNamespace").WithTargetNamespace("MappedNamespace"))
+                .Build();
+
+
+            // Act & Assert
+            TypeName.Invoking(x => x.MapTypeName(settings, alternateTypeMetadataName: null!))
+                    .Should().Throw<ArgumentNullException>().WithParameterName("alternateTypeMetadataName");
         }
 
         [Fact]
@@ -24,7 +52,7 @@ public class StringExtensionsTests
                 .Build();
 
             // Act
-            var result = collectionTypeName.MapTypeName(settings, string.Empty);
+            var result = collectionTypeName.MapTypeName(settings);
 
             // Assert
             result.Should().Be("System.Collections.Generic.IEnumerable<MappedNamespace.MyClass>");
@@ -55,7 +83,7 @@ public class StringExtensionsTests
                 .Build();
 
             // Act
-            var result = TypeName.MapTypeName(settings, string.Empty);
+            var result = TypeName.MapTypeName(settings);
 
             // Assert
             result.Should().Be("MappedNamespace.MyClass");
@@ -70,10 +98,59 @@ public class StringExtensionsTests
                 .Build();
 
             // Act
-            var result = TypeName.MapTypeName(settings, string.Empty);
+            var result = TypeName.MapTypeName(settings);
 
             // Assert
             result.Should().Be("MappedNamespace.MappedClass");
+        }
+
+        [Fact]
+        public void Maps_SingleType_Correctly_Using_TypenameMapping_With_AlternateMetadataName_When_Not_Found()
+        {
+            // Arrange
+            var settings = new PipelineSettingsBuilder()
+                .WithInheritFromInterfaces()
+                .AddTypenameMappings(new TypenameMappingBuilder().WithSourceTypeName("MyNamespace.MyClass").WithTargetTypeName("MappedNamespace.MappedClass"))
+                .Build();
+
+            // Act
+            var result = TypeName.MapTypeName(settings, alternateTypeMetadataName: "NonExistingName");
+
+            // Assert
+            result.Should().Be("MappedNamespace.MappedClass");
+        }
+
+        [Fact]
+        public void Maps_SingleType_Correctly_Using_TypenameMapping_With_AlternateMetadataName_When_Found_But_Empty()
+        {
+            // Arrange
+            var settings = new PipelineSettingsBuilder()
+                .WithInheritFromInterfaces()
+                .AddTypenameMappings(new TypenameMappingBuilder().WithSourceTypeName("MyNamespace.MyClass").WithTargetTypeName("MappedNamespace.MappedClass").AddMetadata(new MetadataBuilder().WithName("MyName")))
+                .Build();
+
+            // Act
+            var result = TypeName.MapTypeName(settings, alternateTypeMetadataName: "MyName");
+
+            // Assert
+            result.Should().Be("MappedNamespace.MappedClass");
+        }
+
+
+        [Fact]
+        public void Maps_SingleType_Correctly_Using_TypenameMapping_With_AlternateMetadataName_When_Found_And_Not_Empty()
+        {
+            // Arrange
+            var settings = new PipelineSettingsBuilder()
+                .WithInheritFromInterfaces()
+                .AddTypenameMappings(new TypenameMappingBuilder().WithSourceTypeName("MyNamespace.MyClass").WithTargetTypeName("MappedNamespace.MappedClass").AddMetadata(new MetadataBuilder().WithName("MyName").WithValue("MappedNamespace.CustomMappedClass")))
+                .Build();
+
+            // Act
+            var result = TypeName.MapTypeName(settings, alternateTypeMetadataName: "MyName");
+
+            // Assert
+            result.Should().Be("MappedNamespace.CustomMappedClass");
         }
 
         [Fact]
@@ -85,7 +162,7 @@ public class StringExtensionsTests
                 .Build();
 
             // Act
-            var result = $"System.Func<{TypeName}>".MapTypeName(settings, string.Empty);
+            var result = $"System.Func<{TypeName}>".MapTypeName(settings);
 
             // Assert
             result.Should().Be("System.Func<MappedNamespace.MyClass>");
@@ -100,7 +177,7 @@ public class StringExtensionsTests
                 .Build();
 
             // Act
-            var result = $"System.Func<{TypeName}>".MapTypeName(settings, string.Empty);
+            var result = $"System.Func<{TypeName}>".MapTypeName(settings);
 
             // Assert
             result.Should().Be("System.Func<MappedNamespace.MappedClass>");
@@ -117,7 +194,7 @@ public class StringExtensionsTests
 
             // Act
             // note that you have to use <x,y> instead of <x, y> else we think it's a fully qualified typename! e.g. System.String, blablabla
-            var result = $"System.Func<{TypeName},MyNamespace.MySecondClass>".MapTypeName(settings, string.Empty);
+            var result = $"System.Func<{TypeName},MyNamespace.MySecondClass>".MapTypeName(settings);
 
             // Assert
             result.Should().Be("System.Func<MappedNamespace.MappedClass,MappedNamespace.MappedSecondClass>");
@@ -133,7 +210,7 @@ public class StringExtensionsTests
                 .Build();
 
             // Act
-            var result = TypeName.MapTypeName(settings, string.Empty);
+            var result = TypeName.MapTypeName(settings);
 
             // Assert
             result.Should().Be(TypeName);

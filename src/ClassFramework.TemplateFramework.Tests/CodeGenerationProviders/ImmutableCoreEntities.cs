@@ -6,7 +6,7 @@ public class ImmutableCoreEntities : ImmutableCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetImmutableClasses(GetCoreModels(), "Test.Domain");
+    public override IEnumerable<TypeBase> Model => GetEntities(GetCoreModels(), "Test.Domain");
 
     public override string Path => "Test.Domain";
 }

@@ -77,6 +77,7 @@ public abstract class TestBase : IDisposable
                     new PropertyBuilder().WithName("Property2").WithTypeName(typeof(List<>).ReplaceGenericTypeName(typeof(string))).WithHasSetter(true)
                 }.Where(_ => addProperties)
             )
+            .AddMethods(new MethodBuilder().WithName("MyMethod"))
             .BuildTyped();
 
     protected static IConcreteType CreateGenericModel(bool addProperties)
@@ -141,6 +142,7 @@ public abstract class TestBase : IDisposable
         bool copyInterfaces = false,
         bool addCopyConstructor = false,
         bool setDefaultValues = true,
+        bool inheritFromInterfaces = false,
         string newCollectionTypeName = "System.Collections.Generic.List",
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
         IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
@@ -169,7 +171,8 @@ public abstract class TestBase : IDisposable
                 copyAttributes: copyAttributes,
                 copyInterfaces: copyInterfaces,
                 copyAttributePredicate: copyAttributePredicate,
-                copyInterfacePredicate: copyInterfacePredicate
+                copyInterfacePredicate: copyInterfacePredicate,
+                inheritFromInterfaces: inheritFromInterfaces
             )
             .WithBuilderNewCollectionTypeName(newCollectionTypeName)
             .WithEnableNullableReferenceTypes(enableNullableReferenceTypes)
@@ -213,6 +216,7 @@ public abstract class TestBase : IDisposable
         bool createRecord = false,
         bool addBackingFields = false,
         bool createAsObservable = false,
+        bool inheritFromInterfaces = false,
         SubVisibility setterVisibility = SubVisibility.InheritFromParent,
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
         IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
@@ -225,6 +229,7 @@ public abstract class TestBase : IDisposable
             .WithCreateRecord(createRecord)
             .WithAddBackingFields(addBackingFields)
             .WithCreateAsObservable(createAsObservable)
+            .WithInheritFromInterfaces(inheritFromInterfaces)
             .WithAddNullChecks(addNullChecks)
             .WithUseExceptionThrowIfNull(useExceptionThrowIfNull)
             .WithEnableInheritance(enableEntityInheritance)
@@ -314,6 +319,7 @@ public abstract class TestBase : IDisposable
         bool addSetters = false,
         bool copyAttributes = false,
         bool copyInterfaces = false,
+        bool copyMethods = false,
         bool allowGenerationWithoutProperties = false,
         bool enableEntityInheritance = false,
         bool isAbstract = false,
@@ -324,7 +330,8 @@ public abstract class TestBase : IDisposable
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
         IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
-        Predicate<string>? copyInterfacePredicate = null)
+        Predicate<string>? copyInterfacePredicate = null,
+        Func<IType, Method, bool>? copyMethodPredicate = null)
         => new PipelineSettingsBuilder()
             .WithAddSetters(addSetters)
             .WithAllowGenerationWithoutProperties(allowGenerationWithoutProperties)
@@ -338,8 +345,10 @@ public abstract class TestBase : IDisposable
             .AddTypenameMappings(typenameMappings.DefaultWhenNull())
             .WithCopyAttributes(copyAttributes)
             .WithCopyInterfaces(copyInterfaces)
+            .WithCopyMethods(copyMethods)
             .WithCopyAttributePredicate(copyAttributePredicate)
-            .WithCopyInterfacePredicate(copyInterfacePredicate);
+            .WithCopyInterfacePredicate(copyInterfacePredicate)
+            .WithCopyMethodPredicate(copyMethodPredicate);
 
     protected static IEnumerable<NamespaceMappingBuilder> CreateNamespaceMappings(string sourceNamespace = "MySourceNamespace")
         =>
@@ -370,7 +379,7 @@ public abstract class TestBase : IDisposable
                     new MetadataBuilder().WithValue("ExpressionFramework.Domain.Builders.Evaluatables").WithName(MetadataNames.CustomBuilderNamespace),
                     new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(MetadataNames.CustomBuilderName),
                     new MetadataBuilder().WithValue("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.[Name])").WithName(MetadataNames.CustomBuilderConstructorInitializeExpression),
-                    new MetadataBuilder().WithValue(new Literal("default(ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder)!", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
+                    new MetadataBuilder().WithValue(new Literal("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder()", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
                     new MetadataBuilder().WithValue("[Name][NullableSuffix].BuildTyped()").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
                 ),
             new TypenameMappingBuilder()

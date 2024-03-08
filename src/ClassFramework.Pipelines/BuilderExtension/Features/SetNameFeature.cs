@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Features;
 
-public class SetNameFeatureBuilder : IBuilderInterfaceFeatureBuilder
+public class SetNameFeatureBuilder : IBuilderExtensionFeatureBuilder
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -28,7 +28,7 @@ public class SetNameFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderExte
 
         var resultSetBuilder = new NamedResultSetBuilder<string>();
         resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNameFormatString, context.Context.FormatProvider, context));
-        resultSetBuilder.Add("Namespace", () => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings).GetStringResult(MetadataNames.CustomBuilderNamespace, () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNamespaceFormatString, context.Context.FormatProvider, context)));
+        resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNamespaceFormatString, context.Context.FormatProvider, context));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());

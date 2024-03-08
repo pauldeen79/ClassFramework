@@ -27,6 +27,9 @@ internal interface IPipelineSettings
     bool CopyAttributes { get; }
     Predicate<string>? CopyInterfacePredicate { get; }
     bool CopyInterfaces { get; }
+    Func<IType, IMethod, bool>? CopyMethodPredicate { get; }
+    bool CopyMethods { get; }
+    bool InheritFromInterfaces { get; }
     bool CreateAsObservable { get; }
     bool CreateConstructors { get; }
     bool CreateRecord { get; }
@@ -55,6 +58,6 @@ internal interface IPipelineSettings
     [Required]IReadOnlyCollection<ITypenameMapping> TypenameMappings { get; }
     bool UseBaseClassFromSourceModel { get; }
     bool UseExceptionThrowIfNull { get; }
-    Domains.ArgumentValidationType ValidateArguments { get; }
-    Domains.ArgumentValidationType OriginalValidateArguments { get; }
+    ArgumentValidationType ValidateArguments { get; }
+    ArgumentValidationType OriginalValidateArguments { get; }
 }
