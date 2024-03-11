@@ -12,12 +12,13 @@ public static class PropertyExtensions
 
         if (md is not null && md.Value is not null)
         {
-            if (md.Value is Literal literal && literal.Value is not null)
+            var value = md.Value;
+            if (value is Literal literal && literal.Value is not null)
             {
-                return literal.Value;
+                value = new StringLiteral(literal.Value);
             }
 
-            return csharpExpressionCreator.Create(md.Value);
+            return csharpExpressionCreator.Create(value);
         }
 
         return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, enableNullableReferenceTypes);

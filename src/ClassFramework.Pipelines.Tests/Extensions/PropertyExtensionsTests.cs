@@ -40,6 +40,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal("custom value", null)).Build();
             var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
+            csharpExpressionCreator.Create(Arg.Any<StringLiteral>()).Returns(x => x.ArgAt<StringLiteral>(0).Value);
             var settings = new PipelineSettingsBuilder().Build();
 
             // Act
