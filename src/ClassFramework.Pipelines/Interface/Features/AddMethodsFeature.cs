@@ -21,7 +21,7 @@ public class AddMethodsFeature : IPipelineFeature<InterfaceBuilder, InterfaceCon
             .Where(x => context.Context.Settings.CopyMethodPredicate is null || context.Context.Settings.CopyMethodPredicate(context.Context.SourceModel, x))
             .Select(x => x.ToBuilder()
                 .WithReturnTypeName(context.Context.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(context.Context.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))
-                .With(y => y.Parameters.ForEach(z => z.TypeName = context.Context.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
+                .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = context.Context.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
             ));
 
         return Result.Continue<InterfaceBuilder>();

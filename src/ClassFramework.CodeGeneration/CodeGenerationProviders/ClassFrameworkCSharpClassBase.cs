@@ -14,7 +14,7 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
 
     protected override Type EntityCollectionType => typeof(IReadOnlyCollection<>);
     protected override Type EntityConcreteCollectionType => typeof(ReadOnlyValueCollection<>);
-    protected override Type BuilderCollectionType => typeof(List<>);
+    protected override Type BuilderCollectionType => typeof(ObservableCollection<>);
 
     protected override string ProjectName => "ClassFramework";
     protected override string CodeGenerationRootNamespace => "ClassFramework.CodeGeneration";
