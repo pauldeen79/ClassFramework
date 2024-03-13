@@ -2,8 +2,8 @@
 
 public class EnumerationViewModel : AttributeContainerViewModelBase<Enumeration>
 {
-    public EnumerationViewModel(ICsharpExpressionCreator csharpExpressionCreator)
-        : base(csharpExpressionCreator)
+    public EnumerationViewModel(ICsharpExpressionDumper csharpExpressionDumper)
+        : base(csharpExpressionDumper)
     {
     }
 

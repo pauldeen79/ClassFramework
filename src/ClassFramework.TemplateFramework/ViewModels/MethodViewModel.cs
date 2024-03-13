@@ -2,8 +2,8 @@
 
 public class MethodViewModel : MethodViewModelBase<Method>
 {
-    public MethodViewModel(ICsharpExpressionCreator csharpExpressionCreator)
-        : base(csharpExpressionCreator)
+    public MethodViewModel(ICsharpExpressionDumper csharpExpressionDumper)
+        : base(csharpExpressionDumper)
     {
     }
 

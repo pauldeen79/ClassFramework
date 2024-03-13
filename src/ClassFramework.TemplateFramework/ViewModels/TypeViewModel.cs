@@ -2,8 +2,8 @@
 
 public class TypeViewModel : AttributeContainerViewModelBase<IType>
 {
-    public TypeViewModel(ICsharpExpressionCreator csharpExpressionCreator)
-        : base(csharpExpressionCreator)
+    public TypeViewModel(ICsharpExpressionDumper csharpExpressionDumper)
+        : base(csharpExpressionDumper)
     {
     }
 

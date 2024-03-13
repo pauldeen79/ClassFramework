@@ -142,7 +142,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
         public void Returns_True_When_Model_DefaultValue_Is_Filled()
         {
             // Arrange
-            Fixture.Freeze<ICsharpExpressionCreator>().Create(Arg.Any<object?>()).Returns("formatted value");
+            Fixture.Freeze<ICsharpExpressionDumper>().Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns("formatted value");
             var sut = CreateSut();
             sut.Model = new ParameterBuilder()
                 .WithName("MyField")
@@ -177,7 +177,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
         public void Returns_Params_On_ParamArray_Parameter()
         {
             // Arrange
-            Fixture.Freeze<ICsharpExpressionCreator>().Create(Arg.Any<object?>()).Returns("formatted value");
+            Fixture.Freeze<ICsharpExpressionDumper>().Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns("formatted value");
             var sut = CreateSut();
             sut.Model = new ParameterBuilder()
                 .WithName("MyField")
@@ -196,7 +196,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
         public void Returns_Ref_On_Ref_Parameter()
         {
             // Arrange
-            Fixture.Freeze<ICsharpExpressionCreator>().Create(Arg.Any<object?>()).Returns("formatted value");
+            Fixture.Freeze<ICsharpExpressionDumper>().Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns("formatted value");
             var sut = CreateSut();
             sut.Model = new ParameterBuilder()
                 .WithName("MyField")
@@ -215,7 +215,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
         public void Returns_Out_On_Out_Parameter()
         {
             // Arrange
-            Fixture.Freeze<ICsharpExpressionCreator>().Create(Arg.Any<object?>()).Returns("formatted value");
+            Fixture.Freeze<ICsharpExpressionDumper>().Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns("formatted value");
             var sut = CreateSut();
             sut.Model = new ParameterBuilder()
                 .WithName("MyField")
@@ -234,7 +234,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
         public void Returns_Empty_String_On_Regular_Parameter()
         {
             // Arrange
-            Fixture.Freeze<ICsharpExpressionCreator>().Create(Arg.Any<object?>()).Returns("formatted value");
+            Fixture.Freeze<ICsharpExpressionDumper>().Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns("formatted value");
             var sut = CreateSut();
             sut.Model = new ParameterBuilder()
                 .WithName("MyField")

@@ -2,7 +2,7 @@
 
 public class PropertyCodeBodyViewModel : CsharpClassGeneratorViewModelBase<PropertyCodeBodyModel>
 {
-    public PropertyCodeBodyViewModel(ICsharpExpressionCreator csharpExpressionCreator) : base(csharpExpressionCreator)
+    public PropertyCodeBodyViewModel(ICsharpExpressionDumper csharpExpressionDumper) : base(csharpExpressionDumper)
     {
     }
 

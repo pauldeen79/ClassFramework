@@ -3,7 +3,7 @@
 public abstract class CodeStatementViewModelBase<T> : CsharpClassGeneratorViewModelBase<T>
     where T : CodeStatementBase
 {
-    protected CodeStatementViewModelBase(ICsharpExpressionCreator csharpExpressionCreator) : base(csharpExpressionCreator)
+    protected CodeStatementViewModelBase(ICsharpExpressionDumper csharpExpressionDumper) : base(csharpExpressionDumper)
     {
     }
 

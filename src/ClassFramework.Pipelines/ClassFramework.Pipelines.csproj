@@ -11,13 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsharpExpressionDumper.Abstractions" Version="1.5.1" />
     <PackageReference Include="pauldeen79.CrossCutting.ProcessingPipeline" Version="4.0.2" />
     <PackageReference Include="pauldeen79.CrossCutting.Utilities.Parsers" Version="3.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ClassFramework.Domain\ClassFramework.Domain.csproj" />
-    <ProjectReference Include="..\ClassFramework.CsharpExpressionCreator\ClassFramework.CsharpExpressionCreator.csproj" />
   </ItemGroup>
 
 </Project>

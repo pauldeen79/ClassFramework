@@ -9,7 +9,7 @@ public class ServiceCollectionExtensionsTests
         {
             // Arrange
             var serviceCollection = new ServiceCollection()
-                .AddCsharpExpressionCreator() // dependency of some templates
+                .AddCsharpExpressionDumper() // dependency of some templates
                 .AddClassFrameworkTemplates();
 
             // Act & Assert

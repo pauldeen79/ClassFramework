@@ -2,8 +2,8 @@
 
 public class UsingsViewModel : CsharpClassGeneratorViewModelBase<UsingsModel>
 {
-    public UsingsViewModel(ICsharpExpressionCreator csharpExpressionCreator)
-        : base(csharpExpressionCreator)
+    public UsingsViewModel(ICsharpExpressionDumper csharpExpressionDumper)
+        : base(csharpExpressionDumper)
     {
     }
 

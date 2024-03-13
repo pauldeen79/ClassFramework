@@ -10,7 +10,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             // Arrange
             var serviceCollection = new ServiceCollection()
                 .AddScoped(_ => Fixture.Freeze<IFormattableStringParser>()) // note that normally, you would probably use AddParsers from the CrossCutting.Utilities.Parsers package...
-                .AddCsharpExpressionCreator()
+                .AddCsharpExpressionDumper()
                 .AddPipelines();
 
             // Act & Assert

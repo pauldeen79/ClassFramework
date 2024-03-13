@@ -2,7 +2,7 @@
 
 public class SpaceAndCommaViewModel : CsharpClassGeneratorViewModelBase<SpaceAndCommaModel>
 {
-    public SpaceAndCommaViewModel(ICsharpExpressionCreator csharpExpressionCreator) : base(csharpExpressionCreator)
+    public SpaceAndCommaViewModel(ICsharpExpressionDumper csharpExpressionDumper) : base(csharpExpressionDumper)
     {
     }
 }

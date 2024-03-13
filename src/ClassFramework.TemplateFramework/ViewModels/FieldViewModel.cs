@@ -2,8 +2,8 @@
 
 public class FieldViewModel : AttributeContainerViewModelBase<Field>
 {
-    public FieldViewModel(ICsharpExpressionCreator csharpExpressionCreator)
-        : base(csharpExpressionCreator)
+    public FieldViewModel(ICsharpExpressionDumper csharpExpressionDumper)
+        : base(csharpExpressionDumper)
     {
     }
 
@@ -26,5 +26,5 @@ public class FieldViewModel : AttributeContainerViewModelBase<Field>
         => GetModel().DefaultValue is not null;
 
     public string DefaultValueExpression
-        => CsharpExpressionCreator.Create(GetModel().DefaultValue);
+        => CsharpExpressionDumper.Dump(GetModel().DefaultValue);
 }

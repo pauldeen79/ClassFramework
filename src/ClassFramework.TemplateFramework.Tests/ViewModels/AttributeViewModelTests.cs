@@ -21,8 +21,8 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
         public void Returns_String_With_Named_Parameter_Name()
         {
             // Arrange
-            var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
-            csharpExpressionCreator.Create(Arg.Any<object?>()).Returns("true");
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
+            csharpExpressionDumper.Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns("true");
             var sut = CreateSut();
             sut.Model = new AttributeBuilder()
                 .WithName(typeof(RequiredAttribute))
@@ -40,8 +40,8 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
         public void Returns_String_With_Unnamed_Parameter_Name()
         {
             // Arrange
-            var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
-            csharpExpressionCreator.Create(Arg.Any<object?>()).Returns("true");
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
+            csharpExpressionDumper.Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns("true");
             var sut = CreateSut();
             sut.Model = new AttributeBuilder()
                 .WithName(typeof(RequiredAttribute))
@@ -59,8 +59,8 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
         public void Returns_String_With_Mixed_Parameter_Names()
         {
             // Arrange
-            var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
-            csharpExpressionCreator.Create(Arg.Any<object?>()).Returns(x => x.Args()[0].ToString()!.ToLowerInvariant());
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
+            csharpExpressionDumper.Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns(x => x.Args()[0].ToString()!.ToLowerInvariant());
             var sut = CreateSut();
             sut.Model = new AttributeBuilder()
                 .WithName(typeof(RequiredAttribute))

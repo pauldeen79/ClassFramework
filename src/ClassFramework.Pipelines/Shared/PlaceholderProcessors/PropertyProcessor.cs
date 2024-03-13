@@ -2,11 +2,11 @@
 
 public class PropertyProcessor : IPipelinePlaceholderProcessor
 {
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
+    private readonly ICsharpExpressionDumper _csharpExpressionDumper;
 
-    public PropertyProcessor(ICsharpExpressionCreator csharpExpressionCreator)
+    public PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper)
     {
-        _csharpExpressionCreator = csharpExpressionCreator.IsNotNull(nameof(csharpExpressionCreator));
+        _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
     }
 
     public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
@@ -41,7 +41,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
             $"{nameof(Property.TypeName)}.NoGenerics" => Result.Success(typeName.WithoutProcessedGenerics()),
             "ParentTypeName" => Result.Success(propertyContext.SourceModel.ParentTypeFullName),
             "ParentTypeName.ClassName" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName()),
-            "DefaultValue" => formattableStringParser.Parse(propertyContext.SourceModel.GetDefaultValue(_csharpExpressionCreator, propertyContext.Settings.EnableNullableReferenceTypes, typeName, propertyContext.Settings), formatProvider, context),
+            "DefaultValue" => formattableStringParser.Parse(propertyContext.SourceModel.GetDefaultValue(_csharpExpressionDumper, propertyContext.Settings.EnableNullableReferenceTypes, typeName, propertyContext.Settings), formatProvider, context),
             "NullableSuffix" => Result.Success(propertyContext.SourceModel.GetSuffix(propertyContext.Settings.EnableNullableReferenceTypes)),
             _ => Result.Continue<string>()
         };

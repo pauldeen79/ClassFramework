@@ -2,14 +2,14 @@
 
 public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGenerationProvider
 {
-    protected CsharpClassGeneratorCodeGenerationProviderBase(ICsharpExpressionCreator csharpExpressionCreator)
+    protected CsharpClassGeneratorCodeGenerationProviderBase(ICsharpExpressionDumper csharpExpressionDumper)
     {
-        Guard.IsNotNull(csharpExpressionCreator);
+        Guard.IsNotNull(csharpExpressionDumper);
 
-        _csharpExpressionCreator = csharpExpressionCreator;
+        _csharpExpressionDumper = csharpExpressionDumper;
     }
 
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
+    private readonly ICsharpExpressionDumper _csharpExpressionDumper;
 
     public abstract string Path { get; }
     public abstract bool RecurseOnDeleteGeneratedFiles { get; }
@@ -24,7 +24,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     public abstract CsharpClassGeneratorSettings Settings { get; }
 
     public object? CreateModel()
-        => new CsharpClassGeneratorViewModel(_csharpExpressionCreator)
+        => new CsharpClassGeneratorViewModel(_csharpExpressionDumper)
         {
             Model = Model,
             Settings = Settings

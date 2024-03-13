@@ -25,7 +25,7 @@ public abstract class TestBase : IDisposable
                 Provider = new ServiceCollection()
                     .AddParsers()
                     .AddPipelines()
-                    .AddCsharpExpressionCreator()
+                    .AddCsharpExpressionDumper()
                     .BuildServiceProvider();
                 Scope = Provider.CreateScope();
                 _formattableStringParser = Scope.ServiceProvider.GetRequiredService<IFormattableStringParser>();
@@ -38,8 +38,8 @@ public abstract class TestBase : IDisposable
     protected IFormattableStringParser InitializeParser()
     {
         var parser = Fixture.Freeze<IFormattableStringParser>();
-        var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
-        csharpExpressionCreator.Create(Arg.Any<object?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
+        var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
+        csharpExpressionDumper.Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
         
         // Pass through real IFormattableStringParser implementation, with all placeholder processors and stuff in our ClassFramework.Pipelines project.
         // One exception: If we supply "{Error}" as placeholder, then simply return an error with the error message "Kaboom".

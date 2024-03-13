@@ -2,9 +2,9 @@
 
 public static class PropertyExtensions
 {
-    public static string GetDefaultValue(this Property property, ICsharpExpressionCreator csharpExpressionCreator, bool enableNullableReferenceTypes, string typeName, PipelineSettings settings)
+    public static string GetDefaultValue(this Property property, ICsharpExpressionDumper csharpExpressionDumper, bool enableNullableReferenceTypes, string typeName, PipelineSettings settings)
     {
-        csharpExpressionCreator = csharpExpressionCreator.IsNotNull(nameof(csharpExpressionCreator));
+        csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
         var md = property.Metadata
             .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), settings)
@@ -18,7 +18,7 @@ public static class PropertyExtensions
                 value = new StringLiteral(literal.Value);
             }
 
-            return csharpExpressionCreator.Create(value);
+            return csharpExpressionDumper.Dump(value);
         }
 
         return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, enableNullableReferenceTypes);

@@ -10,7 +10,7 @@ public abstract class IntegrationTestBase<T> : TestBase
         Provider = new ServiceCollection()
             .AddParsers()
             .AddPipelines()
-            .AddCsharpExpressionCreator()
+            .AddCsharpExpressionDumper()
             .BuildServiceProvider();
         Scope = Provider.CreateScope();
     }

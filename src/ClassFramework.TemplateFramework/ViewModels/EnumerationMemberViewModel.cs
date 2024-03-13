@@ -2,14 +2,14 @@
 
 public class EnumerationMemberViewModel : CsharpClassGeneratorViewModelBase<EnumerationMember>
 {
-    public EnumerationMemberViewModel(ICsharpExpressionCreator csharpExpressionCreator) : base(csharpExpressionCreator)
+    public EnumerationMemberViewModel(ICsharpExpressionDumper csharpExpressionDumper) : base(csharpExpressionDumper)
     {
     }
 
     public string ValueExpression
         => GetModel().Value is null
             ? string.Empty
-            : $" = {CsharpExpressionCreator.Create(Model!.Value)}";
+            : $" = {CsharpExpressionDumper.Dump(Model!.Value)}";
 
     public string Name
         => GetModel().Name.Sanitize().GetCsharpFriendlyName();

@@ -3,13 +3,13 @@
 public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : CsharpClassGeneratorCodeGenerationProviderBase
 {
     protected CsharpClassGeneratorPipelineCodeGenerationProviderBase(
-        ICsharpExpressionCreator csharpExpressionCreator,
+        ICsharpExpressionDumper csharpExpressionDumper,
         IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline,
         IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline,
         IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline,
         IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline,
         IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline,
-        IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator)
+        IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionDumper)
     {
         Guard.IsNotNull(builderPipeline);
         Guard.IsNotNull(builderExtensionPipeline);

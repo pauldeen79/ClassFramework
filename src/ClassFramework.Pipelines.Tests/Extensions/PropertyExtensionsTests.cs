@@ -9,11 +9,11 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
             var settings = new PipelineSettingsBuilder().Build();
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionCreator, false, sut.TypeName, settings);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, settings);
 
             // Assert
             result.Should().Be("default(System.String)");
@@ -24,11 +24,11 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, null).Build();
-            var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
             var settings = new PipelineSettingsBuilder().Build();
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionCreator, false, sut.TypeName, settings);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, settings);
 
             // Assert
             result.Should().Be("default(System.String)");
@@ -39,12 +39,12 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal("custom value", null)).Build();
-            var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
-            csharpExpressionCreator.Create(Arg.Any<StringLiteral>()).Returns(x => x.ArgAt<StringLiteral>(0).Value);
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
+            csharpExpressionDumper.Dump(Arg.Any<IStringLiteral>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<IStringLiteral>(0).Value); // note that we mock the behavior of the real csharp expression dumper here :)
             var settings = new PipelineSettingsBuilder().Build();
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionCreator, false, sut.TypeName, settings);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, settings);
 
             // Assert
             result.Should().Be("custom value");
@@ -55,12 +55,12 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, "custom value").Build();
-            var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
-            csharpExpressionCreator.Create(Arg.Any<object?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
+            csharpExpressionDumper.Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
             var settings = new PipelineSettingsBuilder().Build();
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionCreator, false, sut.TypeName, settings);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, settings);
 
             // Assert
             result.Should().Be("custom value");

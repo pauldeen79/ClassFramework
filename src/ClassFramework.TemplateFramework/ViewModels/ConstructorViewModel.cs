@@ -2,8 +2,8 @@
 
 public class ConstructorViewModel : MethodViewModelBase<Constructor>
 {
-    public ConstructorViewModel(ICsharpExpressionCreator csharpExpressionCreator)
-        : base(csharpExpressionCreator)
+    public ConstructorViewModel(ICsharpExpressionDumper csharpExpressionDumper)
+        : base(csharpExpressionDumper)
     {
     }
 

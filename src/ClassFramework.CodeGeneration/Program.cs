@@ -19,7 +19,7 @@ internal static class Program
             .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
-            .AddCsharpExpressionCreator()
+            .AddCsharpExpressionDumper()
             .AddClassFrameworkTemplates()
             .AddScoped<IAssemblyInfoContextService, MyAssemblyInfoContextService>();
 

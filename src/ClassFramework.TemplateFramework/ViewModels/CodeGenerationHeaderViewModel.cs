@@ -2,7 +2,7 @@
 
 public class CodeGenerationHeaderViewModel : CsharpClassGeneratorViewModelBase<CodeGenerationHeaderModel>
 {
-    public CodeGenerationHeaderViewModel(ICsharpExpressionCreator csharpExpressionCreator) : base(csharpExpressionCreator)
+    public CodeGenerationHeaderViewModel(ICsharpExpressionDumper csharpExpressionDumper) : base(csharpExpressionDumper)
     {
     }
 

@@ -2,7 +2,7 @@
 
 public class NewLineViewModel : CsharpClassGeneratorViewModelBase<NewLineModel>
 {
-    public NewLineViewModel(ICsharpExpressionCreator csharpExpressionCreator) : base(csharpExpressionCreator)
+    public NewLineViewModel(ICsharpExpressionDumper csharpExpressionDumper) : base(csharpExpressionDumper)
     {
     }
 }

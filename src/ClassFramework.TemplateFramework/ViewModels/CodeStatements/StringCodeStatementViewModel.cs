@@ -2,7 +2,7 @@
 
 public class StringCodeStatementViewModel : CodeStatementViewModelBase<StringCodeStatement>
 {
-    public StringCodeStatementViewModel(ICsharpExpressionCreator csharpExpressionCreator) : base(csharpExpressionCreator)
+    public StringCodeStatementViewModel(ICsharpExpressionDumper csharpExpressionDumper) : base(csharpExpressionDumper)
     {
     }
 

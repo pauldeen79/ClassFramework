@@ -2,8 +2,8 @@
 
 public class PropertyViewModel : AttributeContainerViewModelBase<Property>
 {
-    public PropertyViewModel(ICsharpExpressionCreator csharpExpressionCreator)
-        : base(csharpExpressionCreator)
+    public PropertyViewModel(ICsharpExpressionDumper csharpExpressionDumper)
+        : base(csharpExpressionDumper)
     {
     }
 
@@ -31,7 +31,7 @@ public class PropertyViewModel : AttributeContainerViewModelBase<Property>
         => GetModel().DefaultValue is not null;
 
     public string DefaultValueExpression
-        => CsharpExpressionCreator.Create(GetModel().DefaultValue);
+        => CsharpExpressionDumper.Dump(GetModel().DefaultValue);
 
     public IEnumerable<PropertyCodeBodyModel> CodeBodyItems
     {
