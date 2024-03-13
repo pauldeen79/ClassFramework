@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClassFramework.Pipelines\ClassFramework.Pipelines.csproj" />
     <ProjectReference Include="..\ClassFramework.TemplateFramework\ClassFramework.TemplateFramework.csproj" />
   </ItemGroup>
 
