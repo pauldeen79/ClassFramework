@@ -7,10 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.Domain", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.Domain.Tests", "src\ClassFramework.Domain.Tests\ClassFramework.Domain.Tests.csproj", "{A2E701FE-4B03-4969-924E-FEEBDDD9A9C8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.CsharpExpressionCreator", "src\ClassFramework.CsharpExpressionCreator\ClassFramework.CsharpExpressionCreator.csproj", "{49DBA7C9-9D99-4D0A-9B05-973242C537B0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.CsharpExpressionCreator.Tests", "src\ClassFramework.CsharpExpressionCreator.Tests\ClassFramework.CsharpExpressionCreator.Tests.csproj", "{D5493C76-2D61-4D98-9D87-372AAB677500}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.Pipelines", "src\ClassFramework.Pipelines\ClassFramework.Pipelines.csproj", "{F6956526-8340-415E-AE6D-9B57C18FB885}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.Pipelines.Tests", "src\ClassFramework.Pipelines.Tests\ClassFramework.Pipelines.Tests.csproj", "{9514164C-CAB3-4A77-ABF2-5E6EA22456A2}"
@@ -33,14 +29,6 @@ Global
 		{A2E701FE-4B03-4969-924E-FEEBDDD9A9C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2E701FE-4B03-4969-924E-FEEBDDD9A9C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2E701FE-4B03-4969-924E-FEEBDDD9A9C8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{49DBA7C9-9D99-4D0A-9B05-973242C537B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{49DBA7C9-9D99-4D0A-9B05-973242C537B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{49DBA7C9-9D99-4D0A-9B05-973242C537B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{49DBA7C9-9D99-4D0A-9B05-973242C537B0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D5493C76-2D61-4D98-9D87-372AAB677500}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D5493C76-2D61-4D98-9D87-372AAB677500}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D5493C76-2D61-4D98-9D87-372AAB677500}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D5493C76-2D61-4D98-9D87-372AAB677500}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F6956526-8340-415E-AE6D-9B57C18FB885}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F6956526-8340-415E-AE6D-9B57C18FB885}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6956526-8340-415E-AE6D-9B57C18FB885}.Release|Any CPU.ActiveCfg = Release|Any CPU
