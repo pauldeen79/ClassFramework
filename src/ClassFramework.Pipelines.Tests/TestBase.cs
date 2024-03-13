@@ -142,6 +142,7 @@ public abstract class TestBase : IDisposable
         bool copyInterfaces = false,
         bool addCopyConstructor = false,
         bool setDefaultValues = true,
+        bool createAsObservable = false,
         bool inheritFromInterfaces = false,
         string newCollectionTypeName = "System.Collections.Generic.List",
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
@@ -172,7 +173,8 @@ public abstract class TestBase : IDisposable
                 copyInterfaces: copyInterfaces,
                 copyAttributePredicate: copyAttributePredicate,
                 copyInterfacePredicate: copyInterfacePredicate,
-                inheritFromInterfaces: inheritFromInterfaces
+                inheritFromInterfaces: inheritFromInterfaces,
+                createAsObservable: createAsObservable
             )
             .WithBuilderNewCollectionTypeName(newCollectionTypeName)
             .WithEnableNullableReferenceTypes(enableNullableReferenceTypes)

@@ -23,7 +23,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
 
     public class Process : PipelineBuilderTests
     {
-        private BuilderContext CreateContext(bool addProperties = true)
+        private BuilderContext CreateContext(bool addProperties = true, bool createAsObservable = false)
             => new BuilderContext
             (
                 CreateGenericModel(addProperties),
@@ -31,7 +31,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 (
                     builderNamespaceFormatString: "{Namespace}.Builders",
                     allowGenerationWithoutProperties: false,
-                    copyAttributes: true
+                    copyAttributes: true,
+                    createAsObservable: createAsObservable
                 ).Build(),
                 CultureInfo.InvariantCulture
             );
@@ -209,6 +210,22 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "foreach (var item in property2) Property2.Add(item);",
                 "return this;"
             );
+        }
+
+        [Fact]
+        public void Adds_PropertyChanged_Event_When_Creating_Observable_Builder()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = sut.Process(Model, CreateContext(createAsObservable: true));
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().NotBeNull();
+            result.Value!.Fields.Select(x => x.Name).Should().BeEquivalentTo("PropertyChanged");
+            result.Value.Methods.Should().ContainSingle(x => x.Name == "HandlePropertyChanged");
         }
 
         [Fact]
