@@ -10,6 +10,7 @@ public class OverrideCodeStatementBuilders : ClassFrameworkCSharpClassBase
     public override string Path => "ClassFramework.Domain/Builders/CodeStatements";
 
     protected override bool EnableEntityInheritance => true;
+    protected override bool CreateAsObservable => true;
     protected override Class? BaseClass => CreateBaseclass(typeof(ICodeStatementBase), "ClassFramework.Domain");
 
     public override IEnumerable<TypeBase> Model

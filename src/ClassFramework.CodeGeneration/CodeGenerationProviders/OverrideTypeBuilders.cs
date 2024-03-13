@@ -10,6 +10,7 @@ public class OverrideTypeBuilders : ClassFrameworkCSharpClassBase
     public override string Path => "ClassFramework.Domain/Builders/Types";
 
     protected override bool EnableEntityInheritance => true;
+    protected override bool CreateAsObservable => true;
     protected override Class? BaseClass => CreateBaseclass(typeof(ITypeBase), "ClassFramework.Domain");
 
     public override IEnumerable<TypeBase> Model

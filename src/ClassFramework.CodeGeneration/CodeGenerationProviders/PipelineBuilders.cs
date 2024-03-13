@@ -10,4 +10,6 @@ public class PipelineBuilders : ClassFrameworkCSharpClassBase
     public override IEnumerable<TypeBase> Model => GetBuilders(GetPipelineModels(), "ClassFramework.Pipelines.Builders", "ClassFramework.Pipelines");
 
     public override string Path => "ClassFramework.Pipelines/Builders";
+
+    protected override bool CreateAsObservable => true;
 }
