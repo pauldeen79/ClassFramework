@@ -113,10 +113,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .ToArray();
 
     protected virtual IEnumerable<Type> GetPureAbstractModels()
-        => GetType().Assembly.GetTypes()
-            .Where(x => x.IsInterface && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models.") == true && x.GetInterfaces().Count(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models") == 1)
-            .Select(x => x.GetInterfaces().First(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models"))
-            .Distinct();
+        => GetType().Assembly.GetTypes().Where(IsAbstractType);
 
     protected virtual ClassBuilder PostProcessClassBuilder(ClassBuilder builder) => builder;
 
@@ -472,12 +469,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                             new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(Pipelines.MetadataNames.CustomBuilderName),
                             new MetadataBuilder().WithValue($"{ProjectName}.Abstractions.Builders").WithName(Pipelines.MetadataNames.CustomBuilderInterfaceNamespace),
                             new MetadataBuilder().WithValue("I{TypeName.ClassName}Builder").WithName(Pipelines.MetadataNames.CustomBuilderInterfaceName),
-                            new MetadataBuilder().WithValue(x.Namespace != $"{CodeGenerationRootNamespace}.Models" && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
+                            new MetadataBuilder().WithValue(x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
                                 ? $"new {CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder([Name])"
                                 : "[Name][NullableSuffix].ToBuilder()").WithName(Pipelines.MetadataNames.CustomBuilderSourceExpression),
                                 //: $"builderFactory.Create<{CoreNamespace}.Builders.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}Builder>([Name])", Pipelines.MetadataNames.CustomBuilderSourceExpression),
                             new MetadataBuilder().WithValue(new Literal($"new {CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder()", null)).WithName(Pipelines.MetadataNames.CustomBuilderDefaultValue),
-                            new MetadataBuilder().WithValue(x.Namespace != $"{CodeGenerationRootNamespace}.Models" && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
+                            new MetadataBuilder().WithValue(x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
                                 ? "[Name][NullableSuffix].BuildTyped()"
                                 : "[Name][NullableSuffix].Build()").WithName(Pipelines.MetadataNames.CustomBuilderMethodParameterExpression),
                             new MetadataBuilder().WithName(Pipelines.MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{ProjectName}.Abstractions.I{x.GetEntityClassName()}")
@@ -494,6 +491,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(IList<>).WithoutGenerics()).WithTargetTypeName(typeof(IList<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(ICollection<>).WithoutGenerics()).WithTargetTypeName(typeof(ICollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
             ]);
+
+    private bool IsAbstractType(Type type)
+        => type.IsInterface && type.Namespace == $"{CodeGenerationRootNamespace}.Models" && type.Name.EndsWith("Base");
 
     protected virtual bool SkipNamespaceOnTypenameMappings(string @namespace) => false;
 
