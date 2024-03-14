@@ -2,5 +2,5 @@
 
 internal interface INameContainer
 {
-    [Required] INameIdentifier Name { get; }
+    [Required] string Name { get; }
 }
