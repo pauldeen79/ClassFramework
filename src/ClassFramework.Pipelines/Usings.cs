@@ -36,6 +36,7 @@ global using ClassFramework.Pipelines.Reflection.PlaceholderProcessors;
 global using ClassFramework.Pipelines.Shared.Features.Abstractions;
 global using ClassFramework.Pipelines.Shared.PlaceholderProcessors;
 global using CrossCutting.Common;
+global using CrossCutting.Common.DataAnnotations;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;
 global using CrossCutting.ProcessingPipeline;

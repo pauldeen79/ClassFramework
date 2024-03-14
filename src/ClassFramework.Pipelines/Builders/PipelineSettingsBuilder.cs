@@ -63,6 +63,19 @@ public partial class PipelineSettingsBuilder
                 new AttributeBuilder().WithName(requiredAttribute.GetType())
                     .AddParameters(CreateConditional(() => requiredAttribute.AllowEmptyStrings, () => new AttributeParameterBuilder().WithValue(requiredAttribute.AllowEmptyStrings).WithName(nameof(RequiredAttribute.AllowEmptyStrings))))
                     .AddParameters(ErrorMessage(requiredAttribute)).Build(),
+            MinCountAttribute minCountAttribute =>
+                new AttributeBuilder().WithName(minCountAttribute.GetType())
+                    .AddParameters(new AttributeParameterBuilder().WithValue(minCountAttribute.Count))
+                    .AddParameters(ErrorMessage(minCountAttribute)).Build(),
+            MaxCountAttribute maxCountAttribute =>
+                new AttributeBuilder().WithName(maxCountAttribute.GetType())
+                    .AddParameters(new AttributeParameterBuilder().WithValue(maxCountAttribute.Count))
+                    .AddParameters(ErrorMessage(maxCountAttribute)).Build(),
+            CountAttribute countAttribute =>
+                new AttributeBuilder().WithName(countAttribute.GetType())
+                    .AddParameters(new AttributeParameterBuilder().WithValue(countAttribute.MinimumCount))
+                    .AddParameters(new AttributeParameterBuilder().WithValue(countAttribute.MaximumCount))
+                    .AddParameters(ErrorMessage(countAttribute)).Build(),
             ValidationAttribute validationAttribute =>
                 new AttributeBuilder().WithName(validationAttribute.GetType())
                     .AddParameters(ErrorMessage(validationAttribute)).Build(),
