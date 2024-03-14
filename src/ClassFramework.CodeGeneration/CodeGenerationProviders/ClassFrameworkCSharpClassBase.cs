@@ -17,7 +17,6 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
     protected override Type BuilderCollectionType => typeof(ObservableCollection<>);
 
     protected override string ProjectName => "ClassFramework";
-    protected override string CodeGenerationRootNamespace => "ClassFramework.CodeGeneration";
     protected override string CoreNamespace => "ClassFramework.Domain";
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;
