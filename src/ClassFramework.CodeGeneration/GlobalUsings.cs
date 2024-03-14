@@ -6,6 +6,7 @@ global using System.Text;
 global using ClassFramework.CodeGeneration.CodeGenerationProviders;
 global using ClassFramework.CodeGeneration.Models;
 global using ClassFramework.CodeGeneration.Models.Domains;
+global using ClassFramework.CodeGeneration.Models.ValueObjects;
 global using ClassFramework.Domain;
 global using ClassFramework.Domain.Abstractions;
 global using ClassFramework.Domain.Builders;
