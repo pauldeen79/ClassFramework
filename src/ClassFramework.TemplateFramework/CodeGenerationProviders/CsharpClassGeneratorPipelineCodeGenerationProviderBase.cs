@@ -492,8 +492,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(ICollection<>).WithoutGenerics()).WithTargetTypeName(typeof(ICollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
             ]);
 
-    private bool IsAbstractType(Type type)
-        => type.IsInterface && type.Namespace == $"{CodeGenerationRootNamespace}.Models" && type.Name.EndsWith("Base");
+    protected virtual bool IsAbstractType(Type type)
+    {
+        type = type.IsNotNull(nameof(type));
+        return type.IsInterface && type.Namespace == $"{CodeGenerationRootNamespace}.Models" && type.Name.EndsWith("Base");
+    }
 
     protected virtual bool SkipNamespaceOnTypenameMappings(string @namespace) => false;
 
