@@ -192,9 +192,15 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
 
         var metadata = sourceProperty.Metadata.WithMappingMetadata(sourceProperty.TypeName.GetCollectionItemType().WhenNullOrEmpty(sourceProperty.TypeName), context.Context.Settings);
         var sourceExpression = metadata.GetStringValue(MetadataNames.CustomBuilderSourceExpression, PlaceholderNames.NamePlaceholder);
-        return sourceProperty.TypeName.FixTypeName().IsCollectionTypeName()
-            ? value.Replace(PlaceholderNames.SourceExpressionPlaceholder, $"{sourceProperty.Name}.Select(x => {sourceExpression})").Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty).Replace(".Select(x => x)", string.Empty)
-            : value.Replace(PlaceholderNames.SourceExpressionPlaceholder, sourceExpression).Replace(PlaceholderNames.NamePlaceholder, sourceProperty.Name).Replace("[NullableSuffix]", sourceProperty.GetSuffix(context.Context.Settings.EnableNullableReferenceTypes));
+        if (sourceProperty.TypeName.FixTypeName().IsCollectionTypeName())
+        {
+            return value.Replace(PlaceholderNames.SourceExpressionPlaceholder, $"{sourceProperty.Name}.Select(x => {sourceExpression})").Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty).Replace(".Select(x => x)", string.Empty);
+        }
+
+        return value
+            .Replace($"source.{PlaceholderNames.SourceExpressionPlaceholder}", $"{sourceExpression.Replace(PlaceholderNames.NamePlaceholder, "source." + sourceProperty.Name)}")
+            .Replace(PlaceholderNames.NamePlaceholder, sourceProperty.Name)
+            .Replace("[NullableSuffix]", sourceProperty.GetSuffix(context.Context.Settings.EnableNullableReferenceTypes));
     }
 
     private static string CreateBuilderClassCopyConstructorChainCall(IType instance, PipelineSettings settings)
