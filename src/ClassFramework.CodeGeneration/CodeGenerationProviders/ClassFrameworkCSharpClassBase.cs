@@ -57,6 +57,15 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
                     new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()").WithName(Pipelines.MetadataNames.CustomBuilderSourceExpression),
                     new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()").WithName(Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
                 ),
+            new TypenameMappingBuilder().WithSourceTypeName($"{CodeGenerationRootNamespace}.Models.Pipelines.IAttributeInitializer").WithTargetTypeName("ClassFramework.Pipelines.AttributeInitializer"),
+            new TypenameMappingBuilder().WithSourceTypeName("ClassFramework.Pipelines.AttributeInitializer").WithTargetTypeName("ClassFramework.Pipelines.AttributeInitializer")
+                .AddMetadata
+                (
+                    new MetadataBuilder().WithValue("ClassFramework.Pipelines.Builders").WithName(Pipelines.MetadataNames.CustomBuilderNamespace),
+                    new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(Pipelines.MetadataNames.CustomBuilderName),
+                    new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()").WithName(Pipelines.MetadataNames.CustomBuilderSourceExpression),
+                    new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()").WithName(Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
+                ),
         ]);
 }
 #pragma warning restore S125 // Sections of code should not be commented out
