@@ -30,6 +30,7 @@ public partial class PipelineSettingsBuilder
         UseBaseClassFromSourceModel = true;
         CreateAsPartial = true;
         CreateConstructors = true;
+        UseDefaultValueAttributeValuesForBuilderInitialization = true;
         AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is StringLengthAttribute stringLengthAttribute
             ? new AttributeBuilder().WithName(stringLengthAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(stringLengthAttribute.MaximumLength))

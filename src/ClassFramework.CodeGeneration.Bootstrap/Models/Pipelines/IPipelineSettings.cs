@@ -60,4 +60,5 @@ internal interface IPipelineSettings
     bool UseExceptionThrowIfNull { get; }
     Domains.ArgumentValidationType ValidateArguments { get; }
     Domains.ArgumentValidationType OriginalValidateArguments { get; }
+    bool UseDefaultValueAttributeValuesForBuilderInitialization { get; }
 }

@@ -79,7 +79,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
                 (x =>
                     context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)
                     && !x.TypeName.FixTypeName().IsCollectionTypeName()
-                    && ((!x.IsValueType && !x.IsNullable) || x.Attributes.Any(y => y.Name == typeof(DefaultValueAttribute).FullName))
+                    && ((!x.IsValueType && !x.IsNullable) || (x.Attributes.Any(y => y.Name == typeof(DefaultValueAttribute).FullName) && context.Context.Settings.UseDefaultValueAttributeValuesForBuilderInitialization))
                 )
                 .Select(x => GenerateDefaultValueStatement(x, context))
                 .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
