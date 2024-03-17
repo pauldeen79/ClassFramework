@@ -79,12 +79,14 @@ public partial class PipelineSettingsBuilder
                 .AddParameters(new AttributeParameterBuilder().WithValue(countAttribute.MaximumCount))
                 .AddParameters(ErrorMessage(countAttribute)).Build()
             : null));
-        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is ValidationAttribute validationAttribute
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is ValidationAttribute validationAttribute && Array.Exists(x.GetType().GetConstructors(), y => y.GetParameters().Length == 0)
             ? new AttributeBuilder().WithName(validationAttribute.GetType())
                 .AddParameters(ErrorMessage(validationAttribute)).Build()
             : null));
         // Fallback as latest
-        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => new AttributeBuilder().WithName(x.GetType()).Build()));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => Array.Exists(x.GetType().GetConstructors(), y => y.GetParameters().Length == 0)
+            ? new AttributeBuilder().WithName(x.GetType()).Build()
+            : null));
     }
 
     private static IEnumerable<AttributeParameterBuilder> ErrorMessage(ValidationAttribute validationAttribute)
