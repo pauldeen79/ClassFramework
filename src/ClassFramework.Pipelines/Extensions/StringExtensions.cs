@@ -7,31 +7,40 @@ public static class StringExtensions
         settings = settings.IsNotNull(nameof(settings));
         newCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
         alternateTypeMetadataName = alternateTypeMetadataName.IsNotNull(nameof(alternateTypeMetadataName));
+        var suffix = string.Empty;
+
+        if (typeName.EndsWith("?"))
+        {
+            typeName = typeName.Substring(0, typeName.Length - 1);
+            suffix = "?";
+        }
 
         if (typeName.IsCollectionTypeName())
         {
             // i.e. IEnumerable<TSource> => IEnumerable<TTarget> (including collection typename mapping, when available)
-            return typeName
+            var newTypeName = typeName
                 .FixCollectionTypeName(newCollectionTypeName) // note that this always converts to a generic type :)
                 .ReplaceGenericTypeName(typeName.GetCollectionItemType().MapTypeName(settings, newCollectionTypeName, alternateTypeMetadataName)); // so we can safely use ReplaceGenericTypeName here
+
+            return $"{newTypeName}{suffix}";
         }
 
         if (settings.InheritFromInterfaces && !string.IsNullOrEmpty(alternateTypeMetadataName))
         {
-            return MapTypeUsingAlternateTypeMetadata(typeName, settings, newCollectionTypeName, alternateTypeMetadataName);
+            return $"{MapTypeUsingAlternateTypeMetadata(typeName, settings, newCollectionTypeName, alternateTypeMetadataName)}{suffix}";
         }
 
         var genericArguments = typeName.FixTypeName().GetProcessedGenericArguments();
         if (!string.IsNullOrEmpty(genericArguments))
         {
-            return MapTypeUsingGenerics(typeName, settings, newCollectionTypeName, alternateTypeMetadataName, genericArguments);
+            return $"{MapTypeUsingGenerics(typeName, settings, newCollectionTypeName, alternateTypeMetadataName, genericArguments)}{suffix}";
         }
 
         var typeNameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
         if (typeNameMapping is not null)
         {
             // i.e. TSource => TTarget
-            return typeNameMapping.TargetTypeName;
+            return $"{typeNameMapping.TargetTypeName}{suffix}";
         }
 
         var ns = typeName.GetNamespaceWithDefault();
@@ -41,11 +50,11 @@ public static class StringExtensions
             var namespaceMapping = settings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
             if (namespaceMapping is not null)
             {
-                return $"{namespaceMapping.TargetNamespace}.{typeName.GetClassName()}";
+                return $"{namespaceMapping.TargetNamespace}.{typeName.GetClassName()}{suffix}";
             }
         }
 
-        return typeName;
+        return $"{typeName}{suffix}";
     }
 
     private static string MapTypeUsingGenerics(string typeName, PipelineSettings settings, string newCollectionTypeName, string alternateTypeMetadataName, string genericArguments)
