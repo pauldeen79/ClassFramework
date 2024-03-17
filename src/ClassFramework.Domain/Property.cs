@@ -7,17 +7,17 @@ public partial record Property
 
 public static class PropertyValidator
 {
-    public static ValidationResult Validate(object instance, ValidationContext context)
+    public static ValidationResult Validate(object instance)
     {
-        if (context?.ObjectInstance is null)
+        if (instance is null)
         {
             return ValidationResult.Success;
         }
 
-        if (context.ObjectType.GetProperty(nameof(Property.HasSetter)).GetValue(context.ObjectInstance) is bool b1 && b1
-            && context.ObjectType.GetProperty(nameof(Property.HasInitializer)).GetValue(context.ObjectInstance) is bool b2 && b2)
+        if (instance.GetType().GetProperty(nameof(Property.HasSetter)).GetValue(instance) is bool b1 && b1
+            && instance.GetType().GetProperty(nameof(Property.HasInitializer)).GetValue(instance) is bool b2 && b2)
         {
-            return new ValidationResult("HasSetter and HasInitializer cannot both be true", [nameof(Property.HasSetter), nameof(Property.HasInitializer)]);
+            return new ValidationResult($"{nameof(Property.HasSetter)} and {nameof(Property.HasInitializer)} cannot both be true", [nameof(Property.HasSetter), nameof(Property.HasInitializer)]);
         }
 
         return ValidationResult.Success;
