@@ -12,6 +12,7 @@ global using ClassFramework.Domain.Builders.CodeStatements;
 global using ClassFramework.Domain.Builders.Extensions;
 global using ClassFramework.Domain.Domains;
 global using ClassFramework.Domain.Extensions;
+global using ClassFramework.Domain.Validation;
 global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
 global using CrossCutting.Common.Results;
