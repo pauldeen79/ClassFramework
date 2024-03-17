@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Extensions;
+﻿namespace ClassFramework.Pipelines;
 
 internal sealed class StringLiteral : IStringLiteral
 {
