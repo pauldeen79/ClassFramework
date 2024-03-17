@@ -31,74 +31,64 @@ public partial class PipelineSettingsBuilder
         CreateAsPartial = true;
         CreateConstructors = true;
         UseDefaultValueAttributeValuesForBuilderInitialization = true;
-        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is StringLengthAttribute stringLengthAttribute
-            ? new AttributeBuilder().WithName(stringLengthAttribute.GetType())
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => GetInitializer<StringLengthAttribute>(x, stringLengthAttribute =>
+            new AttributeBuilder().WithName(stringLengthAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(stringLengthAttribute.MaximumLength))
                 .AddParameters(CreateConditional(() => stringLengthAttribute.MinimumLength > 0, () => new AttributeParameterBuilder().WithValue(stringLengthAttribute.MinimumLength).WithName(nameof(stringLengthAttribute.MinimumLength))))
                 .AddParameters(ErrorMessage(stringLengthAttribute))
-                .Build()
-            : null));
-        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is RangeAttribute rangeAttribute
-            ? new AttributeBuilder().WithName(rangeAttribute.GetType())
+                .Build())));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => GetInitializer<RangeAttribute>(x, rangeAttribute =>
+            new AttributeBuilder().WithName(rangeAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(rangeAttribute.Minimum))
                 .AddParameters(new AttributeParameterBuilder().WithValue(rangeAttribute.Maximum))
                 .AddParameters(ErrorMessage(rangeAttribute))
-                .Build()
-            : null));
-        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is MinLengthAttribute minLengthAttribute
-            ? new AttributeBuilder().WithName(minLengthAttribute.GetType())
+                .Build())));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => GetInitializer<MinLengthAttribute>(x, minLengthAttribute =>
+            new AttributeBuilder().WithName(minLengthAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(minLengthAttribute.Length))
                 .AddParameters(ErrorMessage(minLengthAttribute))
-                .Build()
-            : null));
-        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is MaxLengthAttribute maxLengthAttribute
-            ? new AttributeBuilder().WithName(maxLengthAttribute.GetType())
+                .Build())));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => GetInitializer<MaxLengthAttribute>(x, maxLengthAttribute =>
+            new AttributeBuilder().WithName(maxLengthAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(maxLengthAttribute.Length))
                 .AddParameters(ErrorMessage(maxLengthAttribute))
-                .Build()
-            : null));
-        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is RegularExpressionAttribute regularExpressionAttribute
-            ? new AttributeBuilder().WithName(regularExpressionAttribute.GetType())
+                .Build())));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => GetInitializer<RegularExpressionAttribute>(x, regularExpressionAttribute =>
+            new AttributeBuilder().WithName(regularExpressionAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(regularExpressionAttribute.Pattern))
                 .AddParameters(CreateConditional(() => regularExpressionAttribute.MatchTimeoutInMilliseconds != 2000, () => new AttributeParameterBuilder().WithValue(regularExpressionAttribute.MatchTimeoutInMilliseconds).WithName(nameof(RegularExpressionAttribute.MatchTimeoutInMilliseconds))))
                 .AddParameters(ErrorMessage(regularExpressionAttribute))
-                .Build()
-            : null));
-        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is RequiredAttribute requiredAttribute
-            ? new AttributeBuilder().WithName(requiredAttribute.GetType())
+                .Build())));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => GetInitializer<RequiredAttribute>(x, requiredAttribute =>
+            new AttributeBuilder().WithName(requiredAttribute.GetType())
                 .AddParameters(CreateConditional(() => requiredAttribute.AllowEmptyStrings, () => new AttributeParameterBuilder().WithValue(requiredAttribute.AllowEmptyStrings).WithName(nameof(RequiredAttribute.AllowEmptyStrings))))
                 .AddParameters(ErrorMessage(requiredAttribute))
-                .Build()
-            : null));
-        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is MinCountAttribute minCountAttribute
-            ? new AttributeBuilder().WithName(minCountAttribute.GetType())
+                .Build())));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => GetInitializer<MinCountAttribute>(x, minCountAttribute =>
+            new AttributeBuilder().WithName(minCountAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(minCountAttribute.Count))
                 .AddParameters(ErrorMessage(minCountAttribute))
-                .Build()
-            : null));
-        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is MaxCountAttribute maxCountAttribute
-            ? new AttributeBuilder().WithName(maxCountAttribute.GetType())
+                .Build())));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => GetInitializer<MaxCountAttribute>(x, maxCountAttribute =>
+            new AttributeBuilder().WithName(maxCountAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(maxCountAttribute.Count))
                 .AddParameters(ErrorMessage(maxCountAttribute))
-                .Build()
-            : null));
-        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is CountAttribute countAttribute
-            ? new AttributeBuilder().WithName(countAttribute.GetType())
+                .Build())));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => GetInitializer<CountAttribute>(x, countAttribute =>
+            new AttributeBuilder().WithName(countAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(countAttribute.MinimumCount))
                 .AddParameters(new AttributeParameterBuilder().WithValue(countAttribute.MaximumCount))
                 .AddParameters(ErrorMessage(countAttribute))
-                .Build()
-            : null));
-        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is ValidationAttribute validationAttribute && Array.Exists(x.GetType().GetConstructors(), y => y.GetParameters().Length == 0)
+                .Build())));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => GetInitializer<ValidationAttribute>(x, validationAttribute => Array.Exists(x.GetType().GetConstructors(), y => y.GetParameters().Length == 0)
             ? new AttributeBuilder().WithName(validationAttribute.GetType())
                 .AddParameters(ErrorMessage(validationAttribute)).
                 Build()
-            : null));
-        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is DefaultValueAttribute defaultValueAttribute
-            ? new AttributeBuilder().WithName(defaultValueAttribute.GetType())
+            : null)));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => GetInitializer<DefaultValueAttribute>(x, defaultValueAttribute =>
+            new AttributeBuilder().WithName(defaultValueAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(defaultValueAttribute.Value))
-                .Build()
-            : null));
+                .Build())));
         // Fallback as latest
         AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => Array.Exists(x.GetType().GetConstructors(), y => y.GetParameters().Length == 0)
             ? new AttributeBuilder().WithName(x.GetType()).Build()
@@ -115,4 +105,9 @@ public partial class PipelineSettingsBuilder
             yield return result.Invoke();
         }
     }
+
+    private static Domain.Attribute? GetInitializer<T>(System.Attribute sourceAttribute, Func<T, Domain.Attribute?> initializer)
+        => sourceAttribute is T typed
+            ? initializer(typed)
+            : null;
 }
