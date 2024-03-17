@@ -1,6 +1,7 @@
 ﻿global using System.CodeDom.Compiler;
 global using System.Collections;
 global using System.Collections.ObjectModel;
+global using System.ComponentModel.DataAnnotations;
 global using System.Globalization;
 global using System.Reflection;
 global using System.Text;

@@ -44,5 +44,21 @@ public class PropertyBuilderTests : TestBase<PropertyBuilder>
             result.Should().BeFalse();
             validationResults.Should().NotBeEmpty();
         }
+
+        [Fact]
+        public void Can_Use_Shared_Validation_With_DomainEntity()
+        {
+            // Arrange
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(int)).WithHasSetter().WithHasInitializer();
+            var validationResults = new List<ValidationResult>();
+
+            // Act
+            var result = Validator.TryValidateObject(sut, new ValidationContext(sut), validationResults);
+
+            // Assert
+            result.Should().BeFalse();
+            validationResults.Should().NotBeEmpty();
+            validationResults.Select(x => x.ErrorMessage).Should().BeEquivalentTo("HasSetter and HasInitializer cannot both be true");
+        }
     }
 }
