@@ -2,8 +2,8 @@
 
 internal interface IProperty : Abstractions.IMetadataContainer, Abstractions.IExtendedVisibilityContainer, Abstractions.INameContainer, Abstractions.IAttributesContainer, Abstractions.ITypeContainer, Abstractions.IDefaultValueContainer, Abstractions.IExplicitInterfaceNameContainer, Abstractions.IParentTypeContainer
 {
-    bool HasGetter { get; }
-    bool HasSetter { get; }
+    [DefaultValue(true)] bool HasGetter { get; }
+    [DefaultValue(true)] bool HasSetter { get; }
     bool HasInitializer { get; }
     SubVisibility GetterVisibility { get; }
     SubVisibility SetterVisibility { get; }

@@ -21,6 +21,12 @@ public static class PropertyExtensions
             return csharpExpressionDumper.Dump(value);
         }
 
+        var defaultValueAttribute = property.Attributes.FirstOrDefault(x => x.Name == typeof(DefaultValueAttribute).FullName);
+        if (defaultValueAttribute is not null)
+        {
+            return csharpExpressionDumper.Dump(defaultValueAttribute.Parameters.Single().Value);
+        }
+
         return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, enableNullableReferenceTypes);
     }
 
