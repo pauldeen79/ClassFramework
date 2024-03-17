@@ -11,7 +11,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder().Build();
 
             // Act
-            var result = new TestContext(sut).GetInitializeDelegate().Invoke(typeof(StringLengthClass).GetProperty(nameof(StringLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestContext(sut).InitializeDelegate(typeof(StringLengthClass).GetProperty(nameof(StringLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.Should().Be(typeof(StringLengthAttribute).FullName);
@@ -26,7 +26,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder().Build();
 
             // Act
-            var result = new TestContext(sut).GetInitializeDelegate().Invoke(typeof(RangeClass).GetProperty(nameof(RangeClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestContext(sut).InitializeDelegate(typeof(RangeClass).GetProperty(nameof(RangeClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.Should().Be(typeof(RangeAttribute).FullName);
@@ -41,7 +41,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder().Build();
 
             // Act
-            var result = new TestContext(sut).GetInitializeDelegate().Invoke(typeof(MinLengthClass).GetProperty(nameof(MinLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestContext(sut).InitializeDelegate(typeof(MinLengthClass).GetProperty(nameof(MinLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.Should().Be(typeof(MinLengthAttribute).FullName);
@@ -56,7 +56,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder().Build();
 
             // Act
-            var result = new TestContext(sut).GetInitializeDelegate().Invoke(typeof(MaxLengthClass).GetProperty(nameof(MaxLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestContext(sut).InitializeDelegate(typeof(MaxLengthClass).GetProperty(nameof(MaxLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.Should().Be(typeof(MaxLengthAttribute).FullName);
@@ -71,7 +71,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder().Build();
 
             // Act
-            var result = new TestContext(sut).GetInitializeDelegate().Invoke(typeof(MinCountClass).GetProperty(nameof(MinCountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestContext(sut).InitializeDelegate(typeof(MinCountClass).GetProperty(nameof(MinCountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.Should().Be(typeof(MinCountAttribute).FullName);
@@ -86,7 +86,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder().Build();
 
             // Act
-            var result = new TestContext(sut).GetInitializeDelegate().Invoke(typeof(MaxCountClass).GetProperty(nameof(MaxCountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestContext(sut).InitializeDelegate(typeof(MaxCountClass).GetProperty(nameof(MaxCountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.Should().Be(typeof(MaxCountAttribute).FullName);
@@ -101,7 +101,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder().Build();
 
             // Act
-            var result = new TestContext(sut).GetInitializeDelegate().Invoke(typeof(CountClass).GetProperty(nameof(CountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestContext(sut).InitializeDelegate(typeof(CountClass).GetProperty(nameof(CountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.Should().Be(typeof(CountAttribute).FullName);

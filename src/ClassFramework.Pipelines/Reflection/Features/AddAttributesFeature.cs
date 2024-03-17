@@ -19,7 +19,7 @@ public class AddAttributesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
         }
 
         context.Model.AddAttributes(context.Context.SourceModel.GetCustomAttributes(true).ToAttributes(
-            x => context.Context.MapAttribute(x.ConvertToDomainAttribute(context.Context.GetInitializeDelegate())),
+            x => context.Context.MapAttribute(x.ConvertToDomainAttribute(context.Context.InitializeDelegate)),
             context.Context.Settings.CopyAttributes,
             context.Context.Settings.CopyAttributePredicate));
 
