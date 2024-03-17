@@ -150,4 +150,9 @@ public abstract class ContextBase<TModel>
             .WithParentTypeFullName(property.ParentTypeFullName)
             .AddMetadata(property.Metadata.Select(x => x.ToBuilder()));
     }
+
+    public Func<System.Attribute, Domain.Attribute> GetInitializeDelegate()
+    {
+        return y => Settings.AttributeInitializers.Select(z => z.Result(y)).FirstOrDefault(z => z is not null) ?? throw new NotSupportedException($"Attribute not supported by initializer:");
+    }
 }

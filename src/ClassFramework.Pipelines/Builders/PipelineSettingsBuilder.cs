@@ -30,57 +30,62 @@ public partial class PipelineSettingsBuilder
         UseBaseClassFromSourceModel = true;
         CreateAsPartial = true;
         CreateConstructors = true;
-        AttributeInitializeDelegate = DefaultInitializer;
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is StringLengthAttribute stringLengthAttribute
+            ? new AttributeBuilder().WithName(stringLengthAttribute.GetType())
+                .AddParameters(new AttributeParameterBuilder().WithValue(stringLengthAttribute.MaximumLength))
+                .AddParameters(CreateConditional(() => stringLengthAttribute.MinimumLength > 0, () => new AttributeParameterBuilder().WithValue(stringLengthAttribute.MinimumLength).WithName(nameof(stringLengthAttribute.MinimumLength))))
+                .AddParameters(ErrorMessage(stringLengthAttribute)).Build()
+            : null));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is RangeAttribute rangeAttribute
+            ? new AttributeBuilder().WithName(rangeAttribute.GetType())
+                .AddParameters(new AttributeParameterBuilder().WithValue(rangeAttribute.Minimum))
+                .AddParameters(new AttributeParameterBuilder().WithValue(rangeAttribute.Maximum))
+                .AddParameters(ErrorMessage(rangeAttribute)).Build()
+            : null));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is MinLengthAttribute minLengthAttribute
+            ? new AttributeBuilder().WithName(minLengthAttribute.GetType())
+                .AddParameters(new AttributeParameterBuilder().WithValue(minLengthAttribute.Length))
+                .AddParameters(ErrorMessage(minLengthAttribute)).Build()
+            : null));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is MaxLengthAttribute maxLengthAttribute
+            ? new AttributeBuilder().WithName(maxLengthAttribute.GetType())
+                .AddParameters(new AttributeParameterBuilder().WithValue(maxLengthAttribute.Length))
+                .AddParameters(ErrorMessage(maxLengthAttribute)).Build()
+            : null));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is RegularExpressionAttribute regularExpressionAttribute
+            ? new AttributeBuilder().WithName(regularExpressionAttribute.GetType())
+                .AddParameters(new AttributeParameterBuilder().WithValue(regularExpressionAttribute.Pattern))
+                .AddParameters(CreateConditional(() => regularExpressionAttribute.MatchTimeoutInMilliseconds != 2000, () => new AttributeParameterBuilder().WithValue(regularExpressionAttribute.MatchTimeoutInMilliseconds).WithName(nameof(RegularExpressionAttribute.MatchTimeoutInMilliseconds))))
+                .AddParameters(ErrorMessage(regularExpressionAttribute)).Build()
+            : null));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is RequiredAttribute requiredAttribute
+            ? new AttributeBuilder().WithName(requiredAttribute.GetType())
+                .AddParameters(CreateConditional(() => requiredAttribute.AllowEmptyStrings, () => new AttributeParameterBuilder().WithValue(requiredAttribute.AllowEmptyStrings).WithName(nameof(RequiredAttribute.AllowEmptyStrings))))
+                .AddParameters(ErrorMessage(requiredAttribute)).Build()
+            : null));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is MinCountAttribute minCountAttribute
+            ? new AttributeBuilder().WithName(minCountAttribute.GetType())
+                .AddParameters(new AttributeParameterBuilder().WithValue(minCountAttribute.Count))
+                .AddParameters(ErrorMessage(minCountAttribute)).Build()
+            : null));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is MaxCountAttribute maxCountAttribute
+            ? new AttributeBuilder().WithName(maxCountAttribute.GetType())
+                .AddParameters(new AttributeParameterBuilder().WithValue(maxCountAttribute.Count))
+                .AddParameters(ErrorMessage(maxCountAttribute)).Build()
+            : null));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is CountAttribute countAttribute
+            ? new AttributeBuilder().WithName(countAttribute.GetType())
+                .AddParameters(new AttributeParameterBuilder().WithValue(countAttribute.MinimumCount))
+                .AddParameters(new AttributeParameterBuilder().WithValue(countAttribute.MaximumCount))
+                .AddParameters(ErrorMessage(countAttribute)).Build()
+            : null));
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => x is ValidationAttribute validationAttribute
+            ? new AttributeBuilder().WithName(validationAttribute.GetType())
+                .AddParameters(ErrorMessage(validationAttribute)).Build()
+            : null));
+        // Fallback as latest
+        AttributeInitializers.Add(new AttributeInitializerBuilder().WithResult(x => new AttributeBuilder().WithName(x.GetType()).Build()));
     }
-
-    private static Domain.Attribute DefaultInitializer(System.Attribute sourceAttribute)
-        => sourceAttribute switch
-        {
-            StringLengthAttribute stringLengthAttribute =>
-                new AttributeBuilder().WithName(stringLengthAttribute.GetType())
-                    .AddParameters(new AttributeParameterBuilder().WithValue(stringLengthAttribute.MaximumLength))
-                    .AddParameters(CreateConditional(() => stringLengthAttribute.MinimumLength > 0, () => new AttributeParameterBuilder().WithValue(stringLengthAttribute.MinimumLength).WithName(nameof(stringLengthAttribute.MinimumLength))))
-                    .AddParameters(ErrorMessage(stringLengthAttribute)).Build(),
-            RangeAttribute rangeAttribute =>
-                new AttributeBuilder().WithName(rangeAttribute.GetType())
-                    .AddParameters(new AttributeParameterBuilder().WithValue(rangeAttribute.Minimum))
-                    .AddParameters(new AttributeParameterBuilder().WithValue(rangeAttribute.Maximum))
-                    .AddParameters(ErrorMessage(rangeAttribute)).Build(),
-            MinLengthAttribute minLengthAttribute =>
-                new AttributeBuilder().WithName(minLengthAttribute.GetType())
-                    .AddParameters(new AttributeParameterBuilder().WithValue(minLengthAttribute.Length))
-                    .AddParameters(ErrorMessage(minLengthAttribute)).Build(),
-            MaxLengthAttribute maxLengthAttribute =>
-                new AttributeBuilder().WithName(maxLengthAttribute.GetType())
-                    .AddParameters(new AttributeParameterBuilder().WithValue(maxLengthAttribute.Length))
-                    .AddParameters(ErrorMessage(maxLengthAttribute)).Build(),
-            RegularExpressionAttribute regularExpressionAttribute =>
-                new AttributeBuilder().WithName(regularExpressionAttribute.GetType())
-                    .AddParameters(new AttributeParameterBuilder().WithValue(regularExpressionAttribute.Pattern))
-                    .AddParameters(CreateConditional(() => regularExpressionAttribute.MatchTimeoutInMilliseconds != 2000, () => new AttributeParameterBuilder().WithValue(regularExpressionAttribute.MatchTimeoutInMilliseconds).WithName(nameof(RegularExpressionAttribute.MatchTimeoutInMilliseconds))))
-                    .AddParameters(ErrorMessage(regularExpressionAttribute)).Build(),
-            RequiredAttribute requiredAttribute =>
-                new AttributeBuilder().WithName(requiredAttribute.GetType())
-                    .AddParameters(CreateConditional(() => requiredAttribute.AllowEmptyStrings, () => new AttributeParameterBuilder().WithValue(requiredAttribute.AllowEmptyStrings).WithName(nameof(RequiredAttribute.AllowEmptyStrings))))
-                    .AddParameters(ErrorMessage(requiredAttribute)).Build(),
-            MinCountAttribute minCountAttribute =>
-                new AttributeBuilder().WithName(minCountAttribute.GetType())
-                    .AddParameters(new AttributeParameterBuilder().WithValue(minCountAttribute.Count))
-                    .AddParameters(ErrorMessage(minCountAttribute)).Build(),
-            MaxCountAttribute maxCountAttribute =>
-                new AttributeBuilder().WithName(maxCountAttribute.GetType())
-                    .AddParameters(new AttributeParameterBuilder().WithValue(maxCountAttribute.Count))
-                    .AddParameters(ErrorMessage(maxCountAttribute)).Build(),
-            CountAttribute countAttribute =>
-                new AttributeBuilder().WithName(countAttribute.GetType())
-                    .AddParameters(new AttributeParameterBuilder().WithValue(countAttribute.MinimumCount))
-                    .AddParameters(new AttributeParameterBuilder().WithValue(countAttribute.MaximumCount))
-                    .AddParameters(ErrorMessage(countAttribute)).Build(),
-            ValidationAttribute validationAttribute =>
-                new AttributeBuilder().WithName(validationAttribute.GetType())
-                    .AddParameters(ErrorMessage(validationAttribute)).Build(),
-            _ => new AttributeBuilder().WithName(sourceAttribute.GetType()).Build()
-        };
 
     private static IEnumerable<AttributeParameterBuilder> ErrorMessage(ValidationAttribute validationAttribute)
         => CreateConditional(() => !string.IsNullOrEmpty(validationAttribute.ErrorMessage), () => new AttributeParameterBuilder().WithValue(validationAttribute.ErrorMessage).WithName(nameof(ValidationAttribute.ErrorMessage)));

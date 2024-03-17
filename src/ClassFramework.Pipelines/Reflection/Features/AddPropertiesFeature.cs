@@ -34,7 +34,7 @@ public class AddPropertiesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
                 .WithIsValueType(p.PropertyType.IsValueType())
                 .WithVisibility(Array.Exists(p.GetAccessors(), m => m.IsPublic).ToVisibility())
                 .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
-                    x => x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate),
+                    x => x.ConvertToDomainAttribute(context.Context.GetInitializeDelegate()),
                     context.Context.Settings.CopyAttributes,
                     context.Context.Settings.CopyAttributePredicate))
         );

@@ -1,4 +1,5 @@
-﻿namespace ClassFramework.Pipelines.Reflection.Features;
+﻿
+namespace ClassFramework.Pipelines.Reflection.Features;
 
 public class AddAttributesFeatureBuilder : IReflectionFeatureBuilder
 {
@@ -18,7 +19,7 @@ public class AddAttributesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
         }
 
         context.Model.AddAttributes(context.Context.SourceModel.GetCustomAttributes(true).ToAttributes(
-            x => context.Context.MapAttribute(x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate)),
+            x => context.Context.MapAttribute(x.ConvertToDomainAttribute(context.Context.GetInitializeDelegate())),
             context.Context.Settings.CopyAttributes,
             context.Context.Settings.CopyAttributePredicate));
 

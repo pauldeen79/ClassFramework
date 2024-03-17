@@ -40,13 +40,13 @@ public class AddConstructorsFeature : IPipelineFeature<TypeBaseBuilder, Reflecti
                             .WithIsNullable(p.IsNullable())
                             .WithIsValueType(p.ParameterType.IsValueType())
                             .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
-                                x => x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate),
+                                x => x.ConvertToDomainAttribute(context.Context.GetInitializeDelegate()),
                                 context.Context.Settings.CopyAttributes,
                                 context.Context.Settings.CopyAttributePredicate))
                     )
                 )
                 .AddAttributes(x.GetCustomAttributes(true).ToAttributes(
-                    x => x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate),
+                    x => x.ConvertToDomainAttribute(context.Context.GetInitializeDelegate()),
                     context.Context.Settings.CopyAttributes,
                     context.Context.Settings.CopyAttributePredicate))
         );
