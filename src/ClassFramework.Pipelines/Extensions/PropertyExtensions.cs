@@ -72,25 +72,23 @@ public static class PropertyExtensions
         && !property.IsNullable(enableNullableReferenceTypes)
         && argumentValidation != ArgumentValidationType.Shared) || addBackingFields;
 
-    public static Result<string> GetBuilderConstructorInitializer(
+    public static Result<string> GetBuilderConstructorInitializer<T>(
         this Property property,
-        PipelineSettings settings,
-        IFormatProvider formatProvider,
+        ContextBase<T> context,
         object parentChildContext,
         string mappedTypeName,
         string newCollectionTypeName,
         string metadataName,
         IFormattableStringParser formattableStringParser)
     {
-        settings = settings.IsNotNull(nameof(settings));
-        formatProvider = formatProvider.IsNotNull(nameof(formatProvider));
+        context = context.IsNotNull(nameof(context));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
         newCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
         metadataName = metadataName.IsNotNull(nameof(metadataName));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, settings, formatProvider, parentChildContext, mappedTypeName, formattableStringParser);
+        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, context.Settings, context.FormatProvider, parentChildContext, mappedTypeName, formattableStringParser);
 
         if (!builderArgumentTypeResult.IsSuccessful())
         {
@@ -100,10 +98,10 @@ public static class PropertyExtensions
         var customBuilderConstructorInitializeExpression = string.IsNullOrEmpty(metadataName)
             ? string.Empty
             : property.Metadata
-                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), settings)
+                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Settings)
                 .GetStringValue(metadataName);
 
-        var result = formattableStringParser.Parse(customBuilderConstructorInitializeExpression, formatProvider, parentChildContext);
+        var result = formattableStringParser.Parse(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext);
         if (!result.IsSuccessful())
         {
             return result;
