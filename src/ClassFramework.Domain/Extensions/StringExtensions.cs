@@ -71,37 +71,37 @@ public static class StringExtensions
     public static string GetCsharpFriendlyTypeName(this string instance)
         => instance switch
         {
-            "System.Char" => "char",
-            "System.String" => "string",
-            "System.Boolean" => "bool",
-            "System.Object" => "object",
-            "System.Decimal" => "decimal",
-            "System.Double" => "double",
-            "System.Single" => "float",
-            "System.Byte" => "byte",
-            "System.SByte" => "sbyte",
-            "System.Int16" => "short",
-            "System.UInt16" => "ushort",
-            "System.Int32" => "int",
-            "System.UInt32" => "uint",
-            "System.Int64" => "long",
-            "System.UInt64" => "ulong",
+            "System.Char" => WellKnownTypes.Char,
+            "System.String" => WellKnownTypes.String,
+            "System.Boolean" => WellKnownTypes.Boolean,
+            "System.Object" => WellKnownTypes.Object,
+            "System.Decimal" => WellKnownTypes.Decimal,
+            "System.Double" => WellKnownTypes.Double,
+            "System.Single" => WellKnownTypes.Float,
+            "System.Byte" => WellKnownTypes.Byte,
+            "System.SByte" => WellKnownTypes.SignedByte,
+            "System.Int16" => WellKnownTypes.Short,
+            "System.UInt16" => WellKnownTypes.UnsignedShort,
+            "System.Int32" => WellKnownTypes.Int,
+            "System.UInt32" => WellKnownTypes.UnsignedInt,
+            "System.Int64" => WellKnownTypes.Long,
+            "System.UInt64" => WellKnownTypes.UnsignedLong,
             _ => instance
-                .ReplaceGenericArgument("System.Char", "char")
-                .ReplaceGenericArgument("System.String", "string")
-                .ReplaceGenericArgument("System.Boolean", "bool")
-                .ReplaceGenericArgument("System.Object", "object")
-                .ReplaceGenericArgument("System.Decimal", "decimal")
-                .ReplaceGenericArgument("System.Double", "double")
-                .ReplaceGenericArgument("System.Single", "float")
-                .ReplaceGenericArgument("System.Byte", "byte")
-                .ReplaceGenericArgument("System.SByte", "sbyte")
-                .ReplaceGenericArgument("System.Int16", "short")
-                .ReplaceGenericArgument("System.UInt16", "ushort")
-                .ReplaceGenericArgument("System.Int32", "int")
-                .ReplaceGenericArgument("System.UInt32", "uint")
-                .ReplaceGenericArgument("System.Int64", "long")
-                .ReplaceGenericArgument("System.UInt64", "ulong")
+                .ReplaceGenericArgument("System.Char", WellKnownTypes.Char)
+                .ReplaceGenericArgument("System.String", WellKnownTypes.String)
+                .ReplaceGenericArgument("System.Boolean",  WellKnownTypes.Boolean)
+                .ReplaceGenericArgument("System.Object", WellKnownTypes.Object)
+                .ReplaceGenericArgument("System.Decimal", WellKnownTypes.Decimal)
+                .ReplaceGenericArgument("System.Double", WellKnownTypes.Double)
+                .ReplaceGenericArgument("System.Single", WellKnownTypes.Float)
+                .ReplaceGenericArgument("System.Byte", WellKnownTypes.Byte)
+                .ReplaceGenericArgument("System.SByte", WellKnownTypes.SignedByte)
+                .ReplaceGenericArgument("System.Int16", WellKnownTypes.Short)
+                .ReplaceGenericArgument("System.UInt16",  WellKnownTypes.UnsignedShort)
+                .ReplaceGenericArgument("System.Int32", WellKnownTypes.Int)
+                .ReplaceGenericArgument("System.UInt32", WellKnownTypes.UnsignedInt)
+                .ReplaceGenericArgument("System.Int64", WellKnownTypes.Long)
+                .ReplaceGenericArgument("System.UInt64", WellKnownTypes.UnsignedLong)
         };
 
     public static string GetGenericArguments(this string value, bool addBrackets = false)
@@ -334,12 +334,12 @@ public static class StringExtensions
 
     public static string GetDefaultValue(this string typeName, bool isNullable, bool isValueType, bool enableNullableReferenceTypes)
     {
-        if ((typeName.IsStringTypeName() || typeName == "string") && !isNullable)
+        if ((typeName.IsStringTypeName() || typeName == WellKnownTypes.String) && !isNullable)
         {
             return "string.Empty";
         }
 
-        if ((typeName.IsObjectTypeName() || typeName == "object") && !isNullable)
+        if ((typeName.IsObjectTypeName() || typeName == WellKnownTypes.Object) && !isNullable)
         {
             return $"new {typeof(object).FullName}()";
         }
@@ -440,21 +440,21 @@ public static class StringExtensions
         "abstract",
         "as",
         "base",
-        "bool",
+         WellKnownTypes.Boolean,
         "break",
-        "byte",
+        WellKnownTypes.Byte,
         "case",
         "catch",
-        "char",
+        WellKnownTypes.Char,
         "checked",
         "class",
         "const",
         "continue",
-        "decimal",
+        WellKnownTypes.Decimal,
         "default",
         "delegate",
         "do",
-        "double",
+        WellKnownTypes.Double,
         "else",
         "enum",
         "event",
@@ -463,23 +463,23 @@ public static class StringExtensions
         "false",
         "finally",
         "fixed",
-        "float",
+        WellKnownTypes.Float,
         "for",
         "foreach",
         "goto",
         "if",
         "implicit",
         "in",
-        "int",
+        WellKnownTypes.Int,
         "interface",
         "internal",
         "is",
         "lock",
-        "long",
+        WellKnownTypes.Long,
         "namespace",
         "new",
         "null",
-        "object",
+        WellKnownTypes.Object,
         "operator",
         "out",
         "override",
@@ -490,13 +490,13 @@ public static class StringExtensions
         "readonly",
         "ref",
         "return",
-        "sbyte",
+        WellKnownTypes.SignedByte,
         "sealed",
-        "short",
+        WellKnownTypes.Short,
         "sizeof",
         "stackalloc",
         "static",
-        "string",
+        WellKnownTypes.String,
         "struct",
         "switch",
         "this",
@@ -504,11 +504,11 @@ public static class StringExtensions
         "true",
         "try",
         "typeof",
-        "uint",
-        "ulong",
+        WellKnownTypes.UnsignedInt,
+        WellKnownTypes.UnsignedLong,
         "unchecked",
         "unsafe",
-        "ushort",
+         WellKnownTypes.UnsignedShort,
         "using",
         "virtual",
         "void",
