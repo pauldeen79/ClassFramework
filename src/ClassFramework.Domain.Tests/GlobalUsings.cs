@@ -16,6 +16,7 @@ global using ClassFramework.Domain.Builders.Types;
 global using ClassFramework.Domain.Extensions;
 global using ClassFramework.Domain.Tests.TestFixtures;
 global using ClassFramework.Domain.Types;
+global using ClassFramework.Domain.Validation;
 global using CrossCutting.Common;
 global using FluentAssertions;
 global using NSubstitute;

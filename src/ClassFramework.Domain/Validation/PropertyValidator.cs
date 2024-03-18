@@ -9,6 +9,11 @@ public static class PropertyValidator
             return ValidationResult.Success;
         }
 
+        if (!instance.GetType().Name.In(nameof(Property), nameof(PropertyBuilder)))
+        {
+            return new ValidationResult($"The {nameof(PropertyValidator)} attribute can only be applied to {nameof(Property)} and {nameof(PropertyBuilder)} types");
+        }
+
         if (instance.GetType().GetProperty(nameof(Property.HasSetter)).GetValue(instance) is bool b1 && b1
             && instance.GetType().GetProperty(nameof(Property.HasInitializer)).GetValue(instance) is bool b2 && b2)
         {
