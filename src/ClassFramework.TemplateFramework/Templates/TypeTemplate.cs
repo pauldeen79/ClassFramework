@@ -44,6 +44,9 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
 
     public void Render(StringBuilder builder)
     {
+        Guard.IsNotNull(builder);
+        Guard.IsNotNull(Model);
+
         var generationEnvironment = new StringBuilderEnvironment(builder);
         RenderTypeBase(generationEnvironment);
     }
