@@ -36,7 +36,7 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
             var parentChildContext = CreateParentChildContext(context, property);
 
             var resultSetBuilder = new NamedResultSetBuilder<string>();
-            resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, CreateParentChildContext(context, property), context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser));
+            resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context, CreateParentChildContext(context, property), context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser));
             resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNamespaceFormatString, context.Context.FormatProvider, parentChildContext));
             resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, parentChildContext));
             resultSetBuilder.Add("AddMethodName", () => _formattableStringParser.Parse(context.Context.Settings.AddMethodNameFormatString, context.Context.FormatProvider, parentChildContext));
@@ -112,7 +112,7 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
         {
             var argumentNullCheckResult = _formattableStringParser.Parse
             (
-                property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
+                context.Context.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
                 context.Context.FormatProvider,
                 new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext>, Property>(context, property, context.Context.Settings)
             );
@@ -134,8 +134,8 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
 
         var builderAddExpressionResult = _formattableStringParser.Parse
         (
-            property.Metadata
-                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings)
+            context.Context
+                .GetMappingMetadata(property.TypeName)
                 .GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Context.Settings.CollectionCopyStatementFormatString),
             context.Context.FormatProvider,
             new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext>, Property>(context, property, context.Context.Settings)

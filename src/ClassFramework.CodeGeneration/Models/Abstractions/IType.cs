@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Abstractions;
 
-internal interface IType : IMetadataContainer, IVisibilityContainer, INameContainer, IAttributesContainer, IGenericTypeArgumentsContainer, ISuppressWarningCodesContainer
+internal interface IType : IVisibilityContainer, INameContainer, IAttributesContainer, IGenericTypeArgumentsContainer, ISuppressWarningCodesContainer
 {
     [Required(AllowEmptyStrings = true)] string Namespace { get; }
     bool Partial { get; }

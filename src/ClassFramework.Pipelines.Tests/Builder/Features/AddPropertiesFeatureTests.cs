@@ -62,14 +62,20 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
         public void Uses_CustomBuilderArgumentType_When_Present()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("MyCustomType"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 isAbstract: false,
-                baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped());
+                baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped(),
+                typenameMappings:
+                [
+                    new TypenameMappingBuilder().WithSourceType(typeof(int)).WithTargetType(typeof(int)).AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("MyCustomType")),
+                    new TypenameMappingBuilder().WithSourceType(typeof(string)).WithTargetType(typeof(int)).AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("MyCustomType")),
+                    new TypenameMappingBuilder().WithSourceTypeName(typeof(List<int>).FullName!.FixTypeName()).WithTargetType(typeof(int)).AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("MyCustomType")),
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -106,29 +112,10 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
         }
 
         [Fact]
-        public void Adds_Metadata_To_Properties_From_SourceModel_Properties()
-        {
-            // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName("MyMetadata").WithValue("Value"));
-            InitializeParser();
-            var sut = CreateSut();
-            var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder();
-            var context = CreateContext(sourceModel, model, settings);
-
-            // Act
-            var result = sut.Process(context);
-
-            // Assert
-            result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.Metadata).Should().BeEquivalentTo(Enumerable.Range(1, 3).Select(_ => new MetadataBuilder().WithName("MyMetadata").WithValue("Value")));
-        }
-
-        [Fact]
         public void Adds_Attributes_To_Properties_From_SourceModel_Properties_When_CopyAttributes_Is_True()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName("MyMetadata").WithValue("Value"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
@@ -148,7 +135,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
         public void Does_Not_Add_Attributes_To_Properties_From_SourceModel_Properties_When_CopyAttributes_Is_False()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName("MyMetadata").WithValue("Value"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
@@ -304,11 +291,18 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
         public void Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Succesful()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder();
+            var settings = CreateSettingsForBuilder(
+                typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(int))
+                        .WithTargetType(typeof(int))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"))
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act

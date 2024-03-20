@@ -1,5 +1,5 @@
 ﻿namespace ClassFramework.CodeGeneration.Bootstrap.Models;
 
-internal interface ICodeStatementBase : IMetadataContainer
+internal interface ICodeStatementBase
 {
 }

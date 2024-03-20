@@ -50,10 +50,24 @@ public class ParentTypeContainerExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var typeBase = new ClassBuilder().WithName("MyClass").Build();
-            var sut = CreateSut().WithName("MyProperty").WithType(typeof(int)).WithParentTypeFullName(typeBase.GetFullName()).Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(int)).WithParentType(typeBase).Build();
 
             // Act
             var result = sut.IsDefinedOn(typeBase);
+
+            // Assert
+            result.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Returns_True_When_ParentTypeFullName_Is_Equal_To_TypeBaseBuilder_FullName()
+        {
+            // Arrange
+            var typeBase = new ClassBuilder().WithName("MyClass");
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(int)).WithParentType(typeBase).Build();
+
+            // Act
+            var result = sut.IsDefinedOn(typeBase.Build());
 
             // Assert
             result.Should().BeTrue();

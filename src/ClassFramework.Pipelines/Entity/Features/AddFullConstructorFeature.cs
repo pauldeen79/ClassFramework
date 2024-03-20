@@ -66,7 +66,7 @@ public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             (
                 context.Context.SourceModel.Properties
                     .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
-                    .Where(property => context.Context.Settings.AddNullChecks && context.Context.Settings.AddValidationCode() == ArgumentValidationType.None && property.Metadata.GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
+                    .Where(property => context.Context.Settings.AddNullChecks && context.Context.Settings.AddValidationCode() == ArgumentValidationType.None && context.Context.GetMappingMetadata(property.TypeName).GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
                     .Select(property => context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
             .AddStringCodeStatements(initializationResults.Select(x => x.Value!))
@@ -85,7 +85,7 @@ public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             yield break;
         }
 
-        var customValidationCodeStatements = context.Context.SourceModel.Metadata.GetStringValues(MetadataNames.CustomEntityValidationCode).ToArray();
+        var customValidationCodeStatements = context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName()).GetStringValues(MetadataNames.CustomEntityValidationCode).ToArray();
         if (customValidationCodeStatements.Length > 0)
         {
             foreach (var statement in customValidationCodeStatements)

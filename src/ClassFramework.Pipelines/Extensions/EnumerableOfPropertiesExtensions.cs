@@ -14,12 +14,8 @@ public static class EnumerableOfPropertiesExtensions
                     .WithName(property.Name.ToPascalCase(formatProvider.ToCultureInfo()))
                     .WithTypeName
                     (
-                        mapTypeNameDelegate
-                        (
-                            property.Metadata
-                                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), settings)
-                                .GetStringValue(MetadataNames.CustomImmutableArgumentType, () => property.TypeName)
-                        ).FixCollectionTypeName(/*context.Context.Settings.ConstructorSettings.CollectionTypeName.WhenNullOrEmpty(*/typeof(IEnumerable<>).WithoutGenerics()/*)*/)
+                        mapTypeNameDelegate(property.TypeName)
+                        .FixCollectionTypeName(/*context.Context.Settings.ConstructorSettings.CollectionTypeName.WhenNullOrEmpty(*/typeof(IEnumerable<>).WithoutGenerics()/*)*/)
                     )
                     .WithIsNullable(property.IsNullable)
                     .WithIsValueType(property.IsValueType)

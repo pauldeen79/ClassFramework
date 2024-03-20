@@ -54,15 +54,14 @@ public abstract class TestBase : IDisposable
         return parser;
     }
 
-    protected static IConcreteType CreateModel(string baseClass = "", params MetadataBuilder[] propertyMetadataBuilders)
+    protected static IConcreteType CreateModel(string baseClass = "")
         => new ClassBuilder()
             .WithName("SomeClass")
             .WithNamespace("SomeNamespace")
             .WithBaseClass(baseClass)
-            .AddProperties(new PropertyBuilder().WithName("Property1").WithType(typeof(int)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
-            .AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(string)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
-            .AddProperties(new PropertyBuilder().WithName("Property3").WithType(typeof(List<int>)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
-            .AddMetadata(new MetadataBuilder().WithName("MyMetadataName").WithValue("MyMetadataValue"))
+            .AddProperties(new PropertyBuilder().WithName("Property1").WithType(typeof(int)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
+            .AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(string)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
+            .AddProperties(new PropertyBuilder().WithName("Property3").WithType(typeof(List<int>)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
             .BuildTyped();
 
     protected static Domain.Types.Interface CreateInterfaceModel(bool addProperties)

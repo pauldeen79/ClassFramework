@@ -69,11 +69,17 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
         public void Adds_Methods_With_CustomBuilderArgumentType_When_Present()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue(typeof(IReadOnlyCollection<>).ReplaceGenericTypeName("MyCustomType")));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{Name}");
+            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{Name}", typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(int))
+                        .WithTargetType(typeof(int))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue(typeof(IReadOnlyCollection<>).ReplaceGenericTypeName("MyCustomType")))
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -241,11 +247,17 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
         public void Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Succesful(bool addNullChecks, ArgumentValidationType validateArguments)
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder(addNullChecks: addNullChecks, validateArguments: validateArguments);
+            var settings = CreateSettingsForBuilder(addNullChecks: addNullChecks, validateArguments: validateArguments, typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(int))
+                        .WithTargetType(typeof(int))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"))
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -298,11 +310,17 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
         public void Returns_Error_When_Parsing_CustomBuilderArgumentNullCheckExpression_Is_Not_Succesful()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentNullCheckExpression).WithValue("{Error}"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder(addNullChecks: true);
+            var settings = CreateSettingsForBuilder(addNullChecks: true, typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(List<int>))
+                        .WithTargetType(typeof(List<int>))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentNullCheckExpression).WithValue("{Error}"))
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -317,11 +335,17 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
         public void Returns_Error_When_Parsing_CustomBuilderArgumentNullCheckExpression_Is_Not_Succesful_Using_Enumerable_CollectionType()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentNullCheckExpression).WithValue("{Error}"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder(addNullChecks: true, newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics());
+            var settings = CreateSettingsForBuilder(addNullChecks: true, newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics(), typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(int))
+                        .WithTargetType(typeof(int))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentNullCheckExpression).WithValue("{Error}"))
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act

@@ -1,8 +1,8 @@
-﻿namespace ClassFramework.Domain.Tests.Builders.Extensions;
+﻿namespace ClassFramework.Pipelines.Tests.Builders;
 
-public class MetadataContainerBuilderExtensionsTests : TestBase<ClassBuilder>
+public class NamespaceMappingBuilderTests : TestBase<NamespaceMappingBuilder>
 {
-    public class AddMetadata : MetadataContainerBuilderExtensionsTests
+    public class AddMetadata : NamespaceMappingBuilderTests
     {
         [Fact]
         public void Throws_On_Null_Name()

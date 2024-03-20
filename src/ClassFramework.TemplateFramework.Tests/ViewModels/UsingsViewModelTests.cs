@@ -13,24 +13,12 @@ public class UsingsViewModelTests : TestBase<UsingsViewModel>
         }
 
         [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            sut.Invoking(x => _ = x.Usings.ToArray())
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
-        }
-
-        [Fact]
         public void Returns_Default_Usigns_When_No_Custom_Usings_Are_Present()
         {
             // Arrange
             var sut = CreateSut();
             sut.Model = new UsingsModel(new TypeBase[] { new ClassBuilder().WithName("MyClass").Build() });
+            sut.Settings = CreateCsharpClassGeneratorSettings();
 
             // Act
             var result = sut.Usings.ToArray();
@@ -44,11 +32,13 @@ public class UsingsViewModelTests : TestBase<UsingsViewModel>
         {
             // Arrange
             var sut = CreateSut();
+            sut.Settings = CreateCsharpClassGeneratorSettings().ToBuilder()
+                .AddCustomUsings("Z")
+                .AddCustomUsings("A")
+                .AddCustomUsings("Z") // note that we add this two times
+                .Build();
             var cls = new ClassBuilder()
                 .WithName("MyClass")
-                .AddMetadata(MetadataNames.CustomUsing, "Z")
-                .AddMetadata(MetadataNames.CustomUsing, "A")
-                .AddMetadata(MetadataNames.CustomUsing, "Z") // note that we add this two times
                 .Build();
             sut.Model = new UsingsModel(new TypeBase[] { cls });
 
@@ -56,7 +46,7 @@ public class UsingsViewModelTests : TestBase<UsingsViewModel>
             var result = sut.Usings.ToArray();
 
             // Assert
-            result.Should().BeEquivalentTo([ "A", "System", "System.Collections.Generic", "System.Linq", "System.Text", "Z" ], cfg => cfg.WithStrictOrdering());
+            result.Should().BeEquivalentTo(["A", "System", "System.Collections.Generic", "System.Linq", "System.Text", "Z"], cfg => cfg.WithStrictOrdering());
         }
     }
 }

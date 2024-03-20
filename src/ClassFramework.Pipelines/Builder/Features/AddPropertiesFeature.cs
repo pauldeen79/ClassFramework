@@ -33,7 +33,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
         foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
         {
-            var typeNameResult = property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser);
+            var typeNameResult = property.GetBuilderArgumentTypeName(context.Context, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser);
 
             if (!typeNameResult.IsSuccessful())
             {
@@ -53,7 +53,6 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
                 .AddAttributes(property.Attributes
                     .Where(_ => context.Context.Settings.CopyAttributes)
                     .Select(x => context.Context.MapAttribute(x).ToBuilder()))
-                .AddMetadata(property.Metadata.Select(x => x.ToBuilder()))
                 .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
                 .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))
             );

@@ -99,11 +99,17 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
         public void Returns_Error_When_Parsing_EntityInstanciation_Is_Not_Successful()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("{Error}"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder();
+            var settings = CreateSettingsForBuilder(typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(int))
+                        .WithTargetType(typeof(int))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("{Error}"))
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act

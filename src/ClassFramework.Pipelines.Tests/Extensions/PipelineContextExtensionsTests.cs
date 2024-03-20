@@ -108,10 +108,14 @@ public class PipelineContextExtensionsTests : TestBase
                 .WithNamespace("MyNamespace")
                 .WithName("MyClass")
                 .AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
-                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderEntityInstanciation).WithValue("Factory.DoSomething(this)"))
                 .Build();
             InitializeParser();
-            var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder().Build(), Fixture.Freeze<IFormatProvider>());
+            var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder()
+                .AddTypenameMappings(new TypenameMappingBuilder()
+                    .WithSourceType(sourceModel)
+                    .WithTargetType(sourceModel)
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderEntityInstanciation).WithValue("Factory.DoSomething(this)")))
+                .Build(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 

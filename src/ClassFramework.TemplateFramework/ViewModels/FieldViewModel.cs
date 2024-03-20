@@ -17,7 +17,7 @@ public class FieldViewModel : AttributeContainerViewModelBase<Field>
         => GetModel().TypeName
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(Model!.IsNullable, Settings.EnableNullableContext)
-            .AbbreviateNamespaces(Model.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate));
+            .AbbreviateNamespaces(GetContext().GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate);
 
     public string Name
         => GetModel().Name.Sanitize().GetCsharpFriendlyName();

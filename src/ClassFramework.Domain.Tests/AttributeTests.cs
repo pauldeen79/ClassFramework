@@ -8,7 +8,7 @@ public class AttributeTests
         public void Throws_On_Null_Parameters()
         {
             // Act & Assert
-            this.Invoking(_ => new Attribute(parameters: null!, Enumerable.Empty<Metadata>(), "Name"))
+            this.Invoking(_ => new Attribute(parameters: null!, "Name"))
                 .Should().Throw<ValidationException>();
         }
 
@@ -16,7 +16,7 @@ public class AttributeTests
         public void Throws_On_Null_Name()
         {
             // Act & Assert
-            this.Invoking(_ => new Attribute(Enumerable.Empty<AttributeParameter>(), Enumerable.Empty<Metadata>(), name: null!))
+            this.Invoking(_ => new Attribute(Enumerable.Empty<AttributeParameter>(), name: null!))
                 .Should().Throw<ValidationException>();
         }
 
@@ -24,7 +24,7 @@ public class AttributeTests
         public void Throws_On_Emtpty_Name()
         {
             // Act & Assert
-            this.Invoking(_ => new Attribute(Enumerable.Empty<AttributeParameter>(), Enumerable.Empty<Metadata>(), name: string.Empty))
+            this.Invoking(_ => new Attribute(Enumerable.Empty<AttributeParameter>(), name: string.Empty))
                 .Should().Throw<ValidationException>();
         }
 

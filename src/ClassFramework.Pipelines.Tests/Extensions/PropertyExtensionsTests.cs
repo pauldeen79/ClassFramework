@@ -10,25 +10,10 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
-            var settings = new PipelineSettingsBuilder().Build();
+            var context = new PropertyContext(sut, new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, settings);
-
-            // Assert
-            result.Should().Be("default(System.String)");
-        }
-
-        [Fact]
-        public void Gets_Value_From_TypeName_When_Metadata_Is_Found_But_Value_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, null).Build();
-            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
-            var settings = new PipelineSettingsBuilder().Build();
-
-            // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, settings);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, context);
 
             // Assert
             result.Should().Be("default(System.String)");
@@ -38,13 +23,14 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         public void Gets_Value_From_MetadataValue_Literal_When_Found()
         {
             // Arrange
-            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal("custom value", null)).Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
             csharpExpressionDumper.Dump(Arg.Any<IStringLiteral>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<IStringLiteral>(0).Value); // note that we mock the behavior of the real csharp expression dumper here :)
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder().AddTypenameMappings(new TypenameMappingBuilder().WithSourceType(typeof(string)).WithTargetType(typeof(string)).AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal("custom value", null))).Build();
+            var context = new PropertyContext(sut, settings, CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, settings);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, context);
 
             // Assert
             result.Should().Be("custom value");
@@ -54,13 +40,19 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         public void Gets_Value_From_MetadataValue_Non_Literal_When_Found()
         {
             // Arrange
-            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, "custom value").Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
             csharpExpressionDumper.Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder()
+                .AddTypenameMappings(new TypenameMappingBuilder()
+                    .WithSourceType(typeof(string))
+                    .WithTargetType(typeof(string))
+                    .AddMetadata(MetadataNames.CustomBuilderDefaultValue, "custom value"))
+                .Build();
+            var context = new PropertyContext(sut, settings, CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, settings);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, context);
 
             // Assert
             result.Should().Be("custom value");

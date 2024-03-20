@@ -25,8 +25,8 @@ public class TestBase
             .WithPath(path)
             .Build();
 
-    protected ITemplateContext CreateTemplateContext()
-        => new TemplateContext(Fixture.Freeze<ITemplateEngine>(), Fixture.Freeze<ITemplateComponentRegistry>(), "default.cs", Fixture.Freeze<ITemplateIdentifier>(), new object());
+    protected ITemplateContext CreateTemplateContext(object? template = null, object? model = null)
+        => new TemplateContext(Fixture.Freeze<ITemplateEngine>(), Fixture.Freeze<ITemplateComponentRegistry>(), "default.cs", Fixture.Freeze<ITemplateIdentifier>(), template ?? new object(), model);
 }
 
 public abstract class TestBase<T> : TestBase

@@ -135,13 +135,24 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
         public void Adds_Method_With_Custom_ArgumentNullChecks_When_SetMethodNameFormatString_Is_Not_Empty()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentNullCheckExpression).WithValue("/* custom argument null check goes here */"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 setMethodNameFormatString: "With{Name}",
-                addNullChecks: true);
+                addNullChecks: true,
+                typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(int))
+                        .WithTargetType(typeof(int))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentNullCheckExpression).WithValue("/* custom argument null check goes here */")),
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(string))
+                        .WithTargetType(typeof(string))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentNullCheckExpression).WithValue("/* custom argument null check goes here */"))
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -205,11 +216,21 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
         public void Uses_CustomBuilderArgumentType_When_Present()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("Custom{Name}"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}", typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(int))
+                        .WithTargetType(typeof(int))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("Custom{Name}")),
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(string))
+                        .WithTargetType(typeof(string))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("Custom{Name}"))
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -240,11 +261,22 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             // Note that this doesn't seem logical for this unit test, but in code generation the Literal is needed for correct formatting of literal values.
             // If you would use a string without wrapping it in a Literal, then it will get formatted to "customDefaultValue" which may not be what you want.
             // Or, in case you just want a default boolean value, you might also use true and false directly, without wrapping it in a Literal...
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithDefaultPropertyValue).WithValue(new Literal("customDefaultValue", null)));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}", typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(int))
+                        .WithTargetType(typeof(int))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithDefaultPropertyValue).WithValue(new Literal("customDefaultValue", null))),
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(string))
+                        .WithTargetType(typeof(string))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithDefaultPropertyValue).WithValue(new Literal("customDefaultValue", null)))
+
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -264,11 +296,21 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
         public void Uses_CustomBuilderWithExpression_When_Present()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{Name} = {NamePascal}; // custom"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}", typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(int))
+                        .WithTargetType(typeof(int))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{Name} = {NamePascal}; // custom")),
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(string))
+                        .WithTargetType(typeof(string))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{Name} = {NamePascal}; // custom"))
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -312,11 +354,17 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
         public void Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder();
+            var settings = CreateSettingsForBuilder(typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(int))
+                        .WithTargetType(typeof(int))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"))
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act

@@ -14,7 +14,7 @@ public class MethodViewModel : MethodViewModelBase<Method>
         => GetModel().ReturnTypeName
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(Model!.ReturnTypeIsNullable, Settings.EnableNullableContext)
-            .AbbreviateNamespaces(Model.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate))
+            .AbbreviateNamespaces(GetContext().GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate)
             .WhenNullOrEmpty("void");
 
     public string ExplicitInterfaceName

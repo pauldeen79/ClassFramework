@@ -1,7 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
 public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T>
-    where T : IAttributesContainer, IParametersContainer, ICodeStatementsContainer, IVisibilityContainer, IMetadataContainer, ISuppressWarningCodesContainer
+    where T : IAttributesContainer, IParametersContainer, ICodeStatementsContainer, IVisibilityContainer, ISuppressWarningCodesContainer
 {
     protected MethodViewModelBase(ICsharpExpressionDumper csharpExpressionDumper)
         : base(csharpExpressionDumper)

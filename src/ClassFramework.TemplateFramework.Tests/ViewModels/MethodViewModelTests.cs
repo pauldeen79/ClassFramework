@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.TemplateFramework.Tests.ViewModels;
+﻿using ClassFramework.TemplateFramework.Templates;
+
+namespace ClassFramework.TemplateFramework.Tests.ViewModels;
 
 public class MethodViewModelTests : TestBase<MethodViewModel>
 {
@@ -87,6 +89,11 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
                 .WithName("MyMethod")
                 .WithReturnType(typeof(int))
                 .Build();
+            var template = new MethodTemplate();
+            sut.Context = CreateTemplateContext(template, sut.Model);
+            template.Context = sut.Context;
+            template.Model = sut;
+            sut.Settings = CreateCsharpClassGeneratorSettings().ToBuilder().AddNamespacesToAbbreviate("MyNamespace").Build();
 
             // Act
             var result = sut.ReturnTypeName;
@@ -105,6 +112,11 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
                 .WithReturnType(new ClassBuilder().WithName("MyType"))
                 .WithReturnTypeIsNullable()
                 .Build();
+            var template = new MethodTemplate();
+            sut.Context = CreateTemplateContext(template, sut.Model);
+            template.Context = sut.Context;
+            template.Model = sut;
+            sut.Settings = CreateCsharpClassGeneratorSettings().ToBuilder().AddNamespacesToAbbreviate("MyNamespace").Build();
 
             // Act
             var result = sut.ReturnTypeName;
@@ -121,8 +133,12 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Model = new MethodBuilder()
                 .WithName("MyMethod")
                 .WithReturnType(new ClassBuilder().WithName("MyType").WithNamespace("MyNamespace"))
-                .AddMetadata(MetadataNames.NamespaceToAbbreviate, "MyNamespace")
                 .Build();
+            var template = new MethodTemplate();
+            sut.Context = CreateTemplateContext(template, sut.Model);
+            template.Context = sut.Context;
+            template.Model = sut;
+            sut.Settings = CreateCsharpClassGeneratorSettings().ToBuilder().AddNamespacesToAbbreviate("MyNamespace").Build();
 
             // Act
             var result = sut.ReturnTypeName;
@@ -140,6 +156,11 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
                 .WithName("MyMethod")
                 .WithReturnTypeName(string.Empty)
                 .Build();
+            var template = new MethodTemplate();
+            sut.Context = CreateTemplateContext(template, sut.Model);
+            template.Context = sut.Context;
+            template.Model = sut;
+            sut.Settings = CreateCsharpClassGeneratorSettings().ToBuilder().AddNamespacesToAbbreviate("MyNamespace").Build();
 
             // Act
             var result = sut.ReturnTypeName;

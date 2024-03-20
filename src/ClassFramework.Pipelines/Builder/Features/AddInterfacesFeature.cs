@@ -35,7 +35,7 @@ public class AddInterfacesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
             .Where(x => context.Context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Select(x =>
             {
-                var metadata = Enumerable.Empty<Metadata>().WithMappingMetadata(x, context.Context.Settings);
+                var metadata = context.Context.GetMappingMetadata(x);
                 var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
 
                 if (!string.IsNullOrEmpty(ns))

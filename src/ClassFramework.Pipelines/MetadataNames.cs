@@ -8,11 +8,6 @@ public static class MetadataNames
     public const string CustomBuilderArgumentType = "ClassFramework.Builder.ArgumentType";
 
     /// <summary>
-    /// Metadata name for defining a custom typename for argument in an entity. Note that the value will be converted to string.
-    /// </summary>
-    public const string CustomImmutableArgumentType = "ClassFramework.Entity.ArgumentType";
-
-    /// <summary>
     /// Metadata name for defining a custom default value in builder c'tor.
     /// </summary>
     public const string CustomBuilderDefaultValue = "ClassFramework.Builder.Ctor.CustomDefaultValue";
