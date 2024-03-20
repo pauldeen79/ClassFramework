@@ -48,7 +48,7 @@ public class ValidatableObjectFeature : IPipelineFeature<IConcreteTypeBuilder, B
                 .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatementsForBuildMethod())
                 .AddStringCodeStatements
                 (
-                    context.Context.SourceModel.Metadata.GetStringValues(MetadataNames.CustomBuilderValidationCode).WhenEmpty(() =>
+                    context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName()).GetStringValues(MetadataNames.CustomBuilderValidationCode).WhenEmpty(() =>
                     [
                         $"var results = new {typeof(List<>).ReplaceGenericTypeName(typeof(ValidationResult))}();",
                         $"{typeof(Validator).FullName}.{nameof(Validator.TryValidateObject)}(instance, new {typeof(ValidationContext).FullName}(instance), results, true);",

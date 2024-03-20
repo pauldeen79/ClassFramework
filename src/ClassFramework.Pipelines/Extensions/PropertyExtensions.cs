@@ -2,12 +2,13 @@
 
 public static class PropertyExtensions
 {
-    public static string GetDefaultValue(this Property property, ICsharpExpressionDumper csharpExpressionDumper, bool enableNullableReferenceTypes, string typeName, PipelineSettings settings)
+    public static string GetDefaultValue<T>(this Property property, ICsharpExpressionDumper csharpExpressionDumper, bool enableNullableReferenceTypes, string typeName, ContextBase<T> context)
     {
         csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
+        context = context.IsNotNull(nameof(context));
 
-        var md = property.Metadata
-            .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), settings)
+        var md = context
+            .GetMappingMetadata(property.TypeName)
             .FirstOrDefault(x => x.Name == MetadataNames.CustomBuilderDefaultValue);
 
         if (md is not null && md.Value is not null)
@@ -88,7 +89,7 @@ public static class PropertyExtensions
         metadataName = metadataName.IsNotNull(nameof(metadataName));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, context.Settings, context.FormatProvider, parentChildContext, mappedTypeName, formattableStringParser);
+        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, context, parentChildContext, mappedTypeName, formattableStringParser);
 
         if (!builderArgumentTypeResult.IsSuccessful())
         {
@@ -97,8 +98,8 @@ public static class PropertyExtensions
 
         var customBuilderConstructorInitializeExpression = string.IsNullOrEmpty(metadataName)
             ? string.Empty
-            : property.Metadata
-                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Settings)
+            : context
+                .GetMappingMetadata(property.TypeName)
                 .GetStringValue(metadataName);
 
         var result = formattableStringParser.Parse(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext);
@@ -113,21 +114,19 @@ public static class PropertyExtensions
             .GetCsharpFriendlyTypeName());
     }
 
-    public static Result<string> GetBuilderArgumentTypeName(
+    public static Result<string> GetBuilderArgumentTypeName<T>(
         this Property property,
-        PipelineSettings settings,
-        IFormatProvider formatProvider,
+        ContextBase<T> context,
         object parentChildContext,
         string mappedTypeName,
         IFormattableStringParser formattableStringParser)
     {
-        settings = settings.IsNotNull(nameof(settings));
-        formatProvider = formatProvider.IsNotNull(nameof(formatProvider));
+        context = context.IsNotNull(nameof(context));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        var metadata = property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), settings);
+        var metadata = context.GetMappingMetadata(property.TypeName);
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderNamespace);
 
         if (!string.IsNullOrEmpty(ns))
@@ -146,7 +145,7 @@ public static class PropertyExtensions
             return formattableStringParser.Parse
             (
                 newFullName,
-                formatProvider,
+                context.FormatProvider,
                 parentChildContext
             );
         }
@@ -154,7 +153,7 @@ public static class PropertyExtensions
         return formattableStringParser.Parse
         (
             metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, mappedTypeName),
-            formatProvider,
+            context.FormatProvider,
             parentChildContext
         );
     }
@@ -169,7 +168,7 @@ public static class PropertyExtensions
             return Result.Success(property.ParentTypeFullName);
         }
 
-        var metadata = property.Metadata.WithMappingMetadata(property.ParentTypeFullName.GetCollectionItemType().WhenNullOrEmpty(property.ParentTypeFullName), context.Context.Settings);
+        var metadata = context.Context.GetMappingMetadata(property.ParentTypeFullName);
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeNamespace);
 
         if (string.IsNullOrEmpty(ns))

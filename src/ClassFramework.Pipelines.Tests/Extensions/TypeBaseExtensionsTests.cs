@@ -434,7 +434,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass")
                 .AddProperties
                 (
-                    new PropertyBuilder().WithName("Property1").WithType(typeof(string)).AddMetadata(MetadataNames.CustomBuilderArgumentType, "MyCustomType"),
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(string)),
                     new PropertyBuilder().WithName("Property2").WithType(typeof(string)),
                     new PropertyBuilder().WithName("Property3").WithType(typeof(string)).WithIsNullable()
                 )
@@ -444,7 +444,14 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 enableNullableReferenceTypes: true,
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
-                validateArguments: ArgumentValidationType.DomainOnly
+                validateArguments: ArgumentValidationType.DomainOnly,
+                typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(string))
+                        .WithTargetType(typeof(string))
+                        .AddMetadata(MetadataNames.CustomBuilderArgumentType, "MyCustomType")
+                ]
             );
             var model = new ClassBuilder();
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
@@ -455,7 +462,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
 
             // Assert
             result.Select(x => x.Value!.Name).Should().BeEquivalentTo("_property1", "_property2");
-            result.Select(x => x.Value!.TypeName).Should().BeEquivalentTo("MyCustomType", typeof(string).FullName);
+            result.Select(x => x.Value!.TypeName).Should().BeEquivalentTo("MyCustomType", "MyCustomType");
             result.Select(x => x.Value!.IsValueType).Should().AllBeEquivalentTo(false);
         }
     }

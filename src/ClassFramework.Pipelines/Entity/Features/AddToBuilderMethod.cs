@@ -28,7 +28,7 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
 
         var resultSetBuilder = new NamedResultSetBuilder<string>();
         resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.EntityNameFormatString, context.Context.FormatProvider, context));
-        resultSetBuilder.Add("Namespace", () => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
+        resultSetBuilder.Add("Namespace", () => context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName()).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
         resultSetBuilder.Add("ToBuilderMethodName", () => _formattableStringParser.Parse(context.Context.Settings.ToBuilderFormatString, context.Context.FormatProvider, context));
         resultSetBuilder.Add("ToTypedBuilderMethodName", () => _formattableStringParser.Parse(context.Context.Settings.ToTypedBuilderFormatString, context.Context.FormatProvider, context));
         var results = resultSetBuilder.Build();
@@ -61,9 +61,10 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
             ? context.Context.Settings.BaseClass.GetFullName()
             : entityFullName;
 
-        var builderNamespaceResult = context.Context.SourceModel.Metadata.WithMappingMetadata(entityFullName.GetCollectionItemType().WhenNullOrEmpty(entityFullName), context.Context.Settings).GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders"));
-        var builderInterfaceNamespaceResult = context.Context.SourceModel.Metadata.WithMappingMetadata(entityFullName.GetCollectionItemType().WhenNullOrEmpty(entityFullName), context.Context.Settings).GetStringResult(MetadataNames.CustomBuilderInterfaceNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders"));
-        var concreteBuilderNamespaceResult = context.Context.SourceModel.Metadata.WithMappingMetadata(entityConcreteFullName.GetCollectionItemType().WhenNullOrEmpty(entityConcreteFullName), context.Context.Settings).GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders"));
+        var metadata = context.Context.GetMappingMetadata(entityFullName);
+        var builderNamespaceResult = metadata.GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders"));
+        var builderInterfaceNamespaceResult = metadata.GetStringResult(MetadataNames.CustomBuilderInterfaceNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders"));
+        var concreteBuilderNamespaceResult = context.Context.GetMappingMetadata(entityConcreteFullName).GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders"));
 
         var builderConcreteName = context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is null
             ? name

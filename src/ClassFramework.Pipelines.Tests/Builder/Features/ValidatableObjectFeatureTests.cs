@@ -77,13 +77,18 @@ public class ValidatableObjectFeatureTests : TestBase<Pipelines.Builder.Features
                 .WithName("SomeClass")
                 .WithNamespace("SomeNamespace")
                 .AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
-                .AddMetadata(MetadataNames.CustomBuilderValidationCode, "// here goes some custom validation code")
-                .AddMetadata(MetadataNames.CustomBuilderValidationCode, "return Enumerable.Empty<ValidationResult>();")
                 .Build();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder(validateArguments: ArgumentValidationType.Shared);
+            var settings = CreateSettingsForBuilder(validateArguments: ArgumentValidationType.Shared, typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(sourceModel)
+                        .WithTargetType(sourceModel)
+                        .AddMetadata(MetadataNames.CustomBuilderValidationCode, "// here goes some custom validation code")
+                        .AddMetadata(MetadataNames.CustomBuilderValidationCode, "return Enumerable.Empty<ValidationResult>();")
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -128,12 +133,17 @@ public class ValidatableObjectFeatureTests : TestBase<Pipelines.Builder.Features
                 .WithName("SomeClass")
                 .WithNamespace("SomeNamespace")
                 .AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
-                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderEntityInstanciation).WithValue("{Error}"))
                 .Build();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder(validateArguments: ArgumentValidationType.Shared);
+            var settings = CreateSettingsForBuilder(validateArguments: ArgumentValidationType.Shared, typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(sourceModel)
+                        .WithTargetType(sourceModel)
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderEntityInstanciation).WithValue("{Error}"))
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act

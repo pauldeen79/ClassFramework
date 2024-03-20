@@ -16,6 +16,7 @@ public static class StringExtensions
         {
             return string.Empty;
         }
+
         int startIndex;
         while (true)
         {

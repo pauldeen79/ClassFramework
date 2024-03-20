@@ -166,14 +166,21 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
         public void Returns_Error_When_Parsing_CustomBuilderConstructorInitializeExpression_Is_Not_Successful()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderConstructorInitializeExpression).WithValue("{Error}"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
-                enableEntityInheritance: false);
+                enableEntityInheritance: false,
+                typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(int))
+                        .WithTargetType(typeof(int))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderConstructorInitializeExpression).WithValue("{Error}"))
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -188,14 +195,21 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
         public void Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Successful()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
-                enableEntityInheritance: false);
+                enableEntityInheritance: false,
+                typenameMappings:
+                [
+                    new TypenameMappingBuilder()
+                        .WithSourceType(typeof(int))
+                        .WithTargetType(typeof(int))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"))
+                ]);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act

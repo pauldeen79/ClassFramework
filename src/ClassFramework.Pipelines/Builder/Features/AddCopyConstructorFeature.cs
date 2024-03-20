@@ -59,7 +59,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
         var resultSetBuilder = new NamedResultSetBuilder<string>();
         resultSetBuilder.Add("NullCheck.Source", () => _formattableStringParser.Parse("{NullCheck.Source}", context.Context.FormatProvider, context));
         resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.EntityNameFormatString, context.Context.FormatProvider, context));
-        resultSetBuilder.Add("Namespace", () => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
+        resultSetBuilder.Add("Namespace", () => context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName()).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());
@@ -104,8 +104,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             )
             .AddParameters
             (
-                context.Context.SourceModel.Metadata
-                    .WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings)
+                context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName())
                     .GetValues<Parameter>(MetadataNames.CustomBuilderCopyConstructorParameter)
                     .Select(x => x.ToBuilder())
             )
@@ -132,7 +131,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
 
     private Tuple<Property, Result<string>>[] GetInitializationCodeResults(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
         => context.Context.SourceModel.Properties
-            .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings) && !(x.TypeName.FixTypeName().IsCollectionTypeName() && x.Metadata.WithMappingMetadata(x.TypeName.GetCollectionItemType().WhenNullOrEmpty(x.TypeName), context.Context.Settings).Any(y => y.Name == MetadataNames.CustomBuilderConstructorInitializeExpression)))
+            .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings) && !(x.TypeName.FixTypeName().IsCollectionTypeName() && context.Context.GetMappingMetadata(x.TypeName).Any(y => y.Name == MetadataNames.CustomBuilderConstructorInitializeExpression)))
             .Select(x => new Tuple<Property, Result<string>>
             (
                 x,
@@ -155,8 +154,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
     private Result<string> CreateBuilderInitializationCode(Property property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
         => _formattableStringParser.Parse
         (
-            ProcessCreateBuilderInitializationCode(property.Metadata
-                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings)
+            ProcessCreateBuilderInitializationCode(context.Context.GetMappingMetadata(property.TypeName)
                 .GetStringValue
                 (
                     MetadataNames.CustomBuilderConstructorInitializeExpression,
@@ -190,7 +188,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             return sourceProperty.Name;
         }
 
-        var metadata = sourceProperty.Metadata.WithMappingMetadata(sourceProperty.TypeName.GetCollectionItemType().WhenNullOrEmpty(sourceProperty.TypeName), context.Context.Settings);
+        var metadata = context.Context.GetMappingMetadata(sourceProperty.TypeName);
         var sourceExpression = metadata.GetStringValue(MetadataNames.CustomBuilderSourceExpression, PlaceholderNames.NamePlaceholder);
         if (sourceProperty.TypeName.FixTypeName().IsCollectionTypeName())
         {
@@ -226,8 +224,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             )
             .AddParameters
             (
-                context.Context.SourceModel.Metadata
-                    .WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings)
+                context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName())
                     .GetValues<Parameter>(MetadataNames.CustomBuilderCopyConstructorParameter)
                     .Select(x => x.ToBuilder())
             );

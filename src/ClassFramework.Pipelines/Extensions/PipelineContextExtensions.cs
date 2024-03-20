@@ -6,7 +6,9 @@ public static class PipelineContextExtensions
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        var customEntityInstanciation = context.Context.SourceModel.Metadata.GetStringValue(MetadataNames.CustomBuilderEntityInstanciation);
+        var customEntityInstanciation = context.Context
+            .GetMappingMetadata(context.Context.SourceModel.GetFullName())
+            .GetStringValue(MetadataNames.CustomBuilderEntityInstanciation);
         if (!string.IsNullOrEmpty(customEntityInstanciation))
         {
             return formattableStringParser.Parse(customEntityInstanciation, context.Context.FormatProvider, context);
@@ -32,7 +34,7 @@ public static class PipelineContextExtensions
             return parametersResult;
         }
 
-        var entityNamespace = context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.Context.SourceModel.Namespace);
+        var entityNamespace = context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName()).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.Context.SourceModel.Namespace);
         var ns = context.Context.MapNamespace(entityNamespace).AppendWhenNotNullOrEmpty(".");
 
         return Result.Success($"new {ns}{context.Context.SourceModel.Name}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
@@ -71,20 +73,15 @@ public static class PipelineContextExtensions
                 Source = property,
                 Result = formattableStringParser.Parse
                 (
-                    property.Metadata
-                        .WithMappingMetadata
-                        (
-                            property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName),
-                            context.Context.Settings
-                        ).GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, PlaceholderNames.NamePlaceholder),
+                    context.Context
+                        .GetMappingMetadata(property.TypeName)
+                        .GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, PlaceholderNames.NamePlaceholder),
                     context.Context.FormatProvider,
                     new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Context.Settings)
                 ),
-                CollectionInitializer = property.Metadata
-                    .WithMappingMetadata
+                CollectionInitializer = context.Context.GetMappingMetadata
                     (
-                        property.TypeName.FixTypeName().WithoutProcessedGenerics(), // i.e. List<> etc.
-                        context.Context.Settings
+                        property.TypeName.FixTypeName().WithoutProcessedGenerics() // i.e. List<> etc.
                     ).GetStringValue(MetadataNames.CustomCollectionInitialization, () => "[Expression]"),
                 Suffix = property.GetSuffix(context.Context.Settings.EnableNullableReferenceTypes)
             }

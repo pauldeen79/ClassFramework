@@ -61,7 +61,7 @@ public abstract class ContextBase<TModel>
     {
         var resultSetBuilder = new NamedResultSetBuilder<string>();
         resultSetBuilder.Add("Name", () => formattableStringParser.Parse(Settings.EntityNameFormatString, FormatProvider, context));
-        resultSetBuilder.Add("Namespace", () => sourceModel.Metadata.WithMappingMetadata(sourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(sourceModel.GetFullName), Settings).GetStringResult(MetadataNames.CustomEntityNamespace, () => formattableStringParser.Parse(Settings.EntityNamespaceFormatString, FormatProvider, context)));
+        resultSetBuilder.Add("Namespace", () => GetMappingMetadata(sourceModel.GetFullName()).GetStringResult(MetadataNames.CustomEntityNamespace, () => formattableStringParser.Parse(Settings.EntityNamespaceFormatString, FormatProvider, context)));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());
@@ -156,4 +156,34 @@ public abstract class ContextBase<TModel>
             .Select(x => x.Result(sourceAttribute))
             .FirstOrDefault(x => x is not null)
                 ?? throw new NotSupportedException($"Attribute not supported by initializer:");
+
+    public IEnumerable<Metadata> GetMappingMetadata(string typeName)
+    {
+        typeName = typeName.IsNotNull(nameof(typeName)).FixTypeName();
+
+        var typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
+        if (typeNameMapping is null && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
+        {
+            typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType());
+        }
+        if (typeNameMapping is not null)
+        {
+            return typeNameMapping.Metadata;
+        }
+
+        var ns = typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType())
+            ? typeName.GetCollectionItemType().GetNamespaceWithDefault()
+            : typeName.GetNamespaceWithDefault();
+
+        if (!string.IsNullOrEmpty(ns))
+        {
+            var namespaceMapping = Settings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
+            if (namespaceMapping is not null)
+            {
+                return namespaceMapping.Metadata;
+            }
+        }
+
+        return Enumerable.Empty<Metadata>();
+    }
 }
