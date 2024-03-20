@@ -33,7 +33,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddFluentMethodsForCollectionPropertiesFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddFluentMethodsForNonCollectionPropertiesFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddInterfacesFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddMetadataFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddPropertiesFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.BaseClassFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.GenericsFeatureBuilder>()
@@ -48,7 +47,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.AddExtensionMethodsForCollectionPropertiesFeatureBuilder>()
             .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder>()
-            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.AddMetadataFeatureBuilder>()
             .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.SetNameFeatureBuilder>()
             .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.SetStaticFeatureBuilder>();
 
@@ -62,7 +60,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddFullConstructorFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddGenericsFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddInterfacesFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.AddMetadataFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddPropertiesFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddPublicParameterlessConstructorFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddToBuilderMethodFeatureBuilder>()
@@ -79,7 +76,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.AbstractEntityFeatureBuilder>()
             .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.AddConstructorFeatureBuilder>()
             .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.AddGenericsFeatureBuilder>()
-            .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.AddMetadataFeatureBuilder>()
             .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.SetBaseClassFeatureBuilder>()
             .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.SetNameFeatureBuilder>()
             .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.SetRecordFeatureBuilder>();
@@ -108,7 +104,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IInterfaceFeatureBuilder, Interface.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddAttributesFeatureBuilder>()
             .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddInterfacesFeatureBuilder>()
-            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddMetadataFeatureBuilder>()
             .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddMethodsFeatureBuilder>()
             .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddPropertiesFeatureBuilder>()
             .AddScoped<IInterfaceFeatureBuilder, Interface.Features.SetNameFeatureBuilder>()
