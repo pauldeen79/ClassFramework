@@ -18,6 +18,7 @@ public class UsingsViewModelTests : TestBase<UsingsViewModel>
             // Arrange
             var sut = CreateSut();
             sut.Model = new UsingsModel(new TypeBase[] { new ClassBuilder().WithName("MyClass").Build() });
+            sut.Settings = CreateCsharpClassGeneratorSettings();
 
             // Act
             var result = sut.Usings.ToArray();
@@ -26,24 +27,26 @@ public class UsingsViewModelTests : TestBase<UsingsViewModel>
             result.Should().BeEquivalentTo("System", "System.Collections.Generic", "System.Linq", "System.Text");
         }
 
-        //[Fact]
-        //public void Returns_Distinct_Usigns_When_Custom_Usings_Are_Present()
-        //{
-        //    // Arrange
-        //    var sut = CreateSut();
-        //    var cls = new ClassBuilder()
-        //        .WithName("MyClass")
-        //        .AddMetadata(MetadataNames.CustomUsing, "Z")
-        //        .AddMetadata(MetadataNames.CustomUsing, "A")
-        //        .AddMetadata(MetadataNames.CustomUsing, "Z") // note that we add this two times
-        //        .Build();
-        //    sut.Model = new UsingsModel(new TypeBase[] { cls });
+        [Fact]
+        public void Returns_Distinct_Usigns_When_Custom_Usings_Are_Present()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Settings = CreateCsharpClassGeneratorSettings().ToBuilder()
+                .AddCustomUsings("Z")
+                .AddCustomUsings("A")
+                .AddCustomUsings("Z") // note that we add this two times
+                .Build();
+            var cls = new ClassBuilder()
+                .WithName("MyClass")
+                .Build();
+            sut.Model = new UsingsModel(new TypeBase[] { cls });
 
-        //    // Act
-        //    var result = sut.Usings.ToArray();
+            // Act
+            var result = sut.Usings.ToArray();
 
-        //    // Assert
-        //    result.Should().BeEquivalentTo([ "A", "System", "System.Collections.Generic", "System.Linq", "System.Text", "Z" ], cfg => cfg.WithStrictOrdering());
-        //}
+            // Assert
+            result.Should().BeEquivalentTo(["A", "System", "System.Collections.Generic", "System.Linq", "System.Text", "Z"], cfg => cfg.WithStrictOrdering());
+        }
     }
 }

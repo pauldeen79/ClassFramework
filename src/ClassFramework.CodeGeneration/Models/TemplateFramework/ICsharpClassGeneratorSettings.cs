@@ -15,4 +15,5 @@ internal interface ICsharpClassGeneratorSettings
     [Required(AllowEmptyStrings = true)] string FilenameSuffix { get; }
     bool EnableNullableContext { get; }
     bool EnableGlobalUsings { get; }
+    [Required] IReadOnlyCollection<string> CustomUsings { get; }
 }
