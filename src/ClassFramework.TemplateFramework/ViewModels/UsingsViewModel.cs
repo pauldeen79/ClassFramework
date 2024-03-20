@@ -17,7 +17,7 @@ public class UsingsViewModel : CsharpClassGeneratorViewModelBase<UsingsModel>
 
     public IEnumerable<string> Usings
         => DefaultUsings
-            .Concat(GetModel().Types.SelectMany(classItem => classItem.Metadata.GetStringValues(MetadataNames.CustomUsing)))
+            //.Concat(Settings.CustomUsings) //TODO: Add custom usings to settings
             .OrderBy(ns => ns)
             .Distinct();
 }

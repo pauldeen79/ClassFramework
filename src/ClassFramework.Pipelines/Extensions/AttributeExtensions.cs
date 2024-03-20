@@ -11,7 +11,6 @@ public static class AttributeExtensions
         return new AttributeBuilder()
             .WithName(prefilled.Name)
             .AddParameters(prefilled.Parameters.Select(x => x.ToBuilder()))
-            .AddMetadata(prefilled.Metadata.Select(x => x.ToBuilder()))
             .Build();
     }
 }

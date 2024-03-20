@@ -1,6 +1,7 @@
-﻿namespace ClassFramework.Domain.Tests.Builders.Extensions;
+﻿
+namespace ClassFramework.Domain.Tests.Builders.Extensions;
 
-public class MetadataContainerBuilderExtensionsTests : TestBase<ClassBuilder>
+public class MetadataContainerBuilderExtensionsTests : TestBase<MyMetadataContainerBuilder>
 {
     public class AddMetadata : MetadataContainerBuilderExtensionsTests
     {
@@ -28,4 +29,9 @@ public class MetadataContainerBuilderExtensionsTests : TestBase<ClassBuilder>
             result.Metadata.Should().BeEquivalentTo(new[] { new Metadata(name: "Name", value: "Value") });
         }
     }
+}
+
+public class MyMetadataContainerBuilder : IMetadataContainerBuilder
+{
+    public ObservableCollection<MetadataBuilder> Metadata { get; set; } = new();
 }

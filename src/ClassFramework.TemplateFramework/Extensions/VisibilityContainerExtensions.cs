@@ -3,14 +3,8 @@
 public static class VisibilityContainerExtensions
 {
     public static string GetModifiers<T>(this T instance, CultureInfo cultureInfo)
-        where T : IMetadataContainer, IVisibilityContainer
+        where T : IVisibilityContainer
     {
-        var customModifiers = instance.Metadata.GetStringValue(MetadataNames.CustomModifiers);
-        if (!string.IsNullOrEmpty(customModifiers))
-        {
-            return customModifiers + " ";
-        }
-
         var builder = new StringBuilder();
         if (instance is IExtendedVisibilityContainer extendedVisibilityContainer)
         {

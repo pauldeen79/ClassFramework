@@ -13,19 +13,6 @@ public class UsingsViewModelTests : TestBase<UsingsViewModel>
         }
 
         [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            sut.Invoking(x => _ = x.Usings.ToArray())
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
-        }
-
-        [Fact]
         public void Returns_Default_Usigns_When_No_Custom_Usings_Are_Present()
         {
             // Arrange
@@ -39,24 +26,24 @@ public class UsingsViewModelTests : TestBase<UsingsViewModel>
             result.Should().BeEquivalentTo("System", "System.Collections.Generic", "System.Linq", "System.Text");
         }
 
-        [Fact]
-        public void Returns_Distinct_Usigns_When_Custom_Usings_Are_Present()
-        {
-            // Arrange
-            var sut = CreateSut();
-            var cls = new ClassBuilder()
-                .WithName("MyClass")
-                .AddMetadata(MetadataNames.CustomUsing, "Z")
-                .AddMetadata(MetadataNames.CustomUsing, "A")
-                .AddMetadata(MetadataNames.CustomUsing, "Z") // note that we add this two times
-                .Build();
-            sut.Model = new UsingsModel(new TypeBase[] { cls });
+        //[Fact]
+        //public void Returns_Distinct_Usigns_When_Custom_Usings_Are_Present()
+        //{
+        //    // Arrange
+        //    var sut = CreateSut();
+        //    var cls = new ClassBuilder()
+        //        .WithName("MyClass")
+        //        .AddMetadata(MetadataNames.CustomUsing, "Z")
+        //        .AddMetadata(MetadataNames.CustomUsing, "A")
+        //        .AddMetadata(MetadataNames.CustomUsing, "Z") // note that we add this two times
+        //        .Build();
+        //    sut.Model = new UsingsModel(new TypeBase[] { cls });
 
-            // Act
-            var result = sut.Usings.ToArray();
+        //    // Act
+        //    var result = sut.Usings.ToArray();
 
-            // Assert
-            result.Should().BeEquivalentTo([ "A", "System", "System.Collections.Generic", "System.Linq", "System.Text", "Z" ], cfg => cfg.WithStrictOrdering());
-        }
+        //    // Assert
+        //    result.Should().BeEquivalentTo([ "A", "System", "System.Collections.Generic", "System.Linq", "System.Text", "Z" ], cfg => cfg.WithStrictOrdering());
+        //}
     }
 }

@@ -52,23 +52,23 @@ public class FieldViewModelTests : TestBase<FieldViewModel>
             result.Should().Be("MyType?");
         }
 
-        [Fact]
-        public void Abbreviates_Namespaces()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = new FieldBuilder()
-                .WithName("MyField")
-                .WithType(new ClassBuilder().WithName("MyType").WithNamespace("MyNamespace"))
-                .AddMetadata(MetadataNames.NamespaceToAbbreviate, "MyNamespace")
-                .Build();
+        //[Fact]
+        //public void Abbreviates_Namespaces()
+        //{
+        //    // Arrange
+        //    var sut = CreateSut();
+        //    sut.Model = new FieldBuilder()
+        //        .WithName("MyField")
+        //        .WithType(new ClassBuilder().WithName("MyType").WithNamespace("MyNamespace"))
+        //        .AddMetadata(MetadataNames.NamespaceToAbbreviate, "MyNamespace")
+        //        .Build();
 
-            // Act
-            var result = sut.TypeName;
+        //    // Act
+        //    var result = sut.TypeName;
 
-            // Assert
-            result.Should().Be("MyType");
-        }
+        //    // Assert
+        //    result.Should().Be("MyType");
+        //}
     }
 
     public class ShouldRenderDefaultValue : FieldViewModelTests

@@ -34,7 +34,7 @@ public class ParameterViewModel : AttributeContainerViewModelBase<Parameter>
         => GetModel().TypeName
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(Model!.IsNullable, Settings.EnableNullableContext)
-            .AbbreviateNamespaces(Model.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate));
+            .AbbreviateNamespaces(Enumerable.Empty<string>());
 
     public string Name
         => GetModel().Name.Sanitize().GetCsharpFriendlyName();

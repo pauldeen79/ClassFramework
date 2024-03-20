@@ -112,29 +112,10 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
         }
 
         [Fact]
-        public void Adds_Metadata_To_Properties_From_SourceModel_Properties()
-        {
-            // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName("MyMetadata").WithValue("Value"));
-            InitializeParser();
-            var sut = CreateSut();
-            var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder();
-            var context = CreateContext(sourceModel, model, settings);
-
-            // Act
-            var result = sut.Process(context);
-
-            // Assert
-            result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.Metadata).Should().BeEquivalentTo(Enumerable.Range(1, 3).Select(_ => new MetadataBuilder().WithName("MyMetadata").WithValue("Value")));
-        }
-
-        [Fact]
         public void Adds_Attributes_To_Properties_From_SourceModel_Properties_When_CopyAttributes_Is_True()
         {
             // Arrange
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName("MyMetadata").WithValue("Value"));
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();

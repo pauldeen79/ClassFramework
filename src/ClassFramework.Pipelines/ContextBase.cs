@@ -147,8 +147,7 @@ public abstract class ContextBase<TModel>
             .WithIsNullable(property.IsNullable)
             .WithIsValueType(property.IsValueType)
             .WithVisibility(property.Visibility)
-            .WithParentTypeFullName(property.ParentTypeFullName)
-            .AddMetadata(property.Metadata.Select(x => x.ToBuilder()));
+            .WithParentTypeFullName(property.ParentTypeFullName);
     }
 
     public Domain.Attribute InitializeDelegate(System.Attribute sourceAttribute)

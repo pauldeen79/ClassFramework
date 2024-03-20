@@ -113,23 +113,23 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             result.Should().Be("MyType?");
         }
 
-        [Fact]
-        public void Abbreviates_Namespaces()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = new MethodBuilder()
-                .WithName("MyMethod")
-                .WithReturnType(new ClassBuilder().WithName("MyType").WithNamespace("MyNamespace"))
-                .AddMetadata(MetadataNames.NamespaceToAbbreviate, "MyNamespace")
-                .Build();
+        //[Fact]
+        //public void Abbreviates_Namespaces()
+        //{
+        //    // Arrange
+        //    var sut = CreateSut();
+        //    sut.Model = new MethodBuilder()
+        //        .WithName("MyMethod")
+        //        .WithReturnType(new ClassBuilder().WithName("MyType").WithNamespace("MyNamespace"))
+        //        .AddMetadata(MetadataNames.NamespaceToAbbreviate, "MyNamespace")
+        //        .Build();
 
-            // Act
-            var result = sut.ReturnTypeName;
+        //    // Act
+        //    var result = sut.ReturnTypeName;
 
-            // Assert
-            result.Should().Be("MyType");
-        }
+        //    // Assert
+        //    result.Should().Be("MyType");
+        //}
 
         [Fact]
         public void Returns_void_When_Empty()

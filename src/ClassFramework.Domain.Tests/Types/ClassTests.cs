@@ -18,7 +18,6 @@ public class ClassTests
                 Enumerable.Empty<Field>(),
                 Enumerable.Empty<Property>(),
                 Enumerable.Empty<Method>(),
-                Enumerable.Empty<Metadata>(),
                 default,
                 name: null!,
                 Enumerable.Empty<Attribute>(),

@@ -20,21 +20,6 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         }
 
         [Fact]
-        public void Gets_Value_From_TypeName_When_Metadata_Is_Found_But_Value_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, null).Build();
-            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
-            var context = new PropertyContext(sut, new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
-
-            // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, context);
-
-            // Assert
-            result.Should().Be("default(System.String)");
-        }
-
-        [Fact]
         public void Gets_Value_From_MetadataValue_Literal_When_Found()
         {
             // Arrange
