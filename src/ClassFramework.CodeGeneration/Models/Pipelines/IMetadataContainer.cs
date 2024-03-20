@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.CodeGeneration.Bootstrap.Models.Abstractions;
+﻿namespace ClassFramework.CodeGeneration.Models.Pipelines;
 
 internal interface IMetadataContainer
 {

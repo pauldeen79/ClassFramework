@@ -8,4 +8,5 @@ public partial class TypenameMappingBuilder
     public TypenameMappingBuilder WithTargetType(Type targetType) => WithTargetTypeName(targetType.IsNotNull(nameof(targetType)).FullName.FixTypeName());
     public TypenameMappingBuilder WithTargetType(IType targetType) => WithTargetTypeName(targetType.IsNotNull(nameof(targetType)).GetFullName());
     public TypenameMappingBuilder WithTargetType(ITypeBuilder targetType) => WithTargetTypeName(targetType.IsNotNull(nameof(targetType)).GetFullName());
+    public TypenameMappingBuilder AddMetadata(string name, object? value) => AddMetadata(new MetadataBuilder().WithName(name.IsNotNull(nameof(name))).WithValue(value));
 }

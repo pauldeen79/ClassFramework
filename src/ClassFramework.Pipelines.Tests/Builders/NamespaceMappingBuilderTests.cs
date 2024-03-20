@@ -1,9 +1,8 @@
-﻿
-namespace ClassFramework.Domain.Tests.Builders.Extensions;
+﻿namespace ClassFramework.Pipelines.Tests.Builders;
 
-public class MetadataContainerBuilderExtensionsTests : TestBase<MyMetadataContainerBuilder>
+public class NamespaceMappingBuilderTests : TestBase<NamespaceMappingBuilder>
 {
-    public class AddMetadata : MetadataContainerBuilderExtensionsTests
+    public class AddMetadata : NamespaceMappingBuilderTests
     {
         [Fact]
         public void Throws_On_Null_Name()
@@ -29,9 +28,4 @@ public class MetadataContainerBuilderExtensionsTests : TestBase<MyMetadataContai
             result.Metadata.Should().BeEquivalentTo(new[] { new Metadata(name: "Name", value: "Value") });
         }
     }
-}
-
-public class MyMetadataContainerBuilder : IMetadataContainerBuilder
-{
-    public ObservableCollection<MetadataBuilder> Metadata { get; set; } = new();
 }
