@@ -16,4 +16,5 @@ internal interface ICsharpClassGeneratorSettings
     bool EnableNullableContext { get; }
     bool EnableGlobalUsings { get; }
     [Required] IReadOnlyCollection<string> CustomUsings { get; }
+    [Required] IReadOnlyCollection<string> NamespacesToAbbreviate { get; }
 }
