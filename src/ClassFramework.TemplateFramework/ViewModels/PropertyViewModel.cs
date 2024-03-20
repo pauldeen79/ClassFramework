@@ -14,7 +14,7 @@ public class PropertyViewModel : AttributeContainerViewModelBase<Property>
         => GetModel().TypeName
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(Model!.IsNullable, Settings.EnableNullableContext)
-            .AbbreviateNamespaces(Enumerable.Empty<string>());
+            .AbbreviateNamespaces(GetContext().GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate);
 
     public string Name
         => GetModel().Name.Sanitize().GetCsharpFriendlyName();

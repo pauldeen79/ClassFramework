@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.TemplateFramework.Tests.ViewModels;
+﻿using ClassFramework.TemplateFramework.Templates;
+
+namespace ClassFramework.TemplateFramework.Tests.ViewModels;
 
 public class PropertyViewModelTests : TestBase<PropertyViewModel>
 {
@@ -26,6 +28,11 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
                 .WithName("MyField")
                 .WithType(typeof(int))
                 .Build();
+            var template = new PropertyTemplate();
+            sut.Context = CreateTemplateContext(template, sut.Model);
+            template.Context = sut.Context;
+            template.Model = sut;
+            sut.Settings = CreateCsharpClassGeneratorSettings().ToBuilder().AddNamespacesToAbbreviate("MyNamespace").Build();
 
             // Act
             var result = sut.TypeName;
@@ -44,6 +51,11 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
                 .WithType(new ClassBuilder().WithName("MyType"))
                 .WithIsNullable()
                 .Build();
+            var template = new PropertyTemplate();
+            sut.Context = CreateTemplateContext(template, sut.Model);
+            template.Context = sut.Context;
+            template.Model = sut;
+            sut.Settings = CreateCsharpClassGeneratorSettings().ToBuilder().AddNamespacesToAbbreviate("MyNamespace").Build();
 
             // Act
             var result = sut.TypeName;
@@ -52,23 +64,27 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             result.Should().Be("MyType?");
         }
 
-        //[Fact]
-        //public void Abbreviates_Namespaces()
-        //{
-        //    // Arrange
-        //    var sut = CreateSut();
-        //    sut.Model = new PropertyBuilder()
-        //        .WithName("MyField")
-        //        .WithType(new ClassBuilder().WithName("MyType").WithNamespace("MyNamespace"))
-        //        .AddMetadata(MetadataNames.NamespaceToAbbreviate, "MyNamespace")
-        //        .Build();
+        [Fact]
+        public void Abbreviates_Namespaces()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Model = new PropertyBuilder()
+                .WithName("MyField")
+                .WithType(new ClassBuilder().WithName("MyType").WithNamespace("MyNamespace"))
+                .Build();
+            var template = new PropertyTemplate();
+            sut.Context = CreateTemplateContext(template, sut.Model);
+            template.Context = sut.Context;
+            template.Model = sut;
+            sut.Settings = CreateCsharpClassGeneratorSettings().ToBuilder().AddNamespacesToAbbreviate("MyNamespace").Build();
 
-        //    // Act
-        //    var result = sut.TypeName;
+            // Act
+            var result = sut.TypeName;
 
-        //    // Assert
-        //    result.Should().Be("MyType");
-        //}
+            // Assert
+            result.Should().Be("MyType");
+        }
     }
 
     public class ExplicitInterfaceName : PropertyViewModelTests

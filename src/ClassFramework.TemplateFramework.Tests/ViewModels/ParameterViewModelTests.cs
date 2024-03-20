@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.TemplateFramework.Tests.ViewModels;
+﻿using ClassFramework.TemplateFramework.Templates;
+
+namespace ClassFramework.TemplateFramework.Tests.ViewModels;
 
 public class ParameterViewModelTests : TestBase<ParameterViewModel>
 {
@@ -26,6 +28,11 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
                 .WithName("MyField")
                 .WithType(typeof(int))
                 .Build();
+            var template = new ParameterTemplate();
+            sut.Context = CreateTemplateContext(template, sut.Model);
+            template.Context = sut.Context;
+            template.Model = sut;
+            sut.Settings = CreateCsharpClassGeneratorSettings().ToBuilder().AddNamespacesToAbbreviate("MyNamespace").Build();
 
             // Act
             var result = sut.TypeName;
@@ -44,6 +51,11 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
                 .WithType(new ClassBuilder().WithName("MyType"))
                 .WithIsNullable()
                 .Build();
+            var template = new ParameterTemplate();
+            sut.Context = CreateTemplateContext(template, sut.Model);
+            template.Context = sut.Context;
+            template.Model = sut;
+            sut.Settings = CreateCsharpClassGeneratorSettings().ToBuilder().AddNamespacesToAbbreviate("MyNamespace").Build();
 
             // Act
             var result = sut.TypeName;
@@ -52,23 +64,27 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             result.Should().Be("MyType?");
         }
 
-        //[Fact]
-        //public void Abbreviates_Namespaces()
-        //{
-        //    // Arrange
-        //    var sut = CreateSut();
-        //    sut.Model = new ParameterBuilder()
-        //        .WithName("MyField")
-        //        .WithType(new ClassBuilder().WithName("MyType").WithNamespace("MyNamespace"))
-        //        .AddMetadata(MetadataNames.NamespaceToAbbreviate, "MyNamespace")
-        //        .Build();
+        [Fact]
+        public void Abbreviates_Namespaces()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Model = new ParameterBuilder()
+                .WithName("MyField")
+                .WithType(new ClassBuilder().WithName("MyType").WithNamespace("MyNamespace"))
+                .Build();
+            var template = new ParameterTemplate();
+            sut.Context = CreateTemplateContext(template, sut.Model);
+            template.Context = sut.Context;
+            template.Model = sut;
+            sut.Settings = CreateCsharpClassGeneratorSettings().ToBuilder().AddNamespacesToAbbreviate("MyNamespace").Build();
 
-        //    // Act
-        //    var result = sut.TypeName;
+            // Act
+            var result = sut.TypeName;
 
-        //    // Assert
-        //    result.Should().Be("MyType");
-        //}
+            // Assert
+            result.Should().Be("MyType");
+        }
     }
 
     public class ShouldRenderDefaultValue : ParameterViewModelTests
