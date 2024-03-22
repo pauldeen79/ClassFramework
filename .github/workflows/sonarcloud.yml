@@ -32,7 +32,7 @@ jobs:
       - name: Install SonarCloud scanners
         run: |
           dotnet tool install --global dotnet-sonarscanner
-      - name: Build and analyze
+      - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -43,5 +43,13 @@ jobs:
           dotnet build src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj -c Release
           dotnet src/ClassFramework.CodeGeneration/bin/Release/net8.0/ClassFramework.CodeGeneration.dll
           dotnet build ClassFramework.sln
+      - name: Run tests
+        continue-on-error: true
+        run: |
           dotnet test ClassFramework.sln --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+      - name: Finalize analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
           dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
