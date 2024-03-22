@@ -190,7 +190,7 @@ public abstract class ContextBase<TModel>
     {
         var needValidation =
             Settings.AddValidationCode() == ArgumentValidationType.DomainOnly
-            || (Settings.AddValidationCode() == ArgumentValidationType.Shared && baseClass);
+            || (Settings.AddValidationCode() == ArgumentValidationType.Shared && !baseClass);
 
         if (!needValidation)
         {
