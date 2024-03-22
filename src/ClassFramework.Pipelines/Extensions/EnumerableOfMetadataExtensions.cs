@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Domain.Extensions;
+﻿namespace ClassFramework.Pipelines.Extensions;
 
 public static class EnumerableOfMetadataExtensions
 {

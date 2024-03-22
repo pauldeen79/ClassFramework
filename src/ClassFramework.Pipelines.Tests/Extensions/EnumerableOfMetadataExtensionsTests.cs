@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Domain.Tests.Extensions;
+﻿namespace ClassFramework.Pipelines.Tests.Extensions;
 
 public class EnumerableOfMetadataExtensionsTests
 {
