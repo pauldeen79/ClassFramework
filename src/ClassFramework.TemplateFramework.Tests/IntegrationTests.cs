@@ -480,6 +480,7 @@ namespace Test.Domain
     {
         public Literal(string value, object? originalValue) : base(value, originalValue)
         {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }
 #nullable restore
@@ -510,7 +511,6 @@ namespace Test.Domain
         {
             this.Value = value;
             this.OriginalValue = originalValue;
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
         public Test.Domain.Builders.LiteralBuilder ToBuilder()

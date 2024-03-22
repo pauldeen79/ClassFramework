@@ -12,4 +12,5 @@ public class PipelineBuilders : ClassFrameworkCSharpClassBase
     public override string Path => "ClassFramework.Pipelines/Builders";
 
     protected override bool CreateAsObservable => true;
+    protected override bool AddBackingFields => true;
 }

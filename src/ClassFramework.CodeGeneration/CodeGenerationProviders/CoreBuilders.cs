@@ -12,4 +12,5 @@ public class CoreBuilders : ClassFrameworkCSharpClassBase
     public override string Path => "ClassFramework.Domain/Builders";
 
     protected override bool CreateAsObservable => true;
+    protected override bool AddBackingFields => true;
 }

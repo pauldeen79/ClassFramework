@@ -619,7 +619,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     {
         var builder = new ClassBuilder();
         _ = _overrideEntityPipeline
-            .Process(builder, new OverrideEntityContext(typeBase, CreateOverrideEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: true), CultureInfo.InvariantCulture))
+            .Process(builder, new OverrideEntityContext(typeBase, CreateOverrideEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return PostProcessClassBuilder(builder).Build();

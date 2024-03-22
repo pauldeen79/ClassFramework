@@ -185,4 +185,29 @@ public abstract class ContextBase<TModel>
 
         return Enumerable.Empty<Metadata>();
     }
+
+    public IEnumerable<string> CreateEntityValidationCode(IType sourceModel, bool baseClass)
+    {
+        var needValidation =
+            Settings.AddValidationCode() == ArgumentValidationType.DomainOnly
+            || (Settings.AddValidationCode() == ArgumentValidationType.Shared && baseClass);
+
+        if (!needValidation)
+        {
+            yield break;
+        }
+
+        var customValidationCodeStatements = GetMappingMetadata(sourceModel.GetFullName()).GetStringValues(MetadataNames.CustomEntityValidationCode).ToArray();
+        if (customValidationCodeStatements.Length > 0)
+        {
+            foreach (var statement in customValidationCodeStatements)
+            {
+                yield return statement;
+            }
+        }
+        else
+        {
+            yield return $"{typeof(Validator).FullName}.{nameof(Validator.ValidateObject)}(this, new {typeof(ValidationContext).FullName}(this, null, null), true);";
+        }
+    }
 }
