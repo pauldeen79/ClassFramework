@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="pauldeen79.ModelFramework.CodeGeneration" Version="0.8.3" />
+    <PackageReference Include="pauldeen79.ModelFramework.CodeGeneration" Version="0.8.4" />
   </ItemGroup>
 
 </Project>
