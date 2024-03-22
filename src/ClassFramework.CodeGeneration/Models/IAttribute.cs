@@ -2,5 +2,5 @@
 
 internal interface IAttribute : Abstractions.INameContainer
 {
-    [Required] IReadOnlyCollection<IAttributeParameter> Parameters { get; }
+    [Required] [ValidateObject] IReadOnlyCollection<IAttributeParameter> Parameters { get; }
 }

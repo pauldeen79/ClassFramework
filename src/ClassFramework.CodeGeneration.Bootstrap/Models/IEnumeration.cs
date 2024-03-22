@@ -2,5 +2,5 @@
 
 internal interface IEnumeration : IAttributesContainer, INameContainer, IVisibilityContainer
 {
-    [Required] IReadOnlyCollection<IEnumerationMember> Members { get; }
+    [Required] [ValidateObject] IReadOnlyCollection<IEnumerationMember> Members { get; }
 }

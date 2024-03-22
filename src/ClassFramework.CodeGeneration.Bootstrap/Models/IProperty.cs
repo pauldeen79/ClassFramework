@@ -8,7 +8,7 @@ internal interface IProperty : IExtendedVisibilityContainer, INameContainer, IAt
     SubVisibility GetterVisibility { get; }
     SubVisibility SetterVisibility { get; }
     SubVisibility InitializerVisibility { get; }
-    [Required] IReadOnlyCollection<ICodeStatementBase> GetterCodeStatements { get; }
-    [Required] IReadOnlyCollection<ICodeStatementBase> SetterCodeStatements { get; }
-    [Required] IReadOnlyCollection<ICodeStatementBase> InitializerCodeStatements { get; }
+    [Required] [ValidateObject] IReadOnlyCollection<ICodeStatementBase> GetterCodeStatements { get; }
+    [Required] [ValidateObject] IReadOnlyCollection<ICodeStatementBase> SetterCodeStatements { get; }
+    [Required] [ValidateObject] IReadOnlyCollection<ICodeStatementBase> InitializerCodeStatements { get; }
 }

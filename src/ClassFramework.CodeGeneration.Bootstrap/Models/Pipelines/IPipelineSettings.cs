@@ -11,7 +11,7 @@ internal interface IPipelineSettings
     bool AddSetters { get; }
     bool AllowGenerationWithoutProperties { get; }
     [Required] IReadOnlyCollection<IAttributeInitializer> AttributeInitializers { get; }
-    ITypeBase? BaseClass { get; }
+    [ValidateObject] ITypeBase? BaseClass { get; }
     [Required(AllowEmptyStrings = true)] string BaseClassBuilderNameSpace { get; }
     [Required(AllowEmptyStrings = true)] string BuilderExtensionsCollectionCopyStatementFormatString { get; }
     [Required(AllowEmptyStrings = true)] string BuilderExtensionsNameFormatString { get; }

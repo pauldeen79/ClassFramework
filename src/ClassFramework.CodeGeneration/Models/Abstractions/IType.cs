@@ -4,8 +4,8 @@ internal interface IType : IVisibilityContainer, INameContainer, IAttributesCont
 {
     [Required(AllowEmptyStrings = true)] string Namespace { get; }
     bool Partial { get; }
-    [Required] IReadOnlyCollection<string> Interfaces { get; }
-    [Required] IReadOnlyCollection<IField> Fields { get; }
-    [Required] IReadOnlyCollection<IProperty> Properties { get; }
-    [Required] IReadOnlyCollection<IMethod> Methods { get; }
+    [Required] [ValidateObject] IReadOnlyCollection<string> Interfaces { get; }
+    [Required] [ValidateObject] IReadOnlyCollection<IField> Fields { get; }
+    [Required] [ValidateObject] IReadOnlyCollection<IProperty> Properties { get; }
+    [Required] [ValidateObject] IReadOnlyCollection<IMethod> Methods { get; }
 }

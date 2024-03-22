@@ -2,5 +2,5 @@
 
 internal interface IConstructorsContainer
 {
-    [Required] IReadOnlyCollection<IConstructor> Constructors { get; }
+    [Required] [ValidateObject] IReadOnlyCollection<IConstructor> Constructors { get; }
 }
