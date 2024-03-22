@@ -426,7 +426,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
             .Build();
 
-    protected virtual IEnumerable<NamespaceMappingBuilder> CreateNamespaceMappings()
+    protected IEnumerable<NamespaceMappingBuilder> CreateNamespaceMappings()
     {
         // From models to domain entities
         yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models").WithTargetNamespace(CoreNamespace);
@@ -448,9 +448,17 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.{entityClassName}s").WithTargetNamespace($"{CoreNamespace}.{entityClassName}s");
             yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CoreNamespace}.{entityClassName}s").WithTargetNamespace($"{CoreNamespace}.{entityClassName}s");
         }
+
+        foreach (var mapping in CreateAdditionalNamespaceMappings())
+        {
+            yield return mapping;
+        }
     }
 
-    protected virtual IEnumerable<TypenameMappingBuilder> CreateTypenameMappings()
+    protected virtual IEnumerable<NamespaceMappingBuilder> CreateAdditionalNamespaceMappings()
+        => Enumerable.Empty<NamespaceMappingBuilder>();
+    
+    protected IEnumerable<TypenameMappingBuilder> CreateTypenameMappings()
         => GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface
                 && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models", StringComparison.Ordinal) == true
@@ -490,7 +498,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(IReadOnlyCollection<>).WithoutGenerics()).WithTargetTypeName(typeof(IReadOnlyCollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList().AsReadOnly()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(IList<>).WithoutGenerics()).WithTargetTypeName(typeof(IList<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(ICollection<>).WithoutGenerics()).WithTargetTypeName(typeof(ICollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
-            ]);
+            ])
+        .Concat(CreateAdditionalTypenameMappings());
+
+    protected virtual IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
+         => Enumerable.Empty<TypenameMappingBuilder>();
 
     protected virtual bool IsAbstractType(Type type)
     {

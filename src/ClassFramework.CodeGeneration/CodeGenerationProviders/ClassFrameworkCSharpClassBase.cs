@@ -35,10 +35,10 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
         => @namespace.In($"{CodeGenerationRootNamespace}.Models.Pipelines",
                          $"{CodeGenerationRootNamespace}.Models.TemplateFramework");
 
-    protected override IEnumerable<TypenameMappingBuilder> CreateTypenameMappings()
-        => base.CreateTypenameMappings()
-            .Concat(GetType().Assembly.GetTypes()
-            .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Pipelines" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName())).SelectMany(x => CreateCustomTypenameMappings(x, "ClassFramework.Pipelines", "ClassFramework.Pipelines.Builders")))
+    protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
+        => GetType().Assembly.GetTypes()
+            .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Pipelines" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
+            .SelectMany(x => CreateCustomTypenameMappings(x, "ClassFramework.Pipelines", "ClassFramework.Pipelines.Builders"))
             .Concat([new TypenameMappingBuilder().WithSourceType(typeof(ArgumentValidationType)).WithTargetTypeName($"ClassFramework.Pipelines.Domains.{nameof(ArgumentValidationType)}")]);
 
     private IEnumerable<TypenameMappingBuilder> CreateCustomTypenameMappings(Type modelType, string entityNamespace, string builderNamespace) =>
