@@ -60,8 +60,8 @@ public abstract class ContextBase<TModel>
     public Result<IConcreteTypeBuilder> SetEntityName(IType sourceModel, IConcreteTypeBuilder model, IFormattableStringParser formattableStringParser, object context)
     {
         var resultSetBuilder = new NamedResultSetBuilder<string>();
-        resultSetBuilder.Add("Name", () => formattableStringParser.Parse(Settings.EntityNameFormatString, FormatProvider, context));
-        resultSetBuilder.Add("Namespace", () => GetMappingMetadata(sourceModel.GetFullName()).GetStringResult(MetadataNames.CustomEntityNamespace, () => formattableStringParser.Parse(Settings.EntityNamespaceFormatString, FormatProvider, context)));
+        resultSetBuilder.Add(NamedResults.Name, () => formattableStringParser.Parse(Settings.EntityNameFormatString, FormatProvider, context));
+        resultSetBuilder.Add(NamedResults.Namespace, () => GetMappingMetadata(sourceModel.GetFullName()).GetStringResult(MetadataNames.CustomEntityNamespace, () => formattableStringParser.Parse(Settings.EntityNamespaceFormatString, FormatProvider, context)));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());
@@ -72,8 +72,8 @@ public abstract class ContextBase<TModel>
         }
 
         model
-            .WithName(results.First(x => x.Name == "Name").Result.Value!)
-            .WithNamespace(MapNamespace(results.First(x => x.Name == "Namespace").Result.Value!));
+            .WithName(results.First(x => x.Name == NamedResults.Name).Result.Value!)
+            .WithNamespace(MapNamespace(results.First(x => x.Name == NamedResults.Namespace).Result.Value!));
 
         return Result.Continue<IConcreteTypeBuilder>();
     }
@@ -214,9 +214,9 @@ public abstract class ContextBase<TModel>
         arrayOverloadCode = arrayOverloadCode.IsNotNull(nameof(arrayOverloadCode));
 
         var resultSetBuilder = new NamedResultSetBuilder<string>();
-        resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser));
-        resultSetBuilder.Add("Namespace", () => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext));
-        resultSetBuilder.Add("BuilderName", () => formattableStringParser.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext));
+        resultSetBuilder.Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser));
+        resultSetBuilder.Add(NamedResults.Namespace, () => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext));
+        resultSetBuilder.Add(NamedResults.BuilderName, () => formattableStringParser.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext));
         resultSetBuilder.Add("AddMethodName", () => formattableStringParser.Parse(Settings.AddMethodNameFormatString, FormatProvider, parentChildContext));
         resultSetBuilder.AddRange("EnumerableOverload", () => enumerableOverloadCode);
         resultSetBuilder.AddRange("ArrayOverload", () => arrayOverloadCode);
@@ -234,10 +234,10 @@ public abstract class ContextBase<TModel>
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
         var resultSetBuilder = new NamedResultSetBuilder<string>();
-        resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser));
-        resultSetBuilder.Add("Namespace", () => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext));
+        resultSetBuilder.Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser));
+        resultSetBuilder.Add(NamedResults.Namespace, () => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext));
         resultSetBuilder.Add("MethodName", () => formattableStringParser.Parse(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext));
-        resultSetBuilder.Add("BuilderName", () => formattableStringParser.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext));
+        resultSetBuilder.Add(NamedResults.BuilderName, () => formattableStringParser.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext));
         resultSetBuilder.Add("ArgumentNullCheck", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), FormatProvider, parentChildContext));
         resultSetBuilder.Add("BuilderWithExpression", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix}{Name} = {NamePascalCsharpFriendlyName};"), FormatProvider, parentChildContext));
 
