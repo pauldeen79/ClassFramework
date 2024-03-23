@@ -24,7 +24,6 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
     //protected override string ToBuilderFormatString => string.Empty;
     //protected override string ToTypedBuilderFormatString => string.Empty;
     //protected override bool AddCopyConstructor => false;
-    //protected override Pipelines.Domains.ArgumentValidationType ValidateArgumentsInConstructor => Pipelines.Domains.ArgumentValidationType.Shared;
 
     protected TypeBase[] GetPipelineModels()
         => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.Pipelines");
