@@ -27,7 +27,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
             $"{nameof(Property.Name)}Upper" => Result.Success(propertyContext.SourceModel.Name.ToUpper(formatProvider.ToCultureInfo())),
             $"{nameof(Property.Name)}Pascal" => Result.Success(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo())),
             $"{nameof(Property.Name)}PascalCsharpFriendlyName" => Result.Success(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
-            "BuilderMemberName" => Result.Success(propertyContext.SourceModel.GetBuilderMemberName(propertyContext.Settings.AddNullChecks, propertyContext.Settings.EnableNullableReferenceTypes, propertyContext.Settings.AddBackingFields || propertyContext.Settings.CreateAsObservable, propertyContext.FormatProvider.ToCultureInfo())),
+            "BuilderMemberName" => Result.Success(propertyContext.SourceModel.GetBuilderMemberName(propertyContext.Settings, propertyContext.FormatProvider.ToCultureInfo())),
             "EntityMemberName" => Result.Success(propertyContext.SourceModel.GetEntityMemberName(propertyContext.Settings.AddBackingFields || propertyContext.Settings.CreateAsObservable, propertyContext.FormatProvider.ToCultureInfo())),
             "InitializationExpression" => Result.Success(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo(), propertyContext.Settings.AddNullChecks, propertyContext.Settings.ValidateArguments, propertyContext.Settings.EnableNullableReferenceTypes)),
             "CollectionTypeName" => Result.Success(propertyContext.Settings.CollectionTypeName),
