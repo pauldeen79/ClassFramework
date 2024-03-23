@@ -12,5 +12,4 @@ public class TemplateFrameworkBuilders : ClassFrameworkCSharpClassBase
     public override string Path => "ClassFramework.TemplateFramework/Builders";
 
     protected override bool CreateAsObservable => true;
-    protected override bool AddBackingFields => true;
 }

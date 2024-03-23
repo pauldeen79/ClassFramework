@@ -127,7 +127,7 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
                 }
                 else
                 {
-                    yield return Result.Success($"if (instance.{property.GetBuilderMemberName(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields, context.Context.FormatProvider.ToCultureInfo())} is null) instance.{property.GetBuilderMemberName(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields, context.Context.FormatProvider.ToCultureInfo())} = {constructorInitializerResult.Value};");
+                    yield return Result.Success($"if (instance.{property.GetBuilderMemberName(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields || context.Context.Settings.CreateAsObservable, context.Context.FormatProvider.ToCultureInfo())} is null) instance.{property.GetBuilderMemberName(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields || context.Context.Settings.CreateAsObservable, context.Context.FormatProvider.ToCultureInfo())} = {constructorInitializerResult.Value};");
                 }
             }
         }

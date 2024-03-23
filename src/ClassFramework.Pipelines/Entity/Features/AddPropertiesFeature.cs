@@ -25,8 +25,8 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
                     .WithAbstract(property.Abstract)
                     .WithProtected(property.Protected)
                     .WithOverride(property.Override)
-                    .WithHasInitializer(property.HasInitializer && !(context.Context.Settings.AddSetters || context.Context.Settings.AddBackingFields))
-                    .WithHasSetter(context.Context.Settings.AddSetters || context.Context.Settings.AddBackingFields)
+                    .WithHasInitializer(property.HasInitializer && !(context.Context.Settings.AddSetters || context.Context.Settings.AddBackingFields || context.Context.Settings.CreateAsObservable))
+                    .WithHasSetter(context.Context.Settings.AddSetters || context.Context.Settings.AddBackingFields || context.Context.Settings.CreateAsObservable)
                     .WithGetterVisibility(property.GetterVisibility)
                     .WithSetterVisibility(context.Context.Settings.SetterVisibility)
                     .WithInitializerVisibility(property.InitializerVisibility)
@@ -37,7 +37,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
             )
         );
 
-        if (context.Context.Settings.AddBackingFields)
+        if (context.Context.Settings.AddBackingFields || context.Context.Settings.CreateAsObservable)
         {
             AddBackingFields(context, properties);
         }
@@ -70,7 +70,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
         Property property,
         EntityContext context)
     {
-        if (context.Settings.AddBackingFields)
+        if (context.Settings.AddBackingFields || context.Settings.CreateAsObservable)
         {
             yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())};");
         }
@@ -80,7 +80,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
         Property property,
         EntityContext context)
     {
-        if (context.Settings.AddBackingFields)
+        if (context.Settings.AddBackingFields || context.Settings.CreateAsObservable)
         {
             yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks)};");
             if (context.Settings.CreateAsObservable)

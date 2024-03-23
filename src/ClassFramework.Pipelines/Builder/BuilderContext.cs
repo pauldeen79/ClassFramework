@@ -38,7 +38,8 @@ public class BuilderContext : ContextBase<IType>
         => !(IsAbstractBuilder
         || !Settings.AddNullChecks
         || Settings.OriginalValidateArguments == ArgumentValidationType.Shared)
-        || Settings.AddBackingFields;
+        || Settings.AddBackingFields
+        || Settings.CreateAsObservable;
 
     private bool NeedsPragmasForBuildMethod()
         => Settings.EnableNullableReferenceTypes

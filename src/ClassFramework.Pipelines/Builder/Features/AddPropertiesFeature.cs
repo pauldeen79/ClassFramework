@@ -72,7 +72,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, BuilderContext context)
     {
-        if (property.HasBackingFieldOnBuilder(context.Settings.AddNullChecks, context.Settings.EnableNullableReferenceTypes, context.Settings.OriginalValidateArguments, context.Settings.AddBackingFields))
+        if (property.HasBackingFieldOnBuilder(context.Settings.AddNullChecks, context.Settings.EnableNullableReferenceTypes, context.Settings.OriginalValidateArguments, context.Settings.AddBackingFields || context.Settings.CreateAsObservable))
         {
             yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())};");
         }
@@ -80,7 +80,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(Property property, BuilderContext context)
     {
-        if (property.HasBackingFieldOnBuilder(context.Settings.AddNullChecks, context.Settings.EnableNullableReferenceTypes, context.Settings.OriginalValidateArguments, context.Settings.AddBackingFields))
+        if (property.HasBackingFieldOnBuilder(context.Settings.AddNullChecks, context.Settings.EnableNullableReferenceTypes, context.Settings.OriginalValidateArguments, context.Settings.AddBackingFields || context.Settings.CreateAsObservable))
         {
             yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks)};");
             if (context.Settings.CreateAsObservable)

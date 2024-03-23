@@ -224,7 +224,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
             result.Value.Should().NotBeNull();
-            result.Value!.Fields.Select(x => x.Name).Should().BeEquivalentTo("PropertyChanged");
+            result.Value!.Fields.Select(x => x.Name).Should().BeEquivalentTo("_property1", "_property2", "PropertyChanged");
             result.Value.Methods.Should().ContainSingle(x => x.Name == "HandlePropertyChanged");
         }
 
