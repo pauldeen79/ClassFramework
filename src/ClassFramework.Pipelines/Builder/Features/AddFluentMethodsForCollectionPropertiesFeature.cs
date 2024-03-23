@@ -35,14 +35,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
         {
             var parentChildContext = CreateParentChildContext(context, property);
 
-            var resultSetBuilder = new NamedResultSetBuilder<string>();
-            resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context, parentChildContext, context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser));
-            resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNamespaceFormatString, context.Context.FormatProvider, parentChildContext));
-            resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, parentChildContext));
-            resultSetBuilder.Add("AddMethodName", () => _formattableStringParser.Parse(context.Context.Settings.AddMethodNameFormatString, context.Context.FormatProvider, parentChildContext));
-            resultSetBuilder.AddRange("EnumerableOverload", () => GetCodeStatementsForEnumerableOverload(context, property));
-            resultSetBuilder.AddRange("ArrayOverload", () => GetCodeStatementsForArrayOverload(context, property));
-            var results = resultSetBuilder.Build();
+            var results = context.Context.GetResultsForBuilderCollectionProperties(property, parentChildContext, _formattableStringParser, GetCodeStatementsForEnumerableOverload(context, property), GetCodeStatementsForArrayOverload(context, property));
 
             var error = Array.Find(results, x => !x.Result.IsSuccessful());
             if (error is not null)
@@ -122,19 +115,6 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
                 new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
             );
             yield return argumentNullCheckResult;
-            
-            if (context.Context.Settings.OriginalValidateArguments == ArgumentValidationType.Shared)
-            {
-                var constructorInitializerResult = property.GetBuilderConstructorInitializer(context.Context, CreateParentChildContext(context, property), context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Context.Settings.BuilderNewCollectionTypeName, string.Empty, _formattableStringParser); // note that we're not checking the status of this result, because it is using the same expression that we heve already checked before (typeNameResult, see above in this class)
-                if (!constructorInitializerResult.IsSuccessful())
-                {
-                    yield return constructorInitializerResult;
-                }
-                else
-                {
-                    yield return Result.Success($"if ({property.GetBuilderMemberName(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields, context.Context.FormatProvider.ToCultureInfo())} is null) {property.GetBuilderMemberName(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields, context.Context.FormatProvider.ToCultureInfo())} = {constructorInitializerResult.Value};");
-                }
-            }
         }
 
         var builderAddExpressionResult = _formattableStringParser.Parse

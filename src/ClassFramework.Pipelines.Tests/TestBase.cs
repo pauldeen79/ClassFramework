@@ -237,7 +237,6 @@ public abstract class TestBase : IDisposable
             .WithIsAbstract(isAbstract)
             .WithBaseClass(baseClass?.ToBuilder())
             .WithValidateArguments(validateArguments)
-            .WithOriginalValidateArguments(validateArguments)
             .WithCollectionTypeName(collectionTypeName)
             .WithAddFullConstructor(addFullConstructor)
             .WithAddPublicParameterlessConstructor(addPublicParameterlessConstructor)

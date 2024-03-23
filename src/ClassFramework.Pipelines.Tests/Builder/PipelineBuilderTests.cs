@@ -8,11 +8,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         public void Allows_Altering_Existing_Pipeline()
         {
             // Arrange
-            var sharedFeatureBuilders = Scope!.ServiceProvider.GetServices<ISharedFeatureBuilder>();
-            var builderFeatureBuilders = Scope.ServiceProvider.GetServices<IBuilderFeatureBuilder>();
+            var builderFeatureBuilders = Scope!.ServiceProvider.GetServices<IBuilderFeatureBuilder>();
 
             // Act
-            var pipeline = new Pipelines.Builder.PipelineBuilder(sharedFeatureBuilders, builderFeatureBuilders)
+            var pipeline = new Pipelines.Builder.PipelineBuilder(builderFeatureBuilders)
                 .With(x => x.Features.Clear())
                 .Build();
 
@@ -224,7 +223,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
             result.Value.Should().NotBeNull();
-            result.Value!.Fields.Select(x => x.Name).Should().BeEquivalentTo("PropertyChanged");
+            result.Value!.Fields.Select(x => x.Name).Should().BeEquivalentTo("_property1", "_property2", "PropertyChanged");
             result.Value.Methods.Should().ContainSingle(x => x.Name == "HandlePropertyChanged");
         }
 

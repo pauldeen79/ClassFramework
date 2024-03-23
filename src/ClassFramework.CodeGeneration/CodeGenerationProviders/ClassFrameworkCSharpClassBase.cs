@@ -4,7 +4,7 @@
 #pragma warning disable S125 // Sections of code should not be commented out
 public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
 {
-    protected ClassFrameworkCSharpClassBase(ICsharpExpressionDumper csharpExpressionDumper, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionDumper, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
+    protected ClassFrameworkCSharpClassBase(ICsharpExpressionDumper csharpExpressionDumper, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionDumper, builderPipeline, builderExtensionPipeline, entityPipeline, reflectionPipeline, interfacePipeline)
     {
     }
 
@@ -35,46 +35,28 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
         => @namespace.In($"{CodeGenerationRootNamespace}.Models.Pipelines",
                          $"{CodeGenerationRootNamespace}.Models.TemplateFramework");
 
-    protected override IEnumerable<TypenameMappingBuilder> CreateTypenameMappings()
-        => base.CreateTypenameMappings().Concat(
+    protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
+        => GetType().Assembly.GetTypes()
+            .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Pipelines" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
+            .SelectMany(x => CreateCustomTypenameMappings(x, "ClassFramework.Pipelines", "ClassFramework.Pipelines.Builders"))
+            .Concat([new TypenameMappingBuilder().WithSourceType(typeof(ArgumentValidationType)).WithTargetTypeName($"ClassFramework.Pipelines.Domains.{nameof(ArgumentValidationType)}")]);
+
+    private IEnumerable<TypenameMappingBuilder> CreateCustomTypenameMappings(Type modelType, string entityNamespace, string builderNamespace) =>
         [
-            new TypenameMappingBuilder().WithSourceTypeName($"{CodeGenerationRootNamespace}.Models.Domains.ArgumentValidationType").WithTargetTypeName("ClassFramework.Pipelines.Domains.ArgumentValidationType"),
-            new TypenameMappingBuilder().WithSourceTypeName($"{CodeGenerationRootNamespace}.Models.Pipelines.INamespaceMapping").WithTargetTypeName("ClassFramework.Pipelines.NamespaceMapping"),
-            new TypenameMappingBuilder().WithSourceTypeName("ClassFramework.Pipelines.NamespaceMapping").WithTargetTypeName("ClassFramework.Pipelines.NamespaceMapping")
+            new TypenameMappingBuilder()
+                .WithSourceType(modelType)
+                .WithTargetTypeName($"{entityNamespace}.{modelType.GetEntityClassName()}"),
+            new TypenameMappingBuilder()
+                .WithSourceTypeName($"{entityNamespace}.{modelType.GetEntityClassName()}")
+                .WithTargetTypeName($"{entityNamespace}.{modelType.GetEntityClassName()}")
                 .AddMetadata
                 (
-                    new MetadataBuilder().WithValue("ClassFramework.Pipelines.Builders").WithName(Pipelines.MetadataNames.CustomBuilderNamespace),
+                    new MetadataBuilder().WithValue(builderNamespace).WithName(Pipelines.MetadataNames.CustomBuilderNamespace),
                     new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(Pipelines.MetadataNames.CustomBuilderName),
                     new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()").WithName(Pipelines.MetadataNames.CustomBuilderSourceExpression),
                     new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()").WithName(Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
                 ),
-            new TypenameMappingBuilder().WithSourceTypeName($"{CodeGenerationRootNamespace}.Models.Pipelines.ITypenameMapping").WithTargetTypeName("ClassFramework.Pipelines.TypenameMapping"),
-            new TypenameMappingBuilder().WithSourceTypeName("ClassFramework.Pipelines.TypenameMapping").WithTargetTypeName("ClassFramework.Pipelines.TypenameMapping")
-                .AddMetadata
-                (
-                    new MetadataBuilder().WithValue("ClassFramework.Pipelines.Builders").WithName(Pipelines.MetadataNames.CustomBuilderNamespace),
-                    new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(Pipelines.MetadataNames.CustomBuilderName),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()").WithName(Pipelines.MetadataNames.CustomBuilderSourceExpression),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()").WithName(Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
-                ),
-            new TypenameMappingBuilder().WithSourceTypeName($"{CodeGenerationRootNamespace}.Models.Pipelines.IAttributeInitializer").WithTargetTypeName("ClassFramework.Pipelines.AttributeInitializer"),
-            new TypenameMappingBuilder().WithSourceTypeName("ClassFramework.Pipelines.AttributeInitializer").WithTargetTypeName("ClassFramework.Pipelines.AttributeInitializer")
-                .AddMetadata
-                (
-                    new MetadataBuilder().WithValue("ClassFramework.Pipelines.Builders").WithName(Pipelines.MetadataNames.CustomBuilderNamespace),
-                    new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(Pipelines.MetadataNames.CustomBuilderName),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()").WithName(Pipelines.MetadataNames.CustomBuilderSourceExpression),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()").WithName(Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
-                ),
-            new TypenameMappingBuilder().WithSourceTypeName($"{CodeGenerationRootNamespace}.Models.Pipelines.IMetadata").WithTargetTypeName("ClassFramework.Pipelines.Metadata"),
-            new TypenameMappingBuilder().WithSourceTypeName("ClassFramework.Pipelines.Metadata").WithTargetTypeName("ClassFramework.Pipelines.Metadata")
-                .AddMetadata
-                (
-                    new MetadataBuilder().WithValue("ClassFramework.Pipelines.Builders").WithName(Pipelines.MetadataNames.CustomBuilderNamespace),
-                    new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(Pipelines.MetadataNames.CustomBuilderName),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()").WithName(Pipelines.MetadataNames.CustomBuilderSourceExpression),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()").WithName(Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
-                ),
-        ]);
+        ];
+
 }
 #pragma warning restore S125 // Sections of code should not be commented out

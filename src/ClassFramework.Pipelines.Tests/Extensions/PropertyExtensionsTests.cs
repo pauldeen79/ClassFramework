@@ -117,13 +117,25 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
     public class GetInitializationName : PropertyExtensionsTests
     {
         [Fact]
-        public void Throws_On_Null_CultureInfo()
+        public void Throws_On_Null_Settings()
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderMemberName(default, default, default, default, cultureInfo: null!))
+            sut.Invoking(x => x.GetBuilderMemberName(settings: null!, CultureInfo.InvariantCulture))
+               .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+        }
+
+        [Fact]
+        public void Throws_On_Null_CultureInfo()
+        {
+            // Arrange
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var settings = new PipelineSettingsBuilder().Build();
+
+            // Act & Assert
+            sut.Invoking(x => x.GetBuilderMemberName(settings, cultureInfo: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("cultureInfo");
         }
     }

@@ -319,6 +319,27 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             );
         }
 
+        [Fact]
+        public void Creates_Entity_With_Custom_Validation()
+        {
+            // Arrange
+            var model = CreateModelWithCustomTypeProperties();
+            var settings = CreateSettingsForEntity(
+                addNullChecks: true,
+                validateArguments: ArgumentValidationType.CustomValidationCode);
+            var context = CreateContext(model, settings);
+
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = sut.Process(Model, context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            result.Value.Should().NotBeNull();
+            result.Value!.Methods.Should().ContainSingle(x => x.Name == "Validate");
+        }
+        
         private static EntityContext CreateContext(IConcreteType model, PipelineSettingsBuilder settings)
             => new(model, settings.Build(), CultureInfo.InvariantCulture);
     }

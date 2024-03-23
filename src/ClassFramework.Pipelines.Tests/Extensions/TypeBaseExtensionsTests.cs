@@ -323,7 +323,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 addNullChecks: true,
                 enableBuilderInheritance: true,
                 baseClass: null,
-                validateArguments: ArgumentValidationType.DomainOnly
+                validateArguments: ArgumentValidationType.IValidatableObject
             );
             var model = new ClassBuilder();
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
@@ -352,36 +352,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 addNullChecks: false,
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
-                validateArguments: ArgumentValidationType.DomainOnly
-            );
-            var model = new ClassBuilder();
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-
-            // Act
-            var result = sut.GetBuilderClassFields(context, formattableStringParser);
-
-            // Assert
-            result.Select(x => x.Value!.Name).Should().BeEmpty();
-        }
-
-        [Fact]
-        public void Returns_Empty_Sequence_When_OriginalValidateArguments_Is_Shared()
-        {
-            // Arrange
-            var sut = CreateSut().WithName("MyClass")
-                .AddProperties
-                (
-                    new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
-                    new PropertyBuilder().WithName("Property2").WithType(typeof(int)),
-                    new PropertyBuilder().WithName("Property3").WithType(typeof(int))
-                )
-                .Build();
-            var settings = CreateSettingsForBuilder(
-                addNullChecks: true,
-                enableBuilderInheritance: true,
-                baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
-                validateArguments: ArgumentValidationType.Shared
+                validateArguments: ArgumentValidationType.IValidatableObject
             );
             var model = new ClassBuilder();
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
@@ -411,7 +382,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 enableNullableReferenceTypes: true,
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
-                validateArguments: ArgumentValidationType.DomainOnly
+                validateArguments: ArgumentValidationType.IValidatableObject
             );
             var model = new ClassBuilder();
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
@@ -444,7 +415,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 enableNullableReferenceTypes: true,
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
-                validateArguments: ArgumentValidationType.DomainOnly,
+                validateArguments: ArgumentValidationType.IValidatableObject,
                 typenameMappings:
                 [
                     new TypenameMappingBuilder()

@@ -2,11 +2,8 @@
 
 public class PipelineBuilder : PipelineBuilder<IConcreteTypeBuilder, BuilderExtensionContext>
 {
-    public PipelineBuilder(
-        IEnumerable<ISharedFeatureBuilder> sharedFeatureBuilders,
-        IEnumerable<IBuilderExtensionFeatureBuilder> builderInterfaceFeatureBuilders)
+    public PipelineBuilder(IEnumerable<IBuilderExtensionFeatureBuilder> builderInterfaceFeatureBuilders)
     {
         AddFeatures(builderInterfaceFeatureBuilders);
-        AddFeatures(sharedFeatureBuilders.Select(x => x.BuildFor<BuilderExtensionContext>()));
     }
 }

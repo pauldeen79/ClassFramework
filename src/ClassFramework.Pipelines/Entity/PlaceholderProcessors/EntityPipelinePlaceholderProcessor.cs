@@ -36,9 +36,6 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
         => value switch
         {
             "EntityNamespace" => formattableStringParser.Parse(pipelineContext.Context.Settings.EntityNamespaceFormatString, pipelineContext.Context.FormatProvider, pipelineContext.Context),
-            "EntityNameSuffix" => Result.Success(pipelineContext.Context.Settings.ValidateArguments == ArgumentValidationType.Shared
-                ? "Base"
-                : string.Empty),
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(pipelineContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<string>()
         };

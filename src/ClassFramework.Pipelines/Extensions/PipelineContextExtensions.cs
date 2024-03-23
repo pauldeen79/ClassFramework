@@ -40,14 +40,9 @@ public static class PipelineContextExtensions
         return Result.Success($"new {ns}{context.Context.SourceModel.Name}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
-    public static string CreateEntityChainCall<TModel>(this PipelineContext<TModel, EntityContext> context, bool baseClass)
+    public static string CreateEntityChainCall<TModel>(this PipelineContext<TModel, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
-
-        if (baseClass && context.Context.Settings.AddValidationCode() == ArgumentValidationType.Shared)
-        {
-            return $"base({CreateImmutableClassCtorParameterNames(context)})";
-        }
 
         return context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null
             ? $"base({GetPropertyNamesConcatenated(context.Context.Settings.BaseClass.Properties, context.Context.FormatProvider.ToCultureInfo())})"
@@ -57,9 +52,6 @@ public static class PipelineContextExtensions
 
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()));
-
-    private static string CreateImmutableClassCtorParameterNames<TModel>(PipelineContext<TModel, EntityContext> context)
-        => string.Join(", ", context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, n => context.Context.MapTypeName(n)).Select(x => x.Name.GetCsharpFriendlyName()));
 
     private static Result<string> GetConstructionMethodParameters<TModel>(PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {

@@ -153,7 +153,7 @@ public class AddFullConstructorFeatureTests : TestBase<Pipelines.Entity.Features
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForEntity(validateArguments: ArgumentValidationType.DomainOnly);
+            var settings = CreateSettingsForEntity(validateArguments: ArgumentValidationType.IValidatableObject);
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act

@@ -25,8 +25,6 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableCoreEntities>()
             .AddScoped<ImmutablePrivateSettersCoreBuilders>()
             .AddScoped<ImmutablePrivateSettersCoreEntities>()
-            .AddScoped<ImmutableSharedValidationCoreBuilders>()
-            .AddScoped<ImmutableSharedValidationCoreEntities>()
             .AddScoped<ImmutableInheritFromInterfacesCoreBuilders>()
             .AddScoped<ImmutableInheritFromInterfacesCoreEntities>()
             .AddScoped<ImmutableInheritFromInterfacesAbstractionsInterfaces>()
@@ -447,158 +445,6 @@ namespace Test.Domain.Builders
         {
             OriginalValue = originalValue;
             return this;
-        }
-    }
-#nullable restore
-}
-");
-    }
-
-    [Fact]
-    public void Can_Generate_Code_For_Immutable_Entity_SharedValidation_With_PipelineCodeGenerationProviderBase()
-    {
-        // Arrange
-        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
-        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableSharedValidationCoreEntities>();
-        var generationEnvironment = new MultipleContentBuilderEnvironment();
-        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
-
-        // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
-
-        // Assert
-        generationEnvironment.Builder.Contents.Should().HaveCount(2);
-        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Test.Domain
-{
-#nullable enable
-    public partial class Literal : LiteralBase
-    {
-        public Literal(string value, object? originalValue) : base(value, originalValue)
-        {
-        }
-    }
-#nullable restore
-}
-");
-        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Test.Domain
-{
-#nullable enable
-    public partial class LiteralBase
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string Value
-        {
-            get;
-        }
-
-        public object? OriginalValue
-        {
-            get;
-        }
-
-        public LiteralBase(string value, object? originalValue)
-        {
-            this.Value = value;
-            this.OriginalValue = originalValue;
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public Test.Domain.Builders.LiteralBuilder ToBuilder()
-        {
-            return new Test.Domain.Builders.LiteralBuilder(this);
-        }
-    }
-#nullable restore
-}
-");
-    }
-
-    [Fact]
-    public void Can_Generate_Code_For_Immutable_Builder_SharedValidation_With_PipelineCodeGenerationProviderBase()
-    {
-        // Arrange
-        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
-        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableSharedValidationCoreBuilders>();
-        var generationEnvironment = new MultipleContentBuilderEnvironment();
-        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
-
-        // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
-
-        // Assert
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
-        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Test.Domain.Builders
-{
-#nullable enable
-    public partial class LiteralBuilder : System.ComponentModel.DataAnnotations.IValidatableObject
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string Value
-        {
-            get;
-            set;
-        }
-
-        public object? OriginalValue
-        {
-            get;
-            set;
-        }
-
-        public LiteralBuilder(Test.Domain.LiteralBase source)
-        {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _value = source.Value;
-            OriginalValue = source.OriginalValue;
-        }
-
-        public LiteralBuilder()
-        {
-            _value = string.Empty;
-            SetDefaultValues();
-        }
-
-        public Test.Domain.Literal Build()
-        {
-            return new Test.Domain.Literal(Value, OriginalValue);
-        }
-
-        partial void SetDefaultValues();
-
-        public Test.Domain.Builders.LiteralBuilder WithValue(string value)
-        {
-            if (value is null) throw new System.ArgumentNullException(nameof(value));
-            Value = value;
-            return this;
-        }
-
-        public Test.Domain.Builders.LiteralBuilder WithOriginalValue(object? originalValue)
-        {
-            OriginalValue = originalValue;
-            return this;
-        }
-
-        public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
-        {
-            var instance = new Test.Domain.LiteralBase(Value, OriginalValue);
-            var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
-            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance), results, true);
-            return results;
         }
     }
 #nullable restore
@@ -1213,7 +1059,7 @@ namespace ClassFramework.TemplateFramework
 
     private sealed class TestPipelineCodeGenerationProvider : CsharpClassGeneratorPipelineCodeGenerationProviderBase
     {
-        public TestPipelineCodeGenerationProvider(ICsharpExpressionDumper csharpExpressionDumper, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionDumper, builderPipeline, builderExtensionPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
+        public TestPipelineCodeGenerationProvider(ICsharpExpressionDumper csharpExpressionDumper, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionDumper, builderPipeline, builderExtensionPipeline, entityPipeline, reflectionPipeline, interfacePipeline)
         {
         }
 

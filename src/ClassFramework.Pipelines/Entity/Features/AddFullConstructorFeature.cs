@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Entity.Features;
+﻿using System.Runtime;
+
+namespace ClassFramework.Pipelines.Entity.Features;
 
 public class AddFullConstructorFeatureBuilder : IEntityFeatureBuilder
 {
@@ -39,6 +41,11 @@ public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
 
         context.Model.AddConstructors(ctorResult.Value!);
 
+        if (context.Context.Settings.AddValidationCode() == ArgumentValidationType.CustomValidationCode)
+        {
+            context.Model.AddMethods(new MethodBuilder().WithName("Validate").WithPartial().WithVisibility(Visibility.Private));
+        }
+
         return Result.Continue<IConcreteTypeBuilder>();
     }
 
@@ -61,7 +68,7 @@ public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
 
         return Result.Success(new ConstructorBuilder()
             .WithProtected(context.Context.Settings.EnableInheritance && context.Context.Settings.IsAbstract)
-            .AddParameters(context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, n => context.Context.MapTypeName(n, MetadataNames.CustomEntityInterfaceTypeName)))
+            .AddParameters(context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, n => context.Context.MapTypeName(n, MetadataNames.CustomEntityInterfaceTypeName)))
             .AddStringCodeStatements
             (
                 context.Context.SourceModel.Properties
@@ -70,32 +77,7 @@ public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
                     .Select(property => context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
             .AddStringCodeStatements(initializationResults.Select(x => x.Value!))
-            .AddStringCodeStatements(CreateValidationCode(context, true))
-            .WithChainCall(context.CreateEntityChainCall(false)));
-    }
-
-    private static IEnumerable<string> CreateValidationCode(PipelineContext<IConcreteTypeBuilder, EntityContext> context, bool baseClass)
-    {
-        var needValidation =
-            context.Context.Settings.AddValidationCode() == ArgumentValidationType.DomainOnly
-            || (context.Context.Settings.AddValidationCode() == ArgumentValidationType.Shared && baseClass);
-
-        if (!needValidation)
-        {
-            yield break;
-        }
-
-        var customValidationCodeStatements = context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName()).GetStringValues(MetadataNames.CustomEntityValidationCode).ToArray();
-        if (customValidationCodeStatements.Length > 0)
-        {
-            foreach (var statement in customValidationCodeStatements)
-            {
-                yield return statement;
-            }
-        }
-        else
-        {
-            yield return $"{typeof(Validator).FullName}.{nameof(Validator.ValidateObject)}(this, new {typeof(ValidationContext).FullName}(this, null, null), true);";
-        }
+            .AddStringCodeStatements(context.Context.CreateEntityValidationCode())
+            .WithChainCall(context.CreateEntityChainCall()));
     }
 }

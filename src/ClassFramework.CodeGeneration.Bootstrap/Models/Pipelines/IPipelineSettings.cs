@@ -59,6 +59,5 @@ internal interface IPipelineSettings
     bool UseBaseClassFromSourceModel { get; }
     bool UseExceptionThrowIfNull { get; }
     Domains.ArgumentValidationType ValidateArguments { get; }
-    Domains.ArgumentValidationType OriginalValidateArguments { get; }
     bool UseDefaultValueAttributeValuesForBuilderInitialization { get; }
 }

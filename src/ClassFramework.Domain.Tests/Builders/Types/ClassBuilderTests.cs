@@ -3,13 +3,13 @@
 public class ClassBuilderTests : TestBase<ClassBuilder>
 {
     [Fact]
-    public void Can_Validate_Recursively()
+    public void Can_Validate_Recursively_Using_TryValidate()
     {
         // Arrange
         var sut = CreateSut().AddFields(new FieldBuilder());
+        var validationResults = new List<ValidationResult>();
 
         // Act
-        var validationResults = new List<ValidationResult>();
         var success = sut.TryValidate(validationResults);
 
         // Assert

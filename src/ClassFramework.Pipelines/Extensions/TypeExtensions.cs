@@ -55,9 +55,11 @@ public static class TypeExtensions
     public static bool IsValueType(this Type type)
         => type.IsValueType || type.IsEnum;
 
-    public static string GetEntityBaseClass(this Type instance, bool useBaseClassFromSourceModel, bool enableInheritance, IType? baseClass)
+    public static string GetEntityBaseClass(this Type instance, PipelineSettings settings)
     {
-        if (useBaseClassFromSourceModel)
+        settings = settings.IsNotNull(nameof(settings));
+
+        if (settings.UseBaseClassFromSourceModel)
         {
             if (instance.BaseType is null || instance.BaseType == typeof(object))
             {
@@ -67,9 +69,9 @@ public static class TypeExtensions
             return instance.BaseType.FullName.FixTypeName();
         }
 
-        if (enableInheritance && baseClass is not null)
+        if (settings.EnableInheritance && settings.BaseClass is not null)
         {
-            return baseClass.GetFullName();
+            return settings.BaseClass.GetFullName();
         }
 
         return string.Empty;

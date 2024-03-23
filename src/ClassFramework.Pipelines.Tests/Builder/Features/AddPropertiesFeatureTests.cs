@@ -170,31 +170,9 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             model.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
         }
 
-        [Fact]
-        public void Does_Not_Add_CodeStatements_To_Properties_When_ValidateArguments_Is_Shared()
-        {
-            // Arrange
-            var sourceModel = CreateModel();
-            InitializeParser();
-            var sut = CreateSut();
-            var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder(
-                addNullChecks: true,
-                validateArguments: ArgumentValidationType.Shared);
-            var context = CreateContext(sourceModel, model, settings);
-
-            // Act
-            var result = sut.Process(context);
-
-            // Assert
-            result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
-            model.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
-        }
-
         [Theory]
         [InlineData(ArgumentValidationType.None)]
-        [InlineData(ArgumentValidationType.DomainOnly)]
+        [InlineData(ArgumentValidationType.IValidatableObject)]
         public void Adds_CodeStatements_To_Properties_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
         {
             // Arrange
@@ -228,7 +206,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
 
         [Theory]
         [InlineData(ArgumentValidationType.None)]
-        [InlineData(ArgumentValidationType.DomainOnly)]
+        [InlineData(ArgumentValidationType.IValidatableObject)]
         public void Adds_CodeStatements_To_Properties_With_CsharpFriendlyName_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
         {
             // Arrange
@@ -261,7 +239,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
 
         [Theory]
         [InlineData(ArgumentValidationType.None)]
-        [InlineData(ArgumentValidationType.DomainOnly)]
+        [InlineData(ArgumentValidationType.IValidatableObject)]
         public void Adds_Fields_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
         {
             // Arrange
