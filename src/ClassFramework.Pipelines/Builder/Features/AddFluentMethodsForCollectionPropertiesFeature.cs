@@ -35,14 +35,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
         {
             var parentChildContext = CreateParentChildContext(context, property);
 
-            var resultSetBuilder = new NamedResultSetBuilder<string>();
-            resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context, parentChildContext, context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser));
-            resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNamespaceFormatString, context.Context.FormatProvider, parentChildContext));
-            resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, parentChildContext));
-            resultSetBuilder.Add("AddMethodName", () => _formattableStringParser.Parse(context.Context.Settings.AddMethodNameFormatString, context.Context.FormatProvider, parentChildContext));
-            resultSetBuilder.AddRange("EnumerableOverload", () => GetCodeStatementsForEnumerableOverload(context, property));
-            resultSetBuilder.AddRange("ArrayOverload", () => GetCodeStatementsForArrayOverload(context, property));
-            var results = resultSetBuilder.Build();
+            var results = context.Context.GetResultsForBuilderCollectionProperties(property, parentChildContext, _formattableStringParser, GetCodeStatementsForEnumerableOverload(context, property), GetCodeStatementsForArrayOverload(context, property));
 
             var error = Array.Find(results, x => !x.Result.IsSuccessful());
             if (error is not null)
