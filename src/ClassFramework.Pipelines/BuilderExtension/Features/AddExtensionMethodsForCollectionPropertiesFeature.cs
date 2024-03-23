@@ -117,19 +117,6 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
                 new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext>, Property>(context, property, context.Context.Settings)
             );
             yield return argumentNullCheckResult;
-
-            if (context.Context.Settings.OriginalValidateArguments == ArgumentValidationType.Shared)
-            {
-                var constructorInitializerResult = property.GetBuilderConstructorInitializer(context.Context, CreateParentChildContext(context, property), context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Context.Settings.BuilderNewCollectionTypeName, string.Empty, _formattableStringParser); // note that we're not checking the status of this result, because it is using the same expression that we heve already checked before (typeNameResult, see above in this class)
-                if (!constructorInitializerResult.IsSuccessful())
-                {
-                    yield return constructorInitializerResult;
-                }
-                else
-                {
-                    yield return Result.Success($"if (instance.{property.GetBuilderMemberName(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields || context.Context.Settings.CreateAsObservable, context.Context.FormatProvider.ToCultureInfo())} is null) instance.{property.GetBuilderMemberName(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields || context.Context.Settings.CreateAsObservable, context.Context.FormatProvider.ToCultureInfo())} = {constructorInitializerResult.Value};");
-                }
-            }
         }
 
         var builderAddExpressionResult = _formattableStringParser.Parse

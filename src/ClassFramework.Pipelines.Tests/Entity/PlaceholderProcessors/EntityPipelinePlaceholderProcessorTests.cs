@@ -66,7 +66,6 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
         }
 
         [Theory]
-        [InlineData(ArgumentValidationType.Shared, "Base")]
         [InlineData(ArgumentValidationType.DomainOnly, "")]
         [InlineData(ArgumentValidationType.None, "")]
         public void Returns_Ok_With_Correct_Value_On_EntityNameSuffix_Based_On_ValidateArguments(ArgumentValidationType validateArguments, string expectedValue)

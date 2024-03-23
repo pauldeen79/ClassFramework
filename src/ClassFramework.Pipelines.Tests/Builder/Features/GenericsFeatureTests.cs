@@ -22,7 +22,7 @@ public class GenericsFeatureTests : TestBase<Pipelines.Builder.Features.Generics
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddGenericTypeArguments("T").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder(validateArguments: ArgumentValidationType.Shared);
+            var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -40,7 +40,7 @@ public class GenericsFeatureTests : TestBase<Pipelines.Builder.Features.Generics
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddGenericTypeArguments("T").AddGenericTypeArgumentConstraints("where T : class").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder(validateArguments: ArgumentValidationType.Shared);
+            var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act

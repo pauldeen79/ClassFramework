@@ -366,35 +366,6 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
         }
 
         [Fact]
-        public void Returns_Empty_Sequence_When_OriginalValidateArguments_Is_Shared()
-        {
-            // Arrange
-            var sut = CreateSut().WithName("MyClass")
-                .AddProperties
-                (
-                    new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
-                    new PropertyBuilder().WithName("Property2").WithType(typeof(int)),
-                    new PropertyBuilder().WithName("Property3").WithType(typeof(int))
-                )
-                .Build();
-            var settings = CreateSettingsForBuilder(
-                addNullChecks: true,
-                enableBuilderInheritance: true,
-                baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
-                validateArguments: ArgumentValidationType.Shared
-            );
-            var model = new ClassBuilder();
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-
-            // Act
-            var result = sut.GetBuilderClassFields(context, formattableStringParser);
-
-            // Assert
-            result.Select(x => x.Value!.Name).Should().BeEmpty();
-        }
-
-        [Fact]
         public void Returns_Correct_Result_On_NonAbstract_Builder_With_NullChecks_And_NonShared_OriginalValidateArguments()
         {
             // Arrange

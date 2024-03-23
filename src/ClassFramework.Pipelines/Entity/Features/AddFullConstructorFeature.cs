@@ -71,6 +71,6 @@ public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             )
             .AddStringCodeStatements(initializationResults.Select(x => x.Value!))
             .AddStringCodeStatements(context.Context.CreateEntityValidationCode(context.Context.SourceModel, true))
-            .WithChainCall(context.CreateEntityChainCall(false)));
+            .WithChainCall(context.CreateEntityChainCall()));
     }
 }

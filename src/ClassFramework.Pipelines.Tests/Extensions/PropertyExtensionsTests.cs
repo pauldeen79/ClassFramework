@@ -123,7 +123,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderMemberName(default, default, default, default, cultureInfo: null!))
+            sut.Invoking(x => x.GetBuilderMemberName(default, default, default, cultureInfo: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("cultureInfo");
         }
     }

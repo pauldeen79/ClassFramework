@@ -171,42 +171,6 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
         }
 
         [Fact]
-        public void Adds_Methods_With_Shared_Validation()
-        {
-            // Arrange
-            var sourceModel = CreateModel();
-            InitializeParser();
-            var sut = CreateSut();
-            var model = new ClassBuilder();
-            var settings = CreateSettingsForBuilder(
-                addNullChecks: true,
-                validateArguments: ArgumentValidationType.Shared,
-                addMethodNameFormatString: "Add{Name}");
-            var context = CreateContext(sourceModel, model, settings);
-
-            // Act
-            var result = sut.Process(context);
-
-            // Assert
-            result.IsSuccessful().Should().BeTrue();
-            model.Methods.Should().HaveCount(2);
-            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
-            model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
-            model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
-            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
-            model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
-            (
-                "return AddProperty3(property3?.ToArray() ?? throw new System.ArgumentNullException(nameof(property3)));",
-                "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
-                "if (Property3 is null) Property3 = new System.Collections.Generic.List<int>();",
-                "foreach (var item in property3) Property3.Add(item);",
-                "return this;"
-            );
-        }
-
-        [Fact]
         public void Adds_Method_For_BuilderForAbstractEntity()
         {
             // Arrange
@@ -240,8 +204,6 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
         }
 
         [Theory]
-        [InlineData(true, ArgumentValidationType.Shared)]
-        [InlineData(false, ArgumentValidationType.Shared)]
         [InlineData(true, ArgumentValidationType.None)]
         [InlineData(false, ArgumentValidationType.None)]
         public void Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Succesful(bool addNullChecks, ArgumentValidationType validateArguments)

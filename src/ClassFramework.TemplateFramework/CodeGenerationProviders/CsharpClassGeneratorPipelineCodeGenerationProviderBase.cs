@@ -7,21 +7,18 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline,
         IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline,
         IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline,
-        IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline,
         IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline,
         IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionDumper)
     {
         Guard.IsNotNull(builderPipeline);
         Guard.IsNotNull(builderExtensionPipeline);
         Guard.IsNotNull(entityPipeline);
-        Guard.IsNotNull(overrideEntityPipeline);
         Guard.IsNotNull(reflectionPipeline);
         Guard.IsNotNull(interfacePipeline);
 
         _builderPipeline = builderPipeline;
         _builderExtensionPipeline = builderExtensionPipeline;
         _entityPipeline = entityPipeline;
-        _overrideEntityPipeline = overrideEntityPipeline;
         _reflectionPipeline = reflectionPipeline;
         _interfacePipeline = interfacePipeline;
     }
@@ -29,7 +26,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private readonly IPipeline<IConcreteTypeBuilder, BuilderContext> _builderPipeline;
     private readonly IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> _builderExtensionPipeline;
     private readonly IPipeline<IConcreteTypeBuilder, EntityContext> _entityPipeline;
-    private readonly IPipeline<IConcreteTypeBuilder, OverrideEntityContext> _overrideEntityPipeline;
     private readonly IPipeline<TypeBaseBuilder, ReflectionContext> _reflectionPipeline;
     private readonly IPipeline<InterfaceBuilder, InterfaceContext> _interfacePipeline;
 
@@ -129,18 +125,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     {
         Guard.IsNotNull(models);
         Guard.IsNotNull(entitiesNamespace);
-
-        if (ValidateArgumentsInConstructor == ArgumentValidationType.Shared && !(EnableEntityInheritance && BaseClass is null))
-        {
-            return models.SelectMany
-            (
-                x => new[]
-                {
-                    CreateImmutableClass(x, entitiesNamespace),
-                    CreateOverrideEntities(x, entitiesNamespace)
-                }
-            ).ToArray();
-        }
 
         return models.Select
         (
@@ -368,35 +352,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .AddTypenameMappings(CreateTypenameMappings())
             .AddNamespaceMappings(CreateNamespaceMappings())
             .WithValidateArguments(forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)))
-            .WithOriginalValidateArguments(ValidateArgumentsInConstructor)
             .WithCollectionTypeName(EntityConcreteCollectionType.WithoutGenerics())
             .WithAddFullConstructor(AddFullConstructor)
             .WithAddPublicParameterlessConstructor(AddPublicParameterlessConstructor)
-            .WithAddNullChecks(forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false))
+            .WithAddNullChecks(overrideAddNullChecks ?? false)
             .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
-            .Build();
-
-    private PipelineSettings CreateOverrideEntityPipelineSettings(
-        string entitiesNamespace,
-        ArgumentValidationType? forceValidateArgumentsInConstructor = null,
-        bool? overrideAddNullChecks = null,
-        string entityNameFormatString = "{Class.NameNoInterfacePrefix}")
-        => new PipelineSettingsBuilder()
-            .WithCreateRecord(CreateRecord)
-            .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
-            .WithEntityNameFormatString(entityNameFormatString)
-            .WithEntityNamespaceFormatString(entitiesNamespace)
-            .WithEnableInheritance(EnableEntityInheritance)
-            .WithIsAbstract(IsAbstract)
-            .WithBaseClass(BaseClass?.ToBuilder())
-            .WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
-            .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
-            .WithEnableNullableReferenceTypes()
-            .AddTypenameMappings(CreateTypenameMappings())
-            .AddNamespaceMappings(CreateNamespaceMappings())
-            .WithAddNullChecks(forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false))
-            .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
-            .WithValidateArguments(ValidateArgumentsInConstructor)
             .Build();
 
     private PipelineSettings CreateInterfacePipelineSettings(
@@ -614,15 +574,5 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .GetValueOrThrow();
 
         return builder.Build();
-    }
-
-    private TypeBase CreateOverrideEntities(TypeBase typeBase, string entitiesNamespace)
-    {
-        var builder = new ClassBuilder();
-        _ = _overrideEntityPipeline
-            .Process(builder, new OverrideEntityContext(typeBase, CreateOverrideEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: true), CultureInfo.InvariantCulture))
-            .GetValueOrThrow();
-
-        return PostProcessClassBuilder(builder).Build();
     }
 }
