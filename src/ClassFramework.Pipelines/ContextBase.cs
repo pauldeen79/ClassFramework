@@ -223,4 +223,24 @@ public abstract class ContextBase<TModel>
         
         return resultSetBuilder.Build();
     }
+
+    public NamedResult<Result<string>>[] GetResultsForBuilderNonCollectionProperties(
+        Property property,
+        object parentChildContext,
+        IFormattableStringParser formattableStringParser)
+    {
+        property = property.IsNotNull(nameof(property));
+        parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
+        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+
+        var resultSetBuilder = new NamedResultSetBuilder<string>();
+        resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser));
+        resultSetBuilder.Add("Namespace", () => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext));
+        resultSetBuilder.Add("MethodName", () => formattableStringParser.Parse(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext));
+        resultSetBuilder.Add("BuilderName", () => formattableStringParser.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext));
+        resultSetBuilder.Add("ArgumentNullCheck", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), FormatProvider, parentChildContext));
+        resultSetBuilder.Add("BuilderWithExpression", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix}{Name} = {NamePascalCsharpFriendlyName};"), FormatProvider, parentChildContext));
+
+        return resultSetBuilder.Build();
+    }
 }
