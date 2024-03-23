@@ -14,7 +14,6 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
         => services
-            .AddScoped<ISharedFeatureBuilder, Shared.Features.PartialFeatureBuilder>()
             .AddScoped<IPipelinePlaceholderProcessor, PropertyProcessor>()
             .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>()
             .AddScoped<IPipelinePlaceholderProcessor, TypeProcessor>();
@@ -36,6 +35,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.BaseClassFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.GenericsFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.ObservableFeatureBuilder>()
+            .AddScoped<IBuilderFeatureBuilder, Builder.Features.PartialFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.SetNameFeatureBuilder>();
 
     private static IServiceCollection AddBuilderInterfacePipeline(this IServiceCollection services)
@@ -45,6 +45,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.AddExtensionMethodsForCollectionPropertiesFeatureBuilder>()
             .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder>()
+            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.PartialFeatureBuilder>()
             .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.SetNameFeatureBuilder>()
             .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.SetStaticFeatureBuilder>();
 
@@ -62,6 +63,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddPublicParameterlessConstructorFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddToBuilderMethodFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.ObservableFeatureBuilder>()
+            .AddScoped<IEntityFeatureBuilder, Entity.Features.PartialFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.SetBaseClassFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.SetNameFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.SetRecordFeatureBuilder>();

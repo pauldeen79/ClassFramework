@@ -30,8 +30,6 @@ global using ClassFramework.Pipelines.Extensions;
 global using ClassFramework.Pipelines.Interface;
 global using ClassFramework.Pipelines.Reflection;
 global using ClassFramework.Pipelines.Reflection.PlaceholderProcessors;
-global using ClassFramework.Pipelines.Shared.Features;
-global using ClassFramework.Pipelines.Shared.Features.Abstractions;
 global using ClassFramework.Pipelines.Shared.PlaceholderProcessors;
 global using ClassFramework.Pipelines.Tests.TestFixtures;
 global using CrossCutting.Common;
