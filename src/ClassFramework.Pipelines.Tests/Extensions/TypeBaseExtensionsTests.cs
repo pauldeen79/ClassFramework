@@ -323,7 +323,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 addNullChecks: true,
                 enableBuilderInheritance: true,
                 baseClass: null,
-                validateArguments: ArgumentValidationType.DomainOnly
+                validateArguments: ArgumentValidationType.IValidatableObject
             );
             var model = new ClassBuilder();
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
@@ -352,7 +352,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 addNullChecks: false,
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
-                validateArguments: ArgumentValidationType.DomainOnly
+                validateArguments: ArgumentValidationType.IValidatableObject
             );
             var model = new ClassBuilder();
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
@@ -382,7 +382,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 enableNullableReferenceTypes: true,
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
-                validateArguments: ArgumentValidationType.DomainOnly
+                validateArguments: ArgumentValidationType.IValidatableObject
             );
             var model = new ClassBuilder();
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
@@ -415,7 +415,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 enableNullableReferenceTypes: true,
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
-                validateArguments: ArgumentValidationType.DomainOnly,
+                validateArguments: ArgumentValidationType.IValidatableObject,
                 typenameMappings:
                 [
                     new TypenameMappingBuilder()

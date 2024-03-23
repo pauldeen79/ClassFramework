@@ -188,7 +188,7 @@ public abstract class ContextBase<TModel>
 
     public IEnumerable<string> CreateEntityValidationCode(IType sourceModel, bool baseClass)
     {
-        var needValidation = Settings.AddValidationCode() == ArgumentValidationType.DomainOnly;
+        var needValidation = Settings.AddValidationCode() == ArgumentValidationType.IValidatableObject;
 
         if (!needValidation)
         {

@@ -18,7 +18,7 @@ public class PipelineSettingsExtensionsTests : TestBase<PipelineSettingsBuilder>
         }
 
         [Theory]
-        [InlineData(ArgumentValidationType.DomainOnly)]
+        [InlineData(ArgumentValidationType.IValidatableObject)]
         [InlineData(ArgumentValidationType.None)]
         public void Returns_ValidateArguments_When_EnableInheritance_Is_False(ArgumentValidationType input)
         {
@@ -39,7 +39,7 @@ public class PipelineSettingsExtensionsTests : TestBase<PipelineSettingsBuilder>
             var sut = CreateSut()
                 .WithEnableInheritance()
                 .WithIsAbstract()
-                .WithValidateArguments(ArgumentValidationType.DomainOnly)
+                .WithValidateArguments(ArgumentValidationType.IValidatableObject)
                 .Build();
 
             // Act
@@ -57,7 +57,7 @@ public class PipelineSettingsExtensionsTests : TestBase<PipelineSettingsBuilder>
                 .WithEnableInheritance()
                 .WithIsAbstract(false)
                 .WithBaseClass(null)
-                .WithValidateArguments(ArgumentValidationType.DomainOnly)
+                .WithValidateArguments(ArgumentValidationType.IValidatableObject)
                 .Build();
 
             // Act
@@ -68,7 +68,7 @@ public class PipelineSettingsExtensionsTests : TestBase<PipelineSettingsBuilder>
         }
 
         [Theory]
-        [InlineData(ArgumentValidationType.DomainOnly)]
+        [InlineData(ArgumentValidationType.IValidatableObject)]
         [InlineData(ArgumentValidationType.None)]
         public void Returns_ValidateArguments_When_EnableInheritance_Is_True_But_IsAbstract_Is_False_With_BaseClass(ArgumentValidationType input)
         {

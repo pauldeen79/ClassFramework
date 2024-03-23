@@ -172,7 +172,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
 
         [Theory]
         [InlineData(ArgumentValidationType.None)]
-        [InlineData(ArgumentValidationType.DomainOnly)]
+        [InlineData(ArgumentValidationType.IValidatableObject)]
         public void Adds_CodeStatements_To_Properties_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
         {
             // Arrange
@@ -206,7 +206,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
 
         [Theory]
         [InlineData(ArgumentValidationType.None)]
-        [InlineData(ArgumentValidationType.DomainOnly)]
+        [InlineData(ArgumentValidationType.IValidatableObject)]
         public void Adds_CodeStatements_To_Properties_With_CsharpFriendlyName_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
         {
             // Arrange
@@ -239,7 +239,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
 
         [Theory]
         [InlineData(ArgumentValidationType.None)]
-        [InlineData(ArgumentValidationType.DomainOnly)]
+        [InlineData(ArgumentValidationType.IValidatableObject)]
         public void Adds_Fields_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
         {
             // Arrange

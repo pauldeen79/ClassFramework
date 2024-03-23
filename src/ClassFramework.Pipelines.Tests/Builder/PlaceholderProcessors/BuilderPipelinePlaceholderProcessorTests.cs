@@ -78,7 +78,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace.Builders"));
             var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(addNullChecks: true, validateArguments: ArgumentValidationType.DomainOnly);
+            var settings = CreateSettingsForBuilder(addNullChecks: true, validateArguments: ArgumentValidationType.IValidatableObject);
             var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
