@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Entity.Features;
+﻿using System.Runtime;
+
+namespace ClassFramework.Pipelines.Entity.Features;
 
 public class AddFullConstructorFeatureBuilder : IEntityFeatureBuilder
 {
@@ -38,6 +40,11 @@ public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
         }
 
         context.Model.AddConstructors(ctorResult.Value!);
+
+        if (context.Context.Settings.AddValidationCode() == ArgumentValidationType.CustomValidationCode)
+        {
+            context.Model.AddMethods(new MethodBuilder().WithName("Validate").WithPartial().WithVisibility(Visibility.Private));
+        }
 
         return Result.Continue<IConcreteTypeBuilder>();
     }

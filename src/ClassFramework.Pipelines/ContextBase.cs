@@ -188,13 +188,15 @@ public abstract class ContextBase<TModel>
 
     public IEnumerable<string> CreateEntityValidationCode()
     {
-        var needValidation = Settings.AddValidationCode() == ArgumentValidationType.IValidatableObject;
+        var argumentValidationType = Settings.AddValidationCode();
 
-        if (!needValidation)
+        if (argumentValidationType == ArgumentValidationType.IValidatableObject)
         {
-            yield break;
+            yield return $"{typeof(Validator).FullName}.{nameof(Validator.ValidateObject)}(this, new {typeof(ValidationContext).FullName}(this, null, null), true);";
         }
-
-        yield return $"{typeof(Validator).FullName}.{nameof(Validator.ValidateObject)}(this, new {typeof(ValidationContext).FullName}(this, null, null), true);";
+        else if (argumentValidationType == ArgumentValidationType.CustomValidationCode)
+        {
+            yield return "Validate();";
+        }
     }
 }
