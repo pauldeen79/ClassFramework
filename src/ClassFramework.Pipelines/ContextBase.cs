@@ -195,17 +195,6 @@ public abstract class ContextBase<TModel>
             yield break;
         }
 
-        var customValidationCodeStatements = GetMappingMetadata(sourceModel.GetFullName()).GetStringValues(MetadataNames.CustomEntityValidationCode).ToArray();
-        if (customValidationCodeStatements.Length > 0)
-        {
-            foreach (var statement in customValidationCodeStatements)
-            {
-                yield return statement;
-            }
-        }
-        else
-        {
-            yield return $"{typeof(Validator).FullName}.{nameof(Validator.ValidateObject)}(this, new {typeof(ValidationContext).FullName}(this, null, null), true);";
-        }
+        yield return $"{typeof(Validator).FullName}.{nameof(Validator.ValidateObject)}(this, new {typeof(ValidationContext).FullName}(this, null, null), true);";
     }
 }

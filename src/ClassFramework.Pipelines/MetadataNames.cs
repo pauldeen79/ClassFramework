@@ -43,16 +43,6 @@ public static class MetadataNames
     public const string CustomBuilderArgumentNullCheckExpression = "ClassFramework.Builder.ArgumentNullCheck";
 
     /// <summary>
-    /// Metadata name for defining custom validation code statements in a builder. Note that the this metadata can occur multiple times, and that all values will all be converted to string.
-    /// </summary>
-    public const string CustomBuilderValidationCode = "ClassFramework.Builder.ValidationCode";
-
-    /// <summary>
-    /// Metadata name for defining custom validation code statements in an entity. Note that the this metadata can occur multiple times, and that all values will all be converted to string.
-    /// </summary>
-    public const string CustomEntityValidationCode = "ClassFramework.Entity.ValiationCode";
-
-    /// <summary>
     /// Metadata name for defining a custom initialization on a fluent (Add) method in a builder. Note that the value will be converted to string.
     /// </summary>
     public const string CustomBuilderAddExpression = "ClassFramework.Builder.AddExpression";
