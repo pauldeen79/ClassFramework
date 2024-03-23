@@ -70,7 +70,7 @@ public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
                     .Select(property => context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
             .AddStringCodeStatements(initializationResults.Select(x => x.Value!))
-            .AddStringCodeStatements(context.Context.CreateEntityValidationCode(context.Context.SourceModel, true))
+            .AddStringCodeStatements(context.Context.CreateEntityValidationCode())
             .WithChainCall(context.CreateEntityChainCall()));
     }
 }

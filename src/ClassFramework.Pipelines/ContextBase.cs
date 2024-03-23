@@ -186,7 +186,7 @@ public abstract class ContextBase<TModel>
         return Enumerable.Empty<Metadata>();
     }
 
-    public IEnumerable<string> CreateEntityValidationCode(IType sourceModel, bool baseClass)
+    public IEnumerable<string> CreateEntityValidationCode()
     {
         var needValidation = Settings.AddValidationCode() == ArgumentValidationType.IValidatableObject;
 
