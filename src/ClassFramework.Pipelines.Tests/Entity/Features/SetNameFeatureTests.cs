@@ -42,7 +42,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Entity.Features.SetNameFea
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateSettingsForEntity(entityNameFormatString: "CustomClassName{EntityNameSuffix}");
+            var settings = CreateSettingsForEntity(entityNameFormatString: "CustomClassName");
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act

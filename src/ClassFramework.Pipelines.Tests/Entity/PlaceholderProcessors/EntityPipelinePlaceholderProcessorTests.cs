@@ -64,23 +64,5 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
             result.Status.Should().Be(ResultStatus.Ok);
             result.Value.Should().Be(expectedValue);
         }
-
-        [Theory]
-        [InlineData(ArgumentValidationType.IValidatableObject, "")]
-        [InlineData(ArgumentValidationType.None, "")]
-        public void Returns_Ok_With_Correct_Value_On_EntityNameSuffix_Based_On_ValidateArguments(ArgumentValidationType validateArguments, string expectedValue)
-        {
-            // Arrange
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            var sut = CreateSut();
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(CreateModel(), new EntityContext(CreateModel().BuildTyped(), new PipelineSettingsBuilder().WithValidateArguments(validateArguments).Build(), CultureInfo.InvariantCulture));
-
-            // Act
-            var result = sut.Process("EntityNameSuffix", CultureInfo.InvariantCulture, context, formattableStringParser);
-
-            // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(expectedValue);
-        }
     }
 }

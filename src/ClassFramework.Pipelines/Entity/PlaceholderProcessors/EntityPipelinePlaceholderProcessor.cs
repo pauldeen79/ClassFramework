@@ -36,7 +36,6 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
         => value switch
         {
             "EntityNamespace" => formattableStringParser.Parse(pipelineContext.Context.Settings.EntityNamespaceFormatString, pipelineContext.Context.FormatProvider, pipelineContext.Context),
-            "EntityNameSuffix" => Result.Success(string.Empty), // TODO: Remove this, no longer needed after removing Shared validation
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(pipelineContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<string>()
         };
