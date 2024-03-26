@@ -41,7 +41,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
             $"{nameof(Property.TypeName)}.NoGenerics" => Result.Success(typeName.WithoutProcessedGenerics()),
             "ParentTypeName" => Result.Success(propertyContext.SourceModel.ParentTypeFullName),
             "ParentTypeName.ClassName" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName()),
-            "DefaultValue" => formattableStringParser.Parse(propertyContext.SourceModel.GetDefaultValue(_csharpExpressionDumper, propertyContext.Settings.EnableNullableReferenceTypes, typeName, propertyContext), formatProvider, context),
+            "DefaultValue" => formattableStringParser.Parse(propertyContext.SourceModel.GetDefaultValue(_csharpExpressionDumper, typeName, propertyContext), formatProvider, context),
             "NullableSuffix" => Result.Success(propertyContext.SourceModel.GetSuffix(propertyContext.Settings.EnableNullableReferenceTypes)),
             _ => Result.Continue<string>()
         };

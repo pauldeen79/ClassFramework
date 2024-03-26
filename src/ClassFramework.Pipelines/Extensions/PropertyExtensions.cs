@@ -2,10 +2,14 @@
 
 public static class PropertyExtensions
 {
-    public static string GetDefaultValue<T>(this Property property, ICsharpExpressionDumper csharpExpressionDumper, bool enableNullableReferenceTypes, string typeName, ContextBase<T> context)
+    public static string GetDefaultValue<T>(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, ContextBase<T> context)
     {
         csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
         context = context.IsNotNull(nameof(context));
+
+        var suffix = !property.IsValueType && !property.IsNullable && context.Settings.EnableNullableReferenceTypes
+            ? "!"
+            : string.Empty;
 
         var defaultValueAttribute = property.Attributes.FirstOrDefault(x => x.Name == typeof(DefaultValueAttribute).FullName);
         if (defaultValueAttribute is not null)
@@ -16,7 +20,7 @@ public static class PropertyExtensions
                 value = new StringLiteral(literal.Value);
             }
 
-            return csharpExpressionDumper.Dump(value);
+            return $"{csharpExpressionDumper.Dump(value)}{suffix}";
         }
 
         var md = context
@@ -28,13 +32,14 @@ public static class PropertyExtensions
             var value = md.Value;
             if (value is Literal literal && literal.Value is not null)
             {
+
                 value = new StringLiteral(literal.Value);
             }
 
-            return csharpExpressionDumper.Dump(value);
+            return $"{csharpExpressionDumper.Dump(value)}{suffix}";
         }
 
-        return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, enableNullableReferenceTypes);
+        return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, context.Settings.EnableNullableReferenceTypes);
     }
 
     public static string GetNullCheckSuffix(this Property property, string name, bool addNullChecks)

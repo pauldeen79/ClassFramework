@@ -13,7 +13,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var context = new PropertyContext(sut, new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, context);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
 
             // Assert
             result.Should().Be("default(System.String)");
@@ -30,7 +30,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var context = new PropertyContext(sut, settings, CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, context);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
 
             // Assert
             result.Should().Be("custom value");
@@ -52,7 +52,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var context = new PropertyContext(sut, settings, CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, context);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
 
             // Assert
             result.Should().Be("custom value");
