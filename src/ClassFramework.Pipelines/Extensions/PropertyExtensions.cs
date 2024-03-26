@@ -7,6 +7,18 @@ public static class PropertyExtensions
         csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
         context = context.IsNotNull(nameof(context));
 
+        var defaultValueAttribute = property.Attributes.FirstOrDefault(x => x.Name == typeof(DefaultValueAttribute).FullName);
+        if (defaultValueAttribute is not null)
+        {
+            var value = defaultValueAttribute.Parameters.Single().Value;
+            if (value is Literal literal && literal.Value is not null)
+            {
+                value = new StringLiteral(literal.Value);
+            }
+
+            return csharpExpressionDumper.Dump(value);
+        }
+
         var md = context
             .GetMappingMetadata(property.TypeName)
             .FirstOrDefault(x => x.Name == MetadataNames.CustomBuilderDefaultValue);
@@ -20,12 +32,6 @@ public static class PropertyExtensions
             }
 
             return csharpExpressionDumper.Dump(value);
-        }
-
-        var defaultValueAttribute = property.Attributes.FirstOrDefault(x => x.Name == typeof(DefaultValueAttribute).FullName);
-        if (defaultValueAttribute is not null)
-        {
-            return csharpExpressionDumper.Dump(defaultValueAttribute.Parameters.Single().Value);
         }
 
         return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, enableNullableReferenceTypes);
