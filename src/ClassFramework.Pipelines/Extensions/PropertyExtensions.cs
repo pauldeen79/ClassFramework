@@ -146,7 +146,7 @@ public static class PropertyExtensions
         {
             var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{TypeName}");
             var newFullName = $"{ns}.{newTypeName}";
-            if (property.TypeName.IsCollectionTypeName())
+            if (property.TypeName.FixTypeName().IsCollectionTypeName())
             {
                 var idx = property.TypeName.IndexOf('<');
                 if (idx > -1)
@@ -191,7 +191,7 @@ public static class PropertyExtensions
 
         var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ParentTypeName.ClassName}");
 
-        if (property.TypeName.IsCollectionTypeName())
+        if (property.TypeName.FixTypeName().IsCollectionTypeName())
         {
             newTypeName = newTypeName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}");
         }
@@ -207,7 +207,7 @@ public static class PropertyExtensions
     }
 
     public static string GetSuffix(this Property source, bool enableNullableReferenceTypes)
-        => source.IsNullable(enableNullableReferenceTypes) && !source.IsValueType && !source.TypeName.IsCollectionTypeName()
+        => source.IsNullable(enableNullableReferenceTypes) && !source.IsValueType && !source.TypeName.FixTypeName().IsCollectionTypeName()
             ? "?"
             : string.Empty;
 }

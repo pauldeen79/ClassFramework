@@ -51,7 +51,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
     {
         collectionTypeName = collectionTypeName.IsNotNull(nameof(collectionTypeName));
 
-        return typeName.IsCollectionTypeName()
+        return typeName.FixTypeName().IsCollectionTypeName()
             && (collectionTypeName.Length == 0 || collectionTypeName != property.TypeName.WithoutGenerics())
                 ? GetCollectionFormatStringForInitialization(property, typeName, cultureInfo, collectionTypeName, addNullChecks, validateArguments, enableNullableReferenceTypes)
                 : property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName();
