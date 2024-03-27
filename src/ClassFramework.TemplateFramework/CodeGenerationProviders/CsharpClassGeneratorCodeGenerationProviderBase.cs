@@ -6,10 +6,10 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     {
         Guard.IsNotNull(csharpExpressionDumper);
 
-        _csharpExpressionDumper = csharpExpressionDumper;
+        CsharpExpressionDumper = csharpExpressionDumper;
     }
 
-    private readonly ICsharpExpressionDumper _csharpExpressionDumper;
+    protected ICsharpExpressionDumper CsharpExpressionDumper { get; }
 
     public abstract string Path { get; }
     public abstract bool RecurseOnDeleteGeneratedFiles { get; }
@@ -24,7 +24,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     public abstract CsharpClassGeneratorSettings Settings { get; }
 
     public object? CreateModel()
-        => new CsharpClassGeneratorViewModel(_csharpExpressionDumper)
+        => new CsharpClassGeneratorViewModel(CsharpExpressionDumper)
         {
             Model = Model,
             Settings = Settings
