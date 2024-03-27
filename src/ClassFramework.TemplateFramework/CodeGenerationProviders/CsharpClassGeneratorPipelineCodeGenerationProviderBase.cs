@@ -41,6 +41,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithEnableNullableContext()
             .WithFilenameSuffix(FilenameSuffix)
             .WithEnvironmentVersion(EnvironmentVersion)
+            .WithSkipWhenFileExists(SkipWhenFileExists)
             .Build();
 
     protected abstract string ProjectName { get; }
@@ -85,6 +86,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool SetDefaultValues => true;
     protected virtual string FilenameSuffix => ".template.generated";
     protected virtual bool CreateCodeGenerationHeader => true;
+    protected virtual bool SkipWhenFileExists => false;
     protected virtual Predicate<Domain.Attribute>? CopyAttributePredicate => null;
     protected virtual Predicate<string>? CopyInterfacePredicate => null;
     protected virtual Func<IType, Method, bool>? CopyMethodPredicate => null;
