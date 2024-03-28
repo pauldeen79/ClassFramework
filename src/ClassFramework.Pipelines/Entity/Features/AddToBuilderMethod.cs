@@ -49,7 +49,7 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
         var typedMethodName = results.First(x => x.Name == "ToTypedBuilderMethodName").Result.Value!;
 
         var ns = results.First(x => x.Name == "Namespace").Result.Value!;
-        var name = results.First(x => x.Name == "Name").Result.Value!;
+        var name = results.First(x => x.Name == "Name").Result.Value!.WithoutProcessedGenerics();
 
         var entityFullName = $"{ns.AppendWhenNotNullOrEmpty(".")}{name}";
         if (context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null)
@@ -70,8 +70,8 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
             ? name
             : name.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
 
-        var builderConcreteTypeName = $"{builderNamespaceResult.Value}.{builderConcreteName}Builder";
-
+        var generics = context.Context.SourceModel.GetGenericTypeArgumentsString();
+        var builderConcreteTypeName = $"{builderNamespaceResult.Value}.{builderConcreteName}Builder{generics}";
         var builderTypeName = GetBuilderTypeName(context, builderInterfaceNamespaceResult, concreteBuilderNamespaceResult, builderConcreteName, builderConcreteTypeName);
 
         var returnStatement = context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null && !string.IsNullOrEmpty(typedMethodName)

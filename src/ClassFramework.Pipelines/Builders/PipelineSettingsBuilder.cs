@@ -21,7 +21,7 @@ public partial class PipelineSettingsBuilder
         BuilderExtensionsNameFormatString = "{Class.NameNoInterfacePrefix}BuilderExtensions";
         BuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {NamePascalCsharpFriendlyName}) {InstancePrefix}{Name}.Add(item);";
         EntityNamespaceFormatString = "{Namespace}";
-        EntityNameFormatString = "{Class.Name}";
+        EntityNameFormatString = "{Class.Name}{Class.GenericArgumentsWithBrackets}";
         ToBuilderFormatString = "ToBuilder";
         ToTypedBuilderFormatString = "ToTypedBuilder";
         EntityNewCollectionTypeName = "System.Collections.Generic.List";

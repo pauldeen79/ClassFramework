@@ -43,7 +43,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
             result.Value.Should().NotBeNull();
-            result.Value!.Name.Should().Be("MyClass");
+            result.Value!.Name.Should().Be("MyClass<T>");
             result.Value.Namespace.Should().Be("MyNamespace");
         }
 
