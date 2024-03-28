@@ -71,6 +71,25 @@ public static class TypeExtensions
 
     public static string GetFullName(this IType type) => $"{type.Namespace.GetNamespacePrefix()}{type.Name}";
 
+    public static IEnumerable<string> GetGenericTypeArguments(this Type instance)
+        => ((TypeInfo)instance).GenericTypeParameters.Select(x => x.Name);
+
+    public static string GetGenericTypeArgumentsString(this Type instance, bool addBrackets = false)
+    {
+        var args = instance.GetGenericTypeArguments().ToArray();
+
+        if (args.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        var prefix = addBrackets ? "<" : string.Empty;
+        var suffix = addBrackets ? ":" : string.Empty;
+        var argsString = string.Join(",", args);
+
+        return $"{prefix}{argsString}{suffix}";
+    }
+
     public static bool IsRecord(this Type type)
         => type.GetMethod("<Clone>$") is not null;
 

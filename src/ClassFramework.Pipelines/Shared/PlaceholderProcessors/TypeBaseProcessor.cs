@@ -18,6 +18,7 @@ public class TypeBaseProcessor : IPipelinePlaceholderProcessor
             $"{nameof(IType.Namespace)}" or $"Class.{nameof(IType.Namespace)}" => Result.Success(pipelineContext.Model.Namespace),
             $"FullName" or "Class.FullName" => Result.Success(pipelineContext.Model.GetFullName()),
             $"{nameof(IType.Name)}NoInterfacePrefix" or $"Class.{nameof(IType.Name)}NoInterfacePrefix" => Result.Success(pipelineContext.Model.WithoutInterfacePrefix()),
+            "GenericArgumentsWithBrackets" or "Class.GenericArgumentsWithBrackets" => Result.Success(pipelineContext.Model.GetGenericTypeArgumentsString()),
             _ => Result.Continue<string>()
         };
     }

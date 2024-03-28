@@ -61,4 +61,100 @@ public class PropertyBuilderTests : TestBase<PropertyBuilder>
             validationResults.Select(x => x.ErrorMessage).Should().BeEquivalentTo("HasSetter and HasInitializer cannot both be true");
         }
     }
+
+    public class GetterNotImplemented : PropertyBuilderTests
+    {
+        [Fact]
+        public void Adds_Correct_Statement()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.GetterNotImplemented();
+
+            // Assert
+            result.GetterCodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("throw new System.NotImplementedException();") });
+        }
+    }
+
+    public class SetterNotImplemented : PropertyBuilderTests
+    {
+        [Fact]
+        public void Adds_Correct_Statement()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.SetterNotImplemented();
+
+            // Assert
+            result.SetterCodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("throw new System.NotImplementedException();") });
+        }
+    }
+
+    public class InitializerNotImplemented : PropertyBuilderTests
+    {
+        [Fact]
+        public void Adds_Correct_Statement()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.InitializerNotImplemented();
+
+            // Assert
+            result.InitializerCodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("throw new System.NotImplementedException();") });
+        }
+    }
+
+    public class AddGetterStringGeCodeStatements : PropertyBuilderTests
+    {
+        [Fact]
+        public void Adds_Correct_Statement()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.AddGetterStringCodeStatements(new[] { "// code goes here" }.AsEnumerable());
+
+            // Assert
+            result.GetterCodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("// code goes here") });
+        }
+    }
+
+    public class AddSetterStringGeCodeStatements : PropertyBuilderTests
+    {
+        [Fact]
+        public void Adds_Correct_Statement()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.AddSetterStringCodeStatements(new[] { "// code goes here" }.AsEnumerable());
+
+            // Assert
+            result.SetterCodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("// code goes here") });
+        }
+    }
+
+    public class AddInitializerStringGeCodeStatements : PropertyBuilderTests
+    {
+        [Fact]
+        public void Adds_Correct_Statement()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.AddInitializerStringCodeStatements(new[] { "// code goes here" }.AsEnumerable());
+
+            // Assert
+            result.InitializerCodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("// code goes here") });
+        }
+    }
 }

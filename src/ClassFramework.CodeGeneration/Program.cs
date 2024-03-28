@@ -34,31 +34,34 @@ internal static class Program
 
         using var serviceProvider = services.BuildServiceProvider();
         using var scope = serviceProvider.CreateScope();
-        var generationEnvironment = new MultipleContentBuilderEnvironment();
         var instances = generators
             .Select(x => (ICodeGenerationProvider)scope.ServiceProvider.GetRequiredService(x))
             .ToArray();
         var engine = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
 
         // Generate code
+        var count = 0;
         foreach (var instance in instances)
         {
+            var generationEnvironment = new MultipleContentBuilderEnvironment();
             engine.Generate(instance, generationEnvironment, codeGenerationSettings);
+            count += generationEnvironment.Builder.Contents.Count();
             if (!codeGenerationSettings.DryRun)
             {
                 generationEnvironment.SaveContents(instance, codeGenerationSettings.BasePath, codeGenerationSettings.DefaultFilename);
             }
+
+            if (string.IsNullOrEmpty(basePath))
+            {
+                Console.WriteLine(generationEnvironment.Builder.ToString());
+            }
         }
 
         // Log output to console
-        if (string.IsNullOrEmpty(basePath))
-        {
-            Console.WriteLine(generationEnvironment.Builder.ToString());
-        }
-        else
+        if (!string.IsNullOrEmpty(basePath))
         {
             Console.WriteLine($"Code generation completed, check the output in {basePath}");
-            Console.WriteLine($"Generated files: {generationEnvironment.Builder.Contents.Count()}");
+            Console.WriteLine($"Generated files: {count}");
         }
     }
 }

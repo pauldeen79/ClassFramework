@@ -62,7 +62,7 @@ public class AddInterfacesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
             return Result.FromExistingResult<IConcreteTypeBuilder>(error);
         }
 
-        context.Model.AddInterfaces(results.Select(x => x.Value!));
+        context.Model.AddInterfaces(results.Where(x => !string.IsNullOrEmpty(x.Value)).Select(x => x.Value!));
 
         return Result.Continue<IConcreteTypeBuilder>();
     }

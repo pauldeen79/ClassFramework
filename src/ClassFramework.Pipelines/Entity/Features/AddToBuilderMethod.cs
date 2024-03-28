@@ -70,8 +70,8 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
             ? name
             : name.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
 
-        var builderConcreteTypeName = $"{builderNamespaceResult.Value}.{builderConcreteName}Builder";
-
+        var generics = context.Context.SourceModel.GetGenericTypeArgumentsString();
+        var builderConcreteTypeName = $"{builderNamespaceResult.Value}.{builderConcreteName}Builder{generics}";
         var builderTypeName = GetBuilderTypeName(context, builderInterfaceNamespaceResult, concreteBuilderNamespaceResult, builderConcreteName, builderConcreteTypeName);
 
         var returnStatement = context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null && !string.IsNullOrEmpty(typedMethodName)
