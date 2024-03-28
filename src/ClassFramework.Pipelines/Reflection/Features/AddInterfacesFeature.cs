@@ -19,9 +19,10 @@ public class AddInterfacesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
 
         context.Model.AddInterfaces(
             context.Context.SourceModel.GetInterfaces()
-                .Select(x => x.FullName.FixTypeName())
+                .Where(x => !(context.Context.SourceModel.IsRecord() && x.FullName.StartsWith($"System.IEquatable`1[[{context.Context.SourceModel.FullName}")))
+                .Select(x => x.GetTypeName(context.Context.SourceModel))
                 .Where(x => context.Context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-                .Select(n => context.Context.MapTypeName(n))
+                .Select(x => context.Context.MapTypeName(x))
         );
 
         return Result.Continue<TypeBaseBuilder>();

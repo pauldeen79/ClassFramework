@@ -31,7 +31,7 @@ public static class TypeExtensions
 
         if (!type.IsGenericType)
         {
-            return type.FullName.FixTypeName().WhenNullOrEmpty(() => type.Name);
+            return type.FullName.FixTypeName().WhenNullOrEmpty(type.Name);
         }
 
         var typeName = type.FullName.FixTypeName();

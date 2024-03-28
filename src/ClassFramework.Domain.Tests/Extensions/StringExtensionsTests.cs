@@ -560,6 +560,7 @@ public class StringExtensionsTests
     [InlineData("Func<blablabla", false, "")]
     [InlineData("Func<blablabla>", false, "blablabla")]
     [InlineData("Func<blablabla>", true, "<blablabla>")]
+    [InlineData("ITypedExpression<IEnumerable<object?>>", false, "IEnumerable<object?>")]
     public void GetProcessedGenericArguments_Returns_Correct_Result(string? typeName, bool addBrackets, string expectedResult)
     {
         // Act
