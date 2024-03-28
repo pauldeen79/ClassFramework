@@ -49,7 +49,7 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
         var typedMethodName = results.First(x => x.Name == "ToTypedBuilderMethodName").Result.Value!;
 
         var ns = results.First(x => x.Name == "Namespace").Result.Value!;
-        var name = results.First(x => x.Name == "Name").Result.Value!.WithoutProcessedGenerics();
+        var name = results.First(x => x.Name == "Name").Result.Value!;
 
         var entityFullName = $"{ns.AppendWhenNotNullOrEmpty(".")}{name}";
         if (context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null)
