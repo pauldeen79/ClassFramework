@@ -19,7 +19,8 @@ public class AddInterfacesFeature : IPipelineFeature<InterfaceBuilder, Interface
 
         context.Model.AddInterfaces(context.Context.SourceModel.Interfaces
             .Where(x => context.Context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-            .Select(x => context.Context.MapTypeName(x.FixTypeName())));
+            .Select(x => context.Context.MapTypeName(x.FixTypeName()))
+            .Where(x => !string.IsNullOrEmpty(x)));
 
         return Result.Continue<InterfaceBuilder>();
     }
