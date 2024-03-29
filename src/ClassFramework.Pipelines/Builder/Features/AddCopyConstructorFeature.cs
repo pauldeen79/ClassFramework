@@ -58,8 +58,8 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
     {
         var resultSetBuilder = new NamedResultSetBuilder<string>();
         resultSetBuilder.Add("NullCheck.Source", () => _formattableStringParser.Parse("{NullCheck.Source}", context.Context.FormatProvider, context));
-        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.EntityNameFormatString, context.Context.FormatProvider, context));
-        resultSetBuilder.Add("Namespace", () => context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName()).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
+        resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Context.Settings.EntityNameFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add(NamedResults.Namespace, () => context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName()).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());
@@ -83,11 +83,11 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             return Result.FromExistingResult<ConstructorBuilder>(initializerErrorResult.Item2);
         }
 
-        var name = results.First(x => x.Name == "Name").Result.Value!;
-        name = FixEntityName(context, name, $"{results.First(x => x.Name == "Namespace").Result.Value.AppendWhenNotNullOrEmpty(".")}{name}");
+        var name = results.First(x => x.Name == NamedResults.Name).Result.Value!;
+        name = FixEntityName(context, name, $"{results.First(x => x.Name == NamedResults.Namespace).Result.Value.AppendWhenNotNullOrEmpty(".")}{name}");
         var nsPlusPrefix = context.Context.Settings.InheritFromInterfaces
             ? string.Empty
-            : results.First(x => x.Name == "Namespace").Result.Value.AppendWhenNotNullOrEmpty(".");
+            : results.First(x => x.Name == NamedResults.Namespace).Result.Value.AppendWhenNotNullOrEmpty(".");
 
         return Result.Success(new ConstructorBuilder()
             .WithChainCall(CreateBuilderClassCopyConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
