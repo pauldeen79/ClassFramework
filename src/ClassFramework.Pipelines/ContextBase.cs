@@ -165,6 +165,12 @@ public abstract class ContextBase<TModel>
         {
             typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType());
         }
+
+        if (typeNameMapping is null && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
+        {
+            typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.WithoutProcessedGenerics());
+        }
+
         if (typeNameMapping is not null)
         {
             return typeNameMapping.Metadata;

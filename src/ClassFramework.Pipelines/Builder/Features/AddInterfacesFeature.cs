@@ -31,6 +31,8 @@ public class AddInterfacesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
+        if (context.Context.SourceModel.Name == "AllExpression") System.Diagnostics.Debugger.Break();
+
         var results = context.Context.SourceModel.Interfaces
             .Where(x => context.Context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Select(x =>
