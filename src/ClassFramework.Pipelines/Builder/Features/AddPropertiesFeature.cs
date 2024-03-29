@@ -41,6 +41,10 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
             }
 
             var parentTypeNameResult = property.GetBuilderParentTypeName(context, _formattableStringParser);
+            if (!parentTypeNameResult.IsSuccessful())
+            {
+                return Result.FromExistingResult<IConcreteTypeBuilder>(parentTypeNameResult);
+            }
 
             context.Model.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
