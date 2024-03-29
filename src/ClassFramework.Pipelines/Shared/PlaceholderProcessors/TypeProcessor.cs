@@ -18,7 +18,8 @@ public class TypeProcessor : IPipelinePlaceholderProcessor
             $"{nameof(Type.Namespace)}" or $"Class.{nameof(Type.Namespace)}" => Result.Success(pipelineContext.Model.Namespace),
             $"{nameof(Type.FullName)}" or $"Class.{nameof(Type.FullName)}" => Result.Success(pipelineContext.Model.FullName.WithoutGenerics()),
             $"{nameof(Type.Name)}NoInterfacePrefix" or $"Class.{nameof(Type.Name)}NoInterfacePrefix" => Result.Success(pipelineContext.Model.WithoutInterfacePrefix()),
-            "GenericArgumentsWithBrackets" or "Class.GenericArgumentsWithBrackets" => Result.Success(pipelineContext.Model.GetGenericTypeArgumentsString(true)),
+            "GenericArgumentsWithBrackets" or "Class.GenericArgumentsWithBrackets" => Result.Success(pipelineContext.Model.GetGenericTypeArgumentsString(addBrackets: true)),
+            "GenericArgumentsWithoutBrackets" or "Class.GenericArgumentsWithoutBrackets" => Result.Success(pipelineContext.Model.GetGenericTypeArgumentsString(addBrackets: false)),
             _ => Result.Continue<string>()
         };
     }

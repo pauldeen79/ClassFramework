@@ -352,7 +352,7 @@ public static class StringExtensions
 
         if (typeName.WithoutProcessedGenerics() == typeof(IEnumerable<>).WithoutGenerics() && !isNullable)
         {
-            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{typeName.GetGenericArguments()}>()";
+            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{typeName.GetGenericArguments(addBrackets: true)}()";
         }
 
         var preNullableSuffix = isNullable && (enableNullableReferenceTypes || isValueType) && !typeName.EndsWith("?") && !typeName.StartsWith(typeof(Nullable<>).WithoutGenerics())
@@ -402,7 +402,7 @@ public static class StringExtensions
     {
         if (instance.StartsWith(typeof(IEnumerable<>).WithoutGenerics()))
         {
-            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{instance.GetGenericArguments()}>()";
+            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{instance.GetGenericArguments(addBrackets: true)}()";
         }
 
         if (!string.IsNullOrEmpty(customBuilderConstructorInitializeExpression))

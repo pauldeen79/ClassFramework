@@ -34,6 +34,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
             nameof (Property.TypeName) => Result.Success(typeName),
             $"{nameof(Property.TypeName)}.GenericArguments" => Result.Success(typeName.GetProcessedGenericArguments()),
             $"{nameof(Property.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(typeName.GetProcessedGenericArguments(addBrackets: true)),
+            $"{nameof(Property.TypeName)}.GenericArgumentsWithoutBrackets" => Result.Success(typeName.GetProcessedGenericArguments(addBrackets: false)),
             $"{nameof(Property.TypeName)}.GenericArguments.ClassName" => Result.Success(typeName.GetProcessedGenericArguments().GetClassName()),
             $"{nameof(Property.TypeName)}.ClassName" => Result.Success(typeName.GetClassName()),
             $"{nameof(Property.TypeName)}.ClassName.NoGenerics" => Result.Success(typeName.GetClassName().WithoutProcessedGenerics()),
@@ -44,6 +45,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
             "ParentTypeName.ClassName" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName()),
             "ParentTypeName.ClassName.NoGenerics" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName().WithoutProcessedGenerics()),
             "ParentTypeName.GenericArgumentsWithBrackets" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName().GetProcessedGenericArguments(addBrackets: true)),
+            "ParentTypeName.GenericArgumentsWithoutBrackets" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName().GetProcessedGenericArguments(addBrackets: false)),
             "DefaultValue" => formattableStringParser.Parse(propertyContext.SourceModel.GetDefaultValue(_csharpExpressionDumper, typeName, propertyContext), formatProvider, context),
             "NullableSuffix" => Result.Success(propertyContext.SourceModel.GetSuffix(propertyContext.Settings.EnableNullableReferenceTypes)),
             _ => Result.Continue<string>()

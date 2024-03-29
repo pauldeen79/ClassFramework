@@ -74,7 +74,7 @@ public static class TypeExtensions
     public static IEnumerable<string> GetGenericTypeArguments(this Type instance)
         => ((TypeInfo)instance).GenericTypeParameters.Select(x => x.Name);
 
-    public static string GetGenericTypeArgumentsString(this Type instance, bool addBrackets = false)
+    public static string GetGenericTypeArgumentsString(this Type instance, bool addBrackets = true)
     {
         var args = instance.GetGenericTypeArguments().ToArray();
 
