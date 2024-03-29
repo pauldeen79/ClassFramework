@@ -270,17 +270,17 @@ public static class StringExtensions
                 : fixedTypeName;
     }
 
-    public static bool ContainsAny(this string instance, params string[] verbs)
-        => Array.Exists(verbs, instance.Contains);
+    private static readonly string[] collectionTypeNames =
+    [
+        "Enumerable<",
+        "List<",
+        "Collection<",
+        "Array<"
+    ];
 
     public static bool IsCollectionTypeName(this string typeName)
-        => typeName.ContainsAny
-        (
-            "Enumerable<",
-            "List<",
-            "Collection<",
-            "Array<"
-        ) || typeName.EndsWith("[]");
+        => Array.Exists(collectionTypeNames, x => typeName.IndexOf(x) > -1 && typeName.IndexOf("<") > typeName.IndexOf(x))
+        || typeName.EndsWith("[]");
 
     public static string GetCollectionItemType(this string? instance)
     {
