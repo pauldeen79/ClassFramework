@@ -75,6 +75,54 @@ public class StringExtensionsTests
         }
 
         [Fact]
+        public void Maps_CollectionItemType_Correctly_With_New_Collection_TypeName_Nested()
+        {
+            // Arrange
+            var collectionTypeName = $"System.Func<{typeof(IEnumerable<>).ReplaceGenericTypeName(TypeName)}>";
+            var settings = new PipelineSettingsBuilder()
+                .AddNamespaceMappings(new NamespaceMappingBuilder().WithSourceNamespace("MyNamespace").WithTargetNamespace("MappedNamespace"))
+                .Build();
+
+            // Act
+            var result = collectionTypeName.MapTypeName(settings, typeof(List<>).WithoutGenerics());
+
+            // Assert
+            result.Should().Be("System.Func<System.Collections.Generic.IEnumerable<MappedNamespace.MyClass>>");
+        }
+
+        [Fact]
+        public void Maps_SingleType_Correctly_Nested_Array_NamespaceMapping()
+        {
+            // Arrange
+            var nestedTypeName = $"MyNamespace.ITypedExpression<char[]>";
+            var settings = new PipelineSettingsBuilder()
+                .AddNamespaceMappings(new NamespaceMappingBuilder().WithSourceNamespace("MyNamespace").WithTargetNamespace("MappedNamespace"))
+                .Build();
+
+            // Act
+            var result = nestedTypeName.MapTypeName(settings, typeof(List<>).WithoutGenerics());
+
+            // Assert
+            result.Should().Be("MappedNamespace.ITypedExpression<char[]>");
+        }
+
+        [Fact]
+        public void Maps_SingleType_Correctly_Nested_Array_TypenameMapping()
+        {
+            // Arrange
+            var nestedTypeName = "MyNamespace.ITypedExpression<char[]>";
+            var settings = new PipelineSettingsBuilder()
+                .AddTypenameMappings(new TypenameMappingBuilder().WithSourceTypeName("MyNamespace.ITypedExpression").WithTargetTypeName("MappedNamespace.Builders.ITypedExpressionBuilder"))
+                .Build();
+
+            // Act
+            var result = nestedTypeName.MapTypeName(settings, typeof(List<>).WithoutGenerics());
+
+            // Assert
+            result.Should().Be("MappedNamespace.Builders.ITypedExpressionBuilder<char[]>");
+        }
+
+        [Fact]
         public void Maps_SingleType_Correctly_Using_NamespaceMapping()
         {
             // Arrange

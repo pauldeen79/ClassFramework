@@ -15,7 +15,7 @@ public static class StringExtensions
             suffix = "?";
         }
 
-        if (typeName.IsCollectionTypeName())
+        if (typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(newCollectionTypeName))
         {
             // i.e. IEnumerable<TSource> => IEnumerable<TTarget> (including collection typename mapping, when available)
             var newTypeName = typeName
@@ -67,7 +67,7 @@ public static class StringExtensions
                 mappedGenericArgumentsBuilder.Append(",");
             }
 
-            mappedGenericArgumentsBuilder.Append(item.MapTypeName(settings, newCollectionTypeName, alternateTypeMetadataName));
+            mappedGenericArgumentsBuilder.Append(item.MapTypeName(settings, string.Empty, alternateTypeMetadataName));
         }
 
         return $"{typeName.FixTypeName().WithoutProcessedGenerics().MapTypeName(settings, newCollectionTypeName, alternateTypeMetadataName)}<{mappedGenericArgumentsBuilder}>";
