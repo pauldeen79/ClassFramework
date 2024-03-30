@@ -115,7 +115,7 @@ public static class PipelineContextExtensions
     private static string GetCollectionBuilderPropertyExpression(string? value, Property sourceProperty, string collectionInitializer, string suffix)
         => collectionInitializer
             .Replace("[Type]", sourceProperty.TypeName.FixTypeName().WithoutProcessedGenerics())
-            .Replace("[Generics]", sourceProperty.TypeName.FixTypeName().GetGenericArguments(addBrackets: true))
+            .Replace("[Generics]", sourceProperty.TypeName.FixTypeName().GetProcessedGenericArguments(addBrackets: true))
             .Replace("[Expression]", $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty)})");
 
     private static string GetBuilderPocoCloseSign(bool poco)

@@ -75,7 +75,9 @@ public static class StringExtensions
 
     private static string MapTypeUsingAlternateTypeMetadata(string typeName, PipelineSettings settings, string newCollectionTypeName, string alternateTypeMetadataName)
     {
-        var typenameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName() ? typeName.GetGenericArguments() : typeName));
+        var typenameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName()
+        ? typeName.GetProcessedGenericArguments()
+        : typeName));
         if (typenameMapping is not null)
         {
             var alternateType = typenameMapping.Metadata.GetStringValue(alternateTypeMetadataName);

@@ -66,7 +66,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
     {
         collectionTypeName = collectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
 
-        var genericTypeName = typeName.GetGenericArguments();
+        var genericTypeName = typeName.GetProcessedGenericArguments();
         var nullSuffix = enableNullableReferenceTypes && !property.IsNullable
             ? "!"
             : string.Empty;
@@ -82,5 +82,4 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
         && className.Substring(1, 1).Equals(className.Substring(1, 1).ToUpperInvariant(), StringComparison.Ordinal)
             ? className.Substring(1)
             : className;
-
 }

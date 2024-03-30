@@ -38,7 +38,7 @@ public static class TypeExtensions
         if (typeName.IsCollectionTypeName())
         {
             // for now, we will ignore nullability of the generic argument on generic lists
-            return typeName.ReplaceGenericTypeName(typeName.GetGenericArguments());
+            return typeName.ReplaceGenericTypeName(typeName.GetProcessedGenericArguments());
         }
 
         var builder = new StringBuilder();
