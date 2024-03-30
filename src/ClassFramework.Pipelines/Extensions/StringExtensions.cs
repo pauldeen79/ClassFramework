@@ -20,7 +20,7 @@ public static class StringExtensions
             // i.e. IEnumerable<TSource> => IEnumerable<TTarget> (including collection typename mapping, when available)
             var newTypeName = typeName
                 .FixCollectionTypeName(newCollectionTypeName) // note that this always converts to a generic type :)
-                .ReplaceGenericTypeName(typeName.GetCollectionItemType().MapTypeName(settings, newCollectionTypeName, alternateTypeMetadataName)); // so we can safely use ReplaceGenericTypeName here
+                .ReplaceGenericTypeName(typeName.GetCollectionItemType().MapTypeName(settings, string.Empty, alternateTypeMetadataName)); // so we can safely use ReplaceGenericTypeName here
 
             return $"{newTypeName}{suffix}";
         }
