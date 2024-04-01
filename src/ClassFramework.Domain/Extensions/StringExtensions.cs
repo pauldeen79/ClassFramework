@@ -391,7 +391,9 @@ public static class StringExtensions
     }
 
     public static string ReplaceGenericTypeName(this string instance, string genericArguments)
-        => instance.WithoutProcessedGenerics().MakeGenericTypeName(genericArguments);
+        => instance == instance.WithoutProcessedGenerics()
+            ? instance
+            : instance.WithoutProcessedGenerics().MakeGenericTypeName(genericArguments);
 
     public static string GetNamespacePrefix(this string instance)
         => string.IsNullOrEmpty(instance)

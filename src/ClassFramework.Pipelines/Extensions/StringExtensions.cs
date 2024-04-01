@@ -15,7 +15,7 @@ public static class StringExtensions
             suffix = "?";
         }
 
-        if (typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(newCollectionTypeName))
+        if (typeName.IsCollectionTypeName())
         {
             // i.e. IEnumerable<TSource> => IEnumerable<TTarget> (including collection typename mapping, when available)
             var newTypeName = typeName
@@ -76,8 +76,8 @@ public static class StringExtensions
     private static string MapTypeUsingAlternateTypeMetadata(string typeName, PipelineSettings settings, string newCollectionTypeName, string alternateTypeMetadataName)
     {
         var typenameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName()
-        ? typeName.GetProcessedGenericArguments()
-        : typeName));
+            ? typeName.GetProcessedGenericArguments()
+            : typeName));
         if (typenameMapping is not null)
         {
             var alternateType = typenameMapping.Metadata.GetStringValue(alternateTypeMetadataName);
