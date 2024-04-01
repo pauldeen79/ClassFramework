@@ -124,7 +124,7 @@ public abstract class ContextBase<TModel>
         {
             var pipelinePlaceholderProcessorsArray = pipelinePlaceholderProcessors.ToArray();
             return pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, formatProvider, new PropertyContext(childContext, Settings, formatProvider, MapTypeName(childContext.TypeName), Settings.BuilderNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<string>();
         }
     }
