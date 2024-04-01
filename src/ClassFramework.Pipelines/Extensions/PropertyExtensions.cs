@@ -33,7 +33,11 @@ public static class PropertyExtensions
             if (value is Literal literal && literal.Value is not null)
             {
 
-                value = new StringLiteral(literal.Value);
+                value = new StringLiteral(literal.Value
+                    .Replace("[Name]", property.Name)
+                    .Replace("[NameLower]", property.Name.ToLower(context.FormatProvider.ToCultureInfo()))
+                    .Replace("[Generics]", property.TypeName.GetGenericArguments(addBrackets: true))
+                    );
             }
 
             return $"{csharpExpressionDumper.Dump(value)}{suffix}";
