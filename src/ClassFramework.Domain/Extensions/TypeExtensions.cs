@@ -34,6 +34,7 @@ public static class TypeExtensions
             return type.FullName.FixTypeName().WhenNullOrEmpty(type.Name);
         }
 
+        //TODO: Remove this, and fix build
         var typeName = type.FullName.FixTypeName();
         if (typeName.IsCollectionTypeName())
         {
@@ -58,14 +59,20 @@ public static class TypeExtensions
             }
 
             index++;
-            builder.Append(arg.GetTypeName(type));
-            if ((!arg.IsGenericParameter && arg.IsNullable(arg, declaringType.CustomAttributes, index))
-                || (arg.IsGenericParameter && arg.IsNullable(declaringType, declaringType.CustomAttributes, index)))
+            builder.Append(arg.GetTypeName(arg));
+            if (!arg.IsGenericParameter && arg.IsNullable(arg, declaringType.CustomAttributes, index))
             {
                 builder.Append("?");
             }
         }
+        
         builder.Append(">");
+
+        if (!type.IsValueType && !type.IsEnum && type.IsNullable(declaringType, declaringType.CustomAttributes, 0))
+        {
+            builder.Append("?");
+        }
+
         return builder.ToString();
     }
 
@@ -99,16 +106,23 @@ public static class TypeExtensions
         declaringType = declaringType.IsNotNull(nameof(declaringType));
         customAttributes = customAttributes.IsNotNull(nameof(customAttributes));
 
+        var customAttributesArray = customAttributes.ToArray();
+
         if (memberType.IsValueType)
         {
             return Nullable.GetUnderlyingType(memberType) is not null;
         }
 
-        var nullable = customAttributes
-            .FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableAttribute");
-        if (nullable is not null && nullable.ConstructorArguments.Count == 1)
+        var allowNullAttribute = Array.Find(customAttributesArray, x => x.AttributeType.FullName == "System.Diagnostics.CodeAnalysis.AllowNullAttribute");
+        if (allowNullAttribute is not null)
         {
-            var attributeArgument = nullable.ConstructorArguments[0];
+            return true;
+        }
+
+        var nullableAttribute = Array.Find(customAttributesArray, x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableAttribute");
+        if (nullableAttribute is not null && nullableAttribute.ConstructorArguments.Count == 1)
+        {
+            var attributeArgument = nullableAttribute.ConstructorArguments[0];
             if (attributeArgument.ArgumentType == typeof(byte[]))
             {
                 var args = (ReadOnlyCollection<CustomAttributeTypedArgument>)attributeArgument.Value!;
@@ -125,8 +139,7 @@ public static class TypeExtensions
 
         for (var type = declaringType; type is not null; type = type.DeclaringType)
         {
-            var context = type.CustomAttributes
-                .FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableContextAttribute");
+            var context = type.CustomAttributes.FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableContextAttribute");
             if (context is not null &&
                 context.ConstructorArguments.Count == 1 &&
                 context.ConstructorArguments[0].ArgumentType == typeof(byte))

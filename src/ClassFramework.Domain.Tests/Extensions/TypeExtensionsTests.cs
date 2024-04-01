@@ -61,6 +61,76 @@ public class TypeExtensionsTests
         }
 
         [Fact]
+        public void Returns_Correct_Result_On_IReadOnlyCollection_With_Nullable_Argument()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyNullableProperty));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.IReadOnlyCollection<System.Object?>");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_IReadOnlyCollection_With_Nullable_Type()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyNullableProperty2));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.IReadOnlyCollection<System.Object>?");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_IReadOnlyCollection_With_Nested_Nullable_Argument()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyNullableProperty3));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.IReadOnlyCollection<System.Func<System.Object?>>");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Non_Collection_With_Nested_Nullable_Argument()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyNullableProperty4));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Func<System.Collections.Generic.IEnumerable<System.Object?>>");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Enumerable_With_Non_Nullable_Argument()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyNullableProperty5));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.IEnumerable<System.String>");
+        }
+
+        [Fact]
         public void Returns_Correct_Result_On_Nullable_Int()
         {
             // Arrange
@@ -89,6 +159,11 @@ public class TypeExtensionsTests
         }
 
         public IReadOnlyCollection<string> MyProperty { get; } = new ReadOnlyCollection<string>(Array.Empty<string>());
+        public IReadOnlyCollection<object?> MyNullableProperty { get; } = new ReadOnlyCollection<object?>(Array.Empty<object?>());
+        public IReadOnlyCollection<object>? MyNullableProperty2 { get; } = new ReadOnlyCollection<object>(Array.Empty<object>());
+        public IReadOnlyCollection<Func<object?>> MyNullableProperty3 { get; } = new ReadOnlyCollection<Func<object?>>(Array.Empty<Func<object?>>());
+        public Func<IEnumerable<object?>> MyNullableProperty4 { get; } = new Func<IEnumerable<object?>>(() => Enumerable.Empty<object?>());
+        public IEnumerable<string> MyNullableProperty5 { get; } = default!;
         public int? MyProperty2 { get; }
         public Tuple<TypeExtensionsTests, Lazy<TypeExtensionsTests>> MyProperty3 { get; } = null!;
     }
