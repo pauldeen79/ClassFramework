@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.TemplateFramework.CodeGenerationProviders;
+﻿using ClassFramework.Domain;
+
+namespace ClassFramework.TemplateFramework.CodeGenerationProviders;
 
 public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : CsharpClassGeneratorCodeGenerationProviderBase
 {
@@ -318,6 +320,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyMethodPredicate(CopyMethodPredicate)
             .AddNamespaceMappings(CreateNamespaceMappings())
             .AddTypenameMappings(CreateTypenameMappings())
+            .AddAttributeInitializers(new AttributeInitializerBuilder().WithResult(x => x is CsharpTypeNameAttribute csharpTypeNameAttribute
+                ? new AttributeBuilder().WithName(csharpTypeNameAttribute.GetType()).AddParameters(new AttributeParameterBuilder().WithValue(csharpTypeNameAttribute.TypeName)).Build()
+                : null))
             .Build();
 
     private PipelineSettings CreateEntityPipelineSettings(
