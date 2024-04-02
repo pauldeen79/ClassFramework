@@ -37,12 +37,8 @@ public static class TypeExtensions
         var typeName = type.FullName.FixTypeName();
         if (typeName.IsCollectionTypeName())
         {
-            //var suffix = !type.IsValueType && !type.IsEnum && type.IsNullable(declaringType, declaringType.CustomAttributes, 0) == true
-            //    ? "?"
-            //    : string.Empty;
-            var suffix = string.Empty;
-
-            return $"{typeName.ReplaceGenericTypeName(typeName.GetProcessedGenericArguments())}{suffix}";
+            // for now, we will ignore nullability of the generic argument on generic lists
+            return typeName.ReplaceGenericTypeName(typeName.GetProcessedGenericArguments());
         }
 
         var builder = new StringBuilder();
