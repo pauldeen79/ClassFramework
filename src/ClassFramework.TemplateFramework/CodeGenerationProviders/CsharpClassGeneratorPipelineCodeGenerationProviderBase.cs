@@ -272,7 +272,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyInterfaces(CopyInterfaces)
             .WithCopyMethods(CopyMethods)
             .WithInheritFromInterfaces(InheritFromInterfaces)
-            .WithCopyAttributePredicate(CopyAttributePredicate)
+            .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
             .WithCopyMethodPredicate(CopyMethodPredicate)
             .WithEntityNameFormatString("{Class.NameNoInterfacePrefix}")
@@ -302,6 +302,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         
         return PostProcessClassBuilder(builder).BuildTyped();
     }
+
+    private static bool DefaultCopyAttributePredicate(Domain.Attribute attribute)
+        => attribute.Name != typeof(CsharpTypeNameAttribute).FullName;
 
     protected ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
         => secondCondition
@@ -341,7 +344,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyInterfaces(CopyInterfaces)
             .WithCopyMethods(CopyMethods)
             .WithInheritFromInterfaces(InheritFromInterfaces)
-            .WithCopyAttributePredicate(CopyAttributePredicate)
+            .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
             .WithCopyMethodPredicate(CopyMethodPredicate)
             .WithEntityNameFormatString(entityNameFormatString)
@@ -387,7 +390,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyInterfaces(CopyInterfaces)
             .WithCopyMethods(CopyMethods || copyMethodPredicate != null)
             .WithInheritFromInterfaces(InheritFromInterfaces)
-            .WithCopyAttributePredicate(CopyAttributePredicate)
+            .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
             .WithCopyMethodPredicate(copyMethodPredicate ?? CopyMethodPredicate)
             .WithAddSetters(addSetters)
