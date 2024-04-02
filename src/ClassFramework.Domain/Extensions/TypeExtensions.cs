@@ -138,15 +138,12 @@ public static class TypeExtensions
             }
         }
 
-        for (var type = declaringType; type is not null; type = type.DeclaringType)
+        var context = declaringType.CustomAttributes.FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableContextAttribute");
+        if (context is not null &&
+            context.ConstructorArguments.Count == 1 &&
+            context.ConstructorArguments[0].ArgumentType == typeof(byte))
         {
-            var context = type.CustomAttributes.FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableContextAttribute");
-            if (context is not null &&
-                context.ConstructorArguments.Count == 1 &&
-                context.ConstructorArguments[0].ArgumentType == typeof(byte))
-            {
-                return (byte)context.ConstructorArguments[0].Value! == 2;
-            }
+            return (byte)context.ConstructorArguments[0].Value! == 2;
         }
 
         // Couldn't find a suitable attribute
