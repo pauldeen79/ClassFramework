@@ -253,6 +253,8 @@ public abstract class ContextBase<TModel>
     public string GetMappedTypeName(Type type, MemberInfo declaringType)
     {
         var result = type.GetTypeName(declaringType);
+
+        //TODO: See if we can remove this work-around. Needed because nullability of complex type is not working like it should (e.g. IEnumerable<Func<object?, object?>>)
         var mapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == result);
         var customResult = mapping?.Metadata.GetStringValue(MetadataNames.CustomTypeName);
         if (customResult is not null && !string.IsNullOrEmpty(customResult))
