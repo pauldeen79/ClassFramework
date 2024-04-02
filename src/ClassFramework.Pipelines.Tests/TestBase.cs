@@ -364,7 +364,7 @@ public abstract class TestBase : IDisposable
     protected static IEnumerable<TypenameMappingBuilder> CreateTypenameMappings()
         =>
         [
-            new TypenameMappingBuilder().WithSourceTypeName(typeof(List<>).WithoutGenerics()).WithTargetTypeName(typeof(List<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "new [Type]<[Generics]>([Expression])"), //"[Expression].ToList()"
+            new TypenameMappingBuilder().WithSourceTypeName(typeof(List<>).WithoutGenerics()).WithTargetTypeName(typeof(List<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "new [Type][Generics]([Expression])"), //"[Expression].ToList()"
             new TypenameMappingBuilder().WithSourceTypeName(typeof(IList<>).WithoutGenerics()).WithTargetTypeName(typeof(IList<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "[Expression].ToList()"),
         ];
 
@@ -427,7 +427,7 @@ internal sealed class BuilderOmitter : ISpecimenBuilder
     public object Create(object request, ISpecimenContext context)
     {
         var propInfo = request as System.Reflection.PropertyInfo;
-        if (propInfo is not null && propInfo.DeclaringType?.Name.Contains("Builder", StringComparison.Ordinal) == true)
+        if (propInfo is not null && propInfo.DeclaringType?.Name.EndsWith("Builder", StringComparison.Ordinal) == true)
         {
             return new OmitSpecimen();
         }

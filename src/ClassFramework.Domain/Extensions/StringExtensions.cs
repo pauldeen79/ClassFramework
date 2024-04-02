@@ -270,17 +270,17 @@ public static class StringExtensions
                 : fixedTypeName;
     }
 
-    public static bool ContainsAny(this string instance, params string[] verbs)
-        => Array.Exists(verbs, instance.Contains);
+    private static readonly string[] collectionTypeNames =
+    [
+        "Enumerable<",
+        "List<",
+        "Collection<",
+        "Array<"
+    ];
 
     public static bool IsCollectionTypeName(this string typeName)
-        => typeName.ContainsAny
-        (
-            "Enumerable<",
-            "List<",
-            "Collection<",
-            "Array<"
-        ) || typeName.EndsWith("[]");
+        => Array.Exists(collectionTypeNames, x => typeName.IndexOf(x) > -1 && typeName.IndexOf("<") > typeName.IndexOf(x))
+        || typeName.EndsWith("[]");
 
     public static string GetCollectionItemType(this string? instance)
     {
@@ -352,7 +352,7 @@ public static class StringExtensions
 
         if (typeName.WithoutProcessedGenerics() == typeof(IEnumerable<>).WithoutGenerics() && !isNullable)
         {
-            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{typeName.GetGenericArguments()}>()";
+            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{typeName.GetProcessedGenericArguments(addBrackets: true)}()";
         }
 
         var preNullableSuffix = isNullable && (enableNullableReferenceTypes || isValueType) && !typeName.EndsWith("?") && !typeName.StartsWith(typeof(Nullable<>).WithoutGenerics())
@@ -391,7 +391,9 @@ public static class StringExtensions
     }
 
     public static string ReplaceGenericTypeName(this string instance, string genericArguments)
-        => instance.WithoutProcessedGenerics().MakeGenericTypeName(genericArguments);
+        => instance == instance.WithoutProcessedGenerics()
+            ? instance
+            : instance.WithoutProcessedGenerics().MakeGenericTypeName(genericArguments);
 
     public static string GetNamespacePrefix(this string instance)
         => string.IsNullOrEmpty(instance)
@@ -402,7 +404,7 @@ public static class StringExtensions
     {
         if (instance.StartsWith(typeof(IEnumerable<>).WithoutGenerics()))
         {
-            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{instance.GetGenericArguments()}>()";
+            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{instance.GetProcessedGenericArguments(addBrackets: true)}()";
         }
 
         if (!string.IsNullOrEmpty(customBuilderConstructorInitializeExpression))

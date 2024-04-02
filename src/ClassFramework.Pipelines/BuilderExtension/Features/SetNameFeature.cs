@@ -27,8 +27,8 @@ public class SetNameFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderExte
         context = context.IsNotNull(nameof(context));
 
         var resultSetBuilder = new NamedResultSetBuilder<string>();
-        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNameFormatString, context.Context.FormatProvider, context));
-        resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNamespaceFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNameFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add(NamedResults.Namespace, () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNamespaceFormatString, context.Context.FormatProvider, context));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());
@@ -39,8 +39,8 @@ public class SetNameFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderExte
         }
 
         context.Model
-            .WithName(results.First(x => x.Name == "Name").Result.Value!)
-            .WithNamespace(results.First(x => x.Name == "Namespace").Result.Value!);
+            .WithName(results.First(x => x.Name == NamedResults.Name).Result.Value!)
+            .WithNamespace(results.First(x => x.Name == NamedResults.Namespace).Result.Value!);
 
         return Result.Continue<IConcreteTypeBuilder>();
     }

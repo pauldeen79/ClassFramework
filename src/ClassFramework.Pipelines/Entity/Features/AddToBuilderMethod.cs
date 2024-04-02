@@ -27,8 +27,8 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
         context = context.IsNotNull(nameof(context));
 
         var resultSetBuilder = new NamedResultSetBuilder<string>();
-        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.EntityNameFormatString, context.Context.FormatProvider, context));
-        resultSetBuilder.Add("Namespace", () => context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName()).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
+        resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Context.Settings.EntityNameFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add(NamedResults.Namespace, () => context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName()).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
         resultSetBuilder.Add("ToBuilderMethodName", () => _formattableStringParser.Parse(context.Context.Settings.ToBuilderFormatString, context.Context.FormatProvider, context));
         resultSetBuilder.Add("ToTypedBuilderMethodName", () => _formattableStringParser.Parse(context.Context.Settings.ToTypedBuilderFormatString, context.Context.FormatProvider, context));
         var results = resultSetBuilder.Build();
@@ -48,8 +48,8 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
 
         var typedMethodName = results.First(x => x.Name == "ToTypedBuilderMethodName").Result.Value!;
 
-        var ns = results.First(x => x.Name == "Namespace").Result.Value!;
-        var name = results.First(x => x.Name == "Name").Result.Value!;
+        var ns = results.First(x => x.Name == NamedResults.Namespace).Result.Value!;
+        var name = results.First(x => x.Name == NamedResults.Name).Result.Value!;
 
         var entityFullName = $"{ns.AppendWhenNotNullOrEmpty(".")}{name}";
         if (context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null)
@@ -70,8 +70,8 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
             ? name
             : name.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
 
-        var builderConcreteTypeName = $"{builderNamespaceResult.Value}.{builderConcreteName}Builder";
-
+        var generics = context.Context.SourceModel.GetGenericTypeArgumentsString();
+        var builderConcreteTypeName = $"{builderNamespaceResult.Value}.{builderConcreteName}Builder{generics}";
         var builderTypeName = GetBuilderTypeName(context, builderInterfaceNamespaceResult, concreteBuilderNamespaceResult, builderConcreteName, builderConcreteTypeName);
 
         var returnStatement = context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null && !string.IsNullOrEmpty(typedMethodName)

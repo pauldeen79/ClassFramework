@@ -560,10 +560,26 @@ public class StringExtensionsTests
     [InlineData("Func<blablabla", false, "")]
     [InlineData("Func<blablabla>", false, "blablabla")]
     [InlineData("Func<blablabla>", true, "<blablabla>")]
+    [InlineData("ITypedExpression<IEnumerable<object?>>", false, "IEnumerable<object?>")]
     public void GetProcessedGenericArguments_Returns_Correct_Result(string? typeName, bool addBrackets, string expectedResult)
     {
         // Act
         var result = typeName.GetProcessedGenericArguments(addBrackets);
+
+        // Assert
+        result.Should().Be(expectedResult);
+    }
+
+    [Theory]
+    [InlineData("System.Boolean", false)]
+    [InlineData("Collection<System.Boolean>", true)]
+    [InlineData("System.Boolean[]", true)]
+    [InlineData("System.Func<Collection<System.Boolean>>", false)]
+    [InlineData("ExpressionFramework.CodeGeneration.Models.Contracts.ITypedExpression<System.Collections.Generic.IEnumerable<System.Object>>", false)]
+    public void IsCollectionTypeName_Returns_Correct_Result(string typeName, bool expectedResult)
+    {
+        // Act
+        var result = typeName.IsCollectionTypeName();
 
         // Assert
         result.Should().Be(expectedResult);

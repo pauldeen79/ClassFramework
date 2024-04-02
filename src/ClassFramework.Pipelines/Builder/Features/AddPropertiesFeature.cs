@@ -33,23 +33,26 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
         foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
         {
-            var typeNameResult = property.GetBuilderArgumentTypeName(context.Context, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser);
+            var resultSetBuilder = new NamedResultSetBuilder<string>();
+            resultSetBuilder.Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(context.Context, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser));
+            resultSetBuilder.Add(NamedResults.ParentTypeName, () => property.GetBuilderParentTypeName(context, _formattableStringParser));
+            var results = resultSetBuilder.Build();
 
-            if (!typeNameResult.IsSuccessful())
+            var error = Array.Find(results, x => !x.Result.IsSuccessful());
+            if (error is not null)
             {
-                return Result.FromExistingResult<IConcreteTypeBuilder>(typeNameResult);
+                // Error in formattable string parsing
+                return Result.FromExistingResult<IConcreteTypeBuilder>(error.Result);
             }
-
-            var parentTypeNameResult = property.GetBuilderParentTypeName(context, _formattableStringParser);
 
             context.Model.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
-                .WithTypeName(typeNameResult.Value!
+                .WithTypeName(results.First(x => x.Name == NamedResults.TypeName).Result.Value!
                     .FixCollectionTypeName(context.Context.Settings.BuilderNewCollectionTypeName)
                     .FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
-                .WithParentTypeFullName(parentTypeNameResult.Value!)
+                .WithParentTypeFullName(results.First(x => x.Name == NamedResults.ParentTypeName).Result.Value!)
                 .AddAttributes(property.Attributes
                     .Where(_ => context.Context.Settings.CopyAttributes)
                     .Select(x => context.Context.MapAttribute(x).ToBuilder()))

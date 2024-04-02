@@ -32,16 +32,21 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
             "InitializationExpression" => Result.Success(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo(), propertyContext.Settings.AddNullChecks, propertyContext.Settings.ValidateArguments, propertyContext.Settings.EnableNullableReferenceTypes)),
             "CollectionTypeName" => Result.Success(propertyContext.Settings.CollectionTypeName),
             nameof (Property.TypeName) => Result.Success(typeName),
-            $"{nameof(Property.TypeName)}.GenericArguments" => Result.Success(typeName.GetGenericArguments()),
-            $"{nameof(Property.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(typeName.GetGenericArguments(addBrackets: true)),
-            $"{nameof(Property.TypeName)}.GenericArguments.ClassName" => Result.Success(typeName.GetGenericArguments().GetClassName()),
+            $"{nameof(Property.TypeName)}.GenericArguments" => Result.Success(typeName.GetProcessedGenericArguments()),
+            $"{nameof(Property.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(typeName.GetProcessedGenericArguments(addBrackets: true)),
+            $"{nameof(Property.TypeName)}.GenericArgumentsWithoutBrackets" => Result.Success(typeName.GetProcessedGenericArguments(addBrackets: false)),
+            $"{nameof(Property.TypeName)}.GenericArguments.ClassName" => Result.Success(typeName.GetProcessedGenericArguments().GetClassName()),
             $"{nameof(Property.TypeName)}.ClassName" => Result.Success(typeName.GetClassName()),
+            $"{nameof(Property.TypeName)}.ClassName.NoGenerics" => Result.Success(typeName.GetClassName().WithoutProcessedGenerics()),
             $"{nameof(Property.TypeName)}.ClassName.NoInterfacePrefix" => Result.Success(WithoutInterfacePrefix(typeName.GetClassName())),
             $"{nameof(Property.TypeName)}.Namespace" => Result.Success(typeName.GetNamespaceWithDefault()),
             $"{nameof(Property.TypeName)}.NoGenerics" => Result.Success(typeName.WithoutProcessedGenerics()),
             "ParentTypeName" => Result.Success(propertyContext.SourceModel.ParentTypeFullName),
             "ParentTypeName.ClassName" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName()),
-            "DefaultValue" => formattableStringParser.Parse(propertyContext.SourceModel.GetDefaultValue(_csharpExpressionDumper, propertyContext.Settings.EnableNullableReferenceTypes, typeName, propertyContext), formatProvider, context),
+            "ParentTypeName.ClassName.NoGenerics" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName().WithoutProcessedGenerics()),
+            "ParentTypeName.GenericArgumentsWithBrackets" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName().GetProcessedGenericArguments(addBrackets: true)),
+            "ParentTypeName.GenericArgumentsWithoutBrackets" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName().GetProcessedGenericArguments(addBrackets: false)),
+            "DefaultValue" => formattableStringParser.Parse(propertyContext.SourceModel.GetDefaultValue(_csharpExpressionDumper, typeName, propertyContext), formatProvider, propertyContext),
             "NullableSuffix" => Result.Success(propertyContext.SourceModel.GetSuffix(propertyContext.Settings.EnableNullableReferenceTypes)),
             _ => Result.Continue<string>()
         };
@@ -51,7 +56,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
     {
         collectionTypeName = collectionTypeName.IsNotNull(nameof(collectionTypeName));
 
-        return typeName.IsCollectionTypeName()
+        return typeName.FixTypeName().IsCollectionTypeName()
             && (collectionTypeName.Length == 0 || collectionTypeName != property.TypeName.WithoutGenerics())
                 ? GetCollectionFormatStringForInitialization(property, typeName, cultureInfo, collectionTypeName, addNullChecks, validateArguments, enableNullableReferenceTypes)
                 : property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName();
@@ -61,7 +66,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
     {
         collectionTypeName = collectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
 
-        var genericTypeName = typeName.GetGenericArguments();
+        var genericTypeName = typeName.GetProcessedGenericArguments();
         var nullSuffix = enableNullableReferenceTypes && !property.IsNullable
             ? "!"
             : string.Empty;
@@ -77,5 +82,4 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
         && className.Substring(1, 1).Equals(className.Substring(1, 1).ToUpperInvariant(), StringComparison.Ordinal)
             ? className.Substring(1)
             : className;
-
 }

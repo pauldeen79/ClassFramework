@@ -13,7 +13,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var context = new PropertyContext(sut, new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, context);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
 
             // Assert
             result.Should().Be("default(System.String)");
@@ -30,7 +30,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var context = new PropertyContext(sut, settings, CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, context);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
 
             // Assert
             result.Should().Be("custom value");
@@ -52,7 +52,49 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var context = new PropertyContext(sut, settings, CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, false, sut.TypeName, context);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
+
+            // Assert
+            result.Should().Be("custom value");
+        }
+
+        [Fact]
+        public void Gets_Value_From_DefaultValue_No_Literal_When_Found()
+        {
+            // Arrange
+            var sut = CreateSut()
+                .WithName("MyProperty")
+                .WithType(typeof(string))
+                .AddAttributes(new AttributeBuilder().WithName(typeof(DefaultValueAttribute)).AddParameters(new AttributeParameterBuilder().WithValue("custom value")))
+                .Build();
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
+            csharpExpressionDumper.Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
+            var settings = new PipelineSettingsBuilder().Build();
+            var context = new PropertyContext(sut, settings, CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
+
+            // Act
+            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
+
+            // Assert
+            result.Should().Be("custom value");
+        }
+
+        [Fact]
+        public void Gets_Value_From_DefaultValue_Literal_When_Found()
+        {
+            // Arrange
+            var sut = CreateSut()
+                .WithName("MyProperty")
+                .WithType(typeof(string))
+                .AddAttributes(new AttributeBuilder().WithName(typeof(DefaultValueAttribute)).AddParameters(new AttributeParameterBuilder().WithValue(new Literal("custom value", null))))
+                .Build();
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
+            csharpExpressionDumper.Dump(Arg.Any<IStringLiteral>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<IStringLiteral>(0).Value); // note that we mock the behavior of the real csharp expression dumper here :)
+            var settings = new PipelineSettingsBuilder().Build();
+            var context = new PropertyContext(sut, settings, CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
+
+            // Act
+            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
 
             // Assert
             result.Should().Be("custom value");

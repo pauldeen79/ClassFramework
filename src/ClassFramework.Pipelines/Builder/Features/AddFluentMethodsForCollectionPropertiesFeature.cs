@@ -114,7 +114,11 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
                 context.Context.FormatProvider,
                 new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
             );
-            yield return argumentNullCheckResult;
+
+            if (!string.IsNullOrEmpty(argumentNullCheckResult.Value) || !argumentNullCheckResult.IsSuccessful())
+            {
+                yield return argumentNullCheckResult;
+            }
         }
 
         var builderAddExpressionResult = _formattableStringParser.Parse

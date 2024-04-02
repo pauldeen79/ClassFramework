@@ -12,14 +12,11 @@ public class AddGenericTypeArgumentsFeature : IPipelineFeature<TypeBaseBuilder, 
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.AddGenericTypeArguments(GetGenericTypeArguments(context.Context.SourceModel));
+        context.Model.AddGenericTypeArguments(context.Context.SourceModel.GetGenericTypeArguments());
 
         return Result.Continue<TypeBaseBuilder>();
     }
 
     public IBuilder<IPipelineFeature<TypeBaseBuilder, ReflectionContext>> ToBuilder()
         => new AddGenericTypeArgumentsFeatureBuilder();
-
-    private static IEnumerable<string> GetGenericTypeArguments(Type instance)
-        => ((TypeInfo)instance).GenericTypeParameters.Select(x => x.Name);
 }

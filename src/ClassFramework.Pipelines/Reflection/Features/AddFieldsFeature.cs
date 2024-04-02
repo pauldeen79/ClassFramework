@@ -25,7 +25,7 @@ public class AddFieldsFeature : IPipelineFeature<TypeBaseBuilder, ReflectionCont
         (
             f => new FieldBuilder()
                 .WithName(f.Name)
-                .WithTypeName(f.FieldType.GetTypeName(f))
+                .WithTypeName(context.Context.GetMappedTypeName(f.FieldType, f))
                 .WithStatic(f.IsStatic)
                 .WithConstant(f.IsLiteral)
                 .WithReadOnly(f.IsInitOnly)

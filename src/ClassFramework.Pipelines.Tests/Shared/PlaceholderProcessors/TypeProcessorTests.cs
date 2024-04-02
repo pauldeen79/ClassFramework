@@ -46,6 +46,8 @@ public class TypeProcessorTests : TestBase<TypeProcessor>
         [InlineData("NamePascal", "someClass")]
         [InlineData("Namespace", "ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors")]
         [InlineData("FullName", "ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors.SomeClass")]
+        [InlineData("GenericArgumentsWithBrackets", "")]
+        [InlineData("GenericArgumentsWithoutBrackets", "")]
         [InlineData("Class.Name", "SomeClass")]
         [InlineData("Class.NameLower", "someclass")]
         [InlineData("Class.NameUpper", "SOMECLASS")]
@@ -53,6 +55,8 @@ public class TypeProcessorTests : TestBase<TypeProcessor>
         [InlineData("Class.Namespace", "ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors")]
         [InlineData("Class.FullName", "ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors.SomeClass")]
         [InlineData("Class.NameNoInterfacePrefix", "SomeClass")]
+        [InlineData("Class.GenericArgumentsWithBrackets", "")]
+        [InlineData("Class.GenericArgumentsWithoutBrackets", "")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {
             // Arrange

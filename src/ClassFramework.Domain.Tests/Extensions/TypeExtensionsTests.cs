@@ -61,6 +61,76 @@ public class TypeExtensionsTests
         }
 
         [Fact]
+        public void Returns_Correct_Result_On_IReadOnlyCollection_With_Nullable_Argument()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyNullableProperty));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.IReadOnlyCollection<System.Object?>");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_IReadOnlyCollection_With_Nullable_Type()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyNullableProperty2));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.IReadOnlyCollection<System.Object>?");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_IReadOnlyCollection_With_Nested_Nullable_Argument()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyNullableProperty3));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.IReadOnlyCollection<System.Func<System.Object?>>");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Non_Collection_With_Nested_Nullable_Argument()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyNullableProperty4));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Func<System.Collections.Generic.IEnumerable<System.Object?>>");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Enumerable_With_Non_Nullable_Argument()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyNullableProperty5));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.IEnumerable<System.String>");
+        }
+
+        [Fact]
         public void Returns_Correct_Result_On_Nullable_Int()
         {
             // Arrange
@@ -88,10 +158,109 @@ public class TypeExtensionsTests
             result.Should().Be("System.Tuple<ClassFramework.Domain.Tests.Extensions.TypeExtensionsTests,System.Lazy<ClassFramework.Domain.Tests.Extensions.TypeExtensionsTests>>");
         }
 
+        [Fact]
+        public void Returns_Correct_Result_On_IReadOnlyCollection_With_Non_Nullable_Argument()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyProperty6));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.IReadOnlyCollection<ClassFramework.Domain.Tests.Extensions.TypeExtensionsTests.IMyObject>");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Func_With_Two_Nullable_Arguments()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyNullableProperty7));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Func<System.Object?,System.String?>");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_On_Func_With_Two_Nullable_Arguments_Nested()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyNullableProperty8));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Func<System.Object?,System.Func<System.String?>>");
+        }
+
         public IReadOnlyCollection<string> MyProperty { get; } = new ReadOnlyCollection<string>(Array.Empty<string>());
+        [CsharpTypeName("System.Collections.Generic.IReadOnlyCollection<System.Object?>")]
+        public IReadOnlyCollection<object?> MyNullableProperty { get; } = new ReadOnlyCollection<object?>(Array.Empty<object?>());
+        [CsharpTypeName("System.Collections.Generic.IReadOnlyCollection<System.Object>?")]
+        public IReadOnlyCollection<object>? MyNullableProperty2 { get; } = new ReadOnlyCollection<object>(Array.Empty<object>());
+        [CsharpTypeName("System.Collections.Generic.IReadOnlyCollection<System.Func<System.Object?>>")]
+        public IReadOnlyCollection<Func<object?>> MyNullableProperty3 { get; } = new ReadOnlyCollection<Func<object?>>(Array.Empty<Func<object?>>());
+        [CsharpTypeName("System.Func<System.Collections.Generic.IEnumerable<System.Object?>>")]
+        public Func<IEnumerable<object?>> MyNullableProperty4 { get; } = new Func<IEnumerable<object?>>(() => Enumerable.Empty<object?>());
+        public IEnumerable<string> MyNullableProperty5 { get; } = default!;
+        public IReadOnlyCollection<IMyObject> MyProperty6 { get; } = default!;
+        public Func<object?, string?> MyNullableProperty7 { get; } = default!;
+        [CsharpTypeName("System.Func<System.Object?,System.Func<System.String?>>")]
+        public Func<object?, Func<string?>> MyNullableProperty8 { get; } = default!;
         public int? MyProperty2 { get; }
         public Tuple<TypeExtensionsTests, Lazy<TypeExtensionsTests>> MyProperty3 { get; } = null!;
     }
+
+    public class GetGenericTypeArgumentsString
+    {
+        [Fact]
+        public void Returns_Empty_String_When_Type_Is_Not_Generic()
+        {
+            // Arrange
+            var type = typeof(string);
+
+            // Act
+            var result = type.GetGenericTypeArgumentsString();
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_Without_Brackets()
+        {
+            // Arrange
+            var type = typeof(Tuple<,>);
+
+            // Act
+            var result = type.GetGenericTypeArgumentsString(addBrackets: false);
+
+            // Assert
+            result.Should().Be("T1,T2");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_With_Brackets()
+        {
+            // Arrange
+            var type = typeof(Tuple<,>);
+
+            // Act
+            var result = type.GetGenericTypeArgumentsString(addBrackets: true);
+
+            // Assert
+            result.Should().Be("<T1,T2>");
+        }
+    }
+
+    public interface IMyObject { object? Value { get; set; } }
 
     public class IsRecord
     {

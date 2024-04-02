@@ -2,10 +2,15 @@
 
 public static class GenericTypeArgumentsContainerExtensions
 {
-    public static string GetGenericTypeArgumentsString(this IGenericTypeArgumentsContainer instance)
-        => instance.GenericTypeArguments.Count > 0
-            ? $"<{string.Join(", ", instance.GenericTypeArguments)}>"
+    public static string GetGenericTypeArgumentsString(this IGenericTypeArgumentsContainer instance, bool addBrackets = true)
+    {
+        var prefix = addBrackets ? "<" : string.Empty;
+        var suffix = addBrackets ? ">" : string.Empty;
+
+        return instance.GenericTypeArguments.Count > 0
+            ? $"{prefix}{string.Join(", ", instance.GenericTypeArguments)}{suffix}"
             : string.Empty;
+    }
 
     public static string GetGenericTypeArgumentConstraintsString(this IGenericTypeArgumentsContainer instance, int indent)
         => instance.GenericTypeArgumentConstraints.Count > 0

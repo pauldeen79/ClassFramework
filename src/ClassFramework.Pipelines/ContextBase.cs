@@ -124,7 +124,7 @@ public abstract class ContextBase<TModel>
         {
             var pipelinePlaceholderProcessorsArray = pipelinePlaceholderProcessors.ToArray();
             return pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, formatProvider, new PropertyContext(childContext, Settings, formatProvider, MapTypeName(childContext.TypeName), Settings.BuilderNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<string>();
         }
     }
@@ -165,6 +165,12 @@ public abstract class ContextBase<TModel>
         {
             typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType());
         }
+
+        if (typeNameMapping is null && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
+        {
+            typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.WithoutProcessedGenerics());
+        }
+
         if (typeNameMapping is not null)
         {
             return typeNameMapping.Metadata;
@@ -242,5 +248,20 @@ public abstract class ContextBase<TModel>
         resultSetBuilder.Add("BuilderWithExpression", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix}{Name} = {NamePascalCsharpFriendlyName};"), FormatProvider, parentChildContext));
 
         return resultSetBuilder.Build();
+    }
+
+    public string GetMappedTypeName(Type type, MemberInfo declaringType)
+    {
+        var result = type.GetTypeName(declaringType);
+
+        //TODO: See if we can remove this work-around. Needed because nullability of complex type is not working like it should (e.g. IEnumerable<Func<object?, object?>>)
+        var mapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == result);
+        var customResult = mapping?.Metadata.GetStringValue(MetadataNames.CustomTypeName);
+        if (customResult is not null && !string.IsNullOrEmpty(customResult))
+        {
+            return customResult;
+        }
+
+        return result;
     }
 }

@@ -2,10 +2,26 @@
 
 public static class PropertyExtensions
 {
-    public static string GetDefaultValue<T>(this Property property, ICsharpExpressionDumper csharpExpressionDumper, bool enableNullableReferenceTypes, string typeName, ContextBase<T> context)
+    public static string GetDefaultValue<T>(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, ContextBase<T> context)
     {
         csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
         context = context.IsNotNull(nameof(context));
+
+        var suffix = !property.IsValueType && !property.IsNullable && context.Settings.EnableNullableReferenceTypes
+            ? "!"
+            : string.Empty;
+
+        var defaultValueAttribute = property.Attributes.FirstOrDefault(x => x.Name == typeof(DefaultValueAttribute).FullName);
+        if (defaultValueAttribute is not null)
+        {
+            var value = defaultValueAttribute.Parameters.Single().Value;
+            if (value is Literal literal && literal.Value is not null)
+            {
+                value = new StringLiteral(literal.Value);
+            }
+
+            return $"{csharpExpressionDumper.Dump(value)}{suffix}";
+        }
 
         var md = context
             .GetMappingMetadata(property.TypeName)
@@ -16,19 +32,18 @@ public static class PropertyExtensions
             var value = md.Value;
             if (value is Literal literal && literal.Value is not null)
             {
-                value = new StringLiteral(literal.Value);
+
+                value = new StringLiteral(literal.Value
+                    .Replace("[Name]", property.Name)
+                    .Replace("[NameLower]", property.Name.ToLower(context.FormatProvider.ToCultureInfo()))
+                    .Replace("[Generics]", property.TypeName.GetGenericArguments(addBrackets: true))
+                    );
             }
 
-            return csharpExpressionDumper.Dump(value);
+            return $"{csharpExpressionDumper.Dump(value)}{suffix}";
         }
 
-        var defaultValueAttribute = property.Attributes.FirstOrDefault(x => x.Name == typeof(DefaultValueAttribute).FullName);
-        if (defaultValueAttribute is not null)
-        {
-            return csharpExpressionDumper.Dump(defaultValueAttribute.Parameters.Single().Value);
-        }
-
-        return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, enableNullableReferenceTypes);
+        return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, context.Settings.EnableNullableReferenceTypes);
     }
 
     public static string GetNullCheckSuffix(this Property property, string name, bool addNullChecks)
@@ -135,7 +150,7 @@ public static class PropertyExtensions
         {
             var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{TypeName}");
             var newFullName = $"{ns}.{newTypeName}";
-            if (property.TypeName.IsCollectionTypeName())
+            if (property.TypeName.FixTypeName().IsCollectionTypeName())
             {
                 var idx = property.TypeName.IndexOf('<');
                 if (idx > -1)
@@ -180,7 +195,7 @@ public static class PropertyExtensions
 
         var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ParentTypeName.ClassName}");
 
-        if (property.TypeName.IsCollectionTypeName())
+        if (property.TypeName.FixTypeName().IsCollectionTypeName())
         {
             newTypeName = newTypeName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}");
         }
@@ -196,7 +211,7 @@ public static class PropertyExtensions
     }
 
     public static string GetSuffix(this Property source, bool enableNullableReferenceTypes)
-        => source.IsNullable(enableNullableReferenceTypes) && !source.IsValueType && !source.TypeName.IsCollectionTypeName()
+        => source.IsNullable(enableNullableReferenceTypes) && !source.IsValueType && !source.TypeName.FixTypeName().IsCollectionTypeName()
             ? "?"
             : string.Empty;
 }

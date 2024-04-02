@@ -20,7 +20,7 @@ public static class StringExtensions
             // i.e. IEnumerable<TSource> => IEnumerable<TTarget> (including collection typename mapping, when available)
             var newTypeName = typeName
                 .FixCollectionTypeName(newCollectionTypeName) // note that this always converts to a generic type :)
-                .ReplaceGenericTypeName(typeName.GetCollectionItemType().MapTypeName(settings, newCollectionTypeName, alternateTypeMetadataName)); // so we can safely use ReplaceGenericTypeName here
+                .ReplaceGenericTypeName(typeName.GetCollectionItemType().MapTypeName(settings, string.Empty, alternateTypeMetadataName)); // so we can safely use ReplaceGenericTypeName here
 
             return $"{newTypeName}{suffix}";
         }
@@ -67,7 +67,7 @@ public static class StringExtensions
                 mappedGenericArgumentsBuilder.Append(",");
             }
 
-            mappedGenericArgumentsBuilder.Append(item.MapTypeName(settings, newCollectionTypeName, alternateTypeMetadataName));
+            mappedGenericArgumentsBuilder.Append(item.MapTypeName(settings, string.Empty, alternateTypeMetadataName));
         }
 
         return $"{typeName.FixTypeName().WithoutProcessedGenerics().MapTypeName(settings, newCollectionTypeName, alternateTypeMetadataName)}<{mappedGenericArgumentsBuilder}>";
@@ -75,7 +75,9 @@ public static class StringExtensions
 
     private static string MapTypeUsingAlternateTypeMetadata(string typeName, PipelineSettings settings, string newCollectionTypeName, string alternateTypeMetadataName)
     {
-        var typenameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName() ? typeName.GetGenericArguments() : typeName));
+        var typenameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName()
+            ? typeName.GetProcessedGenericArguments()
+            : typeName));
         if (typenameMapping is not null)
         {
             var alternateType = typenameMapping.Metadata.GetStringValue(alternateTypeMetadataName);
