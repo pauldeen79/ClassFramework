@@ -34,6 +34,17 @@ public static class TypeExtensions
             return type.FullName.FixTypeName().WhenNullOrEmpty(type.Name);
         }
 
+        var typeName = type.FullName.FixTypeName();
+        if (typeName.IsCollectionTypeName())
+        {
+            //var suffix = !type.IsValueType && !type.IsEnum && type.IsNullable(declaringType, declaringType.CustomAttributes, 0) == true
+            //    ? "?"
+            //    : string.Empty;
+            var suffix = string.Empty;
+
+            return $"{typeName.ReplaceGenericTypeName(typeName.GetProcessedGenericArguments())}{suffix}";
+        }
+
         var builder = new StringBuilder();
         builder.Append(type.WithoutGenerics());
         builder.Append("<");
