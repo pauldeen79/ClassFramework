@@ -120,12 +120,6 @@ public static class TypeExtensions
             return Nullable.GetUnderlyingType(memberType) is not null;
         }
 
-        var allowNullAttribute = Array.Find(customAttributesArray, x => x.AttributeType.FullName == "System.Diagnostics.CodeAnalysis.AllowNullAttribute");
-        if (allowNullAttribute is not null)
-        {
-            return true;
-        }
-
         var nullableAttribute = Array.Find(customAttributesArray, x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableAttribute");
         if (nullableAttribute is not null && nullableAttribute.ConstructorArguments.Count == 1)
         {
