@@ -201,13 +201,18 @@ public class TypeExtensionsTests
         }
 
         public IReadOnlyCollection<string> MyProperty { get; } = new ReadOnlyCollection<string>(Array.Empty<string>());
+        [CsharpTypeName("System.Collections.Generic.IReadOnlyCollection<System.Object?>")]
         public IReadOnlyCollection<object?> MyNullableProperty { get; } = new ReadOnlyCollection<object?>(Array.Empty<object?>());
+        [CsharpTypeName("System.Collections.Generic.IReadOnlyCollection<System.Object>?")]
         public IReadOnlyCollection<object>? MyNullableProperty2 { get; } = new ReadOnlyCollection<object>(Array.Empty<object>());
+        [CsharpTypeName("System.Collections.Generic.IReadOnlyCollection<System.Func<System.Object?>>")]
         public IReadOnlyCollection<Func<object?>> MyNullableProperty3 { get; } = new ReadOnlyCollection<Func<object?>>(Array.Empty<Func<object?>>());
+        [CsharpTypeName("System.Func<System.Collections.Generic.IEnumerable<System.Object?>>")]
         public Func<IEnumerable<object?>> MyNullableProperty4 { get; } = new Func<IEnumerable<object?>>(() => Enumerable.Empty<object?>());
         public IEnumerable<string> MyNullableProperty5 { get; } = default!;
         public IReadOnlyCollection<IMyObject> MyProperty6 { get; } = default!;
         public Func<object?, string?> MyNullableProperty7 { get; } = default!;
+        [CsharpTypeName("System.Func<System.Object?,System.Func<System.String?>>")]
         public Func<object?, Func<string?>> MyNullableProperty8 { get; } = default!;
         public int? MyProperty2 { get; }
         public Tuple<TypeExtensionsTests, Lazy<TypeExtensionsTests>> MyProperty3 { get; } = null!;
