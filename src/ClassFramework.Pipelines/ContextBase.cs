@@ -249,4 +249,17 @@ public abstract class ContextBase<TModel>
 
         return resultSetBuilder.Build();
     }
+
+    public string GetMappedTypeName(Type type, MemberInfo declaringType)
+    {
+        var result = type.GetTypeName(declaringType);
+        var mapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == result);
+        var customResult = mapping?.Metadata.GetStringValue(MetadataNames.CustomTypeName);
+        if (customResult is not null && !string.IsNullOrEmpty(customResult))
+        {
+            return customResult;
+        }
+
+        return result;
+    }
 }

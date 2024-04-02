@@ -32,7 +32,7 @@ public class AddMethodsFeature : IPipelineFeature<TypeBaseBuilder, ReflectionCon
             (
                 m => new MethodBuilder()
                     .WithName(m.Name)
-                    .WithReturnTypeName(m.ReturnType.GetTypeName(m))
+                    .WithReturnTypeName(context.Context.GetMappedTypeName(m.ReturnType, m))
                     .WithVisibility(m.IsPublic.ToVisibility())
                     .WithStatic(m.IsStatic)
                     .WithVirtual(m.IsVirtual)
@@ -44,7 +44,7 @@ public class AddMethodsFeature : IPipelineFeature<TypeBaseBuilder, ReflectionCon
                     (
                         p => new ParameterBuilder()
                             .WithName(p.Name)
-                            .WithTypeName(p.ParameterType.GetTypeName(m))
+                            .WithTypeName(context.Context.GetMappedTypeName(p.ParameterType, m))
                             .WithIsNullable(p.IsNullable())
                             .WithIsValueType(p.ParameterType.IsValueType())
                             .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
