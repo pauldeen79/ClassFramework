@@ -218,6 +218,48 @@ public class TypeExtensionsTests
         public Tuple<TypeExtensionsTests, Lazy<TypeExtensionsTests>> MyProperty3 { get; } = null!;
     }
 
+    public class GetGenericTypeArgumentsString
+    {
+        [Fact]
+        public void Returns_Empty_String_When_Type_Is_Not_Generic()
+        {
+            // Arrange
+            var type = typeof(string);
+
+            // Act
+            var result = type.GetGenericTypeArgumentsString();
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_Without_Brackets()
+        {
+            // Arrange
+            var type = typeof(Tuple<,>);
+
+            // Act
+            var result = type.GetGenericTypeArgumentsString(addBrackets: false);
+
+            // Assert
+            result.Should().Be("T1,T2");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_With_Brackets()
+        {
+            // Arrange
+            var type = typeof(Tuple<,>);
+
+            // Act
+            var result = type.GetGenericTypeArgumentsString(addBrackets: true);
+
+            // Assert
+            result.Should().Be("<T1,T2>");
+        }
+    }
+
     public interface IMyObject { object? Value { get; set; } }
 
     public class IsRecord

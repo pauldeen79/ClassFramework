@@ -98,7 +98,7 @@ public static class TypeExtensions
         }
 
         var prefix = addBrackets ? "<" : string.Empty;
-        var suffix = addBrackets ? ":" : string.Empty;
+        var suffix = addBrackets ? ">" : string.Empty;
         var argsString = string.Join(",", args);
 
         return $"{prefix}{argsString}{suffix}";
