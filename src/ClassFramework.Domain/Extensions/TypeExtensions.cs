@@ -52,7 +52,7 @@ public static class TypeExtensions
 
             index++;
             builder.Append(arg.GetTypeName(arg));
-            if ((!arg.IsGenericParameter && arg.IsNullable(arg, declaringType.CustomAttributes, index))
+            if ((!arg.IsGenericParameter && arg.IsNullable(type, declaringType.CustomAttributes, index))
                 || (arg.IsGenericParameter && arg.IsNullable(declaringType, declaringType.CustomAttributes, index)))
             {
                 builder.Append("?");
@@ -106,11 +106,11 @@ public static class TypeExtensions
             return Nullable.GetUnderlyingType(memberType) is not null;
         }
 
-        var allowNullAttribute = Array.Find(customAttributesArray, x => x.AttributeType.FullName == "System.Diagnostics.CodeAnalysis.AllowNullAttribute");
-        if (allowNullAttribute is not null)
-        {
-            return true;
-        }
+        //var allowNullAttribute = Array.Find(customAttributesArray, x => x.AttributeType.FullName == "System.Diagnostics.CodeAnalysis.AllowNullAttribute");
+        //if (allowNullAttribute is not null)
+        //{
+        //    return true;
+        //}
 
         var nullableAttribute = Array.Find(customAttributesArray, x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableAttribute");
         if (nullableAttribute is not null && nullableAttribute.ConstructorArguments.Count == 1)
@@ -130,18 +130,21 @@ public static class TypeExtensions
             }
         }
 
-        for (var type = declaringType; type is not null; type = type.DeclaringType)
-        {
-            var context = type.CustomAttributes.FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableContextAttribute");
-            if (context is not null &&
-                context.ConstructorArguments.Count == 1 &&
-                context.ConstructorArguments[0].ArgumentType == typeof(byte))
-            {
-                return (byte)context.ConstructorArguments[0].Value! == 2;
-            }
-        }
+        var info = memberType.GetNullability();
+        return info == NullabilityState.Nullable;
 
-        // Couldn't find a suitable attribute
-        return false;
+        //for (var type = declaringType; type is not null; type = type.DeclaringType)
+        //{
+        //    var context = type.CustomAttributes.FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableContextAttribute");
+        //    if (context is not null &&
+        //        context.ConstructorArguments.Count == 1 &&
+        //        context.ConstructorArguments[0].ArgumentType == typeof(byte))
+        //    {
+        //        return (byte)context.ConstructorArguments[0].Value! == 2;
+        //    }
+        //}
+
+        //// Couldn't find a suitable attribute
+        //return false;
     }
 }
