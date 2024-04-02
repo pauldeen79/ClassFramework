@@ -65,7 +65,7 @@ public static class TypeExtensions
                 builder.Append("?");
             }
         }
-        
+
         builder.Append(">");
 
         if (!type.IsValueType && !type.IsEnum && type.IsNullable(declaringType, declaringType.CustomAttributes, 0))
