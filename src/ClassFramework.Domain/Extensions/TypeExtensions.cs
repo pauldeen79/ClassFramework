@@ -34,14 +34,6 @@ public static class TypeExtensions
             return type.FullName.FixTypeName().WhenNullOrEmpty(type.Name);
         }
 
-        //TODO: Remove this, and fix build
-        var typeName = type.FullName.FixTypeName();
-        if (typeName.IsCollectionTypeName())
-        {
-            // for now, we will ignore nullability of the generic argument on generic lists
-            return typeName.ReplaceGenericTypeName(typeName.GetProcessedGenericArguments());
-        }
-
         var builder = new StringBuilder();
         builder.Append(type.WithoutGenerics());
         builder.Append("<");
@@ -60,7 +52,8 @@ public static class TypeExtensions
 
             index++;
             builder.Append(arg.GetTypeName(arg));
-            if (!arg.IsGenericParameter && arg.IsNullable(arg, declaringType.CustomAttributes, index))
+            if ((!arg.IsGenericParameter && arg.IsNullable(arg, declaringType.CustomAttributes, index))
+                || (arg.IsGenericParameter && arg.IsNullable(declaringType, declaringType.CustomAttributes, index)))
             {
                 builder.Append("?");
             }

@@ -158,15 +158,32 @@ public class TypeExtensionsTests
             result.Should().Be("System.Tuple<ClassFramework.Domain.Tests.Extensions.TypeExtensionsTests,System.Lazy<ClassFramework.Domain.Tests.Extensions.TypeExtensionsTests>>");
         }
 
+        [Fact]
+        public void Returns_Correct_Result_On_IReadOnlyCollection_With_Non_Nullable_Argument()
+        {
+            // Arrange
+            var prop = GetType().GetProperty(nameof(MyProperty6));
+            var type = prop!.PropertyType;
+
+            // Act
+            var result = type.GetTypeName(prop);
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.IReadOnlyCollection<ClassFramework.Domain.Tests.Extensions.TypeExtensionsTests.IMyObject>");
+        }
+
         public IReadOnlyCollection<string> MyProperty { get; } = new ReadOnlyCollection<string>(Array.Empty<string>());
         public IReadOnlyCollection<object?> MyNullableProperty { get; } = new ReadOnlyCollection<object?>(Array.Empty<object?>());
         public IReadOnlyCollection<object>? MyNullableProperty2 { get; } = new ReadOnlyCollection<object>(Array.Empty<object>());
         public IReadOnlyCollection<Func<object?>> MyNullableProperty3 { get; } = new ReadOnlyCollection<Func<object?>>(Array.Empty<Func<object?>>());
         public Func<IEnumerable<object?>> MyNullableProperty4 { get; } = new Func<IEnumerable<object?>>(() => Enumerable.Empty<object?>());
         public IEnumerable<string> MyNullableProperty5 { get; } = default!;
+        public IReadOnlyCollection<IMyObject> MyProperty6 { get; } = default!;
         public int? MyProperty2 { get; }
         public Tuple<TypeExtensionsTests, Lazy<TypeExtensionsTests>> MyProperty3 { get; } = null!;
     }
+
+    public interface IMyObject { object? Value { get; set; } }
 
     public class IsRecord
     {
