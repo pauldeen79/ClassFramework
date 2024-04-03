@@ -46,10 +46,6 @@ internal static class Program
             var generationEnvironment = new MultipleContentBuilderEnvironment();
             engine.Generate(instance, generationEnvironment, codeGenerationSettings);
             count += generationEnvironment.Builder.Contents.Count();
-            if (!codeGenerationSettings.DryRun)
-            {
-                generationEnvironment.SaveContents(instance, codeGenerationSettings.BasePath, codeGenerationSettings.DefaultFilename);
-            }
 
             if (string.IsNullOrEmpty(basePath))
             {
