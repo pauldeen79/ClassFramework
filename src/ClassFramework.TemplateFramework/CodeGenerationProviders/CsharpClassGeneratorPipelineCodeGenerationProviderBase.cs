@@ -1,6 +1,4 @@
-﻿using ClassFramework.Domain;
-
-namespace ClassFramework.TemplateFramework.CodeGenerationProviders;
+﻿namespace ClassFramework.TemplateFramework.CodeGenerationProviders;
 
 public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : CsharpClassGeneratorCodeGenerationProviderBase
 {
@@ -38,9 +36,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithLastGeneratedFilesFilename(LastGeneratedFilesFilename)
             .WithEncoding(Encoding)
             .WithCultureInfo(CultureInfo.InvariantCulture)
-            .WithGenerateMultipleFiles()
+            .WithGenerateMultipleFiles(GenerateMultipleFiles)
             .WithCreateCodeGenerationHeader(CreateCodeGenerationHeader)
-            .WithEnableNullableContext()
+            .WithEnableNullableContext(EnableNullableContext)
             .WithFilenameSuffix(FilenameSuffix)
             .WithEnvironmentVersion(EnvironmentVersion)
             .WithSkipWhenFileExists(SkipWhenFileExists)
@@ -89,6 +87,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual string FilenameSuffix => ".template.generated";
     protected virtual bool CreateCodeGenerationHeader => true;
     protected virtual bool SkipWhenFileExists => false;
+    protected virtual bool GenerateMultipleFiles => true;
+    protected virtual bool EnableNullableContext => true;
     protected virtual Predicate<Domain.Attribute>? CopyAttributePredicate => null;
     protected virtual Predicate<string>? CopyInterfacePredicate => null;
     protected virtual Func<IType, Method, bool>? CopyMethodPredicate => null;
