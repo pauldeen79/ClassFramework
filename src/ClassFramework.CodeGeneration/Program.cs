@@ -35,7 +35,7 @@ internal static class Program
         using var serviceProvider = services.BuildServiceProvider();
         using var scope = serviceProvider.CreateScope();
         var instances = generators
-            .Select(x => (ICodeGenerationProvider)scope.ServiceProvider.GetRequiredService(x))
+            .Select(x => (CsharpClassGeneratorCodeGenerationProviderBase)scope.ServiceProvider.GetRequiredService(x))
             .ToArray();
         var engine = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
 
@@ -43,7 +43,7 @@ internal static class Program
         var count = 0;
         foreach (var instance in instances)
         {
-            var generationEnvironment = new MultipleContentBuilderEnvironment();
+            var generationEnvironment = (MultipleContentBuilderEnvironment)instance.CreateGenerationEnvironment(); // for this project, we assume
             engine.Generate(instance, generationEnvironment, codeGenerationSettings);
             count += generationEnvironment.Builder.Contents.Count();
 

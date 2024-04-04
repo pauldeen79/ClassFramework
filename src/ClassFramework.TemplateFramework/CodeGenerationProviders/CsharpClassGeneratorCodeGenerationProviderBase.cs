@@ -20,9 +20,6 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
 
     public Type GetGeneratorType() => typeof(CsharpClassGenerator);
 
-    public abstract IEnumerable<TypeBase> Model { get; }
-    public abstract CsharpClassGeneratorSettings Settings { get; }
-
     public object? CreateModel()
         => new CsharpClassGeneratorViewModel(CsharpExpressionDumper)
         {
@@ -30,6 +27,15 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
             Settings = Settings
             //Context is filled in base class, on the property setter of Context (propagated to Model)
         };
+
+    public IGenerationEnvironment CreateGenerationEnvironment()
+        => Settings.GenerateMultipleFiles
+            ? new MultipleContentBuilderEnvironment()
+            : new StringBuilderEnvironment();
+
+    public abstract IEnumerable<TypeBase> Model { get; }
+    public abstract CsharpClassGeneratorSettings Settings { get; }
+
 
     protected virtual string CurrentNamespace => Path.Replace('/', '.');
 }
