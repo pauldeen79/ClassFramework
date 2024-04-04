@@ -8,8 +8,16 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
     }
 
     public bool ShouldRenderNullablePragmas
-        => GetSettings().EnableNullableContext
-        && GetContext().GetIndentCount() == 1; // note: only for root level, because it gets rendered in the same file
+    {
+        get
+        {
+            var settings = GetSettings();
+
+            return settings.EnableNullableContext
+                && settings.GenerateMultipleFiles // only needed when generating multiple files, because else it will be done only in the header and footer of the generated file
+                && GetContext().GetIndentCount() == 1; // note: only for root level, because it gets rendered in the same file
+        }
+    }
 
     public bool ShouldRenderNamespaceScope
         => GetSettings().GenerateMultipleFiles

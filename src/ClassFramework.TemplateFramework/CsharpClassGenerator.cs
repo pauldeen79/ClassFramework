@@ -19,7 +19,9 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
             RenderHeader(generationEnvironment);
         }
 
+        singleStringBuilder?.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
         RenderNamespaceHierarchy(generationEnvironment, singleStringBuilder);
+        singleStringBuilder?.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas);
     }
 
     public void Render(StringBuilder builder)
@@ -34,7 +36,9 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
         var generationEnvironment = new StringBuilderEnvironment(builder);
         RenderHeader(generationEnvironment);
+        generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
         RenderNamespaceHierarchy(generationEnvironment, builder);
+        generationEnvironment.Builder.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas);
     }
 
     private void RenderHeader(IGenerationEnvironment generationEnvironment)

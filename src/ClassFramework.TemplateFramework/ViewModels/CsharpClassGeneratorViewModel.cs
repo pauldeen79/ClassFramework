@@ -18,4 +18,15 @@ public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<I
 
     public IEnumerable<TypeBase> GetTypes(IEnumerable<TypeBase> @namespace)
         => @namespace.OrderBy(typeBase => typeBase.Name);
+
+    public bool ShouldRenderNullablePragmas
+    {
+        get
+        {
+            var settings = GetSettings();
+
+            return settings.EnableNullableContext
+                && !settings.GenerateMultipleFiles; // only needed when generating single file
+        }
+    }
 }

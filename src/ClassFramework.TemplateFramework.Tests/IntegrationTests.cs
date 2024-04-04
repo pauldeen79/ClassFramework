@@ -44,7 +44,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TestCodeGenerationProvider>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -57,9 +57,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+#nullable enable
 namespace MyNamespace
 {
-#nullable enable
     [System.ComponentModel.DataAnnotations.RequiredAttribute]
     public class MyClass
     {
@@ -134,8 +134,8 @@ namespace MyNamespace
             }
         }
     }
-#nullable restore
 }
+#nullable disable
 ");
     }
 
