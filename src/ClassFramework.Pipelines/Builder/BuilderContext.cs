@@ -39,11 +39,6 @@ public class BuilderContext : ContextBase<IType>
         || Settings.AddBackingFields
         || Settings.CreateAsObservable;
 
-    private bool NeedsPragmasForBuildMethod()
-        => Settings.EnableNullableReferenceTypes
-        && !IsBuilderForAbstractEntity
-        && !Settings.AddNullChecks;
-
     public bool IsValidForFluentMethod(Property property)
     {
         property = property.IsNotNull(nameof(property));
@@ -67,4 +62,24 @@ public class BuilderContext : ContextBase<IType>
 
         return !isInterfaced;
     }
+
+    public string ReturnValueStatementForFluentMethod => $"return {ReturnValue};";
+
+    private string ReturnValue
+    {
+        get
+        {
+            if (IsBuilderForAbstractEntity)
+            {
+                return "(TBuilder)this";
+            }
+
+            return "this";
+        }
+    }
+
+    private bool NeedsPragmasForBuildMethod()
+        => Settings.EnableNullableReferenceTypes
+        && !IsBuilderForAbstractEntity
+        && !Settings.AddNullChecks;
 }

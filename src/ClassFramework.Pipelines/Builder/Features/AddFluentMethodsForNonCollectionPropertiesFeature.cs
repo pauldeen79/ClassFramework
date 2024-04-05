@@ -56,7 +56,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
                         .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!)
                         .WithIsNullable(property.IsNullable)
                         .WithIsValueType(property.IsValueType)
-                        .WithDefaultValue(GetMetadata(context, property).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
+                        .WithDefaultValue(context.Context.GetMappingMetadata(property.TypeName).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
                 );
 
             if (context.Context.Settings.AddNullChecks)
@@ -71,7 +71,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
             builder.AddStringCodeStatements
             (
                 results.First(x => x.Name == "BuilderWithExpression").Result.Value!,
-                $"return {GetReturnValue(context.Context)};"
+                context.Context.ReturnValueStatementForFluentMethod
             );
 
             context.Model.AddMethods(builder);
@@ -80,19 +80,6 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
         return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    private static IEnumerable<Metadata> GetMetadata(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)
-        => context.Context.GetMappingMetadata(property.TypeName);
-
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddFluentMethodsForNonCollectionPropertiesFeatureBuilder(_formattableStringParser);
-
-    private static string GetReturnValue(BuilderContext context)
-    {
-        if (context.IsBuilderForAbstractEntity)
-        {
-            return "(TBuilder)this";
-        }
-
-        return "this";
-    }
 }

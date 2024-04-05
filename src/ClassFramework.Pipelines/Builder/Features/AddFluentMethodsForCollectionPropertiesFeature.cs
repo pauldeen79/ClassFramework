@@ -130,17 +130,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
 
         yield return builderAddExpressionResult;
 
-        yield return Result.Success($"return {GetReturnValue(context.Context)};");
-    }
-
-    private static string GetReturnValue(BuilderContext context)
-    {
-        if (context.IsBuilderForAbstractEntity)
-        {
-            return "(TBuilder)this";
-        }
-
-        return "this";
+        yield return Result.Success(context.Context.ReturnValueStatementForFluentMethod);
     }
 
     private static ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property> CreateParentChildContext(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)

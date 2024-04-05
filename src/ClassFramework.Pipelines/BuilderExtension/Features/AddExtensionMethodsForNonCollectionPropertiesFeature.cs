@@ -61,7 +61,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
                         .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!)
                         .WithIsNullable(property.IsNullable)
                         .WithIsValueType(property.IsValueType)
-                        .WithDefaultValue(GetMetadata(context, property).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
+                        .WithDefaultValue(context.Context.GetMappingMetadata(property.TypeName).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
                 );
 
             if (context.Context.Settings.AddNullChecks)
@@ -84,9 +84,6 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
 
         return Result.Continue<IConcreteTypeBuilder>();
     }
-
-    private static IEnumerable<Metadata> GetMetadata(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context, Property property)
-        => context.Context.GetMappingMetadata(property.TypeName);
 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext>> ToBuilder()
         => new AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder(_formattableStringParser);
