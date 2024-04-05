@@ -1,8 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Shared.PlaceholderProcessors;
 
-public class PropertyProcessor : IPipelinePlaceholderProcessor
+public class PropertyProcessor : IPipelinePlaceholderProcessor, IPlaceholderProcessor
 {
     private readonly ICsharpExpressionDumper _csharpExpressionDumper;
+
+    public int Order => 30;
 
     public PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper)
     {
@@ -48,6 +50,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
             "ParentTypeName.GenericArgumentsWithoutBrackets" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName().GetProcessedGenericArguments(addBrackets: false)),
             "DefaultValue" => formattableStringParser.Parse(propertyContext.SourceModel.GetDefaultValue(_csharpExpressionDumper, typeName, propertyContext), formatProvider, propertyContext),
             "NullableSuffix" => Result.Success(propertyContext.SourceModel.GetSuffix(propertyContext.Settings.EnableNullableReferenceTypes)),
+            "BuilderAddMethodName" => formattableStringParser.Parse(propertyContext.Settings.AddMethodNameFormatString, formatProvider, propertyContext),
             _ => Result.Continue<string>()
         };
     }

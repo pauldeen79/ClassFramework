@@ -103,5 +103,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPlaceholderProcessor, BuilderInterfacePipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, InterfacePipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholderProcessor, ReflectionPipelinePlaceholderProcessor>();
+            .AddScoped<IPlaceholderProcessor, ReflectionPipelinePlaceholderProcessor>()
+            .AddScoped<IPlaceholderProcessor, PropertyProcessor>(); // needed for recursive calls to FormattableStringParser from PropertyProcessor...
 }

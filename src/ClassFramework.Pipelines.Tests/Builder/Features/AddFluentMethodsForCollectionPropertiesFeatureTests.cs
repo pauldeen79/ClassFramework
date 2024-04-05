@@ -129,10 +129,10 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "return AddProperty3(property3?.ToArray() ?? throw new System.ArgumentNullException(nameof(property3)));",
                 "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
-                "foreach (var item in property3) Property3.Add(item);",
-                "return this;"
+                "return AddProperty3(property3.ToArray());",
+                "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
+                "foreach (var item in property3) Property3.Add(item);", "return this;"
             );
         }
 
@@ -163,7 +163,8 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "return AddDelegate(@delegate?.ToArray() ?? throw new System.ArgumentNullException(nameof(@delegate)));",
+                "if (@delegate is null) throw new System.ArgumentNullException(nameof(@delegate));",
+                "return AddDelegate(@delegate.ToArray());",
                 "if (@delegate is null) throw new System.ArgumentNullException(nameof(@delegate));",
                 "foreach (var item in @delegate) Delegate.Add(item);",
                 "return this;"
