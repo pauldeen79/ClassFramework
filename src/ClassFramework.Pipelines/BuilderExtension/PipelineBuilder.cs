@@ -2,8 +2,8 @@
 
 public class PipelineBuilder : PipelineBuilder<IConcreteTypeBuilder, BuilderExtensionContext>
 {
-    public PipelineBuilder(IEnumerable<IBuilderExtensionFeatureBuilder> builderInterfaceFeatureBuilders)
+    public PipelineBuilder(IEnumerable<IBuilderExtensionComponentBuilder> builderInterfaceComponentBuilders)
     {
-        AddFeatures(builderInterfaceFeatureBuilders);
+        AddComponents(builderInterfaceComponentBuilders);
     }
 }

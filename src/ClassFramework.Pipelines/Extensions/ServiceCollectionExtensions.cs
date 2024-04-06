@@ -22,79 +22,79 @@ public static class ServiceCollectionExtensions
         => services
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<IConcreteTypeBuilder, BuilderContext>>().Build())
             .AddScoped<IPipelineBuilder<IConcreteTypeBuilder, BuilderContext>, Builder.PipelineBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.AbstractBuilderFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddAttributesFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddBuildMethodFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddCopyConstructorFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddDefaultConstructorFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddFluentMethodsForCollectionPropertiesFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddFluentMethodsForNonCollectionPropertiesFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddInterfacesFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddPropertiesFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.BaseClassFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.GenericsFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.ObservableFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.PartialFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.SetNameFeatureBuilder>();
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.AbstractBuilderComponentBuilder>()
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.AddAttributesComponentBuilder>()
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.AddBuildMethodComponentBuilder>()
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.AddCopyConstructorComponentBuilder>()
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.AddDefaultConstructorComponentBuilder>()
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.AddFluentMethodsForCollectionPropertiesComponentBuilder>()
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.AddFluentMethodsForNonCollectionPropertiesComponentBuilder>()
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.AddInterfacesComponentBuilder>()
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.AddPropertiesComponentBuilder>()
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.BaseClassComponentBuilder>()
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.GenericsComponentBuilder>()
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.ObservableComponentBuilder>()
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.PartialComponentBuilder>()
+            .AddScoped<IBuilderComponentBuilder, Builder.Features.SetNameComponentBuilder>();
 
     private static IServiceCollection AddBuilderInterfacePipeline(this IServiceCollection services)
         => services
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<IConcreteTypeBuilder, BuilderExtensionContext>>().Build())
             .AddScoped<IPipelineBuilder<IConcreteTypeBuilder, BuilderExtensionContext>, BuilderExtension.PipelineBuilder>()
-            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
-            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.AddExtensionMethodsForCollectionPropertiesFeatureBuilder>()
-            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder>()
-            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.PartialFeatureBuilder>()
-            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.SetNameFeatureBuilder>()
-            .AddScoped<IBuilderExtensionFeatureBuilder, BuilderExtension.Features.SetStaticFeatureBuilder>();
+            .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
+            .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.AddExtensionMethodsForCollectionPropertiesComponentBuilder>()
+            .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.AddExtensionMethodsForNonCollectionPropertiesComponentBuilder>()
+            .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.PartialComponentBuilder>()
+            .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.SetNameComponentBuilder>()
+            .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.SetStaticComponentBuilder>();
 
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<IConcreteTypeBuilder, EntityContext>>().Build())
             .AddScoped<IPipelineBuilder<IConcreteTypeBuilder, EntityContext>, Entity.PipelineBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.AbstractEntityFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.AddAttributesFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.AddFullConstructorFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.AddGenericsFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.AddInterfacesFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.AddPropertiesFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.AddPublicParameterlessConstructorFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.AddToBuilderMethodFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.ObservableFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.PartialFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.SetBaseClassFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.SetNameFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.SetRecordFeatureBuilder>();
+            .AddScoped<IEntityComponentBuilder, Entity.Features.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
+            .AddScoped<IEntityComponentBuilder, Entity.Features.AbstractEntityComponentBuilder>()
+            .AddScoped<IEntityComponentBuilder, Entity.Features.AddAttributesComponentBuilder>()
+            .AddScoped<IEntityComponentBuilder, Entity.Features.AddFullConstructorComponentBuilder>()
+            .AddScoped<IEntityComponentBuilder, Entity.Features.AddGenericsComponentBuilder>()
+            .AddScoped<IEntityComponentBuilder, Entity.Features.AddInterfacesComponentBuilder>()
+            .AddScoped<IEntityComponentBuilder, Entity.Features.AddPropertiesComponentBuilder>()
+            .AddScoped<IEntityComponentBuilder, Entity.Features.AddPublicParameterlessConstructorComponentBuilder>()
+            .AddScoped<IEntityComponentBuilder, Entity.Features.AddToBuilderMethodComponentBuilder>()
+            .AddScoped<IEntityComponentBuilder, Entity.Features.ObservableComponentBuilder>()
+            .AddScoped<IEntityComponentBuilder, Entity.Features.PartialComponentBuilder>()
+            .AddScoped<IEntityComponentBuilder, Entity.Features.SetBaseClassComponentBuilder>()
+            .AddScoped<IEntityComponentBuilder, Entity.Features.SetNameComponentBuilder>()
+            .AddScoped<IEntityComponentBuilder, Entity.Features.SetRecordComponentBuilder>();
 
     private static IServiceCollection AddReflectionPipeline(this IServiceCollection services)
         => services
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<TypeBaseBuilder, Reflection.ReflectionContext>>().Build())
             .AddScoped<IPipelineBuilder<TypeBaseBuilder, Reflection.ReflectionContext>, Reflection.PipelineBuilder>()
-            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
-            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddAttributesFeatureBuilder>()
-            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddConstructorsFeatureBuilder>()
-            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddFieldsFeatureBuilder>()
-            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddGenericTypeArgumentsFeatureBuilder>()
-            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddInterfacesFeatureBuilder>()
-            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddMethodsFeatureBuilder>()
-            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddPropertiesFeatureBuilder>()
-            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetBaseClassFeatureBuilder>()
-            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetModifiersFeatureBuilder>()
-            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetNameFeatureBuilder>()
-            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetVisibilityFeatureBuilder>();
+            .AddScoped<IReflectionComponentBuilder, Reflection.Features.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
+            .AddScoped<IReflectionComponentBuilder, Reflection.Features.AddAttributesComponentBuilder>()
+            .AddScoped<IReflectionComponentBuilder, Reflection.Features.AddConstructorsComponentBuilder>()
+            .AddScoped<IReflectionComponentBuilder, Reflection.Features.AddFieldsComponentBuilder>()
+            .AddScoped<IReflectionComponentBuilder, Reflection.Features.AddGenericTypeArgumentsComponentBuilder>()
+            .AddScoped<IReflectionComponentBuilder, Reflection.Features.AddInterfacesComponentBuilder>()
+            .AddScoped<IReflectionComponentBuilder, Reflection.Features.AddMethodsComponentBuilder>()
+            .AddScoped<IReflectionComponentBuilder, Reflection.Features.AddPropertiesComponentBuilder>()
+            .AddScoped<IReflectionComponentBuilder, Reflection.Features.SetBaseClassComponentBuilder>()
+            .AddScoped<IReflectionComponentBuilder, Reflection.Features.SetModifiersComponentBuilder>()
+            .AddScoped<IReflectionComponentBuilder, Reflection.Features.SetNameComponentBuilder>()
+            .AddScoped<IReflectionComponentBuilder, Reflection.Features.SetVisibilityComponentBuilder>();
 
     private static IServiceCollection AddInterfacePipeline(this IServiceCollection services)
         => services
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<InterfaceBuilder, Interface.InterfaceContext>>().Build())
             .AddScoped<IPipelineBuilder<InterfaceBuilder, Interface.InterfaceContext>, Interface.PipelineBuilder>()
-            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
-            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddAttributesFeatureBuilder>()
-            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddInterfacesFeatureBuilder>()
-            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddMethodsFeatureBuilder>()
-            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddPropertiesFeatureBuilder>()
-            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.SetNameFeatureBuilder>()
+            .AddScoped<IInterfaceComponentBuilder, Interface.Features.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
+            .AddScoped<IInterfaceComponentBuilder, Interface.Features.AddAttributesComponentBuilder>()
+            .AddScoped<IInterfaceComponentBuilder, Interface.Features.AddInterfacesComponentBuilder>()
+            .AddScoped<IInterfaceComponentBuilder, Interface.Features.AddMethodsComponentBuilder>()
+            .AddScoped<IInterfaceComponentBuilder, Interface.Features.AddPropertiesComponentBuilder>()
+            .AddScoped<IInterfaceComponentBuilder, Interface.Features.SetNameComponentBuilder>()
         ;
 
     private static IServiceCollection AddParserComponents(this IServiceCollection services)

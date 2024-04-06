@@ -2,24 +2,6 @@
 
 public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcreteTypeBuilder, BuilderExtensionContext>>
 {
-    public class Constructor : PipelineBuilderTests
-    {
-        [Fact]
-        public void Allows_Altering_Existing_Pipeline()
-        {
-            // Arrange
-            var builderExtensionFeatureBuilders = Scope!.ServiceProvider.GetServices<IBuilderExtensionFeatureBuilder>();
-
-            // Act
-            var pipeline = new Pipelines.BuilderExtension.PipelineBuilder(builderExtensionFeatureBuilders)
-                .With(x => x.Features.Clear())
-                .Build();
-
-            // Assert
-            pipeline.Features.Should().BeEmpty();
-        }
-    }
-
     public class Process : PipelineBuilderTests
     {
         private BuilderExtensionContext CreateContext(bool addProperties = true)

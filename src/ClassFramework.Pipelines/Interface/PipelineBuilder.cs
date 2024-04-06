@@ -2,8 +2,8 @@
 
 public class PipelineBuilder : PipelineBuilder<InterfaceBuilder, InterfaceContext>
 {
-    public PipelineBuilder(IEnumerable<IInterfaceFeatureBuilder> interfaceFeatureBuilders)
+    public PipelineBuilder(IEnumerable<IInterfaceComponentBuilder> interfaceComponentBuilders)
     {
-        AddFeatures(interfaceFeatureBuilders);
+        AddComponents(interfaceComponentBuilders);
     }
 }

@@ -2,8 +2,8 @@
 
 public class PipelineBuilder : PipelineBuilder<TypeBaseBuilder, ReflectionContext>
 {
-    public PipelineBuilder(IEnumerable<IReflectionFeatureBuilder> reflectionFeatureBuilders)
+    public PipelineBuilder(IEnumerable<IReflectionComponentBuilder> reflectionComponentBuilders)
     {
-        AddFeatures(reflectionFeatureBuilders);
+        AddComponents(reflectionComponentBuilders);
     }
 }

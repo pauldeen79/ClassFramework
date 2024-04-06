@@ -2,8 +2,8 @@
 
 public class PipelineBuilder : PipelineBuilder<IConcreteTypeBuilder, EntityContext>
 {
-    public PipelineBuilder(IEnumerable<IEntityFeatureBuilder> entityFeatureBuilders)
+    public PipelineBuilder(IEnumerable<IEntityComponentBuilder> entityComponentBuilders)
     {
-        AddFeatures(entityFeatureBuilders);
+        AddComponents(entityComponentBuilders);
     }
 }

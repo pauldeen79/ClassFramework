@@ -12,8 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="CsharpExpressionDumper.Abstractions" Version="1.5.2" />
-    <PackageReference Include="pauldeen79.CrossCutting.ProcessingPipeline" Version="4.4.0" />
-    <PackageReference Include="pauldeen79.CrossCutting.Utilities.Parsers" Version="3.7.0" />
+    <PackageReference Include="pauldeen79.CrossCutting.ProcessingPipeline" Version="5.0.1" />
+    <PackageReference Include="pauldeen79.CrossCutting.Utilities.Parsers" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>
