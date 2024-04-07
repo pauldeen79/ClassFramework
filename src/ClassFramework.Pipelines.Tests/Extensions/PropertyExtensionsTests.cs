@@ -279,4 +279,42 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             protected override string NewCollectionTypeName => string.Empty;
         }
     }
+
+    public class GetBuilderArgumentTypeName : PropertyExtensionsTests
+    {
+        [Fact]
+        public void Returns_Correct_Result_On_Collection_With_GenericArgument()
+        {
+            // Arrange
+            var sut = CreateSut().WithName("MyProperty").WithTypeName("IReadOnlyCollection<ITypedExpression<ValidationError>>").Build();
+            var settings = new PipelineSettingsBuilder()
+                .AddTypenameMappings(new TypenameMappingBuilder()
+                    .WithSourceTypeName("ITypedExpression")
+                    .WithTargetTypeName("ITypedExpression")
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderNamespace).WithValue("Builders"))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderName).WithValue("{TypeName.ClassName.NoGenerics}Builder{TypeName.GenericArgumentsWithBrackets}"))
+                ).Build();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
+            var context = new TestContext(settings, formatProvider);
+            var parentChildContext = new ParentChildContext<TestContext, PropertyContext>(context, new PropertyContext(sut, settings, formatProvider, sut.TypeName, string.Empty), settings);
+            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            formattableStringParser.Parse(Arg.Any<string>(), formatProvider, Arg.Any<object?>()).Returns(x => Result.Success(x.ArgAt<string>(0)));
+
+            // Act
+            var result = sut.GetBuilderArgumentTypeName(context, parentChildContext, sut.TypeName, formattableStringParser);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            result.Value.Should().Be("IReadOnlyCollection<Builders.{TypeName.GenericArguments.ClassName.NoGenerics}Builder{TypeName.CollectionItemType.GenericArgumentsWithBrackets}>");
+        }
+
+        private sealed class TestContext : ContextBase<string>
+        {
+            public TestContext(PipelineSettings settings, IFormatProvider formatProvider) : base(string.Empty, settings, formatProvider)
+            {
+            }
+
+            protected override string NewCollectionTypeName => string.Empty;
+        }
+    }
 }
