@@ -163,7 +163,14 @@ public abstract class ContextBase<TModel>
         var typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
         if (typeNameMapping is null && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
         {
-            typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType());
+            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
+            {
+                typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutProcessedGenerics());
+            }
+            else
+            {
+                typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType());
+            }
         }
 
         if (typeNameMapping is null && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
@@ -176,9 +183,23 @@ public abstract class ContextBase<TModel>
             return typeNameMapping.Metadata;
         }
 
-        var ns = typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType())
-            ? typeName.GetCollectionItemType().GetNamespaceWithDefault()
-            : typeName.GetNamespaceWithDefault();
+        string ns;
+
+        if (typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
+        {
+            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
+            {
+                ns = typeName.GetCollectionItemType().WithoutProcessedGenerics().GetNamespaceWithDefault();
+            }
+            else
+            {
+                ns = typeName.GetCollectionItemType().GetNamespaceWithDefault();
+            }
+        }
+        else
+        {
+            ns = typeName.GetNamespaceWithDefault();
+        }
 
         if (!string.IsNullOrEmpty(ns))
         {
