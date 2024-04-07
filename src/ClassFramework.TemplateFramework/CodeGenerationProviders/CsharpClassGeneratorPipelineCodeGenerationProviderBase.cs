@@ -323,9 +323,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyMethodPredicate(CopyMethodPredicate)
             .AddNamespaceMappings(CreateNamespaceMappings())
             .AddTypenameMappings(CreateTypenameMappings())
-            .AddAttributeInitializers(new AttributeInitializerBuilder().WithResult(x => x is CsharpTypeNameAttribute csharpTypeNameAttribute
+            .AddAttributeInitializers(x => x is CsharpTypeNameAttribute csharpTypeNameAttribute
                 ? new AttributeBuilder().WithName(csharpTypeNameAttribute.GetType()).AddParameters(new AttributeParameterBuilder().WithValue(csharpTypeNameAttribute.TypeName)).Build()
-                : null))
+                : null)
             .Build();
 
     private PipelineSettings CreateEntityPipelineSettings(

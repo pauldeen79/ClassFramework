@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
+﻿using ClassFramework.CodeGeneration.Models.Pipelines;
+
+namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 #pragma warning disable S125 // Sections of code should not be commented out
@@ -39,7 +41,11 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
         => GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Pipelines" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
             .SelectMany(x => CreateCustomTypenameMappings(x, "ClassFramework.Pipelines", "ClassFramework.Pipelines.Builders"))
-            .Concat([new TypenameMappingBuilder().WithSourceType(typeof(ArgumentValidationType)).WithTargetTypeName($"ClassFramework.Pipelines.Domains.{nameof(ArgumentValidationType)}")]);
+            .Concat(
+            [
+                new TypenameMappingBuilder().WithSourceType(typeof(ArgumentValidationType)).WithTargetTypeName($"ClassFramework.Pipelines.Domains.{nameof(ArgumentValidationType)}"),
+                new TypenameMappingBuilder().WithSourceType(typeof(AttributeInitializerDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(AttributeInitializerDelegate)}")
+            ]);
 
     private IEnumerable<TypenameMappingBuilder> CreateCustomTypenameMappings(Type modelType, string entityNamespace, string builderNamespace) =>
         [

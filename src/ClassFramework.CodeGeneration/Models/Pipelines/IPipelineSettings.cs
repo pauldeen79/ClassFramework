@@ -10,7 +10,7 @@ internal interface IPipelineSettings
     bool AddPublicParameterlessConstructor { get; }
     bool AddSetters { get; }
     bool AllowGenerationWithoutProperties { get; }
-    [Required] IReadOnlyCollection<IAttributeInitializer> AttributeInitializers { get; }
+    [Required] IReadOnlyCollection<AttributeInitializerDelegate> AttributeInitializers { get; }
     [ValidateObject] ITypeBase? BaseClass { get; }
     [Required(AllowEmptyStrings = true)] string BaseClassBuilderNameSpace { get; }
     [Required(AllowEmptyStrings = true)] string BuilderExtensionsCollectionCopyStatementFormatString { get; }

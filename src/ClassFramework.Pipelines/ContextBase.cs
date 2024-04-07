@@ -152,7 +152,7 @@ public abstract class ContextBase<TModel>
 
     public Domain.Attribute InitializeDelegate(System.Attribute sourceAttribute)
         => Settings.AttributeInitializers
-            .Select(x => x.Result(sourceAttribute))
+            .Select(x => x(sourceAttribute))
             .FirstOrDefault(x => x is not null)
                 ?? throw new NotSupportedException($"Attribute not supported by initializer:");
 
