@@ -249,7 +249,7 @@ namespace ClassFramework.Pipelines.Builders
 
         private bool _copyInterfaces;
 
-        private System.Func<ClassFramework.Domain.Abstractions.IType,ClassFramework.Domain.Method,bool>? _copyMethodPredicate;
+        private ClassFramework.Pipelines.CopyMethodPredicate? _copyMethodPredicate;
 
         private bool _copyMethods;
 
@@ -271,9 +271,9 @@ namespace ClassFramework.Pipelines.Builders
 
         private string _entityNamespaceFormatString;
 
-        private System.Func<ClassFramework.Domain.Abstractions.IParentTypeContainer,ClassFramework.Domain.Abstractions.IType,bool>? _inheritanceComparisonDelegate;
+        private ClassFramework.Pipelines.InheritanceComparisonDelegate? _inheritanceComparisonDelegate;
 
-        private System.Func<ClassFramework.Domain.Abstractions.IParentTypeContainer,System.Type,bool>? _inheritanceComparisonDelegateForReflection;
+        private ClassFramework.Pipelines.ReflectionInheritanceComparisonDelegate? _inheritanceComparisonDelegateForReflection;
 
         private bool _isAbstract;
 
@@ -656,7 +656,7 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
-        public System.Func<ClassFramework.Domain.Abstractions.IType,ClassFramework.Domain.Method,bool>? CopyMethodPredicate
+        public ClassFramework.Pipelines.CopyMethodPredicate? CopyMethodPredicate
         {
             get
             {
@@ -801,7 +801,7 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
-        public System.Func<ClassFramework.Domain.Abstractions.IParentTypeContainer,ClassFramework.Domain.Abstractions.IType,bool>? InheritanceComparisonDelegate
+        public ClassFramework.Pipelines.InheritanceComparisonDelegate? InheritanceComparisonDelegate
         {
             get
             {
@@ -814,7 +814,7 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
-        public System.Func<ClassFramework.Domain.Abstractions.IParentTypeContainer,System.Type,bool>? InheritanceComparisonDelegateForReflection
+        public ClassFramework.Pipelines.ReflectionInheritanceComparisonDelegate? InheritanceComparisonDelegateForReflection
         {
             get
             {
@@ -1397,7 +1397,7 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithCopyMethodPredicate(System.Func<ClassFramework.Domain.Abstractions.IType,ClassFramework.Domain.Method,bool>? copyMethodPredicate)
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithCopyMethodPredicate(ClassFramework.Pipelines.CopyMethodPredicate? copyMethodPredicate)
         {
             CopyMethodPredicate = copyMethodPredicate;
             return this;
@@ -1465,13 +1465,13 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithInheritanceComparisonDelegate(System.Func<ClassFramework.Domain.Abstractions.IParentTypeContainer,ClassFramework.Domain.Abstractions.IType,bool>? inheritanceComparisonDelegate)
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithInheritanceComparisonDelegate(ClassFramework.Pipelines.InheritanceComparisonDelegate? inheritanceComparisonDelegate)
         {
             InheritanceComparisonDelegate = inheritanceComparisonDelegate;
             return this;
         }
 
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithInheritanceComparisonDelegateForReflection(System.Func<ClassFramework.Domain.Abstractions.IParentTypeContainer,System.Type,bool>? inheritanceComparisonDelegateForReflection)
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithInheritanceComparisonDelegateForReflection(ClassFramework.Pipelines.ReflectionInheritanceComparisonDelegate? inheritanceComparisonDelegateForReflection)
         {
             InheritanceComparisonDelegateForReflection = inheritanceComparisonDelegateForReflection;
             return this;

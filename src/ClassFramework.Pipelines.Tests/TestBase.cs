@@ -157,7 +157,7 @@ public abstract class TestBase : IDisposable
         string? baseClassBuilderNameSpace = null,
         bool allowGenerationWithoutProperties = false,
         Class? baseClass = null,
-        Func<IParentTypeContainer, IType, bool>? inheritanceComparisonDelegate = null,
+        ClassFramework.Pipelines.InheritanceComparisonDelegate? inheritanceComparisonDelegate = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
         =>  CreateSettingsForEntity
@@ -331,7 +331,7 @@ public abstract class TestBase : IDisposable
         IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null,
-        Func<IType, Method, bool>? copyMethodPredicate = null)
+        CopyMethodPredicate? copyMethodPredicate = null)
         => new PipelineSettingsBuilder()
             .WithAddSetters(addSetters)
             .WithAllowGenerationWithoutProperties(allowGenerationWithoutProperties)

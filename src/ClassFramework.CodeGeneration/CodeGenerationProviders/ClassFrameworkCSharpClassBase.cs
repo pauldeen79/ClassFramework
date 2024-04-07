@@ -45,7 +45,10 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
             .Concat(
             [
                 new TypenameMappingBuilder().WithSourceType(typeof(ArgumentValidationType)).WithTargetTypeName($"ClassFramework.Pipelines.Domains.{nameof(ArgumentValidationType)}"),
-                new TypenameMappingBuilder().WithSourceType(typeof(AttributeInitializerDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(AttributeInitializerDelegate)}")
+                new TypenameMappingBuilder().WithSourceType(typeof(AttributeInitializerDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(AttributeInitializerDelegate)}"),
+                new TypenameMappingBuilder().WithSourceType(typeof(CopyMethodPredicate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(CopyMethodPredicate)}"),
+                new TypenameMappingBuilder().WithSourceType(typeof(InheritanceComparisonDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(InheritanceComparisonDelegate)}"),
+                new TypenameMappingBuilder().WithSourceType(typeof(ReflectionInheritanceComparisonDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(ReflectionInheritanceComparisonDelegate)}"),
             ]);
 
     private IEnumerable<TypenameMappingBuilder> CreateCustomTypenameMappings(Type modelType, string entityNamespace, string builderNamespace) =>

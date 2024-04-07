@@ -4,7 +4,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
 {
     public class Process : PipelineBuilderTests
     {
-        private InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, Func<IType, Method, bool>? copyMethodPredicate = null) => new InterfaceContext
+        private InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, CopyMethodPredicate? copyMethodPredicate = null) => new InterfaceContext
         (
             CreateInterfaceModel(addProperties),
             CreateSettingsForInterface

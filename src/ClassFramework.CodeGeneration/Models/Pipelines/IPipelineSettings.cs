@@ -27,7 +27,7 @@ internal interface IPipelineSettings
     bool CopyAttributes { get; }
     Predicate<string>? CopyInterfacePredicate { get; }
     bool CopyInterfaces { get; }
-    Func<IType, IMethod, bool>? CopyMethodPredicate { get; }
+    CopyMethodPredicate? CopyMethodPredicate { get; }
     bool CopyMethods { get; }
     bool InheritFromInterfaces { get; }
     bool CreateAsObservable { get; }
@@ -38,8 +38,8 @@ internal interface IPipelineSettings
     bool EnableNullableReferenceTypes { get; }
     [Required(AllowEmptyStrings = true)] string EntityNameFormatString { get; }
     [Required(AllowEmptyStrings = true)] string EntityNamespaceFormatString { get; }
-    Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate { get; }
-    Func<IParentTypeContainer, Type, bool>? InheritanceComparisonDelegateForReflection { get; }
+    InheritanceComparisonDelegate? InheritanceComparisonDelegate { get; }
+    ReflectionInheritanceComparisonDelegate? InheritanceComparisonDelegateForReflection { get; }
     bool IsAbstract { get; }
     bool IsForAbstractBuilder { get; }
     [Required(AllowEmptyStrings = true)] string NameFormatString { get; }
