@@ -160,46 +160,13 @@ public abstract class ContextBase<TModel>
     {
         typeName = typeName.IsNotNull(nameof(typeName)).FixTypeName();
 
-        var typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
-        if (typeNameMapping is null && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
-        {
-            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
-            {
-                typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutProcessedGenerics());
-            }
-            else
-            {
-                typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType());
-            }
-        }
-
-        if (typeNameMapping is null && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
-        {
-            typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.WithoutProcessedGenerics());
-        }
-
+        var typeNameMapping = GetTypenameMapping(typeName);
         if (typeNameMapping is not null)
         {
             return typeNameMapping.Metadata;
         }
 
-        string ns;
-
-        if (typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
-        {
-            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
-            {
-                ns = typeName.GetCollectionItemType().WithoutProcessedGenerics().GetNamespaceWithDefault();
-            }
-            else
-            {
-                ns = typeName.GetCollectionItemType().GetNamespaceWithDefault();
-            }
-        }
-        else
-        {
-            ns = typeName.GetNamespaceWithDefault();
-        }
+        var ns = GetNamespace(typeName);
 
         if (!string.IsNullOrEmpty(ns))
         {
@@ -284,5 +251,45 @@ public abstract class ContextBase<TModel>
         }
 
         return result;
+    }
+
+    private TypenameMapping? GetTypenameMapping(string typeName)
+    {
+        var typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
+        if (typeNameMapping is null && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
+        {
+            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
+            {
+                typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutProcessedGenerics());
+            }
+            else
+            {
+                typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType());
+            }
+        }
+
+        if (typeNameMapping is null && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
+        {
+            typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.WithoutProcessedGenerics());
+        }
+
+        return typeNameMapping;
+    }
+
+    private static string GetNamespace(string typeName)
+    {
+        if (typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
+        {
+            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
+            {
+                return typeName.GetCollectionItemType().WithoutProcessedGenerics().GetNamespaceWithDefault();
+            }
+            else
+            {
+                return typeName.GetCollectionItemType().GetNamespaceWithDefault();
+            }
+        }
+
+        return typeName.GetNamespaceWithDefault();
     }
 }
