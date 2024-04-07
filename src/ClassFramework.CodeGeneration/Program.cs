@@ -11,7 +11,6 @@ internal static class Program
             ? Path.Combine(currentDirectory, @"src/")
             : Path.Combine(currentDirectory, @"../../../../");
         var dryRun = false;
-        var codeGenerationSettings = new CodeGenerationSettings(basePath, "GeneratedCode.cs", dryRun);
         var services = new ServiceCollection()
             .AddParsers()
             .AddPipelines()
@@ -43,13 +42,17 @@ internal static class Program
         var count = 0;
         foreach (var instance in instances)
         {
-            var generationEnvironment = (MultipleContentBuilderEnvironment)instance.CreateGenerationEnvironment(); // for this project, we assume
+            var codeGenerationSettings = new CodeGenerationSettings(basePath, Path.Combine(instance.Path, $"{instance.GetType().Name}.template.generated.cs"), dryRun);
+            var generationEnvironment = instance.CreateGenerationEnvironment();
             engine.Generate(instance, generationEnvironment, codeGenerationSettings);
-            count += generationEnvironment.Builder.Contents.Count();
-
-            if (string.IsNullOrEmpty(basePath))
+            var multipleEnv = generationEnvironment as MultipleContentBuilderEnvironment;
+            if (multipleEnv is not null)
             {
-                Console.WriteLine(generationEnvironment.Builder.ToString());
+                count += multipleEnv.Builder.Contents.Count();
+            }
+            else
+            {
+                count++;
             }
         }
 

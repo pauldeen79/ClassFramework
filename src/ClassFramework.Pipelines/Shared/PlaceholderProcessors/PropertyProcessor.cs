@@ -38,6 +38,9 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor, IPlaceholderProc
             $"{nameof(Property.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(typeName.GetProcessedGenericArguments(addBrackets: true)),
             $"{nameof(Property.TypeName)}.GenericArgumentsWithoutBrackets" => Result.Success(typeName.GetProcessedGenericArguments(addBrackets: false)),
             $"{nameof(Property.TypeName)}.GenericArguments.ClassName" => Result.Success(typeName.GetProcessedGenericArguments().GetClassName()),
+            $"{nameof(Property.TypeName)}.GenericArguments.ClassName.NoGenerics" => Result.Success(typeName.GetProcessedGenericArguments().GetClassName().WithoutProcessedGenerics()),
+            $"{nameof(Property.TypeName)}.CollectionItemType.GenericArgumentsWithBrackets" => Result.Success(typeName.GetCollectionItemType().GetProcessedGenericArguments(addBrackets: true)),
+            $"{nameof(Property.TypeName)}.CollectionItemType.GenericArgumentsWithoutBrackets" => Result.Success(typeName.GetCollectionItemType().GetProcessedGenericArguments(addBrackets: false)),
             $"{nameof(Property.TypeName)}.ClassName" => Result.Success(typeName.GetClassName()),
             $"{nameof(Property.TypeName)}.ClassName.NoGenerics" => Result.Success(typeName.GetClassName().WithoutProcessedGenerics()),
             $"{nameof(Property.TypeName)}.ClassName.NoInterfacePrefix" => Result.Success(WithoutInterfacePrefix(typeName.GetClassName())),
@@ -60,7 +63,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor, IPlaceholderProc
         collectionTypeName = collectionTypeName.IsNotNull(nameof(collectionTypeName));
 
         return typeName.FixTypeName().IsCollectionTypeName()
-            && (collectionTypeName.Length == 0 || collectionTypeName != property.TypeName.WithoutGenerics())
+            && (collectionTypeName.Length == 0 || collectionTypeName != property.TypeName.WithoutProcessedGenerics())
                 ? GetCollectionFormatStringForInitialization(property, typeName, cultureInfo, collectionTypeName, addNullChecks, validateArguments, enableNullableReferenceTypes)
                 : property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName();
     }

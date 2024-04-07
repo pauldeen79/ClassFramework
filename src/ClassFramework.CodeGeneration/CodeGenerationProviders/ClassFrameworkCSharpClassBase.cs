@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
+﻿using ClassFramework.CodeGeneration.Models.Pipelines;
+
+namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 #pragma warning disable S125 // Sections of code should not be commented out
@@ -21,6 +23,7 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;
     protected override bool CreateRecord => true;
+    protected override bool GenerateMultipleFiles => false;
     //protected override string ToBuilderFormatString => string.Empty;
     //protected override string ToTypedBuilderFormatString => string.Empty;
     //protected override bool AddCopyConstructor => false;
@@ -39,7 +42,14 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
         => GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Pipelines" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
             .SelectMany(x => CreateCustomTypenameMappings(x, "ClassFramework.Pipelines", "ClassFramework.Pipelines.Builders"))
-            .Concat([new TypenameMappingBuilder().WithSourceType(typeof(ArgumentValidationType)).WithTargetTypeName($"ClassFramework.Pipelines.Domains.{nameof(ArgumentValidationType)}")]);
+            .Concat(
+            [
+                new TypenameMappingBuilder().WithSourceType(typeof(ArgumentValidationType)).WithTargetTypeName($"ClassFramework.Pipelines.Domains.{nameof(ArgumentValidationType)}"),
+                new TypenameMappingBuilder().WithSourceType(typeof(AttributeInitializerDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(AttributeInitializerDelegate)}"),
+                new TypenameMappingBuilder().WithSourceType(typeof(CopyMethodPredicate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(CopyMethodPredicate)}"),
+                new TypenameMappingBuilder().WithSourceType(typeof(InheritanceComparisonDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(InheritanceComparisonDelegate)}"),
+                new TypenameMappingBuilder().WithSourceType(typeof(ReflectionInheritanceComparisonDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(ReflectionInheritanceComparisonDelegate)}"),
+            ]);
 
     private IEnumerable<TypenameMappingBuilder> CreateCustomTypenameMappings(Type modelType, string entityNamespace, string builderNamespace) =>
         [

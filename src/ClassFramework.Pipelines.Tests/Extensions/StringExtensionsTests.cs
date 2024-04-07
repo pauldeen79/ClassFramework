@@ -123,6 +123,38 @@ public class StringExtensionsTests
         }
 
         [Fact]
+        public void Maps_CollectionType_Correctly_Nested_TypenameMapping_Array()
+        {
+            // Arrange
+            var collectionTypeName = typeof(IEnumerable<>).ReplaceGenericTypeName("MyNamespace.ITypedExpression<char[]>");
+            var settings = new PipelineSettingsBuilder()
+                .AddTypenameMappings(new TypenameMappingBuilder().WithSourceTypeName("MyNamespace.ITypedExpression").WithTargetTypeName("MappedNamespace.Builders.ITypedExpressionBuilder"))
+                .Build();
+
+            // Act
+            var result = collectionTypeName.MapTypeName(settings, typeof(List<>).WithoutGenerics());
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.List<MappedNamespace.Builders.ITypedExpressionBuilder<char[]>>");
+        }
+
+        [Fact]
+        public void Maps_CollectionType_Correctly_Nested_TypenameMapping_SimpleSystemType()
+        {
+            // Arrange
+            var collectionTypeName = typeof(IEnumerable<>).ReplaceGenericTypeName("MyNamespace.ITypedExpression<System.Object>");
+            var settings = new PipelineSettingsBuilder()
+                .AddTypenameMappings(new TypenameMappingBuilder().WithSourceTypeName("MyNamespace.ITypedExpression").WithTargetTypeName("MappedNamespace.Builders.ITypedExpressionBuilder"))
+                .Build();
+
+            // Act
+            var result = collectionTypeName.MapTypeName(settings, typeof(List<>).WithoutGenerics());
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.List<MappedNamespace.Builders.ITypedExpressionBuilder<System.Object>>");
+        }
+
+        [Fact]
         public void Maps_SingleType_Correctly_Using_NamespaceMapping()
         {
             // Arrange

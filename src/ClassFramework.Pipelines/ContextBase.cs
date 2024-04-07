@@ -152,7 +152,7 @@ public abstract class ContextBase<TModel>
 
     public Domain.Attribute InitializeDelegate(System.Attribute sourceAttribute)
         => Settings.AttributeInitializers
-            .Select(x => x.Result(sourceAttribute))
+            .Select(x => x(sourceAttribute))
             .FirstOrDefault(x => x is not null)
                 ?? throw new NotSupportedException($"Attribute not supported by initializer:");
 
@@ -160,25 +160,13 @@ public abstract class ContextBase<TModel>
     {
         typeName = typeName.IsNotNull(nameof(typeName)).FixTypeName();
 
-        var typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
-        if (typeNameMapping is null && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
-        {
-            typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType());
-        }
-
-        if (typeNameMapping is null && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
-        {
-            typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.WithoutProcessedGenerics());
-        }
-
+        var typeNameMapping = GetTypenameMapping(typeName);
         if (typeNameMapping is not null)
         {
             return typeNameMapping.Metadata;
         }
 
-        var ns = typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType())
-            ? typeName.GetCollectionItemType().GetNamespaceWithDefault()
-            : typeName.GetNamespaceWithDefault();
+        var ns = GetNamespace(typeName);
 
         if (!string.IsNullOrEmpty(ns))
         {
@@ -263,5 +251,45 @@ public abstract class ContextBase<TModel>
         }
 
         return result;
+    }
+
+    private TypenameMapping? GetTypenameMapping(string typeName)
+    {
+        var typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
+        if (typeNameMapping is null && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
+        {
+            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
+            {
+                typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutProcessedGenerics());
+            }
+            else
+            {
+                typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType());
+            }
+        }
+
+        if (typeNameMapping is null && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
+        {
+            typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.WithoutProcessedGenerics());
+        }
+
+        return typeNameMapping;
+    }
+
+    private static string GetNamespace(string typeName)
+    {
+        if (typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
+        {
+            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
+            {
+                return typeName.GetCollectionItemType().WithoutProcessedGenerics().GetNamespaceWithDefault();
+            }
+            else
+            {
+                return typeName.GetCollectionItemType().GetNamespaceWithDefault();
+            }
+        }
+
+        return typeName.GetNamespaceWithDefault();
     }
 }

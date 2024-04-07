@@ -5,7 +5,7 @@ public static class ParentTypeContainerExtensions
     public static bool IsDefinedOn(
         this IParentTypeContainer instance,
         IType typeBase,
-        Func<IParentTypeContainer, IType, bool>? comparisonDelegate = null)
+        InheritanceComparisonDelegate? comparisonDelegate = null)
     {
         typeBase = typeBase.IsNotNull(nameof(typeBase));
 

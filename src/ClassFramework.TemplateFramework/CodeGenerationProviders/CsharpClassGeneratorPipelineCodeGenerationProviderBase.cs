@@ -91,8 +91,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool EnableNullableContext => true;
     protected virtual Predicate<Domain.Attribute>? CopyAttributePredicate => null;
     protected virtual Predicate<string>? CopyInterfacePredicate => null;
-    protected virtual Func<IType, Method, bool>? CopyMethodPredicate => null;
-    protected virtual Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => new Func<IParentTypeContainer, IType, bool>((parentNameContainer, typeBase)
+    CopyMethodPredicate? CopyMethodPredicate => null;
+    protected virtual InheritanceComparisonDelegate? InheritanceComparisonDelegate => (parentNameContainer, typeBase)
         => parentNameContainer is not null
         && typeBase is not null
         && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
@@ -100,7 +100,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
             || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
             || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
-        ));
+        );
 
     protected virtual string[] GetModelAbstractBaseTyped() => Array.Empty<string>();
 
@@ -323,9 +323,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyMethodPredicate(CopyMethodPredicate)
             .AddNamespaceMappings(CreateNamespaceMappings())
             .AddTypenameMappings(CreateTypenameMappings())
-            .AddAttributeInitializers(new AttributeInitializerBuilder().WithResult(x => x is CsharpTypeNameAttribute csharpTypeNameAttribute
+            .AddAttributeInitializers(x => x is CsharpTypeNameAttribute csharpTypeNameAttribute
                 ? new AttributeBuilder().WithName(csharpTypeNameAttribute.GetType()).AddParameters(new AttributeParameterBuilder().WithValue(csharpTypeNameAttribute.TypeName)).Build()
-                : null))
+                : null)
             .Build();
 
     private PipelineSettings CreateEntityPipelineSettings(
@@ -372,8 +372,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private PipelineSettings CreateInterfacePipelineSettings(
         string interfacesNamespace,
         string newCollectionTypeName,
-        Func<IParentTypeContainer, IType, bool>? inheritanceComparisonDelegate,
-        Func<IType, Method, bool>? copyMethodPredicate,
+        InheritanceComparisonDelegate? inheritanceComparisonDelegate,
+        CopyMethodPredicate? copyMethodPredicate,
         bool addSetters,
         string nameFormatString = "{Class.Name}")
         => new PipelineSettingsBuilder()
@@ -578,7 +578,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         string newCollectionTypeName,
         bool addSetters,
         string nameFormatString = "{Class.Name}",
-        Func<IType, Method, bool>? copyMethodPredicate = null)
+        CopyMethodPredicate? copyMethodPredicate = null)
     {
         var builder = new InterfaceBuilder();
         _ = _interfacePipeline
