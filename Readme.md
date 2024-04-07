@@ -35,6 +35,14 @@ The entity and builder generators use the following characteristics:
 
 # Dog fooding
 
-I have decided that the models for ClassFramework need to be generated using ClassFramework. To make this possible, I first generate everything with another framework (called ModelFramework) as a Bootstrap action. After this, I can re-generate everything using ClassFramework.
+I have decided that the models for ClassFramework need to be generated using ClassFramework. To make this possible, I have first generated everything with another framework (called ModelFramework) as a Bootstrap action. After this, I re-generated everything using ClassFramework.
 
-As with my other Github repositories, I have decided not to store generated code. So in the build pipeline, I need to run the code generation before I can build, test and pack the solution.
+But since version 0.9.1, I stored the generated code, so I could add breaking changes. This means the code generation in the build pipelines has been removed.
+
+# Known issues
+
+If you have types with nested or multiple generic arguments, the nullability of those types will not get determined correctly... Try to fix this by creating types for this.
+E.g. System.Func<System.Object, System.Int32, System.Object?>
+Just create a delegate for this, and add this to the type mapping.
+
+If you still get errors, you could use the CsharpTypeNameAttribute to decorate your property/field/parameter.
