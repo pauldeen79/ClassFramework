@@ -147,7 +147,7 @@ namespace ClassFramework.Pipelines.Builders
             _metadata = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.MetadataBuilder>();
             _sourceNamespace = source.SourceNamespace;
             _targetNamespace = source.TargetNamespace;
-            if (source.Metadata is not null) foreach (var item in source.Metadata.Select(x => x.ToBuilder()!)) _metadata.Add(item);
+            if (source.Metadata is not null) foreach (var item in source.Metadata.Select(x => x.ToBuilder())) _metadata.Add(item);
         }
 
         public NamespaceMappingBuilder()
@@ -1146,7 +1146,7 @@ namespace ClassFramework.Pipelines.Builders
             _isForAbstractBuilder = source.IsForAbstractBuilder;
             _nameFormatString = source.NameFormatString;
             _namespaceFormatString = source.NamespaceFormatString;
-            if (source.NamespaceMappings is not null) foreach (var item in source.NamespaceMappings.Select(x => x.ToBuilder()!)) _namespaceMappings.Add(item);
+            if (source.NamespaceMappings is not null) foreach (var item in source.NamespaceMappings.Select(x => x.ToBuilder())) _namespaceMappings.Add(item);
             _builderNewCollectionTypeName = source.BuilderNewCollectionTypeName;
             _entityNewCollectionTypeName = source.EntityNewCollectionTypeName;
             _nonCollectionInitializationStatementFormatString = source.NonCollectionInitializationStatementFormatString;
@@ -1157,7 +1157,7 @@ namespace ClassFramework.Pipelines.Builders
             _setterVisibility = source.SetterVisibility;
             _toBuilderFormatString = source.ToBuilderFormatString;
             _toTypedBuilderFormatString = source.ToTypedBuilderFormatString;
-            if (source.TypenameMappings is not null) foreach (var item in source.TypenameMappings.Select(x => x.ToBuilder()!)) _typenameMappings.Add(item);
+            if (source.TypenameMappings is not null) foreach (var item in source.TypenameMappings.Select(x => x.ToBuilder())) _typenameMappings.Add(item);
             _useBaseClassFromSourceModel = source.UseBaseClassFromSourceModel;
             _useExceptionThrowIfNull = source.UseExceptionThrowIfNull;
             _validateArguments = source.ValidateArguments;
@@ -1658,7 +1658,7 @@ namespace ClassFramework.Pipelines.Builders
             _metadata = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.MetadataBuilder>();
             _sourceTypeName = source.SourceTypeName;
             _targetTypeName = source.TargetTypeName;
-            if (source.Metadata is not null) foreach (var item in source.Metadata.Select(x => x.ToBuilder()!)) _metadata.Add(item);
+            if (source.Metadata is not null) foreach (var item in source.Metadata.Select(x => x.ToBuilder())) _metadata.Add(item);
         }
 
         public TypenameMappingBuilder()

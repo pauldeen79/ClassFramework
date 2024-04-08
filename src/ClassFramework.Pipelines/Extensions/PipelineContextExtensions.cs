@@ -2,7 +2,7 @@
 
 public static class PipelineContextExtensions
 {
-    public static Result<string> CreateEntityInstanciation(this PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, string classNameSuffix)
+    public static Result<string> CreateEntityInstanciation(this PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
@@ -28,7 +28,7 @@ public static class PipelineContextExtensions
         var openSign = GetBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Count != 0);
         var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Count != 0);
 
-        var parametersResult = GetConstructionMethodParameters(context, formattableStringParser, hasPublicParameterlessConstructor);
+        var parametersResult = GetConstructionMethodParameters(context, formattableStringParser, csharpExpressionDumper, hasPublicParameterlessConstructor);
         if (!parametersResult.IsSuccessful())
         {
             return parametersResult;
@@ -53,7 +53,7 @@ public static class PipelineContextExtensions
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()));
 
-    private static Result<string> GetConstructionMethodParameters<TModel>(PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
+    private static Result<string> GetConstructionMethodParameters<TModel>(PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor)
     {
         var properties = context.Context.SourceModel.GetBuilderConstructorProperties(context.Context);
 
@@ -75,7 +75,7 @@ public static class PipelineContextExtensions
                     (
                         property.TypeName.FixTypeName().WithoutProcessedGenerics() // i.e. List<> etc.
                     ).GetStringValue(MetadataNames.CustomCollectionInitialization, () => "[Expression]"),
-                Suffix = property.GetSuffix(context.Context.Settings.EnableNullableReferenceTypes)
+                Suffix = property.GetSuffix(context.Context.Settings.EnableNullableReferenceTypes, csharpExpressionDumper, context.Context)
             }
         ).TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful()).ToArray();
 

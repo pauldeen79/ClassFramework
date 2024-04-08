@@ -220,8 +220,19 @@ public static class PropertyExtensions
         );
     }
 
-    public static string GetSuffix(this Property source, bool enableNullableReferenceTypes)
-        => source.IsNullable(enableNullableReferenceTypes) && !source.IsValueType && !source.TypeName.FixTypeName().IsCollectionTypeName()
+    public static string GetSuffix<T>(this Property source, bool enableNullableReferenceTypes, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<T> context)
+        =>
+        (
+            source.IsNullable(enableNullableReferenceTypes)
+            && !source.IsValueType
+            && !source.TypeName.FixTypeName().IsCollectionTypeName()
+        )
+        ||
+        (
+            !source.TypeName.IsCollectionTypeName()
+            && !source.IsValueType
+            && source.GetDefaultValue(csharpExpressionDumper, source.TypeName.FixTypeName(), context).StartsWith("default(")
+        )
             ? "?"
             : string.Empty;
 }

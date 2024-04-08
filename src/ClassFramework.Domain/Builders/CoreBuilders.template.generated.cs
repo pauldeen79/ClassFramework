@@ -56,7 +56,7 @@ namespace ClassFramework.Domain.Builders
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _parameters = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.AttributeParameterBuilder>();
-            if (source.Parameters is not null) foreach (var item in source.Parameters.Select(x => x.ToBuilder()!)) _parameters.Add(item);
+            if (source.Parameters is not null) foreach (var item in source.Parameters.Select(x => x.ToBuilder())) _parameters.Add(item);
             _name = source.Name;
         }
 
@@ -365,9 +365,9 @@ namespace ClassFramework.Domain.Builders
             _protected = source.Protected;
             _override = source.Override;
             _visibility = source.Visibility;
-            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder()!)) _attributes.Add(item);
-            if (source.CodeStatements is not null) foreach (var item in source.CodeStatements.Select(x => x.ToBuilder()!)) _codeStatements.Add(item);
-            if (source.Parameters is not null) foreach (var item in source.Parameters.Select(x => x.ToBuilder()!)) _parameters.Add(item);
+            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder())) _attributes.Add(item);
+            if (source.CodeStatements is not null) foreach (var item in source.CodeStatements.Select(x => x.ToBuilder())) _codeStatements.Add(item);
+            if (source.Parameters is not null) foreach (var item in source.Parameters.Select(x => x.ToBuilder())) _parameters.Add(item);
             if (source.SuppressWarningCodes is not null) foreach (var item in source.SuppressWarningCodes) _suppressWarningCodes.Add(item);
         }
 
@@ -562,8 +562,8 @@ namespace ClassFramework.Domain.Builders
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _members = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.EnumerationMemberBuilder>();
             _attributes = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.AttributeBuilder>();
-            if (source.Members is not null) foreach (var item in source.Members.Select(x => x.ToBuilder()!)) _members.Add(item);
-            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder()!)) _attributes.Add(item);
+            if (source.Members is not null) foreach (var item in source.Members.Select(x => x.ToBuilder())) _members.Add(item);
+            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder())) _attributes.Add(item);
             _name = source.Name;
             _visibility = source.Visibility;
         }
@@ -684,7 +684,7 @@ namespace ClassFramework.Domain.Builders
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _attributes = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.AttributeBuilder>();
             _value = source.Value;
-            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder()!)) _attributes.Add(item);
+            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder())) _attributes.Add(item);
             _name = source.Name;
         }
 
@@ -996,7 +996,7 @@ namespace ClassFramework.Domain.Builders
             _override = source.Override;
             _visibility = source.Visibility;
             _name = source.Name;
-            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder()!)) _attributes.Add(item);
+            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder())) _attributes.Add(item);
             _typeName = source.TypeName;
             _isNullable = source.IsNullable;
             _isValueType = source.IsValueType;
@@ -1576,9 +1576,9 @@ namespace ClassFramework.Domain.Builders
             _override = source.Override;
             _visibility = source.Visibility;
             _name = source.Name;
-            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder()!)) _attributes.Add(item);
-            if (source.CodeStatements is not null) foreach (var item in source.CodeStatements.Select(x => x.ToBuilder()!)) _codeStatements.Add(item);
-            if (source.Parameters is not null) foreach (var item in source.Parameters.Select(x => x.ToBuilder()!)) _parameters.Add(item);
+            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder())) _attributes.Add(item);
+            if (source.CodeStatements is not null) foreach (var item in source.CodeStatements.Select(x => x.ToBuilder())) _codeStatements.Add(item);
+            if (source.Parameters is not null) foreach (var item in source.Parameters.Select(x => x.ToBuilder())) _parameters.Add(item);
             _explicitInterfaceName = source.ExplicitInterfaceName;
             _parentTypeFullName = source.ParentTypeFullName;
             if (source.GenericTypeArguments is not null) foreach (var item in source.GenericTypeArguments) _genericTypeArguments.Add(item);
@@ -1944,7 +1944,7 @@ namespace ClassFramework.Domain.Builders
             _typeName = source.TypeName;
             _isNullable = source.IsNullable;
             _isValueType = source.IsValueType;
-            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder()!)) _attributes.Add(item);
+            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder())) _attributes.Add(item);
             _name = source.Name;
             _defaultValue = source.DefaultValue;
         }
@@ -2408,9 +2408,9 @@ namespace ClassFramework.Domain.Builders
             _getterVisibility = source.GetterVisibility;
             _setterVisibility = source.SetterVisibility;
             _initializerVisibility = source.InitializerVisibility;
-            if (source.GetterCodeStatements is not null) foreach (var item in source.GetterCodeStatements.Select(x => x.ToBuilder()!)) _getterCodeStatements.Add(item);
-            if (source.SetterCodeStatements is not null) foreach (var item in source.SetterCodeStatements.Select(x => x.ToBuilder()!)) _setterCodeStatements.Add(item);
-            if (source.InitializerCodeStatements is not null) foreach (var item in source.InitializerCodeStatements.Select(x => x.ToBuilder()!)) _initializerCodeStatements.Add(item);
+            if (source.GetterCodeStatements is not null) foreach (var item in source.GetterCodeStatements.Select(x => x.ToBuilder())) _getterCodeStatements.Add(item);
+            if (source.SetterCodeStatements is not null) foreach (var item in source.SetterCodeStatements.Select(x => x.ToBuilder())) _setterCodeStatements.Add(item);
+            if (source.InitializerCodeStatements is not null) foreach (var item in source.InitializerCodeStatements.Select(x => x.ToBuilder())) _initializerCodeStatements.Add(item);
             _static = source.Static;
             _virtual = source.Virtual;
             _abstract = source.Abstract;
@@ -2418,7 +2418,7 @@ namespace ClassFramework.Domain.Builders
             _override = source.Override;
             _visibility = source.Visibility;
             _name = source.Name;
-            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder()!)) _attributes.Add(item);
+            if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder())) _attributes.Add(item);
             _typeName = source.TypeName;
             _isNullable = source.IsNullable;
             _isValueType = source.IsValueType;

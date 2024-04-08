@@ -153,11 +153,11 @@ namespace ClassFramework.Domain.Builders.Types
             _static = source.Static;
             _sealed = source.Sealed;
             _abstract = source.Abstract;
-            if (source.Constructors is not null) foreach (var item in source.Constructors.Select(x => x.ToBuilder()!)) _constructors.Add(item);
+            if (source.Constructors is not null) foreach (var item in source.Constructors.Select(x => x.ToBuilder())) _constructors.Add(item);
             _record = source.Record;
             _baseClass = source.BaseClass;
-            if (source.Enums is not null) foreach (var item in source.Enums.Select(x => x.ToBuilder()!)) _enums.Add(item);
-            if (source.SubClasses is not null) foreach (var item in source.SubClasses.Select(x => x.ToBuilder()!)) _subClasses.Add(item);
+            if (source.Enums is not null) foreach (var item in source.Enums.Select(x => x.ToBuilder())) _enums.Add(item);
+            if (source.SubClasses is not null) foreach (var item in source.SubClasses.Select(x => x.ToBuilder())) _subClasses.Add(item);
         }
 
         public ClassBuilder() : base()
@@ -319,7 +319,7 @@ namespace ClassFramework.Domain.Builders.Types
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _constructors = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.ConstructorBuilder>();
-            if (source.Constructors is not null) foreach (var item in source.Constructors.Select(x => x.ToBuilder()!)) _constructors.Add(item);
+            if (source.Constructors is not null) foreach (var item in source.Constructors.Select(x => x.ToBuilder())) _constructors.Add(item);
             _record = source.Record;
             _baseClass = source.BaseClass;
         }

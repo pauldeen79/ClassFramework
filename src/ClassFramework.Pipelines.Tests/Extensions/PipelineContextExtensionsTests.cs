@@ -14,9 +14,10 @@ public class PipelineContextExtensionsTests : TestBase
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder().Build(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
+            var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -33,9 +34,10 @@ public class PipelineContextExtensionsTests : TestBase
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder().Build(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
+            var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -52,9 +54,10 @@ public class PipelineContextExtensionsTests : TestBase
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder().Build(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
+            var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -71,9 +74,10 @@ public class PipelineContextExtensionsTests : TestBase
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder().Build(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
+            var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -90,9 +94,10 @@ public class PipelineContextExtensionsTests : TestBase
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder().Build(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
+            var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -118,9 +123,10 @@ public class PipelineContextExtensionsTests : TestBase
                 .Build(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
+            var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
