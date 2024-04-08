@@ -95,22 +95,28 @@ public abstract class ContextBase<TModel>
         };
     }
 
-    public Result<string> GetBuilderPlaceholderProcessorResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, object context, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
+    public Result<string> GetBuilderPlaceholderProcessorResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, object context, IType parentContextModel, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
     {
         sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        context = context.IsNotNull(nameof(context));
+        parentContextModel = parentContextModel.IsNotNull(nameof(parentContextModel));
         pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
         childContext = childContext.IsNotNull(nameof(childContext));
 
+        // note that for now, we assume that a generic type argument should not be included in argument null checks...
+        // this might be the case (for example there is a constraint on class), but this is not supported yet
+        var isGenericArgument = parentContextModel.GenericTypeArguments.Contains(childContext.TypeName);
+
         return value switch
         {
-            "NullCheck.Source.Argument" => Result.Success(Settings.AddNullChecks && Settings.AddValidationCode() == ArgumentValidationType.None && !childContext.IsNullable && !childContext.IsValueType // only if the source entity does not use validation...
+            "NullCheck.Source.Argument" => Result.Success(Settings.AddNullChecks && Settings.AddValidationCode() == ArgumentValidationType.None && !childContext.IsNullable && !childContext.IsValueType && !isGenericArgument// only if the source entity does not use validation...
                 ? $"if (source.{childContext.Name} is not null) "
                 : string.Empty),
-            "NullCheck.Argument" => Result.Success(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable
+            "NullCheck.Argument" => Result.Success(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
                 ? CreateArgumentNullException(childContext.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName())
                 : string.Empty),
-            "NullableRequiredSuffix" => Result.Success(!Settings.AddNullChecks && !childContext.IsValueType && childContext.IsNullable && Settings.EnableNullableReferenceTypes
+            "NullableRequiredSuffix" => Result.Success(!Settings.AddNullChecks && !childContext.IsValueType && childContext.IsNullable && Settings.EnableNullableReferenceTypes && !isGenericArgument
                 ? "!"
                 : string.Empty),
             "NullableSuffix" => Result.Success(childContext.IsNullable && (childContext.IsValueType || Settings.EnableNullableReferenceTypes)

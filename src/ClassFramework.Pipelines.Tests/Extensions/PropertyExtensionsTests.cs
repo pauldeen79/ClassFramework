@@ -108,9 +108,10 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).Build();
+            var sourceModel = new ClassBuilder().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetNullCheckSuffix("myProperty", false);
+            var result = sut.GetNullCheckSuffix("myProperty", false, sourceModel);
 
             // Assert
             result.Should().BeEmpty();
@@ -121,9 +122,10 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var sourceModel = new ClassBuilder().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetNullCheckSuffix("myProperty", true);
+            var result = sut.GetNullCheckSuffix("myProperty", true, sourceModel);
 
             // Assert
             result.Should().BeEmpty();
@@ -134,9 +136,10 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(int)).Build();
+            var sourceModel = new ClassBuilder().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetNullCheckSuffix("myProperty", true);
+            var result = sut.GetNullCheckSuffix("myProperty", true, sourceModel);
 
             // Assert
             result.Should().BeEmpty();
@@ -147,9 +150,10 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).Build();
+            var sourceModel = new ClassBuilder().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetNullCheckSuffix("myProperty", true);
+            var result = sut.GetNullCheckSuffix("myProperty", true, sourceModel);
 
             // Assert
             result.Should().Be(" ?? throw new System.ArgumentNullException(nameof(myProperty))");
