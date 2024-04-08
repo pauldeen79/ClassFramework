@@ -147,7 +147,7 @@ namespace ClassFramework.Pipelines.Builders
             _metadata = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.MetadataBuilder>();
             _sourceNamespace = source.SourceNamespace;
             _targetNamespace = source.TargetNamespace;
-            if (source.Metadata is not null) foreach (var item in source.Metadata.Select(x => x.ToBuilder())) _metadata.Add(item);
+            if (source.Metadata is not null) foreach (var item in source.Metadata.Select(x => x.ToBuilder()!)) _metadata.Add(item);
         }
 
         public NamespaceMappingBuilder()
@@ -160,7 +160,7 @@ namespace ClassFramework.Pipelines.Builders
 
         public ClassFramework.Pipelines.NamespaceMapping Build()
         {
-            return new ClassFramework.Pipelines.NamespaceMapping(SourceNamespace, TargetNamespace, Metadata.Select(x => x.Build()).ToList().AsReadOnly());
+            return new ClassFramework.Pipelines.NamespaceMapping(SourceNamespace, TargetNamespace, Metadata.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         partial void SetDefaultValues();
@@ -1113,7 +1113,7 @@ namespace ClassFramework.Pipelines.Builders
             _addSetters = source.AddSetters;
             _allowGenerationWithoutProperties = source.AllowGenerationWithoutProperties;
             if (source.AttributeInitializers is not null) foreach (var item in source.AttributeInitializers) _attributeInitializers.Add(item);
-            _baseClass = source.BaseClass?.ToBuilder();
+            _baseClass = source.BaseClass?.ToBuilder()!;
             _baseClassBuilderNameSpace = source.BaseClassBuilderNameSpace;
             _builderExtensionsCollectionCopyStatementFormatString = source.BuilderExtensionsCollectionCopyStatementFormatString;
             _builderExtensionsNameFormatString = source.BuilderExtensionsNameFormatString;
@@ -1146,7 +1146,7 @@ namespace ClassFramework.Pipelines.Builders
             _isForAbstractBuilder = source.IsForAbstractBuilder;
             _nameFormatString = source.NameFormatString;
             _namespaceFormatString = source.NamespaceFormatString;
-            if (source.NamespaceMappings is not null) foreach (var item in source.NamespaceMappings.Select(x => x.ToBuilder())) _namespaceMappings.Add(item);
+            if (source.NamespaceMappings is not null) foreach (var item in source.NamespaceMappings.Select(x => x.ToBuilder()!)) _namespaceMappings.Add(item);
             _builderNewCollectionTypeName = source.BuilderNewCollectionTypeName;
             _entityNewCollectionTypeName = source.EntityNewCollectionTypeName;
             _nonCollectionInitializationStatementFormatString = source.NonCollectionInitializationStatementFormatString;
@@ -1157,7 +1157,7 @@ namespace ClassFramework.Pipelines.Builders
             _setterVisibility = source.SetterVisibility;
             _toBuilderFormatString = source.ToBuilderFormatString;
             _toTypedBuilderFormatString = source.ToTypedBuilderFormatString;
-            if (source.TypenameMappings is not null) foreach (var item in source.TypenameMappings.Select(x => x.ToBuilder())) _typenameMappings.Add(item);
+            if (source.TypenameMappings is not null) foreach (var item in source.TypenameMappings.Select(x => x.ToBuilder()!)) _typenameMappings.Add(item);
             _useBaseClassFromSourceModel = source.UseBaseClassFromSourceModel;
             _useExceptionThrowIfNull = source.UseExceptionThrowIfNull;
             _validateArguments = source.ValidateArguments;
@@ -1197,7 +1197,7 @@ namespace ClassFramework.Pipelines.Builders
 
         public ClassFramework.Pipelines.PipelineSettings Build()
         {
-            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build(), BaseClassBuilderNameSpace, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, InheritFromInterfaces, CreateAsObservable, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()).ToList().AsReadOnly(), BuilderNewCollectionTypeName, EntityNewCollectionTypeName, NonCollectionInitializationStatementFormatString, CreateAsPartial, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseExceptionThrowIfNull, ValidateArguments, UseDefaultValueAttributeValuesForBuilderInitialization);
+            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, InheritFromInterfaces, CreateAsObservable, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), BuilderNewCollectionTypeName, EntityNewCollectionTypeName, NonCollectionInitializationStatementFormatString, CreateAsPartial, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseExceptionThrowIfNull, ValidateArguments, UseDefaultValueAttributeValuesForBuilderInitialization);
         }
 
         partial void SetDefaultValues();
@@ -1658,7 +1658,7 @@ namespace ClassFramework.Pipelines.Builders
             _metadata = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.MetadataBuilder>();
             _sourceTypeName = source.SourceTypeName;
             _targetTypeName = source.TargetTypeName;
-            if (source.Metadata is not null) foreach (var item in source.Metadata.Select(x => x.ToBuilder())) _metadata.Add(item);
+            if (source.Metadata is not null) foreach (var item in source.Metadata.Select(x => x.ToBuilder()!)) _metadata.Add(item);
         }
 
         public TypenameMappingBuilder()
@@ -1671,7 +1671,7 @@ namespace ClassFramework.Pipelines.Builders
 
         public ClassFramework.Pipelines.TypenameMapping Build()
         {
-            return new ClassFramework.Pipelines.TypenameMapping(SourceTypeName, TargetTypeName, Metadata.Select(x => x.Build()).ToList().AsReadOnly());
+            return new ClassFramework.Pipelines.TypenameMapping(SourceTypeName, TargetTypeName, Metadata.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         partial void SetDefaultValues();

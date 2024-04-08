@@ -108,7 +108,10 @@ public static class PipelineContextExtensions
         }
         else
         {
-            return value!.Replace(PlaceholderNames.NamePlaceholder, sourceProperty.Name).Replace("[NullableSuffix]", suffix);
+            return value!
+                .Replace(PlaceholderNames.NamePlaceholder, sourceProperty.Name)
+                .Replace("[NullableSuffix]", suffix)
+                .Replace("[ForcedNullableSuffix]", string.IsNullOrEmpty(suffix) ? string.Empty : "!");
         }
     }
 
@@ -116,7 +119,7 @@ public static class PipelineContextExtensions
         => collectionInitializer
             .Replace("[Type]", sourceProperty.TypeName.FixTypeName().WithoutProcessedGenerics())
             .Replace("[Generics]", sourceProperty.TypeName.FixTypeName().GetProcessedGenericArguments(addBrackets: true))
-            .Replace("[Expression]", $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty)})");
+            .Replace("[Expression]", $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty).Replace("[ForcedNullableSuffix]", sourceProperty.IsValueType ? string.Empty : "!")})");
 
     private static string GetBuilderPocoCloseSign(bool poco)
         => poco

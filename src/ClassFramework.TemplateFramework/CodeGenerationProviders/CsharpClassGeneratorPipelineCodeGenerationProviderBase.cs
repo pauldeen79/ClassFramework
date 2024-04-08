@@ -450,13 +450,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                             new MetadataBuilder().WithValue("I{TypeName.ClassName}Builder").WithName(MetadataNames.CustomBuilderInterfaceName),
                             new MetadataBuilder().WithValue(x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
                                 ? $"new {CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder([Name])"
-                                : "[Name][NullableSuffix].ToBuilder()").WithName(MetadataNames.CustomBuilderSourceExpression),
+                                : "[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
                             new MetadataBuilder().WithValue(x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && IsAbstractType(x)
                                 ? new Literal($"default({CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder)", null)
                                 : new Literal($"new {CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder()", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
                             new MetadataBuilder().WithValue(x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
-                                ? "[Name][NullableSuffix].BuildTyped()"
-                                : "[Name][NullableSuffix].Build()").WithName(MetadataNames.CustomBuilderMethodParameterExpression),
+                                ? "[Name][NullableSuffix].BuildTyped()[ForcedNullableSuffix]"
+                                : "[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression),
                             new MetadataBuilder().WithName(MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{ProjectName}.Abstractions.I{x.GetEntityClassName()}")
                         )
                 })

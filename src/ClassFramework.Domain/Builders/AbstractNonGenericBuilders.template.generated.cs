@@ -251,12 +251,12 @@ namespace ClassFramework.Domain.Builders
             _namespace = source.Namespace;
             _partial = source.Partial;
             foreach (var item in source.Interfaces) _interfaces.Add(item);
-            foreach (var item in source.Fields.Select(x => x.ToBuilder())) _fields.Add(item);
-            foreach (var item in source.Properties.Select(x => x.ToBuilder())) _properties.Add(item);
-            foreach (var item in source.Methods.Select(x => x.ToBuilder())) _methods.Add(item);
+            foreach (var item in source.Fields.Select(x => x.ToBuilder()!)) _fields.Add(item);
+            foreach (var item in source.Properties.Select(x => x.ToBuilder()!)) _properties.Add(item);
+            foreach (var item in source.Methods.Select(x => x.ToBuilder()!)) _methods.Add(item);
             _visibility = source.Visibility;
             _name = source.Name;
-            foreach (var item in source.Attributes.Select(x => x.ToBuilder())) _attributes.Add(item);
+            foreach (var item in source.Attributes.Select(x => x.ToBuilder()!)) _attributes.Add(item);
             foreach (var item in source.GenericTypeArguments) _genericTypeArguments.Add(item);
             foreach (var item in source.GenericTypeArgumentConstraints) _genericTypeArgumentConstraints.Add(item);
             foreach (var item in source.SuppressWarningCodes) _suppressWarningCodes.Add(item);
