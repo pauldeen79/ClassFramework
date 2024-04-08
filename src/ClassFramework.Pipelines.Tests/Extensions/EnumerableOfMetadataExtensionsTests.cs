@@ -29,7 +29,7 @@ public class EnumerableOfMetadataExtensionsTests
     }
 
     [Fact]
-    public void GetsFirstValueWhenPresent()
+    public void GetsLastValueWhenPresent()
     {
         // Arrange
         var lst = new[] { new Metadata("value", "name"), new Metadata("second value", "name") };
@@ -38,7 +38,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = lst.GetStringValue("name", "default");
 
         // Assert
-        actual.Should().Be("value");
+        actual.Should().Be("second value");
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = lst.GetBooleanValue("name");
 
         // Assert
-        actual.Should().BeTrue();
+        actual.Should().BeFalse();
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class EnumerableOfMetadataExtensionsTests
         var lst = new[] { new Metadata(true, "name"), new Metadata(false, "name") };
 
         // Act
-        var actual = lst.GetBooleanValue("name", () => true);
+        var actual = lst.GetBooleanValue("wrong name", () => true);
 
         // Assert
         actual.Should().BeTrue();

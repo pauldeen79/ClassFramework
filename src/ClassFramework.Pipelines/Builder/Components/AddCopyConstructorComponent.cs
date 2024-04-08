@@ -179,8 +179,9 @@ public class AddCopyConstructorComponent : IPipelineComponent<IConcreteTypeBuild
             return sourceProperty.Name;
         }
 
-        var metadata = context.Context.GetMappingMetadata(sourceProperty.TypeName);
-        var sourceExpression = metadata.GetStringValue(MetadataNames.CustomBuilderSourceExpression, PlaceholderNames.NamePlaceholder);
+        var sourceExpression = context.Context
+            .GetMappingMetadata(sourceProperty.TypeName)
+            .GetStringValue(MetadataNames.CustomBuilderSourceExpression, PlaceholderNames.NamePlaceholder);
         if (sourceProperty.TypeName.FixTypeName().IsCollectionTypeName())
         {
             return value.Replace(PlaceholderNames.SourceExpressionPlaceholder, $"{sourceProperty.Name}.Select(x => {sourceExpression})").Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty).Replace("[ForcedNullableSuffix]", sourceProperty.IsValueType ? string.Empty : "!").Replace(".Select(x => x)", string.Empty);

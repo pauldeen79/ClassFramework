@@ -25,7 +25,7 @@ public static class PropertyExtensions
 
         var md = context
             .GetMappingMetadata(property.TypeName)
-            .FirstOrDefault(x => x.Name == MetadataNames.CustomBuilderDefaultValue);
+            .LastOrDefault(x => x.Name == MetadataNames.CustomBuilderDefaultValue);
 
         if (md is not null && md.Value is not null)
         {

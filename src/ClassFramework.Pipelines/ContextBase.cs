@@ -181,21 +181,19 @@ public abstract class ContextBase<TModel> : ContextBase
     {
         typeName = typeName.IsNotNull(nameof(typeName)).FixTypeName();
 
-        var typeNameMapping = GetTypenameMapping(typeName);
-        if (typeNameMapping is not null)
+        var typeNameMappings = GetTypenameMappings(typeName);
+        if (typeNameMappings.Length > 0)
         {
-            return typeNameMapping.Metadata;
+            return typeNameMappings.SelectMany(x => x.Metadata);
         }
 
         var ns = GetNamespace(typeName);
 
         if (!string.IsNullOrEmpty(ns))
         {
-            var namespaceMapping = Settings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
-            if (namespaceMapping is not null)
-            {
-                return namespaceMapping.Metadata;
-            }
+            return Settings.NamespaceMappings
+                .Where(x => x.SourceNamespace == ns)
+                .SelectMany(x => x.Metadata);
         }
 
         return Enumerable.Empty<Metadata>();
@@ -264,8 +262,11 @@ public abstract class ContextBase<TModel> : ContextBase
         var result = type.GetTypeName(declaringType);
 
         //TODO: See if we can remove this work-around. Needed because nullability of complex type is not working like it should (e.g. IEnumerable<Func<object?, object?>>)
-        var mapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == result);
-        var customResult = mapping?.Metadata.GetStringValue(MetadataNames.CustomTypeName);
+        var customResult = Settings.TypenameMappings
+            .Where(x => x.SourceTypeName == result)
+            .SelectMany(x => x.Metadata)
+            .GetStringValue(MetadataNames.CustomTypeName);
+        
         if (customResult is not null && !string.IsNullOrEmpty(customResult))
         {
             return customResult;
@@ -274,27 +275,27 @@ public abstract class ContextBase<TModel> : ContextBase
         return result;
     }
 
-    private TypenameMapping? GetTypenameMapping(string typeName)
+    private TypenameMapping[] GetTypenameMappings(string typeName)
     {
-        var typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
-        if (typeNameMapping is null && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
+        var typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName).ToArray();
+        if (typeNameMappings.Length == 0 && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
         {
             if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
             {
-                typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutProcessedGenerics());
+                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutProcessedGenerics()).ToArray();
             }
             else
             {
-                typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType());
+                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType()).ToArray();
             }
         }
 
-        if (typeNameMapping is null && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
+        if (typeNameMappings.Length == 0 && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
         {
-            typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.WithoutProcessedGenerics());
+            typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.WithoutProcessedGenerics()).ToArray();
         }
 
-        return typeNameMapping;
+        return typeNameMappings;
     }
 
     private static string GetNamespace(string typeName)
