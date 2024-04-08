@@ -1,19 +1,27 @@
 ﻿namespace ClassFramework.Pipelines;
 
-public abstract class ContextBase<TModel>
+public abstract class ContextBase
 {
-    protected ContextBase(TModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
+    public PipelineSettings Settings { get; }
+    public IFormatProvider FormatProvider { get; }
+
+    protected ContextBase(PipelineSettings settings, IFormatProvider formatProvider)
     {
-        SourceModel = sourceModel.IsNotNull(nameof(sourceModel));
         Settings = settings.IsNotNull(nameof(settings));
         FormatProvider = formatProvider.IsNotNull(nameof(formatProvider));
+    }
+}
+
+public abstract class ContextBase<TModel> : ContextBase
+{
+    protected ContextBase(TModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : base(settings, formatProvider)
+    {
+        SourceModel = sourceModel.IsNotNull(nameof(sourceModel));
     }
 
     protected abstract string NewCollectionTypeName { get; }
 
     public TModel SourceModel { get; }
-    public PipelineSettings Settings { get; }
-    public IFormatProvider FormatProvider { get; }
 
     public string CreateArgumentNullException(string argumentName)
     {
@@ -95,7 +103,14 @@ public abstract class ContextBase<TModel>
         };
     }
 
-    public Result<string> GetBuilderPlaceholderProcessorResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, object context, IType parentContextModel, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
+    public Result<string> GetBuilderPlaceholderProcessorResultForParentChildContext(
+        string value,
+        IFormattableStringParser formattableStringParser,
+        ContextBase context,
+        IType parentContextModel,
+        Property childContext,
+        IType sourceModel,
+        IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
     {
         sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
@@ -114,7 +129,7 @@ public abstract class ContextBase<TModel>
                 ? $"if (source.{childContext.Name} is not null) "
                 : string.Empty),
             "NullCheck.Argument" => Result.Success(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
-                ? CreateArgumentNullException(childContext.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName())
+                ? CreateArgumentNullException(childContext.Name.ToPascalCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())
                 : string.Empty),
             "NullableRequiredSuffix" => Result.Success(!Settings.AddNullChecks && !childContext.IsValueType && childContext.IsNullable && Settings.EnableNullableReferenceTypes && !isGenericArgument
                 ? "!"
@@ -122,8 +137,8 @@ public abstract class ContextBase<TModel>
             "NullableSuffix" => Result.Success(childContext.IsNullable && (childContext.IsValueType || Settings.EnableNullableReferenceTypes)
                 ? "?"
                 : string.Empty),
-            "BuildersNamespace" => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, formatProvider, context),
-            _ => Default(value, formatProvider, formattableStringParser, childContext, sourceModel, pipelinePlaceholderProcessors)
+            "BuildersNamespace" => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, context.FormatProvider, context),
+            _ => Default(value, context.FormatProvider, formattableStringParser, childContext, sourceModel, pipelinePlaceholderProcessors)
         };
 
         Result<string> Default(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
