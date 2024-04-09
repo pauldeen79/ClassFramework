@@ -2,5 +2,5 @@
 
 internal interface ICodeStatementsContainer
 {
-    [Required] [ValidateObject] IReadOnlyCollection<ICodeStatementBase> CodeStatements { get; }
+    [Required][ValidateObject] IReadOnlyCollection<ICodeStatementBase> CodeStatements { get; }
 }

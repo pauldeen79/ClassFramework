@@ -2,5 +2,5 @@
 
 internal interface IParametersContainer
 {
-    [Required] [ValidateObject] IReadOnlyCollection<IParameter> Parameters { get; }
+    [Required][ValidateObject] IReadOnlyCollection<IParameter> Parameters { get; }
 }
