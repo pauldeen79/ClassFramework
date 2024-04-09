@@ -32,5 +32,35 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Feature
             result.IsSuccessful().Should().BeTrue();
             model.Properties.Should().ContainSingle();
         }
+
+        [Fact]
+        public void Fills_GenericTypeArguments_Correctly()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var sourceModel = typeof(MyNullableClass);
+            var model = new ClassBuilder();
+            var settings = CreateSettingsForReflection();
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Properties.Should().ContainSingle();
+            //public Func<object, IEnumerable<object?>> MyDelegateProperty { get; set; } = default!;
+            //model.Properties.Single().TypeName.Should().Be("System.Func<System.Object,System.Collections.Generic.IEnumerable<System.Object?>>");
+            model.Properties.Single().IsNullable.Should().BeFalse();
+            model.Properties.Single().GenericTypeArguments.Should().HaveCount(2);
+            model.Properties.Single().GenericTypeArguments[0].TypeName.Should().Be("System.Object");
+            model.Properties.Single().GenericTypeArguments[0].IsNullable.Should().BeFalse();
+            model.Properties.Single().GenericTypeArguments[0].GenericTypeArguments.Should().BeEmpty();
+            //model.Properties.Single().GenericTypeArguments[1].TypeName.Should().Be("System.Collections.Generic.IEnumerable<System.Object?>");
+            model.Properties.Single().GenericTypeArguments[1].IsNullable.Should().BeFalse();
+            model.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Should().ContainSingle();
+            model.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Single().TypeName.Should().Be("System.Object");
+            //model.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Single().IsNullable.Should().BeTrue();
+        }
     }
 }

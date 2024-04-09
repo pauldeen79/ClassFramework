@@ -88,7 +88,7 @@ public static class TypeExtensions
     public static IEnumerable<string> GetGenericTypeArgumentTypeNames(this Type instance)
         => ((TypeInfo)instance).GenericTypeParameters.Select(x => x.Name);
 
-    public static ITypeContainer ToTypeContainer(this Type instance, MemberInfo declaringType, Func<Type, MemberInfo, string> mapDelegate)
+    public static ITypeContainer ToTypeContainer(this Type instance, MemberInfo declaringType, int index, Func<Type, MemberInfo, string> mapDelegate)
     {
         declaringType = declaringType.IsNotNull(nameof(declaringType));
         mapDelegate = mapDelegate.IsNotNull(nameof(mapDelegate));
@@ -97,8 +97,8 @@ public static class TypeExtensions
             .WithName("Dummy")
             .WithTypeName(mapDelegate(instance, declaringType))
             .WithIsValueType(instance.IsValueType)
-            .WithIsNullable(instance.IsNullable(declaringType, declaringType.CustomAttributes, 0))
-            .AddGenericTypeArguments(instance.GenericTypeArguments.Select(x => x.ToTypeContainer(instance, mapDelegate)))
+            .WithIsNullable(instance.IsNullable(declaringType, declaringType.CustomAttributes, index))
+            .AddGenericTypeArguments(instance.GenericTypeArguments.Select((x, index2) => x.ToTypeContainer(instance, index2 + 1, mapDelegate)))
             .Build();
     }
 

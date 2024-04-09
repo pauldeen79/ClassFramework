@@ -30,7 +30,7 @@ public class AddFieldsComponent : IPipelineComponent<TypeBaseBuilder, Reflection
                 .WithIsNullable(f.IsNullable())
                 .WithIsValueType(f.FieldType.IsValueType())
                 .WithVisibility(f.IsPublic.ToVisibility())
-                .AddGenericTypeArguments(f.FieldType.GenericTypeArguments.Select(x => x.ToTypeContainer(f.FieldType, context.Context.GetMappedTypeName)))
+                .AddGenericTypeArguments(f.FieldType.GenericTypeArguments.Select((x, index) => x.ToTypeContainer(f.FieldType, index + 1, context.Context.GetMappedTypeName)))
                 .AddAttributes(f.GetCustomAttributes(true).ToAttributes(
                     x => x.ConvertToDomainAttribute(context.Context.InitializeDelegate),
                     context.Context.Settings.CopyAttributes,

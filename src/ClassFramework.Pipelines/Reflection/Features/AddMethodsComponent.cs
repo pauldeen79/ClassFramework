@@ -44,7 +44,7 @@ public class AddMethodsComponent : IPipelineComponent<TypeBaseBuilder, Reflectio
                             .WithTypeName(context.Context.GetMappedTypeName(p.ParameterType, m))
                             .WithIsNullable(p.IsNullable())
                             .WithIsValueType(p.ParameterType.IsValueType())
-                            .AddGenericTypeArguments(p.ParameterType.GenericTypeArguments.Select(x => x.ToTypeContainer(p.ParameterType, context.Context.GetMappedTypeName)))
+                            .AddGenericTypeArguments(p.ParameterType.GenericTypeArguments.Select((x, index) => x.ToTypeContainer(p.ParameterType, index + 1, context.Context.GetMappedTypeName)))
                             .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
                                 x => x.ConvertToDomainAttribute(context.Context.InitializeDelegate),
                                 context.Context.Settings.CopyAttributes,
