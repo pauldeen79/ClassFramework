@@ -366,6 +366,21 @@ namespace ClassFramework.Domain.Builders.Extensions
     }
     public static partial class TypeContainerBuilderExtensions
     {
+        public static T AddGenericTypeArguments<T>(this T instance, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Abstractions.ITypeContainer> genericTypeArguments)
+            where T : ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder
+        {
+            if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
+            return instance.AddGenericTypeArguments<T>(genericTypeArguments.ToArray());
+        }
+
+        public static T AddGenericTypeArguments<T>(this T instance, params ClassFramework.Domain.Abstractions.ITypeContainer[] genericTypeArguments)
+            where T : ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder
+        {
+            if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
+            foreach (var item in genericTypeArguments) instance.GenericTypeArguments.Add(item);
+            return instance;
+        }
+
         public static T WithTypeName<T>(this T instance, string typeName)
             where T : ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder
         {

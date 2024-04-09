@@ -244,6 +244,13 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        System.Collections.Generic.IReadOnlyCollection<ClassFramework.Domain.Abstractions.ITypeContainer> GenericTypeArguments
+        {
+            get;
+        }
     }
     public interface IValueType : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
     {

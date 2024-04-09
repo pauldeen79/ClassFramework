@@ -161,12 +161,11 @@ public abstract class ContextBase<TModel> : ContextBase
                 .FixNullableTypeName(property)))
             .WithIsNullable(property.IsNullable)
             .WithIsValueType(property.IsValueType)
+            .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x.TypeName).WithIsValueType(x.IsValueType).WithIsNullable(x.IsNullable).AddGenericTypeArguments(x.GenericTypeArguments).Build()))
             .AddAttributes(property.Attributes
                 .Where(x => Settings.CopyAttributes && (Settings.CopyAttributePredicate?.Invoke(x) ?? true))
                 .Select(x => MapAttribute(x).ToBuilder()))
             .WithStatic(property.Static)
-            .WithIsNullable(property.IsNullable)
-            .WithIsValueType(property.IsValueType)
             .WithVisibility(property.Visibility)
             .WithParentTypeFullName(property.ParentTypeFullName);
     }
@@ -261,7 +260,7 @@ public abstract class ContextBase<TModel> : ContextBase
     {
         var result = type.GetTypeName(declaringType);
 
-        //TODO: See if we can remove this work-around. Needed because nullability of complex type is not working like it should (e.g. IEnumerable<Func<object?, object?>>)
+        //HACK for wrong detection of nullability of multiple or nested generic arguments
         var customResult = Settings.TypenameMappings
             .Where(x => x.SourceTypeName == result)
             .SelectMany(x => x.Metadata)

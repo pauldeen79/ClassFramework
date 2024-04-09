@@ -58,6 +58,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineCompone
                         .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!.FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics()))
                         .WithIsNullable(property.IsNullable)
                         .WithIsValueType(property.IsValueType)
+                        .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x.TypeName).WithIsValueType(x.IsValueType).WithIsNullable(x.IsNullable).AddGenericTypeArguments(x.GenericTypeArguments).Build()))
                 )
                 .AddStringCodeStatements(results.Where(x => x.Name == "EnumerableOverload").Select(x => x.Result.Value!))
             );
@@ -73,6 +74,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineCompone
                         .WithIsParamArray()
                         .WithIsNullable(property.IsNullable)
                         .WithIsValueType(property.IsValueType)
+                        .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x.TypeName).WithIsValueType(x.IsValueType).WithIsNullable(x.IsNullable).AddGenericTypeArguments(x.GenericTypeArguments).Build()))
                 )
                 .AddStringCodeStatements(results.Where(x => x.Name == "ArrayOverload").Select(x => x.Result.Value!))
             );

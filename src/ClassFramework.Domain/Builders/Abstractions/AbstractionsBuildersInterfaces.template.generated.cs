@@ -276,6 +276,14 @@ namespace ClassFramework.Domain.Builders.Abstractions
             get;
             set;
         }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Abstractions.ITypeContainer> GenericTypeArguments
+        {
+            get;
+            set;
+        }
     }
     public interface IValueTypeBuilder : ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder
     {

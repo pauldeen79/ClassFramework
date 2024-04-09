@@ -85,12 +85,26 @@ public static class TypeExtensions
 
     public static string GetFullName(this IType type) => $"{type.Namespace.GetNamespacePrefix()}{type.Name}";
 
-    public static IEnumerable<string> GetGenericTypeArguments(this Type instance)
+    public static IEnumerable<string> GetGenericTypeArgumentTypeNames(this Type instance)
         => ((TypeInfo)instance).GenericTypeParameters.Select(x => x.Name);
+
+    public static ITypeContainer ToTypeContainer(this Type instance, MemberInfo declaringType, Func<Type, MemberInfo, string> mapDelegate)
+    {
+        declaringType = declaringType.IsNotNull(nameof(declaringType));
+        mapDelegate = mapDelegate.IsNotNull(nameof(mapDelegate));
+
+        return new PropertyBuilder()
+            .WithName("Dummy")
+            .WithTypeName(mapDelegate(instance, declaringType))
+            .WithIsValueType(instance.IsValueType)
+            .WithIsNullable(instance.IsNullable(declaringType, declaringType.CustomAttributes, 0))
+            .AddGenericTypeArguments(instance.GenericTypeArguments.Select(x => x.ToTypeContainer(instance, mapDelegate)))
+            .Build();
+    }
 
     public static string GetGenericTypeArgumentsString(this Type instance, bool addBrackets = true)
     {
-        var args = instance.GetGenericTypeArguments().ToArray();
+        var args = instance.GetGenericTypeArgumentTypeNames().ToArray();
 
         if (args.Length == 0)
         {

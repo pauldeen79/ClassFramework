@@ -12,7 +12,7 @@ public class AddGenericTypeArgumentsComponent : IPipelineComponent<TypeBaseBuild
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.AddGenericTypeArguments(context.Context.SourceModel.GetGenericTypeArguments());
+        context.Model.AddGenericTypeArguments(context.Context.SourceModel.GetGenericTypeArgumentTypeNames());
 
         return Result.Continue<TypeBaseBuilder>();
     }

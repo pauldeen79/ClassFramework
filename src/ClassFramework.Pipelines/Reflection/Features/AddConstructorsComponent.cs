@@ -36,6 +36,7 @@ public class AddConstructorsComponent : IPipelineComponent<TypeBaseBuilder, Refl
                             .WithTypeName(p.ParameterType.FullName.FixTypeName())
                             .WithIsNullable(p.IsNullable())
                             .WithIsValueType(p.ParameterType.IsValueType())
+                            .AddGenericTypeArguments(p.ParameterType.GenericTypeArguments.Select(x => x.ToTypeContainer(p.ParameterType, context.Context.GetMappedTypeName)))
                             .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
                                 x => x.ConvertToDomainAttribute(context.Context.InitializeDelegate),
                                 context.Context.Settings.CopyAttributes,
