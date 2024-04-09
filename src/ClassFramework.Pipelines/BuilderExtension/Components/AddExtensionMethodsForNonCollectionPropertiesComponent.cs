@@ -51,7 +51,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineC
                 .WithReturnTypeName("T")
                 .WithStatic()
                 .WithExtensionMethod()
-                .AddGenericTypeArguments(new TypeInfoBuilder().WithTypeName("T"))
+                .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
                 .AddParameters

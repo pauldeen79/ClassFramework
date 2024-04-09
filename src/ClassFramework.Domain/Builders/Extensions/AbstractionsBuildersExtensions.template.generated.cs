@@ -154,14 +154,14 @@ namespace ClassFramework.Domain.Builders.Extensions
     }
     public static partial class GenericTypeArgumentsContainerBuilderExtensions
     {
-        public static T AddGenericTypeArguments<T>(this T instance, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.TypeInfoBuilder> genericTypeArguments)
+        public static T AddGenericTypeArguments<T>(this T instance, System.Collections.Generic.IEnumerable<string> genericTypeArguments)
             where T : ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder
         {
             if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
             return instance.AddGenericTypeArguments<T>(genericTypeArguments.ToArray());
         }
 
-        public static T AddGenericTypeArguments<T>(this T instance, params ClassFramework.Domain.Builders.TypeInfoBuilder[] genericTypeArguments)
+        public static T AddGenericTypeArguments<T>(this T instance, params string[] genericTypeArguments)
             where T : ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder
         {
             if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));

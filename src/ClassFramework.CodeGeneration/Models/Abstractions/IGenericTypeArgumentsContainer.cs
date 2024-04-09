@@ -2,6 +2,6 @@
 
 internal interface IGenericTypeArgumentsContainer
 {
-    [Required][ValidateObject] IReadOnlyCollection<ITypeInfo> GenericTypeArguments { get; }
+    [Required][ValidateObject] IReadOnlyCollection<string> GenericTypeArguments { get; }
     [Required][ValidateObject] IReadOnlyCollection<string> GenericTypeArgumentConstraints { get; }
 }

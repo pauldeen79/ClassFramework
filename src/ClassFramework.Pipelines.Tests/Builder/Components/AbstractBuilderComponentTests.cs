@@ -31,7 +31,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Features
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.GenericTypeArguments.Select(x => x.TypeName).Should().BeEquivalentTo("TBuilder", "TEntity");
+            model.GenericTypeArguments.Should().BeEquivalentTo("TBuilder", "TEntity");
             model.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where TEntity : SomeNamespace.SomeClass", "where TBuilder : SomeClassBuilder<TBuilder, TEntity>");
             model.Abstract.Should().BeTrue();
         }

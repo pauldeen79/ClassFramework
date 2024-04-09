@@ -108,7 +108,7 @@ namespace ClassFramework.Domain.Abstractions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.Generic.IReadOnlyCollection<ClassFramework.Domain.TypeInfo> GenericTypeArguments
+        System.Collections.Generic.IReadOnlyCollection<string> GenericTypeArguments
         {
             get;
         }

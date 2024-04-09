@@ -474,7 +474,7 @@ namespace ClassFramework.Domain
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<ClassFramework.Domain.TypeInfo> GenericTypeArguments
+        public System.Collections.Generic.IReadOnlyCollection<string> GenericTypeArguments
         {
             get;
         }
@@ -492,7 +492,7 @@ namespace ClassFramework.Domain
             get;
         }
 
-        public Method(string returnTypeName, bool returnTypeIsNullable, bool returnTypeIsValueType, bool partial, bool extensionMethod, bool @operator, bool async, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ClassFramework.Domain.Domains.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Attribute> attributes, System.Collections.Generic.IEnumerable<ClassFramework.Domain.CodeStatementBase> codeStatements, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Parameter> parameters, string explicitInterfaceName, string parentTypeFullName, System.Collections.Generic.IEnumerable<ClassFramework.Domain.TypeInfo> genericTypeArguments, System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<string> suppressWarningCodes)
+        public Method(string returnTypeName, bool returnTypeIsNullable, bool returnTypeIsValueType, bool partial, bool extensionMethod, bool @operator, bool async, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ClassFramework.Domain.Domains.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Attribute> attributes, System.Collections.Generic.IEnumerable<ClassFramework.Domain.CodeStatementBase> codeStatements, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Parameter> parameters, string explicitInterfaceName, string parentTypeFullName, System.Collections.Generic.IEnumerable<string> genericTypeArguments, System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<string> suppressWarningCodes)
         {
             this.ReturnTypeName = returnTypeName;
             this.ReturnTypeIsNullable = returnTypeIsNullable;
@@ -513,7 +513,7 @@ namespace ClassFramework.Domain
             this.Parameters = parameters is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Parameter>(parameters);
             this.ExplicitInterfaceName = explicitInterfaceName;
             this.ParentTypeFullName = parentTypeFullName;
-            this.GenericTypeArguments = genericTypeArguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.TypeInfo>(genericTypeArguments);
+            this.GenericTypeArguments = genericTypeArguments is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(genericTypeArguments);
             this.GenericTypeArgumentConstraints = genericTypeArgumentConstraints is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(genericTypeArgumentConstraints);
             this.SuppressWarningCodes = suppressWarningCodes is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(suppressWarningCodes);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
@@ -756,37 +756,6 @@ namespace ClassFramework.Domain
         public ClassFramework.Domain.Builders.PropertyBuilder ToBuilder()
         {
             return new ClassFramework.Domain.Builders.PropertyBuilder(this);
-        }
-    }
-    public partial record TypeInfo : ClassFramework.Domain.Abstractions.ITypeContainer
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public string TypeName
-        {
-            get;
-        }
-
-        public bool IsNullable
-        {
-            get;
-        }
-
-        public bool IsValueType
-        {
-            get;
-        }
-
-        public TypeInfo(string typeName, bool isNullable, bool isValueType)
-        {
-            this.TypeName = typeName;
-            this.IsNullable = isNullable;
-            this.IsValueType = isValueType;
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public ClassFramework.Domain.Builders.TypeInfoBuilder ToBuilder()
-        {
-            return new ClassFramework.Domain.Builders.TypeInfoBuilder(this);
         }
     }
 }

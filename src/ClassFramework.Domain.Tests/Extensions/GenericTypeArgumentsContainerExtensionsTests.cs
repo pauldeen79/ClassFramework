@@ -1,6 +1,4 @@
-﻿using NSubstitute;
-
-namespace ClassFramework.Domain.Tests.Extensions;
+﻿namespace ClassFramework.Domain.Tests.Extensions;
 
 public class GenericTypeArgumentsContainerExtensionsTests : TestBase
 {
@@ -11,7 +9,7 @@ public class GenericTypeArgumentsContainerExtensionsTests : TestBase
         {
             // Arrange
             var sut = Fixture.Freeze<IGenericTypeArgumentsContainer>();
-            sut.GenericTypeArguments.Returns(Array.Empty<TypeInfo>());
+            sut.GenericTypeArguments.Returns(Array.Empty<string>());
 
             // Act
             var result = sut.GetGenericTypeArgumentsString();
@@ -25,8 +23,8 @@ public class GenericTypeArgumentsContainerExtensionsTests : TestBase
         {
             // Arrange
             var sut = Fixture.Freeze<IGenericTypeArgumentsContainer>();
-            var typeContainer = new TypeInfoBuilder().WithTypeName("T").Build();
-            sut.GenericTypeArguments.Returns([typeContainer]);
+            sut.GenericTypeArguments.Returns(["T"]);
+
 
             // Act
             var result = sut.GetGenericTypeArgumentsString();
@@ -43,7 +41,7 @@ public class GenericTypeArgumentsContainerExtensionsTests : TestBase
         {
             // Arrange
             var sut = Fixture.Freeze<IGenericTypeArgumentsContainer>();
-            sut.GenericTypeArguments.Returns(Array.Empty<TypeInfo>());
+            sut.GenericTypeArguments.Returns(Array.Empty<string>());
 
             // Act
             var result = sut.GetGenericTypeArgumentConstraintsString(8);
@@ -57,8 +55,7 @@ public class GenericTypeArgumentsContainerExtensionsTests : TestBase
         {
             // Arrange
             var sut = Fixture.Freeze<IGenericTypeArgumentsContainer>();
-            var typeContainer = new TypeInfoBuilder().WithTypeName("T").Build();
-            sut.GenericTypeArguments.Returns([typeContainer]);
+            sut.GenericTypeArguments.Returns(["T"]);
 
             // Act
             var result = sut.GetGenericTypeArgumentConstraintsString(8);
@@ -72,8 +69,7 @@ public class GenericTypeArgumentsContainerExtensionsTests : TestBase
         {
             // Arrange
             var sut = Fixture.Freeze<IGenericTypeArgumentsContainer>();
-            var typeContainer = new TypeInfoBuilder().WithTypeName("T").Build();
-            sut.GenericTypeArguments.Returns([typeContainer]);
+            sut.GenericTypeArguments.Returns(["T"]);
             sut.GenericTypeArgumentConstraints.Returns(["where T : class"]);
 
             // Act

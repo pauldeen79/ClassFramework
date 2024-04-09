@@ -19,7 +19,7 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Features.Generi
         public void Adds_GenericTypeArguments()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddGenericTypeArguments(new TypeInfoBuilder().WithTypeName("T")).Build();
+            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddGenericTypeArguments("T").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder();
@@ -30,14 +30,14 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Features.Generi
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.GenericTypeArguments.Select(x => x.TypeName).Should().BeEquivalentTo("T");
+            model.GenericTypeArguments.Should().BeEquivalentTo("T");
         }
 
         [Fact]
         public void Adds_GenericTypeArgumentConstraints()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddGenericTypeArguments(new TypeInfoBuilder().WithTypeName("T")).AddGenericTypeArgumentConstraints("where T : class").Build();
+            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddGenericTypeArguments("T").AddGenericTypeArgumentConstraints("where T : class").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder();

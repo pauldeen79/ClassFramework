@@ -121,7 +121,7 @@ public abstract class ContextBase<TModel> : ContextBase
 
         // note that for now, we assume that a generic type argument should not be included in argument null checks...
         // this might be the case (for example there is a constraint on class), but this is not supported yet
-        var isGenericArgument = parentContextModel.GenericTypeArguments.Any(x => x.TypeName == childContext.TypeName);
+        var isGenericArgument = parentContextModel.GenericTypeArguments.Contains(childContext.TypeName);
 
         return value switch
         {
@@ -261,7 +261,7 @@ public abstract class ContextBase<TModel> : ContextBase
     {
         var result = type.GetTypeName(declaringType);
 
-        //HACK: Work-around needed because nullability of complex type is not working like it should (e.g. IEnumerable<Func<object?, object?>>)
+        //TODO: See if we can remove this work-around. Needed because nullability of complex type is not working like it should (e.g. IEnumerable<Func<object?, object?>>)
         var customResult = Settings.TypenameMappings
             .Where(x => x.SourceTypeName == result)
             .SelectMany(x => x.Metadata)

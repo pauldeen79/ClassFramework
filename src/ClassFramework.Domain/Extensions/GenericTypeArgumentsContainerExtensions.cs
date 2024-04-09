@@ -8,7 +8,7 @@ public static class GenericTypeArgumentsContainerExtensions
         var suffix = addBrackets ? ">" : string.Empty;
 
         return instance.GenericTypeArguments.Count > 0
-            ? $"{prefix}{string.Join(", ", instance.GenericTypeArguments.Select(x => x.TypeName))}{suffix}"
+            ? $"{prefix}{string.Join(", ", instance.GenericTypeArguments)}{suffix}"
             : string.Empty;
     }
 

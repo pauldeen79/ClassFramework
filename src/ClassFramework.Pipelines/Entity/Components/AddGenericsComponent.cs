@@ -13,7 +13,7 @@ public class AddGenericsComponent : IPipelineComponent<IConcreteTypeBuilder, Ent
         context = context.IsNotNull(nameof(context));
 
         context.Model
-            .AddGenericTypeArguments(context.Context.SourceModel.GenericTypeArguments.Select(x => x.ToBuilder()))
+            .AddGenericTypeArguments(context.Context.SourceModel.GenericTypeArguments)
             .AddGenericTypeArgumentConstraints(context.Context.SourceModel.GenericTypeArgumentConstraints);
 
         return Result.Continue<IConcreteTypeBuilder>();

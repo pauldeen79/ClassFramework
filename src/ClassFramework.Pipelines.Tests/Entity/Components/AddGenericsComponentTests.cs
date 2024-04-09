@@ -30,7 +30,7 @@ public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Features.AddG
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.GenericTypeArguments.Select(x => x.TypeName).Should().BeEquivalentTo("T");
+            model.GenericTypeArguments.Should().BeEquivalentTo("T");
             model.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where T : class");
         }
     }

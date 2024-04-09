@@ -44,7 +44,7 @@ public class AbstractBuilderComponent : IPipelineComponent<IConcreteTypeBuilder,
             if (!context.Context.Settings.IsForAbstractBuilder)
             {
                 classBuilder
-                    .AddGenericTypeArguments(new TypeInfoBuilder().WithTypeName("TBuilder"), new TypeInfoBuilder().WithTypeName("TEntity"))
+                    .AddGenericTypeArguments("TBuilder", "TEntity")
                     .AddGenericTypeArgumentConstraints($"where TEntity : {context.Context.SourceModel.GetFullName()}")
                     .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity>")
                     .WithAbstract();
