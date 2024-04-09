@@ -21,7 +21,7 @@ public class ClassTests
                 default,
                 name: null!,
                 Enumerable.Empty<Attribute>(),
-                Enumerable.Empty<string>(),
+                Enumerable.Empty<TypeInfo>(),
                 Enumerable.Empty<string>(),
                 Enumerable.Empty<string>(),
                 default,

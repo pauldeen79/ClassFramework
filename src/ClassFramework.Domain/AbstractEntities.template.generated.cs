@@ -84,7 +84,7 @@ namespace ClassFramework.Domain
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<string> GenericTypeArguments
+        public System.Collections.Generic.IReadOnlyCollection<ClassFramework.Domain.TypeInfo> GenericTypeArguments
         {
             get;
         }
@@ -102,7 +102,7 @@ namespace ClassFramework.Domain
             get;
         }
 
-        protected TypeBase(string @namespace, bool partial, System.Collections.Generic.IEnumerable<string> interfaces, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Field> fields, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Property> properties, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Method> methods, ClassFramework.Domain.Domains.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Attribute> attributes, System.Collections.Generic.IEnumerable<string> genericTypeArguments, System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<string> suppressWarningCodes)
+        protected TypeBase(string @namespace, bool partial, System.Collections.Generic.IEnumerable<string> interfaces, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Field> fields, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Property> properties, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Method> methods, ClassFramework.Domain.Domains.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Attribute> attributes, System.Collections.Generic.IEnumerable<ClassFramework.Domain.TypeInfo> genericTypeArguments, System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<string> suppressWarningCodes)
         {
             this.Namespace = @namespace!;
             this.Partial = partial;
@@ -113,7 +113,7 @@ namespace ClassFramework.Domain
             this.Visibility = visibility;
             this.Name = name!;
             this.Attributes = new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Attribute>(attributes)!;
-            this.GenericTypeArguments = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(genericTypeArguments)!;
+            this.GenericTypeArguments = new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.TypeInfo>(genericTypeArguments)!;
             this.GenericTypeArgumentConstraints = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(genericTypeArgumentConstraints)!;
             this.SuppressWarningCodes = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(suppressWarningCodes)!;
         }

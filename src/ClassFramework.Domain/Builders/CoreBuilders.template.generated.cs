@@ -1244,7 +1244,7 @@ namespace ClassFramework.Domain.Builders
 
         private string _parentTypeFullName;
 
-        private System.Collections.ObjectModel.ObservableCollection<string> _genericTypeArguments;
+        private System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.TypeInfoBuilder> _genericTypeArguments;
 
         private System.Collections.ObjectModel.ObservableCollection<string> _genericTypeArgumentConstraints;
 
@@ -1511,7 +1511,7 @@ namespace ClassFramework.Domain.Builders
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.ObjectModel.ObservableCollection<string> GenericTypeArguments
+        public System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.TypeInfoBuilder> GenericTypeArguments
         {
             get
             {
@@ -1559,7 +1559,7 @@ namespace ClassFramework.Domain.Builders
             _attributes = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.AttributeBuilder>();
             _codeStatements = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.CodeStatementBaseBuilder>();
             _parameters = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.ParameterBuilder>();
-            _genericTypeArguments = new System.Collections.ObjectModel.ObservableCollection<string>();
+            _genericTypeArguments = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.TypeInfoBuilder>();
             _genericTypeArgumentConstraints = new System.Collections.ObjectModel.ObservableCollection<string>();
             _suppressWarningCodes = new System.Collections.ObjectModel.ObservableCollection<string>();
             _returnTypeName = source.ReturnTypeName;
@@ -1581,7 +1581,7 @@ namespace ClassFramework.Domain.Builders
             if (source.Parameters is not null) foreach (var item in source.Parameters.Select(x => x.ToBuilder())) _parameters.Add(item);
             _explicitInterfaceName = source.ExplicitInterfaceName;
             _parentTypeFullName = source.ParentTypeFullName;
-            if (source.GenericTypeArguments is not null) foreach (var item in source.GenericTypeArguments) _genericTypeArguments.Add(item);
+            if (source.GenericTypeArguments is not null) foreach (var item in source.GenericTypeArguments.Select(x => x.ToBuilder())) _genericTypeArguments.Add(item);
             if (source.GenericTypeArgumentConstraints is not null) foreach (var item in source.GenericTypeArgumentConstraints) _genericTypeArgumentConstraints.Add(item);
             if (source.SuppressWarningCodes is not null) foreach (var item in source.SuppressWarningCodes) _suppressWarningCodes.Add(item);
         }
@@ -1591,7 +1591,7 @@ namespace ClassFramework.Domain.Builders
             _attributes = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.AttributeBuilder>();
             _codeStatements = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.CodeStatementBaseBuilder>();
             _parameters = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.ParameterBuilder>();
-            _genericTypeArguments = new System.Collections.ObjectModel.ObservableCollection<string>();
+            _genericTypeArguments = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.TypeInfoBuilder>();
             _genericTypeArgumentConstraints = new System.Collections.ObjectModel.ObservableCollection<string>();
             _suppressWarningCodes = new System.Collections.ObjectModel.ObservableCollection<string>();
             _returnTypeName = string.Empty;
@@ -1603,7 +1603,7 @@ namespace ClassFramework.Domain.Builders
 
         public ClassFramework.Domain.Method Build()
         {
-            return new ClassFramework.Domain.Method(ReturnTypeName, ReturnTypeIsNullable, ReturnTypeIsValueType, Partial, ExtensionMethod, Operator, Async, Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), CodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), ExplicitInterfaceName, ParentTypeFullName, GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes);
+            return new ClassFramework.Domain.Method(ReturnTypeName, ReturnTypeIsNullable, ReturnTypeIsValueType, Partial, ExtensionMethod, Operator, Async, Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), CodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), ExplicitInterfaceName, ParentTypeFullName, GenericTypeArguments.Select(x => x.Build()!).ToList().AsReadOnly(), GenericTypeArgumentConstraints, SuppressWarningCodes);
         }
 
         partial void SetDefaultValues();
@@ -1647,13 +1647,13 @@ namespace ClassFramework.Domain.Builders
             return this;
         }
 
-        public ClassFramework.Domain.Builders.MethodBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
+        public ClassFramework.Domain.Builders.MethodBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.TypeInfoBuilder> genericTypeArguments)
         {
             if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
             return AddGenericTypeArguments(genericTypeArguments.ToArray());
         }
 
-        public ClassFramework.Domain.Builders.MethodBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
+        public ClassFramework.Domain.Builders.MethodBuilder AddGenericTypeArguments(params ClassFramework.Domain.Builders.TypeInfoBuilder[] genericTypeArguments)
         {
             if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
             foreach (var item in genericTypeArguments) GenericTypeArguments.Add(item);
@@ -2616,6 +2616,101 @@ namespace ClassFramework.Domain.Builders
         {
             if (parentTypeFullName is null) throw new System.ArgumentNullException(nameof(parentTypeFullName));
             ParentTypeFullName = parentTypeFullName;
+            return this;
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+    public partial class TypeInfoBuilder : ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    {
+        private string _typeName;
+
+        private bool _isNullable;
+
+        private bool _isValueType;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string TypeName
+        {
+            get
+            {
+                return _typeName;
+            }
+            set
+            {
+                _typeName = value ?? throw new System.ArgumentNullException(nameof(value));
+                HandlePropertyChanged(nameof(TypeName));
+            }
+        }
+
+        public bool IsNullable
+        {
+            get
+            {
+                return _isNullable;
+            }
+            set
+            {
+                _isNullable = value;
+                HandlePropertyChanged(nameof(IsNullable));
+            }
+        }
+
+        public bool IsValueType
+        {
+            get
+            {
+                return _isValueType;
+            }
+            set
+            {
+                _isValueType = value;
+                HandlePropertyChanged(nameof(IsValueType));
+            }
+        }
+
+        public TypeInfoBuilder(ClassFramework.Domain.TypeInfo source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _typeName = source.TypeName;
+            _isNullable = source.IsNullable;
+            _isValueType = source.IsValueType;
+        }
+
+        public TypeInfoBuilder()
+        {
+            _typeName = string.Empty;
+            SetDefaultValues();
+        }
+
+        public ClassFramework.Domain.TypeInfo Build()
+        {
+            return new ClassFramework.Domain.TypeInfo(TypeName, IsNullable, IsValueType);
+        }
+
+        partial void SetDefaultValues();
+
+        public ClassFramework.Domain.Builders.TypeInfoBuilder WithTypeName(string typeName)
+        {
+            if (typeName is null) throw new System.ArgumentNullException(nameof(typeName));
+            TypeName = typeName;
+            return this;
+        }
+
+        public ClassFramework.Domain.Builders.TypeInfoBuilder WithIsNullable(bool isNullable = true)
+        {
+            IsNullable = isNullable;
+            return this;
+        }
+
+        public ClassFramework.Domain.Builders.TypeInfoBuilder WithIsValueType(bool isValueType = true)
+        {
+            IsValueType = isValueType;
             return this;
         }
 

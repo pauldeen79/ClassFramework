@@ -120,7 +120,7 @@ namespace ClassFramework.Domain.Builders.Abstractions
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.ObjectModel.ObservableCollection<string> GenericTypeArguments
+        System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.TypeInfoBuilder> GenericTypeArguments
         {
             get;
             set;

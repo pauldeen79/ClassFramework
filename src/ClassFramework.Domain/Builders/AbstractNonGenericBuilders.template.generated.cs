@@ -57,7 +57,7 @@ namespace ClassFramework.Domain.Builders
 
         private System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.AttributeBuilder> _attributes;
 
-        private System.Collections.ObjectModel.ObservableCollection<string> _genericTypeArguments;
+        private System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.TypeInfoBuilder> _genericTypeArguments;
 
         private System.Collections.ObjectModel.ObservableCollection<string> _genericTypeArgumentConstraints;
 
@@ -196,7 +196,7 @@ namespace ClassFramework.Domain.Builders
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public System.Collections.ObjectModel.ObservableCollection<string> GenericTypeArguments
+        public System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.TypeInfoBuilder> GenericTypeArguments
         {
             get
             {
@@ -245,7 +245,7 @@ namespace ClassFramework.Domain.Builders
             _properties = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.PropertyBuilder>();
             _methods = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.MethodBuilder>();
             _attributes = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.AttributeBuilder>();
-            _genericTypeArguments = new System.Collections.ObjectModel.ObservableCollection<string>();
+            _genericTypeArguments = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.TypeInfoBuilder>();
             _genericTypeArgumentConstraints = new System.Collections.ObjectModel.ObservableCollection<string>();
             _suppressWarningCodes = new System.Collections.ObjectModel.ObservableCollection<string>();
             _namespace = source.Namespace;
@@ -257,7 +257,7 @@ namespace ClassFramework.Domain.Builders
             _visibility = source.Visibility;
             _name = source.Name;
             foreach (var item in source.Attributes.Select(x => x.ToBuilder())) _attributes.Add(item);
-            foreach (var item in source.GenericTypeArguments) _genericTypeArguments.Add(item);
+            foreach (var item in source.GenericTypeArguments.Select(x => x.ToBuilder())) _genericTypeArguments.Add(item);
             foreach (var item in source.GenericTypeArgumentConstraints) _genericTypeArgumentConstraints.Add(item);
             foreach (var item in source.SuppressWarningCodes) _suppressWarningCodes.Add(item);
         }
@@ -269,7 +269,7 @@ namespace ClassFramework.Domain.Builders
             _properties = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.PropertyBuilder>();
             _methods = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.MethodBuilder>();
             _attributes = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.AttributeBuilder>();
-            _genericTypeArguments = new System.Collections.ObjectModel.ObservableCollection<string>();
+            _genericTypeArguments = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.TypeInfoBuilder>();
             _genericTypeArgumentConstraints = new System.Collections.ObjectModel.ObservableCollection<string>();
             _suppressWarningCodes = new System.Collections.ObjectModel.ObservableCollection<string>();
             _namespace = string.Empty;

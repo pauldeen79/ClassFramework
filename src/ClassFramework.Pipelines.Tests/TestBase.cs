@@ -83,7 +83,7 @@ public abstract class TestBase : IDisposable
         => new ClassBuilder()
             .WithName("MyClass")
             .WithNamespace("MyNamespace")
-            .AddGenericTypeArguments("T")
+            .AddGenericTypeArguments(new TypeInfoBuilder().WithTypeName("T"))
             .AddGenericTypeArgumentConstraints("where T : class")
             .AddAttributes(new AttributeBuilder().WithName("MyAttribute"))
             .AddProperties(

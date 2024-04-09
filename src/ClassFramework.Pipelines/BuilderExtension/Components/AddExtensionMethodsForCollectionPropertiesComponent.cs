@@ -51,7 +51,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
                 .WithReturnTypeName("T")
                 .WithStatic()
                 .WithExtensionMethod()
-                .AddGenericTypeArguments("T")
+                .AddGenericTypeArguments(new TypeInfoBuilder().WithTypeName("T"))
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
                 .AddParameters
@@ -70,7 +70,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
                 .WithReturnTypeName("T")
                 .WithStatic()
                 .WithExtensionMethod()
-                .AddGenericTypeArguments("T")
+                .AddGenericTypeArguments(new TypeInfoBuilder().WithTypeName("T"))
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
                 .AddParameters

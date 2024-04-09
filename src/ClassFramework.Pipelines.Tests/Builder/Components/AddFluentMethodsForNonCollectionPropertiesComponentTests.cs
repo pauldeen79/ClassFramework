@@ -138,7 +138,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var sourceModel = ((Class)CreateModel())
                 .ToTypedBuilder()
                 .With(x => x.Properties.First(y => y.Name == "Property2").TypeName = "T")
-                .AddGenericTypeArguments("T")
+                .AddGenericTypeArguments(new TypeInfoBuilder().WithTypeName("T"))
                 .BuildTyped();
             InitializeParser();
             var sut = CreateSut();
@@ -176,7 +176,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var sourceModel = ((Class)CreateModel())
                 .ToTypedBuilder()
                 .With(x => x.Properties.First(y => y.Name == "Property2").TypeName = "System.Func<T>")
-                .AddGenericTypeArguments("T")
+                .AddGenericTypeArguments(new TypeInfoBuilder().WithTypeName("T"))
                 .BuildTyped();
             InitializeParser();
             var sut = CreateSut();

@@ -49,7 +49,7 @@ public static class PropertyExtensions
 
         // note that for now, we assume that a generic type argument should not be included in argument null checks...
         // this might be the case (for example there is a constraint on class), but this is not supported yet
-        var isGenericArgument = sourceModel.GenericTypeArguments.Contains(property.TypeName);
+        var isGenericArgument = sourceModel.GenericTypeArguments.Any(x => x.TypeName == property.TypeName);
 
         if (!addNullChecks || property.IsNullable || property.IsValueType || isGenericArgument)
         {
