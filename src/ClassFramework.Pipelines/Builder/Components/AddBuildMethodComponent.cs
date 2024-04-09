@@ -3,23 +3,27 @@
 public class AddBuildMethodComponentBuilder : IBuilderComponentBuilder
 {
     private readonly IFormattableStringParser _formattableStringParser;
+    private readonly ICsharpExpressionDumper _csharpExpressionDumper;
 
-    public AddBuildMethodComponentBuilder(IFormattableStringParser formattableStringParser)
+    public AddBuildMethodComponentBuilder(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper)
     {
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
     }
 
     public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
-        => new AddBuildMethodComponent(_formattableStringParser);
+        => new AddBuildMethodComponent(_formattableStringParser, _csharpExpressionDumper);
 }
 
 public class AddBuildMethodComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
+    private readonly ICsharpExpressionDumper _csharpExpressionDumper;
 
-    public AddBuildMethodComponent(IFormattableStringParser formattableStringParser)
+    public AddBuildMethodComponent(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper)
     {
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
     }
 
     public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
@@ -56,7 +60,7 @@ public class AddBuildMethodComponent : IPipelineComponent<IConcreteTypeBuilder, 
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
-        var instanciationResult = context.CreateEntityInstanciation(_formattableStringParser, string.Empty);
+        var instanciationResult = context.CreateEntityInstanciation(_formattableStringParser, _csharpExpressionDumper, string.Empty);
         if (!instanciationResult.IsSuccessful())
         {
             return Result.FromExistingResult<IConcreteTypeBuilder>(instanciationResult);

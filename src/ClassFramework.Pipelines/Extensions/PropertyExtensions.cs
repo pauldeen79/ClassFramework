@@ -25,7 +25,7 @@ public static class PropertyExtensions
 
         var md = context
             .GetMappingMetadata(property.TypeName)
-            .FirstOrDefault(x => x.Name == MetadataNames.CustomBuilderDefaultValue);
+            .LastOrDefault(x => x.Name == MetadataNames.CustomBuilderDefaultValue);
 
         if (md is not null && md.Value is not null)
         {
@@ -42,9 +42,16 @@ public static class PropertyExtensions
         return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, context.Settings.EnableNullableReferenceTypes);
     }
 
-    public static string GetNullCheckSuffix(this Property property, string name, bool addNullChecks)
+    public static string GetNullCheckSuffix(this Property property, string name, bool addNullChecks, IType sourceModel)
     {
-        if (!addNullChecks || property.IsNullable || property.IsValueType)
+        name = name.IsNotNull(nameof(name));
+        sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
+
+        // note that for now, we assume that a generic type argument should not be included in argument null checks...
+        // this might be the case (for example there is a constraint on class), but this is not supported yet
+        var isGenericArgument = sourceModel.GenericTypeArguments.Contains(property.TypeName);
+
+        if (!addNullChecks || property.IsNullable || property.IsValueType || isGenericArgument)
         {
             return string.Empty;
         }
@@ -213,8 +220,19 @@ public static class PropertyExtensions
         );
     }
 
-    public static string GetSuffix(this Property source, bool enableNullableReferenceTypes)
-        => source.IsNullable(enableNullableReferenceTypes) && !source.IsValueType && !source.TypeName.FixTypeName().IsCollectionTypeName()
+    public static string GetSuffix<T>(this Property source, bool enableNullableReferenceTypes, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<T> context)
+        =>
+        (
+            source.IsNullable(enableNullableReferenceTypes)
+            && !source.IsValueType
+            && !source.TypeName.FixTypeName().IsCollectionTypeName()
+        )
+        ||
+        (
+            !source.TypeName.IsCollectionTypeName()
+            && !source.IsValueType
+            && source.GetDefaultValue(csharpExpressionDumper, source.TypeName.FixTypeName(), context).StartsWith("default(")
+        )
             ? "?"
             : string.Empty;
 }

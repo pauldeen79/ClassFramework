@@ -160,7 +160,7 @@ namespace ClassFramework.Pipelines.Builders
 
         public ClassFramework.Pipelines.NamespaceMapping Build()
         {
-            return new ClassFramework.Pipelines.NamespaceMapping(SourceNamespace, TargetNamespace, Metadata.Select(x => x.Build()).ToList().AsReadOnly());
+            return new ClassFramework.Pipelines.NamespaceMapping(SourceNamespace, TargetNamespace, Metadata.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         partial void SetDefaultValues();
@@ -1113,7 +1113,7 @@ namespace ClassFramework.Pipelines.Builders
             _addSetters = source.AddSetters;
             _allowGenerationWithoutProperties = source.AllowGenerationWithoutProperties;
             if (source.AttributeInitializers is not null) foreach (var item in source.AttributeInitializers) _attributeInitializers.Add(item);
-            _baseClass = source.BaseClass?.ToBuilder();
+            _baseClass = source.BaseClass?.ToBuilder()!;
             _baseClassBuilderNameSpace = source.BaseClassBuilderNameSpace;
             _builderExtensionsCollectionCopyStatementFormatString = source.BuilderExtensionsCollectionCopyStatementFormatString;
             _builderExtensionsNameFormatString = source.BuilderExtensionsNameFormatString;
@@ -1197,7 +1197,7 @@ namespace ClassFramework.Pipelines.Builders
 
         public ClassFramework.Pipelines.PipelineSettings Build()
         {
-            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build(), BaseClassBuilderNameSpace, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, InheritFromInterfaces, CreateAsObservable, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()).ToList().AsReadOnly(), BuilderNewCollectionTypeName, EntityNewCollectionTypeName, NonCollectionInitializationStatementFormatString, CreateAsPartial, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseExceptionThrowIfNull, ValidateArguments, UseDefaultValueAttributeValuesForBuilderInitialization);
+            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, InheritFromInterfaces, CreateAsObservable, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), BuilderNewCollectionTypeName, EntityNewCollectionTypeName, NonCollectionInitializationStatementFormatString, CreateAsPartial, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseExceptionThrowIfNull, ValidateArguments, UseDefaultValueAttributeValuesForBuilderInitialization);
         }
 
         partial void SetDefaultValues();
@@ -1671,7 +1671,7 @@ namespace ClassFramework.Pipelines.Builders
 
         public ClassFramework.Pipelines.TypenameMapping Build()
         {
-            return new ClassFramework.Pipelines.TypenameMapping(SourceTypeName, TargetTypeName, Metadata.Select(x => x.Build()).ToList().AsReadOnly());
+            return new ClassFramework.Pipelines.TypenameMapping(SourceTypeName, TargetTypeName, Metadata.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
         partial void SetDefaultValues();

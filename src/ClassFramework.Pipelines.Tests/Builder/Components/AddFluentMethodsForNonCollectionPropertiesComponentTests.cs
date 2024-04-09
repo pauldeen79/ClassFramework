@@ -132,6 +132,83 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         [Fact]
+        public void Adds_Method_Without_ArgumentNullChecks_When_Property_Has_TypeName_T()
+        {
+            // Arrange
+            var sourceModel = ((Class)CreateModel())
+                .ToTypedBuilder()
+                .With(x => x.Properties.First(y => y.Name == "Property2").TypeName = "T")
+                .AddGenericTypeArguments("T")
+                .BuildTyped();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateSettingsForBuilder(
+                setMethodNameFormatString: "With{Name}",
+                addNullChecks: true);
+            var context = CreateContext(sourceModel, model, settings);
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Methods.Should().HaveCount(2);
+            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder<T>");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "T");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
+            model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "Property1 = property1;",
+                "return this;",
+                "Property2 = property2;",
+                "return this;"
+            );
+        }
+
+        [Fact]
+        public void Adds_Method_Without_ArgumentNullChecks_When_Property_Has_TypeName_Func_T()
+        {
+            // Arrange
+            var sourceModel = ((Class)CreateModel())
+                .ToTypedBuilder()
+                .With(x => x.Properties.First(y => y.Name == "Property2").TypeName = "System.Func<T>")
+                .AddGenericTypeArguments("T")
+                .BuildTyped();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateSettingsForBuilder(
+                setMethodNameFormatString: "With{Name}",
+                addNullChecks: true);
+            var context = CreateContext(sourceModel, model, settings);
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Methods.Should().HaveCount(2);
+            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder<T>");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.Func<T>");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
+            model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "Property1 = property1;",
+                "return this;",
+                "if (property2 is null) throw new System.ArgumentNullException(nameof(property2));",
+                "Property2 = property2;",
+                "return this;"
+            );
+        }
+
+        [Fact]
         public void Adds_Method_With_Custom_ArgumentNullChecks_When_SetMethodNameFormatString_Is_Not_Empty()
         {
             // Arrange

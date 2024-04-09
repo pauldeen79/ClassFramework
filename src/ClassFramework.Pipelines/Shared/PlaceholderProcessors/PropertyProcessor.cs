@@ -52,7 +52,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor, IPlaceholderProc
             "ParentTypeName.GenericArgumentsWithBrackets" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName().GetProcessedGenericArguments(addBrackets: true)),
             "ParentTypeName.GenericArgumentsWithoutBrackets" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName().GetProcessedGenericArguments(addBrackets: false)),
             "DefaultValue" => formattableStringParser.Parse(propertyContext.SourceModel.GetDefaultValue(_csharpExpressionDumper, typeName, propertyContext), formatProvider, propertyContext),
-            "NullableSuffix" => Result.Success(propertyContext.SourceModel.GetSuffix(propertyContext.Settings.EnableNullableReferenceTypes)),
+            "NullableSuffix" => Result.Success(propertyContext.SourceModel.GetSuffix(propertyContext.Settings.EnableNullableReferenceTypes, _csharpExpressionDumper, propertyContext)),
             "BuilderAddMethodName" => formattableStringParser.Parse(propertyContext.Settings.AddMethodNameFormatString, formatProvider, propertyContext),
             _ => Result.Continue<string>()
         };

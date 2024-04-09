@@ -1,19 +1,27 @@
 ﻿namespace ClassFramework.Pipelines;
 
-public abstract class ContextBase<TModel>
+public abstract class ContextBase
 {
-    protected ContextBase(TModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
+    public PipelineSettings Settings { get; }
+    public IFormatProvider FormatProvider { get; }
+
+    protected ContextBase(PipelineSettings settings, IFormatProvider formatProvider)
     {
-        SourceModel = sourceModel.IsNotNull(nameof(sourceModel));
         Settings = settings.IsNotNull(nameof(settings));
         FormatProvider = formatProvider.IsNotNull(nameof(formatProvider));
+    }
+}
+
+public abstract class ContextBase<TModel> : ContextBase
+{
+    protected ContextBase(TModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : base(settings, formatProvider)
+    {
+        SourceModel = sourceModel.IsNotNull(nameof(sourceModel));
     }
 
     protected abstract string NewCollectionTypeName { get; }
 
     public TModel SourceModel { get; }
-    public PipelineSettings Settings { get; }
-    public IFormatProvider FormatProvider { get; }
 
     public string CreateArgumentNullException(string argumentName)
     {
@@ -95,29 +103,42 @@ public abstract class ContextBase<TModel>
         };
     }
 
-    public Result<string> GetBuilderPlaceholderProcessorResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, object context, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
+    public Result<string> GetBuilderPlaceholderProcessorResultForParentChildContext(
+        string value,
+        IFormattableStringParser formattableStringParser,
+        ContextBase context,
+        IType parentContextModel,
+        Property childContext,
+        IType sourceModel,
+        IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
     {
         sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        context = context.IsNotNull(nameof(context));
+        parentContextModel = parentContextModel.IsNotNull(nameof(parentContextModel));
         pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
         childContext = childContext.IsNotNull(nameof(childContext));
 
+        // note that for now, we assume that a generic type argument should not be included in argument null checks...
+        // this might be the case (for example there is a constraint on class), but this is not supported yet
+        var isGenericArgument = parentContextModel.GenericTypeArguments.Contains(childContext.TypeName);
+
         return value switch
         {
-            "NullCheck.Source.Argument" => Result.Success(Settings.AddNullChecks && Settings.AddValidationCode() == ArgumentValidationType.None && !childContext.IsNullable && !childContext.IsValueType // only if the source entity does not use validation...
+            "NullCheck.Source.Argument" => Result.Success(Settings.AddNullChecks && Settings.AddValidationCode() == ArgumentValidationType.None && !childContext.IsNullable && !childContext.IsValueType && !isGenericArgument// only if the source entity does not use validation...
                 ? $"if (source.{childContext.Name} is not null) "
                 : string.Empty),
-            "NullCheck.Argument" => Result.Success(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable
-                ? CreateArgumentNullException(childContext.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName())
+            "NullCheck.Argument" => Result.Success(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
+                ? CreateArgumentNullException(childContext.Name.ToPascalCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())
                 : string.Empty),
-            "NullableRequiredSuffix" => Result.Success(!Settings.AddNullChecks && !childContext.IsValueType && childContext.IsNullable && Settings.EnableNullableReferenceTypes
+            "NullableRequiredSuffix" => Result.Success(!Settings.AddNullChecks && !childContext.IsValueType && childContext.IsNullable && Settings.EnableNullableReferenceTypes && !isGenericArgument
                 ? "!"
                 : string.Empty),
             "NullableSuffix" => Result.Success(childContext.IsNullable && (childContext.IsValueType || Settings.EnableNullableReferenceTypes)
                 ? "?"
                 : string.Empty),
-            "BuildersNamespace" => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, formatProvider, context),
-            _ => Default(value, formatProvider, formattableStringParser, childContext, sourceModel, pipelinePlaceholderProcessors)
+            "BuildersNamespace" => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, context.FormatProvider, context),
+            _ => Default(value, context.FormatProvider, formattableStringParser, childContext, sourceModel, pipelinePlaceholderProcessors)
         };
 
         Result<string> Default(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
@@ -160,21 +181,19 @@ public abstract class ContextBase<TModel>
     {
         typeName = typeName.IsNotNull(nameof(typeName)).FixTypeName();
 
-        var typeNameMapping = GetTypenameMapping(typeName);
-        if (typeNameMapping is not null)
+        var typeNameMappings = GetTypenameMappings(typeName);
+        if (typeNameMappings.Length > 0)
         {
-            return typeNameMapping.Metadata;
+            return typeNameMappings.SelectMany(x => x.Metadata);
         }
 
         var ns = GetNamespace(typeName);
 
         if (!string.IsNullOrEmpty(ns))
         {
-            var namespaceMapping = Settings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
-            if (namespaceMapping is not null)
-            {
-                return namespaceMapping.Metadata;
-            }
+            return Settings.NamespaceMappings
+                .Where(x => x.SourceNamespace == ns)
+                .SelectMany(x => x.Metadata);
         }
 
         return Enumerable.Empty<Metadata>();
@@ -243,8 +262,11 @@ public abstract class ContextBase<TModel>
         var result = type.GetTypeName(declaringType);
 
         //TODO: See if we can remove this work-around. Needed because nullability of complex type is not working like it should (e.g. IEnumerable<Func<object?, object?>>)
-        var mapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == result);
-        var customResult = mapping?.Metadata.GetStringValue(MetadataNames.CustomTypeName);
+        var customResult = Settings.TypenameMappings
+            .Where(x => x.SourceTypeName == result)
+            .SelectMany(x => x.Metadata)
+            .GetStringValue(MetadataNames.CustomTypeName);
+        
         if (customResult is not null && !string.IsNullOrEmpty(customResult))
         {
             return customResult;
@@ -253,27 +275,27 @@ public abstract class ContextBase<TModel>
         return result;
     }
 
-    private TypenameMapping? GetTypenameMapping(string typeName)
+    private TypenameMapping[] GetTypenameMappings(string typeName)
     {
-        var typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
-        if (typeNameMapping is null && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
+        var typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName).ToArray();
+        if (typeNameMappings.Length == 0 && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
         {
             if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
             {
-                typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutProcessedGenerics());
+                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutProcessedGenerics()).ToArray();
             }
             else
             {
-                typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.GetCollectionItemType());
+                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType()).ToArray();
             }
         }
 
-        if (typeNameMapping is null && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
+        if (typeNameMappings.Length == 0 && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
         {
-            typeNameMapping = Settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName.WithoutProcessedGenerics());
+            typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.WithoutProcessedGenerics()).ToArray();
         }
 
-        return typeNameMapping;
+        return typeNameMappings;
     }
 
     private static string GetNamespace(string typeName)

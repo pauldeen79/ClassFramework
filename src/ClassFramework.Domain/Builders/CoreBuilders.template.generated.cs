@@ -69,7 +69,7 @@ namespace ClassFramework.Domain.Builders
 
         public ClassFramework.Domain.Attribute Build()
         {
-            return new ClassFramework.Domain.Attribute(Parameters.Select(x => x.Build()).ToList().AsReadOnly(), Name);
+            return new ClassFramework.Domain.Attribute(Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), Name);
         }
 
         partial void SetDefaultValues();
@@ -383,7 +383,7 @@ namespace ClassFramework.Domain.Builders
 
         public ClassFramework.Domain.Constructor Build()
         {
-            return new ClassFramework.Domain.Constructor(ChainCall, Static, Virtual, Abstract, Protected, Override, Visibility, Attributes.Select(x => x.Build()).ToList().AsReadOnly(), CodeStatements.Select(x => x.Build()).ToList().AsReadOnly(), Parameters.Select(x => x.Build()).ToList().AsReadOnly(), SuppressWarningCodes);
+            return new ClassFramework.Domain.Constructor(ChainCall, Static, Virtual, Abstract, Protected, Override, Visibility, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), CodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), SuppressWarningCodes);
         }
 
         partial void SetDefaultValues();
@@ -578,7 +578,7 @@ namespace ClassFramework.Domain.Builders
 
         public ClassFramework.Domain.Enumeration Build()
         {
-            return new ClassFramework.Domain.Enumeration(Members.Select(x => x.Build()).ToList().AsReadOnly(), Attributes.Select(x => x.Build()).ToList().AsReadOnly(), Name, Visibility);
+            return new ClassFramework.Domain.Enumeration(Members.Select(x => x.Build()!).ToList().AsReadOnly(), Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), Name, Visibility);
         }
 
         partial void SetDefaultValues();
@@ -697,7 +697,7 @@ namespace ClassFramework.Domain.Builders
 
         public ClassFramework.Domain.EnumerationMember Build()
         {
-            return new ClassFramework.Domain.EnumerationMember(Value, Attributes.Select(x => x.Build()).ToList().AsReadOnly(), Name);
+            return new ClassFramework.Domain.EnumerationMember(Value, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), Name);
         }
 
         partial void SetDefaultValues();
@@ -1015,7 +1015,7 @@ namespace ClassFramework.Domain.Builders
 
         public ClassFramework.Domain.Field Build()
         {
-            return new ClassFramework.Domain.Field(ReadOnly, Constant, Event, Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()).ToList().AsReadOnly(), TypeName, IsNullable, IsValueType, DefaultValue, ParentTypeFullName);
+            return new ClassFramework.Domain.Field(ReadOnly, Constant, Event, Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), TypeName, IsNullable, IsValueType, DefaultValue, ParentTypeFullName);
         }
 
         partial void SetDefaultValues();
@@ -1603,7 +1603,7 @@ namespace ClassFramework.Domain.Builders
 
         public ClassFramework.Domain.Method Build()
         {
-            return new ClassFramework.Domain.Method(ReturnTypeName, ReturnTypeIsNullable, ReturnTypeIsValueType, Partial, ExtensionMethod, Operator, Async, Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()).ToList().AsReadOnly(), CodeStatements.Select(x => x.Build()).ToList().AsReadOnly(), Parameters.Select(x => x.Build()).ToList().AsReadOnly(), ExplicitInterfaceName, ParentTypeFullName, GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes);
+            return new ClassFramework.Domain.Method(ReturnTypeName, ReturnTypeIsNullable, ReturnTypeIsValueType, Partial, ExtensionMethod, Operator, Async, Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), CodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), ExplicitInterfaceName, ParentTypeFullName, GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes);
         }
 
         partial void SetDefaultValues();
@@ -1959,7 +1959,7 @@ namespace ClassFramework.Domain.Builders
 
         public ClassFramework.Domain.Parameter Build()
         {
-            return new ClassFramework.Domain.Parameter(IsParamArray, IsOut, IsRef, TypeName, IsNullable, IsValueType, Attributes.Select(x => x.Build()).ToList().AsReadOnly(), Name, DefaultValue);
+            return new ClassFramework.Domain.Parameter(IsParamArray, IsOut, IsRef, TypeName, IsNullable, IsValueType, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), Name, DefaultValue);
         }
 
         partial void SetDefaultValues();
@@ -2444,7 +2444,7 @@ namespace ClassFramework.Domain.Builders
 
         public ClassFramework.Domain.Property Build()
         {
-            return new ClassFramework.Domain.Property(HasGetter, HasSetter, HasInitializer, GetterVisibility, SetterVisibility, InitializerVisibility, GetterCodeStatements.Select(x => x.Build()).ToList().AsReadOnly(), SetterCodeStatements.Select(x => x.Build()).ToList().AsReadOnly(), InitializerCodeStatements.Select(x => x.Build()).ToList().AsReadOnly(), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()).ToList().AsReadOnly(), TypeName, IsNullable, IsValueType, DefaultValue, ExplicitInterfaceName, ParentTypeFullName);
+            return new ClassFramework.Domain.Property(HasGetter, HasSetter, HasInitializer, GetterVisibility, SetterVisibility, InitializerVisibility, GetterCodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), SetterCodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), InitializerCodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), TypeName, IsNullable, IsValueType, DefaultValue, ExplicitInterfaceName, ParentTypeFullName);
         }
 
         partial void SetDefaultValues();

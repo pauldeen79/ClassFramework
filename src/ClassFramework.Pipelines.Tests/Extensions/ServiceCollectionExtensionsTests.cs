@@ -26,6 +26,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             // Arrange
             var serviceCollection = new ServiceCollection()
                 .AddScoped(_ => Fixture.Freeze<IFormattableStringParser>()) // note that normally, you would probably use AddParsers from the CrossCutting.Utilities.Parsers package...
+                .AddScoped(_ => Fixture.Freeze<ICsharpExpressionDumper>()) // note that normally, you would probably use AddCsharpExpressionDumper from the CsharpDumper package...
                 .AddPipelines();
             using var provider = serviceCollection.BuildServiceProvider();
             using var scope = provider.CreateScope();
@@ -43,6 +44,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             // Arrange
             var serviceCollection = new ServiceCollection()
                 .AddScoped(_ => Fixture.Freeze<IFormattableStringParser>()) // note that normally, you would probably use AddParsers from the CrossCutting.Utilities.Parsers package...
+                .AddScoped(_ => Fixture.Freeze<ICsharpExpressionDumper>()) // note that normally, you would probably use AddCsharpExpressionDumper from the CsharpDumper package...
                 .AddPipelines();
             using var provider = serviceCollection.BuildServiceProvider();
             using var scope = provider.CreateScope();

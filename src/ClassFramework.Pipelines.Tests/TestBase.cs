@@ -357,8 +357,8 @@ public abstract class TestBase : IDisposable
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderNamespace).WithValue("MyNamespace.Builders"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderName).WithValue("{TypeName.ClassName}Builder"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomEntityNamespace).WithValue("MyNamespace"))
-                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()"))
-                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()"))
+                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]"))
+                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]"))
         ];
 
     protected static IEnumerable<TypenameMappingBuilder> CreateTypenameMappings()
@@ -380,7 +380,7 @@ public abstract class TestBase : IDisposable
                     new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(MetadataNames.CustomBuilderName),
                     new MetadataBuilder().WithValue("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.[Name])").WithName(MetadataNames.CustomBuilderConstructorInitializeExpression),
                     new MetadataBuilder().WithValue(new Literal("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder()", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].BuildTyped()").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
+                    new MetadataBuilder().WithValue("[Name][NullableSuffix].BuildTyped()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
                 ),
             new TypenameMappingBuilder()
                 .WithSourceTypeName("ExpressionFramework.Domain.Expression")
@@ -391,7 +391,7 @@ public abstract class TestBase : IDisposable
                     new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(MetadataNames.CustomBuilderName),
                     new MetadataBuilder().WithValue("ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(source.[Name])").WithName(MetadataNames.CustomBuilderConstructorInitializeExpression),
                     new MetadataBuilder().WithValue(new Literal("default(ExpressionFramework.Domain.Builders.ExpressionBuilder)!", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
-                    new MetadataBuilder().WithValue($"[Name][NullableSuffix].Build()").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
+                    new MetadataBuilder().WithValue($"[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
                 ),
         ];
 

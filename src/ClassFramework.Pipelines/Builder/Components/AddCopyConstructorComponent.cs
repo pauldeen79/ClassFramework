@@ -3,23 +3,27 @@
 public class AddCopyConstructorComponentBuilder : IBuilderComponentBuilder
 {
     private readonly IFormattableStringParser _formattableStringParser;
+    private readonly ICsharpExpressionDumper _csharpExpressionDumper;
 
-    public AddCopyConstructorComponentBuilder(IFormattableStringParser formattableStringParser)
+    public AddCopyConstructorComponentBuilder(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper)
     {
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
     }
 
     public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
-        => new AddCopyConstructorComponent(_formattableStringParser);
+        => new AddCopyConstructorComponent(_formattableStringParser, _csharpExpressionDumper);
 }
 
 public class AddCopyConstructorComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
+    private readonly ICsharpExpressionDumper _csharpExpressionDumper;
 
-    public AddCopyConstructorComponent(IFormattableStringParser formattableStringParser)
+    public AddCopyConstructorComponent(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper)
     {
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
     }
 
     public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
@@ -167,7 +171,7 @@ public class AddCopyConstructorComponent : IPipelineComponent<IConcreteTypeBuild
         return result;
     }
 
-    private static string? GetSourceExpression(string? value, Property sourceProperty, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    private string? GetSourceExpression(string? value, Property sourceProperty, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         if (value is null || !value.Contains(PlaceholderNames.SourceExpressionPlaceholder))
         {
@@ -179,17 +183,21 @@ public class AddCopyConstructorComponent : IPipelineComponent<IConcreteTypeBuild
             return sourceProperty.Name;
         }
 
-        var metadata = context.Context.GetMappingMetadata(sourceProperty.TypeName);
-        var sourceExpression = metadata.GetStringValue(MetadataNames.CustomBuilderSourceExpression, PlaceholderNames.NamePlaceholder);
+        var sourceExpression = context.Context
+            .GetMappingMetadata(sourceProperty.TypeName)
+            .GetStringValue(MetadataNames.CustomBuilderSourceExpression, PlaceholderNames.NamePlaceholder);
+
         if (sourceProperty.TypeName.FixTypeName().IsCollectionTypeName())
         {
-            return value.Replace(PlaceholderNames.SourceExpressionPlaceholder, $"{sourceProperty.Name}.Select(x => {sourceExpression})").Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty).Replace(".Select(x => x)", string.Empty);
+            return value.Replace(PlaceholderNames.SourceExpressionPlaceholder, $"{sourceProperty.Name}.Select(x => {sourceExpression})").Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty).Replace("[ForcedNullableSuffix]", string.Empty).Replace(".Select(x => x)", string.Empty);
         }
 
+        var suffix = sourceProperty.GetSuffix(context.Context.Settings.EnableNullableReferenceTypes, _csharpExpressionDumper, context.Context);
         return value
             .Replace($"source.{PlaceholderNames.SourceExpressionPlaceholder}", $"{sourceExpression.Replace(PlaceholderNames.NamePlaceholder, "source." + sourceProperty.Name)}")
             .Replace(PlaceholderNames.NamePlaceholder, sourceProperty.Name)
-            .Replace("[NullableSuffix]", sourceProperty.GetSuffix(context.Context.Settings.EnableNullableReferenceTypes));
+            .Replace("[NullableSuffix]", suffix)
+            .Replace("[ForcedNullableSuffix]", string.IsNullOrEmpty(suffix) ? string.Empty : "!");
     }
 
     private static string CreateBuilderClassCopyConstructorChainCall(IType instance, PipelineSettings settings)
