@@ -51,27 +51,14 @@ public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineCompone
             context.Model.AddMethods(new MethodBuilder()
                 .WithName(results.First(x => x.Name == "AddMethodName").Result.Value!)
                 .WithReturnTypeName(returnType)
-                .AddParameters
-                (
-                    new ParameterBuilder()
-                        .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
-                        .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!.FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics()))
-                        .SetTypeContainerPropertiesFrom(property)
-                )
+                .AddParameters(context.Context.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!.FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
                 .AddStringCodeStatements(results.Where(x => x.Name == "EnumerableOverload").Select(x => x.Result.Value!))
             );
 
             context.Model.AddMethods(new MethodBuilder()
                 .WithName(results.First(x => x.Name == "AddMethodName").Result.Value!)
                 .WithReturnTypeName(returnType)
-                .AddParameters
-                (
-                    new ParameterBuilder()
-                        .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
-                        .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!.FixTypeName().ConvertTypeNameToArray())
-                        .WithIsParamArray()
-                        .SetTypeContainerPropertiesFrom(property)
-                )
+                .AddParameters(context.Context.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!.FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
                 .AddStringCodeStatements(results.Where(x => x.Name == "ArrayOverload").Select(x => x.Result.Value!))
             );
         }

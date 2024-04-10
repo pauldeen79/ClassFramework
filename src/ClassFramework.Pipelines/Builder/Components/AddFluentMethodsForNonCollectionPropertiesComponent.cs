@@ -49,7 +49,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComp
                 .WithReturnTypeName(context.Context.IsBuilderForAbstractEntity
                       ? $"TBuilder{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
                       : $"{results.First(x => x.Name == "Namespace").Result.Value.AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
-                .AddParameters(context.Context.CreateParameterForBuilder(property, results));
+                .AddParameters(context.Context.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!));
 
             context.Context.AddNullChecks(builder, results);
 

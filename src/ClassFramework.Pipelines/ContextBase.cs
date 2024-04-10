@@ -274,14 +274,14 @@ public abstract class ContextBase<TModel> : ContextBase
         return result;
     }
 
-    public ParameterBuilder CreateParameterForBuilder(Property property, NamedResult<Result<string>>[] results)
+    public ParameterBuilder CreateParameterForBuilder(Property property, string typeName)
     {
         property = property.IsNotNull(nameof(property));
-        results = results.IsNotNull(nameof(results));
+        typeName = typeName.IsNotNull(nameof(typeName));
 
         return new ParameterBuilder()
             .WithName(property.Name.ToPascalCase(FormatProvider.ToCultureInfo()))
-            .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!)
+            .WithTypeName(typeName)
             .SetTypeContainerPropertiesFrom(property)
             .WithDefaultValue(GetMappingMetadata(property.TypeName).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null));
     }

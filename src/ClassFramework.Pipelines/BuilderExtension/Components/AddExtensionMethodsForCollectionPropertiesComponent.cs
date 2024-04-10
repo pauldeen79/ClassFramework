@@ -54,13 +54,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
-                .AddParameters
-                (
-                    new ParameterBuilder()
-                        .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
-                        .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!.FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics()))
-                        .SetTypeContainerPropertiesFrom(property)
-                )
+                .AddParameters(context.Context.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!.FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
                 .AddStringCodeStatements(results.Where(x => x.Name == "EnumerableOverload").Select(x => x.Result.Value!))
             );
 
@@ -72,14 +66,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
-                .AddParameters
-                (
-                    new ParameterBuilder()
-                        .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
-                        .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!.FixTypeName().ConvertTypeNameToArray())
-                        .WithIsParamArray()
-                        .SetTypeContainerPropertiesFrom(property)
-                )
+                .AddParameters(context.Context.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!.FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
                 .AddStringCodeStatements(results.Where(x => x.Name == "ArrayOverload").Select(x => x.Result.Value!))
             );
         }
