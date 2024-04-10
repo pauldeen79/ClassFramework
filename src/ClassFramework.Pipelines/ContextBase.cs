@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines;
+﻿using ClassFramework.Domain.Builders.Extensions;
+
+namespace ClassFramework.Pipelines;
 
 public abstract class ContextBase
 {
@@ -161,7 +163,7 @@ public abstract class ContextBase<TModel> : ContextBase
                 .FixNullableTypeName(property)))
             .WithIsNullable(property.IsNullable)
             .WithIsValueType(property.IsValueType)
-            .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x.TypeName).WithIsValueType(x.IsValueType).WithIsNullable(x.IsNullable).AddGenericTypeArguments(x.GenericTypeArguments).Build()))
+            .AddGenericTypeArguments(property.GenericTypeArguments)
             .AddAttributes(property.Attributes
                 .Where(x => Settings.CopyAttributes && (Settings.CopyAttributePredicate?.Invoke(x) ?? true))
                 .Select(x => MapAttribute(x).ToBuilder()))

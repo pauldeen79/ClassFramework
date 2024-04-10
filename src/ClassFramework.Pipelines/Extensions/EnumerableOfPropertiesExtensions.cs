@@ -17,6 +17,6 @@ public static class EnumerableOfPropertiesExtensions
                     )
                     .WithIsNullable(property.IsNullable)
                     .WithIsValueType(property.IsValueType)
-                    .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x.TypeName).WithIsValueType(x.IsValueType).WithIsNullable(x.IsNullable).AddGenericTypeArguments(x.GenericTypeArguments).Build()))
+                    .AddGenericTypeArguments(property.GenericTypeArguments)
             );
 }
