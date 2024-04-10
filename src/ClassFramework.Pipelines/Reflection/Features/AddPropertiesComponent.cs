@@ -27,9 +27,7 @@ public class AddPropertiesComponent : IPipelineComponent<TypeBaseBuilder, Reflec
                 .WithHasSetter(p.GetSetMethod() is not null)
                 .WithHasInitializer(p.IsInitOnly())
                 .WithParentTypeFullName(context.Context.MapTypeName(p.DeclaringType.GetParentTypeFullName()))
-                .WithIsNullable(p.IsNullable())
-                .WithIsValueType(p.PropertyType.IsValueType())
-                .AddGenericTypeArguments(p.PropertyType.GenericTypeArguments.Select((x, index) => x.ToTypeContainer(p.PropertyType, index + 1, context.Context.GetMappedTypeName)))
+                .SetTypeContainerPropertiesFrom(p.IsNullable(), p.PropertyType, context.Context.GetMappedTypeName)
                 .WithVisibility(Array.Exists(p.GetAccessors(), m => m.IsPublic).ToVisibility())
                 .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
                     x => x.ConvertToDomainAttribute(context.Context.InitializeDelegate),
