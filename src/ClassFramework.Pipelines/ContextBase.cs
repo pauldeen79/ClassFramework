@@ -36,9 +36,8 @@ public abstract class ContextBase<TModel> : ContextBase
     public string MapTypeName(string typeName, string alternateTypeMetadataName = "")
     {
         typeName = typeName.IsNotNull(nameof(typeName));
-        var result = typeName.MapTypeName(Settings, NewCollectionTypeName, alternateTypeMetadataName);
 
-        return result;
+        return typeName.MapTypeName(Settings, NewCollectionTypeName, alternateTypeMetadataName);
     }
 
     public string MapNamespace(string? ns)
@@ -86,7 +85,7 @@ public abstract class ContextBase<TModel> : ContextBase
         return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public Result<string> GetBuilderPlaceholderProcessorResultForPipelineContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, object context, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
+    public Result<string> GetBuilderPlaceholderProcessorResultForPipelineContext(string value, IFormattableStringParser formattableStringParser, object context, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
     {
         sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
@@ -97,8 +96,8 @@ public abstract class ContextBase<TModel> : ContextBase
             "NullCheck.Source" => Result.Success(Settings.AddNullChecks
                 ? CreateArgumentNullException("source")
                 : string.Empty),
-            "BuildersNamespace" => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, formatProvider, context),
-            _ => pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+            "BuildersNamespace" => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, context),
+            _ => pipelinePlaceholderProcessors.Select(x => x.Process(value, FormatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<string>()
         };
     }
@@ -266,9 +265,9 @@ public abstract class ContextBase<TModel> : ContextBase
             .SelectMany(x => x.Metadata)
             .GetStringValue(MetadataNames.CustomTypeName);
         
-        if (customResult is not null && !string.IsNullOrEmpty(customResult))
+        if (!string.IsNullOrEmpty(customResult))
         {
-            return customResult;
+            return customResult!;
         }
 
         return result;

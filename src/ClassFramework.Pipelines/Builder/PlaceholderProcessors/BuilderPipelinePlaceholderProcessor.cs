@@ -17,7 +17,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
 
         if (context is PipelineContext<IConcreteTypeBuilder, BuilderContext> pipelineContext)
         {
-            return pipelineContext.Context.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formatProvider, formattableStringParser, pipelineContext, pipelineContext.Context.SourceModel, _pipelinePlaceholderProcessors);
+            return pipelineContext.Context.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formattableStringParser, pipelineContext, pipelineContext.Context.SourceModel, _pipelinePlaceholderProcessors);
         }
 
         if (context is ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property> parentChildContext)
