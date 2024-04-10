@@ -59,9 +59,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineC
                     new ParameterBuilder()
                         .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
                         .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!)
-                        .WithIsNullable(property.IsNullable)
-                        .WithIsValueType(property.IsValueType)
-                        .AddGenericTypeArguments(property.GenericTypeArguments)
+                        .SetTypeContainerPropertiesFrom(property)
                         .WithDefaultValue(context.Context.GetMappingMetadata(property.TypeName).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
                 );
 

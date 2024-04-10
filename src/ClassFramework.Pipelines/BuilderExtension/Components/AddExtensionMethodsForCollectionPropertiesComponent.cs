@@ -60,9 +60,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
                     new ParameterBuilder()
                         .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
                         .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!.FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics()))
-                        .WithIsNullable(property.IsNullable)
-                        .WithIsValueType(property.IsValueType)
-                        .AddGenericTypeArguments(property.GenericTypeArguments)
+                        .SetTypeContainerPropertiesFrom(property)
                 )
                 .AddStringCodeStatements(results.Where(x => x.Name == "EnumerableOverload").Select(x => x.Result.Value!))
             );
@@ -81,9 +79,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
                         .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
                         .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!.FixTypeName().ConvertTypeNameToArray())
                         .WithIsParamArray()
-                        .WithIsNullable(property.IsNullable)
-                        .WithIsValueType(property.IsValueType)
-                        .AddGenericTypeArguments(property.GenericTypeArguments)
+                        .SetTypeContainerPropertiesFrom(property)
                 )
                 .AddStringCodeStatements(results.Where(x => x.Name == "ArrayOverload").Select(x => x.Result.Value!))
             );
