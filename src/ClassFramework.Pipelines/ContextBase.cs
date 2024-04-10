@@ -1,6 +1,4 @@
-﻿using ClassFramework.Domain.Builders.Extensions;
-
-namespace ClassFramework.Pipelines;
+﻿namespace ClassFramework.Pipelines;
 
 public abstract class ContextBase
 {
@@ -274,6 +272,33 @@ public abstract class ContextBase<TModel> : ContextBase
         }
 
         return result;
+    }
+
+    public ParameterBuilder CreateParameterForBuilder(Property property, NamedResult<Result<string>>[] results)
+    {
+        property = property.IsNotNull(nameof(property));
+        results = results.IsNotNull(nameof(results));
+
+        return new ParameterBuilder()
+            .WithName(property.Name.ToPascalCase(FormatProvider.ToCultureInfo()))
+            .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!)
+            .SetTypeContainerPropertiesFrom(property)
+            .WithDefaultValue(GetMappingMetadata(property.TypeName).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null));
+    }
+
+    public void AddNullChecks(MethodBuilder builder, NamedResult<Result<string>>[] results)
+    {
+        builder = builder.IsNotNull(nameof(builder));
+        results = results.IsNotNull(nameof(results));
+
+        if (Settings.AddNullChecks)
+        {
+            var nullCheckStatement = results.First(x => x.Name == "ArgumentNullCheck").Result.Value!;
+            if (!string.IsNullOrEmpty(nullCheckStatement))
+            {
+                builder.AddStringCodeStatements(nullCheckStatement);
+            }
+        }
     }
 
     private TypenameMapping[] GetTypenameMappings(string typeName)

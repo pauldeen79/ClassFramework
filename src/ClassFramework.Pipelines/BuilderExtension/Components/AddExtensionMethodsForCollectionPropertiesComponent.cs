@@ -1,5 +1,4 @@
-﻿
-namespace ClassFramework.Pipelines.BuilderExtension.Components;
+﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
 public class AddExtensionMethodsForCollectionPropertiesComponentBuilder : IBuilderExtensionComponentBuilder
 {
