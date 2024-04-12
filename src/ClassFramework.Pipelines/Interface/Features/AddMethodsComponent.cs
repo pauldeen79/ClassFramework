@@ -37,9 +37,12 @@ internal sealed class TypeContainerWrapper : ITypeContainer
         TypeName = method.ReturnTypeName;
         IsNullable = method.ReturnTypeIsNullable;
         IsValueType = method.ReturnTypeIsValueType;
+        GenericTypeArguments = method.ReturnTypeGenericTypeArguments;
     }
 
     public string TypeName { get; }
     public bool IsNullable { get; }
     public bool IsValueType { get; }
+
+    public IReadOnlyCollection<ITypeContainer> GenericTypeArguments { get; }
 }

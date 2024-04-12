@@ -2,5 +2,5 @@
 
 internal interface IAttributesContainer
 {
-    [Required] [ValidateObject] IReadOnlyCollection<IAttribute> Attributes { get; }
+    [Required][ValidateObject] IReadOnlyCollection<IAttribute> Attributes { get; }
 }

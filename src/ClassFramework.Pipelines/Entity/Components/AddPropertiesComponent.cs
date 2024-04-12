@@ -60,6 +60,7 @@ public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, E
                         .FixNullableTypeName(property))
                         .WithIsNullable(property.IsNullable)
                         .WithIsValueType(property.IsValueType)
+                        .AddGenericTypeArguments(property.GenericTypeArguments)
                 )
         );
 

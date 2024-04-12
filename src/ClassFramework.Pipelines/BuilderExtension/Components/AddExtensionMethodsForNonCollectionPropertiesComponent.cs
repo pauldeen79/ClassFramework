@@ -54,24 +54,9 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineC
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
-                .AddParameters
-                (
-                    new ParameterBuilder()
-                        .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
-                        .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!)
-                        .WithIsNullable(property.IsNullable)
-                        .WithIsValueType(property.IsValueType)
-                        .WithDefaultValue(context.Context.GetMappingMetadata(property.TypeName).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
-                );
+                .AddParameters(context.Context.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!));
 
-            if (context.Context.Settings.AddNullChecks)
-            {
-                var nullCheckStatement = results.First(x => x.Name == "ArgumentNullCheck").Result.Value!;
-                if (!string.IsNullOrEmpty(nullCheckStatement))
-                {
-                    builder.AddStringCodeStatements(nullCheckStatement);
-                }
-            }
+            context.Context.AddNullChecks(builder, results);
 
             builder.AddStringCodeStatements
             (

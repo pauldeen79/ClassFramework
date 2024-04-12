@@ -119,6 +119,11 @@ public class MyClass : IMyInterface
     }
 }
 
+public class MyNullableClass
+{
+    public Func<object, IEnumerable<object?>> MyDelegateProperty { get; set; } = default!;
+}
+
 public interface IMyInterface
 {
     string? MyProperty { get; set; }

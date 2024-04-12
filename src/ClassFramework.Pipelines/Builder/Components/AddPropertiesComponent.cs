@@ -52,6 +52,7 @@ public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, B
                     .FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
+                .AddGenericTypeArguments(property.GenericTypeArguments)
                 .WithParentTypeFullName(results.First(x => x.Name == NamedResults.ParentTypeName).Result.Value!)
                 .AddAttributes(property.Attributes
                     .Where(_ => context.Context.Settings.CopyAttributes)

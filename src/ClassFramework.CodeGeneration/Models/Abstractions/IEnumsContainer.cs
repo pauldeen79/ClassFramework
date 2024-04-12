@@ -2,5 +2,5 @@
 
 internal interface IEnumsContainer
 {
-    [Required] [ValidateObject] IReadOnlyCollection<IEnumeration> Enums { get; }
+    [Required][ValidateObject] IReadOnlyCollection<IEnumeration> Enums { get; }
 }

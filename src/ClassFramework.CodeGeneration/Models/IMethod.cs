@@ -5,6 +5,7 @@ internal interface IMethod : Abstractions.IExtendedVisibilityContainer, Abstract
     [Required(AllowEmptyStrings = true)] string ReturnTypeName { get; }
     bool ReturnTypeIsNullable { get; }
     bool ReturnTypeIsValueType { get; }
+    [Required][ValidateObject] IReadOnlyCollection<ITypeContainer> ReturnTypeGenericTypeArguments { get; }
 
     bool Partial { get; }
     bool ExtensionMethod { get; }

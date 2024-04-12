@@ -2,5 +2,5 @@
 
 internal interface ISubClassesContainer
 {
-    [Required] [ValidateObject] IReadOnlyCollection<ITypeBase> SubClasses { get; }
+    [Required][ValidateObject] IReadOnlyCollection<ITypeBase> SubClasses { get; }
 }

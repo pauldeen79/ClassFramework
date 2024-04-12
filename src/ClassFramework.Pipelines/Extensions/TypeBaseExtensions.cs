@@ -116,7 +116,8 @@ public static class TypeBaseExtensions
                 .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
                 .WithTypeName(builderArgumentTypeResult.Value!.FixCollectionTypeName(context.Context.Settings.BuilderNewCollectionTypeName).FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
-                .WithIsValueType(property.IsValueType));
+                .WithIsValueType(property.IsValueType)
+                .AddGenericTypeArguments(property.GenericTypeArguments));
         }
     }
 
