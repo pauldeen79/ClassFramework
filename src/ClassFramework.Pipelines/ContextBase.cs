@@ -64,27 +64,6 @@ public abstract class ContextBase<TModel> : ContextBase
             .Build();
     }
 
-    public Result<IConcreteTypeBuilder> SetEntityName(IType sourceModel, IConcreteTypeBuilder model, IFormattableStringParser formattableStringParser, object context)
-    {
-        var resultSetBuilder = new NamedResultSetBuilder<string>();
-        resultSetBuilder.Add(NamedResults.Name, () => formattableStringParser.Parse(Settings.EntityNameFormatString, FormatProvider, context));
-        resultSetBuilder.Add(NamedResults.Namespace, () => GetMappingMetadata(sourceModel.GetFullName()).GetStringResult(MetadataNames.CustomEntityNamespace, () => formattableStringParser.Parse(Settings.EntityNamespaceFormatString, FormatProvider, context)));
-        var results = resultSetBuilder.Build();
-
-        var error = Array.Find(results, x => !x.Result.IsSuccessful());
-        if (error is not null)
-        {
-            // Error in formattable string parsing
-            return Result.FromExistingResult<IConcreteTypeBuilder>(error.Result);
-        }
-
-        model
-            .WithName(results.First(x => x.Name == NamedResults.Name).Result.Value!)
-            .WithNamespace(MapNamespace(results.First(x => x.Name == NamedResults.Namespace).Result.Value!));
-
-        return Result.Continue<IConcreteTypeBuilder>();
-    }
-
     public Result<string> GetBuilderPlaceholderProcessorResultForPipelineContext(string value, IFormattableStringParser formattableStringParser, object context, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
     {
         sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
@@ -137,14 +116,14 @@ public abstract class ContextBase<TModel> : ContextBase
                 ? "?"
                 : string.Empty),
             "BuildersNamespace" => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, context.FormatProvider, context),
-            _ => Default(value, context.FormatProvider, formattableStringParser, childContext, sourceModel, pipelinePlaceholderProcessors)
+            _ => Default(value, formattableStringParser, childContext, sourceModel, pipelinePlaceholderProcessors)
         };
 
-        Result<string> Default(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
+        Result<string> Default(string value, IFormattableStringParser formattableStringParser, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
         {
             var pipelinePlaceholderProcessorsArray = pipelinePlaceholderProcessors.ToArray();
-            return pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, formatProvider, new PropertyContext(childContext, Settings, formatProvider, MapTypeName(childContext.TypeName), Settings.BuilderNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+            return pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, context.FormatProvider, new PropertyContext(childContext, Settings, context.FormatProvider, MapTypeName(childContext.TypeName), Settings.BuilderNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, context.FormatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<string>();
         }
     }
