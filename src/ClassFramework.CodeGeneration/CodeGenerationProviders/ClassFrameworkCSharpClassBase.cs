@@ -1,6 +1,4 @@
-﻿using ClassFramework.CodeGeneration.Models.Pipelines;
-
-namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
+﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 #pragma warning disable S125 // Sections of code should not be commented out

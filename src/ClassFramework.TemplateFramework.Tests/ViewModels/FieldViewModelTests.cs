@@ -1,6 +1,4 @@
-﻿using ClassFramework.TemplateFramework.Templates;
-
-namespace ClassFramework.TemplateFramework.Tests.ViewModels;
+﻿namespace ClassFramework.TemplateFramework.Tests.ViewModels;
 
 public class FieldViewModelTests : TestBase<FieldViewModel>
 {
