@@ -8,12 +8,12 @@ public class SetStaticComponentBuilder : IBuilderExtensionComponentBuilder
 
 public class SetStaticComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderExtensionContext>
 {
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         (context.Model as IReferenceTypeBuilder)?.WithStatic();
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 }

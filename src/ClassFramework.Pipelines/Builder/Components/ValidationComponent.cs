@@ -7,7 +7,7 @@ public class ValidationComponentBuilder : IBuilderComponentBuilder
 
 public class ValidationComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
 {
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 

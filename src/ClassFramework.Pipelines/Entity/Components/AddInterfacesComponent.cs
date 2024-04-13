@@ -8,7 +8,7 @@ public class AddInterfacesComponentBuilder : IEntityComponentBuilder
 
 public class AddInterfacesComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
 {
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 

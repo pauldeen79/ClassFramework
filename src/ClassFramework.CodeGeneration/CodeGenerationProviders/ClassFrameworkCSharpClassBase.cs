@@ -29,10 +29,10 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
     //protected override bool AddCopyConstructor => false;
 
     protected TypeBase[] GetPipelineModels()
-        => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.Pipelines");
+        => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.Pipelines").Result;
 
     protected TypeBase[] GetTemplateFrameworkModels()
-        => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework");
+        => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework").Result;
 
     protected override bool SkipNamespaceOnTypenameMappings(string @namespace)
         => @namespace.In($"{CodeGenerationRootNamespace}.Models.Pipelines",

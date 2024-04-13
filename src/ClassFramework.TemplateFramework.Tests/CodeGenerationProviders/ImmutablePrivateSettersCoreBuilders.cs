@@ -6,7 +6,7 @@ public class ImmutablePrivateSettersCoreBuilders : ImmutablePrivateSettersCSharp
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetBuilders(GetCoreModels(), "Test.Domain.Builders", "Test.Domain");
+    public override IEnumerable<TypeBase> Model => GetBuilders(GetCoreModels().Result, "Test.Domain.Builders", "Test.Domain").Result;
 
     public override string Path => "Test.Domain/Builders";
 }

@@ -22,7 +22,7 @@ public class AddDefaultConstructorComponent : IPipelineComponent<IConcreteTypeBu
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -37,13 +37,13 @@ public class AddDefaultConstructorComponent : IPipelineComponent<IConcreteTypeBu
             var defaultConstructorResult = CreateDefaultConstructor(context);
             if (!defaultConstructorResult.IsSuccessful())
             {
-                return Result.FromExistingResult<IConcreteTypeBuilder>(defaultConstructorResult);
+                return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(defaultConstructorResult));
             }
 
             context.Model.AddConstructors(defaultConstructorResult.Value!);
         }
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 
     private Result<ConstructorBuilder> CreateDefaultConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
@@ -90,7 +90,7 @@ public class AddDefaultConstructorComponent : IPipelineComponent<IConcreteTypeBu
 
             ctor.AddStringCodeStatements(defaultValueResults.Select(x => x.Value!));
             
-            var setDefaultValuesMethodNameResult = _formattableStringParser.Parse(context.Context.Settings.SetDefaultValuesMethodName, context.Context.FormatProvider, context);
+            var setDefaultValuesMethodNameResult = _formattableStringParser.Parse(context.Context.Settings.SetDefaultValuesMethodName, context.Context.FormatProvider, context).TryCast<string>();
             if (!setDefaultValuesMethodNameResult.IsSuccessful())
             {
                 return Result.FromExistingResult<ConstructorBuilder>(setDefaultValuesMethodNameResult);
@@ -115,7 +115,7 @@ public class AddDefaultConstructorComponent : IPipelineComponent<IConcreteTypeBu
             "{BuilderMemberName} = {DefaultValue};",
             context.Context.FormatProvider,
             new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
-        );
+        ).TryCast<string>();
 
     private static ConstructorBuilder CreateInheritanceDefaultConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
         => new ConstructorBuilder()

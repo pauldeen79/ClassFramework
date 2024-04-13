@@ -10,8 +10,8 @@ public class OverrideTypeEntities : ClassFrameworkCSharpClassBase
     public override string Path => "ClassFramework.Domain/Types";
 
     protected override bool EnableEntityInheritance => true;
-    protected override Class? BaseClass => CreateBaseclass(typeof(ITypeBase), "ClassFramework.Domain");
+    protected override Class? BaseClass => CreateBaseclass(typeof(ITypeBase), "ClassFramework.Domain").Result;
 
     public override IEnumerable<TypeBase> Model
-        => GetEntities(GetOverrideModels(typeof(ITypeBase)), "ClassFramework.Domain.Types");
+        => GetEntities(GetOverrideModels(typeof(ITypeBase)).Result, "ClassFramework.Domain.Types").Result;
 }

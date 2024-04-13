@@ -6,7 +6,7 @@ public class ObservableCoreEntities : ObservableCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetEntities(GetCoreModels(), "Test.Domain");
+    public override IEnumerable<TypeBase> Model => GetEntities(GetCoreModels().Result, "Test.Domain").Result;
 
     public override string Path => "Test.Domain";
 }

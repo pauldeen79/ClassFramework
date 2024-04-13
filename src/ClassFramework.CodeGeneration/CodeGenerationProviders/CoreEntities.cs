@@ -7,7 +7,7 @@ public class CoreEntities : ClassFrameworkCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetEntities(GetCoreModels(), "ClassFramework.Domain");
+    public override IEnumerable<TypeBase> Model => GetEntities(GetCoreModels().Result, "ClassFramework.Domain").Result;
 
     public override string Path => "ClassFramework.Domain";
 }

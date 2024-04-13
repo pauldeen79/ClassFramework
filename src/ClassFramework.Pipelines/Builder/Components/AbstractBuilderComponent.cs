@@ -22,7 +22,7 @@ public class AbstractBuilderComponent : IPipelineComponent<IConcreteTypeBuilder,
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -31,12 +31,12 @@ public class AbstractBuilderComponent : IPipelineComponent<IConcreteTypeBuilder,
             var nameResult = _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, context);
             if (!nameResult.IsSuccessful())
             {
-                return Result.FromExistingResult<IConcreteTypeBuilder>(nameResult);
+                return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(nameResult));
             }
 
             if (context.Model is not ClassBuilder classBuilder)
             {
-                return Result.Invalid<IConcreteTypeBuilder>($"You can only create abstract classes. The type of model ({context.Model.GetType().FullName}) is not a ClassBuilder");
+                return Task.FromResult(Result.Invalid<IConcreteTypeBuilder>($"You can only create abstract classes. The type of model ({context.Model.GetType().FullName}) is not a ClassBuilder"));
             }
 
             classBuilder.WithAbstract();
@@ -51,6 +51,6 @@ public class AbstractBuilderComponent : IPipelineComponent<IConcreteTypeBuilder,
             }
         }
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 }

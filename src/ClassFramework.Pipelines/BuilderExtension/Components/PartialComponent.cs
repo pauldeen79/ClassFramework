@@ -7,12 +7,12 @@ public class PartialComponentBuilder : IBuilderExtensionComponentBuilder
 
 public class PartialComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderExtensionContext>
 {
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Model.WithPartial(context.Context.Settings.CreateAsPartial);
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 }

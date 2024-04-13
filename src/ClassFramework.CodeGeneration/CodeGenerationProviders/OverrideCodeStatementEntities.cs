@@ -10,8 +10,8 @@ public class OverrideCodeStatementEntities : ClassFrameworkCSharpClassBase
     public override string Path => "ClassFramework.Domain/CodeStatements";
 
     protected override bool EnableEntityInheritance => true;
-    protected override Class? BaseClass => CreateBaseclass(typeof(ICodeStatementBase), "ClassFramework.Domain");
+    protected override Class? BaseClass => CreateBaseclass(typeof(ICodeStatementBase), "ClassFramework.Domain").Result;
 
     public override IEnumerable<TypeBase> Model
-        => GetEntities(GetOverrideModels(typeof(ICodeStatementBase)), "ClassFramework.Domain.CodeStatements");
+        => GetEntities(GetOverrideModels(typeof(ICodeStatementBase)).Result, "ClassFramework.Domain.CodeStatements").Result;
 }
