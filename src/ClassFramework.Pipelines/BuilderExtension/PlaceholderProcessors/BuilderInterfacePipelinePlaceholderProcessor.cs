@@ -17,8 +17,7 @@ public class BuilderInterfacePipelinePlaceholderProcessor : IPlaceholderProcesso
 
         if (context is PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> pipelineContext)
         {
-            return pipelineContext.Context.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formattableStringParser, pipelineContext.Context, pipelineContext.Context.SourceModel,  _pipelinePlaceholderProcessors)
-                .Transform(x => x.ToFormattableStringParserResult());
+            return pipelineContext.Context.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formattableStringParser, pipelineContext.Context, pipelineContext.Context.SourceModel,  _pipelinePlaceholderProcessors);
         }
 
         if (context is ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext>, Property> parentChildContext)
@@ -28,8 +27,7 @@ public class BuilderInterfacePipelinePlaceholderProcessor : IPlaceholderProcesso
                 return Result.Success("instance.".ToFormattableStringParserResult());
             }
 
-            return parentChildContext.ParentContext.Context.GetBuilderPlaceholderProcessorResultForParentChildContext(value, formattableStringParser, parentChildContext.ParentContext.Context, parentChildContext.ParentContext.Context.SourceModel, parentChildContext.ChildContext, parentChildContext.ParentContext.Context.SourceModel, _pipelinePlaceholderProcessors)
-                .Transform(x => x.ToFormattableStringParserResult());
+            return parentChildContext.ParentContext.Context.GetBuilderPlaceholderProcessorResultForParentChildContext(value, formattableStringParser, parentChildContext.ParentContext.Context, parentChildContext.ParentContext.Context.SourceModel, parentChildContext.ChildContext, parentChildContext.ParentContext.Context.SourceModel, _pipelinePlaceholderProcessors);
         }
 
         return Result.Continue<FormattableStringParserResult>();

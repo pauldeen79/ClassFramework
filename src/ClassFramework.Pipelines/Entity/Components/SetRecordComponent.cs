@@ -8,7 +8,7 @@ public class SetRecordComponentBuilder : IEntityComponentBuilder
 
 public class SetRecordComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

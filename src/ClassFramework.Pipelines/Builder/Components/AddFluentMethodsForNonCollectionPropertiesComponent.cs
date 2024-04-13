@@ -41,14 +41,14 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComp
             if (error is not null)
             {
                 // Error in formattable string parsing
-                return Result.FromExistingResult<IConcreteTypeBuilder>(error.Result);
+                return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(error.Result));
             }
 
             var builder = new MethodBuilder()
                 .WithName(results.First(x => x.Name == "MethodName").Result.Value!)
                 .WithReturnTypeName(context.Context.IsBuilderForAbstractEntity
                       ? $"TBuilder{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
-                      : $"{results.First(x => x.Name == "Namespace").Result.Value.AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+                      : $"{results.First(x => x.Name == "Namespace").Result.Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
                 .AddParameters(context.Context.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!));
 
             context.Context.AddNullChecks(builder, results);

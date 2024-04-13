@@ -2,25 +2,25 @@
 
 public class TypeBaseProcessor : IPipelinePlaceholderProcessor
 {
-    public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         if (context is not PipelineContext<IType> pipelineContext)
         {
-            return Result.Continue<string>();
+            return Result.Continue<FormattableStringParserResult>();
         }
 
         return value switch
         {
-            nameof(IType.Name) or $"Class.{nameof(IType.Name)}" => Result.Success(pipelineContext.Model.Name),
-            $"{nameof(IType.Name)}Lower" or $"Class.{nameof(IType.Name)}Lower" => Result.Success(pipelineContext.Model.Name.ToLower(formatProvider.ToCultureInfo())),
-            $"{nameof(IType.Name)}Upper" or $"Class.{nameof(IType.Name)}Upper" => Result.Success(pipelineContext.Model.Name.ToUpper(formatProvider.ToCultureInfo())),
-            $"{nameof(IType.Name)}Pascal" or $"Class.{nameof(IType.Name)}Pascal" => Result.Success(pipelineContext.Model.Name.ToPascalCase(formatProvider.ToCultureInfo())),
-            $"{nameof(IType.Namespace)}" or $"Class.{nameof(IType.Namespace)}" => Result.Success(pipelineContext.Model.Namespace),
-            $"FullName" or "Class.FullName" => Result.Success(pipelineContext.Model.GetFullName()),
-            $"{nameof(IType.Name)}NoInterfacePrefix" or $"Class.{nameof(IType.Name)}NoInterfacePrefix" => Result.Success(pipelineContext.Model.WithoutInterfacePrefix()),
-            "GenericArgumentsWithBrackets" or "Class.GenericArgumentsWithBrackets" => Result.Success(pipelineContext.Model.GetGenericTypeArgumentsString(addBrackets: true)),
-            "GenericArgumentsWithoutBrackets" or "Class.GenericArgumentsWithoutBrackets" => Result.Success(pipelineContext.Model.GetGenericTypeArgumentsString(addBrackets: false)),
-            _ => Result.Continue<string>()
+            nameof(IType.Name) or $"Class.{nameof(IType.Name)}" => Result.Success(pipelineContext.Model.Name.ToFormattableStringParserResult()),
+            $"{nameof(IType.Name)}Lower" or $"Class.{nameof(IType.Name)}Lower" => Result.Success(pipelineContext.Model.Name.ToLower(formatProvider.ToCultureInfo()).ToFormattableStringParserResult()),
+            $"{nameof(IType.Name)}Upper" or $"Class.{nameof(IType.Name)}Upper" => Result.Success(pipelineContext.Model.Name.ToUpper(formatProvider.ToCultureInfo()).ToFormattableStringParserResult()),
+            $"{nameof(IType.Name)}Pascal" or $"Class.{nameof(IType.Name)}Pascal" => Result.Success(pipelineContext.Model.Name.ToPascalCase(formatProvider.ToCultureInfo()).ToFormattableStringParserResult()),
+            $"{nameof(IType.Namespace)}" or $"Class.{nameof(IType.Namespace)}" => Result.Success(pipelineContext.Model.Namespace.ToFormattableStringParserResult()),
+            $"FullName" or "Class.FullName" => Result.Success(pipelineContext.Model.GetFullName().ToFormattableStringParserResult()),
+            $"{nameof(IType.Name)}NoInterfacePrefix" or $"Class.{nameof(IType.Name)}NoInterfacePrefix" => Result.Success(pipelineContext.Model.WithoutInterfacePrefix().ToFormattableStringParserResult()),
+            "GenericArgumentsWithBrackets" or "Class.GenericArgumentsWithBrackets" => Result.Success(pipelineContext.Model.GetGenericTypeArgumentsString(addBrackets: true).ToFormattableStringParserResult()),
+            "GenericArgumentsWithoutBrackets" or "Class.GenericArgumentsWithoutBrackets" => Result.Success(pipelineContext.Model.GetGenericTypeArgumentsString(addBrackets: false).ToFormattableStringParserResult()),
+            _ => Result.Continue<FormattableStringParserResult>()
         };
     }
 }

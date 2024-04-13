@@ -8,19 +8,19 @@ public class AddAttributesComponentBuilder : IInterfaceComponentBuilder
 
 public class AddAttributesComponent : IPipelineComponent<InterfaceBuilder, InterfaceContext>
 {
-    public Result<InterfaceBuilder> Process(PipelineContext<InterfaceBuilder, InterfaceContext> context)
+    public Task<Result<InterfaceBuilder>> Process(PipelineContext<InterfaceBuilder, InterfaceContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.CopyAttributes)
         {
-            return Result.Continue<InterfaceBuilder>();
+            return Task.FromResult(Result.Continue<InterfaceBuilder>());
         }
 
         context.Model.AddAttributes(context.Context.SourceModel.Attributes
             .Where(x => context.Context.Settings.CopyAttributePredicate?.Invoke(x) ?? true)
             .Select(x => context.Context.MapAttribute(x).ToBuilder()));
 
-        return Result.Continue<InterfaceBuilder>();
+        return Task.FromResult(Result.Continue<InterfaceBuilder>());
     }
 }

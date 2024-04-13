@@ -26,9 +26,9 @@ public class SetNameComponent : IPipelineComponent<IConcreteTypeBuilder, Builder
     {
         context = context.IsNotNull(nameof(context));
 
-        var resultSetBuilder = new NamedResultSetBuilder<string>();
-        resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNameFormatString, context.Context.FormatProvider, context).TryCast<string>());
-        resultSetBuilder.Add(NamedResults.Namespace, () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNamespaceFormatString, context.Context.FormatProvider, context).TryCast<string>());
+        var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
+        resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNameFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add(NamedResults.Namespace, () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNamespaceFormatString, context.Context.FormatProvider, context));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());

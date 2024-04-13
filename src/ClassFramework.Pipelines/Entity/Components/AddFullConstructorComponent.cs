@@ -34,7 +34,7 @@ public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuild
         var ctorResult = CreateEntityConstructor(context);
         if (!ctorResult.IsSuccessful())
         {
-            return Result.FromExistingResult<IConcreteTypeBuilder>(ctorResult);
+            return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(ctorResult));
         }
 
         context.Model.AddConstructors(ctorResult.Value!);
@@ -71,7 +71,7 @@ public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuild
                     .Where(property => context.Context.Settings.AddNullChecks && context.Context.Settings.AddValidationCode() == ArgumentValidationType.None && context.Context.GetMappingMetadata(property.TypeName).GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
                     .Select(property => context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
-            .AddStringCodeStatements(initializationResults.Select(x => x.Value!))
+            .AddStringCodeStatements(initializationResults.Select(x => x.Value!.ToString()))
             .AddStringCodeStatements(context.Context.CreateEntityValidationCode())
             .WithChainCall(context.CreateEntityChainCall()));
     }

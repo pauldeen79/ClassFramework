@@ -8,13 +8,13 @@ public class AddPropertiesComponentBuilder : IReflectionComponentBuilder
 
 public class AddPropertiesComponent : IPipelineComponent<TypeBaseBuilder, ReflectionContext>
 {
-    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
+    public Task<Result<TypeBaseBuilder>> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Model.AddProperties(GetProperties(context));
 
-        return Result.Continue<TypeBaseBuilder>();
+        return Task.FromResult(Result.Continue<TypeBaseBuilder>());
     }
 
     private static IEnumerable<PropertyBuilder> GetProperties(PipelineContext<TypeBaseBuilder, ReflectionContext> context)

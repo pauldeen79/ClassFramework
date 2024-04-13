@@ -8,19 +8,19 @@ public class AddConstructorsComponentBuilder : IReflectionComponentBuilder
 
 public class AddConstructorsComponent : IPipelineComponent<TypeBaseBuilder, ReflectionContext>
 {
-    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
+    public Task<Result<TypeBaseBuilder>> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.CreateConstructors
             || context.Model is not IConstructorsContainerBuilder constructorsContainerBuilder)
         {
-            return Result.Continue<TypeBaseBuilder>();
+            return Task.FromResult(Result.Continue<TypeBaseBuilder>());
         }
 
         constructorsContainerBuilder.AddConstructors(GetConstructors(context));
 
-        return Result.Continue<TypeBaseBuilder>();
+        return Task.FromResult(Result.Continue<TypeBaseBuilder>());
     }
 
     private static IEnumerable<ConstructorBuilder> GetConstructors(PipelineContext<TypeBaseBuilder, ReflectionContext> context)

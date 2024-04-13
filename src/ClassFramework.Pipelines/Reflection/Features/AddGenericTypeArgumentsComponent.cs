@@ -8,12 +8,12 @@ public class AddGenericTypeArgumentsComponentBuilder : IReflectionComponentBuild
 
 public class AddGenericTypeArgumentsComponent : IPipelineComponent<TypeBaseBuilder, ReflectionContext>
 {
-    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
+    public Task<Result<TypeBaseBuilder>> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Model.AddGenericTypeArguments(context.Context.SourceModel.GetGenericTypeArgumentTypeNames());
 
-        return Result.Continue<TypeBaseBuilder>();
+        return Task.FromResult(Result.Continue<TypeBaseBuilder>());
     }
 }

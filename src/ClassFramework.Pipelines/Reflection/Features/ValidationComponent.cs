@@ -7,16 +7,16 @@ public class ValidationComponentBuilder : IReflectionComponentBuilder
 
 public class ValidationComponent : IPipelineComponent<TypeBaseBuilder, ReflectionContext>
 {
-    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
+    public Task<Result<TypeBaseBuilder>> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.AllowGenerationWithoutProperties
             && context.Context.SourceModel.GetProperties().Length == 0)
         {
-            return Result.Invalid<TypeBaseBuilder>("To create a class, there must be at least one property");
+            return Task.FromResult(Result.Invalid<TypeBaseBuilder>("To create a class, there must be at least one property"));
         }
         
-        return Result.Continue<TypeBaseBuilder>();
+        return Task.FromResult(Result.Continue<TypeBaseBuilder>());
     }
 }

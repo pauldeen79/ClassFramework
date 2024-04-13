@@ -29,7 +29,7 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
         var baseClassResult = GetBuilderBaseClass(context.Context.SourceModel, context);
         if (!baseClassResult.IsSuccessful())
         {
-            return Result.FromExistingResult<IConcreteTypeBuilder>(baseClassResult);
+            return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(baseClassResult));
         }
 
         context.Model.WithBaseClass(baseClassResult.Value!);
@@ -52,7 +52,10 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
             && !context.Context.Settings.IsForAbstractBuilder
             && context.Context.Settings.IsAbstract;
 
-        var nameResult = _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, context);
+        var nameResult = _formattableStringParser
+            .Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, context)
+            .TryCast<string>();
+
         if (!nameResult.IsSuccessful())
         {
             return nameResult;
@@ -73,7 +76,7 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
                 context.Context.Settings.BuilderNameFormatString,
                 context.Context.FormatProvider,
                 new PipelineContext<IConcreteTypeBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))
-            );
+            ).TryCast<string>();
             if (!inheritanceNameResult.IsSuccessful())
             {
                 return inheritanceNameResult;
@@ -108,7 +111,9 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
             new BuilderContext(CreateTypeBase(context.Context.MapTypeName(baseClassContainer.BaseClass!)), context.Context.Settings, context.Context.FormatProvider)
         );
 
-        return _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, newContext);
+        return _formattableStringParser
+            .Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, newContext)
+            .TryCast<string>();
     }
 
     private static TypeBase CreateTypeBase(string baseClass)

@@ -33,7 +33,7 @@ public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, B
 
         foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
         {
-            var resultSetBuilder = new NamedResultSetBuilder<string>();
+            var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
             resultSetBuilder.Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(context.Context, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser));
             resultSetBuilder.Add(NamedResults.ParentTypeName, () => property.GetBuilderParentTypeName(context, _formattableStringParser));
             var results = resultSetBuilder.Build();
@@ -42,12 +42,12 @@ public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, B
             if (error is not null)
             {
                 // Error in formattable string parsing
-                return Result.FromExistingResult<IConcreteTypeBuilder>(error.Result);
+                return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(error.Result));
             }
 
             context.Model.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
-                .WithTypeName(results.First(x => x.Name == NamedResults.TypeName).Result.Value!
+                .WithTypeName(results.First(x => x.Name == NamedResults.TypeName).Result.Value!.ToString()
                     .FixCollectionTypeName(context.Context.Settings.BuilderNewCollectionTypeName)
                     .FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)

@@ -8,7 +8,7 @@ public class SetVisibilityComponentBuilder : IReflectionComponentBuilder
 
 public class SetVisibilityComponent : IPipelineComponent<TypeBaseBuilder, ReflectionContext>
 {
-    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
+    public Task<Result<TypeBaseBuilder>> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -23,6 +23,6 @@ public class SetVisibilityComponent : IPipelineComponent<TypeBaseBuilder, Reflec
                 : Visibility.Private);
         }
 
-        return Result.Continue<TypeBaseBuilder>();
+        return Task.FromResult(Result.Continue<TypeBaseBuilder>());
     }
 }

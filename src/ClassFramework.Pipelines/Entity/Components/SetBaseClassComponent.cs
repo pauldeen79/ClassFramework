@@ -2,27 +2,13 @@
 
 public class SetBaseClassComponentBuilder : IEntityComponentBuilder
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-
-    public SetBaseClassComponentBuilder(IFormattableStringParser formattableStringParser)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-    }
-
     public IPipelineComponent<IConcreteTypeBuilder, EntityContext> Build()
-        => new SetBaseClassComponent(_formattableStringParser);
+        => new SetBaseClassComponent();
 }
 
 public class SetBaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-
-    public SetBaseClassComponent(IFormattableStringParser formattableStringParser)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-    }
-
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

@@ -8,13 +8,13 @@ public class AddInterfacesComponentBuilder : IInterfaceComponentBuilder
 
 public class AddInterfacesComponent : IPipelineComponent<InterfaceBuilder, InterfaceContext>
 {
-    public Result<InterfaceBuilder> Process(PipelineContext<InterfaceBuilder, InterfaceContext> context)
+    public Task<Result<InterfaceBuilder>> Process(PipelineContext<InterfaceBuilder, InterfaceContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.CopyInterfaces)
         {
-            return Result.Continue<InterfaceBuilder>();
+            return Task.FromResult(Result.Continue<InterfaceBuilder>());
         }
 
         context.Model.AddInterfaces(context.Context.SourceModel.Interfaces
@@ -22,6 +22,6 @@ public class AddInterfacesComponent : IPipelineComponent<InterfaceBuilder, Inter
             .Select(x => context.Context.MapTypeName(x.FixTypeName()))
             .Where(x => !string.IsNullOrEmpty(x)));
 
-        return Result.Continue<InterfaceBuilder>();
+        return Task.FromResult(Result.Continue<InterfaceBuilder>());
     }
 }

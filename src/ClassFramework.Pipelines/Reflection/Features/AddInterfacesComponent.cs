@@ -8,13 +8,13 @@ public class AddInterfacesComponentBuilder : IReflectionComponentBuilder
 
 public class AddInterfacesComponent : IPipelineComponent<TypeBaseBuilder, ReflectionContext>
 {
-    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
+    public Task<Result<TypeBaseBuilder>> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.CopyInterfaces)
         {
-            return Result.Continue<TypeBaseBuilder>();
+            return Task.FromResult(Result.Continue<TypeBaseBuilder>());
         }
 
         context.Model.AddInterfaces(
@@ -25,6 +25,6 @@ public class AddInterfacesComponent : IPipelineComponent<TypeBaseBuilder, Reflec
                 .Select(x => context.Context.MapTypeName(x))
         );
 
-        return Result.Continue<TypeBaseBuilder>();
+        return Task.FromResult(Result.Continue<TypeBaseBuilder>());
     }
 }

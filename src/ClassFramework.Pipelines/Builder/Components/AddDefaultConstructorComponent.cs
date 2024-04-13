@@ -88,18 +88,22 @@ public class AddDefaultConstructorComponent : IPipelineComponent<IConcreteTypeBu
                 return Result.FromExistingResult<ConstructorBuilder>(defaultValueErrorResult);
             }
 
-            ctor.AddStringCodeStatements(defaultValueResults.Select(x => x.Value!));
+            ctor.AddStringCodeStatements(defaultValueResults.Select(x => x.Value!.ToString()));
             
-            var setDefaultValuesMethodNameResult = _formattableStringParser.Parse(context.Context.Settings.SetDefaultValuesMethodName, context.Context.FormatProvider, context).TryCast<string>();
+            var setDefaultValuesMethodNameResult = _formattableStringParser.Parse(context.Context.Settings.SetDefaultValuesMethodName, context.Context.FormatProvider, context);
             if (!setDefaultValuesMethodNameResult.IsSuccessful())
             {
                 return Result.FromExistingResult<ConstructorBuilder>(setDefaultValuesMethodNameResult);
             }
             
-            if (!string.IsNullOrEmpty(setDefaultValuesMethodNameResult.Value))
+            if (!string.IsNullOrEmpty(setDefaultValuesMethodNameResult.Value!.ToString()))
             {
                 ctor.AddStringCodeStatements($"{setDefaultValuesMethodNameResult.Value}();");
-                context.Model.AddMethods(new MethodBuilder().WithName(setDefaultValuesMethodNameResult.Value!).WithPartial().WithVisibility(Visibility.Private));
+                context.Model.AddMethods(new MethodBuilder()
+                    .WithName(setDefaultValuesMethodNameResult.Value)
+                    .WithPartial()
+                    .WithVisibility(Visibility.Private)
+                    );
             }
         }
 
@@ -109,13 +113,13 @@ public class AddDefaultConstructorComponent : IPipelineComponent<IConcreteTypeBu
     private static string CreateBuilderClassConstructorChainCall(IType instance, PipelineSettings settings)
         => instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success("base()")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
-    private Result<string> GenerateDefaultValueStatement(Property property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    private Result<FormattableStringParserResult> GenerateDefaultValueStatement(Property property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
         => _formattableStringParser.Parse
         (
             "{BuilderMemberName} = {DefaultValue};",
             context.Context.FormatProvider,
             new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
-        ).TryCast<string>();
+        );
 
     private static ConstructorBuilder CreateInheritanceDefaultConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
         => new ConstructorBuilder()

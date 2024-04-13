@@ -11,7 +11,7 @@ public class ReflectionPipelinePlaceholderProcessor : IPlaceholderProcessor
 
     public int Order => 20;
 
-    public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
@@ -25,21 +25,21 @@ public class ReflectionPipelinePlaceholderProcessor : IPlaceholderProcessor
             return GetResultForParentChildContext(value, formatProvider, formattableStringParser, parentChildContext);
         }
 
-        return Result.Continue<string>();
+        return Result.Continue<FormattableStringParserResult>();
     }
 
-    private Result<string> GetResultForPipelineContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, PipelineContext<TypeBaseBuilder, ReflectionContext> pipelineContext)
+    private Result<FormattableStringParserResult> GetResultForPipelineContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, PipelineContext<TypeBaseBuilder, ReflectionContext> pipelineContext)
         => value switch
         {
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<Type>(pipelineContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Continue<string>()
+                ?? Result.Continue<FormattableStringParserResult>()
         };
 
-    private Result<string> GetResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, ParentChildContext<PipelineContext<TypeBaseBuilder, ReflectionContext>, Property> parentChildContext)
+    private Result<FormattableStringParserResult> GetResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, ParentChildContext<PipelineContext<TypeBaseBuilder, ReflectionContext>, Property> parentChildContext)
         => value switch
         {
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PropertyContext(parentChildContext.ChildContext, parentChildContext.Settings, formatProvider, parentChildContext.ParentContext.Context.MapTypeName(parentChildContext.ChildContext.TypeName), parentChildContext.Settings.EntityNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<Type>(parentChildContext.ParentContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Continue<string>()
+                ?? Result.Continue<FormattableStringParserResult>()
         };
 }
