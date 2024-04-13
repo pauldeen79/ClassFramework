@@ -13,6 +13,6 @@ public class PartialComponent : IPipelineComponent<IConcreteTypeBuilder, EntityC
 
         context.Model.WithPartial(context.Context.Settings.CreateAsPartial);
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 }

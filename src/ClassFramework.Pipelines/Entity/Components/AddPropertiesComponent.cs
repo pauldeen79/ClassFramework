@@ -8,7 +8,7 @@ public class AddPropertiesComponentBuilder : IEntityComponentBuilder
 
 public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -42,7 +42,7 @@ public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, E
             AddBackingFields(context, properties);
         }
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 
     private static void AddBackingFields(PipelineContext<IConcreteTypeBuilder, EntityContext> context, Property[] properties)

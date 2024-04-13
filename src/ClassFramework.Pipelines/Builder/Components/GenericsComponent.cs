@@ -8,13 +8,13 @@ public class GenericsComponentBuilder : IBuilderComponentBuilder
 
 public class GenericsComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Model.AddGenericTypeArguments(context.Context.SourceModel.GenericTypeArguments);
         context.Model.AddGenericTypeArgumentConstraints(context.Context.SourceModel.GenericTypeArgumentConstraints);
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 }

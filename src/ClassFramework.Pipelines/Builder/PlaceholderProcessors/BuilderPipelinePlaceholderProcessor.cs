@@ -11,25 +11,25 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
 
     public int Order => 20;
 
-    public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
         if (context is PipelineContext<IConcreteTypeBuilder, BuilderContext> pipelineContext)
         {
-            return pipelineContext.Context.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formattableStringParser, pipelineContext, pipelineContext.Context.SourceModel, _pipelinePlaceholderProcessors);
+            return pipelineContext.Context.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formattableStringParser, pipelineContext, pipelineContext.Context.SourceModel, _pipelinePlaceholderProcessors).Transform(x => x.ToFormattableStringParserResult());
         }
 
         if (context is ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property> parentChildContext)
         {
             if (value == "InstancePrefix")
             {
-                return Result.Success(string.Empty);
+                return Result.Success(string.Empty.ToFormattableStringParserResult());
             }
 
-            return parentChildContext.ParentContext.Context.GetBuilderPlaceholderProcessorResultForParentChildContext(value, formattableStringParser, parentChildContext.ParentContext.Context, parentChildContext.ParentContext.Context.SourceModel, parentChildContext.ChildContext, parentChildContext.ParentContext.Context.SourceModel, _pipelinePlaceholderProcessors);
+            return parentChildContext.ParentContext.Context.GetBuilderPlaceholderProcessorResultForParentChildContext(value, formattableStringParser, parentChildContext.ParentContext.Context, parentChildContext.ParentContext.Context.SourceModel, parentChildContext.ChildContext, parentChildContext.ParentContext.Context.SourceModel, _pipelinePlaceholderProcessors).Transform(x => x.ToFormattableStringParserResult());
         }
 
-        return Result.Continue<string>();
+        return Result.Continue<FormattableStringParserResult>();
     }
 }

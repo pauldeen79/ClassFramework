@@ -22,13 +22,13 @@ public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, B
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (context.Context.IsAbstractBuilder)
         {
-            return Result.Continue<IConcreteTypeBuilder>();
+            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
 
         foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
@@ -68,7 +68,7 @@ public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, B
             .GetBuilderClassFields(context, _formattableStringParser)
             .Select(x => x.GetValueOrThrow()));
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, BuilderContext context)

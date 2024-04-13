@@ -18,6 +18,6 @@ public class ValidationComponent : IPipelineComponent<IConcreteTypeBuilder, Enti
             return Result.Invalid<IConcreteTypeBuilder>("To create an entity class, there must be at least one property");
         }
         
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 }

@@ -22,13 +22,13 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComp
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (string.IsNullOrEmpty(context.Context.Settings.SetMethodNameFormatString))
         {
-            return Result.Continue<IConcreteTypeBuilder>();
+            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
 
         foreach (var property in context.Context.GetSourceProperties().Where(x => context.Context.IsValidForFluentMethod(x) && !x.TypeName.FixTypeName().IsCollectionTypeName()))
@@ -62,6 +62,6 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComp
             context.Model.AddMethods(builder);
         }
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 }

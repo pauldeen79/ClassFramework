@@ -22,7 +22,7 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -34,7 +34,7 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
 
         context.Model.WithBaseClass(baseClassResult.Value!);
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 
     private Result<string> GetBuilderBaseClass(IType instance, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)

@@ -8,12 +8,12 @@ public class AddAttributesComponentBuilder : IEntityComponentBuilder
 
 public class AddAttributesComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Model.AddAttributes(context.Context.GetAtributes(context.Context.SourceModel.Attributes));
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 }

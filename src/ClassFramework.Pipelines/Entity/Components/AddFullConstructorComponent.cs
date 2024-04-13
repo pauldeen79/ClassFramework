@@ -1,6 +1,4 @@
-﻿using System.Runtime;
-
-namespace ClassFramework.Pipelines.Entity.Features;
+﻿namespace ClassFramework.Pipelines.Entity.Features;
 
 public class AddFullConstructorComponentBuilder : IEntityComponentBuilder
 {
@@ -24,13 +22,13 @@ public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuild
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.AddFullConstructor)
         {
-            return Result.Continue<IConcreteTypeBuilder>();
+            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
 
         var ctorResult = CreateEntityConstructor(context);
@@ -46,7 +44,7 @@ public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuild
             context.Model.AddMethods(new MethodBuilder().WithName("Validate").WithPartial().WithVisibility(Visibility.Private));
         }
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 
     private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<IConcreteTypeBuilder, EntityContext> context)

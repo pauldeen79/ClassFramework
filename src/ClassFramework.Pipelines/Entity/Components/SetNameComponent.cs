@@ -42,6 +42,6 @@ public class SetNameComponent : IPipelineComponent<IConcreteTypeBuilder, EntityC
             .WithName(results.First(x => x.Name == NamedResults.Name).Result.Value!)
             .WithNamespace(context.Context.MapNamespace(results.First(x => x.Name == NamedResults.Namespace).Result.Value!));
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 }

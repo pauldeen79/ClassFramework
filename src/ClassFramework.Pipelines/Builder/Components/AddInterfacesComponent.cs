@@ -22,13 +22,13 @@ public class AddInterfacesComponent : IPipelineComponent<IConcreteTypeBuilder, B
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.CopyInterfaces)
         {
-            return Result.Continue<IConcreteTypeBuilder>();
+            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
 
         var results = context.Context.SourceModel.Interfaces
@@ -64,6 +64,6 @@ public class AddInterfacesComponent : IPipelineComponent<IConcreteTypeBuilder, B
 
         context.Model.AddInterfaces(results.Where(x => !string.IsNullOrEmpty(x.Value)).Select(x => x.Value!));
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 }
