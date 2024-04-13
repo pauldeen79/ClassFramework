@@ -12,11 +12,12 @@
 
   <ItemGroup>
     <PackageReference Include="CsharpExpressionDumper.Abstractions" Version="1.5.2" />
-    <PackageReference Include="pauldeen79.CrossCutting.ProcessingPipeline" Version="5.0.1" />
-    <PackageReference Include="pauldeen79.CrossCutting.Utilities.Parsers" Version="4.0.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\CrossCutting\src\CrossCutting.ProcessingPipeline\CrossCutting.ProcessingPipeline.csproj" />
+    <ProjectReference Include="..\..\..\CrossCutting\src\CrossCutting.Utilities.Parsers\CrossCutting.Utilities.Parsers.csproj" />
     <ProjectReference Include="..\ClassFramework.Domain\ClassFramework.Domain.csproj" />
   </ItemGroup>
 
