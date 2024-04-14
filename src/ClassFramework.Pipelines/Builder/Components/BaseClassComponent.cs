@@ -54,7 +54,7 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
 
         var nameResult = _formattableStringParser
             .Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, context)
-            .TryCast<string>();
+            .TransformValue(x => x.ToString());
 
         if (!nameResult.IsSuccessful())
         {
@@ -76,7 +76,7 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
                 context.Context.Settings.BuilderNameFormatString,
                 context.Context.FormatProvider,
                 new PipelineContext<IConcreteTypeBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))
-            ).TryCast<string>();
+            ).TransformValue(x => x.ToString());
             if (!inheritanceNameResult.IsSuccessful())
             {
                 return inheritanceNameResult;
@@ -113,7 +113,7 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
 
         return _formattableStringParser
             .Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, newContext)
-            .TryCast<string>();
+            .TransformValue(x => x.ToString());
     }
 
     private static TypeBase CreateTypeBase(string baseClass)

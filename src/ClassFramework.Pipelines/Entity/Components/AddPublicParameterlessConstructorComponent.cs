@@ -68,5 +68,5 @@ public class AddPublicParameterlessConstructorComponent : IPipelineComponent<ICo
                 : "{EntityMemberName} = {DefaultValue};",
             context.Context.FormatProvider,
             new ParentChildContext<PipelineContext<IConcreteTypeBuilder, EntityContext>, Property>(context, property, context.Context.Settings)
-        ).TryCast<string>();
+        ).TransformValue(x => x.ToString());
 }

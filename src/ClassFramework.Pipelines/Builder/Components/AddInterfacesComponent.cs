@@ -49,7 +49,7 @@ public class AddInterfacesComponent : IPipelineComponent<IConcreteTypeBuilder, B
                         newFullName,
                         context.Context.FormatProvider,
                         new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
-                    ).TryCast<string>();
+                    ).TransformValue(x => x.ToString());
                 }
                 return Result.Success(context.Context.MapTypeName(x.FixTypeName()));
             })
