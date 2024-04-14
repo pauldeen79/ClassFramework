@@ -5,18 +5,18 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Featu
     public class Process : AddConstructorsComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Does_Not_Add_Constructors_When_CreateConstructors_Is_Set_To_False()
+        public async Task Does_Not_Add_Constructors_When_CreateConstructors_Is_Set_To_False()
         {
             // Arrange
             var sut = CreateSut();
@@ -26,7 +26,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Featu
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -34,7 +34,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Featu
         }
 
         [Fact]
-        public void Does_Not_Add_Constructors_When_SourceModel_Is_Of_Type_Interface()
+        public async Task Does_Not_Add_Constructors_When_SourceModel_Is_Of_Type_Interface()
         {
             // Arrange
             var sut = CreateSut();
@@ -44,7 +44,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Featu
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -52,7 +52,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Featu
         }
 
         [Fact]
-        public void Adds_Constructors_When_CreateConstructors_Is_Set_To_True_And_SourceModel_Has_Constructors()
+        public async Task Adds_Constructors_When_CreateConstructors_Is_Set_To_True_And_SourceModel_Has_Constructors()
         {
             // Arrange
             var sut = CreateSut();
@@ -62,7 +62,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Featu
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

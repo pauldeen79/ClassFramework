@@ -6,18 +6,18 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Feature
     public class Process : AddAttributesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Adds_Attributes_When_CopyAttributePredicate_Setting_Is_Not_Null_And_CopyAttributes_Is_True()
+        public async Task Adds_Attributes_When_CopyAttributePredicate_Setting_Is_Not_Null_And_CopyAttributes_Is_True()
         {
             // Arrange
             var sourceModel = GetType();
@@ -27,7 +27,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Feature
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -35,7 +35,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Feature
         }
 
         [Fact]
-        public void Adds_Attributes_When_CopyAttributePredicate_Setting_Is_Null_And_CopyAttributes_Is_True()
+        public async Task Adds_Attributes_When_CopyAttributePredicate_Setting_Is_Null_And_CopyAttributes_Is_True()
         {
             // Arrange
             var sourceModel = GetType();
@@ -45,7 +45,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Feature
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -53,7 +53,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Feature
         }
 
         [Fact]
-        public void Does_Not_Copy_Attributes_When_CopyAttributes_Is_False()
+        public async Task Does_Not_Copy_Attributes_When_CopyAttributes_Is_False()
         {
             // Arrange
             var sourceModel = GetType();
@@ -63,7 +63,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Feature
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

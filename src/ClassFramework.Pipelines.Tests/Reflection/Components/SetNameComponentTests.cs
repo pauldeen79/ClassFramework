@@ -5,18 +5,18 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetN
     public class Process : SetNameComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Sets_Name_Property()
+        public async Task Sets_Name_Property()
         {
             // Arrange
             var sourceModel = typeof(MyClass);
@@ -27,7 +27,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetN
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -35,7 +35,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetN
         }
 
         [Fact]
-        public void Sets_Namespace_Property()
+        public async Task Sets_Namespace_Property()
         {
             // Arrange
             var sourceModel = typeof(MyClass);
@@ -46,7 +46,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetN
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -54,7 +54,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetN
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
+        public async Task Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
         {
             // Arrange
             var sourceModel = typeof(MyClass);
@@ -65,7 +65,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetN
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -73,7 +73,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetN
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_BuilderNameSpaceFormatString_Is_Not_Succesful()
+        public async Task Returns_Error_When_Parsing_BuilderNameSpaceFormatString_Is_Not_Succesful()
         {
             // Arrange
             var sourceModel = typeof(MyClass);
@@ -84,7 +84,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetN
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
