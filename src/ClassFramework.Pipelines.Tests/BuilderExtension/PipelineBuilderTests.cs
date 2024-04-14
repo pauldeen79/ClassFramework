@@ -20,13 +20,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         private ClassBuilder Model { get; } = new();
 
         [Fact]
-        public void Sets_Partial()
+        public async Task Sets_Partial()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -35,13 +35,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Adds_Fluent_Method_For_NonCollection_Property()
+        public async Task Adds_Fluent_Method_For_NonCollection_Property()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -56,13 +56,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Adds_Fluent_Method_For_Collection_Property()
+        public async Task Adds_Fluent_Method_For_Collection_Property()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -81,13 +81,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
+        public async Task Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext(addProperties: false));
+            var result = await sut.Process(Model, CreateContext(addProperties: false));
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);

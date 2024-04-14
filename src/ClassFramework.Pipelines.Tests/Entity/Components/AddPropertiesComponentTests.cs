@@ -5,18 +5,18 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
     public class Process : AddPropertiesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Adds_Properties_From_SourceModel()
+        public async Task Adds_Properties_From_SourceModel()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -26,7 +26,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -34,7 +34,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
         }
 
         [Fact]
-        public void Maps_TypeNames_Correctly()
+        public async Task Maps_TypeNames_Correctly()
         {
             // Arrange
             var sourceModel = CreateModelWithCustomTypeProperties();
@@ -44,7 +44,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -64,7 +64,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void Adds_Setters_When_Specified_In_Settings(bool addSetters)
+        public async Task Adds_Setters_When_Specified_In_Settings(bool addSetters)
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -74,7 +74,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -86,7 +86,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
         [InlineData(SubVisibility.Public)]
         [InlineData(SubVisibility.Internal)]
         [InlineData(SubVisibility.Private)]
-        public void Sets_SetterVisibility_From_Settings(SubVisibility setterVisibility)
+        public async Task Sets_SetterVisibility_From_Settings(SubVisibility setterVisibility)
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -96,7 +96,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -104,7 +104,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
         }
 
         [Fact]
-        public void Adds_Mapped_And_Filtered_Attributes_According_To_Settings()
+        public async Task Adds_Mapped_And_Filtered_Attributes_According_To_Settings()
         {
             // Arrange
             var sourceModel = new ClassBuilder()
@@ -125,7 +125,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -133,7 +133,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
         }
 
         [Fact]
-        public void Does_Not_Add_Fields_When_AddBackingFields_Is_False()
+        public async Task Does_Not_Add_Fields_When_AddBackingFields_Is_False()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -143,7 +143,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -151,7 +151,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
         }
 
         [Fact]
-        public void Does_Not_Add_Property_GetterCodeStatements_When_AddBackingFields_Is_False()
+        public async Task Does_Not_Add_Property_GetterCodeStatements_When_AddBackingFields_Is_False()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -161,7 +161,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -169,7 +169,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
         }
 
         [Fact]
-        public void Does_Not_Add_Property_SetterCodeStatements_When_AddBackingFields_Is_False()
+        public async Task Does_Not_Add_Property_SetterCodeStatements_When_AddBackingFields_Is_False()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -179,7 +179,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -187,7 +187,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
         }
 
         [Fact]
-        public void Adds_Fields_When_AddBackingFields_Is_True()
+        public async Task Adds_Fields_When_AddBackingFields_Is_True()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -197,7 +197,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -205,7 +205,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
         }
 
         [Fact]
-        public void Adds_Property_GetterCodeStatements_Without_PropertyChanged_Calls_When_AddBackingFields_Is_True_And_CreateAsObservable_Is_False()
+        public async Task Adds_Property_GetterCodeStatements_Without_PropertyChanged_Calls_When_AddBackingFields_Is_True_And_CreateAsObservable_Is_False()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -215,7 +215,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -234,7 +234,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
         }
 
         [Fact]
-        public void Adds_Property_GetterCodeStatements_With_ProperyChanged_Calls_When_AddBackingFields_Is_True_And_CreateAsObservable_Is_True()
+        public async Task Adds_Property_GetterCodeStatements_With_ProperyChanged_Calls_When_AddBackingFields_Is_True_And_CreateAsObservable_Is_True()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -244,7 +244,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -266,7 +266,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
         }
 
         [Fact]
-        public void Adds_Property_SetterCodeStatements_When_AddBackingFields_Is_True()
+        public async Task Adds_Property_SetterCodeStatements_When_AddBackingFields_Is_True()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -276,7 +276,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -289,7 +289,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
         }
 
         [Fact]
-        public void Adds_Property_SetterCodeStatements_With_NullChecks_When_AddBackingFields_Is_True_And_AddNullChecks_Is_True()
+        public async Task Adds_Property_SetterCodeStatements_With_NullChecks_When_AddBackingFields_Is_True_And_AddNullChecks_Is_True()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -299,7 +299,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

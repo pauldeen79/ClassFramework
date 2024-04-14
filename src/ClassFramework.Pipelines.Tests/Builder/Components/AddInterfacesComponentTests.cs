@@ -5,18 +5,18 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Features.A
     public class Process : AddInterfacesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Adds_Interfaces_When_CopyInterfaces_Setting_Is_True()
+        public async Task Adds_Interfaces_When_CopyInterfaces_Setting_Is_True()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").Build();
@@ -26,7 +26,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -34,7 +34,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Features.A
         }
 
         [Fact]
-        public void Adds_Filtered_Interfaces_When_CopyInterfaces_Setting_Is_True_And_Predicate_Is_Filled()
+        public async Task Adds_Filtered_Interfaces_When_CopyInterfaces_Setting_Is_True_And_Predicate_Is_Filled()
         {
             // Arrange
             var sourceModel = new ClassBuilder()
@@ -50,7 +50,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -58,7 +58,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Features.A
         }
 
         [Fact]
-        public void Does_Not_Add_Interfaces_When_CopyInterfaces_Setting_Is_False()
+        public async Task Does_Not_Add_Interfaces_When_CopyInterfaces_Setting_Is_False()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").Build();
@@ -68,7 +68,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

@@ -5,20 +5,20 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
     public class Process : AddDefaultConstructorComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory]
         [InlineData(true, false, true)]
         [InlineData(false, true, false)]
-        public void Adds_Default_Constructor_For_Abstract_Builder(bool hasBaseClass, bool expectedProtected, bool expectedCodeStatements)
+        public async Task Adds_Default_Constructor_For_Abstract_Builder(bool hasBaseClass, bool expectedProtected, bool expectedCodeStatements)
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -33,7 +33,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -59,7 +59,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
         }
 
         [Fact]
-        public void Adds_Default_Constructor_For_Non_Abstract_Builder()
+        public async Task Adds_Default_Constructor_For_Non_Abstract_Builder()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -73,7 +73,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -92,7 +92,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
         }
 
         [Fact]
-        public void Adds_Default_Constructor_For_Non_Abstract_Builder_With_Backing_Fields()
+        public async Task Adds_Default_Constructor_For_Non_Abstract_Builder_With_Backing_Fields()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -108,7 +108,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -127,7 +127,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
         }
 
         [Fact]
-        public void Adds_Default_Constructor_For_Non_Abstract_Builder_With_CollectionType_Enumerable()
+        public async Task Adds_Default_Constructor_For_Non_Abstract_Builder_With_CollectionType_Enumerable()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -142,7 +142,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -161,7 +161,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
         }
 
         [Fact]
-        public void Adds_Default_Constructor_For_Non_Abstract_Builder_With_BaseClass()
+        public async Task Adds_Default_Constructor_For_Non_Abstract_Builder_With_BaseClass()
         {
             // Arrange
             var sourceModel = CreateModel("MyBaseClass");
@@ -175,7 +175,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -194,7 +194,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
         }
 
         [Fact]
-        public void Adds_Default_Constructor_Without_DefaultValue_Initialization_When_SetDefaultValues_Is_Set_To_False()
+        public async Task Adds_Default_Constructor_Without_DefaultValue_Initialization_When_SetDefaultValues_Is_Set_To_False()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -209,7 +209,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -226,7 +226,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
         }
 
         [Fact]
-        public void Adds_SetDefaultValues_Partial_Method_When_SetDefaultValues_Is_Set_To_True()
+        public async Task Adds_SetDefaultValues_Partial_Method_When_SetDefaultValues_Is_Set_To_True()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -237,7 +237,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -249,7 +249,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
         }
 
         [Fact]
-        public void Does_Not_Add_SetDefaultValues_Partial_Method_When_SetDefaultValues_Is_Set_To_False()
+        public async Task Does_Not_Add_SetDefaultValues_Partial_Method_When_SetDefaultValues_Is_Set_To_False()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -260,7 +260,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -268,7 +268,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Successful()
+        public async Task Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Successful()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -289,7 +289,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -297,7 +297,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_DefaultValueStatement_Is_Not_Successful()
+        public async Task Returns_Error_When_Parsing_DefaultValueStatement_Is_Not_Successful()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -318,7 +318,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -326,7 +326,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
         }
 
         [Fact]
-        public void Processes_TypeMapping_Correctly_SingleProperty()
+        public async Task Processes_TypeMapping_Correctly_SingleProperty()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("Filter").WithTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable")).BuildTyped();
@@ -337,7 +337,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -348,7 +348,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
         }
 
         [Fact]
-        public void Processes_TypeMapping_Correctly_CollectionProperty()
+        public async Task Processes_TypeMapping_Correctly_CollectionProperty()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("GroupByFields").WithTypeName(typeof(IReadOnlyCollection<string>).ReplaceGenericTypeName("ExpressionFramework.Domain.Expression"))).BuildTyped();
@@ -359,7 +359,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Fe
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

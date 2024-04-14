@@ -50,7 +50,7 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
             "EntityNamespace" => formattableStringParser.Parse(parentChildContext.ParentContext.Context.Settings.EntityNamespaceFormatString, parentChildContext.ParentContext.Context.FormatProvider, parentChildContext.ParentContext.Context),
             "NullableRequiredSuffix" => Result.Success(!parentChildContext.ParentContext.Context.Settings.AddNullChecks && !parentChildContext.ChildContext.IsValueType && !parentChildContext.ChildContext.IsNullable && parentChildContext.ParentContext.Context.Settings.EnableNullableReferenceTypes
                 ? "!"
-                : string.Empty).Transform(x => x.ToFormattableStringParserResult()),
+                : string.Empty).TransformValue(x => x.ToFormattableStringParserResult()),
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PropertyContext(parentChildContext.ChildContext, parentChildContext.Settings, formatProvider, parentChildContext.ParentContext.Context.MapTypeName(parentChildContext.ChildContext.TypeName), parentChildContext.Settings.EntityNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(parentChildContext.ParentContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<FormattableStringParserResult>()

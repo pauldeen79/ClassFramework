@@ -21,13 +21,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         private ClassBuilder Model { get; } = new();
 
         [Fact]
-        public void Sets_Partial()
+        public async Task Sets_Partial()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -36,13 +36,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Sets_Namespace_And_Name_According_To_Settings()
+        public async Task Sets_Namespace_And_Name_According_To_Settings()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -52,13 +52,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Adds_Properties()
+        public async Task Adds_Properties()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -69,13 +69,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Adds_Constructors()
+        public async Task Adds_Constructors()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -84,13 +84,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
         
         [Fact]
-        public void Adds_GenericTypeArguments()
+        public async Task Adds_GenericTypeArguments()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -99,13 +99,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Adds_GenericTypeArgumentConstraints()
+        public async Task Adds_GenericTypeArgumentConstraints()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -114,13 +114,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Adds_Attributes()
+        public async Task Adds_Attributes()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -129,13 +129,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Adds_Build_Method()
+        public async Task Adds_Build_Method()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -148,13 +148,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Adds_Fluent_Method_For_NonCollection_Property()
+        public async Task Adds_Fluent_Method_For_NonCollection_Property()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -169,13 +169,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Adds_Fluent_Method_For_Collection_Property()
+        public async Task Adds_Fluent_Method_For_Collection_Property()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -194,13 +194,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Adds_PropertyChanged_Event_When_Creating_Observable_Builder()
+        public async Task Adds_PropertyChanged_Event_When_Creating_Observable_Builder()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext(createAsObservable: true));
+            var result = await sut.Process(Model, CreateContext(createAsObservable: true));
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -210,13 +210,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
+        public async Task Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext(addProperties: false));
+            var result = await sut.Process(Model, CreateContext(addProperties: false));
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -229,7 +229,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         private ClassBuilder Model { get; } = new();
 
         [Fact]
-        public void Creates_Builder_With_NamespaceMapping()
+        public async Task Creates_Builder_With_NamespaceMapping()
         {
             // Arrange
             var model = CreateModelWithCustomTypeProperties();
@@ -241,7 +241,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, context);
+            var result = await sut.Process(Model, context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

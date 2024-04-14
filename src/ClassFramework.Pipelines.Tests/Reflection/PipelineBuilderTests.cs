@@ -5,7 +5,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
     public class IntegrationTests : PipelineBuilderTests
     {
         [Fact]
-        public void Creates_Class_With_NamespaceMapping()
+        public async Task Creates_Class_With_NamespaceMapping()
         {
             // Arrange
             var model = new ClassBuilder();
@@ -17,7 +17,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(model, context);
+            var result = await sut.Process(model, context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -35,7 +35,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
         }
 
         [Fact]
-        public void Creates_Interface_With_NamespaceMapping()
+        public async Task Creates_Interface_With_NamespaceMapping()
         {
             // Arrange
             var model = new InterfaceBuilder();
@@ -47,7 +47,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(model, context);
+            var result = await sut.Process(model, context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -63,7 +63,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
         }
 
         [Fact]
-        public void Creates_Internal_Interface()
+        public async Task Creates_Internal_Interface()
         {
             // Arrange
             var model = new InterfaceBuilder();
@@ -75,7 +75,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(model, context);
+            var result = await sut.Process(model, context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -90,7 +90,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
         }
 
         [Fact]
-        public void Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
+        public async Task Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
         {
             // Arrange
             var model = new ClassBuilder();
@@ -100,7 +100,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(model, context);
+            var result = await sut.Process(model, context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);

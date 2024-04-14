@@ -17,13 +17,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         private ClassBuilder Model { get; } = new();
 
         [Fact]
-        public void Sets_Partial()
+        public async Task Sets_Partial()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -32,13 +32,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Sets_Namespace_And_Name_According_To_Settings()
+        public async Task Sets_Namespace_And_Name_According_To_Settings()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext());
+            var result = await sut.Process(Model, CreateContext());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -48,13 +48,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
+        public async Task Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
         {
             // Arrange
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, CreateContext(addProperties: false));
+            var result = await sut.Process(Model, CreateContext(addProperties: false));
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -67,7 +67,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         private ClassBuilder Model { get; } = new();
 
         [Fact]
-        public void Creates_ReadOnly_Entity_With_NamespaceMapping()
+        public async Task Creates_ReadOnly_Entity_With_NamespaceMapping()
         {
             // Arrange
             var model = CreateModelWithCustomTypeProperties();
@@ -83,7 +83,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, context);
+            var result = await sut.Process(Model, context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -158,7 +158,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Creates_Observable_Entity_With_NamespaceMapping()
+        public async Task Creates_Observable_Entity_With_NamespaceMapping()
         {
             // Arrange
             var model = CreateModelWithCustomTypeProperties();
@@ -181,7 +181,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, context);
+            var result = await sut.Process(Model, context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -320,7 +320,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         }
 
         [Fact]
-        public void Creates_Entity_With_Custom_Validation()
+        public async Task Creates_Entity_With_Custom_Validation()
         {
             // Arrange
             var model = CreateModelWithCustomTypeProperties();
@@ -332,7 +332,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = sut.Process(Model, context);
+            var result = await sut.Process(Model, context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

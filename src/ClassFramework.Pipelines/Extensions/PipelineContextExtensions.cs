@@ -88,7 +88,7 @@ public static class PipelineContextExtensions
         return Result.Success(string.Join(", ", results.Select(x => hasPublicParameterlessConstructor
             ? $"{x.Name} = {GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix)}"
             : GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix))))
-                .Transform(x => x.ToFormattableStringParserResult());
+                .TransformValue(x => x.ToFormattableStringParserResult());
     }
 
     private static string? GetBuilderPropertyExpression(this string? value, Property sourceProperty, string collectionInitializer, string suffix)

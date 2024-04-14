@@ -5,18 +5,18 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Features.Generi
     public class Process : GenericsComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Adds_GenericTypeArguments()
+        public async Task Adds_GenericTypeArguments()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddGenericTypeArguments("T").Build();
@@ -26,7 +26,7 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Features.Generi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -34,7 +34,7 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Features.Generi
         }
 
         [Fact]
-        public void Adds_GenericTypeArgumentConstraints()
+        public async Task Adds_GenericTypeArgumentConstraints()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddGenericTypeArguments("T").AddGenericTypeArgumentConstraints("where T : class").Build();
@@ -44,7 +44,7 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Features.Generi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

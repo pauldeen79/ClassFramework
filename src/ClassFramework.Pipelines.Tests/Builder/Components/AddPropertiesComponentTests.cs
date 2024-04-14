@@ -5,18 +5,18 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
     public class Process : AddPropertiesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!, CancellationToken.None))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Does_Not_Add_Properties_On_Abstract_Builder()
+        public async Task Does_Not_Add_Properties_On_Abstract_Builder()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -26,7 +26,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -34,7 +34,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
         }
 
         [Fact]
-        public void Adds_Properties_On_Non_Abstract_Builder()
+        public async Task Adds_Properties_On_Non_Abstract_Builder()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -48,7 +48,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -59,7 +59,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
         }
 
         [Fact]
-        public void Uses_CustomBuilderArgumentType_When_Present()
+        public async Task Uses_CustomBuilderArgumentType_When_Present()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -79,7 +79,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -88,7 +88,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
         }
 
         [Fact]
-        public void Replaces_CollectionTypeName_Correctly()
+        public async Task Replaces_CollectionTypeName_Correctly()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -103,7 +103,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -112,7 +112,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
         }
 
         [Fact]
-        public void Adds_Attributes_To_Properties_From_SourceModel_Properties_When_CopyAttributes_Is_True()
+        public async Task Adds_Attributes_To_Properties_From_SourceModel_Properties_When_CopyAttributes_Is_True()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -123,7 +123,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -132,7 +132,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
         }
 
         [Fact]
-        public void Does_Not_Add_Attributes_To_Properties_From_SourceModel_Properties_When_CopyAttributes_Is_False()
+        public async Task Does_Not_Add_Attributes_To_Properties_From_SourceModel_Properties_When_CopyAttributes_Is_False()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -143,7 +143,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -151,7 +151,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
         }
 
         [Fact]
-        public void Does_Not_Add_CodeStatements_To_Properties_When_AddNullChecks_Is_False()
+        public async Task Does_Not_Add_CodeStatements_To_Properties_When_AddNullChecks_Is_False()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -162,7 +162,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -173,7 +173,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
         [Theory]
         [InlineData(ArgumentValidationType.None)]
         [InlineData(ArgumentValidationType.IValidatableObject)]
-        public void Adds_CodeStatements_To_Properties_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
+        public async Task Adds_CodeStatements_To_Properties_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
         {
             // Arrange
             var sourceModel = new ClassBuilder()
@@ -192,7 +192,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -207,7 +207,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
         [Theory]
         [InlineData(ArgumentValidationType.None)]
         [InlineData(ArgumentValidationType.IValidatableObject)]
-        public void Adds_CodeStatements_To_Properties_With_CsharpFriendlyName_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
+        public async Task Adds_CodeStatements_To_Properties_With_CsharpFriendlyName_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
         {
             // Arrange
             var sourceModel = new ClassBuilder()
@@ -225,7 +225,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -240,7 +240,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
         [Theory]
         [InlineData(ArgumentValidationType.None)]
         [InlineData(ArgumentValidationType.IValidatableObject)]
-        public void Adds_Fields_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
+        public async Task Adds_Fields_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
         {
             // Arrange
             var sourceModel = new ClassBuilder()
@@ -258,7 +258,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -266,7 +266,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Succesful()
+        public async Task Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Succesful()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -284,7 +284,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.A
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context, CancellationToken.None);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
