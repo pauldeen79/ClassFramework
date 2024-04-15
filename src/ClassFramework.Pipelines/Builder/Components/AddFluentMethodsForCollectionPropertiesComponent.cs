@@ -82,7 +82,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineCompone
         // (in other words, materialization is always performed)
         if (context.Context.Settings.AddNullChecks)
         {
-            yield return Result.Success(context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()).ToFormattableStringParserResult());
+            yield return Result.Success<FormattableStringParserResult>(context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()));
         }
         
         yield return _formattableStringParser.Parse("return {BuilderAddMethodName}({NamePascalCsharpFriendlyName}.ToArray());", context.Context.FormatProvider, parentChildContext);
@@ -114,7 +114,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineCompone
 
         yield return builderAddExpressionResult;
 
-        yield return Result.Success(context.Context.ReturnValueStatementForFluentMethod.ToFormattableStringParserResult());
+        yield return Result.Success<FormattableStringParserResult>(context.Context.ReturnValueStatementForFluentMethod);
     }
 
     private static ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property> CreateParentChildContext(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)

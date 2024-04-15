@@ -128,11 +128,10 @@ public static class PropertyExtensions
             return result;
         }
 
-        return Result.Success(builderArgumentTypeResult.Value!.ToString()
+        return Result.Success<FormattableStringParserResult>(builderArgumentTypeResult.Value!.ToString()
             .FixCollectionTypeName(newCollectionTypeName)
             .GetCollectionInitializeStatement(result.Value?.ToString().Replace("source.[Name]", "x").Replace("[Name]", property.Name) ?? string.Empty).Replace("[Name]", property.Name)
-            .GetCsharpFriendlyTypeName()
-            .ToFormattableStringParserResult());
+            .GetCsharpFriendlyTypeName());
     }
 
     public static Result<FormattableStringParserResult> GetBuilderArgumentTypeName<T>(
@@ -193,7 +192,7 @@ public static class PropertyExtensions
 
         if (string.IsNullOrEmpty(property.ParentTypeFullName))
         {
-            return Result.Success(property.ParentTypeFullName.ToFormattableStringParserResult());
+            return Result.Success<FormattableStringParserResult>(property.ParentTypeFullName);
         }
 
         var metadata = context.Context.GetMappingMetadata(property.ParentTypeFullName);
@@ -201,7 +200,7 @@ public static class PropertyExtensions
 
         if (string.IsNullOrEmpty(ns))
         {
-            return Result.Success(context.Context.MapTypeName(property.ParentTypeFullName.FixTypeName()).ToFormattableStringParserResult());
+            return Result.Success<FormattableStringParserResult>(context.Context.MapTypeName(property.ParentTypeFullName.FixTypeName()));
         }
 
         var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ParentTypeName.ClassName}");

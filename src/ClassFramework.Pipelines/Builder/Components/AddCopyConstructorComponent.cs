@@ -201,7 +201,7 @@ public class AddCopyConstructorComponent : IPipelineComponent<IConcreteTypeBuild
     }
 
     private static string CreateBuilderClassCopyConstructorChainCall(IType instance, PipelineSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success("base(source)")).Value!; //note that the delegate always returns success, so we can simply use the Value here
+        => instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success<FormattableStringParserResult>("base(source)")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private static ConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {

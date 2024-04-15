@@ -37,7 +37,7 @@ public static class PipelineContextExtensions
         var entityNamespace = context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName()).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.Context.SourceModel.Namespace);
         var ns = context.Context.MapNamespace(entityNamespace).AppendWhenNotNullOrEmpty(".");
 
-        return Result.Success($"new {ns}{context.Context.SourceModel.Name}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}".ToFormattableStringParserResult());
+        return Result.Success<FormattableStringParserResult>($"new {ns}{context.Context.SourceModel.Name}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
     public static string CreateEntityChainCall<TModel>(this PipelineContext<TModel, EntityContext> context)
@@ -47,7 +47,7 @@ public static class PipelineContextExtensions
         return context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null
             ? $"base({GetPropertyNamesConcatenated(context.Context.Settings.BaseClass.Properties, context.Context.FormatProvider.ToCultureInfo())})"
             : context.Context.SourceModel.GetCustomValueForInheritedClass(context.Context.Settings.EnableInheritance,
-            cls => Result.Success($"base({GetPropertyNamesConcatenated(context.Context.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Context.FormatProvider.ToCultureInfo())})")).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
+            cls => Result.Success<FormattableStringParserResult>($"base({GetPropertyNamesConcatenated(context.Context.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Context.FormatProvider.ToCultureInfo())})")).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
     }
 
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
@@ -85,10 +85,9 @@ public static class PipelineContextExtensions
             return error.Result;
         }
 
-        return Result.Success(string.Join(", ", results.Select(x => hasPublicParameterlessConstructor
+        return Result.Success<FormattableStringParserResult>(string.Join(", ", results.Select(x => hasPublicParameterlessConstructor
             ? $"{x.Name} = {GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix)}"
-            : GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix))))
-                .TransformValue(x => x.ToFormattableStringParserResult());
+            : GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix))));
     }
 
     private static string? GetBuilderPropertyExpression(this string? value, Property sourceProperty, string collectionInitializer, string suffix)

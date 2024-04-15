@@ -111,7 +111,7 @@ public class AddDefaultConstructorComponent : IPipelineComponent<IConcreteTypeBu
     }
 
     private static string CreateBuilderClassConstructorChainCall(IType instance, PipelineSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success("base()")).Value!; //note that the delegate always returns success, so we can simply use the Value here
+        => instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success<FormattableStringParserResult>("base()")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private Result<FormattableStringParserResult> GenerateDefaultValueStatement(Property property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
         => _formattableStringParser.Parse

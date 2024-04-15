@@ -302,7 +302,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var context = new TestContext(settings, formatProvider);
             var parentChildContext = new ParentChildContext<TestContext, PropertyContext>(context, new PropertyContext(sut, settings, formatProvider, sut.TypeName, string.Empty), settings);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            formattableStringParser.Parse(Arg.Any<string>(), formatProvider, Arg.Any<object?>()).Returns(x => Result.Success(x.ArgAt<string>(0).ToFormattableStringParserResult()));
+            formattableStringParser.Parse(Arg.Any<string>(), formatProvider, Arg.Any<object?>()).Returns(x => Result.Success<FormattableStringParserResult>(x.ArgAt<string>(0)));
 
             // Act
             var result = sut.GetBuilderArgumentTypeName(context, parentChildContext, sut.TypeName, formattableStringParser);

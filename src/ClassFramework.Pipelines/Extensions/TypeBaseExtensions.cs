@@ -20,29 +20,29 @@ public static class TypeBaseExtensions
         return parentTypeContainer.IsDefinedOn(parent, settings.InheritanceComparisonDelegate);
     }
 
-    public static Result<string> GetCustomValueForInheritedClass(
+    public static Result<FormattableStringParserResult> GetCustomValueForInheritedClass(
         this IType instance,
         bool enableInheritance,
-        Func<IBaseClassContainer, Result<string>> customValue)
+        Func<IBaseClassContainer, Result<FormattableStringParserResult>> customValue)
     {
         customValue = customValue.IsNotNull(nameof(customValue));
 
         if (!enableInheritance)
         {
             // Inheritance is not enabled
-            return Result.Success(string.Empty);
+            return Result.Success<FormattableStringParserResult>(string.Empty);
         }
 
         if (instance is not IBaseClassContainer baseClassContainer)
         {
             // Type cannot have a base class
-            return Result.Success(string.Empty);
+            return Result.Success<FormattableStringParserResult>(string.Empty);
         }
 
         if (string.IsNullOrEmpty(baseClassContainer.BaseClass))
         {
             // Class is not inherited
-            return Result.Success(string.Empty);
+            return Result.Success<FormattableStringParserResult>(string.Empty);
         }
 
         return customValue(baseClassContainer);
@@ -125,7 +125,7 @@ public static class TypeBaseExtensions
         => enableInheritance
         && baseClass is not null
             ? baseClass.GetFullName()
-            : instance.GetCustomValueForInheritedClass(enableInheritance, cls => Result.Success(cls.BaseClass!)).Value!; // we're always returning Success here, so we can shortcut the validation of the result by getting .Value
+            : instance.GetCustomValueForInheritedClass(enableInheritance, cls => Result.Success<FormattableStringParserResult>(cls.BaseClass)).Value!; // we're always returning Success here, so we can shortcut the validation of the result by getting .Value
 
     public static string WithoutInterfacePrefix(this IType instance)
         => instance is Domain.Types.Interface

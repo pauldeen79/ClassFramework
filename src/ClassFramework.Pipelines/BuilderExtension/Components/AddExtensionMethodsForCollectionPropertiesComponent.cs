@@ -78,7 +78,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
     {
         if (context.Context.Settings.AddNullChecks)
         {
-            yield return Result.Success(context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()).ToFormattableStringParserResult());
+            yield return Result.Success<FormattableStringParserResult>(context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()));
         }
 
         yield return _formattableStringParser.Parse("return instance.{BuilderAddMethodName}<T>({NamePascalCsharpFriendlyName}.ToArray());", context.Context.FormatProvider, parentChildContext);
@@ -108,7 +108,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
 
         yield return builderAddExpressionResult;
 
-        yield return Result.Success("return instance;".ToFormattableStringParserResult());
+        yield return Result.Success<FormattableStringParserResult>("return instance;");
     }
 
     private static ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext>, Property> CreateParentChildContext(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context, Property property)

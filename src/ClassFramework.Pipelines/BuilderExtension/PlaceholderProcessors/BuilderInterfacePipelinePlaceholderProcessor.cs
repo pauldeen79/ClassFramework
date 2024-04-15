@@ -24,7 +24,7 @@ public class BuilderInterfacePipelinePlaceholderProcessor : IPlaceholderProcesso
         {
             if (value == "InstancePrefix")
             {
-                return Result.Success("instance.".ToFormattableStringParserResult());
+                return Result.Success<FormattableStringParserResult>("instance.");
             }
 
             return parentChildContext.ParentContext.Context.GetBuilderPlaceholderProcessorResultForParentChildContext(value, formattableStringParser, parentChildContext.ParentContext.Context, parentChildContext.ParentContext.Context.SourceModel, parentChildContext.ChildContext, parentChildContext.ParentContext.Context.SourceModel, _pipelinePlaceholderProcessors);

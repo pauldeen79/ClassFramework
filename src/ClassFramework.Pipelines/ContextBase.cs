@@ -72,9 +72,9 @@ public abstract class ContextBase<TModel> : ContextBase
 
         return value switch
         {
-            "NullCheck.Source" => Result.Success(Settings.AddNullChecks
+            "NullCheck.Source" => Result.Success<FormattableStringParserResult>(Settings.AddNullChecks
                 ? CreateArgumentNullException("source")
-                : string.Empty).TransformValue(x => x.ToFormattableStringParserResult()),
+                : string.Empty),
             "BuildersNamespace" => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, context),
             _ => pipelinePlaceholderProcessors.Select(x => x.Process(value, FormatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<FormattableStringParserResult>()
@@ -103,18 +103,18 @@ public abstract class ContextBase<TModel> : ContextBase
 
         return value switch
         {
-            "NullCheck.Source.Argument" => Result.Success(Settings.AddNullChecks && Settings.AddValidationCode() == ArgumentValidationType.None && !childContext.IsNullable && !childContext.IsValueType && !isGenericArgument// only if the source entity does not use validation...
+            "NullCheck.Source.Argument" => Result.Success<FormattableStringParserResult>(Settings.AddNullChecks && Settings.AddValidationCode() == ArgumentValidationType.None && !childContext.IsNullable && !childContext.IsValueType && !isGenericArgument// only if the source entity does not use validation...
                 ? $"if (source.{childContext.Name} is not null) "
-                : string.Empty).TransformValue(x => x.ToFormattableStringParserResult()),
-            "NullCheck.Argument" => Result.Success(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
+                : string.Empty),
+            "NullCheck.Argument" => Result.Success<FormattableStringParserResult>(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
                 ? CreateArgumentNullException(childContext.Name.ToPascalCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())
-                : string.Empty).TransformValue(x => x.ToFormattableStringParserResult()),
-            "NullableRequiredSuffix" => Result.Success(!Settings.AddNullChecks && !childContext.IsValueType && childContext.IsNullable && Settings.EnableNullableReferenceTypes && !isGenericArgument
+                : string.Empty),
+            "NullableRequiredSuffix" => Result.Success<FormattableStringParserResult>(!Settings.AddNullChecks && !childContext.IsValueType && childContext.IsNullable && Settings.EnableNullableReferenceTypes && !isGenericArgument
                 ? "!"
-                : string.Empty).TransformValue(x => x.ToFormattableStringParserResult()),
-            "NullableSuffix" => Result.Success(childContext.IsNullable && (childContext.IsValueType || Settings.EnableNullableReferenceTypes)
+                : string.Empty),
+            "NullableSuffix" => Result.Success<FormattableStringParserResult>(childContext.IsNullable && (childContext.IsValueType || Settings.EnableNullableReferenceTypes)
                 ? "?"
-                : string.Empty).TransformValue(x => x.ToFormattableStringParserResult()),
+                : string.Empty),
             "BuildersNamespace" => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, context.FormatProvider, context),
             _ => Default(value, formattableStringParser, childContext, sourceModel, pipelinePlaceholderProcessors)
         };

@@ -27,7 +27,7 @@ public static class EnumerableOfMetadataExtensions
 
         return string.IsNullOrEmpty(value)
             ? defaultValueDelegate()
-            : Result.Success(value.ToFormattableStringParserResult());
+            : Result.Success<FormattableStringParserResult>(value);
     }
 
     public static bool GetBooleanValue(this IEnumerable<Metadata> metadata, string metadataName, bool defaultValue = false)
