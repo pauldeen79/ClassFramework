@@ -67,7 +67,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(expectedValue);
+            result.Value!.ToString().Should().Be(expectedValue);
         }
 
         [Theory]
@@ -86,7 +86,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(expectedValue);
+            result.Value!.ToString().Should().Be(expectedValue);
         }
 
         [Theory]
@@ -106,7 +106,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(expectedValue);
+            result.Value!.ToString().Should().Be(expectedValue);
         }
 
         [Theory]
@@ -124,7 +124,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(expectedValue);
+            result.Value!.ToString().Should().Be(expectedValue);
         }
 
         [Theory]
@@ -146,7 +146,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(expectedResult);
+            result.Value!.ToString().Should().Be(expectedResult);
         }
 
         [Fact]
@@ -164,7 +164,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("MyResult");
+            result.Value!.ToString().Should().Be("MyResult");
         }
 
         [Fact]
@@ -198,7 +198,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("MyResult");
+            result.Value!.ToString().Should().Be("MyResult");
         }
 
         [Fact]

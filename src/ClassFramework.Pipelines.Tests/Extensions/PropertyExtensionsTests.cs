@@ -309,7 +309,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value.Should().Be("IReadOnlyCollection<Builders.{TypeName.GenericArguments.ClassName.NoGenerics}Builder{TypeName.CollectionItemType.GenericArgumentsWithBrackets}>");
+            result.Value!.ToString().Should().Be("IReadOnlyCollection<Builders.{TypeName.GenericArguments.ClassName.NoGenerics}Builder{TypeName.CollectionItemType.GenericArgumentsWithBrackets}>");
         }
 
         private sealed class TestContext : ContextBase<string>

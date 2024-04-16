@@ -66,7 +66,7 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("MyResult");
+            result.Value!.ToString().Should().Be("MyResult");
         }
 
         [Fact]
@@ -102,7 +102,7 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("MyResult");
+            result.Value!.ToString().Should().Be("MyResult");
         }
 
         [Fact]

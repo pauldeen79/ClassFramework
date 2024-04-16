@@ -126,7 +126,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<FormattableStringParserResult>("CustomValue"));
 
             // Assert
-            result.Value.Should().Be("CustomValue");
+            result.Value!.ToString().Should().Be("CustomValue");
         }
     }
 
