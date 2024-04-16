@@ -5,18 +5,18 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
     public class Process : AddFluentMethodsForNonCollectionPropertiesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
         
         [Fact]
-        public void Does_Not_Add_Method_When_SetMethodNameFormatString_Is_Empty()
+        public async Task Does_Not_Add_Method_When_SetMethodNameFormatString_Is_Empty()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -27,7 +27,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -35,7 +35,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         [Fact]
-        public void Adds_Method_When_SetMethodNameFormatString_Is_Not_Empty()
+        public async Task Adds_Method_When_SetMethodNameFormatString_Is_Not_Empty()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -46,7 +46,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -67,7 +67,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         [Fact]
-        public void Adds_Method_When_SetMethodNameFormatString_Is_Not_Empty_CsharpFriendlyName()
+        public async Task Adds_Method_When_SetMethodNameFormatString_Is_Not_Empty_CsharpFriendlyName()
         {
             // Arrange
             var sourceModel = CreateModelWithPropertyThatHasAReservedName(typeof(int));
@@ -78,7 +78,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -97,7 +97,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         [Fact]
-        public void Adds_Method_With_Default_ArgumentNullChecks_When_SetMethodNameFormatString_Is_Not_Empty()
+        public async Task Adds_Method_With_Default_ArgumentNullChecks_When_SetMethodNameFormatString_Is_Not_Empty()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -110,7 +110,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -132,7 +132,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         [Fact]
-        public void Adds_Method_Without_ArgumentNullChecks_When_Property_Has_TypeName_T()
+        public async Task Adds_Method_Without_ArgumentNullChecks_When_Property_Has_TypeName_T()
         {
             // Arrange
             var sourceModel = ((Class)CreateModel())
@@ -149,7 +149,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -170,7 +170,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         [Fact]
-        public void Adds_Method_Without_ArgumentNullChecks_When_Property_Has_TypeName_Func_T()
+        public async Task Adds_Method_Without_ArgumentNullChecks_When_Property_Has_TypeName_Func_T()
         {
             // Arrange
             var sourceModel = ((Class)CreateModel())
@@ -187,7 +187,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -209,7 +209,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         [Fact]
-        public void Adds_Method_With_Custom_ArgumentNullChecks_When_SetMethodNameFormatString_Is_Not_Empty()
+        public async Task Adds_Method_With_Custom_ArgumentNullChecks_When_SetMethodNameFormatString_Is_Not_Empty()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -233,7 +233,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -256,7 +256,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         [Fact]
-        public void Adds_Method_For_BuilderForAbstractEntity()
+        public async Task Adds_Method_For_BuilderForAbstractEntity()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -269,7 +269,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -290,7 +290,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         [Fact]
-        public void Uses_CustomBuilderArgumentType_When_Present()
+        public async Task Uses_CustomBuilderArgumentType_When_Present()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -311,7 +311,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -332,7 +332,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         [Fact]
-        public void Uses_CustomBuilderWithDefaultPropertyValue_When_Present()
+        public async Task Uses_CustomBuilderWithDefaultPropertyValue_When_Present()
         {
             // Arrange
             // Note that this doesn't seem logical for this unit test, but in code generation the Literal is needed for correct formatting of literal values.
@@ -357,7 +357,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -370,7 +370,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         [Fact]
-        public void Uses_CustomBuilderWithExpression_When_Present()
+        public async Task Uses_CustomBuilderWithExpression_When_Present()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -391,7 +391,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -408,7 +408,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         [Fact]
-        public void Uses_Correct_BuilderNameFormatString()
+        public async Task Uses_Correct_BuilderNameFormatString()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -419,7 +419,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -428,7 +428,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
+        public async Task Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -445,7 +445,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);

@@ -22,22 +22,22 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         var baseClassResult = GetBuilderBaseClass(context.Context.SourceModel, context);
         if (!baseClassResult.IsSuccessful())
         {
-            return Result.FromExistingResult<IConcreteTypeBuilder>(baseClassResult);
+            return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(baseClassResult));
         }
 
         context.Model.WithBaseClass(baseClassResult.Value!);
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 
-    private Result<string> GetBuilderBaseClass(IType instance, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    private Result<FormattableStringParserResult> GetBuilderBaseClass(IType instance, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
@@ -53,6 +53,7 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
             && context.Context.Settings.IsAbstract;
 
         var nameResult = _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, context);
+
         if (!nameResult.IsSuccessful())
         {
             return nameResult;
@@ -60,7 +61,7 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
 
         if (isNotForAbstractBuilder || isAbstract)
         {
-            return Result.Success($"{nameResult.Value}{genericTypeArgumentsString}");
+            return Result.Success<FormattableStringParserResult>($"{nameResult.Value}{genericTypeArgumentsString}");
         }
 
         if (context.Context.Settings.EnableInheritance
@@ -79,7 +80,7 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
                 return inheritanceNameResult;
             }
 
-            return Result.Success($"{context.Context.Settings.BaseClassBuilderNameSpace.AppendWhenNotNullOrEmpty(".")}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
+            return Result.Success<FormattableStringParserResult>($"{context.Context.Settings.BaseClassBuilderNameSpace.AppendWhenNotNullOrEmpty(".")}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
         }
 
         return instance.GetCustomValueForInheritedClass
@@ -93,14 +94,14 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
                     return baseClassResult;
                 }
 
-                return Result.Success(context.Context.Settings.EnableBuilderInheritance
+                return Result.Success<FormattableStringParserResult>(context.Context.Settings.EnableBuilderInheritance
                     ? $"{baseClassResult.Value}{genericTypeArgumentsString}"
                     : $"{baseClassResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
-                }
+            }
         );
     }
 
-    private Result<string> GetBaseClassName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IBaseClassContainer baseClassContainer)
+    private Result<FormattableStringParserResult> GetBaseClassName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IBaseClassContainer baseClassContainer)
     {
         var newContext = new PipelineContext<IConcreteTypeBuilder, BuilderContext>
         (

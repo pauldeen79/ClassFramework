@@ -5,18 +5,18 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Features.
     public class Process : AddBuildMethodComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Adds_Build_Method_When_EnableBuilderInheritance_And_IsAbstract_Are_Both_True()
+        public async Task Adds_Build_Method_When_EnableBuilderInheritance_And_IsAbstract_Are_Both_True()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -26,7 +26,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Features.
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -35,7 +35,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Features.
         }
 
         [Fact]
-        public void Adds_Build_Method_When_IsBuilderForAbstractEntity_Is_False()
+        public async Task Adds_Build_Method_When_IsBuilderForAbstractEntity_Is_False()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -46,7 +46,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Features.
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -61,7 +61,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Features.
         }
 
         [Fact]
-        public void Adds_Build_And_BuildTyped_Methods_When_IsBuilderForAbstractEntity_Is_True()
+        public async Task Adds_Build_And_BuildTyped_Methods_When_IsBuilderForAbstractEntity_Is_True()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -72,7 +72,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Features.
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -96,7 +96,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Features.
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_EntityInstanciation_Is_Not_Successful()
+        public async Task Returns_Error_When_Parsing_EntityInstanciation_Is_Not_Successful()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -113,7 +113,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Features.
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);

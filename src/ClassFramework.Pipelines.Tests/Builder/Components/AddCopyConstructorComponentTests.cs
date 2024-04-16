@@ -5,20 +5,20 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
     public class Process : AddCopyConstructorComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void Adds_Copy_Constructor_For_Abstract_Builder(bool hasBaseClass)
+        public async Task Adds_Copy_Constructor_For_Abstract_Builder(bool hasBaseClass)
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -34,7 +34,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -50,7 +50,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
         }
 
         [Fact]
-        public void Adds_Copy_Constructor_For_Non_Abstract_Builder()
+        public async Task Adds_Copy_Constructor_For_Non_Abstract_Builder()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -64,7 +64,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -87,7 +87,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
         }
 
         [Fact]
-        public void Adds_Copy_Constructor_For_Non_Abstract_Builder_With_BaseClass()
+        public async Task Adds_Copy_Constructor_For_Non_Abstract_Builder_With_BaseClass()
         {
             // Arrange
             var sourceModel = CreateModel("MyBaseClass");
@@ -101,7 +101,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -124,7 +124,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
         }
 
         [Fact]
-        public void Adds_Copy_Constructor_For_Non_Abstract_Builder_With_NullChecks()
+        public async Task Adds_Copy_Constructor_For_Non_Abstract_Builder_With_NullChecks()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -139,7 +139,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -163,7 +163,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_CustomBuilderConstructorInitializeExpression_Is_Not_Successful()
+        public async Task Returns_Error_When_Parsing_CustomBuilderConstructorInitializeExpression_Is_Not_Successful()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -184,7 +184,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -192,7 +192,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Successful()
+        public async Task Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Successful()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -213,7 +213,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -221,7 +221,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
         }
 
         [Fact]
-        public void Processes_TypeMapping_Correctly_SingleProperty()
+        public async Task Processes_TypeMapping_Correctly_SingleProperty()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("Filter").WithTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable")).BuildTyped();
@@ -232,7 +232,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -243,7 +243,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
         }
 
         [Fact]
-        public void Processes_TypeMapping_Correctly_SingleProperty_BackingMembers()
+        public async Task Processes_TypeMapping_Correctly_SingleProperty_BackingMembers()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("Filter").WithTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable")).BuildTyped();
@@ -254,7 +254,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -265,7 +265,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
         }
 
         [Fact]
-        public void Processes_TypeMapping_Correctly_CollectionProperty()
+        public async Task Processes_TypeMapping_Correctly_CollectionProperty()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("GroupByFields").WithTypeName(typeof(IReadOnlyCollection<string>).ReplaceGenericTypeName("ExpressionFramework.Domain.Expression"))).BuildTyped();
@@ -276,7 +276,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -287,7 +287,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
         }
 
         [Fact]
-        public void Processes_TypeMapping_Correctly_CollectionProperty_BackingMembers()
+        public async Task Processes_TypeMapping_Correctly_CollectionProperty_BackingMembers()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("GroupByFields").WithTypeName(typeof(IReadOnlyCollection<string>).ReplaceGenericTypeName("ExpressionFramework.Domain.Expression"))).BuildTyped();
@@ -298,7 +298,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Featu
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

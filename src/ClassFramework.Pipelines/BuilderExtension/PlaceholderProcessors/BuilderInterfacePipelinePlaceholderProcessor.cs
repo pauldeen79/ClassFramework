@@ -11,7 +11,7 @@ public class BuilderInterfacePipelinePlaceholderProcessor : IPlaceholderProcesso
 
     public int Order => 20;
 
-    public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
@@ -24,12 +24,12 @@ public class BuilderInterfacePipelinePlaceholderProcessor : IPlaceholderProcesso
         {
             if (value == "InstancePrefix")
             {
-                return Result.Success("instance.");
+                return Result.Success<FormattableStringParserResult>("instance.");
             }
 
             return parentChildContext.ParentContext.Context.GetBuilderPlaceholderProcessorResultForParentChildContext(value, formattableStringParser, parentChildContext.ParentContext.Context, parentChildContext.ParentContext.Context.SourceModel, parentChildContext.ChildContext, parentChildContext.ParentContext.Context.SourceModel, _pipelinePlaceholderProcessors);
         }
 
-        return Result.Continue<string>();
+        return Result.Continue<FormattableStringParserResult>();
     }
 }

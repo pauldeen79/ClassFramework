@@ -5,18 +5,18 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Feature
     public class Process : AddInterfacesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
         
         [Fact]
-        public void Does_Not_Copy_Interfaces_When_CopyInterfaces_Is_False()
+        public async Task Does_Not_Copy_Interfaces_When_CopyInterfaces_Is_False()
         {
             // Arrange
             var sut = CreateSut();
@@ -26,7 +26,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Feature
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -34,7 +34,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Feature
         }
 
         [Fact]
-        public void Copies_Interfaces_When_CopyInterfaces_Is_True()
+        public async Task Copies_Interfaces_When_CopyInterfaces_Is_True()
         {
             // Arrange
             var sut = CreateSut();
@@ -44,7 +44,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Feature
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -52,7 +52,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Feature
         }
 
         [Fact]
-        public void Filters_Interfaces_When_CopyInterfaces_Is_True_And_Predicate_Is_Set()
+        public async Task Filters_Interfaces_When_CopyInterfaces_Is_True_And_Predicate_Is_Set()
         {
             // Arrange
             var sut = CreateSut();
@@ -62,7 +62,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Feature
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

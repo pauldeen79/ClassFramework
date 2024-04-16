@@ -81,10 +81,11 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetCustomValueForInheritedClass(false, _ => Result.Success("CustomValue"));
+            var result = sut.GetCustomValueForInheritedClass(false, _ => Result.Success<FormattableStringParserResult>("CustomValue"));
 
             // Assert
-            result.Value.Should().BeEmpty();
+            result.Value.Should().NotBeNull();
+            result.Value!.ToString().Should().BeEmpty();
         }
 
         [Fact]
@@ -94,10 +95,11 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = new StructBuilder().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success("CustomValue"));
+            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<FormattableStringParserResult>("CustomValue"));
 
             // Assert
-            result.Value.Should().BeEmpty();
+            result.Value.Should().NotBeNull();
+            result.Value!.ToString().Should().BeEmpty();
         }
 
         [Fact]
@@ -107,10 +109,11 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success("CustomValue"));
+            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<FormattableStringParserResult>("CustomValue"));
 
             // Assert
-            result.Value.Should().BeEmpty();
+            result.Value.Should().NotBeNull();
+            result.Value!.ToString().Should().BeEmpty();
         }
 
         [Fact]
@@ -120,10 +123,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").WithBaseClass("SomeBaseClass").Build();
 
             // Act
-            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success("CustomValue"));
+            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<FormattableStringParserResult>("CustomValue"));
 
             // Assert
-            result.Value.Should().Be("CustomValue");
+            result.Value!.ToString().Should().Be("CustomValue");
         }
     }
 

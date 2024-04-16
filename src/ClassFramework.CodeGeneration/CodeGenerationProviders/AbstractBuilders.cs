@@ -7,7 +7,7 @@ public class AbstractBuilders : ClassFrameworkCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetBuilders(GetAbstractModels(), "ClassFramework.Domain.Builders", "ClassFramework.Domain");
+    public override IEnumerable<TypeBase> Model => GetBuilders(GetAbstractModels().Result, "ClassFramework.Domain.Builders", "ClassFramework.Domain").Result;
 
     public override string Path => "ClassFramework.Domain/Builders";
 

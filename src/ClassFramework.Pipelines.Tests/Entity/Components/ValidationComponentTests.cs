@@ -5,18 +5,18 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Features.Valid
     public class Process : ValidationComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Returns_Continue_When_Properties_Are_Found()
+        public async Task Returns_Continue_When_Properties_Are_Found()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -26,14 +26,14 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Features.Valid
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
         }
 
         [Fact]
-        public void Returns_Continue_When_Properties_Are_Not_Found_But_AllowGenerationWithoutProperties_Is_True()
+        public async Task Returns_Continue_When_Properties_Are_Not_Found_But_AllowGenerationWithoutProperties_Is_True()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").BuildTyped();
@@ -43,14 +43,14 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Features.Valid
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
         }
 
         [Fact]
-        public void Returns_Continue_When_Properties_Are_Not_Found_But_EnableInheritance_Is_True()
+        public async Task Returns_Continue_When_Properties_Are_Not_Found_But_EnableInheritance_Is_True()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").BuildTyped();
@@ -62,7 +62,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Features.Valid
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);

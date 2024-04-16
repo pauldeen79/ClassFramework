@@ -302,14 +302,14 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var context = new TestContext(settings, formatProvider);
             var parentChildContext = new ParentChildContext<TestContext, PropertyContext>(context, new PropertyContext(sut, settings, formatProvider, sut.TypeName, string.Empty), settings);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            formattableStringParser.Parse(Arg.Any<string>(), formatProvider, Arg.Any<object?>()).Returns(x => Result.Success(x.ArgAt<string>(0)));
+            formattableStringParser.Parse(Arg.Any<string>(), formatProvider, Arg.Any<object?>()).Returns(x => Result.Success<FormattableStringParserResult>(x.ArgAt<string>(0)));
 
             // Act
             var result = sut.GetBuilderArgumentTypeName(context, parentChildContext, sut.TypeName, formattableStringParser);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value.Should().Be("IReadOnlyCollection<Builders.{TypeName.GenericArguments.ClassName.NoGenerics}Builder{TypeName.CollectionItemType.GenericArgumentsWithBrackets}>");
+            result.Value!.ToString().Should().Be("IReadOnlyCollection<Builders.{TypeName.GenericArguments.ClassName.NoGenerics}Builder{TypeName.CollectionItemType.GenericArgumentsWithBrackets}>");
         }
 
         private sealed class TestContext : ContextBase<string>

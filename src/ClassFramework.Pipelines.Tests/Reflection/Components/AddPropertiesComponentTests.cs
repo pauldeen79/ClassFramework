@@ -5,18 +5,18 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Feature
     public class Process : AddPropertiesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Copies_Properties()
+        public async Task Copies_Properties()
         {
             // Arrange
             var sut = CreateSut();
@@ -26,7 +26,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Feature
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -34,7 +34,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Feature
         }
 
         [Fact]
-        public void Fills_GenericTypeArguments_Correctly()
+        public async Task Fills_GenericTypeArguments_Correctly()
         {
             // Arrange
             var sut = CreateSut();
@@ -44,7 +44,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Feature
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

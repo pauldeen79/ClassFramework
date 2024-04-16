@@ -1,6 +1,4 @@
-﻿using System.Runtime;
-
-namespace ClassFramework.Pipelines.Entity.Features;
+﻿namespace ClassFramework.Pipelines.Entity.Features;
 
 public class AddFullConstructorComponentBuilder : IEntityComponentBuilder
 {
@@ -24,19 +22,19 @@ public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuild
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.AddFullConstructor)
         {
-            return Result.Continue<IConcreteTypeBuilder>();
+            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
 
         var ctorResult = CreateEntityConstructor(context);
         if (!ctorResult.IsSuccessful())
         {
-            return Result.FromExistingResult<IConcreteTypeBuilder>(ctorResult);
+            return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(ctorResult));
         }
 
         context.Model.AddConstructors(ctorResult.Value!);
@@ -46,7 +44,7 @@ public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuild
             context.Model.AddMethods(new MethodBuilder().WithName("Validate").WithPartial().WithVisibility(Visibility.Private));
         }
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 
     private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
@@ -73,7 +71,7 @@ public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuild
                     .Where(property => context.Context.Settings.AddNullChecks && context.Context.Settings.AddValidationCode() == ArgumentValidationType.None && context.Context.GetMappingMetadata(property.TypeName).GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
                     .Select(property => context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
-            .AddStringCodeStatements(initializationResults.Select(x => x.Value!))
+            .AddStringCodeStatements(initializationResults.Select(x => x.Value!.ToString()))
             .AddStringCodeStatements(context.Context.CreateEntityValidationCode())
             .WithChainCall(context.CreateEntityChainCall()));
     }

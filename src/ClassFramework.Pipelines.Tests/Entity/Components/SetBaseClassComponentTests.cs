@@ -5,18 +5,18 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Features.Set
     public class Process : SetBaseClassComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Does_Not_Set_BaseClass_For_EntityInheritance_When_SourceModel_And_EntitySettings_Do_Not_Have_A_BaseClass()
+        public async Task Does_Not_Set_BaseClass_For_EntityInheritance_When_SourceModel_And_EntitySettings_Do_Not_Have_A_BaseClass()
         {
             // Arrange
             var sourceModel = CreateModel(baseClass: string.Empty);
@@ -29,7 +29,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Features.Set
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -39,7 +39,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Features.Set
         [Theory]
         [InlineData("")]
         [InlineData("ThisBaseClassGetsIgnored")]
-        public void Sets_BaseClass_For_EntityInheritance_From_EntitySettings_When_Specified(string sourceModelBaseClass)
+        public async Task Sets_BaseClass_For_EntityInheritance_From_EntitySettings_When_Specified(string sourceModelBaseClass)
         {
             // Arrange
             var sourceModel = CreateModel(baseClass: sourceModelBaseClass);
@@ -52,7 +52,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Features.Set
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -60,7 +60,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Features.Set
         }
 
         [Fact]
-        public void Sets_BaseClass_For_EntityInheritance_From_Source_When_Specified()
+        public async Task Sets_BaseClass_For_EntityInheritance_From_Source_When_Specified()
         {
             // Arrange
             var sourceModel = CreateModel(baseClass: "MyBaseNamespace.MyBaseClass");
@@ -73,7 +73,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Features.Set
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

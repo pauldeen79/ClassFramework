@@ -76,7 +76,7 @@ public class PropertyProcessorTests : TestBase<PropertyProcessor>
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(expectedValue);
+            result.Value!.ToString().Should().Be(expectedValue);
         }
     }
 }

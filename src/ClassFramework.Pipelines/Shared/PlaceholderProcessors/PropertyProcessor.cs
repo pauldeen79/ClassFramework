@@ -11,50 +11,50 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor, IPlaceholderProc
         _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
     }
 
-    public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
         if (context is not PropertyContext propertyContext)
         {
-            return Result.Continue<string>();
+            return Result.Continue<FormattableStringParserResult>();
         }
 
         var typeName = propertyContext.TypeName.FixTypeName();
 
         return value switch
         {
-            nameof(Property.Name) => Result.Success(propertyContext.SourceModel.Name),
-            $"{nameof(Property.Name)}Lower" => Result.Success(propertyContext.SourceModel.Name.ToLower(formatProvider.ToCultureInfo())),
-            $"{nameof(Property.Name)}Upper" => Result.Success(propertyContext.SourceModel.Name.ToUpper(formatProvider.ToCultureInfo())),
-            $"{nameof(Property.Name)}Pascal" => Result.Success(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo())),
-            $"{nameof(Property.Name)}PascalCsharpFriendlyName" => Result.Success(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
-            "BuilderMemberName" => Result.Success(propertyContext.SourceModel.GetBuilderMemberName(propertyContext.Settings, propertyContext.FormatProvider.ToCultureInfo())),
-            "EntityMemberName" => Result.Success(propertyContext.SourceModel.GetEntityMemberName(propertyContext.Settings.AddBackingFields || propertyContext.Settings.CreateAsObservable, propertyContext.FormatProvider.ToCultureInfo())),
-            "InitializationExpression" => Result.Success(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo(), propertyContext.Settings.AddNullChecks, propertyContext.Settings.ValidateArguments, propertyContext.Settings.EnableNullableReferenceTypes)),
-            "CollectionTypeName" => Result.Success(propertyContext.Settings.CollectionTypeName),
-            nameof (Property.TypeName) => Result.Success(typeName),
-            $"{nameof(Property.TypeName)}.GenericArguments" => Result.Success(typeName.GetProcessedGenericArguments()),
-            $"{nameof(Property.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(typeName.GetProcessedGenericArguments(addBrackets: true)),
-            $"{nameof(Property.TypeName)}.GenericArgumentsWithoutBrackets" => Result.Success(typeName.GetProcessedGenericArguments(addBrackets: false)),
-            $"{nameof(Property.TypeName)}.GenericArguments.ClassName" => Result.Success(typeName.GetProcessedGenericArguments().GetClassName()),
-            $"{nameof(Property.TypeName)}.GenericArguments.ClassName.NoGenerics" => Result.Success(typeName.GetProcessedGenericArguments().GetClassName().WithoutProcessedGenerics()),
-            $"{nameof(Property.TypeName)}.CollectionItemType.GenericArgumentsWithBrackets" => Result.Success(typeName.GetCollectionItemType().GetProcessedGenericArguments(addBrackets: true)),
-            $"{nameof(Property.TypeName)}.CollectionItemType.GenericArgumentsWithoutBrackets" => Result.Success(typeName.GetCollectionItemType().GetProcessedGenericArguments(addBrackets: false)),
-            $"{nameof(Property.TypeName)}.ClassName" => Result.Success(typeName.GetClassName()),
-            $"{nameof(Property.TypeName)}.ClassName.NoGenerics" => Result.Success(typeName.GetClassName().WithoutProcessedGenerics()),
-            $"{nameof(Property.TypeName)}.ClassName.NoInterfacePrefix" => Result.Success(WithoutInterfacePrefix(typeName.GetClassName())),
-            $"{nameof(Property.TypeName)}.Namespace" => Result.Success(typeName.GetNamespaceWithDefault()),
-            $"{nameof(Property.TypeName)}.NoGenerics" => Result.Success(typeName.WithoutProcessedGenerics()),
-            "ParentTypeName" => Result.Success(propertyContext.SourceModel.ParentTypeFullName),
-            "ParentTypeName.ClassName" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName()),
-            "ParentTypeName.ClassName.NoGenerics" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName().WithoutProcessedGenerics()),
-            "ParentTypeName.GenericArgumentsWithBrackets" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName().GetProcessedGenericArguments(addBrackets: true)),
-            "ParentTypeName.GenericArgumentsWithoutBrackets" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName().GetProcessedGenericArguments(addBrackets: false)),
+            nameof(Property.Name) => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name),
+            $"{nameof(Property.Name)}Lower" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToLower(formatProvider.ToCultureInfo())),
+            $"{nameof(Property.Name)}Upper" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToUpper(formatProvider.ToCultureInfo())),
+            $"{nameof(Property.Name)}Pascal" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo())),
+            $"{nameof(Property.Name)}PascalCsharpFriendlyName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
+            "BuilderMemberName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.GetBuilderMemberName(propertyContext.Settings, propertyContext.FormatProvider.ToCultureInfo())),
+            "EntityMemberName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.GetEntityMemberName(propertyContext.Settings.AddBackingFields || propertyContext.Settings.CreateAsObservable, propertyContext.FormatProvider.ToCultureInfo())),
+            "InitializationExpression" => Result.Success<FormattableStringParserResult>(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo(), propertyContext.Settings.AddNullChecks, propertyContext.Settings.ValidateArguments, propertyContext.Settings.EnableNullableReferenceTypes)),
+            "CollectionTypeName" => Result.Success<FormattableStringParserResult>(propertyContext.Settings.CollectionTypeName),
+            nameof (Property.TypeName) => Result.Success<FormattableStringParserResult>(typeName),
+            $"{nameof(Property.TypeName)}.GenericArguments" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments()),
+            $"{nameof(Property.TypeName)}.GenericArgumentsWithBrackets" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments(addBrackets: true)),
+            $"{nameof(Property.TypeName)}.GenericArgumentsWithoutBrackets" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments(addBrackets: false)),
+            $"{nameof(Property.TypeName)}.GenericArguments.ClassName" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments().GetClassName()),
+            $"{nameof(Property.TypeName)}.GenericArguments.ClassName.NoGenerics" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments().GetClassName().WithoutProcessedGenerics()),
+            $"{nameof(Property.TypeName)}.CollectionItemType.GenericArgumentsWithBrackets" => Result.Success<FormattableStringParserResult>(typeName.GetCollectionItemType().GetProcessedGenericArguments(addBrackets: true)),
+            $"{nameof(Property.TypeName)}.CollectionItemType.GenericArgumentsWithoutBrackets" => Result.Success<FormattableStringParserResult>(typeName.GetCollectionItemType().GetProcessedGenericArguments(addBrackets: false)),
+            $"{nameof(Property.TypeName)}.ClassName" => Result.Success<FormattableStringParserResult>(typeName.GetClassName()),
+            $"{nameof(Property.TypeName)}.ClassName.NoGenerics" => Result.Success<FormattableStringParserResult>(typeName.GetClassName().WithoutProcessedGenerics()),
+            $"{nameof(Property.TypeName)}.ClassName.NoInterfacePrefix" => Result.Success<FormattableStringParserResult>(WithoutInterfacePrefix(typeName.GetClassName())),
+            $"{nameof(Property.TypeName)}.Namespace" => Result.Success<FormattableStringParserResult>(typeName.GetNamespaceWithDefault()),
+            $"{nameof(Property.TypeName)}.NoGenerics" => Result.Success<FormattableStringParserResult>(typeName.WithoutProcessedGenerics()),
+            "ParentTypeName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.ParentTypeFullName),
+            "ParentTypeName.ClassName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.ParentTypeFullName.GetClassName()),
+            "ParentTypeName.ClassName.NoGenerics" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.ParentTypeFullName.GetClassName().WithoutProcessedGenerics()),
+            "ParentTypeName.GenericArgumentsWithBrackets" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.ParentTypeFullName.GetClassName().GetProcessedGenericArguments(addBrackets: true)),
+            "ParentTypeName.GenericArgumentsWithoutBrackets" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.ParentTypeFullName.GetClassName().GetProcessedGenericArguments(addBrackets: false)),
             "DefaultValue" => formattableStringParser.Parse(propertyContext.SourceModel.GetDefaultValue(_csharpExpressionDumper, typeName, propertyContext), formatProvider, propertyContext),
-            "NullableSuffix" => Result.Success(propertyContext.SourceModel.GetSuffix(propertyContext.Settings.EnableNullableReferenceTypes, _csharpExpressionDumper, propertyContext)),
+            "NullableSuffix" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.GetSuffix(propertyContext.Settings.EnableNullableReferenceTypes, _csharpExpressionDumper, propertyContext)),
             "BuilderAddMethodName" => formattableStringParser.Parse(propertyContext.Settings.AddMethodNameFormatString, formatProvider, propertyContext),
-            _ => Result.Continue<string>()
+            _ => Result.Continue<FormattableStringParserResult>()
         };
     }
 

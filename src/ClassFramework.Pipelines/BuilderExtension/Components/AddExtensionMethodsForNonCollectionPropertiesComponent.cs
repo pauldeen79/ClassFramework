@@ -22,13 +22,13 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineC
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (string.IsNullOrEmpty(context.Context.Settings.SetMethodNameFormatString))
         {
-            return Result.Continue<IConcreteTypeBuilder>();
+            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
 
         foreach (var property in context.Context.GetSourceProperties().Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
@@ -41,10 +41,10 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineC
             if (error is not null)
             {
                 // Error in formattable string parsing
-                return Result.FromExistingResult<IConcreteTypeBuilder>(error.Result);
+                return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(error.Result));
             }
 
-            var returnType = $"{results.First(x => x.Name == "Namespace").Result.Value.AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}";
+            var returnType = $"{results.First(x => x.Name == "Namespace").Result.Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}";
 
             var builder = new MethodBuilder()
                 .WithName(results.First(x => x.Name == "MethodName").Result.Value!)
@@ -67,6 +67,6 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineC
             context.Model.AddMethods(builder);
         }
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 }

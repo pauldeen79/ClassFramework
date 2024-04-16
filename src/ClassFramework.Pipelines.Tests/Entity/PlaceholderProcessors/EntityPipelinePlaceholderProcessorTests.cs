@@ -35,7 +35,7 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
         {
             // Arrange
             var propertyPlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
-            var externalResult = Result.NoContent<string>();
+            var externalResult = Result.NoContent<FormattableStringParserResult>();
             propertyPlaceholderProcessor.Process(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(externalResult);
             var sut = CreateSut();
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(CreateModel(), new EntityContext(CreateModel().BuildTyped(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
@@ -53,7 +53,7 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
         {
             // Arrange
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            formattableStringParser.Parse("MyEntityNamespaceFormatString", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace"));
+            formattableStringParser.Parse("MyEntityNamespaceFormatString", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace"));
             var sut = CreateSut();
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(CreateModel(), new EntityContext(CreateModel().BuildTyped(), new PipelineSettingsBuilder().WithEntityNamespaceFormatString("MyEntityNamespaceFormatString").Build(), CultureInfo.InvariantCulture));
 
@@ -62,7 +62,7 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(expectedValue);
+            result.Value!.ToString().Should().Be(expectedValue);
         }
     }
 }

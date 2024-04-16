@@ -59,7 +59,7 @@ public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(expectedValue);
+            result.Value!.ToString().Should().Be(expectedValue);
         }
 
         [Theory]
@@ -76,7 +76,7 @@ public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(expectedValue);
+            result.Value!.ToString().Should().Be(expectedValue);
         }
     }
 }

@@ -5,18 +5,18 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Features
     public class Process : AbstractBuilderComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Adds_AddGenericTypeArguments_When_IsBuilderForAbstractEntity_Is_True()
+        public async Task Adds_AddGenericTypeArguments_When_IsBuilderForAbstractEntity_Is_True()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
@@ -27,7 +27,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Features
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -37,7 +37,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Features
         }
 
         [Fact]
-        public void Does_Not_Add_AddGenericTypeArguments_When_IsBuilderForAbstractEntity_Is_False_And_Validation_Is_Not_Shared_Between_Builder_And_Entity()
+        public async Task Does_Not_Add_AddGenericTypeArguments_When_IsBuilderForAbstractEntity_Is_False_And_Validation_Is_Not_Shared_Between_Builder_And_Entity()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
@@ -47,7 +47,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Features
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -57,7 +57,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Features
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_NameFormatString_Is_Not_Successful()
+        public async Task Returns_Error_When_Parsing_NameFormatString_Is_Not_Successful()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
@@ -68,7 +68,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Features
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -76,7 +76,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Features
         }
 
         [Fact]
-        public void Returns_Invalid_When_Model_Is_Not_Of_Type_ClassBuilder()
+        public async Task Returns_Invalid_When_Model_Is_Not_Of_Type_ClassBuilder()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
@@ -87,7 +87,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Features
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);

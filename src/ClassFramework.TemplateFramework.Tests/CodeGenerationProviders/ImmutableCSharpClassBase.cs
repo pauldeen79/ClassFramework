@@ -21,10 +21,9 @@ public abstract class ImmutableCSharpClassBase : CsharpClassGeneratorPipelineCod
     protected override bool CopyInterfaces => true;
     protected override bool CreateCodeGenerationHeader => false;
 
-    protected TypeBase[] GetTemplateFrameworkModels()
-        => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework");
+    protected async Task<TypeBase[]> GetTemplateFrameworkModels()
+        => await GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework");
 
     protected override bool SkipNamespaceOnTypenameMappings(string @namespace)
         => @namespace == $"{CodeGenerationRootNamespace}.Models.TemplateFramework";
-
 }

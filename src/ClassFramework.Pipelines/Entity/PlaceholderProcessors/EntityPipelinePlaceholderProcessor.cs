@@ -11,7 +11,7 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
 
     public int Order => 10;
 
-    public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
@@ -25,10 +25,10 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
             return GetResultForParentChildContext(value, formatProvider, formattableStringParser, parentChildContext);
         }
 
-        return Result.Continue<string>();
+        return Result.Continue<FormattableStringParserResult>();
     }
 
-    private Result<string> GetResultForPipelineContext(
+    private Result<FormattableStringParserResult> GetResultForPipelineContext(
         string value,
         IFormatProvider formatProvider,
         IFormattableStringParser formattableStringParser,
@@ -37,10 +37,10 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
         {
             "EntityNamespace" => formattableStringParser.Parse(pipelineContext.Context.Settings.EntityNamespaceFormatString, pipelineContext.Context.FormatProvider, pipelineContext.Context),
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(pipelineContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Continue<string>()
+                ?? Result.Continue<FormattableStringParserResult>()
         };
 
-    private Result<string> GetResultForParentChildContext(
+    private Result<FormattableStringParserResult> GetResultForParentChildContext(
         string value,
         IFormatProvider formatProvider,
         IFormattableStringParser formattableStringParser,
@@ -48,11 +48,11 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
         => value switch
         {
             "EntityNamespace" => formattableStringParser.Parse(parentChildContext.ParentContext.Context.Settings.EntityNamespaceFormatString, parentChildContext.ParentContext.Context.FormatProvider, parentChildContext.ParentContext.Context),
-            "NullableRequiredSuffix" => Result.Success(!parentChildContext.ParentContext.Context.Settings.AddNullChecks && !parentChildContext.ChildContext.IsValueType && !parentChildContext.ChildContext.IsNullable && parentChildContext.ParentContext.Context.Settings.EnableNullableReferenceTypes
+            "NullableRequiredSuffix" => Result.Success<FormattableStringParserResult>(!parentChildContext.ParentContext.Context.Settings.AddNullChecks && !parentChildContext.ChildContext.IsValueType && !parentChildContext.ChildContext.IsNullable && parentChildContext.ParentContext.Context.Settings.EnableNullableReferenceTypes
                 ? "!"
                 : string.Empty),
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PropertyContext(parentChildContext.ChildContext, parentChildContext.Settings, formatProvider, parentChildContext.ParentContext.Context.MapTypeName(parentChildContext.ChildContext.TypeName), parentChildContext.Settings.EntityNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(parentChildContext.ParentContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Continue<string>()
+                ?? Result.Continue<FormattableStringParserResult>()
         };
 }

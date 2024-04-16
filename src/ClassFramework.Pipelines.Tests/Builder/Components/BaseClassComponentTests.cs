@@ -5,18 +5,18 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
     public class Process : BaseClassComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Sets_BaseClass_For_BuilderInheritance_And_Not_For_Abstract_Builder_No_BaseClass()
+        public async Task Sets_BaseClass_For_BuilderInheritance_And_Not_For_Abstract_Builder_No_BaseClass()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -30,7 +30,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -38,7 +38,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
         }
 
         [Fact]
-        public void Sets_BaseClass_For_BuilderInheritance_And_Not_For_Abstract_Builder_With_BaseClass_And_Abstract()
+        public async Task Sets_BaseClass_For_BuilderInheritance_And_Not_For_Abstract_Builder_With_BaseClass_And_Abstract()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -53,7 +53,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -61,7 +61,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
         }
 
         [Fact]
-        public void Sets_BaseClass_For_BuilderInheritance_And_Not_For_Abstract_Builder_With_BaseClass_And_Not_Abstract_No_Builders_Namespace()
+        public async Task Sets_BaseClass_For_BuilderInheritance_And_Not_For_Abstract_Builder_With_BaseClass_And_Not_Abstract_No_Builders_Namespace()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -76,7 +76,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -84,7 +84,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
         }
 
         [Fact]
-        public void Sets_BaseClass_For_BuilderInheritance_And_Not_For_Abstract_Builder_With_BaseClass_And_Not_Abstract_Builders_Namespace()
+        public async Task Sets_BaseClass_For_BuilderInheritance_And_Not_For_Abstract_Builder_With_BaseClass_And_Not_Abstract_Builders_Namespace()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -100,7 +100,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -108,7 +108,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
         }
 
         [Fact]
-        public void Sets_BaseClass_For_BuilderInheritance_For_Abstract_Builder_With_BaseClass()
+        public async Task Sets_BaseClass_For_BuilderInheritance_For_Abstract_Builder_With_BaseClass()
         {
             // Arrange
             var sourceModel = CreateModel("MyBaseClass");
@@ -121,7 +121,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -129,7 +129,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
         }
 
         [Fact]
-        public void Sets_BaseClass_For_No_BuilderInheritance_For_Abstract_Builder_With_BaseClass()
+        public async Task Sets_BaseClass_For_No_BuilderInheritance_For_Abstract_Builder_With_BaseClass()
         {
             // Arrange
             var sourceModel = CreateModel("MyBaseClass");
@@ -142,7 +142,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -150,7 +150,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
+        public async Task Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -165,7 +165,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);

@@ -26,7 +26,7 @@ public class AddBuildMethodComponent : IPipelineComponent<IConcreteTypeBuilder, 
         _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
     }
 
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -57,13 +57,13 @@ public class AddBuildMethodComponent : IPipelineComponent<IConcreteTypeBuilder, 
                     .WithReturnTypeName("TEntity"));
             }
 
-            return Result.Continue<IConcreteTypeBuilder>();
+            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
 
         var instanciationResult = context.CreateEntityInstanciation(_formattableStringParser, _csharpExpressionDumper, string.Empty);
         if (!instanciationResult.IsSuccessful())
         {
-            return Result.FromExistingResult<IConcreteTypeBuilder>(instanciationResult);
+            return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(instanciationResult));
         }
 
         context.Model.AddMethods(new MethodBuilder()
@@ -90,7 +90,7 @@ public class AddBuildMethodComponent : IPipelineComponent<IConcreteTypeBuilder, 
                 .AddStringCodeStatements($"return {context.Context.Settings.BuildTypedMethodName}();"));
         }
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 
     private static string GetName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)

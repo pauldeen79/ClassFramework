@@ -6,7 +6,7 @@ public class ImmutableInheritFromInterfacesCoreEntities : ImmutableInheritFromIn
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetEntities(GetCoreModels().Select(x => x.ToBuilder().AddInterfaces($"Test.Domain.Abstractions.{x.Name}").Build()).ToArray(), "Test.Domain");
+    public override IEnumerable<TypeBase> Model => GetEntities(GetCoreModels().Result.Select(x => x.ToBuilder().AddInterfaces($"Test.Domain.Abstractions.{x.Name}").Build()).ToArray(), "Test.Domain").Result;
 
     public override string Path => "Test.Domain";
 }

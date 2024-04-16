@@ -8,7 +8,7 @@ public class SetModifiersComponentBuilder : IReflectionComponentBuilder
 
 public class SetModifiersComponent : IPipelineComponent<TypeBaseBuilder, ReflectionContext>
 {
-    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
+    public Task<Result<TypeBaseBuilder>> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -26,6 +26,6 @@ public class SetModifiersComponent : IPipelineComponent<TypeBaseBuilder, Reflect
             recordContainerBuilder.WithRecord(context.Context.SourceModel.IsRecord());
         }
 
-        return Result.Continue<TypeBaseBuilder>();
+        return Task.FromResult(Result.Continue<TypeBaseBuilder>());
     }
 }

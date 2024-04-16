@@ -22,24 +22,24 @@ public class AddPublicParameterlessConstructorComponent : IPipelineComponent<ICo
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.AddPublicParameterlessConstructor)
         {
-            return Result.Continue<IConcreteTypeBuilder>();
+            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
 
         var ctorResult = CreateEntityConstructor(context);
         if (!ctorResult.IsSuccessful())
         {
-            return Result.FromExistingResult<IConcreteTypeBuilder>(ctorResult);
+            return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(ctorResult));
         }
 
         context.Model.AddConstructors(ctorResult.Value!);
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 
     private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
@@ -68,5 +68,5 @@ public class AddPublicParameterlessConstructorComponent : IPipelineComponent<ICo
                 : "{EntityMemberName} = {DefaultValue};",
             context.Context.FormatProvider,
             new ParentChildContext<PipelineContext<IConcreteTypeBuilder, EntityContext>, Property>(context, property, context.Context.Settings)
-        );
+        ).TransformValue(x => x.ToString());
 }

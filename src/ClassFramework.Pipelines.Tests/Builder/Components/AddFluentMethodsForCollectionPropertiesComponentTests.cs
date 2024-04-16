@@ -5,18 +5,18 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
     public class Process : AddFluentMethodsForCollectionPropertiesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Does_Not_Add_Method_When_AddMethodNameFormatString_Is_Empty()
+        public async Task Does_Not_Add_Method_When_AddMethodNameFormatString_Is_Empty()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -27,7 +27,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -35,7 +35,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         }
 
         [Fact]
-        public void Adds_Methods_When_AddMethodNameFormatString_Is_Not_Empty()
+        public async Task Adds_Methods_When_AddMethodNameFormatString_Is_Not_Empty()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -46,7 +46,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -66,7 +66,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         }
 
         [Fact]
-        public void Adds_Methods_With_CustomBuilderArgumentType_When_Present()
+        public async Task Adds_Methods_With_CustomBuilderArgumentType_When_Present()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -83,7 +83,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -103,7 +103,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         }
 
         [Fact]
-        public void Adds_Methods_With_ArgumentNullChecks()
+        public async Task Adds_Methods_With_ArgumentNullChecks()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -116,7 +116,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -137,7 +137,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         }
 
         [Fact]
-        public void Adds_Methods_With_ArgumentNullChecks_CsharpFriendlyName()
+        public async Task Adds_Methods_With_ArgumentNullChecks_CsharpFriendlyName()
         {
             // Arrange
             var sourceModel = CreateModelWithPropertyThatHasAReservedName(typeof(List<int>));
@@ -150,7 +150,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -172,7 +172,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         }
 
         [Fact]
-        public void Adds_Method_For_BuilderForAbstractEntity()
+        public async Task Adds_Method_For_BuilderForAbstractEntity()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -185,7 +185,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -207,7 +207,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         [Theory]
         [InlineData(true, ArgumentValidationType.None)]
         [InlineData(false, ArgumentValidationType.None)]
-        public void Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Succesful(bool addNullChecks, ArgumentValidationType validateArguments)
+        public async Task Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Succesful(bool addNullChecks, ArgumentValidationType validateArguments)
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -224,7 +224,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -232,7 +232,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
+        public async Task Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -243,7 +243,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -251,7 +251,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_AddMethodNameFormatString_Is_Not_Succesful()
+        public async Task Returns_Error_When_Parsing_AddMethodNameFormatString_Is_Not_Succesful()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -262,7 +262,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -270,7 +270,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_CustomBuilderArgumentNullCheckExpression_Is_Not_Succesful()
+        public async Task Returns_Error_When_Parsing_CustomBuilderArgumentNullCheckExpression_Is_Not_Succesful()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -287,7 +287,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -295,7 +295,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_CustomBuilderArgumentNullCheckExpression_Is_Not_Succesful_Using_Enumerable_CollectionType()
+        public async Task Returns_Error_When_Parsing_CustomBuilderArgumentNullCheckExpression_Is_Not_Succesful_Using_Enumerable_CollectionType()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -312,7 +312,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);

@@ -61,7 +61,7 @@ public class PipelineContextExtensionsTests : TestBase
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value.Should().Be("new MyNamespace.MyClass { MyProperty = MyProperty }");
+            result.Value!.ToString().Should().Be("new MyNamespace.MyClass { MyProperty = MyProperty }");
         }
 
         [Fact]
@@ -81,7 +81,7 @@ public class PipelineContextExtensionsTests : TestBase
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value.Should().Be("new MyNamespace.MyClass(MyProperty)");
+            result.Value!.ToString().Should().Be("new MyNamespace.MyClass(MyProperty)");
         }
 
         [Fact]
@@ -101,7 +101,7 @@ public class PipelineContextExtensionsTests : TestBase
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value.Should().Be("new MyNamespace.MyClass { MyProperty = MyProperty }");
+            result.Value!.ToString().Should().Be("new MyNamespace.MyClass { MyProperty = MyProperty }");
         }
 
         [Fact]
@@ -130,7 +130,7 @@ public class PipelineContextExtensionsTests : TestBase
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value.Should().Be("Factory.DoSomething(this)");
+            result.Value!.ToString().Should().Be("Factory.DoSomething(this)");
         }
     }
 }

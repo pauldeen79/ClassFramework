@@ -5,18 +5,18 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
     public class Process : SetNameComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Sets_Name_Property_With_Default_FormatString()
+        public async Task Sets_Name_Property_With_Default_FormatString()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -27,7 +27,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -35,7 +35,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
         }
 
         [Fact]
-        public void Sets_Name_Property_With_Custom_FormatString()
+        public async Task Sets_Name_Property_With_Custom_FormatString()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -46,7 +46,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -54,7 +54,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
         }
 
         [Fact]
-        public void Sets_Namespace_Property_With_Default_FormatString()
+        public async Task Sets_Namespace_Property_With_Default_FormatString()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -65,7 +65,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -73,7 +73,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
         }
 
         [Fact]
-        public void Sets_Namespace_Property_With_Custom_FormatString()
+        public async Task Sets_Namespace_Property_With_Custom_FormatString()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -84,7 +84,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -92,7 +92,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_NameFormatString_Is_Not_Successful()
+        public async Task Returns_Error_When_Parsing_NameFormatString_Is_Not_Successful()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -103,7 +103,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -111,7 +111,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
         }
 
         [Fact]
-        public void Returns_Error_When_Parsing_NamespaceFormatString_Is_Not_Successful()
+        public async Task Returns_Error_When_Parsing_NamespaceFormatString_Is_Not_Successful()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -122,7 +122,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);

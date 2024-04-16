@@ -8,7 +8,7 @@ public class AddPropertiesComponentBuilder : IInterfaceComponentBuilder
 
 public class AddPropertiesComponent : IPipelineComponent<InterfaceBuilder, InterfaceContext>
 {
-    public Result<InterfaceBuilder> Process(PipelineContext<InterfaceBuilder, InterfaceContext> context)
+    public Task<Result<InterfaceBuilder>> Process(PipelineContext<InterfaceBuilder, InterfaceContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -28,6 +28,6 @@ public class AddPropertiesComponent : IPipelineComponent<InterfaceBuilder, Inter
             )
         );
 
-        return Result.Continue<InterfaceBuilder>();
+        return Task.FromResult(Result.Continue<InterfaceBuilder>());
     }
 }

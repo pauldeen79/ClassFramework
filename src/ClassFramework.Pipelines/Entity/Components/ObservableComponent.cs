@@ -8,21 +8,21 @@ public class ObservableComponentBuilder : IEntityComponentBuilder
 
 public class ObservableComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
 {
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.CreateAsObservable
             && !context.Context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
         {
-            return Result.Continue<IConcreteTypeBuilder>();
+            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
 
         if (context.Context.Settings.EnableInheritance
             && context.Context.Settings.BaseClass is not null)
         {
             // Already present in base class
-            return Result.Continue<IConcreteTypeBuilder>();
+            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
 
         if (!context.Context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
@@ -33,6 +33,6 @@ public class ObservableComponent : IPipelineComponent<IConcreteTypeBuilder, Enti
 
         context.Model.AddObservableMembers();
 
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 }

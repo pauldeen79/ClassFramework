@@ -5,18 +5,18 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
     public class Process : SetBaseClassComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Sets_BaseClass_When_Available_Using_SourceModel_BaseClass()
+        public async Task Sets_BaseClass_When_Available_Using_SourceModel_BaseClass()
         {
             // Arrange
             var sut = CreateSut();
@@ -26,7 +26,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -34,7 +34,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
         }
 
         [Fact]
-        public void Does_Not_Set_BaseClass_When_Not_Available_Using_SourceModel_BaseClass()
+        public async Task Does_Not_Set_BaseClass_When_Not_Available_Using_SourceModel_BaseClass()
         {
             // Arrange
             var sut = CreateSut();
@@ -44,7 +44,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -52,7 +52,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
         }
 
         [Fact]
-        public void Sets_BaseClass_When_Available_Using_Inheritance_From_Settings()
+        public async Task Sets_BaseClass_When_Available_Using_Inheritance_From_Settings()
         {
             // Arrange
             var sut = CreateSut();
@@ -65,7 +65,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -73,7 +73,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
         }
 
         [Fact]
-        public void Does_Not_Set_BaseClass_When_Available_Using_Inheritance_From_Settings_When_BaseClass_Is_Empty()
+        public async Task Does_Not_Set_BaseClass_When_Available_Using_Inheritance_From_Settings_When_BaseClass_Is_Empty()
         {
             // Arrange
             var sut = CreateSut();
@@ -86,7 +86,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -94,7 +94,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
         }
 
         [Fact]
-        public void Does_Not_Set_BaseClass_When_UseBaseClassFromSource_Is_False()
+        public async Task Does_Not_Set_BaseClass_When_UseBaseClassFromSource_Is_False()
         {
             // Arrange
             var sut = CreateSut();
@@ -104,7 +104,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

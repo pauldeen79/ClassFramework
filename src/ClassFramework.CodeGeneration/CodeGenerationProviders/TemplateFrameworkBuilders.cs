@@ -7,7 +7,7 @@ public class TemplateFrameworkBuilders : ClassFrameworkCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetBuilders(GetTemplateFrameworkModels(), "ClassFramework.TemplateFramework.Builders", "ClassFramework.TemplateFramework");
+    public override IEnumerable<TypeBase> Model => GetBuilders(GetTemplateFrameworkModels(), "ClassFramework.TemplateFramework.Builders", "ClassFramework.TemplateFramework").Result;
 
     public override string Path => "ClassFramework.TemplateFramework/Builders";
 

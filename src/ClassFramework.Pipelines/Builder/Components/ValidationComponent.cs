@@ -7,7 +7,7 @@ public class ValidationComponentBuilder : IBuilderComponentBuilder
 
 public class ValidationComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
 {
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -15,9 +15,9 @@ public class ValidationComponent : IPipelineComponent<IConcreteTypeBuilder, Buil
             && context.Context.SourceModel.Properties.Count == 0
             && !context.Context.Settings.EnableInheritance)
         {
-            return Result.Invalid<IConcreteTypeBuilder>("To create a builder class, there must be at least one property");
+            return Task.FromResult(Result.Invalid<IConcreteTypeBuilder>("To create a builder class, there must be at least one property"));
         }
         
-        return Result.Continue<IConcreteTypeBuilder>();
+        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 }

@@ -7,7 +7,7 @@ public class PipelineEntities : ClassFrameworkCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetEntities(GetPipelineModels(), "ClassFramework.Pipelines");
+    public override IEnumerable<TypeBase> Model => GetEntities(GetPipelineModels(), "ClassFramework.Pipelines").Result;
 
     public override string Path => "ClassFramework.Pipelines";
 }

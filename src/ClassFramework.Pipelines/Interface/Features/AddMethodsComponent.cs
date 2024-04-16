@@ -8,13 +8,13 @@ public class AddMethodsComponentBuilder : IInterfaceComponentBuilder
 
 public class AddMethodsComponent : IPipelineComponent<InterfaceBuilder, InterfaceContext>
 {
-    public Result<InterfaceBuilder> Process(PipelineContext<InterfaceBuilder, InterfaceContext> context)
+    public Task<Result<InterfaceBuilder>> Process(PipelineContext<InterfaceBuilder, InterfaceContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.CopyMethods)
         {
-            return Result.Continue<InterfaceBuilder>();
+            return Task.FromResult(Result.Continue<InterfaceBuilder>());
         }
 
         context.Model.AddMethods(context.Context.SourceModel.Methods
@@ -24,7 +24,7 @@ public class AddMethodsComponent : IPipelineComponent<InterfaceBuilder, Interfac
                 .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = context.Context.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
             ));
 
-        return Result.Continue<InterfaceBuilder>();
+        return Task.FromResult(Result.Continue<InterfaceBuilder>());
     }
 }
 

@@ -5,18 +5,18 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
     public class Process : AddFullConstructorComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            await sut.Awaiting(x => x.Process(context: null!))
+                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
-        public void Adds_Constructor_Without_NullChecks()
+        public async Task Adds_Constructor_Without_NullChecks()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -27,7 +27,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -47,7 +47,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
         }
 
         [Fact]
-        public void Adds_Constructor_With_NullChecks()
+        public async Task Adds_Constructor_With_NullChecks()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -58,7 +58,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -80,7 +80,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
         }
 
         [Fact]
-        public void Adds_Constructor_With_NullChecks_And_ExceptionThrowIfNull()
+        public async Task Adds_Constructor_With_NullChecks_And_ExceptionThrowIfNull()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -91,7 +91,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -113,7 +113,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
         }
 
         [Fact]
-        public void Adds_Constructor_With_NullChecks_And_BackingFields()
+        public async Task Adds_Constructor_With_NullChecks_And_BackingFields()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -124,7 +124,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -146,7 +146,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
         }
 
         [Fact]
-        public void Adds_Constructor_With_DomainValidation()
+        public async Task Adds_Constructor_With_DomainValidation()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -157,7 +157,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -178,7 +178,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
         }
 
         [Fact]
-        public void Adds_Constructor_With_TypeMapping()
+        public async Task Adds_Constructor_With_TypeMapping()
         {
             // Arrange
             var sourceModel = CreateModelWithCustomTypeProperties();
@@ -189,7 +189,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

@@ -93,7 +93,7 @@ public static class PropertyExtensions
             || settings.CreateAsObservable;
     }
 
-    public static Result<string> GetBuilderConstructorInitializer<T>(
+    public static Result<FormattableStringParserResult> GetBuilderConstructorInitializer<T>(
         this Property property,
         ContextBase<T> context,
         object parentChildContext,
@@ -128,13 +128,13 @@ public static class PropertyExtensions
             return result;
         }
 
-        return Result.Success(builderArgumentTypeResult.Value!
+        return Result.Success<FormattableStringParserResult>(builderArgumentTypeResult.Value!.ToString()
             .FixCollectionTypeName(newCollectionTypeName)
-            .GetCollectionInitializeStatement(result.Value?.Replace("source.[Name]", "x").Replace("[Name]", property.Name) ?? string.Empty).Replace("[Name]", property.Name)
+            .GetCollectionInitializeStatement(result.Value?.ToString().Replace("source.[Name]", "x").Replace("[Name]", property.Name) ?? string.Empty).Replace("[Name]", property.Name)
             .GetCsharpFriendlyTypeName());
     }
 
-    public static Result<string> GetBuilderArgumentTypeName<T>(
+    public static Result<FormattableStringParserResult> GetBuilderArgumentTypeName<T>(
         this Property property,
         ContextBase<T> context,
         object parentChildContext,
@@ -185,14 +185,14 @@ public static class PropertyExtensions
         );
     }
 
-    public static Result<string> GetBuilderParentTypeName(this Property property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser)
+    public static Result<FormattableStringParserResult> GetBuilderParentTypeName(this Property property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser)
     {
         context = context.IsNotNull(nameof(context));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
         if (string.IsNullOrEmpty(property.ParentTypeFullName))
         {
-            return Result.Success(property.ParentTypeFullName);
+            return Result.Success<FormattableStringParserResult>(property.ParentTypeFullName);
         }
 
         var metadata = context.Context.GetMappingMetadata(property.ParentTypeFullName);
@@ -200,7 +200,7 @@ public static class PropertyExtensions
 
         if (string.IsNullOrEmpty(ns))
         {
-            return Result.Success(context.Context.MapTypeName(property.ParentTypeFullName.FixTypeName()));
+            return Result.Success<FormattableStringParserResult>(context.Context.MapTypeName(property.ParentTypeFullName.FixTypeName()));
         }
 
         var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ParentTypeName.ClassName}");
@@ -221,18 +221,18 @@ public static class PropertyExtensions
     }
 
     public static string GetSuffix<T>(this Property source, bool enableNullableReferenceTypes, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<T> context)
-        =>
-        (
-            source.IsNullable(enableNullableReferenceTypes)
-            && !source.IsValueType
-            && !source.TypeName.FixTypeName().IsCollectionTypeName()
-        )
-        ||
-        (
-            !source.TypeName.IsCollectionTypeName()
-            && !source.IsValueType
-            && source.GetDefaultValue(csharpExpressionDumper, source.TypeName.FixTypeName(), context).StartsWith("default(")
-        )
+        => CollectionIsValidForSuffix(source, enableNullableReferenceTypes)
+        || NonCollectionIsValidForSuffix(source, csharpExpressionDumper, context)
             ? "?"
             : string.Empty;
+
+    private static bool NonCollectionIsValidForSuffix<T>(Property source, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<T> context)
+        => !source.TypeName.IsCollectionTypeName()
+        && !source.IsValueType
+        && source.GetDefaultValue(csharpExpressionDumper, source.TypeName.FixTypeName(), context).StartsWith("default(");
+
+    private static bool CollectionIsValidForSuffix(Property source, bool enableNullableReferenceTypes)
+        => source.IsNullable(enableNullableReferenceTypes)
+        && !source.IsValueType
+        && !source.TypeName.FixTypeName().IsCollectionTypeName();
 }

@@ -7,7 +7,7 @@ public class TemplateFrameworkEntities : ClassFrameworkCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetEntities(GetTemplateFrameworkModels(), "ClassFramework.TemplateFramework");
+    public override IEnumerable<TypeBase> Model => GetEntities(GetTemplateFrameworkModels(), "ClassFramework.TemplateFramework").Result;
 
     public override string Path => "ClassFramework.TemplateFramework";
 }
