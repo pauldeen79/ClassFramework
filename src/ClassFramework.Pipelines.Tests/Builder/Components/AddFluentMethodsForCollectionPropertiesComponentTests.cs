@@ -11,7 +11,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => x.Process(context: null!, CancellationToken.None))
+            await sut.Awaiting(x => x.Process(context: null!))
                      .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
@@ -27,7 +27,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = await sut.Process(context, CancellationToken.None);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -46,7 +46,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = await sut.Process(context, CancellationToken.None);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -83,7 +83,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = await sut.Process(context, CancellationToken.None);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -116,7 +116,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = await sut.Process(context, CancellationToken.None);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -150,7 +150,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = await sut.Process(context, CancellationToken.None);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -185,7 +185,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = await sut.Process(context, CancellationToken.None);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -224,7 +224,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = await sut.Process(context, CancellationToken.None);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -243,7 +243,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = await sut.Process(context, CancellationToken.None);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -262,7 +262,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = await sut.Process(context, CancellationToken.None);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -287,7 +287,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = await sut.Process(context, CancellationToken.None);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -312,7 +312,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
-            var result = await sut.Process(context, CancellationToken.None);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);

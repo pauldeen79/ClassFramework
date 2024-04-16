@@ -11,7 +11,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Reflection.Features.V
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => x.Process(context: null!, CancellationToken.None))
+            await sut.Awaiting(x => x.Process(context: null!))
                      .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
@@ -26,7 +26,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Reflection.Features.V
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = await sut.Process(context, CancellationToken.None);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
@@ -43,7 +43,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Reflection.Features.V
             var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = await sut.Process(context, CancellationToken.None);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
