@@ -189,7 +189,10 @@ public class AddCopyConstructorComponent : IPipelineComponent<IConcreteTypeBuild
 
         if (sourceProperty.TypeName.FixTypeName().IsCollectionTypeName())
         {
-            return value.Replace(PlaceholderNames.SourceExpressionPlaceholder, $"{sourceProperty.Name}.Select(x => {sourceExpression})").Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty).Replace("[ForcedNullableSuffix]", string.Empty).Replace(".Select(x => x)", string.Empty);
+            return value
+                .Replace(PlaceholderNames.SourceExpressionPlaceholder, $"{sourceProperty.Name}.Select(x => {sourceExpression})")
+                .Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty)
+                .Replace("[ForcedNullableSuffix]", string.Empty).Replace(".Select(x => x)", string.Empty);
         }
 
         var suffix = sourceProperty.GetSuffix(context.Context.Settings.EnableNullableReferenceTypes, _csharpExpressionDumper, context.Context);
