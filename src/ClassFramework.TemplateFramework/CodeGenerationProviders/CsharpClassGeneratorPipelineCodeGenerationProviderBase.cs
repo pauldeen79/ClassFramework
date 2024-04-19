@@ -175,6 +175,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(models);
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
+        Guard.IsNotNull(buildersExtensionsNamespace);
 
         return (await models.SelectAsync(async x =>
         {
