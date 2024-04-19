@@ -40,7 +40,7 @@ public static class StringBuilderExtensions
 
     public static void RenderMethodBody(this StringBuilder builder, string indentation, Action innerAction)
     {
-        innerAction = innerAction.IsNotNull(nameof(innerAction));
+        Guard.IsNotNull(innerAction);
 
         builder.AppendLine();
         builder.Append(indentation);
