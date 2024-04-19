@@ -21,8 +21,11 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped(_ => templateProviderPluginFactory)
             .AddScoped<TestCodeGenerationProvider>()
             .AddScoped<TestPipelineCodeGenerationProvider>()
+            .AddScoped<AbstractBuilders>()
+            .AddScoped<AbstractEntities>()
             .AddScoped<AbstractionsBuildersExtensions>()
             .AddScoped<AbstractionsBuildersInterfaces>()
+            .AddScoped<AbstractNonGenericBuilders>()
             .AddScoped<ImmutableCoreBuilders>()
             .AddScoped<ImmutableCoreBuilderExtensions>()
             .AddScoped<ImmutableCoreEntities>()
@@ -1127,6 +1130,158 @@ namespace ClassFramework.TemplateFramework
         public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder ToBuilder()
         {
             return new ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder(this);
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Abstract_Builder_With_PipelineCodeGenerationProviderBase()
+    {// Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<AbstractBuilders>();
+        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public abstract partial class AbstractBaseBuilder<TBuilder, TEntity> : AbstractBaseBuilder
+        where TEntity : Test.Domain.AbstractBase
+        where TBuilder : AbstractBaseBuilder<TBuilder, TEntity>
+    {
+        protected AbstractBaseBuilder(Test.Domain.AbstractBase source) : base(source)
+        {
+        }
+
+        protected AbstractBaseBuilder() : base()
+        {
+        }
+
+        public override Test.Domain.AbstractBase Build()
+        {
+            return BuildTyped();
+        }
+
+        public abstract TEntity BuildTyped();
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Abstract_Entity_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<AbstractEntities>();
+        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public abstract partial class AbstractBase
+    {
+        public string MyBaseProperty
+        {
+            get;
+        }
+
+        protected AbstractBase(string myBaseProperty)
+        {
+            this.MyBaseProperty = myBaseProperty!;
+        }
+
+        public abstract Test.Domain.Builders.AbstractBaseBuilder ToBuilder();
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Abstract_Non_Generic_Builder_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<AbstractNonGenericBuilders>();
+        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public abstract partial class AbstractBaseBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private string _myBaseProperty;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public string MyBaseProperty
+        {
+            get
+            {
+                return _myBaseProperty;
+            }
+            set
+            {
+                _myBaseProperty = value;
+                HandlePropertyChanged(nameof(MyBaseProperty));
+            }
+        }
+
+        protected AbstractBaseBuilder(Test.Domain.AbstractBase source)
+        {
+            _myBaseProperty = source.MyBaseProperty;
+        }
+
+        protected AbstractBaseBuilder()
+        {
+            _myBaseProperty = string.Empty;
+            SetDefaultValues();
+        }
+
+        public abstract Test.Domain.AbstractBase Build();
+
+        partial void SetDefaultValues();
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
 #nullable restore
