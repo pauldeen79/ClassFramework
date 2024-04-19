@@ -130,8 +130,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(models);
         Guard.IsNotNull(entitiesNamespace);
 
-        return (await models.SelectAsync(x => CreateImmutableClass(x, entitiesNamespace))
-               ).ToArray();
+        return (await models.SelectAsync(x => CreateImmutableClass(x, entitiesNamespace))).ToArray();
     }
 
     protected async Task<TypeBase[]> GetEntityInterfaces(TypeBase[] models, string entitiesNamespace, string interfacesNamespace)
@@ -140,8 +139,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return (await models.SelectAsync(async x => await CreateInterface(await CreateImmutableClass(x, entitiesNamespace), interfacesNamespace, string.Empty, true, "I{Class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0))
-               ).ToArray();
+        return (await models.SelectAsync(async x => await CreateInterface(await CreateImmutableClass(x, entitiesNamespace), interfacesNamespace, string.Empty, true, "I{Class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0))).ToArray();
     }
 
     protected async Task<TypeBase[]> GetInterfaces(TypeBase[] models, string interfacesNamespace)
@@ -149,8 +147,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(models);
         Guard.IsNotNull(interfacesNamespace);
 
-        return (await models.SelectAsync(async x => await CreateInterface(x, interfacesNamespace, EntityCollectionType.WithoutGenerics(), AddSetters))
-               ).ToArray();
+        return (await models.SelectAsync(async x => await CreateInterface(x, interfacesNamespace, EntityCollectionType.WithoutGenerics(), AddSetters))).ToArray();
     }
 
     protected async Task<TypeBase[]> GetBuilders(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
@@ -220,44 +217,24 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected async Task<TypeBase[]> GetCoreModels()
         => (await GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
-            .SelectAsync(async x =>
-            {
-                var model = new InterfaceBuilder();
-                (await _reflectionPipeline.Process(model, new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))).ThrowIfInvalid();
-                return model.Build();
-            })
+            .SelectAsync(GetModel)
            ).ToArray();
 
     protected async Task<TypeBase[]> GetNonCoreModels(string @namespace)
         => (await GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == @namespace && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
-            .SelectAsync(async x =>
-            {
-                var model = new InterfaceBuilder();
-                (await _reflectionPipeline.Process(model, new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))).ThrowIfInvalid();
-                return model.Build();
-            })
+            .SelectAsync(GetModel)
            ).ToArray();
 
     protected async Task<TypeBase[]> GetAbstractionsInterfaces()
         => (await GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
-            .SelectAsync(async x =>
-            {
-                var model = new InterfaceBuilder();
-                (await _reflectionPipeline.Process(model, new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))).ThrowIfInvalid();
-                return model.Build();
-            })
+            .SelectAsync(GetModel)
            ).ToArray();
 
     protected async Task<TypeBase[]> GetAbstractModels()
         => (await GetPureAbstractModels()
-            .SelectAsync(async x =>
-            {
-                var model = new InterfaceBuilder();
-                (await _reflectionPipeline.Process(model, new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))).ThrowIfInvalid();
-                return model.Build();
-            })
+            .SelectAsync(GetModel)
            ).ToArray();
 
     protected async Task<TypeBase[]> GetOverrideModels(Type abstractType)
@@ -266,12 +243,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
         return (await GetType().Assembly.GetTypes()
                 .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y == abstractType))
-                .SelectAsync(async x =>
-                {
-                    var model = new InterfaceBuilder();
-                    (await _reflectionPipeline.Process(model, new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))).ThrowIfInvalid();
-                    return model.Build();
-                })
+                .SelectAsync(GetModel)
                ).ToArray();
     }
 
@@ -598,6 +570,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         }
 
         return null;
+    }
+
+    private async Task<TypeBase> GetModel(Type type)
+    {
+        var model = new InterfaceBuilder();
+        (await _reflectionPipeline.Process(model, new ReflectionContext(type, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))).ThrowIfInvalid();
+        return model.Build();
     }
 
     private async Task<TypeBase> CreateInterface(
