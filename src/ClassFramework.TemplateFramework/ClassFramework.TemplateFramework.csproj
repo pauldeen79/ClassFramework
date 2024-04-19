@@ -9,11 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="pauldeen79.TemplateFramework.Core" Version="0.9.3" />
-    <PackageReference Include="pauldeen79.TemplateFramework.TemplateProviders.ChildTemplateProvider" Version="0.9.3" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\..\..\TemplateFramework\src\Core\TemplateFramework.Core.csproj" />
+    <ProjectReference Include="..\..\..\TemplateFramework\src\TemplateProviders.ChildTemplateProvider\TemplateFramework.TemplateProviders.ChildTemplateProvider.csproj" />
     <ProjectReference Include="..\ClassFramework.Pipelines\ClassFramework.Pipelines.csproj" />
   </ItemGroup>
 
