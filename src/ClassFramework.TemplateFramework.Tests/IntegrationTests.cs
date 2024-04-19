@@ -22,6 +22,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<TestCodeGenerationProvider>()
             .AddScoped<TestPipelineCodeGenerationProvider>()
             .AddScoped<ImmutableCoreBuilders>()
+            .AddScoped<ImmutableCoreBuilderExtensions>()
             .AddScoped<ImmutableCoreEntities>()
             .AddScoped<ImmutablePrivateSettersCoreBuilders>()
             .AddScoped<ImmutablePrivateSettersCoreEntities>()
@@ -181,7 +182,7 @@ namespace MyNamespace
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Immutable_Entity_With_PipelineCodeGenerationProviderBase()
+    public void Can_Generate_Code_For_Entity_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -233,7 +234,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Immutable_Builder_With_PipelineCodeGenerationProviderBase()
+    public void Can_Generate_Code_For_Builder_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -316,7 +317,51 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Immutable_Entity_PrivateSetters_With_PipelineCodeGenerationProviderBase()
+    public void Can_Generate_Code_For_Builder_Extensions_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreBuilderExtensions>();
+        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Extensions
+{
+#nullable enable
+    public static partial class LiteralBuilderExtensions
+    {
+        public static T WithValue<T>(this T instance, string value)
+            where T : Test.Domain.Builders.ILiteralBuilder
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            instance.Value = value;
+            return instance;
+        }
+
+        public static T WithOriginalValue<T>(this T instance, object? originalValue)
+            where T : Test.Domain.Builders.ILiteralBuilder
+        {
+            instance.OriginalValue = originalValue;
+            return instance;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Entity_PrivateSetters_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -370,7 +415,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Immutable_Builder_PrivateSetters_With_PipelineCodeGenerationProviderBase()
+    public void Can_Generate_Code_For_Builder_PrivateSetters_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -453,7 +498,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Immutable_Entity_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    public void Can_Generate_Code_For_Entity_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -505,7 +550,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Immutable_Builder_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    public void Can_Generate_Code_For_Builder_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -588,7 +633,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Immutable_EntityInterface_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    public void Can_Generate_Code_For_Entity_Interface_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -630,7 +675,7 @@ namespace Test.Abstractions
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Immutable_BuilderInterface_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    public void Can_Generate_Code_For_BuilderInterface_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -674,7 +719,7 @@ namespace Test.Abstractions
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Immutable_Entity_NoToBuilderMethod_With_PipelineCodeGenerationProviderBase()
+    public void Can_Generate_Code_For_Entity_NoToBuilderMethod_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
