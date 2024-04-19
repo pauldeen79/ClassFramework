@@ -5,14 +5,14 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Features.SetRec
     public class Process : SetRecordComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public void Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => x.Process(context: null!))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            sut.Awaiting(x => x.Process(context: null!))
+               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Theory]

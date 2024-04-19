@@ -6,14 +6,14 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Feature
     public class Process : AddAttributesComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public void Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            await sut.Awaiting(x => x.Process(context: null!))
-                     .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            sut.Awaiting(x => x.Process(context: null!))
+               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
         [Fact]
