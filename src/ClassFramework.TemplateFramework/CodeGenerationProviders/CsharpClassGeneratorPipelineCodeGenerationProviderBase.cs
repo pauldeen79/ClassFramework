@@ -140,14 +140,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return (await models.SelectAsync(async x => await CreateInterface(await CreateImmutableClass(x, entitiesNamespace), interfacesNamespace, string.Empty, true, "I{Class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0))).ToArray();
     }
 
-    protected async Task<TypeBase[]> GetInterfaces(TypeBase[] models, string interfacesNamespace)
-    {
-        Guard.IsNotNull(models);
-        Guard.IsNotNull(interfacesNamespace);
-
-        return (await models.SelectAsync(async x => await CreateInterface(x, interfacesNamespace, EntityCollectionType.WithoutGenerics(), AddSetters))).ToArray();
-    }
-
     protected async Task<TypeBase[]> GetBuilders(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
     {
         Guard.IsNotNull(models);
