@@ -7,7 +7,7 @@ public class PipelineBuilders : ClassFrameworkCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetBuilders(GetPipelineModels(), "ClassFramework.Pipelines.Builders", "ClassFramework.Pipelines").Result;
+    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetBuilders(await GetPipelineModels().ConfigureAwait(false), "ClassFramework.Pipelines.Builders", "ClassFramework.Pipelines").ConfigureAwait(false);
 
     public override string Path => "ClassFramework.Pipelines/Builders";
 

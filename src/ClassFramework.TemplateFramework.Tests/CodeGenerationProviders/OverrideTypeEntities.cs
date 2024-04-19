@@ -1,17 +1,16 @@
-﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
+﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-[ExcludeFromCodeCoverage]
-public class OverrideTypeEntities : ClassFrameworkCSharpClassBase
+public class OverrideTypeEntities : ImmutableCSharpClassBase
 {
     public OverrideTypeEntities(ICsharpExpressionDumper csharpExpressionDumper, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionDumper, builderPipeline, builderExtensionPipeline, entityPipeline, reflectionPipeline, interfacePipeline)
     {
     }
 
-    public override string Path => "ClassFramework.Domain/Types";
+    public override string Path => "Test.Domain/Types";
 
     protected override bool EnableEntityInheritance => true;
-    protected override async Task<Class?> GetBaseClass() => await CreateBaseClass(typeof(ITypeBase), "ClassFramework.Domain").ConfigureAwait(false);
+    protected override async Task<Class?> GetBaseClass() => await CreateBaseClass(typeof(IAbstractBase), "Test.Domain").ConfigureAwait(false);
 
     public override async Task<IEnumerable<TypeBase>> GetModel()
-        => await GetEntities(await GetOverrideModels(typeof(ITypeBase)).ConfigureAwait(false), "ClassFramework.Domain.Types").ConfigureAwait(false);
+        => await GetEntities(await GetOverrideModels(typeof(IAbstractBase)).ConfigureAwait(false), "Test.Domain.Types").ConfigureAwait(false);
 }

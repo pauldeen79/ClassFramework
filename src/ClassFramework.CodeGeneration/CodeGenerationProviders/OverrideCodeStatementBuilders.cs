@@ -11,8 +11,8 @@ public class OverrideCodeStatementBuilders : ClassFrameworkCSharpClassBase
 
     protected override bool EnableEntityInheritance => true;
     protected override bool CreateAsObservable => true;
-    protected override Class? BaseClass => CreateBaseclass(typeof(ICodeStatementBase), "ClassFramework.Domain").Result;
+    protected override async Task<Class?> GetBaseClass() => await CreateBaseClass(typeof(ICodeStatementBase), "ClassFramework.Domain").ConfigureAwait(false);
 
-    public override IEnumerable<TypeBase> Model
-        => GetBuilders(GetOverrideModels(typeof(ICodeStatementBase)).Result, "ClassFramework.Domain.Builders.CodeStatements", "ClassFramework.Domain.CodeStatements").Result;
+    public override async Task<IEnumerable<TypeBase>> GetModel()
+        => await GetBuilders(await GetOverrideModels(typeof(ICodeStatementBase)).ConfigureAwait(false), "ClassFramework.Domain.Builders.CodeStatements", "ClassFramework.Domain.CodeStatements").ConfigureAwait(false);
 }

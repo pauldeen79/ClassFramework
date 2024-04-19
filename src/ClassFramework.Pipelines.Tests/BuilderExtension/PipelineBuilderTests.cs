@@ -30,8 +30,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
-            result.Value!.Partial.Should().BeTrue();
+            Model.Partial.Should().BeTrue();
         }
 
         [Fact]
@@ -45,14 +44,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
-            result.Value!.Methods.Where(x => x.Name == "WithProperty1").Should().ContainSingle();
-            var method = result.Value.Methods.Single(x => x.Name == "WithProperty1");
+            Model.Methods.Where(x => x.Name == "WithProperty1").Should().ContainSingle();
+            var method = Model.Methods.Single(x => x.Name == "WithProperty1");
             method.ReturnTypeName.Should().Be("T");
             method.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("instance.Property1 = property1;", "return instance;");
 
-            result.Value.Methods.Where(x => x.Name == "WithProperty2").Should().BeEmpty(); //only for the non-collection property
+            Model.Methods.Where(x => x.Name == "WithProperty2").Should().BeEmpty(); //only for the non-collection property
         }
 
         [Fact]
@@ -66,8 +64,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
-            var methods = result.Value!.Methods.Where(x => x.Name == "AddProperty2");
+            var methods = Model.Methods.Where(x => x.Name == "AddProperty2");
             methods.Where(x => x.Name == "AddProperty2").Should().HaveCount(2);
             methods.Select(x => x.ReturnTypeName).Should().AllBeEquivalentTo("T");
             methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).Should().BeEquivalentTo("T", "System.Collections.Generic.IEnumerable<System.String>", "T", "System.String[]");

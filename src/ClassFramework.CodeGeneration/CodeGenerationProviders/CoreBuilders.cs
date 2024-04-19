@@ -7,7 +7,7 @@ public class CoreBuilders : ClassFrameworkCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetBuilders(GetCoreModels().Result, "ClassFramework.Domain.Builders", "ClassFramework.Domain").Result;
+    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetBuilders(await GetCoreModels().ConfigureAwait(false), "ClassFramework.Domain.Builders", "ClassFramework.Domain").ConfigureAwait(false);
 
     public override string Path => "ClassFramework.Domain/Builders";
 

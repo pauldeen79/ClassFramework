@@ -21,17 +21,16 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value.Should().NotBeNull();
 
-            result.Value!.Attributes.Should().ContainSingle();
-            result.Value.Attributes.Single().Name.Should().Be("System.ComponentModel.DisplayNameAttribute");
+            model.Attributes.Should().ContainSingle();
+            model.Attributes.Single().Name.Should().Be("System.ComponentModel.DisplayNameAttribute");
 
-            result.Value.Interfaces.Should().BeEquivalentTo("MyNamespace.IMyInterface");
+            model.Interfaces.Should().BeEquivalentTo("MyNamespace.IMyInterface");
 
-            result.Value.Name.Should().Be(nameof(MyClass));
-            result.Value.Namespace.Should().Be("MyNamespace");
+            model.Name.Should().Be(nameof(MyClass));
+            model.Namespace.Should().Be("MyNamespace");
 
-            result.Value.Visibility.Should().Be(Visibility.Public);
+            model.Visibility.Should().Be(Visibility.Public);
         }
 
         [Fact]
@@ -51,15 +50,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value.Should().NotBeNull();
 
-            result.Value!.Attributes.Should().BeEmpty();
-            result.Value.Interfaces.Should().BeEmpty();
+            model.Attributes.Should().BeEmpty();
+            model.Interfaces.Should().BeEmpty();
 
-            result.Value.Name.Should().Be(nameof(IMyInterface));
-            result.Value.Namespace.Should().Be("MyNamespace");
+            model.Name.Should().Be(nameof(IMyInterface));
+            model.Namespace.Should().Be("MyNamespace");
 
-            result.Value.Visibility.Should().Be(Visibility.Public);
+            model.Visibility.Should().Be(Visibility.Public);
         }
 
         [Fact]
@@ -79,14 +77,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value.Should().NotBeNull();
-            result.Value!.Attributes.Should().BeEmpty();
-            result.Value.Interfaces.Should().BeEmpty();
 
-            result.Value.Name.Should().Be(nameof(IMyInternalInterface));
-            result.Value.Namespace.Should().Be("MyNamespace");
+            model.Attributes.Should().BeEmpty();
+            model.Interfaces.Should().BeEmpty();
 
-            result.Value.Visibility.Should().Be(Visibility.Internal);
+            model.Name.Should().Be(nameof(IMyInternalInterface));
+            model.Namespace.Should().Be("MyNamespace");
+
+            model.Visibility.Should().Be(Visibility.Internal);
         }
 
         [Fact]

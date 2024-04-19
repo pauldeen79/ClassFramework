@@ -1,15 +1,14 @@
-﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
+﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-[ExcludeFromCodeCoverage]
-public class AbstractNonGenericBuilders : ClassFrameworkCSharpClassBase
+public class AbstractNonGenericBuilders : ImmutableCSharpClassBase
 {
     public AbstractNonGenericBuilders(ICsharpExpressionDumper csharpExpressionDumper, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionDumper, builderPipeline, builderExtensionPipeline, entityPipeline, reflectionPipeline, interfacePipeline)
     {
     }
 
-    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetNonGenericBuilders(await GetAbstractModels().ConfigureAwait(false), "ClassFramework.Domain.Builders", "ClassFramework.Domain").ConfigureAwait(false);
+    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetNonGenericBuilders(await GetAbstractModels().ConfigureAwait(false), "Test.Domain.Builders", "Test.Domain").ConfigureAwait(false);
 
-    public override string Path => "ClassFramework.Domain/Builders";
+    public override string Path => "Test.Domain/Builders";
 
     protected override bool AddNullChecks => false; // not needed for abstract builders, because each derived class will do its own validation
     protected override bool AddBackingFields => true; // backing fields are added when using null checks... so we need to add this explicitly

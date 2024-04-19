@@ -6,7 +6,7 @@ public class ObservableCoreEntities : ObservableCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetEntities(GetCoreModels().Result, "Test.Domain").Result;
+    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetEntities(await GetCoreModels().ConfigureAwait(false), "Test.Domain").ConfigureAwait(false);
 
     public override string Path => "Test.Domain";
 }

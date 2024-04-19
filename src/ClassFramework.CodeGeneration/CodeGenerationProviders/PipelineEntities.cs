@@ -7,7 +7,7 @@ public class PipelineEntities : ClassFrameworkCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetEntities(GetPipelineModels(), "ClassFramework.Pipelines").Result;
+    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetEntities(await GetPipelineModels().ConfigureAwait(false), "ClassFramework.Pipelines").ConfigureAwait(false);
 
     public override string Path => "ClassFramework.Pipelines";
 }

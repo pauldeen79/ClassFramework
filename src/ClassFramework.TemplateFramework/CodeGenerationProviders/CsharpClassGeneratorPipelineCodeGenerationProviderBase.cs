@@ -70,7 +70,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.IValidatableObject;
     protected virtual bool EnableEntityInheritance => false;
     protected virtual bool EnableBuilderInhericance => false;
-    protected virtual Class? BaseClass => null;
+    protected virtual Task<Class?> GetBaseClass() => Task.FromResult(default(Class?));
     protected virtual bool IsAbstract => false;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
     protected virtual bool AllowGenerationWithoutProperties => true;
@@ -92,15 +92,15 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual Predicate<Domain.Attribute>? CopyAttributePredicate => null;
     protected virtual Predicate<string>? CopyInterfacePredicate => null;
     CopyMethodPredicate? CopyMethodPredicate => null;
-    protected virtual InheritanceComparisonDelegate? InheritanceComparisonDelegate => (parentNameContainer, typeBase)
+    protected virtual InheritanceComparisonDelegate? CreateInheritanceComparisonDelegate(Class? baseClass) => (parentNameContainer, typeBase)
         => parentNameContainer is not null
-        && typeBase is not null
-        && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
-            || (BaseClass is not null && !BaseClass.Properties.Any(x => x.Name == (parentNameContainer as INameContainer)?.Name))
-            || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
-            || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
-            || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
-        );
+            && typeBase is not null
+            && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
+                || (baseClass is not null && !baseClass.Properties.Any(x => x.Name == (parentNameContainer as INameContainer)?.Name))
+                || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
+                || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
+                || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
+            );
 
     protected virtual string[] GetModelAbstractBaseTyped() => Array.Empty<string>();
 
@@ -115,8 +115,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetTypes().Where(IsAbstractType);
 
-    protected virtual ClassBuilder PostProcessClassBuilder(ClassBuilder builder) => builder;
-
     /// <summary>
     /// Gets the base typename, based on a derived class.
     /// </summary>
@@ -130,8 +128,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(models);
         Guard.IsNotNull(entitiesNamespace);
 
-        return (await models.SelectAsync(x => CreateImmutableClass(x, entitiesNamespace))
-               ).ToArray();
+        return (await models.SelectAsync(x => CreateImmutableClass(x, entitiesNamespace))).ToArray();
     }
 
     protected async Task<TypeBase[]> GetEntityInterfaces(TypeBase[] models, string entitiesNamespace, string interfacesNamespace)
@@ -140,17 +137,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return (await models.SelectAsync(async x => await CreateInterface(await CreateImmutableClass(x, entitiesNamespace), interfacesNamespace, string.Empty, true, "I{Class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0))
-               ).ToArray();
-    }
-
-    protected async Task<TypeBase[]> GetInterfaces(TypeBase[] models, string interfacesNamespace)
-    {
-        Guard.IsNotNull(models);
-        Guard.IsNotNull(interfacesNamespace);
-
-        return (await models.SelectAsync(async x => await CreateInterface(x, interfacesNamespace, EntityCollectionType.WithoutGenerics(), AddSetters))
-               ).ToArray();
+        return (await models.SelectAsync(async x => await CreateInterface(await CreateImmutableClass(x, entitiesNamespace), interfacesNamespace, string.Empty, true, "I{Class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0))).ToArray();
     }
 
     protected async Task<TypeBase[]> GetBuilders(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
@@ -162,10 +149,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return (await models.SelectAsync(async x =>
         {
             var entityBuilder = new ClassBuilder();
+            var context = new EntityContext(x, await CreateEntityPipelineSettings(entitiesNamespace), CultureInfo.InvariantCulture);
 
-            _ = (await _entityPipeline
-                .Process(entityBuilder, new EntityContext(x, CreateEntityPipelineSettings(entitiesNamespace), CultureInfo.InvariantCulture)))
-                .GetValueOrThrow();
+            (await _entityPipeline.Process(entityBuilder, context)).ThrowIfInvalid();
 
             return await CreateBuilderClass(entityBuilder.Build(), buildersNamespace, entitiesNamespace);
         })).ToArray();
@@ -176,14 +162,14 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(models);
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
+        Guard.IsNotNull(buildersExtensionsNamespace);
 
         return (await models.SelectAsync(async x =>
         {
             var interfaceBuilder = new InterfaceBuilder();
+            var context = new InterfaceContext(x, await CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, CreateInheritanceComparisonDelegate(await GetBaseClass()), null, true), CultureInfo.InvariantCulture);
 
-            _ = (await _interfacePipeline
-                .Process(interfaceBuilder, new InterfaceContext(x, CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, InheritanceComparisonDelegate, null, true), CultureInfo.InvariantCulture)))
-                .GetValueOrThrow();
+            (await _interfacePipeline.Process(interfaceBuilder, context)).ThrowIfInvalid();
 
             return await CreateBuilderExtensionsClass(interfaceBuilder.Build(), buildersNamespace, entitiesNamespace, buildersExtensionsNamespace);
         })).ToArray();
@@ -198,10 +184,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return (await models.SelectAsync(async x =>
         {
             var entityBuilder = new ClassBuilder();
+            var context = new EntityContext(x, await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), CultureInfo.InvariantCulture);
 
-            _ = (await _entityPipeline
-                .Process(entityBuilder, new EntityContext(x, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), CultureInfo.InvariantCulture)))
-                .GetValueOrThrow();
+            (await _entityPipeline.Process(entityBuilder, context)).ThrowIfInvalid();
 
             return await CreateNonGenericBuilderClass(entityBuilder.Build(), buildersNamespace, entitiesNamespace);
         })).ToArray();
@@ -222,24 +207,24 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected async Task<TypeBase[]> GetCoreModels()
         => (await GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
-            .SelectAsync(async x => (await _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))).GetValueOrThrow().Build())
+            .SelectAsync(GetModel)
            ).ToArray();
 
     protected async Task<TypeBase[]> GetNonCoreModels(string @namespace)
         => (await GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == @namespace && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
-            .SelectAsync(async x => (await _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))).GetValueOrThrow().Build())
+            .SelectAsync(GetModel)
            ).ToArray();
 
     protected async Task<TypeBase[]> GetAbstractionsInterfaces()
         => (await GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
-            .SelectAsync(async x => (await _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))).GetValueOrThrow().Build())
+            .SelectAsync(GetModel)
            ).ToArray();
 
     protected async Task<TypeBase[]> GetAbstractModels()
         => (await GetPureAbstractModels()
-            .SelectAsync(async x => (await _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))).GetValueOrThrow().Build())
+            .SelectAsync(GetModel)
            ).ToArray();
 
     protected async Task<TypeBase[]> GetOverrideModels(Type abstractType)
@@ -248,19 +233,19 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
         return (await GetType().Assembly.GetTypes()
                 .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y == abstractType))
-                .SelectAsync(async x => (await _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))).GetValueOrThrow().Build())
+                .SelectAsync(GetModel)
                ).ToArray();
     }
 
-    protected async Task<Class> CreateBaseclass(Type type, string @namespace)
+    protected async Task<Class> CreateBaseClass(Type type, string @namespace)
     {
         Guard.IsNotNull(type);
         Guard.IsNotNull(@namespace);
 
         var reflectionSettings = CreateReflectionPipelineSettings();
-        var typeBase = (await _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(type, reflectionSettings, CultureInfo.InvariantCulture)))
-            .GetValueOrThrow()
-            .Build();
+        var model = new InterfaceBuilder();
+        (await _reflectionPipeline.Process(model, new ReflectionContext(type, reflectionSettings, CultureInfo.InvariantCulture))).ThrowIfInvalid();
+        var typeBase = model.Build();
 
         var builder = new ClassBuilder();
         var entitySettings = new PipelineSettingsBuilder()
@@ -300,9 +285,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
             .Build();
 
-        _ = (await _entityPipeline.Process(builder, new EntityContext(typeBase, entitySettings, CultureInfo.InvariantCulture))).GetValueOrThrow();
+        (await _entityPipeline.Process(builder, new EntityContext(typeBase, entitySettings, CultureInfo.InvariantCulture))).ThrowIfInvalid();
         
-        return PostProcessClassBuilder(builder).BuildTyped();
+        return builder.BuildTyped();
     }
 
     private static bool DefaultCopyAttributePredicate(Domain.Attribute attribute)
@@ -330,12 +315,14 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 : null)
             .Build();
 
-    private PipelineSettings CreateEntityPipelineSettings(
+    private async Task<PipelineSettings> CreateEntityPipelineSettings(
         string entitiesNamespace,
         ArgumentValidationType? forceValidateArgumentsInConstructor = null,
         bool? overrideAddNullChecks = null,
         string entityNameFormatString = "{Class.NameNoInterfacePrefix}")
-        => new PipelineSettingsBuilder()
+    {
+        var baseClass = await GetBaseClass();
+        return new PipelineSettingsBuilder()
             .WithAddSetters(AddSetters)
             .WithAddBackingFields(AddBackingFields)
             .WithSetterVisibility(SetterVisibility)
@@ -357,21 +344,22 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithBuildTypedMethodName(BuildTypedMethodName)
             .WithEnableInheritance(EnableEntityInheritance)
             .WithIsAbstract(IsAbstract)
-            .WithBaseClass(BaseClass?.ToBuilder())
-            .WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
+            .WithBaseClass(baseClass?.ToBuilder())
+            .WithInheritanceComparisonDelegate(CreateInheritanceComparisonDelegate(baseClass))
             .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
             .WithEnableNullableReferenceTypes()
             .AddTypenameMappings(CreateTypenameMappings())
             .AddNamespaceMappings(CreateNamespaceMappings())
-            .WithValidateArguments(forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)))
+            .WithValidateArguments(forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && baseClass is null)))
             .WithCollectionTypeName(EntityConcreteCollectionType.WithoutGenerics())
             .WithAddFullConstructor(AddFullConstructor)
             .WithAddPublicParameterlessConstructor(AddPublicParameterlessConstructor)
             .WithAddNullChecks(overrideAddNullChecks ?? false)
             .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
             .Build();
+    }
 
-    private PipelineSettings CreateInterfacePipelineSettings(
+    private async Task<PipelineSettings> CreateInterfacePipelineSettings(
         string interfacesNamespace,
         string newCollectionTypeName,
         InheritanceComparisonDelegate? inheritanceComparisonDelegate,
@@ -383,7 +371,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithNameFormatString(nameFormatString)
             .WithEnableInheritance(EnableEntityInheritance)
             .WithIsAbstract(IsAbstract)
-            .WithBaseClass(BaseClass?.ToBuilder())
+            .WithBaseClass((await GetBaseClass())?.ToBuilder())
             .WithInheritanceComparisonDelegate(inheritanceComparisonDelegate)
             .WithEntityNewCollectionTypeName(newCollectionTypeName)
             .AddTypenameMappings(CreateTypenameMappings())
@@ -479,7 +467,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     protected virtual bool IsAbstractType(Type type)
     {
-        type = type.IsNotNull(nameof(type));
+        Guard.IsNotNull(type);
         return type.IsInterface && type.Namespace == $"{CodeGenerationRootNamespace}.Models" && type.Name.EndsWith("Base");
     }
 
@@ -502,8 +490,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return string.Empty;
     }
 
-    private PipelineSettings CreateBuilderPipelineSettings(string buildersNamespace, string entitiesNamespace)
-        => new PipelineSettingsBuilder(CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()))
+    private async Task<PipelineSettings> CreateBuilderPipelineSettings(string buildersNamespace, string entitiesNamespace)
+        => new PipelineSettingsBuilder(await CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()))
             .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
             .WithBuilderNamespaceFormatString(buildersNamespace)
             .WithSetMethodNameFormatString(SetMethodNameFormatString)
@@ -514,8 +502,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithSetDefaultValuesInEntityConstructor(SetDefaultValues)
             .Build();
 
-    private PipelineSettings CreateBuilderInterfacePipelineSettings(string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
-        => new PipelineSettingsBuilder(CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()))
+    private async Task<PipelineSettings> CreateBuilderInterfacePipelineSettings(string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
+        => new PipelineSettingsBuilder(await CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()))
             .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
             .WithBuilderNamespaceFormatString(buildersNamespace)
             .WithBuilderExtensionsNamespaceFormatString(buildersExtensionsNamespace)
@@ -527,29 +515,29 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private async Task<TypeBase> CreateImmutableClass(TypeBase typeBase, string entitiesNamespace)
     {
         var builder = new ClassBuilder();
-        _ = (await _entityPipeline
-            .Process(builder, new EntityContext(typeBase, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{Class.NameNoInterfacePrefix}"), CultureInfo.InvariantCulture)))
-            .GetValueOrThrow();
+        (await _entityPipeline
+            .Process(builder, new EntityContext(typeBase, await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{Class.NameNoInterfacePrefix}"), CultureInfo.InvariantCulture)))
+            .ThrowIfInvalid();
 
-        return PostProcessClassBuilder(builder).Build();
+        return builder.Build();
     }
 
     private async Task<TypeBase> CreateBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
     {
         var builder = new ClassBuilder();
-        _ = (await _builderPipeline
-            .Process(builder, new BuilderContext(typeBase, CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture)))
-            .GetValueOrThrow();
+        (await _builderPipeline
+            .Process(builder, new BuilderContext(typeBase, await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture)))
+            .ThrowIfInvalid();
 
-        return PostProcessClassBuilder(builder).Build();
+        return builder.Build();
     }
 
     private async Task<TypeBase> CreateBuilderExtensionsClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
     {
         var builder = new ClassBuilder();
-        _ = (await _builderExtensionPipeline
-            .Process(builder, new BuilderExtensionContext(typeBase, CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace, buildersExtensionsNamespace), CultureInfo.InvariantCulture)))
-            .GetValueOrThrow();
+        (await _builderExtensionPipeline
+            .Process(builder, new BuilderExtensionContext(typeBase, await CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace, buildersExtensionsNamespace), CultureInfo.InvariantCulture)))
+            .ThrowIfInvalid();
 
         return builder.Build();
     }
@@ -557,11 +545,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private async Task<TypeBase> CreateNonGenericBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
     {
         var builder = new ClassBuilder();
-        _ = (await _builderPipeline
-            .Process(builder, new BuilderContext(typeBase, CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ToBuilder().WithIsForAbstractBuilder().Build(), CultureInfo.InvariantCulture)))
-            .GetValueOrThrow();
+        (await _builderPipeline
+            .Process(builder, new BuilderContext(typeBase, (await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace)).ToBuilder().WithIsForAbstractBuilder().Build(), CultureInfo.InvariantCulture)))
+            .ThrowIfInvalid();
 
-        return PostProcessClassBuilder(builder).Build();
+        return builder.Build();
     }
 
     private bool? GetOverrideAddNullChecks()
@@ -574,6 +562,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return null;
     }
 
+    private async Task<TypeBase> GetModel(Type type)
+    {
+        var model = new InterfaceBuilder();
+        (await _reflectionPipeline.Process(model, new ReflectionContext(type, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))).ThrowIfInvalid();
+        return model.Build();
+    }
+
     private async Task<TypeBase> CreateInterface(
         TypeBase typeBase,
         string interfacesNamespace,
@@ -583,9 +578,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         CopyMethodPredicate? copyMethodPredicate = null)
     {
         var builder = new InterfaceBuilder();
-        _ = (await _interfacePipeline
-            .Process(builder, new InterfaceContext(typeBase, CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, InheritanceComparisonDelegate, copyMethodPredicate, addSetters, nameFormatString), CultureInfo.InvariantCulture)))
-            .GetValueOrThrow();
+        (await _interfacePipeline
+            .Process(builder, new InterfaceContext(typeBase, await CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(await GetBaseClass()), copyMethodPredicate, addSetters, nameFormatString), CultureInfo.InvariantCulture)))
+            .ThrowIfInvalid();
 
         return builder.Build();
     }

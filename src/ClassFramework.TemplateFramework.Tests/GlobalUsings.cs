@@ -25,6 +25,7 @@ global using ClassFramework.TemplateFramework.Extensions;
 global using ClassFramework.TemplateFramework.Models;
 global using ClassFramework.TemplateFramework.Templates;
 global using ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
+global using ClassFramework.TemplateFramework.Tests.Models;
 global using ClassFramework.TemplateFramework.ViewModels;
 global using CrossCutting.ProcessingPipeline;
 global using CrossCutting.Utilities.Parsers.Extensions;
