@@ -25,7 +25,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<AbstractEntities>()
             .AddScoped<AbstractionsBuildersExtensions>()
             .AddScoped<AbstractionsBuildersInterfaces>()
-            .AddScoped<AbstractNonGenericBuilders>()
+            .AddScoped<AbstractionsBuildersExtensions>()
+            .AddScoped<AbstractionsInterfaces>()
             .AddScoped<ImmutableCoreBuilders>()
             .AddScoped<ImmutableCoreBuilderExtensions>()
             .AddScoped<ImmutableCoreEntities>()
@@ -253,6 +254,40 @@ namespace Test.Domain.Builders.Extensions
             if (myProperty is null) throw new System.ArgumentNullException(nameof(myProperty));
             instance.MyProperty = myProperty;
             return instance;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Abstractions_Interfaces_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<AbstractionsInterfaces>();
+        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Abstractions
+{
+#nullable enable
+    public interface IMyAbstraction
+    {
+        string MyProperty
+        {
+            get;
         }
     }
 #nullable restore
