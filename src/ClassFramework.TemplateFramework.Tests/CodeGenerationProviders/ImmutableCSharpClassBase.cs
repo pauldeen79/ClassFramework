@@ -22,7 +22,7 @@ public abstract class ImmutableCSharpClassBase : CsharpClassGeneratorPipelineCod
     protected override bool CreateCodeGenerationHeader => false;
 
     protected async Task<TypeBase[]> GetTemplateFrameworkModels()
-        => await GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework");
+        => await GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework").ConfigureAwait(false);
 
     protected override bool SkipNamespaceOnTypenameMappings(string @namespace)
         => @namespace == $"{CodeGenerationRootNamespace}.Models.TemplateFramework";

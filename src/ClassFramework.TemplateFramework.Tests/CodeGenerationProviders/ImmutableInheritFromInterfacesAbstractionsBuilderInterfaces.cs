@@ -6,7 +6,7 @@ public class ImmutableInheritFromInterfacesAbstractionsBuilderInterfaces : Immut
     {
     }
 
-    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetBuilderInterfaces(await GetCoreModels(), "Test.Domain.Builders", "Test.Domain", "Test.Abstractions");
+    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetBuilderInterfaces(await GetCoreModels().ConfigureAwait(false), "Test.Domain.Builders", "Test.Domain", "Test.Abstractions").ConfigureAwait(false);
 
     public override string Path => "Test.Domain";
 }
