@@ -576,7 +576,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Process(builder, new BuilderExtensionContext(typeBase, await CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace, buildersExtensionsNamespace), CultureInfo.InvariantCulture)))
             .ThrowIfInvalid();
 
-        return builder.Build();
+        return PostProcessClassBuilder(builder).Build();
     }
 
     private async Task<TypeBase> CreateNonGenericBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
