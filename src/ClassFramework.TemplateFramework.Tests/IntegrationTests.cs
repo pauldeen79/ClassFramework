@@ -38,6 +38,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableNoToBuilderMethodCoreEntities>()
             .AddScoped<ObservableCoreBuilders>()
             .AddScoped<ObservableCoreEntities>()
+            .AddScoped<OverrideTypeBuilders>()
+            .AddScoped<OverrideTypeEntities>()
             .AddScoped<TemplateFrameworkEntities>()
             .BuildServiceProvider();
         _scope = _serviceProvider.CreateScope();
@@ -1139,7 +1141,8 @@ namespace ClassFramework.TemplateFramework
 
     [Fact]
     public void Can_Generate_Code_For_Abstract_Builder_With_PipelineCodeGenerationProviderBase()
-    {// Arrange
+    {
+        // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<AbstractBuilders>();
         var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
@@ -1282,6 +1285,126 @@ namespace Test.Domain.Builders
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Override_Builder_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<OverrideTypeBuilders>();
+        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders.Types
+{
+#nullable enable
+    public partial class MyAbstractOverrideBuilder : AbstractBaseBuilder<MyAbstractOverrideBuilder, Test.Domain.Types.MyAbstractOverride>
+    {
+        private string _myOverrideProperty;
+
+        public string MyOverrideProperty
+        {
+            get
+            {
+                return _myOverrideProperty;
+            }
+            set
+            {
+                _myOverrideProperty = value ?? throw new System.ArgumentNullException(nameof(value));
+                HandlePropertyChanged(nameof(MyOverrideProperty));
+            }
+        }
+
+        public MyAbstractOverrideBuilder(Test.Domain.Types.MyAbstractOverride source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _myOverrideProperty = source.MyOverrideProperty;
+        }
+
+        public MyAbstractOverrideBuilder() : base()
+        {
+            _myOverrideProperty = string.Empty;
+            SetDefaultValues();
+        }
+
+        public override Test.Domain.Types.MyAbstractOverride BuildTyped()
+        {
+            return new Test.Domain.Types.MyAbstractOverride(MyOverrideProperty, MyBaseProperty);
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.Types.MyAbstractOverrideBuilder WithMyOverrideProperty(string myOverrideProperty)
+        {
+            if (myOverrideProperty is null) throw new System.ArgumentNullException(nameof(myOverrideProperty));
+            MyOverrideProperty = myOverrideProperty;
+            return this;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Override_Entity_With_PipelineCodeGenerationProviderBase()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<OverrideTypeEntities>();
+        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Types
+{
+#nullable enable
+    public partial class MyAbstractOverride : Test.Domain.AbstractBase
+    {
+        public string MyOverrideProperty
+        {
+            get;
+        }
+
+        public MyAbstractOverride(string myOverrideProperty, string myBaseProperty) : base(myBaseProperty)
+        {
+            this.MyOverrideProperty = myOverrideProperty;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override Test.Domain.Builders.AbstractBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public Test.Domain.Types.Builders.MyAbstractOverrideBuilder ToTypedBuilder()
+        {
+            return new Test.Domain.Types.Builders.MyAbstractOverrideBuilder(this);
         }
     }
 #nullable restore
