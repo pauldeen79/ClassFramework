@@ -27,8 +27,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
-            result.Value!.Partial.Should().BeTrue();
+            Model.Partial.Should().BeTrue();
         }
 
         [Fact]
@@ -42,9 +41,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
-            result.Value!.Name.Should().Be("MyClass");
-            result.Value.Namespace.Should().Be("MyNamespace");
+            Model.Name.Should().Be("MyClass");
+            Model.Namespace.Should().Be("MyNamespace");
         }
 
         [Fact]
@@ -87,15 +85,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value.Should().NotBeNull();
+            
+            Model.Name.Should().Be("MyClass");
+            Model.Namespace.Should().Be("MyNamespace");
+            Model.Interfaces.Should().BeEmpty();
 
-            result.Value!.Name.Should().Be("MyClass");
-            result.Value.Namespace.Should().Be("MyNamespace");
-            result.Value.Interfaces.Should().BeEmpty();
-
-            var ctors = (result.Value as IConstructorsContainerBuilder)?.Constructors;
-            ctors.Should().ContainSingle();
-            var copyConstructor = ctors!.Single();
+            Model.Constructors.Should().ContainSingle();
+            var copyConstructor = Model.Constructors.Single();
             copyConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
@@ -112,9 +108,9 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "this.Property8 = property8 is null ? null : new CrossCutting.Common.ReadOnlyValueCollection<MyNamespace.MyClass>(property8);"
             );
 
-            result.Value.Fields.Should().BeEmpty();
+            Model.Fields.Should().BeEmpty();
 
-            result.Value.Properties.Select(x => x.Name).Should().BeEquivalentTo
+            Model.Properties.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "Property1",
                 "Property2",
@@ -125,7 +121,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "Property7",
                 "Property8"
             );
-            result.Value.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
+            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
@@ -136,7 +132,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "System.Collections.Generic.IReadOnlyCollection<MyNamespace.MyClass>",
                 "System.Collections.Generic.IReadOnlyCollection<MyNamespace.MyClass>"
             );
-            result.Value.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
+            Model.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
                 new[]
                 {
@@ -150,11 +146,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                     true
                 }
             );
-            result.Value.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
-            result.Value.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
-            result.Value.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
-            result.Value.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
-            result.Value.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
+            Model.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
+            Model.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
+            Model.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
+            Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
+            Model.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
         }
 
         [Fact]
@@ -185,15 +181,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value.Should().NotBeNull();
+            
+            Model.Name.Should().Be("MyClass");
+            Model.Namespace.Should().Be("MyNamespace");
+            Model.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
 
-            result.Value!.Name.Should().Be("MyClass");
-            result.Value.Namespace.Should().Be("MyNamespace");
-            result.Value.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
-
-            var ctors = (result.Value as IConstructorsContainerBuilder)?.Constructors;
-            ctors.Should().ContainSingle();
-            var publicParameterlessConstructor = ctors!.Single();
+            Model.Constructors.Should().ContainSingle();
+            var publicParameterlessConstructor = Model.Constructors.Single();
             publicParameterlessConstructor.Parameters.Should().BeEmpty();
             publicParameterlessConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             publicParameterlessConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
@@ -209,7 +203,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             );
 
             // non collection type properties have a backing field, so we can implement INotifyPropertyChanged
-            result.Value.Fields.Select(x => x.Name).Should().BeEquivalentTo
+            Model.Fields.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "_property1",
                 "_property2",
@@ -221,7 +215,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "_property8",
                 "PropertyChanged"
             );
-            result.Value.Fields.Select(x => x.TypeName).Should().BeEquivalentTo
+            Model.Fields.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
@@ -232,7 +226,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>",
                 "System.ComponentModel.PropertyChangedEventHandler"
             );
-            result.Value.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo
+            Model.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
                 new[]
                 {
@@ -248,7 +242,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 }
             );
 
-            result.Value.Properties.Select(x => x.Name).Should().BeEquivalentTo
+            Model.Properties.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "Property1",
                 "Property2",
@@ -259,7 +253,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "Property7",
                 "Property8"
             );
-            result.Value.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
+            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
@@ -270,7 +264,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "System.Collections.ObjectModel.ObservableCollection<MyNamespace.MyClass>",
                 "System.Collections.ObjectModel.ObservableCollection<MyNamespace.MyClass>"
             );
-            result.Value.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
+            Model.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
                 new[]
                 {
@@ -284,8 +278,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                     true
                 }
             );
-            result.Value.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
-            result.Value.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            Model.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
+            Model.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return _property1;",
                 "return _property2;",
@@ -296,9 +290,9 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "return _property7;",
                 "return _property8;"
             );
-            result.Value.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
-            result.Value.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
-            result.Value.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            Model.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
+            Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
+            Model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
                 "HandlePropertyChanged(nameof(Property1));",
@@ -336,8 +330,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value.Should().NotBeNull();
-            result.Value!.Methods.Should().ContainSingle(x => x.Name == "Validate");
+
+            Model.Methods.Should().ContainSingle(x => x.Name == "Validate");
         }
         
         private static EntityContext CreateContext(IConcreteType model, PipelineSettingsBuilder settings)

@@ -29,9 +29,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
-            result.Value!.Name.Should().Be("IMyClass");
-            result.Value.Namespace.Should().Be("MyNamespace");
+            Model.Name.Should().Be("IMyClass");
+            Model.Namespace.Should().Be("MyNamespace");
         }
 
         [Fact]
@@ -45,10 +44,9 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
-            result.Value!.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
-            result.Value.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
-            result.Value.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.Collections.Generic.IReadOnlyCollection<System.String>");
+            Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
+            Model.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
+            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.Collections.Generic.IReadOnlyCollection<System.String>");
         }
 
         [Fact]
@@ -62,8 +60,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
-            result.Value!.Methods.Should().ContainSingle();
+            Model.Methods.Should().ContainSingle();
         }
 
         [Fact]
@@ -77,8 +74,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
-            result.Value!.Methods.Should().ContainSingle();
+            Model.Methods.Should().ContainSingle();
         }
 
         [Fact]
@@ -92,8 +88,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
-            result.Value!.Methods.Should().BeEmpty();
+            Model.Methods.Should().BeEmpty();
         }
 
         [Fact]
@@ -107,8 +102,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
-            result.Value!.Methods.Should().BeEmpty();
+            Model.Methods.Should().BeEmpty();
         }
 
         [Fact]
@@ -147,15 +141,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value.Should().NotBeNull();
 
-            result.Value!.Name.Should().Be("IMyClass");
-            result.Value.Namespace.Should().Be("MyNamespace");
-            result.Value.Interfaces.Should().BeEmpty();
+            Model.Name.Should().Be("IMyClass");
+            Model.Namespace.Should().Be("MyNamespace");
+            Model.Interfaces.Should().BeEmpty();
 
-            result.Value.Fields.Should().BeEmpty();
+            Model.Fields.Should().BeEmpty();
 
-            result.Value.Properties.Select(x => x.Name).Should().BeEquivalentTo
+            Model.Properties.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "Property1",
                 "Property2",
@@ -166,7 +159,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
                 "Property7",
                 "Property8"
             );
-            result.Value.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
+            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
@@ -177,7 +170,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
                 "System.Collections.Generic.IReadOnlyCollection<MyNamespace.IMyClass>",
                 "System.Collections.Generic.IReadOnlyCollection<MyNamespace.IMyClass>"
             );
-            result.Value.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
+            Model.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
                 new[]
                 {
@@ -191,11 +184,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
                     true
                 }
             );
-            result.Value.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
-            result.Value.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
-            result.Value.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
-            result.Value.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
-            result.Value.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
+            Model.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
+            Model.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
+            Model.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
+            Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
+            Model.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
         }
 
         private static InterfaceContext CreateContext(IType model, PipelineSettingsBuilder settings)
