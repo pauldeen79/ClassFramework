@@ -7,7 +7,7 @@ public class AbstractionsInterfaces : ClassFrameworkCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetEntityInterfaces(GetAbstractionsInterfaces().Result, "ClassFramework.Domain", "ClassFramework.Domain.Abstractions").Result;
+    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetEntityInterfaces(await GetAbstractionsInterfaces().ConfigureAwait(false), "ClassFramework.Domain", "ClassFramework.Domain.Abstractions").ConfigureAwait(false);
 
     public override string Path => "ClassFramework.Domain/Abstractions";
 

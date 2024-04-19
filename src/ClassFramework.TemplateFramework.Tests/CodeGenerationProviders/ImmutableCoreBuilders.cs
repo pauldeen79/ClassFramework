@@ -6,7 +6,7 @@ public class ImmutableCoreBuilders : ImmutableCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetBuilders(GetCoreModels().Result, "Test.Domain.Builders", "Test.Domain").Result;
+    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetBuilders(await GetCoreModels(), "Test.Domain.Builders", "Test.Domain");
 
     public override string Path => "Test.Domain/Builders";
 }

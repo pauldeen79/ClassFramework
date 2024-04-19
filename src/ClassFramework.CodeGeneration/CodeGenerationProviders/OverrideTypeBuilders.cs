@@ -11,8 +11,8 @@ public class OverrideTypeBuilders : ClassFrameworkCSharpClassBase
 
     protected override bool EnableEntityInheritance => true;
     protected override bool CreateAsObservable => true;
-    protected override Class? BaseClass => CreateBaseclass(typeof(ITypeBase), "ClassFramework.Domain").Result;
+    protected override async Task<Class?> GetBaseClass() => await CreateBaseClass(typeof(ITypeBase), "ClassFramework.Domain").ConfigureAwait(false);
 
-    public override IEnumerable<TypeBase> Model
-        => GetBuilders(GetOverrideModels(typeof(ITypeBase)).Result, "ClassFramework.Domain.Builders.Types", "ClassFramework.Domain.Types").Result;
+    public override async Task<IEnumerable<TypeBase>> GetModel()
+        => await GetBuilders(await GetOverrideModels(typeof(ITypeBase)).ConfigureAwait(false), "ClassFramework.Domain.Builders.Types", "ClassFramework.Domain.Types").ConfigureAwait(false);
 }

@@ -7,7 +7,7 @@ public class AbstractEntities : ClassFrameworkCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetEntities(GetAbstractModels().Result, "ClassFramework.Domain").Result;
+    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetEntities(await GetAbstractModels().ConfigureAwait(false), "ClassFramework.Domain").ConfigureAwait(false);
 
     public override string Path => "ClassFramework.Domain";
 

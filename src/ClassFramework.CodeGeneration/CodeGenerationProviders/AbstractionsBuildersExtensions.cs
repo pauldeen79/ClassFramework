@@ -7,7 +7,7 @@ public class AbstractionsBuildersExtensions : ClassFrameworkCSharpClassBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetBuilderExtensions(GetAbstractionsInterfaces().Result, "ClassFramework.Domain.Builders.Abstractions", "ClassFramework.Domain.Abstractions", "ClassFramework.Domain.Builders.Extensions").Result;
+    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetBuilderExtensions(await GetAbstractionsInterfaces().ConfigureAwait(false), "ClassFramework.Domain.Builders.Abstractions", "ClassFramework.Domain.Abstractions", "ClassFramework.Domain.Builders.Extensions").ConfigureAwait(false);
 
     public override string Path => "ClassFramework.Domain/Builders/Extensions";
 

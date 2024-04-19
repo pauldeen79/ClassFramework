@@ -6,7 +6,7 @@ public class ImmutableInheritFromInterfacesAbstractionsInterfaces : ImmutableInh
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetEntityInterfaces(GetCoreModels().Result, "Test.Domain", "Test.Abstractions").Result;
+    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetEntityInterfaces(await GetCoreModels().ConfigureAwait(false), "Test.Domain", "Test.Abstractions").ConfigureAwait(false);
 
     public override string Path => "Test.Domain";
 }

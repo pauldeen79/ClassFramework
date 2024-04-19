@@ -16,14 +16,14 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     public abstract string LastGeneratedFilesFilename { get; }
     public abstract Encoding Encoding { get; }
 
-    public object? CreateAdditionalParameters() => null;
+    public Task<object?> CreateAdditionalParameters() => Task.FromResult(default(object?));
 
     public Type GetGeneratorType() => typeof(CsharpClassGenerator);
 
-    public object? CreateModel()
+    public async Task<object?> CreateModel()
         => new CsharpClassGeneratorViewModel(CsharpExpressionDumper)
         {
-            Model = Model,
+            Model = await GetModel(),
             Settings = Settings
             //Context is filled in base class, on the property setter of Context (propagated to Model)
         };
@@ -33,7 +33,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
             ? new MultipleContentBuilderEnvironment()
             : new StringBuilderEnvironment();
 
-    public abstract IEnumerable<TypeBase> Model { get; }
+    public abstract Task<IEnumerable<TypeBase>> GetModel();
     public abstract CsharpClassGeneratorSettings Settings { get; }
 
 

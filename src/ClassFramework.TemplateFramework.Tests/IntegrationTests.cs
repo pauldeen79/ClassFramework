@@ -1027,7 +1027,7 @@ namespace ClassFramework.TemplateFramework
         {
         }
 
-        public override IEnumerable<TypeBase> Model =>
+        public override Task<IEnumerable<TypeBase>> GetModel() => Task.FromResult<IEnumerable<TypeBase>>(
         [
             new ClassBuilder()
                 .WithNamespace("MyNamespace")
@@ -1040,7 +1040,7 @@ namespace ClassFramework.TemplateFramework
                 .AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("return _myField;")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("_myField = value;")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))))
                 .AddSubClasses(new ClassBuilder().WithName("MySubClass").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))).AddProperties(new PropertyBuilder().WithName("MySubProperty").WithType(typeof(string)).AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute)))).AddSubClasses(new ClassBuilder().WithName("MySubSubClass").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))).AddProperties(new PropertyBuilder().WithName("MySubSubProperty").WithType(typeof(string)).AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))))))
                 .Build()
-        ];
+        ]);
 
         public override string Path => string.Empty;
         public override bool RecurseOnDeleteGeneratedFiles => false;
@@ -1068,10 +1068,20 @@ namespace ClassFramework.TemplateFramework
         public override string LastGeneratedFilesFilename => string.Empty;
         public override Encoding Encoding => Encoding.UTF8;
 
-        public override IEnumerable<TypeBase> Model =>
+        public override Task<IEnumerable<TypeBase>> GetModel() => Task.FromResult<IEnumerable<TypeBase>>(
         [
-            new InterfaceBuilder().WithName("IMyEntity").WithNamespace("MyNamespace").AddProperties(new PropertyBuilder().WithName("MySingleProperty").WithType(typeof(string)), new PropertyBuilder().WithName("MyCollectionProperty").WithType(typeof(IEnumerable<string>))).Build()
-        ];
+            new InterfaceBuilder()
+                .WithName("IMyEntity")
+                .WithNamespace("MyNamespace")
+                .AddProperties(
+                    new PropertyBuilder()
+                        .WithName("MySingleProperty")
+                        .WithType(typeof(string)),
+                    new PropertyBuilder()
+                        .WithName("MyCollectionProperty")
+                        .WithType(typeof(IEnumerable<string>)))
+                .Build()
+        ]);
 
         protected override string ProjectName => "UnitTest";
         protected override Type EntityCollectionType => typeof(IReadOnlyCollection<>);

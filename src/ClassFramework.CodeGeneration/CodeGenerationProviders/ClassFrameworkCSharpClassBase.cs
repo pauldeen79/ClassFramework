@@ -26,11 +26,11 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
     //protected override string ToTypedBuilderFormatString => string.Empty;
     //protected override bool AddCopyConstructor => false;
 
-    protected TypeBase[] GetPipelineModels()
-        => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.Pipelines").Result;
+    protected async Task<TypeBase[]> GetPipelineModels()
+        => await GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.Pipelines").ConfigureAwait(false);
 
-    protected TypeBase[] GetTemplateFrameworkModels()
-        => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework").Result;
+    protected async Task<TypeBase[]> GetTemplateFrameworkModels()
+        => await GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework").ConfigureAwait(false);
 
     protected override bool SkipNamespaceOnTypenameMappings(string @namespace)
         => @namespace.In($"{CodeGenerationRootNamespace}.Models.Pipelines",
@@ -65,6 +65,5 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
                     new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
                 ),
         ];
-
 }
 #pragma warning restore S125 // Sections of code should not be commented out
