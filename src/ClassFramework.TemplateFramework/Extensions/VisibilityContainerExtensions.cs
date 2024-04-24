@@ -24,8 +24,8 @@ public static class VisibilityContainerExtensions
                 builder.AppendWithCondition("const", classField?.Constant == true);
             }
 
-            builder.AppendWithCondition("async", classMethod?.Async == true);
             builder.AppendWithCondition("partial", classMethod?.Partial == true);
+            builder.AppendWithCondition("async", classMethod?.Async == true);
         }
         else
         {
