@@ -2,7 +2,7 @@
 
 public class ImmutableInheritFromInterfacesCoreBuilders : ImmutableInheritFromInterfacesCSharpClassBase
 {
-    public ImmutableInheritFromInterfacesCoreBuilders(ICsharpExpressionDumper csharpExpressionDumper, IMediator mediator, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionDumper, mediator, builderExtensionPipeline, reflectionPipeline, interfacePipeline)
+    public ImmutableInheritFromInterfacesCoreBuilders(ICsharpExpressionDumper csharpExpressionDumper, IMediator mediator) : base(csharpExpressionDumper, mediator)
     {
     }
 
