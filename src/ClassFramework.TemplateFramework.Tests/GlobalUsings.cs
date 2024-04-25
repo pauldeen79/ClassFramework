@@ -32,6 +32,7 @@ global using CrossCutting.Utilities.Parsers.Extensions;
 global using CsharpExpressionDumper.Abstractions;
 global using CsharpExpressionDumper.Core.Extensions;
 global using FluentAssertions;
+global using MediatR;
 global using Microsoft.Extensions.DependencyInjection;
 global using NSubstitute;
 global using TemplateFramework.Abstractions;

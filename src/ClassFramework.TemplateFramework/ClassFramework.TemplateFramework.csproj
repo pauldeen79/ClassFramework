@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="pauldeen79.TemplateFramework.Core" Version="0.10.0" />
     <PackageReference Include="pauldeen79.TemplateFramework.TemplateProviders.ChildTemplateProvider" Version="0.10.0" />
   </ItemGroup>
