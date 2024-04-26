@@ -11,9 +11,9 @@ public class ValidationComponent : IPipelineComponent<IConcreteTypeBuilder, Enti
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.AllowGenerationWithoutProperties
-            && context.Context.SourceModel.Properties.Count == 0
-            && !context.Context.Settings.EnableInheritance)
+        if (!context.Request.Settings.AllowGenerationWithoutProperties
+            && context.Request.SourceModel.Properties.Count == 0
+            && !context.Request.Settings.EnableInheritance)
         {
             return Task.FromResult(Result.Invalid<IConcreteTypeBuilder>("To create an entity class, there must be at least one property"));
         }

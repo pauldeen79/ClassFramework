@@ -15,19 +15,19 @@ public class BuilderInterfacePipelinePlaceholderProcessor : IPlaceholderProcesso
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (context is PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> pipelineContext)
+        if (context is PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder> pipelineContext)
         {
-            return pipelineContext.Context.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formattableStringParser, pipelineContext.Context, pipelineContext.Context.SourceModel,  _pipelinePlaceholderProcessors);
+            return pipelinecontext.Request.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formattableStringParser, pipelineContext.Context, pipelinecontext.Request.SourceModel,  _pipelinePlaceholderProcessors);
         }
 
-        if (context is ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext>, Property> parentChildContext)
+        if (context is ParentChildContext<PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder>, Property> parentChildContext)
         {
             if (value == "InstancePrefix")
             {
                 return Result.Success<FormattableStringParserResult>("instance.");
             }
 
-            return parentChildContext.ParentContext.Context.GetBuilderPlaceholderProcessorResultForParentChildContext(value, formattableStringParser, parentChildContext.ParentContext.Context, parentChildContext.ParentContext.Context.SourceModel, parentChildContext.ChildContext, parentChildContext.ParentContext.Context.SourceModel, _pipelinePlaceholderProcessors);
+            return parentChildContext.Parentcontext.Request.GetBuilderPlaceholderProcessorResultForParentChildContext(value, formattableStringParser, parentChildContext.ParentContext.Context, parentChildContext.Parentcontext.Request.SourceModel, parentChildContext.ChildContext, parentChildContext.Parentcontext.Request.SourceModel, _pipelinePlaceholderProcessors);
         }
 
         return Result.Continue<FormattableStringParserResult>();

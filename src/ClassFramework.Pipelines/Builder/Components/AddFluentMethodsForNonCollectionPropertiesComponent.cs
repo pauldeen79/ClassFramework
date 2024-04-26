@@ -26,16 +26,16 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComp
     {
         context = context.IsNotNull(nameof(context));
 
-        if (string.IsNullOrEmpty(context.Context.Settings.SetMethodNameFormatString))
+        if (string.IsNullOrEmpty(context.Request.Settings.SetMethodNameFormatString))
         {
             return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
 
-        foreach (var property in context.Context.GetSourceProperties().Where(x => context.Context.IsValidForFluentMethod(x) && !x.TypeName.FixTypeName().IsCollectionTypeName()))
+        foreach (var property in context.Request.GetSourceProperties().Where(x => context.Request.IsValidForFluentMethod(x) && !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var parentChildContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings);
+            var parentChildContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Request.Settings);
 
-            var results = context.Context.GetResultsForBuilderNonCollectionProperties(property, parentChildContext, _formattableStringParser);
+            var results = context.Request.GetResultsForBuilderNonCollectionProperties(property, parentChildContext, _formattableStringParser);
 
             var error = Array.Find(results, x => !x.Result.IsSuccessful());
             if (error is not null)
@@ -46,20 +46,20 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComp
 
             var builder = new MethodBuilder()
                 .WithName(results.First(x => x.Name == "MethodName").Result.Value!)
-                .WithReturnTypeName(context.Context.IsBuilderForAbstractEntity
-                      ? $"TBuilder{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
-                      : $"{results.First(x => x.Name == "Namespace").Result.Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
-                .AddParameters(context.Context.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!));
+                .WithReturnTypeName(context.Request.IsBuilderForAbstractEntity
+                      ? $"TBuilder{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
+                      : $"{results.First(x => x.Name == "Namespace").Result.Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!));
 
-            context.Context.AddNullChecks(builder, results);
+            context.Request.AddNullChecks(builder, results);
 
             builder.AddStringCodeStatements
             (
                 results.First(x => x.Name == "BuilderWithExpression").Result.Value!,
-                context.Context.ReturnValueStatementForFluentMethod
+                context.Request.ReturnValueStatementForFluentMethod
             );
 
-            context.Model.AddMethods(builder);
+            context.Response.AddMethods(builder);
         }
 
         return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());

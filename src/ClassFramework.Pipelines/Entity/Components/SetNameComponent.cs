@@ -27,8 +27,8 @@ public class SetNameComponent : IPipelineComponent<IConcreteTypeBuilder, EntityC
         context = context.IsNotNull(nameof(context));
 
         var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
-        resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Context.Settings.EntityNameFormatString, context.Context.FormatProvider, context));
-        resultSetBuilder.Add(NamedResults.Namespace, () => context.Context.GetMappingMetadata(context.Context.SourceModel.GetFullName()).GetFormattableStringParserResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
+        resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context));
+        resultSetBuilder.Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetFormattableStringParserResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context)));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());
@@ -40,7 +40,7 @@ public class SetNameComponent : IPipelineComponent<IConcreteTypeBuilder, EntityC
 
         context.Model
             .WithName(results.First(x => x.Name == NamedResults.Name).Result.Value!)
-            .WithNamespace(context.Context.MapNamespace(results.First(x => x.Name == NamedResults.Namespace).Result.Value!));
+            .WithNamespace(context.Request.MapNamespace(results.First(x => x.Name == NamedResults.Namespace).Result.Value!));
 
         return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }

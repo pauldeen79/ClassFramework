@@ -26,7 +26,7 @@ public class AddPublicParameterlessConstructorComponent : IPipelineComponent<ICo
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.AddPublicParameterlessConstructor)
+        if (!context.Request.Settings.AddPublicParameterlessConstructor)
         {
             return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
@@ -37,15 +37,15 @@ public class AddPublicParameterlessConstructorComponent : IPipelineComponent<ICo
             return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(ctorResult));
         }
 
-        context.Model.AddConstructors(ctorResult.Value!);
+        context.Response.AddConstructors(ctorResult.Value!);
 
         return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }
 
     private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
     {
-        var initializationStatements = context.Context.SourceModel.Properties
-            .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings))
+        var initializationStatements = context.Request.SourceModel.Properties
+            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings))
             .Select(x => GenerateDefaultValueStatement(x, context))
             .ToArray();
 
@@ -66,7 +66,7 @@ public class AddPublicParameterlessConstructorComponent : IPipelineComponent<ICo
             property.TypeName.FixTypeName().IsCollectionTypeName()
                 ? "{EntityMemberName} = new {CollectionTypeName}<{TypeName.GenericArguments}>();"
                 : "{EntityMemberName} = {DefaultValue};",
-            context.Context.FormatProvider,
-            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, EntityContext>, Property>(context, property, context.Context.Settings)
+            context.Request.FormatProvider,
+            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, EntityContext>, Property>(context, property, context.Request.Settings)
         ).TransformValue(x => x.ToString());
 }

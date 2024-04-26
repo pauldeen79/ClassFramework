@@ -12,17 +12,17 @@ public class AddInterfacesComponent : IPipelineComponent<TypeBaseBuilder, Reflec
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CopyInterfaces)
+        if (!context.Request.Settings.CopyInterfaces)
         {
             return Task.FromResult(Result.Continue<TypeBaseBuilder>());
         }
 
-        context.Model.AddInterfaces(
-            context.Context.SourceModel.GetInterfaces()
-                .Where(x => !(context.Context.SourceModel.IsRecord() && x.FullName.StartsWith($"System.IEquatable`1[[{context.Context.SourceModel.FullName}")))
-                .Select(x => context.Context.GetMappedTypeName(x, context.Context.SourceModel))
-                .Where(x => context.Context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-                .Select(x => context.Context.MapTypeName(x))
+        context.Response.AddInterfaces(
+            context.Request.SourceModel.GetInterfaces()
+                .Where(x => !(context.Request.SourceModel.IsRecord() && x.FullName.StartsWith($"System.IEquatable`1[[{context.Request.SourceModel.FullName}")))
+                .Select(x => context.Request.GetMappedTypeName(x, context.Request.SourceModel))
+                .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+                .Select(x => context.Request.MapTypeName(x))
         );
 
         return Task.FromResult(Result.Continue<TypeBaseBuilder>());

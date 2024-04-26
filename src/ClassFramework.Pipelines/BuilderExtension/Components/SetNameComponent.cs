@@ -9,11 +9,11 @@ public class SetNameComponentBuilder : IBuilderExtensionComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderExtensionContext> Build()
+    public IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder> Build()
         => new SetNameComponent(_formattableStringParser);
 }
 
-public class SetNameComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderExtensionContext>
+public class SetNameComponent : IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,26 +22,26 @@ public class SetNameComponent : IPipelineComponent<IConcreteTypeBuilder, Builder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
-        resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNameFormatString, context.Context.FormatProvider, context));
-        resultSetBuilder.Add(NamedResults.Namespace, () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNamespaceFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.BuilderExtensionsNameFormatString, context.Request.FormatProvider, context));
+        resultSetBuilder.Add(NamedResults.Namespace, () => _formattableStringParser.Parse(context.Request.Settings.BuilderExtensionsNamespaceFormatString, context.Request.FormatProvider, context));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(error.Result));
+            return Task.FromResult<Result>(error.Result);
         }
 
-        context.Model
+        context.Response
             .WithName(results.First(x => x.Name == NamedResults.Name).Result.Value!)
             .WithNamespace(results.First(x => x.Name == NamedResults.Namespace).Result.Value!);
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

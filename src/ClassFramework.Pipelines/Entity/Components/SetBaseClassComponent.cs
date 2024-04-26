@@ -14,7 +14,7 @@ public class SetBaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, En
 
         if (context.Model is IBaseClassContainerBuilder baseClassContainerBuilder)
         {
-            baseClassContainerBuilder.WithBaseClass(context.Context.SourceModel.GetEntityBaseClass(context.Context.Settings.EnableInheritance, context.Context.Settings.BaseClass));
+            baseClassContainerBuilder.WithBaseClass(context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass));
         }
 
         return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());

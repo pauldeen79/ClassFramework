@@ -195,12 +195,12 @@ public static class PropertyExtensions
             return Result.Success<FormattableStringParserResult>(property.ParentTypeFullName);
         }
 
-        var metadata = context.Context.GetMappingMetadata(property.ParentTypeFullName);
+        var metadata = context.Request.GetMappingMetadata(property.ParentTypeFullName);
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeNamespace);
 
         if (string.IsNullOrEmpty(ns))
         {
-            return Result.Success<FormattableStringParserResult>(context.Context.MapTypeName(property.ParentTypeFullName.FixTypeName()));
+            return Result.Success<FormattableStringParserResult>(context.Request.MapTypeName(property.ParentTypeFullName.FixTypeName()));
         }
 
         var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ParentTypeName.ClassName}");
@@ -215,8 +215,8 @@ public static class PropertyExtensions
         return formattableStringParser.Parse
         (
             newFullName,
-            context.Context.FormatProvider,
-            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
+            context.Request.FormatProvider,
+            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Request.Settings)
         );
     }
 

@@ -2,18 +2,18 @@
 
 public class SetStaticComponentBuilder : IBuilderExtensionComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderExtensionContext> Build()
+    public IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder> Build()
         => new SetStaticComponent();
 }
 
-public class SetStaticComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderExtensionContext>
+public class SetStaticComponent : IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        (context.Model as IReferenceTypeBuilder)?.WithStatic();
+        (context.Response as IReferenceTypeBuilder)?.WithStatic();
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

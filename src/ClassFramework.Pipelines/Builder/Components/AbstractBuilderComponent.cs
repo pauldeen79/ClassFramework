@@ -26,9 +26,9 @@ public class AbstractBuilderComponent : IPipelineComponent<IConcreteTypeBuilder,
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Context.IsBuilderForAbstractEntity /*&& context.Context.IsAbstractBuilder*/)
+        if (context.Request.IsBuilderForAbstractEntity /*&& context.Request.IsAbstractBuilder*/)
         {
-            var nameResult = _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, context);
+            var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context);
             if (!nameResult.IsSuccessful())
             {
                 return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(nameResult));
@@ -36,16 +36,16 @@ public class AbstractBuilderComponent : IPipelineComponent<IConcreteTypeBuilder,
 
             if (context.Model is not ClassBuilder classBuilder)
             {
-                return Task.FromResult(Result.Invalid<IConcreteTypeBuilder>($"You can only create abstract classes. The type of model ({context.Model.GetType().FullName}) is not a ClassBuilder"));
+                return Task.FromResult(Result.Invalid<IConcreteTypeBuilder>($"You can only create abstract classes. The type of model ({context.Response.GetType().FullName}) is not a ClassBuilder"));
             }
 
             classBuilder.WithAbstract();
 
-            if (!context.Context.Settings.IsForAbstractBuilder)
+            if (!context.Request.Settings.IsForAbstractBuilder)
             {
                 classBuilder
                     .AddGenericTypeArguments("TBuilder", "TEntity")
-                    .AddGenericTypeArgumentConstraints($"where TEntity : {context.Context.SourceModel.GetFullName()}")
+                    .AddGenericTypeArgumentConstraints($"where TEntity : {context.Request.SourceModel.GetFullName()}")
                     .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity>")
                     .WithAbstract();
             }

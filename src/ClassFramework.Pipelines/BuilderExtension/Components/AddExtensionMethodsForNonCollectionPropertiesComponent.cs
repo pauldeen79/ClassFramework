@@ -9,11 +9,11 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponentBuilder : IBu
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderExtensionContext> Build()
+    public IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder> Build()
         => new AddExtensionMethodsForNonCollectionPropertiesComponent(_formattableStringParser);
 }
 
-public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderExtensionContext>
+public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,29 +22,29 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineC
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (string.IsNullOrEmpty(context.Context.Settings.SetMethodNameFormatString))
+        if (string.IsNullOrEmpty(context.Request.Settings.SetMethodNameFormatString))
         {
-            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
-        foreach (var property in context.Context.GetSourceProperties().Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
+        foreach (var property in context.Request.GetSourceProperties().Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var parentChildContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext>, Property>(context, property, context.Context.Settings);
+            var parentChildContext = new ParentChildContext<PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings);
 
-            var results = context.Context.GetResultsForBuilderNonCollectionProperties(property, parentChildContext, _formattableStringParser);
+            var results = context.Request.GetResultsForBuilderNonCollectionProperties(property, parentChildContext, _formattableStringParser);
 
             var error = Array.Find(results, x => !x.Result.IsSuccessful());
             if (error is not null)
             {
                 // Error in formattable string parsing
-                return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(error.Result));
+                return Task.FromResult<Result>(error.Result);
             }
 
-            var returnType = $"{results.First(x => x.Name == "Namespace").Result.Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}";
+            var returnType = $"{results.First(x => x.Name == "Namespace").Result.Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
 
             var builder = new MethodBuilder()
                 .WithName(results.First(x => x.Name == "MethodName").Result.Value!)
@@ -54,9 +54,9 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineC
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
-                .AddParameters(context.Context.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!));
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!));
 
-            context.Context.AddNullChecks(builder, results);
+            context.Request.AddNullChecks(builder, results);
 
             builder.AddStringCodeStatements
             (
@@ -64,9 +64,9 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineC
                 "return instance;"
             );
 
-            context.Model.AddMethods(builder);
+            context.Response.AddMethods(builder);
         }
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

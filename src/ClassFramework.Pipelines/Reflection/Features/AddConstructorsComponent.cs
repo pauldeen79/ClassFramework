@@ -12,7 +12,7 @@ public class AddConstructorsComponent : IPipelineComponent<TypeBaseBuilder, Refl
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CreateConstructors
+        if (!context.Request.Settings.CreateConstructors
             || context.Model is not IConstructorsContainerBuilder constructorsContainerBuilder)
         {
             return Task.FromResult(Result.Continue<TypeBaseBuilder>());
@@ -24,7 +24,7 @@ public class AddConstructorsComponent : IPipelineComponent<TypeBaseBuilder, Refl
     }
 
     private static IEnumerable<ConstructorBuilder> GetConstructors(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
-        => context.Context.SourceModel.GetConstructors()
+        => context.Request.SourceModel.GetConstructors()
             .Select(x => new ConstructorBuilder()
                 .AddParameters
                 (
@@ -34,16 +34,16 @@ public class AddConstructorsComponent : IPipelineComponent<TypeBaseBuilder, Refl
                         new ParameterBuilder()
                             .WithName(p.Name)
                             .WithTypeName(p.ParameterType.FullName.FixTypeName())
-                            .SetTypeContainerPropertiesFrom(p.IsNullable(), p.ParameterType, context.Context.GetMappedTypeName)
+                            .SetTypeContainerPropertiesFrom(p.IsNullable(), p.ParameterType, context.Request.GetMappedTypeName)
                             .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
-                                x => x.ConvertToDomainAttribute(context.Context.InitializeDelegate),
-                                context.Context.Settings.CopyAttributes,
-                                context.Context.Settings.CopyAttributePredicate))
+                                x => x.ConvertToDomainAttribute(context.Request.InitializeDelegate),
+                                context.Request.Settings.CopyAttributes,
+                                context.Request.Settings.CopyAttributePredicate))
                     )
                 )
                 .AddAttributes(x.GetCustomAttributes(true).ToAttributes(
-                    x => x.ConvertToDomainAttribute(context.Context.InitializeDelegate),
-                    context.Context.Settings.CopyAttributes,
-                    context.Context.Settings.CopyAttributePredicate))
+                    x => x.ConvertToDomainAttribute(context.Request.InitializeDelegate),
+                    context.Request.Settings.CopyAttributes,
+                    context.Request.Settings.CopyAttributePredicate))
         );
 }

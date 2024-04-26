@@ -26,7 +26,7 @@ public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuild
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.AddFullConstructor)
+        if (!context.Request.Settings.AddFullConstructor)
         {
             return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
@@ -37,11 +37,11 @@ public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuild
             return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(ctorResult));
         }
 
-        context.Model.AddConstructors(ctorResult.Value!);
+        context.Response.AddConstructors(ctorResult.Value!);
 
-        if (context.Context.Settings.AddValidationCode() == ArgumentValidationType.CustomValidationCode)
+        if (context.Request.Settings.AddValidationCode() == ArgumentValidationType.CustomValidationCode)
         {
-            context.Model.AddMethods(new MethodBuilder().WithName("Validate").WithPartial().WithVisibility(Visibility.Private));
+            context.Response.AddMethods(new MethodBuilder().WithName("Validate").WithPartial().WithVisibility(Visibility.Private));
         }
 
         return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
@@ -49,9 +49,9 @@ public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuild
 
     private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
     {
-        var initializationResults = context.Context.SourceModel.Properties
-            .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
-            .Select(property => _formattableStringParser.Parse("this.{EntityMemberName} = {InitializationExpression}{NullableRequiredSuffix};", context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, EntityContext>, Property>(context, property, context.Context.Settings)))
+        var initializationResults = context.Request.SourceModel.Properties
+            .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
+            .Select(property => _formattableStringParser.Parse("this.{EntityMemberName} = {InitializationExpression}{NullableRequiredSuffix};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, EntityContext>, Property>(context, property, context.Request.Settings)))
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 
@@ -62,17 +62,17 @@ public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuild
         }
 
         return Result.Success(new ConstructorBuilder()
-            .WithProtected(context.Context.Settings.EnableInheritance && context.Context.Settings.IsAbstract)
-            .AddParameters(context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, n => context.Context.MapTypeName(n, MetadataNames.CustomEntityInterfaceTypeName)))
+            .WithProtected(context.Request.Settings.EnableInheritance && context.Request.Settings.IsAbstract)
+            .AddParameters(context.Request.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Request.FormatProvider, n => context.Request.MapTypeName(n, MetadataNames.CustomEntityInterfaceTypeName)))
             .AddStringCodeStatements
             (
-                context.Context.SourceModel.Properties
-                    .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
-                    .Where(property => context.Context.Settings.AddNullChecks && context.Context.Settings.AddValidationCode() == ArgumentValidationType.None && context.Context.GetMappingMetadata(property.TypeName).GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
-                    .Select(property => context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
+                context.Request.SourceModel.Properties
+                    .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
+                    .Where(property => context.Request.Settings.AddNullChecks && context.Request.Settings.AddValidationCode() == ArgumentValidationType.None && context.Request.GetMappingMetadata(property.TypeName).GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
+                    .Select(property => context.Request.CreateArgumentNullException(property.Name.ToPascalCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
             .AddStringCodeStatements(initializationResults.Select(x => x.Value!.ToString()))
-            .AddStringCodeStatements(context.Context.CreateEntityValidationCode())
+            .AddStringCodeStatements(context.Request.CreateEntityValidationCode())
             .WithChainCall(context.CreateEntityChainCall()));
     }
 }

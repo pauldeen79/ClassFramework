@@ -11,7 +11,7 @@ public class PartialComponent : IPipelineComponent<IConcreteTypeBuilder, EntityC
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.WithPartial(context.Context.Settings.CreateAsPartial);
+        context.Response.WithPartial(context.Request.Settings.CreateAsPartial);
 
         return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }

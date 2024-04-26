@@ -12,19 +12,19 @@ public class AddPropertiesComponent : IPipelineComponent<InterfaceBuilder, Inter
     {
         context = context.IsNotNull(nameof(context));
 
-        var properties = context.Context.SourceModel
+        var properties = context.Request.SourceModel
             .Properties
-            .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
+            .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
             .ToArray();
 
-        context.Model.AddProperties
+        context.Response.AddProperties
         (
             properties.Select
             (
-                property => context.Context.CreatePropertyForEntity(property)
+                property => context.Request.CreatePropertyForEntity(property)
                     .WithHasGetter(property.HasGetter)
                     .WithHasInitializer(false)
-                    .WithHasSetter(property.HasSetter && context.Context.Settings.AddSetters)
+                    .WithHasSetter(property.HasSetter && context.Request.Settings.AddSetters)
             )
         );
 

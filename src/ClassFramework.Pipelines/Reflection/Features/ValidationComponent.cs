@@ -11,8 +11,8 @@ public class ValidationComponent : IPipelineComponent<TypeBaseBuilder, Reflectio
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.AllowGenerationWithoutProperties
-            && context.Context.SourceModel.GetProperties().Length == 0)
+        if (!context.Request.Settings.AllowGenerationWithoutProperties
+            && context.Request.SourceModel.GetProperties().Length == 0)
         {
             return Task.FromResult(Result.Invalid<TypeBaseBuilder>("To create a class, there must be at least one property"));
         }

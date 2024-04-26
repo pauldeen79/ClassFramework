@@ -12,13 +12,13 @@ public class SetVisibilityComponent : IPipelineComponent<TypeBaseBuilder, Reflec
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Context.SourceModel.IsPublic)
+        if (context.Request.SourceModel.IsPublic)
         {
-            context.Model.WithVisibility(Visibility.Public);
+            context.Response.WithVisibility(Visibility.Public);
         }
         else
         {
-            context.Model.WithVisibility(context.Context.SourceModel.IsNotPublic
+            context.Response.WithVisibility(context.Request.SourceModel.IsNotPublic
                 ? Visibility.Internal
                 : Visibility.Private);
         }

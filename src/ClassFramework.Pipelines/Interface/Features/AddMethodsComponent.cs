@@ -12,16 +12,16 @@ public class AddMethodsComponent : IPipelineComponent<InterfaceBuilder, Interfac
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CopyMethods)
+        if (!context.Request.Settings.CopyMethods)
         {
             return Task.FromResult(Result.Continue<InterfaceBuilder>());
         }
 
-        context.Model.AddMethods(context.Context.SourceModel.Methods
-            .Where(x => context.Context.Settings.CopyMethodPredicate is null || context.Context.Settings.CopyMethodPredicate(context.Context.SourceModel, x))
+        context.Response.AddMethods(context.Request.SourceModel.Methods
+            .Where(x => context.Request.Settings.CopyMethodPredicate is null || context.Request.Settings.CopyMethodPredicate(context.Request.SourceModel, x))
             .Select(x => x.ToBuilder()
-                .WithReturnTypeName(context.Context.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(context.Context.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))
-                .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = context.Context.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
+                .WithReturnTypeName(context.Request.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(context.Request.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))
+                .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = context.Request.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
             ));
 
         return Task.FromResult(Result.Continue<InterfaceBuilder>());

@@ -12,14 +12,14 @@ public class AddAttributesComponent : IPipelineComponent<InterfaceBuilder, Inter
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CopyAttributes)
+        if (!context.Request.Settings.CopyAttributes)
         {
             return Task.FromResult(Result.Continue<InterfaceBuilder>());
         }
 
-        context.Model.AddAttributes(context.Context.SourceModel.Attributes
-            .Where(x => context.Context.Settings.CopyAttributePredicate?.Invoke(x) ?? true)
-            .Select(x => context.Context.MapAttribute(x).ToBuilder()));
+        context.Response.AddAttributes(context.Request.SourceModel.Attributes
+            .Where(x => context.Request.Settings.CopyAttributePredicate?.Invoke(x) ?? true)
+            .Select(x => context.Request.MapAttribute(x).ToBuilder()));
 
         return Task.FromResult(Result.Continue<InterfaceBuilder>());
     }

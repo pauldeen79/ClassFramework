@@ -14,7 +14,7 @@ public class AbstractEntityComponent : IPipelineComponent<IConcreteTypeBuilder, 
 
         if (context.Model is ClassBuilder cls)
         {
-            cls.WithAbstract(context.Context.IsAbstract);
+            cls.WithAbstract(context.Request.IsAbstract);
         }
 
         return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());

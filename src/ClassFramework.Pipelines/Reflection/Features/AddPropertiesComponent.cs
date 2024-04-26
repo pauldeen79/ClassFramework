@@ -12,26 +12,26 @@ public class AddPropertiesComponent : IPipelineComponent<TypeBaseBuilder, Reflec
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.AddProperties(GetProperties(context));
+        context.Response.AddProperties(GetProperties(context));
 
         return Task.FromResult(Result.Continue<TypeBaseBuilder>());
     }
 
     private static IEnumerable<PropertyBuilder> GetProperties(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
-        => context.Context.SourceModel.GetPropertiesRecursively().Select
+        => context.Request.SourceModel.GetPropertiesRecursively().Select
         (
             p => new PropertyBuilder()
                 .WithName(p.Name)
-                .WithTypeName(context.Context.GetMappedTypeName(p.PropertyType, p))
+                .WithTypeName(context.Request.GetMappedTypeName(p.PropertyType, p))
                 .WithHasGetter(p.GetGetMethod() is not null)
                 .WithHasSetter(p.GetSetMethod() is not null)
                 .WithHasInitializer(p.IsInitOnly())
-                .WithParentTypeFullName(context.Context.MapTypeName(p.DeclaringType.GetParentTypeFullName()))
-                .SetTypeContainerPropertiesFrom(p.IsNullable(), p.PropertyType, context.Context.GetMappedTypeName)
+                .WithParentTypeFullName(context.Request.MapTypeName(p.DeclaringType.GetParentTypeFullName()))
+                .SetTypeContainerPropertiesFrom(p.IsNullable(), p.PropertyType, context.Request.GetMappedTypeName)
                 .WithVisibility(Array.Exists(p.GetAccessors(), m => m.IsPublic).ToVisibility())
                 .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
-                    x => x.ConvertToDomainAttribute(context.Context.InitializeDelegate),
-                    context.Context.Settings.CopyAttributes,
-                    context.Context.Settings.CopyAttributePredicate))
+                    x => x.ConvertToDomainAttribute(context.Request.InitializeDelegate),
+                    context.Request.Settings.CopyAttributes,
+                    context.Request.Settings.CopyAttributePredicate))
         );
 }

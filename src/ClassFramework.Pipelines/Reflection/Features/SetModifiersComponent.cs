@@ -15,15 +15,15 @@ public class SetModifiersComponent : IPipelineComponent<TypeBaseBuilder, Reflect
         if (context.Model is IReferenceTypeBuilder referenceTypeBuilder)
         {
             referenceTypeBuilder
-                .WithStatic(context.Context.SourceModel.IsAbstract && context.Context.SourceModel.IsSealed)
-                .WithSealed(context.Context.SourceModel.IsSealed)
-                .WithPartial(context.Context.Settings.CreateAsPartial)
-                .WithAbstract(context.Context.SourceModel.IsAbstract);
+                .WithStatic(context.Request.SourceModel.IsAbstract && context.Request.SourceModel.IsSealed)
+                .WithSealed(context.Request.SourceModel.IsSealed)
+                .WithPartial(context.Request.Settings.CreateAsPartial)
+                .WithAbstract(context.Request.SourceModel.IsAbstract);
         }
         
         if (context.Model is IRecordContainerBuilder recordContainerBuilder)
         {
-            recordContainerBuilder.WithRecord(context.Context.SourceModel.IsRecord());
+            recordContainerBuilder.WithRecord(context.Request.SourceModel.IsRecord());
         }
 
         return Task.FromResult(Result.Continue<TypeBaseBuilder>());

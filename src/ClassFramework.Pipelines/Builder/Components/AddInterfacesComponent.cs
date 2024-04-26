@@ -26,16 +26,16 @@ public class AddInterfacesComponent : IPipelineComponent<IConcreteTypeBuilder, B
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CopyInterfaces)
+        if (!context.Request.Settings.CopyInterfaces)
         {
             return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
         }
 
-        var results = context.Context.SourceModel.Interfaces
-            .Where(x => context.Context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+        var results = context.Request.SourceModel.Interfaces
+            .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Select(x =>
             {
-                var metadata = context.Context.GetMappingMetadata(x);
+                var metadata = context.Request.GetMappingMetadata(x);
                 var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
 
                 if (!string.IsNullOrEmpty(ns))
@@ -47,11 +47,11 @@ public class AddInterfacesComponent : IPipelineComponent<IConcreteTypeBuilder, B
                     return _formattableStringParser.Parse
                     (
                         newFullName,
-                        context.Context.FormatProvider,
-                        new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
+                        context.Request.FormatProvider,
+                        new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Request.Settings)
                     ).TransformValue(x => x.ToString());
                 }
-                return Result.Success(context.Context.MapTypeName(x.FixTypeName()));
+                return Result.Success(context.Request.MapTypeName(x.FixTypeName()));
             })
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
@@ -62,7 +62,7 @@ public class AddInterfacesComponent : IPipelineComponent<IConcreteTypeBuilder, B
             return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(error));
         }
 
-        context.Model.AddInterfaces(results.Where(x => !string.IsNullOrEmpty(x.Value)).Select(x => x.Value!));
+        context.Response.AddInterfaces(results.Where(x => !string.IsNullOrEmpty(x.Value)).Select(x => x.Value!));
 
         return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }

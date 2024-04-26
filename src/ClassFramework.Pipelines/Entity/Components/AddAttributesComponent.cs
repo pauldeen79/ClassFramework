@@ -12,7 +12,7 @@ public class AddAttributesComponent : IPipelineComponent<IConcreteTypeBuilder, E
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.AddAttributes(context.Context.GetAtributes(context.Context.SourceModel.Attributes));
+        context.Response.AddAttributes(context.Request.GetAtributes(context.Request.SourceModel.Attributes));
 
         return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
     }

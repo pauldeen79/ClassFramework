@@ -14,7 +14,7 @@ public class SetRecordComponent : IPipelineComponent<IConcreteTypeBuilder, Entit
 
         if (context.Model is IRecordContainerBuilder recordContainerBuilder)
         {
-            recordContainerBuilder.WithRecord(context.Context.Settings.CreateRecord);
+            recordContainerBuilder.WithRecord(context.Request.Settings.CreateRecord);
         }
 
         return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());

@@ -12,24 +12,24 @@ public class AddMethodsComponent : IPipelineComponent<TypeBaseBuilder, Reflectio
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.AddMethods(GetMethods(context));
+        context.Response.AddMethods(GetMethods(context));
 
         return Task.FromResult(Result.Continue<TypeBaseBuilder>());
     }
 
     private static IEnumerable<MethodBuilder> GetMethods(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
-        => context.Context.SourceModel.GetMethodsRecursively()
+        => context.Request.SourceModel.GetMethodsRecursively()
             .Where(m =>
                 m.Name != "<Clone>$"
                 && !m.Name.StartsWith("get_")
                 && !m.Name.StartsWith("set_")
                 && m.DeclaringType != typeof(object)
-                && m.DeclaringType == context.Context.SourceModel)
+                && m.DeclaringType == context.Request.SourceModel)
             .Select
             (
                 m => new MethodBuilder()
                     .WithName(m.Name)
-                    .WithReturnTypeName(context.Context.GetMappedTypeName(m.ReturnType, m))
+                    .WithReturnTypeName(context.Request.GetMappedTypeName(m.ReturnType, m))
                     .WithVisibility(m.IsPublic.ToVisibility())
                     .WithStatic(m.IsStatic)
                     .WithVirtual(m.IsVirtual)
@@ -41,17 +41,17 @@ public class AddMethodsComponent : IPipelineComponent<TypeBaseBuilder, Reflectio
                     (
                         p => new ParameterBuilder()
                             .WithName(p.Name)
-                            .WithTypeName(context.Context.GetMappedTypeName(p.ParameterType, m))
-                            .SetTypeContainerPropertiesFrom(p.IsNullable(), p.ParameterType, context.Context.GetMappedTypeName)
+                            .WithTypeName(context.Request.GetMappedTypeName(p.ParameterType, m))
+                            .SetTypeContainerPropertiesFrom(p.IsNullable(), p.ParameterType, context.Request.GetMappedTypeName)
                             .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
-                                x => x.ConvertToDomainAttribute(context.Context.InitializeDelegate),
-                                context.Context.Settings.CopyAttributes,
-                                context.Context.Settings.CopyAttributePredicate))
+                                x => x.ConvertToDomainAttribute(context.Request.InitializeDelegate),
+                                context.Request.Settings.CopyAttributes,
+                                context.Request.Settings.CopyAttributePredicate))
 
                     ))
                     .AddAttributes(m.GetCustomAttributes(true).ToAttributes(
-                        x => x.ConvertToDomainAttribute(context.Context.InitializeDelegate),
-                        context.Context.Settings.CopyAttributes,
-                        context.Context.Settings.CopyAttributePredicate))
+                        x => x.ConvertToDomainAttribute(context.Request.InitializeDelegate),
+                        context.Request.Settings.CopyAttributes,
+                        context.Request.Settings.CopyAttributePredicate))
             );
 }

@@ -11,8 +11,8 @@ public class ValidationComponent : IPipelineComponent<InterfaceBuilder, Interfac
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.AllowGenerationWithoutProperties
-            && context.Context.SourceModel.Properties.Count == 0)
+        if (!context.Request.Settings.AllowGenerationWithoutProperties
+            && context.Request.SourceModel.Properties.Count == 0)
         {
             return Task.FromResult(Result.Invalid<InterfaceBuilder>("To create an interface, there must be at least one property"));
         }

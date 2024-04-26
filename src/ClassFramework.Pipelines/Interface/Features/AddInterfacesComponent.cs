@@ -12,14 +12,14 @@ public class AddInterfacesComponent : IPipelineComponent<InterfaceBuilder, Inter
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CopyInterfaces)
+        if (!context.Request.Settings.CopyInterfaces)
         {
             return Task.FromResult(Result.Continue<InterfaceBuilder>());
         }
 
-        context.Model.AddInterfaces(context.Context.SourceModel.Interfaces
-            .Where(x => context.Context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-            .Select(x => context.Context.MapTypeName(x.FixTypeName()))
+        context.Response.AddInterfaces(context.Request.SourceModel.Interfaces
+            .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+            .Select(x => context.Request.MapTypeName(x.FixTypeName()))
             .Where(x => !string.IsNullOrEmpty(x)));
 
         return Task.FromResult(Result.Continue<InterfaceBuilder>());
