@@ -50,10 +50,10 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetRequiredService<IPipeline<IConcreteTypeBuilder, BuilderContext>>();
+            var builder = scope.ServiceProvider.GetRequiredService<IPipeline<BuilderContext, IConcreteTypeBuilder>>();
 
             // Assert
-            builder.Should().BeOfType<Pipeline<IConcreteTypeBuilder, BuilderContext>>();
+            builder.Should().BeOfType<Pipeline<BuilderContext, IConcreteTypeBuilder>>();
         }
 
         [Fact]
@@ -84,10 +84,10 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetRequiredService<IPipeline<IConcreteTypeBuilder, EntityContext>>();
+            var builder = scope.ServiceProvider.GetRequiredService<IPipeline<EntityContext, IConcreteTypeBuilder>>();
 
             // Assert
-            builder.Should().BeOfType<Pipeline<IConcreteTypeBuilder, EntityContext>>();
+            builder.Should().BeOfType<Pipeline<EntityContext, IConcreteTypeBuilder>>();
         }
 
         [Fact]
@@ -101,7 +101,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetRequiredService<IPipelineBuilder<TypeBaseBuilder, ReflectionContext>>();
+            var builder = scope.ServiceProvider.GetRequiredService<IPipelineBuilder<ReflectionContext, TypeBaseBuilder>>();
 
             // Assert
             builder.Should().BeOfType<Pipelines.Reflection.PipelineBuilder>();
@@ -118,10 +118,10 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetRequiredService<IPipeline<TypeBaseBuilder, ReflectionContext>>();
+            var builder = scope.ServiceProvider.GetRequiredService<IPipeline<ReflectionContext, TypeBaseBuilder>>();
 
             // Assert
-            builder.Should().BeOfType<Pipeline<TypeBaseBuilder, ReflectionContext>>();
+            builder.Should().BeOfType<Pipeline<ReflectionContext, TypeBaseBuilder>>();
         }
     }
 }

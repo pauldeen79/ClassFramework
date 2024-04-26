@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Reflection;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBaseBuilder, ReflectionContext>>
+public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ReflectionContext, TypeBaseBuilder>>
 {
     public class IntegrationTests : PipelineBuilderTests
     {
@@ -17,7 +17,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(model, context);
+            var result = await sut.Process(context, model);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -46,7 +46,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(model, context);
+            var result = await sut.Process(context, model);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -73,7 +73,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(model, context);
+            var result = await sut.Process(context, model);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -98,7 +98,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(model, context);
+            var result = await sut.Process(context, model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
