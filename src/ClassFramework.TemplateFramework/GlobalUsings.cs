@@ -23,6 +23,7 @@ global using ClassFramework.TemplateFramework.Abstractions;
 global using ClassFramework.TemplateFramework.Builders;
 global using ClassFramework.TemplateFramework.Extensions;
 global using ClassFramework.TemplateFramework.Models;
+global using ClassFramework.TemplateFramework.RequestHandlers;
 global using ClassFramework.TemplateFramework.Requests;
 global using ClassFramework.TemplateFramework.Templates;
 global using ClassFramework.TemplateFramework.Templates.CodeStatements;
