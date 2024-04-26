@@ -40,10 +40,10 @@ public static class ServiceCollectionExtensions
             .AddChildTemplate<StringCodeStatementTemplate>(typeof(StringCodeStatement))
 
             // Add request handlers for using pipelines from CsharpClassGeneratorPipelineCodeGenerationProviderBase
-            .AddTransient<IRequestHandler<PipelineRequest<IConcreteTypeBuilder, BuilderExtensionContext>, Result>, PipelineRequestHandler<IConcreteTypeBuilder, BuilderExtensionContext>>()
-            .AddTransient<IRequestHandler<PipelineRequest<IConcreteTypeBuilder, BuilderContext>, Result>, PipelineRequestHandler<IConcreteTypeBuilder, BuilderContext>>()
-            .AddTransient<IRequestHandler<PipelineRequest<IConcreteTypeBuilder, EntityContext>, Result>, PipelineRequestHandler<IConcreteTypeBuilder, EntityContext>>()
-            .AddTransient<IRequestHandler<PipelineRequest<InterfaceBuilder, InterfaceContext>, Result>, PipelineRequestHandler<InterfaceBuilder, InterfaceContext>>()
-            .AddTransient<IRequestHandler<PipelineRequest<TypeBaseBuilder, ReflectionContext>, Result>, PipelineRequestHandler<TypeBaseBuilder, ReflectionContext>>()
+            .AddTransient<IRequestHandler<PipelineRequest<BuilderExtensionContext, IConcreteTypeBuilder>, Result<IConcreteTypeBuilder>>, PipelineRequestHandler<ClassBuilder, BuilderExtensionContext, IConcreteTypeBuilder>>()
+            .AddTransient<IRequestHandler<PipelineRequest<BuilderContext, IConcreteTypeBuilder>, Result<IConcreteTypeBuilder>>, PipelineRequestHandler<ClassBuilder, BuilderContext, IConcreteTypeBuilder>>()
+            .AddTransient<IRequestHandler<PipelineRequest<EntityContext, IConcreteTypeBuilder>, Result<IConcreteTypeBuilder>>, PipelineRequestHandler<ClassBuilder, EntityContext, IConcreteTypeBuilder>>()
+            .AddTransient<IRequestHandler<PipelineRequest<InterfaceContext, InterfaceBuilder>, Result<InterfaceBuilder>>, PipelineRequestHandler<InterfaceBuilder, InterfaceContext, InterfaceBuilder>>()
+            .AddTransient<IRequestHandler<PipelineRequest<ReflectionContext, TypeBaseBuilder>, Result<TypeBaseBuilder>>, PipelineRequestHandler<InterfaceBuilder, ReflectionContext, TypeBaseBuilder>>()
         ;
 }

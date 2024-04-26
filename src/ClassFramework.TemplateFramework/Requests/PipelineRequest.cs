@@ -1,16 +1,13 @@
 ﻿namespace ClassFramework.TemplateFramework.Requests;
 
-public class PipelineRequest<TModel, TContext> : IRequest<Result>
+public class PipelineRequest<TContext, TResponse> : IRequest<Result<TResponse>>
 {
-    public PipelineRequest(TModel model, TContext context)
+    public PipelineRequest(TContext context)
     {
-        Guard.IsNotNull(model);
         Guard.IsNotNull(context);
 
-        Model = model;
         Context = context;
     }
 
-    public TModel Model { get; }
     public TContext Context { get; }
 }
