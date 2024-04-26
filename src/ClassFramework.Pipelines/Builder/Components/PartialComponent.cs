@@ -2,17 +2,17 @@
 
 public class PartialComponentBuilder : IBuilderComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build() => new PartialComponent();
+    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build() => new PartialComponent();
 }
 
-public class PartialComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
+public class PartialComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Response.WithPartial(context.Request.Settings.CreateAsPartial);
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

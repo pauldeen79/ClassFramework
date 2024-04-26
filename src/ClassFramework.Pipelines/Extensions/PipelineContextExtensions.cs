@@ -2,11 +2,11 @@
 
 public static class PipelineContextExtensions
 {
-    public static Result<FormattableStringParserResult> CreateEntityInstanciation(this PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix)
+    public static Result<FormattableStringParserResult> CreateEntityInstanciation(this PipelineContext<BuilderContext, IConcreteTypeBuilder> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        var customEntityInstanciation = context.Context
+        var customEntityInstanciation = context.Request
             .GetMappingMetadata(context.Request.SourceModel.GetFullName())
             .GetStringValue(MetadataNames.CustomBuilderEntityInstanciation);
         if (!string.IsNullOrEmpty(customEntityInstanciation))
@@ -40,7 +40,7 @@ public static class PipelineContextExtensions
         return Result.Success<FormattableStringParserResult>($"new {ns}{context.Request.SourceModel.Name}{classNameSuffix}{context.Request.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
-    public static string CreateEntityChainCall<TModel>(this PipelineContext<TModel, EntityContext> context)
+    public static string CreateEntityChainCall<TModel>(this PipelineContext<EntityContext, TModel> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -53,9 +53,9 @@ public static class PipelineContextExtensions
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()));
 
-    private static Result<FormattableStringParserResult> GetConstructionMethodParameters<TModel>(PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor)
+    private static Result<FormattableStringParserResult> GetConstructionMethodParameters<TModel>(PipelineContext<BuilderContext, TModel> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor)
     {
-        var properties = context.Request.SourceModel.GetBuilderConstructorProperties(context.Context);
+        var properties = context.Request.SourceModel.GetBuilderConstructorProperties(context.Request);
 
         var results = properties.Select
         (
@@ -65,17 +65,17 @@ public static class PipelineContextExtensions
                 Source = property,
                 Result = formattableStringParser.Parse
                 (
-                    context.Context
+                    context.Request
                         .GetMappingMetadata(property.TypeName)
                         .GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, PlaceholderNames.NamePlaceholder),
                     context.Request.FormatProvider,
-                    new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Request.Settings)
+                    new ParentChildContext<PipelineContext<BuilderContext, TModel>, Property>(context, property, context.Request.Settings)
                 ),
                 CollectionInitializer = context.Request.GetMappingMetadata
                     (
                         property.TypeName.FixTypeName().WithoutProcessedGenerics() // i.e. List<> etc.
                     ).GetStringValue(MetadataNames.CustomCollectionInitialization, () => "[Expression]"),
-                Suffix = property.GetSuffix(context.Request.Settings.EnableNullableReferenceTypes, csharpExpressionDumper, context.Context)
+                Suffix = property.GetSuffix(context.Request.Settings.EnableNullableReferenceTypes, csharpExpressionDumper, context.Request)
             }
         ).TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful()).ToArray();
 

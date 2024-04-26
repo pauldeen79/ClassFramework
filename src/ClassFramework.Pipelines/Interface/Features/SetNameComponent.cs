@@ -9,11 +9,11 @@ public class SetNameComponentBuilder : IInterfaceComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<InterfaceBuilder, InterfaceContext> Build()
+    public IPipelineComponent<InterfaceContext, InterfaceBuilder> Build()
         => new SetNameComponent(_formattableStringParser);
 }
 
-public class SetNameComponent : IPipelineComponent<InterfaceBuilder, InterfaceContext>
+public class SetNameComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class SetNameComponent : IPipelineComponent<InterfaceBuilder, InterfaceCo
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<InterfaceBuilder>> Process(PipelineContext<InterfaceBuilder, InterfaceContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<InterfaceContext, InterfaceBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -35,13 +35,13 @@ public class SetNameComponent : IPipelineComponent<InterfaceBuilder, InterfaceCo
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Task.FromResult(Result.FromExistingResult<InterfaceBuilder>(error.Result));
+            return Task.FromResult<Result>(error.Result);
         }
 
-        context.Model
+        context.Response
             .WithName(results.First(x => x.Name == NamedResults.Name).Result.Value!)
             .WithNamespace(context.Request.MapNamespace(results.First(x => x.Name == NamedResults.Namespace).Result.Value!));
 
-        return Task.FromResult(Result.Continue<InterfaceBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

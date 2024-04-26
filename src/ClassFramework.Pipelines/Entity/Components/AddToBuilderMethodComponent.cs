@@ -9,11 +9,11 @@ public class AddToBuilderMethodComponentBuilder : IEntityComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<IConcreteTypeBuilder, EntityContext> Build()
+    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
         => new AddToBuilderMethodComponent(_formattableStringParser);
 }
 
-public class AddToBuilderMethodComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
+public class AddToBuilderMethodComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AddToBuilderMethodComponent : IPipelineComponent<IConcreteTypeBuild
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -37,13 +37,13 @@ public class AddToBuilderMethodComponent : IPipelineComponent<IConcreteTypeBuild
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(error.Result));
+            return Task.FromResult<Result>(error.Result);
         }
 
         var methodName = results.First(x => x.Name == "ToBuilderMethodName").Result.Value!;
         if (string.IsNullOrEmpty(methodName))
         {
-            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
         var typedMethodName = results.First(x => x.Name == "ToTypedBuilderMethodName").Result.Value!;
@@ -78,7 +78,7 @@ public class AddToBuilderMethodComponent : IPipelineComponent<IConcreteTypeBuild
             ? $"return {typedMethodName}();"
             : $"return new {builderConcreteTypeName}(this);";
 
-        context.Model
+        context.Response
             .AddMethods(new MethodBuilder()
                 .WithName(methodName)
                 .WithAbstract(context.Request.IsAbstract)
@@ -90,17 +90,17 @@ public class AddToBuilderMethodComponent : IPipelineComponent<IConcreteTypeBuild
             && context.Request.Settings.BaseClass is not null
             && !string.IsNullOrEmpty(typedMethodName))
         {
-            context.Model
+            context.Response
                 .AddMethods(new MethodBuilder()
                     .WithName(typedMethodName)
                     .WithReturnTypeName(builderConcreteTypeName)
                     .AddStringCodeStatements($"return new {builderConcreteTypeName}(this);"));
         }
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 
-    private static string GetBuilderTypeName(PipelineContext<IConcreteTypeBuilder, EntityContext> context, Result<string> builderInterfaceNamespaceResult, Result<string> concreteBuilderNamespaceResult, string builderConcreteName, string builderConcreteTypeName)
+    private static string GetBuilderTypeName(PipelineContext<EntityContext, IConcreteTypeBuilder> context, Result<string> builderInterfaceNamespaceResult, Result<string> concreteBuilderNamespaceResult, string builderConcreteName, string builderConcreteTypeName)
     {
         if (context.Request.Settings.InheritFromInterfaces)
         {

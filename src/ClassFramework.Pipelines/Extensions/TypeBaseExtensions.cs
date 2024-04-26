@@ -89,7 +89,7 @@ public static class TypeBaseExtensions
 
     public static IEnumerable<Result<FieldBuilder>> GetBuilderClassFields(
         this IType instance,
-        PipelineContext<IConcreteTypeBuilder, BuilderContext> context,
+        PipelineContext<BuilderContext, IConcreteTypeBuilder> context,
         IFormattableStringParser formattableStringParser)
     {
         context = context.IsNotNull(nameof(context));
@@ -104,7 +104,7 @@ public static class TypeBaseExtensions
             instance.IsMemberValidForBuilderClass(x, context.Request.Settings)
             && x.HasBackingFieldOnBuilder(context.Request.Settings)))
         {
-            var builderArgumentTypeResult = property.GetBuilderArgumentTypeName(context.Context, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser);
+            var builderArgumentTypeResult = property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser);
 
             if (!builderArgumentTypeResult.IsSuccessful())
             {

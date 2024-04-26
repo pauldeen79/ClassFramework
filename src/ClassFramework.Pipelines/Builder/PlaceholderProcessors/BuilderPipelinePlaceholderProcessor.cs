@@ -15,19 +15,19 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (context is PipelineContext<IConcreteTypeBuilder, BuilderContext> pipelineContext)
+        if (context is PipelineContext<BuilderContext, IConcreteTypeBuilder> pipelineContext)
         {
-            return pipelinecontext.Request.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formattableStringParser, pipelineContext, pipelinecontext.Request.SourceModel, _pipelinePlaceholderProcessors);
+            return pipelineContext.Request.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formattableStringParser, pipelineContext, pipelineContext.Request.SourceModel, _pipelinePlaceholderProcessors);
         }
 
-        if (context is ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property> parentChildContext)
+        if (context is ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property> parentChildContext)
         {
             if (value == "InstancePrefix")
             {
                 return Result.Success<FormattableStringParserResult>(string.Empty);
             }
 
-            return parentChildContext.Parentcontext.Request.GetBuilderPlaceholderProcessorResultForParentChildContext(value, formattableStringParser, parentChildContext.ParentContext.Context, parentChildContext.Parentcontext.Request.SourceModel, parentChildContext.ChildContext, parentChildContext.Parentcontext.Request.SourceModel, _pipelinePlaceholderProcessors);
+            return parentChildContext.ParentContext.Request.GetBuilderPlaceholderProcessorResultForParentChildContext(value, formattableStringParser, parentChildContext.ParentContext.Request, parentChildContext.ParentContext.Request.SourceModel, parentChildContext.ChildContext, parentChildContext.ParentContext.Request.SourceModel, _pipelinePlaceholderProcessors);
         }
 
         return Result.Continue<FormattableStringParserResult>();

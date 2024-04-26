@@ -2,13 +2,13 @@
 
 public class AddPropertiesComponentBuilder : IInterfaceComponentBuilder
 {
-    public IPipelineComponent<InterfaceBuilder, InterfaceContext> Build()
+    public IPipelineComponent<InterfaceContext, InterfaceBuilder> Build()
         => new AddPropertiesComponent();
 }
 
-public class AddPropertiesComponent : IPipelineComponent<InterfaceBuilder, InterfaceContext>
+public class AddPropertiesComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
 {
-    public Task<Result<InterfaceBuilder>> Process(PipelineContext<InterfaceBuilder, InterfaceContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<InterfaceContext, InterfaceBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -28,6 +28,6 @@ public class AddPropertiesComponent : IPipelineComponent<InterfaceBuilder, Inter
             )
         );
 
-        return Task.FromResult(Result.Continue<InterfaceBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

@@ -21,7 +21,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<IConcreteTypeBuilder, BuilderContext>>().Build())
-            .AddScoped<IPipelineBuilder<IConcreteTypeBuilder, BuilderContext>, Builder.PipelineBuilder>()
+            .AddScoped<IPipelineBuilder<BuilderContext, IConcreteTypeBuilder>, Builder.PipelineBuilder>()
             .AddScoped<IBuilderComponentBuilder, Builder.Features.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IBuilderComponentBuilder, Builder.Features.AbstractBuilderComponentBuilder>()
             .AddScoped<IBuilderComponentBuilder, Builder.Features.AddAttributesComponentBuilder>()
@@ -41,7 +41,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddBuilderInterfacePipeline(this IServiceCollection services)
         => services
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<IConcreteTypeBuilder, BuilderExtensionContext>>().Build())
-            .AddScoped<IPipelineBuilder<IConcreteTypeBuilder, BuilderExtensionContext>, BuilderExtension.PipelineBuilder>()
+            .AddScoped<IPipelineBuilder<BuilderExtensionContext, IConcreteTypeBuilder>, BuilderExtension.PipelineBuilder>()
             .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.AddExtensionMethodsForCollectionPropertiesComponentBuilder>()
             .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.AddExtensionMethodsForNonCollectionPropertiesComponentBuilder>()
@@ -52,7 +52,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<IConcreteTypeBuilder, EntityContext>>().Build())
-            .AddScoped<IPipelineBuilder<IConcreteTypeBuilder, EntityContext>, Entity.PipelineBuilder>()
+            .AddScoped<IPipelineBuilder<EntityContext, IConcreteTypeBuilder>, Entity.PipelineBuilder>()
             .AddScoped<IEntityComponentBuilder, Entity.Features.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IEntityComponentBuilder, Entity.Features.AbstractEntityComponentBuilder>()
             .AddScoped<IEntityComponentBuilder, Entity.Features.AddAttributesComponentBuilder>()
@@ -71,7 +71,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddReflectionPipeline(this IServiceCollection services)
         => services
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<TypeBaseBuilder, Reflection.ReflectionContext>>().Build())
-            .AddScoped<IPipelineBuilder<TypeBaseBuilder, Reflection.ReflectionContext>, Reflection.PipelineBuilder>()
+            .AddScoped<IPipelineBuilder<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.PipelineBuilder>()
             .AddScoped<IReflectionComponentBuilder, Reflection.Features.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IReflectionComponentBuilder, Reflection.Features.AddAttributesComponentBuilder>()
             .AddScoped<IReflectionComponentBuilder, Reflection.Features.AddConstructorsComponentBuilder>()
@@ -88,7 +88,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddInterfacePipeline(this IServiceCollection services)
         => services
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<InterfaceBuilder, Interface.InterfaceContext>>().Build())
-            .AddScoped<IPipelineBuilder<InterfaceBuilder, Interface.InterfaceContext>, Interface.PipelineBuilder>()
+            .AddScoped<IPipelineBuilder<Interface.InterfaceContext, InterfaceBuilder>, Interface.PipelineBuilder>()
             .AddScoped<IInterfaceComponentBuilder, Interface.Features.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IInterfaceComponentBuilder, Interface.Features.AddAttributesComponentBuilder>()
             .AddScoped<IInterfaceComponentBuilder, Interface.Features.AddInterfacesComponentBuilder>()

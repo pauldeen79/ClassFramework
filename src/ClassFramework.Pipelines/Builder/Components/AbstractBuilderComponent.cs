@@ -9,11 +9,11 @@ public class AbstractBuilderComponentBuilder : IBuilderComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
+    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
         => new AbstractBuilderComponent(_formattableStringParser);
 }
 
-public class AbstractBuilderComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
+public class AbstractBuilderComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AbstractBuilderComponent : IPipelineComponent<IConcreteTypeBuilder,
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -31,12 +31,12 @@ public class AbstractBuilderComponent : IPipelineComponent<IConcreteTypeBuilder,
             var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context);
             if (!nameResult.IsSuccessful())
             {
-                return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(nameResult));
+                return Task.FromResult<Result>(nameResult);
             }
 
-            if (context.Model is not ClassBuilder classBuilder)
+            if (context.Response is not ClassBuilder classBuilder)
             {
-                return Task.FromResult(Result.Invalid<IConcreteTypeBuilder>($"You can only create abstract classes. The type of model ({context.Response.GetType().FullName}) is not a ClassBuilder"));
+                return Task.FromResult(Result.Invalid($"You can only create abstract classes. The type of model ({context.Response.GetType().FullName}) is not a ClassBuilder"));
             }
 
             classBuilder.WithAbstract();
@@ -51,6 +51,6 @@ public class AbstractBuilderComponent : IPipelineComponent<IConcreteTypeBuilder,
             }
         }
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

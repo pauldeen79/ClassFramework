@@ -2,19 +2,19 @@
 
 public class GenericsComponentBuilder : IBuilderComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
+    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
         => new GenericsComponent();
 }
 
-public class GenericsComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
+public class GenericsComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Response.AddGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments);
         context.Response.AddGenericTypeArgumentConstraints(context.Request.SourceModel.GenericTypeArgumentConstraints);
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

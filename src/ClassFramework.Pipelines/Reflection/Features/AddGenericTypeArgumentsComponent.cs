@@ -2,18 +2,18 @@
 
 public class AddGenericTypeArgumentsComponentBuilder : IReflectionComponentBuilder
 {
-    public IPipelineComponent<TypeBaseBuilder, ReflectionContext> Build()
+    public IPipelineComponent<ReflectionContext, TypeBaseBuilder> Build()
         => new AddGenericTypeArgumentsComponent();
 }
 
-public class AddGenericTypeArgumentsComponent : IPipelineComponent<TypeBaseBuilder, ReflectionContext>
+public class AddGenericTypeArgumentsComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
 {
-    public Task<Result<TypeBaseBuilder>> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<ReflectionContext, TypeBaseBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Response.AddGenericTypeArguments(context.Request.SourceModel.GetGenericTypeArgumentTypeNames());
 
-        return Task.FromResult(Result.Continue<TypeBaseBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

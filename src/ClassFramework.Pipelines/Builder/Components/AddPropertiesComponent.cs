@@ -9,11 +9,11 @@ public class AddPropertiesComponentBuilder : IBuilderComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
+    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
         => new AddPropertiesComponent(_formattableStringParser);
 }
 
-public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
+public class AddPropertiesComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,19 +22,19 @@ public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, B
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (context.Request.IsAbstractBuilder)
         {
-            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
         foreach (var property in context.Request.SourceModel.Properties.Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)))
         {
             var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
-            resultSetBuilder.Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(context.Context, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser));
+            resultSetBuilder.Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser));
             resultSetBuilder.Add(NamedResults.ParentTypeName, () => property.GetBuilderParentTypeName(context, _formattableStringParser));
             var results = resultSetBuilder.Build();
 
@@ -42,7 +42,7 @@ public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, B
             if (error is not null)
             {
                 // Error in formattable string parsing
-                return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(error.Result));
+                return Task.FromResult<Result>(error.Result);
             }
 
             context.Response.AddProperties(new PropertyBuilder()
@@ -57,8 +57,8 @@ public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, B
                 .AddAttributes(property.Attributes
                     .Where(_ => context.Request.Settings.CopyAttributes)
                     .Select(x => context.Request.MapAttribute(x).ToBuilder()))
-                .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
-                .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))
+                .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Request))
+                .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Request))
             );
         }
 
@@ -68,7 +68,7 @@ public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, B
             .GetBuilderClassFields(context, _formattableStringParser)
             .Select(x => x.GetValueOrThrow()));
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, BuilderContext context)

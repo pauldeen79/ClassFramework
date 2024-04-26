@@ -9,11 +9,11 @@ public class AddInterfacesComponentBuilder : IBuilderComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
+    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
         => new AddInterfacesComponent(_formattableStringParser);
 }
 
-public class AddInterfacesComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
+public class AddInterfacesComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,13 +22,13 @@ public class AddInterfacesComponent : IPipelineComponent<IConcreteTypeBuilder, B
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Request.Settings.CopyInterfaces)
         {
-            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
         var results = context.Request.SourceModel.Interfaces
@@ -48,7 +48,7 @@ public class AddInterfacesComponent : IPipelineComponent<IConcreteTypeBuilder, B
                     (
                         newFullName,
                         context.Request.FormatProvider,
-                        new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Request.Settings)
+                        new ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings)
                     ).TransformValue(x => x.ToString());
                 }
                 return Result.Success(context.Request.MapTypeName(x.FixTypeName()));
@@ -59,11 +59,11 @@ public class AddInterfacesComponent : IPipelineComponent<IConcreteTypeBuilder, B
         var error = Array.Find(results, x => !x.IsSuccessful());
         if (error is not null)
         {
-            return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(error));
+            return Task.FromResult<Result>(error);
         }
 
         context.Response.AddInterfaces(results.Where(x => !string.IsNullOrEmpty(x.Value)).Select(x => x.Value!));
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

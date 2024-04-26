@@ -9,11 +9,11 @@ public class AddFullConstructorComponentBuilder : IEntityComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<IConcreteTypeBuilder, EntityContext> Build()
+    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
         => new AddFullConstructorComponent(_formattableStringParser);
 }
 
-public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
+public class AddFullConstructorComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,19 +22,19 @@ public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuild
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Request.Settings.AddFullConstructor)
         {
-            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
         var ctorResult = CreateEntityConstructor(context);
         if (!ctorResult.IsSuccessful())
         {
-            return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(ctorResult));
+            return Task.FromResult<Result>(ctorResult);
         }
 
         context.Response.AddConstructors(ctorResult.Value!);
@@ -44,14 +44,14 @@ public class AddFullConstructorComponent : IPipelineComponent<IConcreteTypeBuild
             context.Response.AddMethods(new MethodBuilder().WithName("Validate").WithPartial().WithVisibility(Visibility.Private));
         }
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 
-    private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
+    private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<EntityContext, IConcreteTypeBuilder> context)
     {
         var initializationResults = context.Request.SourceModel.Properties
             .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
-            .Select(property => _formattableStringParser.Parse("this.{EntityMemberName} = {InitializationExpression}{NullableRequiredSuffix};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, EntityContext>, Property>(context, property, context.Request.Settings)))
+            .Select(property => _formattableStringParser.Parse("this.{EntityMemberName} = {InitializationExpression}{NullableRequiredSuffix};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<EntityContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings)))
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 

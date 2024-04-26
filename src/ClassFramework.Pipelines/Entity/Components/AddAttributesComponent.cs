@@ -2,18 +2,18 @@
 
 public class AddAttributesComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, EntityContext> Build()
+    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
         => new AddAttributesComponent();
 }
 
-public class AddAttributesComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
+public class AddAttributesComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Response.AddAttributes(context.Request.GetAtributes(context.Request.SourceModel.Attributes));
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

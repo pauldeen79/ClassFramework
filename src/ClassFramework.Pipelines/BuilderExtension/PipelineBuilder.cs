@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension;
 
-public class PipelineBuilder : PipelineBuilder<IConcreteTypeBuilder, BuilderExtensionContext>
+public class PipelineBuilder : PipelineBuilder<BuilderExtensionContext, IConcreteTypeBuilder>
 {
     public PipelineBuilder(IEnumerable<IBuilderExtensionComponentBuilder> builderInterfaceComponentBuilders)
     {

@@ -9,11 +9,11 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentBuilder : IBuild
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
+    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
         => new AddFluentMethodsForNonCollectionPropertiesComponent(_formattableStringParser);
 }
 
-public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
+public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,18 +22,18 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComp
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (string.IsNullOrEmpty(context.Request.Settings.SetMethodNameFormatString))
         {
-            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
         foreach (var property in context.Request.GetSourceProperties().Where(x => context.Request.IsValidForFluentMethod(x) && !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var parentChildContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Request.Settings);
+            var parentChildContext = new ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings);
 
             var results = context.Request.GetResultsForBuilderNonCollectionProperties(property, parentChildContext, _formattableStringParser);
 
@@ -41,7 +41,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComp
             if (error is not null)
             {
                 // Error in formattable string parsing
-                return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(error.Result));
+                return Task.FromResult<Result>(error.Result);
             }
 
             var builder = new MethodBuilder()
@@ -62,6 +62,6 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComp
             context.Response.AddMethods(builder);
         }
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

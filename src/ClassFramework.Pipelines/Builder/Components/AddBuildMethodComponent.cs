@@ -11,11 +11,11 @@ public class AddBuildMethodComponentBuilder : IBuilderComponentBuilder
         _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
     }
 
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
+    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
         => new AddBuildMethodComponent(_formattableStringParser, _csharpExpressionDumper);
 }
 
-public class AddBuildMethodComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
+public class AddBuildMethodComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
     private readonly ICsharpExpressionDumper _csharpExpressionDumper;
@@ -26,7 +26,7 @@ public class AddBuildMethodComponent : IPipelineComponent<IConcreteTypeBuilder, 
         _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -57,20 +57,20 @@ public class AddBuildMethodComponent : IPipelineComponent<IConcreteTypeBuilder, 
                     .WithReturnTypeName("TEntity"));
             }
 
-            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
         var instanciationResult = context.CreateEntityInstanciation(_formattableStringParser, _csharpExpressionDumper, string.Empty);
         if (!instanciationResult.IsSuccessful())
         {
-            return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(instanciationResult));
+            return Task.FromResult<Result>(instanciationResult);
         }
 
         context.Response.AddMethods(new MethodBuilder()
             .WithName(GetName(context))
             .WithAbstract(context.Request.IsBuilderForAbstractEntity)
             .WithOverride(context.Request.IsBuilderForOverrideEntity)
-            .WithReturnTypeName($"{GetBuilderBuildMethodReturnType(context.Context, context.Request.IsBuilderForAbstractEntity || context.Request.IsBuilderForOverrideEntity ? context.Request.SourceModel.GetFullName() : returnType)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+            .WithReturnTypeName($"{GetBuilderBuildMethodReturnType(context.Request, context.Request.IsBuilderForAbstractEntity || context.Request.IsBuilderForOverrideEntity ? context.Request.SourceModel.GetFullName() : returnType)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
             .AddStringCodeStatements(context.Request.CreatePragmaWarningDisableStatementsForBuildMethod())
             .AddStringCodeStatements
             (
@@ -90,10 +90,10 @@ public class AddBuildMethodComponent : IPipelineComponent<IConcreteTypeBuilder, 
                 .AddStringCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
         }
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 
-    private static string GetName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    private static string GetName(PipelineContext<BuilderContext, IConcreteTypeBuilder> context)
         => context.Request.IsBuilderForAbstractEntity || context.Request.IsBuilderForOverrideEntity
             ? context.Request.Settings.BuildTypedMethodName
             : context.Request.Settings.BuildMethodName;

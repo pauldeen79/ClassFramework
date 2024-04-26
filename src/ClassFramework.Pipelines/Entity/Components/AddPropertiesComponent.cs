@@ -2,13 +2,13 @@
 
 public class AddPropertiesComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, EntityContext> Build()
+    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
         => new AddPropertiesComponent();
 }
 
-public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
+public class AddPropertiesComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -32,8 +32,8 @@ public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, E
                     .WithInitializerVisibility(property.InitializerVisibility)
                     .WithExplicitInterfaceName(property.ExplicitInterfaceName)
                     .WithParentTypeFullName(property.ParentTypeFullName)
-                    .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
-                    .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))
+                    .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Request))
+                    .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Request))
             )
         );
 
@@ -42,10 +42,10 @@ public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, E
             AddBackingFields(context, properties);
         }
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 
-    private static void AddBackingFields(PipelineContext<IConcreteTypeBuilder, EntityContext> context, Property[] properties)
+    private static void AddBackingFields(PipelineContext<EntityContext, IConcreteTypeBuilder> context, Property[] properties)
         => context.Response.AddFields
         (
             properties

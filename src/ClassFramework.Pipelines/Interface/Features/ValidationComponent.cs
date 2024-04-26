@@ -2,21 +2,21 @@
 
 public class ValidationComponentBuilder : IInterfaceComponentBuilder
 {
-    public IPipelineComponent<InterfaceBuilder, InterfaceContext> Build() => new ValidationComponent();
+    public IPipelineComponent<InterfaceContext, InterfaceBuilder> Build() => new ValidationComponent();
 }
 
-public class ValidationComponent : IPipelineComponent<InterfaceBuilder, InterfaceContext>
+public class ValidationComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
 {
-    public Task<Result<InterfaceBuilder>> Process(PipelineContext<InterfaceBuilder, InterfaceContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<InterfaceContext, InterfaceBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Request.Settings.AllowGenerationWithoutProperties
             && context.Request.SourceModel.Properties.Count == 0)
         {
-            return Task.FromResult(Result.Invalid<InterfaceBuilder>("To create an interface, there must be at least one property"));
+            return Task.FromResult(Result.Invalid("To create an interface, there must be at least one property"));
         }
         
-        return Task.FromResult(Result.Continue<InterfaceBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

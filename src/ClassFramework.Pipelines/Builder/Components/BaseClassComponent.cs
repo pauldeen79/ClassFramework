@@ -9,11 +9,11 @@ public class BaseClassComponentBuilder : IBuilderComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
+    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
         => new BaseClassComponent(_formattableStringParser);
 }
 
-public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
+public class BaseClassComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,22 +22,22 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         var baseClassResult = GetBuilderBaseClass(context.Request.SourceModel, context);
         if (!baseClassResult.IsSuccessful())
         {
-            return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(baseClassResult));
+            return Task.FromResult<Result>(baseClassResult);
         }
 
         context.Response.WithBaseClass(baseClassResult.Value!);
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 
-    private Result<FormattableStringParserResult> GetBuilderBaseClass(IType instance, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    private Result<FormattableStringParserResult> GetBuilderBaseClass(IType instance, PipelineContext<BuilderContext, IConcreteTypeBuilder> context)
     {
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
@@ -73,7 +73,7 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
             (
                 context.Request.Settings.BuilderNameFormatString,
                 context.Request.FormatProvider,
-                new PipelineContext<IConcreteTypeBuilder, BuilderContext>(context.Model, new BuilderContext(context.Request.Settings.BaseClass!, context.Request.Settings, context.Request.FormatProvider))
+                new PipelineContext<BuilderContext, IConcreteTypeBuilder>(new BuilderContext(context.Request.Settings.BaseClass!, context.Request.Settings, context.Request.FormatProvider), context.Response)
             );
             if (!inheritanceNameResult.IsSuccessful())
             {
@@ -101,12 +101,12 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
         );
     }
 
-    private Result<FormattableStringParserResult> GetBaseClassName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IBaseClassContainer baseClassContainer)
+    private Result<FormattableStringParserResult> GetBaseClassName(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, IBaseClassContainer baseClassContainer)
     {
-        var newContext = new PipelineContext<IConcreteTypeBuilder, BuilderContext>
+        var newContext = new PipelineContext<BuilderContext, IConcreteTypeBuilder>
         (
-            context.Model,
-            new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!)), context.Request.Settings, context.Request.FormatProvider)
+            new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!)), context.Request.Settings, context.Request.FormatProvider),
+            context.Response
         );
 
         return _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, newContext);

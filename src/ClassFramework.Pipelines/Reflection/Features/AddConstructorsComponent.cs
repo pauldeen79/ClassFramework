@@ -2,28 +2,28 @@
 
 public class AddConstructorsComponentBuilder : IReflectionComponentBuilder
 {
-    public IPipelineComponent<TypeBaseBuilder, ReflectionContext> Build()
+    public IPipelineComponent<ReflectionContext, TypeBaseBuilder> Build()
         => new AddConstructorsComponent();
 }
 
-public class AddConstructorsComponent : IPipelineComponent<TypeBaseBuilder, ReflectionContext>
+public class AddConstructorsComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
 {
-    public Task<Result<TypeBaseBuilder>> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<ReflectionContext, TypeBaseBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Request.Settings.CreateConstructors
-            || context.Model is not IConstructorsContainerBuilder constructorsContainerBuilder)
+            || context.Response is not IConstructorsContainerBuilder constructorsContainerBuilder)
         {
-            return Task.FromResult(Result.Continue<TypeBaseBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
         constructorsContainerBuilder.AddConstructors(GetConstructors(context));
 
-        return Task.FromResult(Result.Continue<TypeBaseBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 
-    private static IEnumerable<ConstructorBuilder> GetConstructors(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
+    private static IEnumerable<ConstructorBuilder> GetConstructors(PipelineContext<ReflectionContext, TypeBaseBuilder> context)
         => context.Request.SourceModel.GetConstructors()
             .Select(x => new ConstructorBuilder()
                 .AddParameters

@@ -2,12 +2,12 @@
 
 public class ValidationComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, EntityContext> Build() => new ValidationComponent();
+    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build() => new ValidationComponent();
 }
 
-public class ValidationComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
+public class ValidationComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -15,9 +15,9 @@ public class ValidationComponent : IPipelineComponent<IConcreteTypeBuilder, Enti
             && context.Request.SourceModel.Properties.Count == 0
             && !context.Request.Settings.EnableInheritance)
         {
-            return Task.FromResult(Result.Invalid<IConcreteTypeBuilder>("To create an entity class, there must be at least one property"));
+            return Task.FromResult(Result.Invalid("To create an entity class, there must be at least one property"));
         }
         
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

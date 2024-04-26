@@ -2,22 +2,22 @@
 
 public class AddFieldsComponentBuilder : IReflectionComponentBuilder
 {
-    public IPipelineComponent<TypeBaseBuilder, ReflectionContext> Build()
+    public IPipelineComponent<ReflectionContext, TypeBaseBuilder> Build()
         => new AddFieldsComponent();
 }
 
-public class AddFieldsComponent : IPipelineComponent<TypeBaseBuilder, ReflectionContext>
+public class AddFieldsComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
 {
-    public Task<Result<TypeBaseBuilder>> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<ReflectionContext, TypeBaseBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Response.AddFields(GetFields(context));
 
-        return Task.FromResult(Result.Continue<TypeBaseBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 
-    private static IEnumerable<FieldBuilder> GetFields(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
+    private static IEnumerable<FieldBuilder> GetFields(PipelineContext<ReflectionContext, TypeBaseBuilder> context)
         => context.Request.SourceModel.GetFieldsRecursively().Select
         (
             f => new FieldBuilder()

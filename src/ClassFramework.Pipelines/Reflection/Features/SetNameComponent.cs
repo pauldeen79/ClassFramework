@@ -9,11 +9,11 @@ public class SetNameComponentBuilder : IReflectionComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<TypeBaseBuilder, ReflectionContext> Build()
+    public IPipelineComponent<ReflectionContext, TypeBaseBuilder> Build()
         => new SetNameComponent(_formattableStringParser);
 }
 
-public class SetNameComponent : IPipelineComponent<TypeBaseBuilder, ReflectionContext>
+public class SetNameComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class SetNameComponent : IPipelineComponent<TypeBaseBuilder, ReflectionCo
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<TypeBaseBuilder>> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<ReflectionContext, TypeBaseBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -35,13 +35,13 @@ public class SetNameComponent : IPipelineComponent<TypeBaseBuilder, ReflectionCo
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Task.FromResult(Result.FromExistingResult<TypeBaseBuilder>(error.Result));
+            return Task.FromResult<Result>(error.Result);
         }
 
-        context.Model
+        context.Response
             .WithName(results.First(x => x.Name == NamedResults.Name).Result.Value!)
             .WithNamespace(context.Request.MapNamespace(results.First(x => x.Name == NamedResults.Namespace).Result.Value!));
 
-        return Task.FromResult(Result.Continue<TypeBaseBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

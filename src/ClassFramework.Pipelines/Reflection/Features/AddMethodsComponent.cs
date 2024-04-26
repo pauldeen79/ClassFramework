@@ -2,22 +2,22 @@
 
 public class AddMethodsComponentBuilder : IReflectionComponentBuilder
 {
-    public IPipelineComponent<TypeBaseBuilder, ReflectionContext> Build()
+    public IPipelineComponent<ReflectionContext, TypeBaseBuilder> Build()
         => new AddMethodsComponent();
 }
 
-public class AddMethodsComponent : IPipelineComponent<TypeBaseBuilder, ReflectionContext>
+public class AddMethodsComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
 {
-    public Task<Result<TypeBaseBuilder>> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<ReflectionContext, TypeBaseBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Response.AddMethods(GetMethods(context));
 
-        return Task.FromResult(Result.Continue<TypeBaseBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 
-    private static IEnumerable<MethodBuilder> GetMethods(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
+    private static IEnumerable<MethodBuilder> GetMethods(PipelineContext<ReflectionContext, TypeBaseBuilder> context)
         => context.Request.SourceModel.GetMethodsRecursively()
             .Where(m =>
                 m.Name != "<Clone>$"

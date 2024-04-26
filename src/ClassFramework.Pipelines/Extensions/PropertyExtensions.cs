@@ -185,7 +185,7 @@ public static class PropertyExtensions
         );
     }
 
-    public static Result<FormattableStringParserResult> GetBuilderParentTypeName(this Property property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser)
+    public static Result<FormattableStringParserResult> GetBuilderParentTypeName(this Property property, PipelineContext<BuilderContext, IConcreteTypeBuilder> context, IFormattableStringParser formattableStringParser)
     {
         context = context.IsNotNull(nameof(context));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
@@ -216,7 +216,7 @@ public static class PropertyExtensions
         (
             newFullName,
             context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Request.Settings)
+            new ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings)
         );
     }
 

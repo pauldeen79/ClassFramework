@@ -3,19 +3,19 @@ namespace ClassFramework.Pipelines.Reflection.Features;
 
 public class AddAttributesComponentBuilder : IReflectionComponentBuilder
 {
-    public IPipelineComponent<TypeBaseBuilder, ReflectionContext> Build()
+    public IPipelineComponent<ReflectionContext, TypeBaseBuilder> Build()
         => new AddAttributesComponent();
 }
 
-public class AddAttributesComponent : IPipelineComponent<TypeBaseBuilder, ReflectionContext>
+public class AddAttributesComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
 {
-    public Task<Result<TypeBaseBuilder>> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<ReflectionContext, TypeBaseBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Request.Settings.CopyAttributes)
         {
-            return Task.FromResult(Result.Continue<TypeBaseBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
         context.Response.AddAttributes(context.Request.SourceModel.GetCustomAttributes(true).ToAttributes(
@@ -23,6 +23,6 @@ public class AddAttributesComponent : IPipelineComponent<TypeBaseBuilder, Reflec
             context.Request.Settings.CopyAttributes,
             context.Request.Settings.CopyAttributePredicate));
 
-        return Task.FromResult(Result.Continue<TypeBaseBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

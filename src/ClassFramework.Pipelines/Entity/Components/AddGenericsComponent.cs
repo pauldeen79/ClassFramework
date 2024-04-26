@@ -2,20 +2,20 @@
 
 public class AddGenericsComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, EntityContext> Build()
+    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
         => new AddGenericsComponent();
 }
 
-public class AddGenericsComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
+public class AddGenericsComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model
+        context.Response
             .AddGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments)
             .AddGenericTypeArgumentConstraints(context.Request.SourceModel.GenericTypeArgumentConstraints);
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }
