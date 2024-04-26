@@ -3,9 +3,9 @@
 public class PipelineRequestHandler<TModel, TContext, TResponse> : IRequestHandler<PipelineRequest<TContext, TResponse>, Result<TResponse>>
     where TModel : TResponse, new()
 {
-    private readonly IPipeline<TResponse, TContext> _pipeline;
+    private readonly IPipeline<TContext, TResponse> _pipeline;
 
-    public PipelineRequestHandler(IPipeline<TResponse, TContext> pipeline)
+    public PipelineRequestHandler(IPipeline<TContext, TResponse> pipeline)
     {
         _pipeline = pipeline;
     }
@@ -15,7 +15,7 @@ public class PipelineRequestHandler<TModel, TContext, TResponse> : IRequestHandl
         Guard.IsNotNull(request);
 
         var model = new TModel();
-        var result = await _pipeline.Process(model, request.Context, cancellationToken);
+        var result = await _pipeline.Process(request.Context, model, cancellationToken);
         return Result.FromExistingResult(result, (TResponse)model);
     }
 }
