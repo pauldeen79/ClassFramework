@@ -9,15 +9,23 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         var templateFactory = Fixture.Freeze<ITemplateFactory>();
         var templateProviderPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
+        var assemblyInfoContextService = Fixture.Freeze<IAssemblyInfoContextService>();
         _serviceProvider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddScoped(_ => assemblyInfoContextService)
             .AddCsharpExpressionDumper()
             .AddClassFrameworkTemplates()
             .AddParsers()
             .AddPipelines()
             .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CsharpClassGeneratorPipelineCodeGenerationProviderBase).Assembly))
+            .AddTransient<IRequestHandler<PipelineRequest<IConcreteTypeBuilder, BuilderExtensionContext>, Result>, PipelineRequestHandler<IConcreteTypeBuilder, BuilderExtensionContext>>()
+            .AddTransient<IRequestHandler<PipelineRequest<IConcreteTypeBuilder, BuilderContext>, Result>, PipelineRequestHandler<IConcreteTypeBuilder, BuilderContext>>()
+            .AddTransient<IRequestHandler<PipelineRequest<IConcreteTypeBuilder, EntityContext>, Result>, PipelineRequestHandler<IConcreteTypeBuilder, EntityContext>>()
+            .AddTransient<IRequestHandler<PipelineRequest<InterfaceBuilder, InterfaceContext>, Result>, PipelineRequestHandler<InterfaceBuilder, InterfaceContext>>()
+            .AddTransient<IRequestHandler<PipelineRequest<TypeBaseBuilder, ReflectionContext>, Result>, PipelineRequestHandler<TypeBaseBuilder, ReflectionContext>>()
             .AddScoped(_ => templateFactory)
             .AddScoped(_ => templateProviderPluginFactory)
             .AddScoped<TestCodeGenerationProvider>()
@@ -43,7 +51,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<OverrideTypeBuilders>()
             .AddScoped<OverrideTypeEntities>()
             .AddScoped<TemplateFrameworkEntities>()
-            .BuildServiceProvider();
+            .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
         _scope = _serviceProvider.CreateScope();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
     }
