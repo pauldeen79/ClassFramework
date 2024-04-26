@@ -172,7 +172,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
-            => new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+        private static PipelineContext<BuilderContext, IConcreteTypeBuilder> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new PipelineContext<BuilderContext, IConcreteTypeBuilder>(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
     }
 }

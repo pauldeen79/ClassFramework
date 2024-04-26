@@ -23,7 +23,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Feature
             var sourceModel = typeof(MyClass);
             var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(copyInterfaces: false);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -41,7 +41,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Feature
             var sourceModel = typeof(MyClass);
             var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(copyInterfaces: true);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -59,7 +59,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Feature
             var sourceModel = typeof(MyClass);
             var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(copyInterfaces: false, copyInterfacePredicate: _ => false);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);

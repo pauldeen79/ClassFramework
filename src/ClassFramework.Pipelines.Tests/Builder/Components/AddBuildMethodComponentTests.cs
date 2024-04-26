@@ -120,7 +120,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Features.
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
-            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+        private static PipelineContext<BuilderContext, IConcreteTypeBuilder> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
     }
 }

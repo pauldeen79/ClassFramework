@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Interface;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<InterfaceBuilder, InterfaceContext>>
+public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<InterfaceContext, InterfaceBuilder>>
 {
     public class Process : PipelineBuilderTests
     {
@@ -25,7 +25,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(CreateContext(), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -40,7 +40,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(CreateContext(), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -56,7 +56,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(CreateContext(), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -70,7 +70,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext(copyMethodPredicate: (_, _) => true));
+            var result = await sut.Process(CreateContext(copyMethodPredicate: (_, _) => true), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -84,7 +84,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext(copyMethodPredicate: (_, _) => false));
+            var result = await sut.Process(CreateContext(copyMethodPredicate: (_, _) => false), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -98,7 +98,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext(copyMethods: false));
+            var result = await sut.Process(CreateContext(copyMethods: false), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -112,7 +112,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext(addProperties: false));
+            var result = await sut.Process(CreateContext(addProperties: false), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -137,7 +137,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, context);
+            var result = await sut.Process(context, Model);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

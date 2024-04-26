@@ -51,7 +51,7 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Features.Generi
             model.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where T : class");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
-            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+        private static PipelineContext<BuilderContext, IConcreteTypeBuilder> CreateContext(TypeBase sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
     }
 }

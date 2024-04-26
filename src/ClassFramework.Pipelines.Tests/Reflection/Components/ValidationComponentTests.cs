@@ -23,7 +23,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Reflection.Features.V
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForReflection();
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -40,7 +40,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Reflection.Features.V
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(allowGenerationWithoutProperties: true);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);

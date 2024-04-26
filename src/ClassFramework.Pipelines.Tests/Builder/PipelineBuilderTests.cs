@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcreteTypeBuilder, BuilderContext>>
+public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<BuilderContext, IConcreteTypeBuilder>>
 {
     public class Process : PipelineBuilderTests
     {
@@ -27,7 +27,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(CreateContext(), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -41,7 +41,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(CreateContext(), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -56,7 +56,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(CreateContext(), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -72,7 +72,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(CreateContext(), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -86,7 +86,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(CreateContext(), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -100,7 +100,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(CreateContext(), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -114,7 +114,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(CreateContext(), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -128,7 +128,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(CreateContext(), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -146,7 +146,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(CreateContext(), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -166,7 +166,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(CreateContext(), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -190,7 +190,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext(createAsObservable: true));
+            var result = await sut.Process(CreateContext(createAsObservable: true), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -205,7 +205,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, CreateContext(addProperties: false));
+            var result = await sut.Process(CreateContext(addProperties: false), Model);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -230,7 +230,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, context);
+            var result = await sut.Process(context, Model);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

@@ -26,7 +26,7 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Features.SetRec
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(createRecord:  createRecordSettingValue);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);

@@ -94,7 +94,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Features
             result.ErrorMessage.Should().Be("You can only create abstract classes. The type of model (ClassFramework.Domain.Builders.Types.StructBuilder) is not a ClassBuilder");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, IConcreteTypeBuilder model, PipelineSettingsBuilder settings)
-            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+        private static PipelineContext<BuilderContext, IConcreteTypeBuilder> CreateContext(TypeBase sourceModel, IConcreteTypeBuilder model, PipelineSettingsBuilder settings)
+            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
     }
 }

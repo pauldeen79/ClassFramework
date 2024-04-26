@@ -75,7 +75,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Features.A
             model.Interfaces.Should().BeEmpty();
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
-            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+        private static PipelineContext<BuilderContext, IConcreteTypeBuilder> CreateContext(TypeBase sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
     }
 }

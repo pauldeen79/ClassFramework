@@ -24,7 +24,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -43,7 +43,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(entityNameFormatString: "CustomClassName");
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -62,7 +62,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -81,7 +81,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "CustomNamespace");
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -100,7 +100,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(entityNameFormatString: "{Error}");
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -119,7 +119,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Features.SetNameC
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "{Error}");
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);

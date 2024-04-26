@@ -23,7 +23,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Features.Valid
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -40,7 +40,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Features.Valid
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(allowGenerationWithoutProperties: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -59,7 +59,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Features.Valid
             var settings = CreateSettingsForEntity(
                 allowGenerationWithoutProperties: false,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);

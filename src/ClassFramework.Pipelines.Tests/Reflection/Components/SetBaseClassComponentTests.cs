@@ -23,7 +23,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
             var sourceModel = typeof(MyBaseClassTestClass);
             var model = new ClassBuilder();
             var settings = CreateSettingsForReflection();
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -41,7 +41,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
             var sourceModel = typeof(MyClass);
             var model = new ClassBuilder().WithBaseClass("Old value");
             var settings = CreateSettingsForReflection();
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -62,7 +62,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
                 useBaseClassFromSourceModel: false,
                 enableEntityInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped());
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -83,7 +83,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
                 useBaseClassFromSourceModel: false,
                 enableEntityInheritance: true,
                 baseClass: null);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -101,7 +101,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
             var sourceModel = typeof(MyBaseClassTestClass);
             var model = new ClassBuilder().WithBaseClass("Old value");
             var settings = CreateSettingsForReflection(useBaseClassFromSourceModel: false);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);

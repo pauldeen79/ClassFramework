@@ -24,7 +24,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addNullChecks: false);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -55,7 +55,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addNullChecks: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -88,7 +88,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addNullChecks: true, useExceptionThrowIfNull: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -121,7 +121,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addNullChecks: true, addBackingFields: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -154,7 +154,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(validateArguments: ArgumentValidationType.IValidatableObject);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
@@ -186,7 +186,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(namespaceMappings: CreateNamespaceMappings());
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
 
             // Act
             var result = await sut.Process(context);
