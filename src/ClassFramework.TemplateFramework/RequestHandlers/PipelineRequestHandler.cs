@@ -15,7 +15,6 @@ public class PipelineRequestHandler<TModel, TContext> : IRequestHandler<Pipeline
         Guard.IsNotNull(request);
 
         var model = (TModel)request.Context.CreateModel();
-        var result = await _pipeline.Process(request.Context, model, cancellationToken);
-        return Result.FromExistingResult(result, model);
+        return await _pipeline.Process(request.Context, model, cancellationToken);
     }
 }
