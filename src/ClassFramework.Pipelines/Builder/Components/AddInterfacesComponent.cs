@@ -62,7 +62,7 @@ public class AddInterfacesComponent : IPipelineComponent<BuilderContext, IConcre
             return Task.FromResult<Result>(error);
         }
 
-        context.Response.AddInterfaces(results.Where(x => !string.IsNullOrEmpty(x.Value)).Select(x => x.Value!));
+        context.Response.AddInterfaces(results.Select(x => x.Value!));
 
         return Task.FromResult(Result.Continue());
     }
