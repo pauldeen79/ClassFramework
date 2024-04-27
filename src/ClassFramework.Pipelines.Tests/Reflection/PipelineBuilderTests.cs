@@ -99,10 +99,12 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Reflect
 
             // Act
             var result = await sut.Process(context, model);
+            var innerResult = result?.InnerResults.FirstOrDefault();
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("To create a class, there must be at least one property");
+            innerResult.Should().NotBeNull();
+            innerResult!.Status.Should().Be(ResultStatus.Invalid);
+            innerResult.ErrorMessage.Should().Be("To create a class, there must be at least one property");
         }
     }
 }
