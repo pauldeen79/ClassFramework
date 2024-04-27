@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Tests.Reflection.Components;
 
-public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Features.AddAttributesComponent>
+public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Components.AddAttributesComponent>
 {
     [ExcludeFromCodeCoverage] // just adding an attribute here, so we can use this class as source model in our tests
     public class Process : AddAttributesComponentTests

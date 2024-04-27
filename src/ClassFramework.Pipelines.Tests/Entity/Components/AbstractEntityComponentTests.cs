@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
-public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Features.AbstractEntityComponent>
+public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components.AbstractEntityComponent>
 {
     public class Process : AbstractEntityComponentTests
     {

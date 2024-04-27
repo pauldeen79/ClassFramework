@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Tests.Reflection.Components;
 
-public class ValidationComponentTests : TestBase<Pipelines.Reflection.Features.ValidationComponent>
+public class ValidationComponentTests : TestBase<Pipelines.Reflection.Components.ValidationComponent>
 {
     public class Process : ValidationComponentTests
     {

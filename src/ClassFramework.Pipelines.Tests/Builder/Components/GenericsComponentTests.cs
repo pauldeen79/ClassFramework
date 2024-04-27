@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Components;
 
-public class GenericsComponentTests : TestBase<Pipelines.Builder.Features.GenericsComponent>
+public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.GenericsComponent>
 {
     public class Process : GenericsComponentTests
     {

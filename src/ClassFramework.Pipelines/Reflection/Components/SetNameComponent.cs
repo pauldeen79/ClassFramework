@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Interface.Features;
+﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class SetNameComponentBuilder : IInterfaceComponentBuilder
+public class SetNameComponentBuilder : IReflectionComponentBuilder
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -9,11 +9,11 @@ public class SetNameComponentBuilder : IInterfaceComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<InterfaceContext, InterfaceBuilder> Build()
+    public IPipelineComponent<ReflectionContext, TypeBaseBuilder> Build()
         => new SetNameComponent(_formattableStringParser);
 }
 
-public class SetNameComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
+public class SetNameComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,13 +22,13 @@ public class SetNameComponent : IPipelineComponent<InterfaceContext, InterfaceBu
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result> Process(PipelineContext<InterfaceContext, InterfaceBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<ReflectionContext, TypeBaseBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
         resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.NameFormatString, context.Request.FormatProvider, context));
-        resultSetBuilder.Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetFormattableStringParserResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Request.Settings.NamespaceFormatString, context.Request.FormatProvider, context)));
+        resultSetBuilder.Add(NamedResults.Namespace, () => _formattableStringParser.Parse(context.Request.Settings.NamespaceFormatString, context.Request.FormatProvider, context));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());

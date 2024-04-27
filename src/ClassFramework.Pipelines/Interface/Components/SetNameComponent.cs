@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class SetNameComponentBuilder : IReflectionComponentBuilder
+public class SetNameComponentBuilder : IInterfaceComponentBuilder
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -9,11 +9,11 @@ public class SetNameComponentBuilder : IReflectionComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<ReflectionContext, TypeBaseBuilder> Build()
+    public IPipelineComponent<InterfaceContext, InterfaceBuilder> Build()
         => new SetNameComponent(_formattableStringParser);
 }
 
-public class SetNameComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
+public class SetNameComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,13 +22,13 @@ public class SetNameComponent : IPipelineComponent<ReflectionContext, TypeBaseBu
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result> Process(PipelineContext<ReflectionContext, TypeBaseBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<InterfaceContext, InterfaceBuilder> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
         resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.NameFormatString, context.Request.FormatProvider, context));
-        resultSetBuilder.Add(NamedResults.Namespace, () => _formattableStringParser.Parse(context.Request.Settings.NamespaceFormatString, context.Request.FormatProvider, context));
+        resultSetBuilder.Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetFormattableStringParserResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Request.Settings.NamespaceFormatString, context.Request.FormatProvider, context)));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());

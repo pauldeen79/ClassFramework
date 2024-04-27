@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
-public class ValidationComponentTests : TestBase<Pipelines.Entity.Features.ValidationComponent>
+public class ValidationComponentTests : TestBase<Pipelines.Entity.Components.ValidationComponent>
 {
     public class Process : ValidationComponentTests
     {

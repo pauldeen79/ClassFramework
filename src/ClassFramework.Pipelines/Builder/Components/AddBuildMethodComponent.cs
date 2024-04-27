@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Builder.Features;
+﻿namespace ClassFramework.Pipelines.Builder.Components;
 
 public class AddBuildMethodComponentBuilder : IBuilderComponentBuilder
 {

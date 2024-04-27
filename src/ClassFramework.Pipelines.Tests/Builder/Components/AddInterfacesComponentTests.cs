@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Components;
 
-public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Features.AddInterfacesComponent>
+public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components.AddInterfacesComponent>
 {
     public class Process : AddInterfacesComponentTests
     {

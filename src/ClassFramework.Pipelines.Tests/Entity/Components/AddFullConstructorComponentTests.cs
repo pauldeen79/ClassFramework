@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
-public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Features.AddFullConstructorComponent>
+public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Components.AddFullConstructorComponent>
 {
     public class Process : AddFullConstructorComponentTests
     {

@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Interface.Features;
+﻿namespace ClassFramework.Pipelines.Interface.Components;
 
 public class ValidationComponentBuilder : IInterfaceComponentBuilder
 {

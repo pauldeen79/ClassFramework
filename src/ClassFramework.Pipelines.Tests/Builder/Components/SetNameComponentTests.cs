@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Components;
 
-public class SetNameComponentTests : TestBase<Pipelines.Builder.Features.SetNameComponent>
+public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNameComponent>
 {
     public class Process : SetNameComponentTests
     {

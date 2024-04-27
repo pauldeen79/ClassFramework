@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Components;
 
-public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Features.AddBuildMethodComponent>
+public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Components.AddBuildMethodComponent>
 {
     public class Process : AddBuildMethodComponentTests
     {

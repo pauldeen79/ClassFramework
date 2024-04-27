@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Components;
 
-public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Features.AddPropertiesComponent>
+public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components.AddPropertiesComponent>
 {
     public class Process : AddPropertiesComponentTests
     {

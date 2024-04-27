@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Components;
 
-public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pipelines.Builder.Features.AddFluentMethodsForCollectionPropertiesComponent>
+public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pipelines.Builder.Components.AddFluentMethodsForCollectionPropertiesComponent>
 {
     public class Process : AddFluentMethodsForCollectionPropertiesComponentTests
     {

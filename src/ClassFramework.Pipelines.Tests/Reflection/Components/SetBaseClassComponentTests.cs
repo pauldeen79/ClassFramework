@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Tests.Reflection.Components;
 
-public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features.SetBaseClassComponent>
+public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Components.SetBaseClassComponent>
 {
     public class Process : SetBaseClassComponentTests
     {
@@ -30,7 +30,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Features
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.BaseClass.Should().Be("ClassFramework.Pipelines.Tests.Reflection.Features.MyBaseClassTestClassBase");
+            model.BaseClass.Should().Be("ClassFramework.Pipelines.Tests.Reflection.Components.MyBaseClassTestClassBase");
         }
 
         [Fact]

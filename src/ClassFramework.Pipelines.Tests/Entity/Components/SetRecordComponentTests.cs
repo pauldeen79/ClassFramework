@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
-public class SetRecordComponentTests : TestBase<Pipelines.Entity.Features.SetRecordComponent>
+public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetRecordComponent>
 {
     public class Process : SetRecordComponentTests
     {

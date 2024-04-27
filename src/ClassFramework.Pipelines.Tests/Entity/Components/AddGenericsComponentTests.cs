@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
-public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Features.AddGenericsComponent>
+public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.AddGenericsComponent>
 {
     public class Process : AddGenericsComponentTests
     {

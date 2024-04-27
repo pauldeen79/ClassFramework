@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
 public class ValidationComponentBuilder : IReflectionComponentBuilder
 {

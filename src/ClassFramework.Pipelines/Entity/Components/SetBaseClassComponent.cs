@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Entity.Features;
+﻿namespace ClassFramework.Pipelines.Entity.Components;
 
 public class SetBaseClassComponentBuilder : IEntityComponentBuilder
 {

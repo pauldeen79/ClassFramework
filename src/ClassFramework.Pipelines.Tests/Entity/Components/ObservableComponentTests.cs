@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
-public class ObservableComponentTests : TestBase<Pipelines.Entity.Features.ObservableComponent>
+public class ObservableComponentTests : TestBase<Pipelines.Entity.Components.ObservableComponent>
 {
     public class Process : ObservableComponentTests
     {

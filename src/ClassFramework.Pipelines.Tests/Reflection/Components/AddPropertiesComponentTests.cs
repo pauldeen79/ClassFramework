@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Tests.Reflection.Components;
 
-public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Features.AddPropertiesComponent>
+public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Components.AddPropertiesComponent>
 {
     public class Process : AddPropertiesComponentTests
     {

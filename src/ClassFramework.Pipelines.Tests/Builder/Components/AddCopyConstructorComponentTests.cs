@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Components;
 
-public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Features.AddCopyConstructorComponent>
+public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Components.AddCopyConstructorComponent>
 {
     public class Process : AddCopyConstructorComponentTests
     {
