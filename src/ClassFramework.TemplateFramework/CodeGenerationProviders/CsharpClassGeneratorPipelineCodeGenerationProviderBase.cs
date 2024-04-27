@@ -1,6 +1,4 @@
-﻿using ClassFramework.Domain.Builders.Extensions;
-
-namespace ClassFramework.TemplateFramework.CodeGenerationProviders;
+﻿namespace ClassFramework.TemplateFramework.CodeGenerationProviders;
 
 public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : CsharpClassGeneratorCodeGenerationProviderBase
 {
@@ -187,7 +185,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(interfacesNamespace);
 
         return (await (await GetBuilders(models, buildersNamespace, entitiesNamespace))
-                .SelectAsync(async x => (await CreateInterface(x, interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{Class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0 && string.IsNullOrEmpty(m.ExplicitInterfaceName))).ToBuilder().AddMethods(new MethodBuilder().WithName("Build").WithReturnTypeName($"I{x.Name.ReplaceSuffix("Builder", string.Empty, StringComparison.Ordinal)}")).Build())
+                .SelectAsync(async x => await CreateInterface(x, interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{Class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0 && string.IsNullOrEmpty(m.ExplicitInterfaceName)))
                ).ToArray();
     }
 
