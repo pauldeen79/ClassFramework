@@ -7,5 +7,7 @@ public class InterfaceContext : ContextBase<IType>
     {
     }
 
+    public override object CreateModel() => new InterfaceBuilder();
+
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
 }

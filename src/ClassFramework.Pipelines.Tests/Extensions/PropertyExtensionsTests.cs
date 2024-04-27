@@ -280,6 +280,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             {
             }
 
+            public override object CreateModel() => string.Empty;
+
             protected override string NewCollectionTypeName => string.Empty;
         }
     }
@@ -317,6 +319,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             public TestContext(PipelineSettings settings, IFormatProvider formatProvider) : base(string.Empty, settings, formatProvider)
             {
             }
+
+            public override object CreateModel() => string.Empty;
 
             protected override string NewCollectionTypeName => string.Empty;
         }

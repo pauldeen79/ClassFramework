@@ -11,5 +11,7 @@ public class PropertyContext : ContextBase<Property>
 
     public string TypeName { get; }
 
+    public override object CreateModel() => new PropertyBuilder();
+
     protected override string NewCollectionTypeName { get; }
 }

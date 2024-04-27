@@ -157,6 +157,8 @@ public class PipelineSettingsBuilderTests
             {
             }
 
+            public override object CreateModel() => string.Empty;
+
             protected override string NewCollectionTypeName => string.Empty;
         }
     }

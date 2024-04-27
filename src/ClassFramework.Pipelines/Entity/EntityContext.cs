@@ -11,5 +11,7 @@ public class EntityContext : ContextBase<IType>
         => Settings.EnableInheritance
         && Settings.IsAbstract;
 
+    public override object CreateModel() => new ClassBuilder();
+
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
 }

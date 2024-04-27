@@ -5,6 +5,8 @@ public abstract class ContextBase
     public PipelineSettings Settings { get; }
     public IFormatProvider FormatProvider { get; }
 
+    public abstract object CreateModel();
+
     protected ContextBase(PipelineSettings settings, IFormatProvider formatProvider)
     {
         Settings = settings.IsNotNull(nameof(settings));

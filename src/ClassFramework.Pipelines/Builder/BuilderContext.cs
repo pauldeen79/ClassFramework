@@ -16,6 +16,8 @@ public class BuilderContext : ContextBase<IType>
 
     protected override string NewCollectionTypeName => Settings.BuilderNewCollectionTypeName;
 
+    public override object CreateModel() => new ClassBuilder();
+
     public string[] CreatePragmaWarningDisableStatementsForBuildMethod()
         => NeedsPragmasForBuildMethod()
             ?

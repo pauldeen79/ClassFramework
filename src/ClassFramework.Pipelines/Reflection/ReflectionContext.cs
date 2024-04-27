@@ -7,5 +7,10 @@ public class ReflectionContext : ContextBase<Type>
     {
     }
 
+    public override object CreateModel()
+        => SourceModel.IsInterface
+            ? new InterfaceBuilder()
+            : new ClassBuilder();
+
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
 }

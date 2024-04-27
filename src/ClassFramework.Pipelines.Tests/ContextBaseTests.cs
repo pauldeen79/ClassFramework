@@ -68,6 +68,8 @@ public class ContextBaseTests : TestBase
         {
         }
 
+        public override object CreateModel() => string.Empty;
+
         protected override string NewCollectionTypeName => string.Empty;
     }
 }

@@ -1,21 +1,21 @@
 ﻿namespace ClassFramework.TemplateFramework.RequestHandlers;
 
-public class PipelineRequestHandler<TModel, TContext, TResponse> : IRequestHandler<PipelineRequest<TContext, TResponse>, Result<TResponse>>
-    where TModel : TResponse, new()
+public class PipelineRequestHandler<TModel, TContext> : IRequestHandler<PipelineRequest<TContext, TModel>, Result<TModel>>
+    where TContext : ContextBase
 {
-    private readonly IPipeline<TContext, TResponse> _pipeline;
+    private readonly IPipeline<TContext, TModel> _pipeline;
 
-    public PipelineRequestHandler(IPipeline<TContext, TResponse> pipeline)
+    public PipelineRequestHandler(IPipeline<TContext, TModel> pipeline)
     {
         _pipeline = pipeline;
     }
 
-    public async Task<Result<TResponse>> Handle(PipelineRequest<TContext, TResponse> request, CancellationToken cancellationToken)
+    public async Task<Result<TModel>> Handle(PipelineRequest<TContext, TModel> request, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(request);
 
-        var model = new TModel();
+        var model = (TModel)request.Context.CreateModel();
         var result = await _pipeline.Process(request.Context, model, cancellationToken);
-        return Result.FromExistingResult(result, (TResponse)model);
+        return Result.FromExistingResult(result, model);
     }
 }

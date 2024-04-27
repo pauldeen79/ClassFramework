@@ -9,6 +9,8 @@ public class BuilderExtensionContext : ContextBase<IType>
 
     protected override string NewCollectionTypeName => Settings.BuilderNewCollectionTypeName;
 
+    public override object CreateModel() => new ClassBuilder();
+
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
 }
