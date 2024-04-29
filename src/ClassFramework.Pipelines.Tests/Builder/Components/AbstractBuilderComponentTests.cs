@@ -22,18 +22,17 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.GenericTypeArguments.Should().BeEquivalentTo("TBuilder", "TEntity");
-            model.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where TEntity : SomeNamespace.SomeClass", "where TBuilder : SomeClassBuilder<TBuilder, TEntity>");
-            model.Abstract.Should().BeTrue();
+            context.Request.Builder.GenericTypeArguments.Should().BeEquivalentTo("TBuilder", "TEntity");
+            context.Request.Builder.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where TEntity : SomeNamespace.SomeClass", "where TBuilder : SomeClassBuilder<TBuilder, TEntity>");
+            context.Request.Builder.Abstract.Should().BeTrue();
         }
 
         [Fact]
@@ -42,18 +41,17 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder();
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.GenericTypeArguments.Should().BeEmpty();
-            model.GenericTypeArgumentConstraints.Should().BeEmpty();
-            model.Abstract.Should().BeFalse();
+            context.Request.Builder.GenericTypeArguments.Should().BeEmpty();
+            context.Request.Builder.GenericTypeArgumentConstraints.Should().BeEmpty();
+            context.Request.Builder.Abstract.Should().BeFalse();
         }
 
         [Fact]
@@ -63,9 +61,8 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(enableEntityInheritance: true, builderNameFormatString: "{Error}");
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
@@ -75,26 +72,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        [Fact]
-        public async Task Returns_Invalid_When_Model_Is_Not_Of_Type_ClassBuilder()
-        {
-            // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
-            InitializeParser();
-            var sut = CreateSut();
-            var model = new StructBuilder();
-            var settings = CreateSettingsForBuilder(enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, model, settings);
-
-            // Act
-            var result = await sut.Process(context);
-
-            // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("You can only create abstract classes. The type of model (ClassFramework.Domain.Builders.Types.StructBuilder) is not a ClassBuilder");
-        }
-
-        private static PipelineContext<BuilderContext, IConcreteTypeBuilder> CreateContext(TypeBase sourceModel, IConcreteTypeBuilder model, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
+        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

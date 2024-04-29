@@ -21,16 +21,15 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddGenericTypeArguments("T").Build();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder();
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.GenericTypeArguments.Should().BeEquivalentTo("T");
+            context.Request.Builder.GenericTypeArguments.Should().BeEquivalentTo("T");
         }
 
         [Fact]
@@ -39,19 +38,18 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddGenericTypeArguments("T").AddGenericTypeArgumentConstraints("where T : class").Build();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder();
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where T : class");
+            context.Request.Builder.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where T : class");
         }
 
-        private static PipelineContext<BuilderContext, IConcreteTypeBuilder> CreateContext(TypeBase sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
+        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

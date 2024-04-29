@@ -2,7 +2,7 @@
 
 public static class PropertyExtensions
 {
-    public static string GetDefaultValue<T>(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, ContextBase<T> context)
+    public static string GetDefaultValue<TSourceModel, TBuilder>(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, ContextBase<TSourceModel, TBuilder> context)
     {
         csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
         context = context.IsNotNull(nameof(context));
@@ -93,9 +93,9 @@ public static class PropertyExtensions
             || settings.CreateAsObservable;
     }
 
-    public static Result<FormattableStringParserResult> GetBuilderConstructorInitializer<T>(
+    public static Result<FormattableStringParserResult> GetBuilderConstructorInitializer<TSourceModel, TBuilder>(
         this Property property,
-        ContextBase<T> context,
+        ContextBase<TSourceModel, TBuilder> context,
         object parentChildContext,
         string mappedTypeName,
         string newCollectionTypeName,
@@ -134,9 +134,9 @@ public static class PropertyExtensions
             .GetCsharpFriendlyTypeName());
     }
 
-    public static Result<FormattableStringParserResult> GetBuilderArgumentTypeName<T>(
+    public static Result<FormattableStringParserResult> GetBuilderArgumentTypeName<TSourceModel, TBuilder>(
         this Property property,
-        ContextBase<T> context,
+        ContextBase<TSourceModel, TBuilder> context,
         object parentChildContext,
         string mappedTypeName,
         IFormattableStringParser formattableStringParser)
@@ -185,7 +185,7 @@ public static class PropertyExtensions
         );
     }
 
-    public static Result<FormattableStringParserResult> GetBuilderParentTypeName(this Property property, PipelineContext<BuilderContext, IConcreteTypeBuilder> context, IFormattableStringParser formattableStringParser)
+    public static Result<FormattableStringParserResult> GetBuilderParentTypeName(this Property property, PipelineContext<BuilderContext> context, IFormattableStringParser formattableStringParser)
     {
         context = context.IsNotNull(nameof(context));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
@@ -216,17 +216,17 @@ public static class PropertyExtensions
         (
             newFullName,
             context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings)
+            new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
         );
     }
 
-    public static string GetSuffix<T>(this Property source, bool enableNullableReferenceTypes, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<T> context)
+    public static string GetSuffix<TSourceModel, TBuilder>(this Property source, bool enableNullableReferenceTypes, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<TSourceModel, TBuilder> context)
         => CollectionIsValidForSuffix(source, enableNullableReferenceTypes)
         || NonCollectionIsValidForSuffix(source, csharpExpressionDumper, context)
             ? "?"
             : string.Empty;
 
-    private static bool NonCollectionIsValidForSuffix<T>(Property source, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<T> context)
+    private static bool NonCollectionIsValidForSuffix<TSourceModel, TBuilder>(Property source, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<TSourceModel, TBuilder> context)
         => !source.TypeName.IsCollectionTypeName()
         && !source.IsValueType
         && source.GetDefaultValue(csharpExpressionDumper, source.TypeName.FixTypeName(), context).StartsWith("default(");

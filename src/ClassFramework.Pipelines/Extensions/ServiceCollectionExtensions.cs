@@ -20,8 +20,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
-            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<BuilderContext, IConcreteTypeBuilder>>().Build())
-            .AddScoped<IPipelineBuilder<BuilderContext, IConcreteTypeBuilder>, Builder.PipelineBuilder>()
+            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<BuilderContext>>().Build())
+            .AddScoped<IPipelineBuilder<BuilderContext>, Builder.PipelineBuilder>()
             .AddScoped<IBuilderComponentBuilder, Builder.Components.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IBuilderComponentBuilder, Builder.Components.AbstractBuilderComponentBuilder>()
             .AddScoped<IBuilderComponentBuilder, Builder.Components.AddAttributesComponentBuilder>()

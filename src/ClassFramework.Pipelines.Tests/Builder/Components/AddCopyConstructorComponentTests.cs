@@ -24,22 +24,21 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass: hasBaseClass ? new ClassBuilder().WithName("BaseClass").BuildTyped() : null,
                 isAbstract: hasBaseClass,
                 addCopyConstructor: true,
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.Protected.Should().BeTrue();
             ctor.ChainCall.Should().Be("base(source)");
             ctor.Parameters.Should().ContainSingle();
@@ -56,20 +55,19 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.Protected.Should().BeFalse();
             ctor.ChainCall.Should().BeEmpty();
             ctor.Parameters.Should().ContainSingle();
@@ -93,20 +91,19 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var sourceModel = CreateModel("MyBaseClass");
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.Protected.Should().BeTrue();
             ctor.ChainCall.Should().Be("base(source)");
             ctor.Parameters.Should().ContainSingle();
@@ -130,21 +127,20 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.Protected.Should().BeFalse();
             ctor.ChainCall.Should().BeEmpty();
             ctor.Parameters.Should().ContainSingle();
@@ -169,7 +165,6 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
@@ -181,7 +176,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
                         .WithTargetType(typeof(int))
                         .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderConstructorInitializeExpression).WithValue("{Error}"))
                 ]);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
@@ -198,7 +193,6 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
@@ -210,7 +204,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
                         .WithTargetType(typeof(int))
                         .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"))
                 ]);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
@@ -227,17 +221,16 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("Filter").WithTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable")).BuildTyped();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true).AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("Filter = new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.Filter);");
         }
@@ -249,17 +242,16 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("Filter").WithTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable")).BuildTyped();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true, addNullChecks: true).AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("if (source is null) throw new System.ArgumentNullException(nameof(source));", "_filter = new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.Filter);");
         }
@@ -271,17 +263,16 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("GroupByFields").WithTypeName(typeof(IReadOnlyCollection<string>).ReplaceGenericTypeName("ExpressionFramework.Domain.Expression"))).BuildTyped();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true).AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("GroupByFields = new System.Collections.Generic.List<ExpressionFramework.Domain.Builders.ExpressionBuilder>(source.GroupByFields.Select(x => ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(x)));");
         }
@@ -293,22 +284,21 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("GroupByFields").WithTypeName(typeof(IReadOnlyCollection<string>).ReplaceGenericTypeName("ExpressionFramework.Domain.Expression"))).BuildTyped();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true, addNullChecks: true).AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("if (source is null) throw new System.ArgumentNullException(nameof(source));", "_groupByFields = new System.Collections.Generic.List<ExpressionFramework.Domain.Builders.ExpressionBuilder>(source.GroupByFields.Select(x => ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(x)));");
         }
 
-        private static PipelineContext<BuilderContext, IConcreteTypeBuilder> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
+        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

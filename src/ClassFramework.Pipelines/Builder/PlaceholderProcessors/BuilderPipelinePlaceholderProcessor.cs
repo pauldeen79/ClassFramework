@@ -15,12 +15,12 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (context is PipelineContext<BuilderContext, IConcreteTypeBuilder> pipelineContext)
+        if (context is PipelineContext<BuilderContext> pipelineContext)
         {
             return pipelineContext.Request.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formattableStringParser, pipelineContext, pipelineContext.Request.SourceModel, _pipelinePlaceholderProcessors);
         }
 
-        if (context is ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property> parentChildContext)
+        if (context is ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContext)
         {
             if (value == "InstancePrefix")
             {

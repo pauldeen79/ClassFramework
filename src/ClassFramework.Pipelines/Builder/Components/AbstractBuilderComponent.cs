@@ -9,11 +9,11 @@ public class AbstractBuilderComponentBuilder : IBuilderComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<BuilderContext> Build()
         => new AbstractBuilderComponent(_formattableStringParser);
 }
 
-public class AbstractBuilderComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
+public class AbstractBuilderComponent : IPipelineComponent<BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AbstractBuilderComponent : IPipelineComponent<BuilderContext, IConc
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -34,16 +34,11 @@ public class AbstractBuilderComponent : IPipelineComponent<BuilderContext, IConc
                 return Task.FromResult<Result>(nameResult);
             }
 
-            if (context.Response is not ClassBuilder classBuilder)
-            {
-                return Task.FromResult(Result.Invalid($"You can only create abstract classes. The type of model ({context.Response.GetType().FullName}) is not a ClassBuilder"));
-            }
-
-            classBuilder.WithAbstract();
+            context.Request.Builder.WithAbstract();
 
             if (!context.Request.Settings.IsForAbstractBuilder)
             {
-                classBuilder
+                context.Request.Builder
                     .AddGenericTypeArguments("TBuilder", "TEntity")
                     .AddGenericTypeArgumentConstraints($"where TEntity : {context.Request.SourceModel.GetFullName()}")
                     .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity>")

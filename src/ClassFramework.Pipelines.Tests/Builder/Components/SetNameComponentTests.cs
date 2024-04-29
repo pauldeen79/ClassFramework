@@ -22,16 +22,15 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder();
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Name.Should().Be("SomeClassBuilder");
+            context.Request.Builder.Name.Should().Be("SomeClassBuilder");
         }
 
         [Fact]
@@ -41,16 +40,15 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder();
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Namespace.Should().Be("SomeNamespace.Builders");
+            context.Request.Builder.Namespace.Should().Be("SomeNamespace.Builders");
         }
 
         [Fact]
@@ -60,9 +58,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(builderNameFormatString: "{Error}");
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
@@ -79,9 +76,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(builderNamespaceFormatString: "{Error}");
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
@@ -91,7 +87,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<BuilderContext, IConcreteTypeBuilder> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
+        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

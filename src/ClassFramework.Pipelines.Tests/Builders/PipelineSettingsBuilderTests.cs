@@ -151,15 +151,21 @@ public class PipelineSettingsBuilderTests
             public List<int> Property { get; set; } = default!;
         }
 
-        private sealed class TestContext : ContextBase<string>
+        private sealed class TestContext : ContextBase<string, string>
         {
             public TestContext(PipelineSettings settings) : base(string.Empty, settings, CultureInfo.CurrentCulture)
             {
             }
 
-            public override object CreateModel() => string.Empty;
-
             protected override string NewCollectionTypeName => string.Empty;
+
+            protected override IBuilder<string> CreateResponseBuilder() => new StringBuilderWrapper();
+
+            private sealed class StringBuilderWrapper : IBuilder<string>
+            {
+                public StringBuilder Builder { get; } = new();
+                public string Build() => Builder.ToString();
+            }
         }
     }
 }

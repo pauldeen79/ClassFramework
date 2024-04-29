@@ -9,11 +9,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentBuilder : IBuilderC
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<BuilderContext> Build()
         => new AddFluentMethodsForCollectionPropertiesComponent(_formattableStringParser);
 }
 
-public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
+public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineComponent<BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineCompone
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -48,14 +48,14 @@ public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineCompone
                 ? $"TBuilder{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
                 : $"{results.First(x => x.Name == "Namespace").Result.Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
 
-            context.Response.AddMethods(new MethodBuilder()
+            context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithName(results.First(x => x.Name == "AddMethodName").Result.Value!)
                 .WithReturnTypeName(returnType)
                 .AddParameters(context.Request.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!.ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
                 .AddStringCodeStatements(results.Where(x => x.Name == "EnumerableOverload").Select(x => x.Result.Value!.ToString()))
             );
 
-            context.Response.AddMethods(new MethodBuilder()
+            context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithName(results.First(x => x.Name == "AddMethodName").Result.Value!)
                 .WithReturnTypeName(returnType)
                 .AddParameters(context.Request.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!.ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
@@ -66,7 +66,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineCompone
         return Task.FromResult(Result.Continue());
     }
 
-    private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, Property property, ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property> parentChildContext)
+    private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderContext> context, Property property, ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContext)
     {
         if (context.Request.Settings.BuilderNewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
@@ -88,7 +88,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineCompone
         yield return _formattableStringParser.Parse("return {BuilderAddMethodName}({NamePascalCsharpFriendlyName}.ToArray());", context.Request.FormatProvider, parentChildContext);
     }
 
-    private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, Property property)
+    private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderContext> context, Property property)
     {
         if (context.Request.Settings.AddNullChecks)
         {
@@ -96,7 +96,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineCompone
             (
                 context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
                 context.Request.FormatProvider,
-                new ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings)
+                new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
             );
 
             if (!argumentNullCheckResult.IsSuccessful() || !string.IsNullOrEmpty(argumentNullCheckResult.Value!.ToString()))
@@ -109,7 +109,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineCompone
         (
             context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Request.Settings.CollectionCopyStatementFormatString),
             context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings)
+            new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
         );
 
         yield return builderAddExpressionResult;
@@ -117,6 +117,6 @@ public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineCompone
         yield return Result.Success<FormattableStringParserResult>(context.Request.ReturnValueStatementForFluentMethod);
     }
 
-    private static ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property> CreateParentChildContext(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, Property property)
+    private static ParentChildContext<PipelineContext<BuilderContext>, Property> CreateParentChildContext(PipelineContext<BuilderContext> context, Property property)
         => new(context, property, context.Request.Settings);
 }

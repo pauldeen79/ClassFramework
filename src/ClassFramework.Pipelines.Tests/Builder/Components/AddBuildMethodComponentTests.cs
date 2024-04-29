@@ -21,17 +21,16 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(enableBuilderInheritance: true, isAbstract: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Methods.Should().HaveCount(2);
-            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("Build", "BuildTyped");
+            context.Request.Builder.Methods.Should().HaveCount(2);
+            context.Request.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo("Build", "BuildTyped");
         }
 
         [Fact]
@@ -41,17 +40,16 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder();
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Methods.Should().ContainSingle();
-            var method = model.Methods.Single();
+            context.Request.Builder.Methods.Should().ContainSingle();
+            var method = context.Request.Builder.Methods.Single();
             method.Name.Should().Be("Build");
             method.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
@@ -67,18 +65,17 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Methods.Should().HaveCount(2);
+            context.Request.Builder.Methods.Should().HaveCount(2);
 
-            var buildMethod = model.Methods.SingleOrDefault(x => x.Name == "Build");
+            var buildMethod = context.Request.Builder.Methods.SingleOrDefault(x => x.Name == "Build");
             buildMethod.Should().NotBeNull(because: "Build method should exist");
             buildMethod!.Abstract.Should().BeFalse();
             buildMethod.ReturnTypeName.Should().Be("SomeNamespace.SomeClass");
@@ -88,7 +85,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
                 "return BuildTyped();"
             );
 
-            var buildTypedMethod = model.Methods.SingleOrDefault(x => x.Name == "BuildTyped");
+            var buildTypedMethod = context.Request.Builder.Methods.SingleOrDefault(x => x.Name == "BuildTyped");
             buildTypedMethod.Should().NotBeNull(because: "BuildTyped method should exist");
             buildTypedMethod!.Abstract.Should().BeTrue();
             buildTypedMethod.ReturnTypeName.Should().Be("TEntity");
@@ -102,15 +99,14 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(typenameMappings:
-                [
-                    new TypenameMappingBuilder()
-                        .WithSourceType(typeof(int))
-                        .WithTargetType(typeof(int))
-                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("{Error}"))
-                ]);
-            var context = CreateContext(sourceModel, model, settings);
+            [
+                new TypenameMappingBuilder()
+                    .WithSourceType(typeof(int))
+                    .WithTargetType(typeof(int))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("{Error}"))
+            ]);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
@@ -120,7 +116,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<BuilderContext, IConcreteTypeBuilder> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
+        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

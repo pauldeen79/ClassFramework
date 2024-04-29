@@ -5,8 +5,6 @@ public abstract class ContextBase
     public PipelineSettings Settings { get; }
     public IFormatProvider FormatProvider { get; }
 
-    public abstract object CreateModel();
-
     protected ContextBase(PipelineSettings settings, IFormatProvider formatProvider)
     {
         Settings = settings.IsNotNull(nameof(settings));
@@ -14,16 +12,35 @@ public abstract class ContextBase
     }
 }
 
-public abstract class ContextBase<TModel> : ContextBase
+public abstract class ContextBase<TSourceModel, TResponse> : ContextBase
 {
-    protected ContextBase(TModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : base(settings, formatProvider)
+    protected ContextBase(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : base(settings, formatProvider)
     {
         SourceModel = sourceModel.IsNotNull(nameof(sourceModel));
     }
 
+    protected abstract IBuilder<TResponse> CreateResponseBuilder();
+
     protected abstract string NewCollectionTypeName { get; }
 
-    public TModel SourceModel { get; }
+    private IBuilder<TResponse>? _responseBuilder;
+    public TSourceModel SourceModel { get; }
+    public IBuilder<TResponse> ResponseBuilder
+    {
+        get
+        {
+            if (_responseBuilder is null)
+            {
+                _responseBuilder = CreateResponseBuilder();
+                if (_responseBuilder is null)
+                {
+                    throw new InvalidOperationException($"{nameof(CreateResponseBuilder)} returned a null reference, this is not allowed");
+                }
+            }
+
+            return _responseBuilder;
+        }
+    }
 
     public string CreateArgumentNullException(string argumentName)
     {

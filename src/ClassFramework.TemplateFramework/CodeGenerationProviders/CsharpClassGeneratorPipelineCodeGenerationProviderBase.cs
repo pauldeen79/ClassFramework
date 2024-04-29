@@ -133,11 +133,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return (await models.SelectAsync(async x =>
         {
             var context = new EntityContext(x, await CreateEntityPipelineSettings(entitiesNamespace), CultureInfo.InvariantCulture);
-            var entityBuilder = (await _mediator.Send(new PipelineRequest<EntityContext, IConcreteTypeBuilder>(context)))
-                .TryCast<ClassBuilder>()
+            var entity = (await _mediator.Send(new PipelineRequest<EntityContext, IConcreteType>(context)))
+                .TryCast<TypeBase>()
                 .GetValueOrThrow();
 
-            return await CreateBuilderClass(entityBuilder.Build(), buildersNamespace, entitiesNamespace);
+            return await CreateBuilderClass(entity, buildersNamespace, entitiesNamespace);
         })).ToArray();
     }
 
@@ -511,11 +511,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     private async Task<TypeBase> CreateBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
     {
-        var builder = (await _mediator.Send(new PipelineRequest<BuilderContext, IConcreteTypeBuilder>(new BuilderContext(typeBase, await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))))
-            .TryCast<ClassBuilder>()
+        return (await _mediator.Send(new PipelineRequest<BuilderContext, TypeBase>(new BuilderContext(typeBase, await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))))
             .GetValueOrThrow();
-
-        return builder.Build();
     }
 
     private async Task<TypeBase> CreateBuilderExtensionsClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)

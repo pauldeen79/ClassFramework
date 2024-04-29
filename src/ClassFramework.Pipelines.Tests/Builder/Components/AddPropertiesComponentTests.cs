@@ -21,16 +21,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(enableBuilderInheritance: true, isAbstract: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.Should().BeEmpty();
+            context.Request.Builder.Properties.Should().BeEmpty();
         }
 
         [Fact]
@@ -40,22 +39,21 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 isAbstract: false,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped());
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.Select(x => x.Name).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.Name));
-            model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.TypeName.FixTypeName()));
-            model.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.IsNullable));
-            model.Properties.Select(x => x.IsValueType).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.IsValueType));
+            context.Request.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.Name));
+            context.Request.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.TypeName.FixTypeName()));
+            context.Request.Builder.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.IsNullable));
+            context.Request.Builder.Properties.Select(x => x.IsValueType).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.IsValueType));
         }
 
         [Fact]
@@ -65,7 +63,6 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 isAbstract: false,
@@ -76,15 +73,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
                     new TypenameMappingBuilder().WithSourceType(typeof(string)).WithTargetType(typeof(int)).AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("MyCustomType")),
                     new TypenameMappingBuilder().WithSourceTypeName(typeof(List<int>).FullName!.FixTypeName()).WithTargetType(typeof(int)).AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("MyCustomType")),
                 ]);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.Select(x => x.Name).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.Name));
-            model.Properties.Select(x => x.TypeName).Should().AllBe("MyCustomType");
+            context.Request.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.Name));
+            context.Request.Builder.Properties.Select(x => x.TypeName).Should().AllBe("MyCustomType");
         }
 
         [Fact]
@@ -94,21 +91,20 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 isAbstract: false,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped(),
                 newCollectionTypeName: typeof(ReadOnlyCollection<>).WithoutGenerics());
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.Select(x => x.Name).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.Name));
-            model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.ObjectModel.ReadOnlyCollection<System.Int32>");
+            context.Request.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.Name));
+            context.Request.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.ObjectModel.ReadOnlyCollection<System.Int32>");
         }
 
         [Fact]
@@ -118,17 +114,16 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(copyAttributes: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).Should().NotBeEmpty();
-            model.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).Should().AllBeEquivalentTo("MyAttribute");
+            context.Request.Builder.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).Should().NotBeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).Should().AllBeEquivalentTo("MyAttribute");
         }
 
         [Fact]
@@ -138,16 +133,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(copyAttributes: false);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.Attributes).Should().BeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.Attributes).Should().BeEmpty();
         }
 
         [Fact]
@@ -157,17 +151,16 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(addNullChecks: false);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
-            model.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
         }
 
         [Theory]
@@ -184,24 +177,23 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
                 .BuildTyped();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
                 validateArguments: validateArguments);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.GetterCodeStatements).Should().NotBeEmpty();
-            model.Properties.SelectMany(x => x.GetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            model.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return _myRequiredProperty;");
-            model.Properties.SelectMany(x => x.SetterCodeStatements).Should().NotBeEmpty();
-            model.Properties.SelectMany(x => x.SetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("_myRequiredProperty = value ?? throw new System.ArgumentNullException(nameof(value));");
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().NotBeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return _myRequiredProperty;");
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().NotBeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("_myRequiredProperty = value ?? throw new System.ArgumentNullException(nameof(value));");
         }
 
         [Theory]
@@ -217,24 +209,23 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
                 .BuildTyped();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
                 validateArguments: validateArguments);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.GetterCodeStatements).Should().NotBeEmpty();
-            model.Properties.SelectMany(x => x.GetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            model.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return _delegate;");
-            model.Properties.SelectMany(x => x.SetterCodeStatements).Should().NotBeEmpty();
-            model.Properties.SelectMany(x => x.SetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("_delegate = value ?? throw new System.ArgumentNullException(nameof(value));");
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().NotBeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return _delegate;");
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().NotBeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("_delegate = value ?? throw new System.ArgumentNullException(nameof(value));");
         }
 
         [Theory]
@@ -250,19 +241,18 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
                 .BuildTyped();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
                 validateArguments: validateArguments);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Fields.Select(x => x.Name).Should().BeEquivalentTo("_myProperty");
+            context.Request.Builder.Fields.Select(x => x.Name).Should().BeEquivalentTo("_myProperty");
         }
 
         [Fact]
@@ -272,7 +262,6 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 typenameMappings:
                 [
@@ -281,7 +270,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
                         .WithTargetType(typeof(int))
                         .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"))
                 ]);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
@@ -291,7 +280,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             result.ErrorMessage.Should().Be("Kaboom");
         }
         
-        private static PipelineContext<BuilderContext, IConcreteTypeBuilder> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
+        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

@@ -2,7 +2,7 @@
 
 public static class PipelineContextExtensions
 {
-    public static Result<FormattableStringParserResult> CreateEntityInstanciation(this PipelineContext<BuilderContext, IConcreteTypeBuilder> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix)
+    public static Result<FormattableStringParserResult> CreateEntityInstanciation(this PipelineContext<BuilderContext> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
@@ -53,7 +53,7 @@ public static class PipelineContextExtensions
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()));
 
-    private static Result<FormattableStringParserResult> GetConstructionMethodParameters<TModel>(PipelineContext<BuilderContext, TModel> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor)
+    private static Result<FormattableStringParserResult> GetConstructionMethodParameters(PipelineContext<BuilderContext> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor)
     {
         var properties = context.Request.SourceModel.GetBuilderConstructorProperties(context.Request);
 
@@ -69,7 +69,7 @@ public static class PipelineContextExtensions
                         .GetMappingMetadata(property.TypeName)
                         .GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, PlaceholderNames.NamePlaceholder),
                     context.Request.FormatProvider,
-                    new ParentChildContext<PipelineContext<BuilderContext, TModel>, Property>(context, property, context.Request.Settings)
+                    new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
                 ),
                 CollectionInitializer = context.Request.GetMappingMetadata
                     (

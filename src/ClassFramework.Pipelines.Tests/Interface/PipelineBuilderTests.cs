@@ -193,7 +193,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             Model.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
         }
 
-        private static InterfaceContext CreateContext(IType model, PipelineSettingsBuilder settings)
+        private static InterfaceContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
             => new(model, settings.Build(), CultureInfo.InvariantCulture);
     }
 }

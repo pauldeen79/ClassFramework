@@ -2,17 +2,17 @@
 
 public class AddAttributesComponentBuilder : IBuilderComponentBuilder
 {
-    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<BuilderContext> Build()
         => new AddAttributesComponent();
 }
 
-public class AddAttributesComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
+public class AddAttributesComponent : IPipelineComponent<BuilderContext>
 {
-    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Response.AddAttributes(context.Request.GetAtributes(context.Request.SourceModel.Attributes));
+        context.Request.Builder.AddAttributes(context.Request.GetAtributes(context.Request.SourceModel.Attributes));
 
         return Task.FromResult(Result.Continue());
     }

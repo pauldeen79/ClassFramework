@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public class BuilderContext : ContextBase<IType>
+public class BuilderContext : ContextBase<TypeBase, TypeBase>
 {
-    public BuilderContext(IType sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
+    public BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
         : base(sourceModel, settings, formatProvider)
     {
     }
@@ -15,8 +15,6 @@ public class BuilderContext : ContextBase<IType>
     public bool IsAbstractBuilder => Settings.EnableBuilderInheritance && (Settings.BaseClass is null || Settings.IsAbstract) && !Settings.IsForAbstractBuilder;
 
     protected override string NewCollectionTypeName => Settings.BuilderNewCollectionTypeName;
-
-    public override object CreateModel() => new ClassBuilder();
 
     public string[] CreatePragmaWarningDisableStatementsForBuildMethod()
         => NeedsPragmasForBuildMethod()
@@ -84,4 +82,10 @@ public class BuilderContext : ContextBase<IType>
         => Settings.EnableNullableReferenceTypes
         && !IsBuilderForAbstractEntity
         && !Settings.AddNullChecks;
+
+    protected override IBuilder<TypeBase> CreateResponseBuilder() => _wrappedBuilder;
+
+    public ClassBuilder Builder => _wrappedBuilder.Builder;
+
+    private readonly ClassBuilderWrapper _wrappedBuilder = new();
 }

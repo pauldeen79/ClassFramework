@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines;
 
-public class PropertyContext : ContextBase<Property>
+public class PropertyContext : ContextBase<Property, Property>
 {
     public PropertyContext(Property model, PipelineSettings settings, IFormatProvider formatProvider, string typeName, string newCollectionTypeName)
         : base(model, settings, formatProvider)
@@ -11,7 +11,7 @@ public class PropertyContext : ContextBase<Property>
 
     public string TypeName { get; }
 
-    public override object CreateModel() => new PropertyBuilder();
-
     protected override string NewCollectionTypeName { get; }
+
+    protected override IBuilder<Property> CreateResponseBuilder() => new PropertyBuilderWrapper();
 }

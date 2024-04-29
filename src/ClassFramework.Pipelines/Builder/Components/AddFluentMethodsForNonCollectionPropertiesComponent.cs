@@ -9,11 +9,11 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentBuilder : IBuild
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<BuilderContext> Build()
         => new AddFluentMethodsForNonCollectionPropertiesComponent(_formattableStringParser);
 }
 
-public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
+public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComponent<BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComp
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -33,7 +33,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComp
 
         foreach (var property in context.Request.GetSourceProperties().Where(x => context.Request.IsValidForFluentMethod(x) && !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var parentChildContext = new ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings);
+            var parentChildContext = new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings);
 
             var results = context.Request.GetResultsForBuilderNonCollectionProperties(property, parentChildContext, _formattableStringParser);
 
@@ -59,7 +59,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComp
                 context.Request.ReturnValueStatementForFluentMethod
             );
 
-            context.Response.AddMethods(builder);
+            context.Request.Builder.AddMethods(builder);
         }
 
         return Task.FromResult(Result.Continue());

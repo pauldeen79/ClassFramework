@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<BuilderContext, IConcreteTypeBuilder>>
+public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<BuilderContext>>
 {
     public class Process : PipelineBuilderTests
     {
@@ -18,20 +18,19 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
                 CultureInfo.InvariantCulture
             );
 
-        private ClassBuilder Model { get; } = new();
-
         [Fact]
         public async Task Sets_Partial()
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(CreateContext(), Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Partial.Should().BeTrue();
+            context.Builder.Partial.Should().BeTrue();
         }
 
         [Fact]
@@ -39,14 +38,15 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(CreateContext(), Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Name.Should().Be("MyClassBuilder");
-            Model.Namespace.Should().Be("MyNamespace.Builders");
+            context.Builder.Name.Should().Be("MyClassBuilder");
+            context.Builder.Namespace.Should().Be("MyNamespace.Builders");
         }
 
         [Fact]
@@ -54,15 +54,16 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(CreateContext(), Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
-            Model.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
-            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.Collections.Generic.List<System.String>");
+            context.Builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
+            context.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
+            context.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.Collections.Generic.List<System.String>");
         }
 
         [Fact]
@@ -70,13 +71,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(CreateContext(), Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Constructors.Should().NotBeEmpty();
+            context.Builder.Constructors.Should().NotBeEmpty();
         }
         
         [Fact]
@@ -84,13 +86,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(CreateContext(), Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.GenericTypeArguments.Should().NotBeEmpty();
+            context.Builder.GenericTypeArguments.Should().NotBeEmpty();
         }
 
         [Fact]
@@ -98,13 +101,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(CreateContext(), Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.GenericTypeArgumentConstraints.Should().NotBeEmpty();
+            context.Builder.GenericTypeArgumentConstraints.Should().NotBeEmpty();
         }
 
         [Fact]
@@ -112,13 +116,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(CreateContext(), Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Attributes.Should().NotBeEmpty();
+            context.Builder.Attributes.Should().NotBeEmpty();
         }
 
         [Fact]
@@ -126,14 +131,15 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(CreateContext(), Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
-            var method = Model.Methods.Single(x => x.Name == "Build");
+            context.Builder.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
+            var method = context.Builder.Methods.Single(x => x.Name == "Build");
             method.ReturnTypeName.Should().Be("MyNamespace.MyClass<T>");
             method.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return new MyNamespace.MyClass<T> { Property2 = Property2 };");
@@ -144,19 +150,20 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(CreateContext(), Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Methods.Where(x => x.Name == "WithProperty1").Should().ContainSingle();
-            var method = Model.Methods.Single(x => x.Name == "WithProperty1");
+            context.Builder.Methods.Where(x => x.Name == "WithProperty1").Should().ContainSingle();
+            var method = context.Builder.Methods.Single(x => x.Name == "WithProperty1");
             method.ReturnTypeName.Should().Be("MyNamespace.Builders.MyClassBuilder<T>");
             method.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("Property1 = property1;", "return this;");
 
-            Model.Methods.Where(x => x.Name == "WithProperty2").Should().BeEmpty(); //only for the non-collection property
+            context.Builder.Methods.Where(x => x.Name == "WithProperty2").Should().BeEmpty(); //only for the non-collection property
         }
 
         [Fact]
@@ -164,13 +171,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(CreateContext(), Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            var methods = Model.Methods.Where(x => x.Name == "AddProperty2");
+            var methods = context.Builder.Methods.Where(x => x.Name == "AddProperty2");
             methods.Where(x => x.Name == "AddProperty2").Should().HaveCount(2);
             methods.Select(x => x.ReturnTypeName).Should().BeEquivalentTo("MyNamespace.Builders.MyClassBuilder<T>", "MyNamespace.Builders.MyClassBuilder<T>");
             methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.String>", "System.String[]");
@@ -188,14 +196,15 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext(createAsObservable: true);
 
             // Act
-            var result = await sut.Process(CreateContext(createAsObservable: true), Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Fields.Select(x => x.Name).Should().BeEquivalentTo("_property1", "_property2", "PropertyChanged");
-            Model.Methods.Should().ContainSingle(x => x.Name == "HandlePropertyChanged");
+            context.Builder.Fields.Select(x => x.Name).Should().BeEquivalentTo("_property1", "_property2", "PropertyChanged");
+            context.Builder.Methods.Should().ContainSingle(x => x.Name == "HandlePropertyChanged");
         }
 
         [Fact]
@@ -203,9 +212,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.Process(CreateContext(addProperties: false), Model);
+            var result = await sut.Process(context);
             var innerResult = result?.InnerResults.FirstOrDefault();
 
             // Assert
@@ -217,8 +227,6 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
 
     public class IntegrationTests : PipelineBuilderTests
     {
-        private ClassBuilder Model { get; } = new();
-
         [Fact]
         public async Task Creates_Builder_With_NamespaceMapping()
         {
@@ -232,21 +240,21 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(context, Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
 
-            Model.Name.Should().Be("MyClassBuilder");
-            Model.Namespace.Should().Be("MyNamespace.Builders");
+            context.Builder.Name.Should().Be("MyClassBuilder");
+            context.Builder.Namespace.Should().Be("MyNamespace.Builders");
 
-            Model.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
-            var buildMethod = Model.Methods.Single(x => x.Name == "Build");
+            context.Builder.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
+            var buildMethod = context.Builder.Methods.Single(x => x.Name == "Build");
             buildMethod.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             buildMethod.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return new MyNamespace.MyClass { Property1 = Property1, Property2 = Property2, Property3 = Property3, Property4 = Property4, Property5 = Property5?.Build()!, Property6 = Property6?.Build()!, Property7 = new System.Collections.Generic.List<MySourceNamespace.MyClass>(Property7.Select(x => x.Build()!)), Property8 = new System.Collections.Generic.List<MySourceNamespace.MyClass>(Property8.Select(x => x.Build()!)) };");
 
-            Model.Constructors.Where(x => x.Parameters.Count == 1).Should().ContainSingle();
-            var copyConstructor = Model.Constructors.Single(x => x.Parameters.Count == 1);
+            context.Builder.Constructors.Where(x => x.Parameters.Count == 1).Should().ContainSingle();
+            var copyConstructor = context.Builder.Constructors.Single(x => x.Parameters.Count == 1);
             copyConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
@@ -264,21 +272,21 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
             );
 
             // non-nullable non-value type properties have a backing field, so we can do null checks
-            Model.Fields.Select(x => x.Name).Should().BeEquivalentTo
+            context.Builder.Fields.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "_property3",
                 "_property5",
                 "_property7"
             );
-            Model.Fields.Select(x => x.TypeName).Should().BeEquivalentTo
+            context.Builder.Fields.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.String",
                 "MyNamespace.Builders.MyClassBuilder",
                 "System.Collections.Generic.List<MyNamespace.Builders.MyClassBuilder>"
             );
-            Model.Fields.Select(x => x.IsNullable).Should().AllBeEquivalentTo(false);
+            context.Builder.Fields.Select(x => x.IsNullable).Should().AllBeEquivalentTo(false);
 
-            Model.Properties.Select(x => x.Name).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "Property1",
                 "Property2",
@@ -289,7 +297,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
                 "Property7",
                 "Property8"
             );
-            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
@@ -300,7 +308,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
                 "System.Collections.Generic.List<MyNamespace.Builders.MyClassBuilder>",
                 "System.Collections.Generic.List<MyNamespace.Builders.MyClassBuilder>"
             );
-            Model.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
                 new[]
                 {
@@ -316,7 +324,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
             );
         }
 
-        private static BuilderContext CreateContext(IConcreteType model, PipelineSettingsBuilder settings)
+        private static BuilderContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
             => new(model, settings.Build(), CultureInfo.InvariantCulture);
     }
 }

@@ -336,7 +336,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
             Model.Methods.Should().ContainSingle(x => x.Name == "Validate");
         }
         
-        private static EntityContext CreateContext(IConcreteType model, PipelineSettingsBuilder settings)
+        private static EntityContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
             => new(model, settings.Build(), CultureInfo.InvariantCulture);
     }
 }

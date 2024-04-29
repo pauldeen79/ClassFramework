@@ -9,11 +9,11 @@ public class AddInterfacesComponentBuilder : IBuilderComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<BuilderContext> Build()
         => new AddInterfacesComponent(_formattableStringParser);
 }
 
-public class AddInterfacesComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
+public class AddInterfacesComponent : IPipelineComponent<BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AddInterfacesComponent : IPipelineComponent<BuilderContext, IConcre
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -48,7 +48,7 @@ public class AddInterfacesComponent : IPipelineComponent<BuilderContext, IConcre
                     (
                         newFullName,
                         context.Request.FormatProvider,
-                        new ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings)
+                        new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
                     ).TransformValue(x => x.ToString());
                 }
                 return Result.Success(context.Request.MapTypeName(x.FixTypeName()));
@@ -62,7 +62,7 @@ public class AddInterfacesComponent : IPipelineComponent<BuilderContext, IConcre
             return Task.FromResult<Result>(error);
         }
 
-        context.Response.AddInterfaces(results.Select(x => x.Value!));
+        context.Request.Builder.AddInterfaces(results.Select(x => x.Value!));
 
         return Task.FromResult(Result.Continue());
     }

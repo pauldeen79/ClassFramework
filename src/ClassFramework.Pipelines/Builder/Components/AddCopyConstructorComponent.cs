@@ -11,11 +11,11 @@ public class AddCopyConstructorComponentBuilder : IBuilderComponentBuilder
         _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
     }
 
-    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<BuilderContext> Build()
         => new AddCopyConstructorComponent(_formattableStringParser, _csharpExpressionDumper);
 }
 
-public class AddCopyConstructorComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
+public class AddCopyConstructorComponent : IPipelineComponent<BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
     private readonly ICsharpExpressionDumper _csharpExpressionDumper;
@@ -26,7 +26,7 @@ public class AddCopyConstructorComponent : IPipelineComponent<BuilderContext, IC
         _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
     }
 
-    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -39,7 +39,7 @@ public class AddCopyConstructorComponent : IPipelineComponent<BuilderContext, IC
             && context.Request.IsAbstractBuilder
             && !context.Request.Settings.IsForAbstractBuilder)
         {
-            context.Response.AddConstructors(CreateInheritanceCopyConstructor(context));
+            context.Request.Builder.AddConstructors(CreateInheritanceCopyConstructor(context));
         }
         else
         {
@@ -49,13 +49,13 @@ public class AddCopyConstructorComponent : IPipelineComponent<BuilderContext, IC
                 return Task.FromResult<Result>(copyConstructorResult);
             }
 
-            context.Response.AddConstructors(copyConstructorResult.Value!);
+            context.Request.Builder.AddConstructors(copyConstructorResult.Value!);
         }
 
         return Task.FromResult(Result.Continue());
     }
 
-    private Result<ConstructorBuilder> CreateCopyConstructor(PipelineContext<BuilderContext, IConcreteTypeBuilder> context)
+    private Result<ConstructorBuilder> CreateCopyConstructor(PipelineContext<BuilderContext> context)
     {
         var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
         resultSetBuilder.Add("NullCheck.Source", () => _formattableStringParser.Parse("{NullCheck.Source}", context.Request.FormatProvider, context));
@@ -114,7 +114,7 @@ public class AddCopyConstructorComponent : IPipelineComponent<BuilderContext, IC
         );
     }
 
-    private static string FixEntityName(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, string name, string fullName)
+    private static string FixEntityName(PipelineContext<BuilderContext> context, string name, string fullName)
     {
         if (context.Request.Settings.InheritFromInterfaces)
         {
@@ -124,7 +124,7 @@ public class AddCopyConstructorComponent : IPipelineComponent<BuilderContext, IC
         return name;
     }
 
-    private Tuple<Property, Result<FormattableStringParserResult>>[] GetInitializationCodeResults(PipelineContext<BuilderContext, IConcreteTypeBuilder> context)
+    private Tuple<Property, Result<FormattableStringParserResult>>[] GetInitializationCodeResults(PipelineContext<BuilderContext> context)
         => context.Request.SourceModel.Properties
             .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings) && !(x.TypeName.FixTypeName().IsCollectionTypeName() && context.Request.GetMappingMetadata(x.TypeName).Any(y => y.Name == MetadataNames.CustomBuilderConstructorInitializeExpression)))
             .Select(x => new Tuple<Property, Result<FormattableStringParserResult>>
@@ -135,18 +135,18 @@ public class AddCopyConstructorComponent : IPipelineComponent<BuilderContext, IC
             .TakeWhileWithFirstNonMatching(x => x.Item2.IsSuccessful())
             .ToArray();
 
-    private Tuple<string, Result<FormattableStringParserResult>>[] GetConstructorInitializerResults(PipelineContext<BuilderContext, IConcreteTypeBuilder> context)
+    private Tuple<string, Result<FormattableStringParserResult>>[] GetConstructorInitializerResults(PipelineContext<BuilderContext> context)
         => context.Request.SourceModel.Properties
             .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
             .Select(x => new Tuple<string, Result<FormattableStringParserResult>>
             (
                 x.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo()),
-                x.GetBuilderConstructorInitializer(context.Request, new ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, MetadataNames.CustomBuilderConstructorInitializeExpression, _formattableStringParser)
+                x.GetBuilderConstructorInitializer(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, MetadataNames.CustomBuilderConstructorInitializeExpression, _formattableStringParser)
             ))
             .TakeWhileWithFirstNonMatching(x => x.Item2.IsSuccessful())
             .ToArray();
 
-    private Result<FormattableStringParserResult> CreateBuilderInitializationCode(Property property, PipelineContext<BuilderContext, IConcreteTypeBuilder> context)
+    private Result<FormattableStringParserResult> CreateBuilderInitializationCode(Property property, PipelineContext<BuilderContext> context)
         => _formattableStringParser.Parse
         (
             ProcessCreateBuilderInitializationCode(context.Request.GetMappingMetadata(property.TypeName)
@@ -158,7 +158,7 @@ public class AddCopyConstructorComponent : IPipelineComponent<BuilderContext, IC
                         : context.Request.Settings.NonCollectionInitializationStatementFormatString
                 ).Replace(PlaceholderNames.NamePlaceholder, property.Name), property.TypeName.FixTypeName().IsCollectionTypeName()),
             context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings)
+            new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
         );
 
     private string ProcessCreateBuilderInitializationCode(string result, bool isCollectionTypeName)
@@ -171,7 +171,7 @@ public class AddCopyConstructorComponent : IPipelineComponent<BuilderContext, IC
         return result;
     }
 
-    private string? GetSourceExpression(string? value, Property sourceProperty, PipelineContext<BuilderContext, IConcreteTypeBuilder> context)
+    private string? GetSourceExpression(string? value, Property sourceProperty, PipelineContext<BuilderContext> context)
     {
         if (value is null || !value.Contains(PlaceholderNames.SourceExpressionPlaceholder))
         {
@@ -206,7 +206,7 @@ public class AddCopyConstructorComponent : IPipelineComponent<BuilderContext, IC
     private static string CreateBuilderClassCopyConstructorChainCall(IType instance, PipelineSettings settings)
         => instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success<FormattableStringParserResult>("base(source)")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
-    private static ConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<BuilderContext, IConcreteTypeBuilder> context)
+    private static ConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<BuilderContext> context)
     {
         var typeName = context.Request.SourceModel.GetFullName();
 

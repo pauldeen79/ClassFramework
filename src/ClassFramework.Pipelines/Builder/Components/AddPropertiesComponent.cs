@@ -9,11 +9,11 @@ public class AddPropertiesComponentBuilder : IBuilderComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<BuilderContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<BuilderContext> Build()
         => new AddPropertiesComponent(_formattableStringParser);
 }
 
-public class AddPropertiesComponent : IPipelineComponent<BuilderContext, IConcreteTypeBuilder>
+public class AddPropertiesComponent : IPipelineComponent<BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AddPropertiesComponent : IPipelineComponent<BuilderContext, IConcre
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result> Process(PipelineContext<BuilderContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -34,7 +34,7 @@ public class AddPropertiesComponent : IPipelineComponent<BuilderContext, IConcre
         foreach (var property in context.Request.SourceModel.Properties.Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)))
         {
             var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
-            resultSetBuilder.Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser));
+            resultSetBuilder.Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser));
             resultSetBuilder.Add(NamedResults.ParentTypeName, () => property.GetBuilderParentTypeName(context, _formattableStringParser));
             var results = resultSetBuilder.Build();
 
@@ -45,7 +45,7 @@ public class AddPropertiesComponent : IPipelineComponent<BuilderContext, IConcre
                 return Task.FromResult<Result>(error.Result);
             }
 
-            context.Response.AddProperties(new PropertyBuilder()
+            context.Request.Builder.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
                 .WithTypeName(results.First(x => x.Name == NamedResults.TypeName).Result.Value!.ToString()
                     .FixCollectionTypeName(context.Request.Settings.BuilderNewCollectionTypeName)
@@ -64,7 +64,7 @@ public class AddPropertiesComponent : IPipelineComponent<BuilderContext, IConcre
 
         // Note that we are not checking the result, because the same formattable string (CustomBuilderArgumentType) has already been checked earlier in this class
         // We can simple use GetValueOrThrow to keep the compiler happy (the value should be a string, and not be null)
-        context.Response.AddFields(context.Request.SourceModel
+        context.Request.Builder.AddFields(context.Request.SourceModel
             .GetBuilderClassFields(context, _formattableStringParser)
             .Select(x => x.GetValueOrThrow()));
 
