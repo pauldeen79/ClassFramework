@@ -2,12 +2,12 @@
 
 public class ValidationComponentBuilder : IReflectionComponentBuilder
 {
-    public IPipelineComponent<ReflectionContext, TypeBaseBuilder> Build() => new ValidationComponent();
+    public IPipelineComponent<ReflectionContext> Build() => new ValidationComponent();
 }
 
-public class ValidationComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
+public class ValidationComponent : IPipelineComponent<ReflectionContext>
 {
-    public Task<Result> Process(PipelineContext<ReflectionContext, TypeBaseBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<ReflectionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

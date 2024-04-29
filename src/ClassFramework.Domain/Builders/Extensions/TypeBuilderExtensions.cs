@@ -11,4 +11,10 @@ public static partial class TypeBuilderExtensions
     public static T AddInterfaces<T>(this T instance, IEnumerable<Type> interfaces)
         where T : ITypeBuilder
         => instance.AddInterfaces(interfaces.IsNotNull(nameof(interfaces)).ToArray());
+
+    public static IReadOnlyCollection<ConstructorBuilder> GetConstructors<T>(this T instance)
+        where T : ITypeBuilder
+        => instance is IConstructorsContainerBuilder constructorsContainerBuilder
+            ? constructorsContainerBuilder.Constructors.ToList().AsReadOnly()
+            : new List<ConstructorBuilder>().AsReadOnly();
 }

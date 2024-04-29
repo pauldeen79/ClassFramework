@@ -2,18 +2,18 @@
 
 public class AddConstructorsComponentBuilder : IReflectionComponentBuilder
 {
-    public IPipelineComponent<ReflectionContext, TypeBaseBuilder> Build()
+    public IPipelineComponent<ReflectionContext> Build()
         => new AddConstructorsComponent();
 }
 
-public class AddConstructorsComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
+public class AddConstructorsComponent : IPipelineComponent<ReflectionContext>
 {
-    public Task<Result> Process(PipelineContext<ReflectionContext, TypeBaseBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<ReflectionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Request.Settings.CreateConstructors
-            || context.Response is not IConstructorsContainerBuilder constructorsContainerBuilder)
+            || context.Request.Builder is not IConstructorsContainerBuilder constructorsContainerBuilder)
         {
             return Task.FromResult(Result.Continue());
         }
@@ -23,7 +23,7 @@ public class AddConstructorsComponent : IPipelineComponent<ReflectionContext, Ty
         return Task.FromResult(Result.Continue());
     }
 
-    private static IEnumerable<ConstructorBuilder> GetConstructors(PipelineContext<ReflectionContext, TypeBaseBuilder> context)
+    private static IEnumerable<ConstructorBuilder> GetConstructors(PipelineContext<ReflectionContext> context)
         => context.Request.SourceModel.GetConstructors()
             .Select(x => new ConstructorBuilder()
                 .AddParameters

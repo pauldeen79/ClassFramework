@@ -70,8 +70,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddReflectionPipeline(this IServiceCollection services)
         => services
-            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<Reflection.ReflectionContext, TypeBaseBuilder>>().Build())
-            .AddScoped<IPipelineBuilder<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.PipelineBuilder>()
+            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<Reflection.ReflectionContext>>().Build())
+            .AddScoped<IPipelineBuilder<Reflection.ReflectionContext>, Reflection.PipelineBuilder>()
             .AddScoped<IReflectionComponentBuilder, Reflection.Components.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IReflectionComponentBuilder, Reflection.Components.AddAttributesComponentBuilder>()
             .AddScoped<IReflectionComponentBuilder, Reflection.Components.AddConstructorsComponentBuilder>()

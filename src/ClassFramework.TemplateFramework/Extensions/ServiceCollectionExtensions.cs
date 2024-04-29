@@ -39,7 +39,7 @@ public static class ServiceCollectionExtensions
             .AddChildTemplate<UsingsTemplate>(typeof(UsingsModel))
             .AddChildTemplate<StringCodeStatementTemplate>(typeof(StringCodeStatement))
 
-            // Add request handlers for using pipelines from CsharpClassGeneratorPipelineCodeGenerationProviderBase
+             // Add request handlers for using pipelines from CsharpClassGeneratorPipelineCodeGenerationProviderBase
             .AddTransient<IRequestHandler<PipelineRequest<BuilderExtensionContext, IConcreteType>, Result<IConcreteType>>, ClassFrameworkPipelineRequestHandler<IConcreteType, BuilderExtensionContext>>()
             .AddTransient<IRequestHandler<PipelineRequest<BuilderContext, IConcreteType>, Result<IConcreteType>>, ClassFrameworkPipelineRequestHandler<IConcreteType, BuilderContext>>()
             .AddTransient<IRequestHandler<PipelineRequest<EntityContext, IConcreteType>, Result<IConcreteType>>, ClassFrameworkPipelineRequestHandler<IConcreteType, EntityContext>>()

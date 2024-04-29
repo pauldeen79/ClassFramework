@@ -2,13 +2,13 @@
 
 public class AddAttributesComponentBuilder : IReflectionComponentBuilder
 {
-    public IPipelineComponent<ReflectionContext, TypeBaseBuilder> Build()
+    public IPipelineComponent<ReflectionContext> Build()
         => new AddAttributesComponent();
 }
 
-public class AddAttributesComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
+public class AddAttributesComponent : IPipelineComponent<ReflectionContext>
 {
-    public Task<Result> Process(PipelineContext<ReflectionContext, TypeBaseBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<ReflectionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -17,7 +17,7 @@ public class AddAttributesComponent : IPipelineComponent<ReflectionContext, Type
             return Task.FromResult(Result.Continue());
         }
 
-        context.Response.AddAttributes(context.Request.SourceModel.GetCustomAttributes(true).ToAttributes(
+        context.Request.Builder.AddAttributes(context.Request.SourceModel.GetCustomAttributes(true).ToAttributes(
             x => context.Request.MapAttribute(x.ConvertToDomainAttribute(context.Request.InitializeDelegate)),
             context.Request.Settings.CopyAttributes,
             context.Request.Settings.CopyAttributePredicate));

@@ -22,16 +22,15 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             // Arrange
             var sourceModel = GetType();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(copyAttributePredicate: _ => true, copyAttributes: true);
-            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
+            context.Request.Builder.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
         }
 
         [Fact]
@@ -40,16 +39,15 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             // Arrange
             var sourceModel = GetType();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(copyAttributePredicate: null, copyAttributes: true);
-            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
+            context.Request.Builder.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
         }
 
         [Fact]
@@ -58,16 +56,15 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             // Arrange
             var sourceModel = GetType();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(copyAttributes: false);
-            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Attributes.Should().BeEmpty();
+            context.Request.Builder.Attributes.Should().BeEmpty();
         }
     }
 }

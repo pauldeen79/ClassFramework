@@ -21,16 +21,15 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             // Arrange
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(createConstructors: false);
-            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().BeEmpty();
+            context.Request.Builder.GetConstructors().Should().BeEmpty();
         }
 
         [Fact]
@@ -39,9 +38,8 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             // Arrange
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
-            var model = new InterfaceBuilder();
             var settings = CreateSettingsForReflection(createConstructors: false);
-            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
@@ -57,19 +55,18 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             // Arrange
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(createConstructors: true);
-            var context = new PipelineContext<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().HaveCount(2);
-            model.Constructors[0].Parameters.Should().BeEmpty();
-            model.Constructors[model.Constructors.Count - 1].Parameters.Select(x => x.Name).Should().BeEquivalentTo("value");
-            model.Constructors[model.Constructors.Count - 1].Parameters.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32");
+            context.Request.Builder.GetConstructors().Should().HaveCount(2);
+            context.Request.Builder.GetConstructors().First().Parameters.Should().BeEmpty();
+            context.Request.Builder.GetConstructors().Last().Parameters.Select(x => x.Name).Should().BeEquivalentTo("value");
+            context.Request.Builder.GetConstructors().Last().Parameters.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32");
         }
     }
 }

@@ -2,22 +2,22 @@
 
 public class AddPropertiesComponentBuilder : IReflectionComponentBuilder
 {
-    public IPipelineComponent<ReflectionContext, TypeBaseBuilder> Build()
+    public IPipelineComponent<ReflectionContext> Build()
         => new AddPropertiesComponent();
 }
 
-public class AddPropertiesComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
+public class AddPropertiesComponent : IPipelineComponent<ReflectionContext>
 {
-    public Task<Result> Process(PipelineContext<ReflectionContext, TypeBaseBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<ReflectionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Response.AddProperties(GetProperties(context));
+        context.Request.Builder.AddProperties(GetProperties(context));
 
         return Task.FromResult(Result.Continue());
     }
 
-    private static IEnumerable<PropertyBuilder> GetProperties(PipelineContext<ReflectionContext, TypeBaseBuilder> context)
+    private static IEnumerable<PropertyBuilder> GetProperties(PipelineContext<ReflectionContext> context)
         => context.Request.SourceModel.GetPropertiesRecursively().Select
         (
             p => new PropertyBuilder()

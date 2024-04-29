@@ -2,17 +2,17 @@
 
 public class SetModifiersComponentBuilder : IReflectionComponentBuilder
 {
-    public IPipelineComponent<ReflectionContext, TypeBaseBuilder> Build()
+    public IPipelineComponent<ReflectionContext> Build()
         => new SetModifiersComponent();
 }
 
-public class SetModifiersComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
+public class SetModifiersComponent : IPipelineComponent<ReflectionContext>
 {
-    public Task<Result> Process(PipelineContext<ReflectionContext, TypeBaseBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<ReflectionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Response is IReferenceTypeBuilder referenceTypeBuilder)
+        if (context.Request.Builder is IReferenceTypeBuilder referenceTypeBuilder)
         {
             referenceTypeBuilder
                 .WithStatic(context.Request.SourceModel.IsAbstract && context.Request.SourceModel.IsSealed)
@@ -21,7 +21,7 @@ public class SetModifiersComponent : IPipelineComponent<ReflectionContext, TypeB
                 .WithAbstract(context.Request.SourceModel.IsAbstract);
         }
         
-        if (context.Response is IRecordContainerBuilder recordContainerBuilder)
+        if (context.Request.Builder is IRecordContainerBuilder recordContainerBuilder)
         {
             recordContainerBuilder.WithRecord(context.Request.SourceModel.IsRecord());
         }
