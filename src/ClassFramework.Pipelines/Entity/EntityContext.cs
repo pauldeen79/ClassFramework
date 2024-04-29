@@ -13,5 +13,9 @@ public class EntityContext : ContextBase<TypeBase, IConcreteType>
 
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
 
-    protected override IBuilder<IConcreteType> CreateResponseBuilder() => new ClassBuilderWrapper();
+    protected override IBuilder<IConcreteType> CreateResponseBuilder() => _wrappedBuilder;
+
+    public ClassBuilder Builder => _wrappedBuilder.Builder;
+
+    private readonly ClassBuilderWrapper _wrappedBuilder = new();
 }

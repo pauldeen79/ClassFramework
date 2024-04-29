@@ -2,13 +2,13 @@
 
 public class ObservableComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new ObservableComponent();
 }
 
-public class ObservableComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
+public class ObservableComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -28,10 +28,10 @@ public class ObservableComponent : IPipelineComponent<EntityContext, IConcreteTy
         if (!context.Request.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
         {
             // Only add the interface when it's not present yet :)
-            context.Response.AddInterfaces(typeof(INotifyPropertyChanged));
+            context.Request.Builder.AddInterfaces(typeof(INotifyPropertyChanged));
         }
 
-        context.Response.AddObservableMembers();
+        context.Request.Builder.AddObservableMembers();
 
         return Task.FromResult(Result.Continue());
     }

@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityContext, IConcreteTypeBuilder>>
+public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityContext>>
 {
     public class Process : PipelineBuilderTests
     {
@@ -14,20 +14,19 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
             CultureInfo.InvariantCulture
         );
 
-        private ClassBuilder Model { get; } = new();
-
         [Fact]
         public async Task Sets_Partial()
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(CreateContext(), Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Partial.Should().BeTrue();
+            context.Builder.Partial.Should().BeTrue();
         }
 
         [Fact]
@@ -35,14 +34,15 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(CreateContext(), Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Name.Should().Be("MyClass");
-            Model.Namespace.Should().Be("MyNamespace");
+            context.Builder.Name.Should().Be("MyClass");
+            context.Builder.Namespace.Should().Be("MyNamespace");
         }
 
         [Fact]
@@ -50,9 +50,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.Process(CreateContext(addProperties: false), Model);
+            var result = await sut.Process(context);
             var innerResult = result?.InnerResults.FirstOrDefault();
 
             // Assert
@@ -83,17 +84,17 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(context, Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
             
-            Model.Name.Should().Be("MyClass");
-            Model.Namespace.Should().Be("MyNamespace");
-            Model.Interfaces.Should().BeEmpty();
+            context.Builder.Name.Should().Be("MyClass");
+            context.Builder.Namespace.Should().Be("MyNamespace");
+            context.Builder.Interfaces.Should().BeEmpty();
 
-            Model.Constructors.Should().ContainSingle();
-            var copyConstructor = Model.Constructors.Single();
+            context.Builder.Constructors.Should().ContainSingle();
+            var copyConstructor = context.Builder.Constructors.Single();
             copyConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
@@ -110,9 +111,9 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                 "this.Property8 = property8 is null ? null : new CrossCutting.Common.ReadOnlyValueCollection<MyNamespace.MyClass>(property8);"
             );
 
-            Model.Fields.Should().BeEmpty();
+            context.Builder.Fields.Should().BeEmpty();
 
-            Model.Properties.Select(x => x.Name).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "Property1",
                 "Property2",
@@ -123,7 +124,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                 "Property7",
                 "Property8"
             );
-            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
@@ -134,7 +135,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                 "System.Collections.Generic.IReadOnlyCollection<MyNamespace.MyClass>",
                 "System.Collections.Generic.IReadOnlyCollection<MyNamespace.MyClass>"
             );
-            Model.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
                 new[]
                 {
@@ -148,11 +149,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                     true
                 }
             );
-            Model.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
-            Model.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
-            Model.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
-            Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
-            Model.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
+            context.Builder.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
+            context.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
+            context.Builder.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
+            context.Builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
+            context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
         }
 
         [Fact]
@@ -179,17 +180,17 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(context, Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
             
-            Model.Name.Should().Be("MyClass");
-            Model.Namespace.Should().Be("MyNamespace");
-            Model.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
+            context.Builder.Name.Should().Be("MyClass");
+            context.Builder.Namespace.Should().Be("MyNamespace");
+            context.Builder.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
 
-            Model.Constructors.Should().ContainSingle();
-            var publicParameterlessConstructor = Model.Constructors.Single();
+            context.Builder.Constructors.Should().ContainSingle();
+            var publicParameterlessConstructor = context.Builder.Constructors.Single();
             publicParameterlessConstructor.Parameters.Should().BeEmpty();
             publicParameterlessConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             publicParameterlessConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
@@ -205,7 +206,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
             );
 
             // non collection type properties have a backing field, so we can implement INotifyPropertyChanged
-            Model.Fields.Select(x => x.Name).Should().BeEquivalentTo
+            context.Builder.Fields.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "_property1",
                 "_property2",
@@ -217,7 +218,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                 "_property8",
                 "PropertyChanged"
             );
-            Model.Fields.Select(x => x.TypeName).Should().BeEquivalentTo
+            context.Builder.Fields.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
@@ -228,7 +229,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                 "CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>",
                 "System.ComponentModel.PropertyChangedEventHandler"
             );
-            Model.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo
+            context.Builder.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
                 new[]
                 {
@@ -244,7 +245,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                 }
             );
 
-            Model.Properties.Select(x => x.Name).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "Property1",
                 "Property2",
@@ -255,7 +256,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                 "Property7",
                 "Property8"
             );
-            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
@@ -266,7 +267,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                 "System.Collections.ObjectModel.ObservableCollection<MyNamespace.MyClass>",
                 "System.Collections.ObjectModel.ObservableCollection<MyNamespace.MyClass>"
             );
-            Model.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
                 new[]
                 {
@@ -280,8 +281,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                     true
                 }
             );
-            Model.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
-            Model.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
+            context.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return _property1;",
                 "return _property2;",
@@ -292,9 +293,9 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                 "return _property7;",
                 "return _property8;"
             );
-            Model.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
-            Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
-            Model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
+            context.Builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
+            context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
                 "HandlePropertyChanged(nameof(Property1));",
@@ -328,12 +329,12 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(context, Model);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
 
-            Model.Methods.Should().ContainSingle(x => x.Name == "Validate");
+            context.Builder.Methods.Should().ContainSingle(x => x.Name == "Validate");
         }
         
         private static EntityContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)

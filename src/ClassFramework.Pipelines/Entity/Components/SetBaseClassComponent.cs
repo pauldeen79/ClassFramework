@@ -2,20 +2,17 @@
 
 public class SetBaseClassComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new SetBaseClassComponent();
 }
 
-public class SetBaseClassComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
+public class SetBaseClassComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Response is IBaseClassContainerBuilder baseClassContainerBuilder)
-        {
-            baseClassContainerBuilder.WithBaseClass(context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass));
-        }
+        context.Request.Builder.WithBaseClass(context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass));
 
         return Task.FromResult(Result.Continue());
     }

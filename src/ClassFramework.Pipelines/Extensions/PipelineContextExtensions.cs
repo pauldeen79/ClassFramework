@@ -40,7 +40,7 @@ public static class PipelineContextExtensions
         return Result.Success<FormattableStringParserResult>($"new {ns}{context.Request.SourceModel.Name}{classNameSuffix}{context.Request.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
-    public static string CreateEntityChainCall<TModel>(this PipelineContext<EntityContext, TModel> context)
+    public static string CreateEntityChainCall(this PipelineContext<EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 

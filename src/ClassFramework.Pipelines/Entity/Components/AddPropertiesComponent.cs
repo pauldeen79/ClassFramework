@@ -2,13 +2,13 @@
 
 public class AddPropertiesComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new AddPropertiesComponent();
 }
 
-public class AddPropertiesComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
+public class AddPropertiesComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -17,7 +17,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext, IConcret
             .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
             .ToArray();
 
-        context.Response.AddProperties(
+        context.Request.Builder.AddProperties(
             properties.Select
             (
                 property => context.Request.CreatePropertyForEntity(property)
@@ -45,8 +45,8 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext, IConcret
         return Task.FromResult(Result.Continue());
     }
 
-    private static void AddBackingFields(PipelineContext<EntityContext, IConcreteTypeBuilder> context, Property[] properties)
-        => context.Response.AddFields
+    private static void AddBackingFields(PipelineContext<EntityContext> context, Property[] properties)
+        => context.Request.Builder.AddFields
         (
             properties
                 .Select

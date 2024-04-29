@@ -9,11 +9,11 @@ public class SetNameComponentBuilder : IEntityComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new SetNameComponent(_formattableStringParser);
 }
 
-public class SetNameComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
+public class SetNameComponent : IPipelineComponent<EntityContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class SetNameComponent : IPipelineComponent<EntityContext, IConcreteTypeB
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -38,7 +38,7 @@ public class SetNameComponent : IPipelineComponent<EntityContext, IConcreteTypeB
             return Task.FromResult<Result>(error.Result);
         }
 
-        context.Response
+        context.Request.Builder
             .WithName(results.First(x => x.Name == NamedResults.Name).Result.Value!)
             .WithNamespace(context.Request.MapNamespace(results.First(x => x.Name == NamedResults.Namespace).Result.Value!));
 

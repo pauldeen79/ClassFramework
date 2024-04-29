@@ -24,16 +24,15 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetR
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(createRecord:  createRecordSettingValue);
-            var context = new PipelineContext<EntityContext, IConcreteTypeBuilder>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture), model);
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Record.Should().Be(expectedRecordValue);
+            context.Request.Builder.Record.Should().Be(expectedRecordValue);
         }
     }
 }

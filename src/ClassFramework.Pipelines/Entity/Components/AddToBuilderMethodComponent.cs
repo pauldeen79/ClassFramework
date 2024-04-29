@@ -9,11 +9,11 @@ public class AddToBuilderMethodComponentBuilder : IEntityComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new AddToBuilderMethodComponent(_formattableStringParser);
 }
 
-public class AddToBuilderMethodComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
+public class AddToBuilderMethodComponent : IPipelineComponent<EntityContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AddToBuilderMethodComponent : IPipelineComponent<EntityContext, ICo
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -78,7 +78,7 @@ public class AddToBuilderMethodComponent : IPipelineComponent<EntityContext, ICo
             ? $"return {typedMethodName}();"
             : $"return new {builderConcreteTypeName}(this);";
 
-        context.Response
+        context.Request.Builder
             .AddMethods(new MethodBuilder()
                 .WithName(methodName)
                 .WithAbstract(context.Request.IsAbstract)
@@ -90,7 +90,7 @@ public class AddToBuilderMethodComponent : IPipelineComponent<EntityContext, ICo
             && context.Request.Settings.BaseClass is not null
             && !string.IsNullOrEmpty(typedMethodName))
         {
-            context.Response
+            context.Request.Builder
                 .AddMethods(new MethodBuilder()
                     .WithName(typedMethodName)
                     .WithReturnTypeName(builderConcreteTypeName)
@@ -100,7 +100,7 @@ public class AddToBuilderMethodComponent : IPipelineComponent<EntityContext, ICo
         return Task.FromResult(Result.Continue());
     }
 
-    private static string GetBuilderTypeName(PipelineContext<EntityContext, IConcreteTypeBuilder> context, Result<string> builderInterfaceNamespaceResult, Result<string> concreteBuilderNamespaceResult, string builderConcreteName, string builderConcreteTypeName)
+    private static string GetBuilderTypeName(PipelineContext<EntityContext> context, Result<string> builderInterfaceNamespaceResult, Result<string> concreteBuilderNamespaceResult, string builderConcreteName, string builderConcreteTypeName)
     {
         if (context.Request.Settings.InheritFromInterfaces)
         {

@@ -15,12 +15,12 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (context is PipelineContext<EntityContext, IConcreteTypeBuilder> pipelineContext)
+        if (context is PipelineContext<EntityContext> pipelineContext)
         {
             return GetResultForPipelineContext(value, formatProvider, formattableStringParser, pipelineContext);
         }
 
-        if (context is ParentChildContext<PipelineContext<EntityContext, IConcreteTypeBuilder>, Property> parentChildContext)
+        if (context is ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContext)
         {
             return GetResultForParentChildContext(value, formatProvider, formattableStringParser, parentChildContext);
         }
@@ -32,7 +32,7 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
         string value,
         IFormatProvider formatProvider,
         IFormattableStringParser formattableStringParser,
-        PipelineContext<EntityContext, IConcreteTypeBuilder> pipelineContext)
+        PipelineContext<EntityContext> pipelineContext)
         => value switch
         {
             "EntityNamespace" => formattableStringParser.Parse(pipelineContext.Request.Settings.EntityNamespaceFormatString, pipelineContext.Request.FormatProvider, pipelineContext.Request),
@@ -44,7 +44,7 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
         string value,
         IFormatProvider formatProvider,
         IFormattableStringParser formattableStringParser,
-        ParentChildContext<PipelineContext<EntityContext, IConcreteTypeBuilder>, Property> parentChildContext)
+        ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContext)
         => value switch
         {
             "EntityNamespace" => formattableStringParser.Parse(parentChildContext.ParentContext.Request.Settings.EntityNamespaceFormatString, parentChildContext.ParentContext.Request.FormatProvider, parentChildContext.ParentContext.Request),

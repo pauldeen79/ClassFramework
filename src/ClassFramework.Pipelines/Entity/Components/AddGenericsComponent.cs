@@ -2,17 +2,17 @@
 
 public class AddGenericsComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new AddGenericsComponent();
 }
 
-public class AddGenericsComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
+public class AddGenericsComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Response
+        context.Request.Builder
             .AddGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments)
             .AddGenericTypeArgumentConstraints(context.Request.SourceModel.GenericTypeArgumentConstraints);
 

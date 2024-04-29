@@ -2,16 +2,16 @@
 
 public class PartialComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build() => new PartialComponent();
+    public IPipelineComponent<EntityContext> Build() => new PartialComponent();
 }
 
-public class PartialComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
+public class PartialComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Response.WithPartial(context.Request.Settings.CreateAsPartial);
+        context.Request.Builder.WithPartial(context.Request.Settings.CreateAsPartial);
 
         return Task.FromResult(Result.Continue());
     }

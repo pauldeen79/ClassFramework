@@ -2,20 +2,17 @@
 
 public class AbstractEntityComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new AbstractEntityComponent();
 }
 
-public class AbstractEntityComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
+public class AbstractEntityComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Response is ClassBuilder cls)
-        {
-            cls.WithAbstract(context.Request.IsAbstract);
-        }
+        context.Request.Builder.WithAbstract(context.Request.IsAbstract);
 
         return Task.FromResult(Result.Continue());
     }

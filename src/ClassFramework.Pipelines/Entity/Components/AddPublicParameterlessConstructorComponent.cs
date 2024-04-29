@@ -9,11 +9,11 @@ public class AddPublicParameterlessConstructorComponentBuilder : IEntityComponen
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new AddPublicParameterlessConstructorComponent(_formattableStringParser);
 }
 
-public class AddPublicParameterlessConstructorComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
+public class AddPublicParameterlessConstructorComponent : IPipelineComponent<EntityContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AddPublicParameterlessConstructorComponent : IPipelineComponent<Ent
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -37,12 +37,12 @@ public class AddPublicParameterlessConstructorComponent : IPipelineComponent<Ent
             return Task.FromResult<Result>(ctorResult);
         }
 
-        context.Response.AddConstructors(ctorResult.Value!);
+        context.Request.Builder.AddConstructors(ctorResult.Value!);
 
         return Task.FromResult(Result.Continue());
     }
 
-    private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<EntityContext, IConcreteTypeBuilder> context)
+    private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<EntityContext> context)
     {
         var initializationStatements = context.Request.SourceModel.Properties
             .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings))
@@ -60,13 +60,13 @@ public class AddPublicParameterlessConstructorComponent : IPipelineComponent<Ent
             );
     }
 
-    private Result<string> GenerateDefaultValueStatement(Property property, PipelineContext<EntityContext, IConcreteTypeBuilder> context)
+    private Result<string> GenerateDefaultValueStatement(Property property, PipelineContext<EntityContext> context)
         => _formattableStringParser.Parse
         (
             property.TypeName.FixTypeName().IsCollectionTypeName()
                 ? "{EntityMemberName} = new {CollectionTypeName}<{TypeName.GenericArguments}>();"
                 : "{EntityMemberName} = {DefaultValue};",
             context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<EntityContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings)
+            new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings)
         ).TransformValue(x => x.ToString());
 }

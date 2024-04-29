@@ -2,13 +2,13 @@
 
 public class AddInterfacesComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<EntityContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new AddInterfacesComponent();
 }
 
-public class AddInterfacesComponent : IPipelineComponent<EntityContext, IConcreteTypeBuilder>
+public class AddInterfacesComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result> Process(PipelineContext<EntityContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -19,7 +19,7 @@ public class AddInterfacesComponent : IPipelineComponent<EntityContext, IConcret
 
         var baseClass = context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass);
 
-        context.Response.AddInterfaces(context.Request.SourceModel.Interfaces
+        context.Request.Builder.AddInterfaces(context.Request.SourceModel.Interfaces
             .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Where(x => x != baseClass)
             .Select(x => context.Request.MapTypeName(x.FixTypeName()))

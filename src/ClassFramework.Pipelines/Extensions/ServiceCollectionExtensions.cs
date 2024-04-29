@@ -51,8 +51,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services
-            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<EntityContext, IConcreteTypeBuilder>>().Build())
-            .AddScoped<IPipelineBuilder<EntityContext, IConcreteTypeBuilder>, Entity.PipelineBuilder>()
+            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<EntityContext>>().Build())
+            .AddScoped<IPipelineBuilder<EntityContext>, Entity.PipelineBuilder>()
             .AddScoped<IEntityComponentBuilder, Entity.Components.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IEntityComponentBuilder, Entity.Components.AbstractEntityComponentBuilder>()
             .AddScoped<IEntityComponentBuilder, Entity.Components.AddAttributesComponentBuilder>()
