@@ -40,8 +40,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddBuilderExtensionPipeline(this IServiceCollection services)
         => services
-            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<BuilderExtensionContext, IConcreteTypeBuilder>>().Build())
-            .AddScoped<IPipelineBuilder<BuilderExtensionContext, IConcreteTypeBuilder>, BuilderExtension.PipelineBuilder>()
+            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<BuilderExtensionContext>>().Build())
+            .AddScoped<IPipelineBuilder<BuilderExtensionContext>, BuilderExtension.PipelineBuilder>()
             .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.AddExtensionMethodsForCollectionPropertiesComponentBuilder>()
             .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.AddExtensionMethodsForNonCollectionPropertiesComponentBuilder>()
@@ -100,7 +100,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddParserComponents(this IServiceCollection services)
         => services
             .AddScoped<IPlaceholderProcessor, BuilderPipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholderProcessor, BuilderInterfacePipelinePlaceholderProcessor>()
+            .AddScoped<IPlaceholderProcessor, BuilderExtensionPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, InterfacePipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, ReflectionPipelinePlaceholderProcessor>()

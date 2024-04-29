@@ -2,16 +2,16 @@
 
 public class PartialComponentBuilder : IBuilderExtensionComponentBuilder
 {
-    public IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder> Build() => new PartialComponent();
+    public IPipelineComponent<BuilderExtensionContext> Build() => new PartialComponent();
 }
 
-public class PartialComponent : IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder>
+public class PartialComponent : IPipelineComponent<BuilderExtensionContext>
 {
-    public Task<Result> Process(PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Response.WithPartial(context.Request.Settings.CreateAsPartial);
+        context.Request.Builder.WithPartial(context.Request.Settings.CreateAsPartial);
 
         return Task.FromResult(Result.Continue());
     }

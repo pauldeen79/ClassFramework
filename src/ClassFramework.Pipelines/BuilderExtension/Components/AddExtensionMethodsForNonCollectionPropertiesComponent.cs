@@ -9,11 +9,11 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponentBuilder : IBu
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<BuilderExtensionContext> Build()
         => new AddExtensionMethodsForNonCollectionPropertiesComponent(_formattableStringParser);
 }
 
-public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder>
+public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineComponent<BuilderExtensionContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineC
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result> Process(PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -33,7 +33,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineC
 
         foreach (var property in context.Request.GetSourceProperties().Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var parentChildContext = new ParentChildContext<PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings);
+            var parentChildContext = new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings);
 
             var results = context.Request.GetResultsForBuilderNonCollectionProperties(property, parentChildContext, _formattableStringParser);
 
@@ -64,7 +64,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent : IPipelineC
                 "return instance;"
             );
 
-            context.Response.AddMethods(builder);
+            context.Request.Builder.AddMethods(builder);
         }
 
         return Task.FromResult(Result.Continue());

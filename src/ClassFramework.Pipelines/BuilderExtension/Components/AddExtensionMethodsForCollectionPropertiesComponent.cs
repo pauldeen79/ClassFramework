@@ -9,11 +9,11 @@ public class AddExtensionMethodsForCollectionPropertiesComponentBuilder : IBuild
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder> Build()
+    public IPipelineComponent<BuilderExtensionContext> Build()
         => new AddExtensionMethodsForCollectionPropertiesComponent(_formattableStringParser);
 }
 
-public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder>
+public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComponent<BuilderExtensionContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result> Process(PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -46,7 +46,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
 
             var returnType = $"{results.First(x => x.Name == "Namespace").Result.Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
 
-            context.Response.AddMethods(new MethodBuilder()
+            context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithName(results.First(x => x.Name == "AddMethodName").Result.Value!)
                 .WithReturnTypeName("T")
                 .WithStatic()
@@ -58,7 +58,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
                 .AddStringCodeStatements(results.Where(x => x.Name == "EnumerableOverload").Select(x => x.Result.Value!.ToString()))
             );
 
-            context.Response.AddMethods(new MethodBuilder()
+            context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithName(results.First(x => x.Name == "AddMethodName").Result.Value!)
                 .WithReturnTypeName("T")
                 .WithStatic()
@@ -74,7 +74,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
         return Task.FromResult(Result.Continue());
     }
 
-    private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder> context, Property property, ParentChildContext<PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder>, Property> parentChildContext)
+    private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderExtensionContext> context, Property property, ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContext)
     {
         if (context.Request.Settings.AddNullChecks)
         {
@@ -84,7 +84,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
         yield return _formattableStringParser.Parse("return instance.{BuilderAddMethodName}<T>({NamePascalCsharpFriendlyName}.ToArray());", context.Request.FormatProvider, parentChildContext);
     }
 
-    private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder> context, Property property)
+    private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderExtensionContext> context, Property property)
     {
         if (context.Request.Settings.AddNullChecks)
         {
@@ -92,7 +92,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
             (
                 context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
                 context.Request.FormatProvider,
-                new ParentChildContext<PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings)
+                new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings)
             );
             yield return argumentNullCheckResult;
         }
@@ -103,7 +103,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
                 .GetMappingMetadata(property.TypeName)
                 .GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Request.Settings.CollectionCopyStatementFormatString),
             context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder>, Property>(context, property, context.Request.Settings)
+            new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings)
         );
 
         yield return builderAddExpressionResult;
@@ -111,6 +111,6 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
         yield return Result.Success<FormattableStringParserResult>("return instance;");
     }
 
-    private static ParentChildContext<PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder>, Property> CreateParentChildContext(PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder> context, Property property)
+    private static ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> CreateParentChildContext(PipelineContext<BuilderExtensionContext> context, Property property)
         => new(context, property, context.Request.Settings);
 }

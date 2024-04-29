@@ -13,5 +13,9 @@ public class BuilderExtensionContext : ContextBase<TypeBase, IConcreteType>
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
 
-    protected override IBuilder<IConcreteType> CreateResponseBuilder() => new ClassBuilderWrapper();
+    protected override IBuilder<IConcreteType> CreateResponseBuilder() => _wrappedBuilder;
+
+    public ClassBuilder Builder => _wrappedBuilder.Builder;
+
+    private readonly ClassBuilderWrapper _wrappedBuilder = new();
 }

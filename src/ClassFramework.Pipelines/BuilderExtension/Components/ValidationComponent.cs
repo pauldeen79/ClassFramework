@@ -2,12 +2,12 @@
 
 public class ValidationComponentBuilder : IBuilderExtensionComponentBuilder
 {
-    public IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder> Build() => new ValidationComponent();
+    public IPipelineComponent<BuilderExtensionContext> Build() => new ValidationComponent();
 }
 
-public class ValidationComponent : IPipelineComponent<BuilderExtensionContext, IConcreteTypeBuilder>
+public class ValidationComponent : IPipelineComponent<BuilderExtensionContext>
 {
-    public Task<Result> Process(PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

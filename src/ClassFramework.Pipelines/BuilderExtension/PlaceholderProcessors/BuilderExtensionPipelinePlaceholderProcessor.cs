@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.PlaceholderProcessors;
 
-public class BuilderInterfacePipelinePlaceholderProcessor : IPlaceholderProcessor
+public class BuilderExtensionPipelinePlaceholderProcessor : IPlaceholderProcessor
 {
     private readonly IEnumerable<IPipelinePlaceholderProcessor> _pipelinePlaceholderProcessors;
 
-    public BuilderInterfacePipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
+    public BuilderExtensionPipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
     {
         _pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
     }
@@ -15,12 +15,12 @@ public class BuilderInterfacePipelinePlaceholderProcessor : IPlaceholderProcesso
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (context is PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder> pipelineContext)
+        if (context is PipelineContext<BuilderExtensionContext> pipelineContext)
         {
-            return pipelineContext.Request.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formattableStringParser, pipelineContext.Response, pipelineContext.Request.SourceModel, _pipelinePlaceholderProcessors);
+            return pipelineContext.Request.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formattableStringParser, pipelineContext, pipelineContext.Request.SourceModel, _pipelinePlaceholderProcessors);
         }
 
-        if (context is ParentChildContext<PipelineContext<BuilderExtensionContext, IConcreteTypeBuilder>, Property> parentChildContext)
+        if (context is ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContext)
         {
             if (value == "InstancePrefix")
             {
