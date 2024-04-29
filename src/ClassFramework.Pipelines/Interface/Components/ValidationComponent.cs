@@ -2,12 +2,12 @@
 
 public class ValidationComponentBuilder : IInterfaceComponentBuilder
 {
-    public IPipelineComponent<InterfaceContext, InterfaceBuilder> Build() => new ValidationComponent();
+    public IPipelineComponent<InterfaceContext> Build() => new ValidationComponent();
 }
 
-public class ValidationComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
+public class ValidationComponent : IPipelineComponent<InterfaceContext>
 {
-    public Task<Result> Process(PipelineContext<InterfaceContext, InterfaceBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<InterfaceContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

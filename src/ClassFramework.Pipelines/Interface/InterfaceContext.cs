@@ -9,5 +9,9 @@ public class InterfaceContext : ContextBase<TypeBase, Domain.Types.Interface>
 
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
 
-    protected override IBuilder<Domain.Types.Interface> CreateResponseBuilder() => new InterfaceBuilderWrapper();
+    protected override IBuilder<Domain.Types.Interface> CreateResponseBuilder() => _wrappedBuilder;
+
+    public InterfaceBuilder Builder => _wrappedBuilder.Builder;
+
+    private readonly InterfaceBuilderWrapper _wrappedBuilder = new();
 }

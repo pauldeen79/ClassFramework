@@ -2,13 +2,13 @@
 
 public class AddMethodsComponentBuilder : IInterfaceComponentBuilder
 {
-    public IPipelineComponent<InterfaceContext, InterfaceBuilder> Build()
+    public IPipelineComponent<InterfaceContext> Build()
         => new AddMethodsComponent();
 }
 
-public class AddMethodsComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
+public class AddMethodsComponent : IPipelineComponent<InterfaceContext>
 {
-    public Task<Result> Process(PipelineContext<InterfaceContext, InterfaceBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<InterfaceContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -17,7 +17,7 @@ public class AddMethodsComponent : IPipelineComponent<InterfaceContext, Interfac
             return Task.FromResult(Result.Continue());
         }
 
-        context.Response.AddMethods(context.Request.SourceModel.Methods
+        context.Request.Builder.AddMethods(context.Request.SourceModel.Methods
             .Where(x => context.Request.Settings.CopyMethodPredicate is null || context.Request.Settings.CopyMethodPredicate(context.Request.SourceModel, x))
             .Select(x => x.ToBuilder()
                 .WithReturnTypeName(context.Request.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(context.Request.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))

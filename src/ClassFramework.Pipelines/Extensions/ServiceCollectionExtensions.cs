@@ -87,8 +87,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddInterfacePipeline(this IServiceCollection services)
         => services
-            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<Interface.InterfaceContext, InterfaceBuilder>>().Build())
-            .AddScoped<IPipelineBuilder<Interface.InterfaceContext, InterfaceBuilder>, Interface.PipelineBuilder>()
+            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<Interface.InterfaceContext>>().Build())
+            .AddScoped<IPipelineBuilder<Interface.InterfaceContext>, Interface.PipelineBuilder>()
             .AddScoped<IInterfaceComponentBuilder, Interface.Components.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IInterfaceComponentBuilder, Interface.Components.AddAttributesComponentBuilder>()
             .AddScoped<IInterfaceComponentBuilder, Interface.Components.AddInterfacesComponentBuilder>()

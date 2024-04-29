@@ -2,13 +2,13 @@
 
 public class AddInterfacesComponentBuilder : IInterfaceComponentBuilder
 {
-    public IPipelineComponent<InterfaceContext, InterfaceBuilder> Build()
+    public IPipelineComponent<InterfaceContext> Build()
         => new AddInterfacesComponent();
 }
 
-public class AddInterfacesComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
+public class AddInterfacesComponent : IPipelineComponent<InterfaceContext>
 {
-    public Task<Result> Process(PipelineContext<InterfaceContext, InterfaceBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<InterfaceContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -17,7 +17,7 @@ public class AddInterfacesComponent : IPipelineComponent<InterfaceContext, Inter
             return Task.FromResult(Result.Continue());
         }
 
-        context.Response.AddInterfaces(context.Request.SourceModel.Interfaces
+        context.Request.Builder.AddInterfaces(context.Request.SourceModel.Interfaces
             .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Select(x => context.Request.MapTypeName(x.FixTypeName()))
             .Where(x => !string.IsNullOrEmpty(x)));

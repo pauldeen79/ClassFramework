@@ -2,13 +2,13 @@
 
 public class AddAttributesComponentBuilder : IInterfaceComponentBuilder
 {
-    public IPipelineComponent<InterfaceContext, InterfaceBuilder> Build()
+    public IPipelineComponent<InterfaceContext> Build()
         => new AddAttributesComponent();
 }
 
-public class AddAttributesComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
+public class AddAttributesComponent : IPipelineComponent<InterfaceContext>
 {
-    public Task<Result> Process(PipelineContext<InterfaceContext, InterfaceBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<InterfaceContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -17,7 +17,7 @@ public class AddAttributesComponent : IPipelineComponent<InterfaceContext, Inter
             return Task.FromResult(Result.Continue());
         }
 
-        context.Response.AddAttributes(context.Request.SourceModel.Attributes
+        context.Request.Builder.AddAttributes(context.Request.SourceModel.Attributes
             .Where(x => context.Request.Settings.CopyAttributePredicate?.Invoke(x) ?? true)
             .Select(x => context.Request.MapAttribute(x).ToBuilder()));
 

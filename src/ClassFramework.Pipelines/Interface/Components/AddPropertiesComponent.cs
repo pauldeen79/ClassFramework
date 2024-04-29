@@ -2,13 +2,13 @@
 
 public class AddPropertiesComponentBuilder : IInterfaceComponentBuilder
 {
-    public IPipelineComponent<InterfaceContext, InterfaceBuilder> Build()
+    public IPipelineComponent<InterfaceContext> Build()
         => new AddPropertiesComponent();
 }
 
-public class AddPropertiesComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
+public class AddPropertiesComponent : IPipelineComponent<InterfaceContext>
 {
-    public Task<Result> Process(PipelineContext<InterfaceContext, InterfaceBuilder> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<InterfaceContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -17,7 +17,7 @@ public class AddPropertiesComponent : IPipelineComponent<InterfaceContext, Inter
             .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
             .ToArray();
 
-        context.Response.AddProperties
+        context.Request.Builder.AddProperties
         (
             properties.Select
             (
