@@ -12,7 +12,7 @@ public abstract class CsharpClassGeneratorViewModelBase : ICsharpClassGeneratorS
     }
 }
 
-public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGeneratorViewModelBase, IModelContainer<TModel>, ITemplateContextContainer
+public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGeneratorViewModelBase, IModelContainer<TModel>, ITemplateContextContainer, IMediatorContainer
 {
     public IMediator? Mediator { get; set; }
     public TModel? Model { get; set; }

@@ -1,7 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework;
 
 public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelContainer<TModel>
-    where TModel : ICsharpClassGeneratorSettingsContainer
+    where TModel : ICsharpClassGeneratorSettingsContainer, IMediatorContainer
 {
     protected override void OnSetContext(ITemplateContext value)
     {
@@ -9,6 +9,16 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
         {
             // Copy Context from template context to ViewModel
             container.Context = value;
+        }
+
+        if (Model is not null && value is not null)
+        {
+            // Copy Mediator from root template ViewModel to child ViewModel
+            var csharpClassGenerator = value.RootContext.Template as CsharpClassGenerator;
+            if (csharpClassGenerator is not null && csharpClassGenerator.Model is not null)
+            {
+                Model.Mediator = csharpClassGenerator.Model.Mediator;
+            }
         }
 
         if (Model is not null && Model.Settings is null)
