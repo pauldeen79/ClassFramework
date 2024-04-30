@@ -21,8 +21,7 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
         public void Returns_String_With_Named_Parameter_Name()
         {
             // Arrange
-            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
-            csharpExpressionDumper.Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns("true");
+            Fixture.Freeze<IMediator>().Send(Arg.Any<IRequest<string>>()).Returns("true");
             var sut = CreateSut();
             sut.Model = new AttributeBuilder()
                 .WithName(typeof(RequiredAttribute))
@@ -40,8 +39,7 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
         public void Returns_String_With_Unnamed_Parameter_Name()
         {
             // Arrange
-            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
-            csharpExpressionDumper.Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns("true");
+            Fixture.Freeze<IMediator>().Send(Arg.Any<IRequest<string>>()).Returns("true");
             var sut = CreateSut();
             sut.Model = new AttributeBuilder()
                 .WithName(typeof(RequiredAttribute))
@@ -59,8 +57,7 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
         public void Returns_String_With_Mixed_Parameter_Names()
         {
             // Arrange
-            var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
-            csharpExpressionDumper.Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns(x => x.Args()[0].ToString()!.ToLowerInvariant());
+            Fixture.Freeze<IMediator>().Send(Arg.Any<IRequest<string>>()).Returns(x => x.ArgAt<CsharpExpressionRequest>(0).Expression!.ToString()!.ToLowerInvariant());
             var sut = CreateSut();
             sut.Model = new AttributeBuilder()
                 .WithName(typeof(RequiredAttribute))
