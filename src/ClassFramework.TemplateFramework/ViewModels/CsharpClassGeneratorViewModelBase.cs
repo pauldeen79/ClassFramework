@@ -14,7 +14,7 @@ public abstract class CsharpClassGeneratorViewModelBase : ICsharpClassGeneratorS
 
 public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGeneratorViewModelBase, IModelContainer<TModel>, ITemplateContextContainer, IMediatorContainer
 {
-    public IMediator? Mediator { get; set; }
+    public IMediator Mediator { get; set; } = default!; // will always be injected in OnSetContext method
     public TModel? Model { get; set; }
     public ITemplateContext Context { get; set; } = default!; // will always be injected in OnSetContext method
 

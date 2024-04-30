@@ -2,5 +2,5 @@
 
 public interface IMediatorContainer
 {
-    IMediator? Mediator { get; set; }
+    IMediator Mediator { get; set; }
 }

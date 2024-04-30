@@ -5,13 +5,15 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
 {
     protected override void OnSetContext(ITemplateContext value)
     {
+        Guard.IsNotNull(value);
+
         if (Model is ITemplateContextContainer container)
         {
             // Copy Context from template context to ViewModel
             container.Context = value;
         }
 
-        if (Model is not null && value is not null)
+        if (Model is not null)
         {
             // Copy Mediator from root template ViewModel to child ViewModel
             var csharpClassGenerator = value.RootContext.Template as CsharpClassGenerator;
