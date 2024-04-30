@@ -2,7 +2,7 @@
 
 public static class PropertyExtensions
 {
-    public static string GetDefaultValue<TSourceModel, TBuilder>(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, ContextBase<TSourceModel, TBuilder> context)
+    public static string GetDefaultValue<TSourceModel>(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, ContextBase<TSourceModel> context)
     {
         csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
         context = context.IsNotNull(nameof(context));
@@ -134,9 +134,9 @@ public static class PropertyExtensions
             .GetCsharpFriendlyTypeName());
     }
 
-    public static Result<FormattableStringParserResult> GetBuilderArgumentTypeName<TSourceModel, TBuilder>(
+    public static Result<FormattableStringParserResult> GetBuilderArgumentTypeName<TSourceModel>(
         this Property property,
-        ContextBase<TSourceModel, TBuilder> context,
+        ContextBase<TSourceModel> context,
         object parentChildContext,
         string mappedTypeName,
         IFormattableStringParser formattableStringParser)
@@ -220,13 +220,13 @@ public static class PropertyExtensions
         );
     }
 
-    public static string GetSuffix<TSourceModel, TBuilder>(this Property source, bool enableNullableReferenceTypes, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<TSourceModel, TBuilder> context)
+    public static string GetSuffix<TSourceModel>(this Property source, bool enableNullableReferenceTypes, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<TSourceModel> context)
         => CollectionIsValidForSuffix(source, enableNullableReferenceTypes)
         || NonCollectionIsValidForSuffix(source, csharpExpressionDumper, context)
             ? "?"
             : string.Empty;
 
-    private static bool NonCollectionIsValidForSuffix<TSourceModel, TBuilder>(Property source, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<TSourceModel, TBuilder> context)
+    private static bool NonCollectionIsValidForSuffix<TSourceModel>(Property source, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<TSourceModel> context)
         => !source.TypeName.IsCollectionTypeName()
         && !source.IsValueType
         && source.GetDefaultValue(csharpExpressionDumper, source.TypeName.FixTypeName(), context).StartsWith("default(");
