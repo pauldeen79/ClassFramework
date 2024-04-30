@@ -152,10 +152,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         {
             var context = new InterfaceContext(x, await CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, CreateInheritanceComparisonDelegate(await GetBaseClass()), null, true), CultureInfo.InvariantCulture);
 
-            var interfaceBuilder = (await _mediator.Send(new PipelineRequest<InterfaceContext, InterfaceBuilder>(context)))
+            var @interface = (await _mediator.Send(new PipelineRequest<InterfaceContext, Interface>(context)))
                 .GetValueOrThrow();
 
-            return await CreateBuilderExtensionsClass(interfaceBuilder.Build(), buildersNamespace, entitiesNamespace, buildersExtensionsNamespace);
+            return await CreateBuilderExtensionsClass(@interface, buildersNamespace, entitiesNamespace, buildersExtensionsNamespace);
         })).ToArray();
     }
 
@@ -169,11 +169,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         {
             var context = new EntityContext(x, await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), CultureInfo.InvariantCulture);
 
-            var entityBuilder = (await _mediator.Send(new PipelineRequest<EntityContext, IConcreteTypeBuilder>(context)))
-                .TryCast<ClassBuilder>()
+            var typeBase = (await _mediator.Send(new PipelineRequest<EntityContext, IConcreteType>(context)))
+                .TryCast<TypeBase>()
                 .GetValueOrThrow();
 
-            return await CreateNonGenericBuilderClass(entityBuilder.Build(), buildersNamespace, entitiesNamespace);
+            return await CreateNonGenericBuilderClass(typeBase, buildersNamespace, entitiesNamespace);
         })).ToArray();
     }
 
@@ -228,10 +228,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(@namespace);
 
         var reflectionSettings = CreateReflectionPipelineSettings();
-        var interfaceBuilder = (await _mediator.Send(new PipelineRequest<ReflectionContext, TypeBaseBuilder>(new ReflectionContext(type, reflectionSettings, CultureInfo.InvariantCulture))))
+        var typeBase = (await _mediator.Send(new PipelineRequest<ReflectionContext, TypeBase>(new ReflectionContext(type, reflectionSettings, CultureInfo.InvariantCulture))))
             .GetValueOrThrow();
-
-        var typeBase = interfaceBuilder.Build();
 
         var entitySettings = new PipelineSettingsBuilder()
             .WithAddSetters(AddSetters)
@@ -270,11 +268,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
             .Build();
 
-        var builder = (await _mediator.Send(new PipelineRequest<EntityContext, IConcreteTypeBuilder>(new EntityContext(typeBase, entitySettings, CultureInfo.InvariantCulture))))
-            .TryCast<ClassBuilder>()
+        var @class = (await _mediator.Send(new PipelineRequest<EntityContext, IConcreteType>(new EntityContext(typeBase, entitySettings, CultureInfo.InvariantCulture))))
+            .TryCast<Class>()
             .GetValueOrThrow();
         
-        return builder.BuildTyped();
+        return @class;
     }
 
     private static bool DefaultCopyAttributePredicate(Domain.Attribute attribute)
@@ -508,7 +506,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     private async Task<TypeBase> CreateBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
     {
-        return (await _mediator.Send(new PipelineRequest<BuilderContext, TypeBase>(new BuilderContext(typeBase, await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))))
+        return (await _mediator.Send(new PipelineRequest<BuilderContext, IConcreteType>(new BuilderContext(typeBase, await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))))
+            .TryCast<TypeBase>()
             .GetValueOrThrow();
     }
 
