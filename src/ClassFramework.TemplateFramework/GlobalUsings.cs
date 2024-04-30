@@ -1,12 +1,11 @@
 ﻿global using System.Collections;
 global using System.Collections.ObjectModel;
+global using System.ComponentModel.DataAnnotations;
 global using System.Globalization;
 global using System.Text;
 global using ClassFramework.Domain;
 global using ClassFramework.Domain.Abstractions;
 global using ClassFramework.Domain.Builders;
-global using ClassFramework.Domain.Builders.Abstractions;
-global using ClassFramework.Domain.Builders.Types;
 global using ClassFramework.Domain.CodeStatements;
 global using ClassFramework.Domain.Domains;
 global using ClassFramework.Domain.Extensions;
