@@ -2,7 +2,7 @@
 
 public class ObservableCoreEntities : ObservableCSharpClassBase
 {
-    public ObservableCoreEntities(ICsharpExpressionDumper csharpExpressionDumper, IMediator mediator) : base(csharpExpressionDumper, mediator)
+    public ObservableCoreEntities(IMediator mediator) : base(mediator)
     {
     }
 

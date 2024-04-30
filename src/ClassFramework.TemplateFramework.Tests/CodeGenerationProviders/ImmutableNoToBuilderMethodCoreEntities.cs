@@ -2,7 +2,7 @@
 
 public class ImmutableNoToBuilderMethodCoreEntities : ImmutableNoToBuilderMethodCSharpClassBase
 {
-    public ImmutableNoToBuilderMethodCoreEntities(ICsharpExpressionDumper csharpExpressionDumper, IMediator mediator) : base(csharpExpressionDumper, mediator)
+    public ImmutableNoToBuilderMethodCoreEntities(IMediator mediator) : base(mediator)
     {
     }
 

@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class OverrideCodeStatementEntities : ClassFrameworkCSharpClassBase
 {
-    public OverrideCodeStatementEntities(ICsharpExpressionDumper csharpExpressionDumper, IMediator mediator) : base(csharpExpressionDumper, mediator)
+    public OverrideCodeStatementEntities(IMediator mediator) : base(mediator)
     {
     }
 

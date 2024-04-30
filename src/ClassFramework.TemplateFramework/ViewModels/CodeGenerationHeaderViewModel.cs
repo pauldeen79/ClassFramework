@@ -2,10 +2,6 @@
 
 public class CodeGenerationHeaderViewModel : CsharpClassGeneratorViewModelBase<CodeGenerationHeaderModel>
 {
-    public CodeGenerationHeaderViewModel(ICsharpExpressionDumper csharpExpressionDumper) : base(csharpExpressionDumper)
-    {
-    }
-
     public string Version
         => !string.IsNullOrEmpty(GetModel().EnvironmentVersion)
             ? Model!.EnvironmentVersion!

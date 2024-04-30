@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class TemplateFrameworkEntities : ClassFrameworkCSharpClassBase
 {
-    public TemplateFrameworkEntities(ICsharpExpressionDumper csharpExpressionDumper, IMediator mediator) : base(csharpExpressionDumper, mediator)
+    public TemplateFrameworkEntities(IMediator mediator) : base(mediator)
     {
     }
 

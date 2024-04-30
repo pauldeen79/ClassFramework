@@ -7,7 +7,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
         // For some reason, we have to register this class, because else we get the following exception:
         // AutoFixture was unable to create an instance of type AutoFixture.Kernel.SeededRequest because the traversed object graph contains a circular reference
         // I tried a generic fix in TestBase (omitting Model property), but this makes some tests fail and I don't understand why :-(
-        Fixture.Register(() => new TypeViewModel(Fixture.Freeze<ICsharpExpressionDumper>()));
+        //Fixture.Register(() => new TypeViewModel());
     }
 
     public class ShouldRenderNullablePragmas : TypeViewModelTests

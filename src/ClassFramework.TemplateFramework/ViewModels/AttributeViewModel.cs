@@ -2,11 +2,6 @@
 
 public class AttributeViewModel : CsharpClassGeneratorViewModelBase<Domain.Attribute>
 {
-    public AttributeViewModel(ICsharpExpressionDumper csharpExpressionDumper)
-        : base(csharpExpressionDumper)
-    {
-    }
-
     public bool IsSingleLineAttributeContainer => GetParentModel() is Parameter;
 
     public string Name
@@ -17,8 +12,8 @@ public class AttributeViewModel : CsharpClassGeneratorViewModelBase<Domain.Attri
             ? string.Empty
             : string.Concat("(", string.Join(", ", Model!.Parameters.Select(p =>
                 string.IsNullOrEmpty(p.Name)
-                    ? CsharpExpressionDumper.Dump(p.Value)
-                    : $"{p.Name} = {CsharpExpressionDumper.Dump(p.Value)}"
+                    ? GetCsharpExpression(p.Value)
+                    : $"{p.Name} = {GetCsharpExpression(p.Value)}"
             )), ")");
 
     public int AdditionalIndents

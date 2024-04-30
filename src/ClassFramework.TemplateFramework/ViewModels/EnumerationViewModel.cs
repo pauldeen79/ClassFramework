@@ -2,11 +2,6 @@
 
 public class EnumerationViewModel : AttributeContainerViewModelBase<Enumeration>
 {
-    public EnumerationViewModel(ICsharpExpressionDumper csharpExpressionDumper)
-        : base(csharpExpressionDumper)
-    {
-    }
-
     public string Modifiers
         => GetModel().GetModifiers(Settings.CultureInfo);
 

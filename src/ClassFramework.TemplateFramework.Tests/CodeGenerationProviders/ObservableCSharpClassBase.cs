@@ -2,7 +2,7 @@
 
 public abstract class ObservableCSharpClassBase : ImmutableCSharpClassBase
 {
-    protected ObservableCSharpClassBase(ICsharpExpressionDumper csharpExpressionDumper, IMediator mediator) : base(csharpExpressionDumper, mediator)
+    protected ObservableCSharpClassBase(IMediator mediator) : base(mediator)
     {
     }
 

@@ -2,7 +2,7 @@
 
 public class OverrideTypeBuilders : ImmutableCSharpClassBase
 {
-    public OverrideTypeBuilders(ICsharpExpressionDumper csharpExpressionDumper, IMediator mediator) : base(csharpExpressionDumper, mediator)
+    public OverrideTypeBuilders(IMediator mediator) : base(mediator)
     {
     }
 

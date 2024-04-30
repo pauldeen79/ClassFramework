@@ -2,11 +2,6 @@
 
 public class MethodViewModel : MethodViewModelBase<Method>
 {
-    public MethodViewModel(ICsharpExpressionDumper csharpExpressionDumper)
-        : base(csharpExpressionDumper)
-    {
-    }
-
     public bool ShouldRenderModifiers
         => string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface;
 

@@ -2,15 +2,8 @@
 
 public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : CsharpClassGeneratorCodeGenerationProviderBase
 {
-    private readonly IMediator _mediator;
-
-    protected CsharpClassGeneratorPipelineCodeGenerationProviderBase(
-        ICsharpExpressionDumper csharpExpressionDumper,
-        IMediator mediator) : base(csharpExpressionDumper)
+    protected CsharpClassGeneratorPipelineCodeGenerationProviderBase(IMediator mediator) : base(mediator)
     {
-        Guard.IsNotNull(mediator);
-
-        _mediator = mediator;
     }
 
     public override CsharpClassGeneratorSettings Settings
@@ -133,7 +126,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return (await models.SelectAsync(async x =>
         {
             var context = new EntityContext(x, await CreateEntityPipelineSettings(entitiesNamespace), CultureInfo.InvariantCulture);
-            var entity = (await _mediator.Send(new PipelineRequest<EntityContext, IConcreteType>(context)))
+            var entity = (await Mediator.Send(new PipelineRequest<EntityContext, IConcreteType>(context)))
                 .TryCast<TypeBase>()
                 .GetValueOrThrow();
 
@@ -152,7 +145,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         {
             var context = new InterfaceContext(x, await CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, CreateInheritanceComparisonDelegate(await GetBaseClass()), null, true), CultureInfo.InvariantCulture);
 
-            var @interface = (await _mediator.Send(new PipelineRequest<InterfaceContext, Interface>(context)))
+            var @interface = (await Mediator.Send(new PipelineRequest<InterfaceContext, Interface>(context)))
                 .GetValueOrThrow();
 
             return await CreateBuilderExtensionsClass(@interface, buildersNamespace, entitiesNamespace, buildersExtensionsNamespace);
@@ -169,7 +162,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         {
             var context = new EntityContext(x, await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), CultureInfo.InvariantCulture);
 
-            var typeBase = (await _mediator.Send(new PipelineRequest<EntityContext, IConcreteType>(context)))
+            var typeBase = (await Mediator.Send(new PipelineRequest<EntityContext, IConcreteType>(context)))
                 .TryCast<TypeBase>()
                 .GetValueOrThrow();
 
@@ -228,7 +221,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(@namespace);
 
         var reflectionSettings = CreateReflectionPipelineSettings();
-        var typeBase = (await _mediator.Send(new PipelineRequest<ReflectionContext, TypeBase>(new ReflectionContext(type, reflectionSettings, CultureInfo.InvariantCulture))))
+        var typeBase = (await Mediator.Send(new PipelineRequest<ReflectionContext, TypeBase>(new ReflectionContext(type, reflectionSettings, CultureInfo.InvariantCulture))))
             .GetValueOrThrow();
 
         var entitySettings = new PipelineSettingsBuilder()
@@ -268,7 +261,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
             .Build();
 
-        var @class = (await _mediator.Send(new PipelineRequest<EntityContext, IConcreteType>(new EntityContext(typeBase, entitySettings, CultureInfo.InvariantCulture))))
+        var @class = (await Mediator.Send(new PipelineRequest<EntityContext, IConcreteType>(new EntityContext(typeBase, entitySettings, CultureInfo.InvariantCulture))))
             .TryCast<Class>()
             .GetValueOrThrow();
         
@@ -498,22 +491,22 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Build();
 
     private async Task<TypeBase> CreateEntity(TypeBase typeBase, string entitiesNamespace)
-        => (await _mediator.Send(new PipelineRequest<EntityContext, IConcreteType>(new EntityContext(typeBase, await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{Class.NameNoInterfacePrefix}"), CultureInfo.InvariantCulture))))
+        => (await Mediator.Send(new PipelineRequest<EntityContext, IConcreteType>(new EntityContext(typeBase, await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{Class.NameNoInterfacePrefix}"), CultureInfo.InvariantCulture))))
             .TryCast<TypeBase>()
             .GetValueOrThrow();
 
     private async Task<TypeBase> CreateBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
-        => (await _mediator.Send(new PipelineRequest<BuilderContext, IConcreteType>(new BuilderContext(typeBase, await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))))
+        => (await Mediator.Send(new PipelineRequest<BuilderContext, IConcreteType>(new BuilderContext(typeBase, await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))))
             .TryCast<TypeBase>()
             .GetValueOrThrow();
 
     private async Task<TypeBase> CreateBuilderExtensionsClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
-        => (await _mediator.Send(new PipelineRequest<BuilderExtensionContext, IConcreteType>(new BuilderExtensionContext(typeBase, await CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace, buildersExtensionsNamespace), CultureInfo.InvariantCulture))))
+        => (await Mediator.Send(new PipelineRequest<BuilderExtensionContext, IConcreteType>(new BuilderExtensionContext(typeBase, await CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace, buildersExtensionsNamespace), CultureInfo.InvariantCulture))))
             .TryCast<TypeBase>()
             .GetValueOrThrow();
 
     private async Task<TypeBase> CreateNonGenericBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
-        => (await _mediator.Send(new PipelineRequest<BuilderContext, IConcreteType>(new BuilderContext(typeBase, (await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace)).ToBuilder().WithIsForAbstractBuilder().Build(), CultureInfo.InvariantCulture))))
+        => (await Mediator.Send(new PipelineRequest<BuilderContext, IConcreteType>(new BuilderContext(typeBase, (await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace)).ToBuilder().WithIsForAbstractBuilder().Build(), CultureInfo.InvariantCulture))))
             .TryCast<TypeBase>()
             .GetValueOrThrow();
 
@@ -528,7 +521,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     }
 
     private async Task<TypeBase> GetModel(Type type)
-        => (await _mediator.Send(new PipelineRequest<ReflectionContext, TypeBase>(new ReflectionContext(type, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))))
+        => (await Mediator.Send(new PipelineRequest<ReflectionContext, TypeBase>(new ReflectionContext(type, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture))))
             .GetValueOrThrow();
 
     private async Task<TypeBase> CreateInterface(
@@ -539,7 +532,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         string nameFormatString = "{Class.Name}",
         CopyMethodPredicate? copyMethodPredicate = null)
     {
-        return (await _mediator.Send(new PipelineRequest<InterfaceContext, Interface>(new InterfaceContext(typeBase, await CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(await GetBaseClass()), copyMethodPredicate, addSetters, nameFormatString), CultureInfo.InvariantCulture))))
+        return (await Mediator.Send(new PipelineRequest<InterfaceContext, Interface>(new InterfaceContext(typeBase, await CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(await GetBaseClass()), copyMethodPredicate, addSetters, nameFormatString), CultureInfo.InvariantCulture))))
             .GetValueOrThrow();
     }
 }

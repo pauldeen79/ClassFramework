@@ -2,7 +2,7 @@
 
 public abstract class ImmutablePrivateSettersCSharpClassBase : ImmutableCSharpClassBase
 {
-    protected ImmutablePrivateSettersCSharpClassBase(ICsharpExpressionDumper csharpExpressionDumper, IMediator mediator) : base(csharpExpressionDumper, mediator)
+    protected ImmutablePrivateSettersCSharpClassBase(IMediator mediator) : base(mediator)
     {
     }
 

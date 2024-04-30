@@ -2,11 +2,6 @@
 
 public class ConstructorViewModel : MethodViewModelBase<Constructor>
 {
-    public ConstructorViewModel(ICsharpExpressionDumper csharpExpressionDumper)
-        : base(csharpExpressionDumper)
-    {
-    }
-
     public string Name
     {
         get

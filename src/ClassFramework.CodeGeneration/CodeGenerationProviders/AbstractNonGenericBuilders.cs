@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractNonGenericBuilders : ClassFrameworkCSharpClassBase
 {
-    public AbstractNonGenericBuilders(ICsharpExpressionDumper csharpExpressionDumper, IMediator mediator) : base(csharpExpressionDumper, mediator)
+    public AbstractNonGenericBuilders(IMediator mediator) : base(mediator)
     {
     }
 

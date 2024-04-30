@@ -2,7 +2,7 @@
 
 public class AbstractEntities : ImmutableCSharpClassBase
 {
-    public AbstractEntities(ICsharpExpressionDumper csharpExpressionDumper, IMediator mediator) : base(csharpExpressionDumper, mediator)
+    public AbstractEntities(IMediator mediator) : base(mediator)
     {
     }
 

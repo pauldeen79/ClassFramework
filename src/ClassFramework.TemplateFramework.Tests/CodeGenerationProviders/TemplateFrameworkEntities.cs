@@ -2,7 +2,7 @@
 
 public class TemplateFrameworkEntities : ImmutableCSharpClassBase
 {
-    public TemplateFrameworkEntities(ICsharpExpressionDumper csharpExpressionDumper, IMediator mediator) : base(csharpExpressionDumper, mediator)
+    public TemplateFrameworkEntities(IMediator mediator) : base(mediator)
     {
     }
 

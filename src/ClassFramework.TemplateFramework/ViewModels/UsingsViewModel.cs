@@ -2,11 +2,6 @@
 
 public class UsingsViewModel : CsharpClassGeneratorViewModelBase<UsingsModel>
 {
-    public UsingsViewModel(ICsharpExpressionDumper csharpExpressionDumper)
-        : base(csharpExpressionDumper)
-    {
-    }
-
     private static readonly string[] DefaultUsings =
     [
         "System",

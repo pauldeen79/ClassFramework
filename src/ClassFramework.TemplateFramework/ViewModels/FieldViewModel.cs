@@ -2,11 +2,6 @@
 
 public class FieldViewModel : AttributeContainerViewModelBase<Field>
 {
-    public FieldViewModel(ICsharpExpressionDumper csharpExpressionDumper)
-        : base(csharpExpressionDumper)
-    {
-    }
-
     public string Modifiers
         => GetModel().GetModifiers(Settings.CultureInfo);
 
@@ -26,5 +21,5 @@ public class FieldViewModel : AttributeContainerViewModelBase<Field>
         => GetModel().DefaultValue is not null;
 
     public string DefaultValueExpression
-        => CsharpExpressionDumper.Dump(GetModel().DefaultValue);
+        => GetCsharpExpression(GetModel().DefaultValue);
 }
