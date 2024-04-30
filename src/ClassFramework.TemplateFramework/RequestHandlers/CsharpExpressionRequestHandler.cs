@@ -10,5 +10,5 @@ public class CsharpExpressionRequestHandler : IRequestHandler<CsharpExpressionRe
     }
 
     public Task<string> Handle(CsharpExpressionRequest request, CancellationToken cancellationToken)
-        => Task.FromResult(_csharpExpressionDumper.Dump(request.Expression));
+        => Task.FromResult(_csharpExpressionDumper.Dump(request.IsNotNull(nameof(request)).Expression));
 }
