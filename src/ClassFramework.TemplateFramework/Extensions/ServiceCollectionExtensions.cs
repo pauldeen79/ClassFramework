@@ -40,10 +40,10 @@ public static class ServiceCollectionExtensions
             .AddChildTemplate<StringCodeStatementTemplate>(typeof(StringCodeStatement))
 
              // Add request handlers for using pipelines from CsharpClassGeneratorPipelineCodeGenerationProviderBase
-            .AddTransient<IRequestHandler<PipelineRequest<BuilderExtensionContext, TypeBase>, Result<TypeBase>>, ClassFrameworkPipelineRequestHandler<BuilderExtensionContext, TypeBase>>()
-            .AddTransient<IRequestHandler<PipelineRequest<BuilderContext, TypeBase>, Result<TypeBase>>, ClassFrameworkPipelineRequestHandler<BuilderContext, TypeBase>>()
-            .AddTransient<IRequestHandler<PipelineRequest<EntityContext, TypeBase>, Result<TypeBase>>, ClassFrameworkPipelineRequestHandler<EntityContext, TypeBase>>()
-            .AddTransient<IRequestHandler<PipelineRequest<InterfaceContext, Interface>, Result<Interface>>, ClassFrameworkPipelineRequestHandler<InterfaceContext, Interface>>()
-            .AddTransient<IRequestHandler<PipelineRequest<ReflectionContext, TypeBase>, Result<TypeBase>>, ReflectionPipelineRequestHandler<ReflectionContext, TypeBase>>()
+            .AddScoped<IRequestHandler<PipelineRequest<BuilderExtensionContext, TypeBase>, Result<TypeBase>>, ClassFrameworkPipelineRequestHandler<BuilderExtensionContext, TypeBase>>()
+            .AddScoped<IRequestHandler<PipelineRequest<BuilderContext, TypeBase>, Result<TypeBase>>, ClassFrameworkPipelineRequestHandler<BuilderContext, TypeBase>>()
+            .AddScoped<IRequestHandler<PipelineRequest<EntityContext, TypeBase>, Result<TypeBase>>, ClassFrameworkPipelineRequestHandler<EntityContext, TypeBase>>()
+            .AddScoped<IRequestHandler<PipelineRequest<InterfaceContext, Interface>, Result<Interface>>, ClassFrameworkPipelineRequestHandler<InterfaceContext, Interface>>()
+            .AddScoped<IRequestHandler<PipelineRequest<ReflectionContext, TypeBase>, Result<TypeBase>>, ReflectionPipelineRequestHandler<ReflectionContext, TypeBase>>()
         ;
 }
