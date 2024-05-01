@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.RequestHandlers;
 
-public abstract class PipelineRequestHandler<TResponse, TContext> : IRequestHandler<PipelineRequest<TContext, TResponse>, Result<TResponse>>
+public abstract class PipelineRequestHandler<TContext, TResponse> : IRequestHandler<PipelineRequest<TContext, TResponse>, Result<TResponse>>
 {
     private readonly IPipeline<TContext> _pipeline;
 
@@ -37,7 +37,7 @@ public abstract class PipelineRequestHandler<TResponse, TContext> : IRequestHand
     protected abstract TResponse BuildResponseValue(TContext context);
 }
 
-public class ClassFrameworkPipelineRequestHandler<TResponse, TContext> : PipelineRequestHandler<TResponse, TContext>
+public class ClassFrameworkPipelineRequestHandler<TContext, TResponse> : PipelineRequestHandler<TContext, TResponse>
     where TContext : ContextBase<TypeBase, TResponse>
 {
     public ClassFrameworkPipelineRequestHandler(IPipeline<TContext> pipeline) : base(pipeline)
@@ -49,7 +49,7 @@ public class ClassFrameworkPipelineRequestHandler<TResponse, TContext> : Pipelin
     protected override IBuilder<TResponse> GetResponseBuilder(TContext context) => context.IsNotNull(nameof(context)).ResponseBuilder;
 }
 
-public class ReflectionPipelineRequestHandler<TResponse, TContext> : PipelineRequestHandler<TResponse, TContext>
+public class ReflectionPipelineRequestHandler<TContext, TResponse> : PipelineRequestHandler<TContext, TResponse>
     where TContext : ContextBase<Type, TResponse>
 {
     public ReflectionPipelineRequestHandler(IPipeline<TContext> pipeline) : base(pipeline)
