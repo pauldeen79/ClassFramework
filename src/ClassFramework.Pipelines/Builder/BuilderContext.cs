@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public class BuilderContext : ContextBase<TypeBase, IConcreteType>
+public class BuilderContext : ContextBase<TypeBase, TypeBase>
 {
     public BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
         : base(sourceModel, settings, formatProvider)
@@ -83,7 +83,7 @@ public class BuilderContext : ContextBase<TypeBase, IConcreteType>
         && !IsBuilderForAbstractEntity
         && !Settings.AddNullChecks;
 
-    protected override IBuilder<IConcreteType> CreateResponseBuilder() => _wrappedBuilder;
+    protected override IBuilder<TypeBase> CreateResponseBuilder() => _wrappedBuilder;
 
     public ClassBuilder Builder => _wrappedBuilder.Builder;
 

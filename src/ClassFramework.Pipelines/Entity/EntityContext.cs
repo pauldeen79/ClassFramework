@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Entity;
 
-public class EntityContext : ContextBase<TypeBase, IConcreteType>
+public class EntityContext : ContextBase<TypeBase, TypeBase>
 {
     public EntityContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
         : base(sourceModel, settings, formatProvider)
@@ -13,7 +13,7 @@ public class EntityContext : ContextBase<TypeBase, IConcreteType>
 
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
 
-    protected override IBuilder<IConcreteType> CreateResponseBuilder() => _wrappedBuilder;
+    protected override IBuilder<TypeBase> CreateResponseBuilder() => _wrappedBuilder;
 
     public ClassBuilder Builder => _wrappedBuilder.Builder;
 
