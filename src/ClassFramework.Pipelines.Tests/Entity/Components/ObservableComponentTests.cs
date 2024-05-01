@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
-public class ObservableComponentTests : TestBase<Pipelines.Entity.Features.ObservableComponent>
+public class ObservableComponentTests : TestBase<Pipelines.Entity.Components.ObservableComponent>
 {
     public class Process : ObservableComponentTests
     {
@@ -22,17 +22,16 @@ public class ObservableComponentTests : TestBase<Pipelines.Entity.Features.Obser
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(createAsObservable: false);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Interfaces.Should().BeEmpty();
-            model.Fields.Should().BeEmpty();
+            context.Request.Builder.Interfaces.Should().BeEmpty();
+            context.Request.Builder.Fields.Should().BeEmpty();
         }
 
         [Fact]
@@ -42,21 +41,20 @@ public class ObservableComponentTests : TestBase<Pipelines.Entity.Features.Obser
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(createAsObservable: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
-            model.Fields.Select(x => x.Name).Should().BeEquivalentTo("PropertyChanged");
-            model.Fields.Select(x => x.TypeName).Should().BeEquivalentTo("System.ComponentModel.PropertyChangedEventHandler");
-            model.Fields.Select(x => x.Event).Should().BeEquivalentTo(new[] { true });
-            model.Fields.Select(x => x.Visibility).Should().BeEquivalentTo(new[] { Visibility.Public });
-            model.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo(new[] { true });
+            context.Request.Builder.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
+            context.Request.Builder.Fields.Select(x => x.Name).Should().BeEquivalentTo("PropertyChanged");
+            context.Request.Builder.Fields.Select(x => x.TypeName).Should().BeEquivalentTo("System.ComponentModel.PropertyChangedEventHandler");
+            context.Request.Builder.Fields.Select(x => x.Event).Should().BeEquivalentTo(new[] { true });
+            context.Request.Builder.Fields.Select(x => x.Visibility).Should().BeEquivalentTo(new[] { Visibility.Public });
+            context.Request.Builder.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo(new[] { true });
         }
     }
 }

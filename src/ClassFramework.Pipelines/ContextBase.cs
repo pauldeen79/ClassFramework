@@ -12,16 +12,16 @@ public abstract class ContextBase
     }
 }
 
-public abstract class ContextBase<TModel> : ContextBase
+public abstract class ContextBase<TSourceModel> : ContextBase
 {
-    protected ContextBase(TModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : base(settings, formatProvider)
+    protected ContextBase(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : base(settings, formatProvider)
     {
         SourceModel = sourceModel.IsNotNull(nameof(sourceModel));
     }
 
-    protected abstract string NewCollectionTypeName { get; }
+    public TSourceModel SourceModel { get; }
 
-    public TModel SourceModel { get; }
+    protected abstract string NewCollectionTypeName { get; }
 
     public string CreateArgumentNullException(string argumentName)
     {
@@ -210,7 +210,7 @@ public abstract class ContextBase<TModel> : ContextBase
         resultSetBuilder.Add("AddMethodName", () => formattableStringParser.Parse(Settings.AddMethodNameFormatString, FormatProvider, parentChildContext));
         resultSetBuilder.AddRange("EnumerableOverload", () => enumerableOverloadCode);
         resultSetBuilder.AddRange("ArrayOverload", () => arrayOverloadCode);
-        
+
         return resultSetBuilder.Build();
     }
 
@@ -243,7 +243,7 @@ public abstract class ContextBase<TModel> : ContextBase
             .Where(x => x.SourceTypeName == result)
             .SelectMany(x => x.Metadata)
             .GetStringValue(MetadataNames.CustomTypeName);
-        
+
         if (!string.IsNullOrEmpty(customResult))
         {
             return customResult!;
@@ -317,5 +317,32 @@ public abstract class ContextBase<TModel> : ContextBase
         }
 
         return typeName.GetNamespaceWithDefault();
+    }
+}
+
+public abstract class ContextBase<TSourceModel, TResponse> : ContextBase<TSourceModel>
+{
+    protected ContextBase(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : base(sourceModel, settings, formatProvider)
+    {
+    }
+
+    protected abstract IBuilder<TResponse> CreateResponseBuilder();
+
+    private IBuilder<TResponse>? _responseBuilder;
+    public IBuilder<TResponse> ResponseBuilder
+    {
+        get
+        {
+            if (_responseBuilder is null)
+            {
+                _responseBuilder = CreateResponseBuilder();
+                if (_responseBuilder is null)
+                {
+                    throw new InvalidOperationException($"{nameof(CreateResponseBuilder)} returned a null reference, this is not allowed");
+                }
+            }
+
+            return _responseBuilder;
+        }
     }
 }

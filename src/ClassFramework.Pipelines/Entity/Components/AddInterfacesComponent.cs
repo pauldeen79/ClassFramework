@@ -1,30 +1,30 @@
-﻿namespace ClassFramework.Pipelines.Entity.Features;
+﻿namespace ClassFramework.Pipelines.Entity.Components;
 
 public class AddInterfacesComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, EntityContext> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new AddInterfacesComponent();
 }
 
-public class AddInterfacesComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
+public class AddInterfacesComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CopyInterfaces)
+        if (!context.Request.Settings.CopyInterfaces)
         {
-            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
-        var baseClass = context.Context.SourceModel.GetEntityBaseClass(context.Context.Settings.EnableInheritance, context.Context.Settings.BaseClass);
+        var baseClass = context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass);
 
-        context.Model.AddInterfaces(context.Context.SourceModel.Interfaces
-            .Where(x => context.Context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+        context.Request.Builder.AddInterfaces(context.Request.SourceModel.Interfaces
+            .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Where(x => x != baseClass)
-            .Select(x => context.Context.MapTypeName(x.FixTypeName()))
+            .Select(x => context.Request.MapTypeName(x.FixTypeName()))
             .Where(x => !string.IsNullOrEmpty(x)));
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

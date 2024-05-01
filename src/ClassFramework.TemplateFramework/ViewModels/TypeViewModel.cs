@@ -2,11 +2,6 @@
 
 public class TypeViewModel : AttributeContainerViewModelBase<IType>
 {
-    public TypeViewModel(ICsharpExpressionDumper csharpExpressionDumper)
-        : base(csharpExpressionDumper)
-    {
-    }
-
     public bool ShouldRenderNullablePragmas
     {
         get

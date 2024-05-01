@@ -237,7 +237,7 @@ public static class StringExtensions
     {
         find = find.IsNotNull(nameof(find));
 
-        var index = instance.IndexOf(find, stringComparison);
+        var index = instance.LastIndexOf(find, stringComparison);
         if (index == -1 || index < instance.Length - find.Length)
         {
             return instance;

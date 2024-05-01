@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Tests.Reflection.Components;
 
-public class ValidationComponentTests : TestBase<Pipelines.Reflection.Features.ValidationComponent>
+public class ValidationComponentTests : TestBase<Pipelines.Reflection.Components.ValidationComponent>
 {
     public class Process : ValidationComponentTests
     {
@@ -21,9 +21,8 @@ public class ValidationComponentTests : TestBase<Pipelines.Reflection.Features.V
             // Arrange
             var sourceModel = typeof(MyClass);
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection();
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
@@ -38,9 +37,8 @@ public class ValidationComponentTests : TestBase<Pipelines.Reflection.Features.V
             // Arrange
             var sourceModel = typeof(MyClass);
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(allowGenerationWithoutProperties: true);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);

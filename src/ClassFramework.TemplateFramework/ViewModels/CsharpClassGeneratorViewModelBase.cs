@@ -14,15 +14,7 @@ public abstract class CsharpClassGeneratorViewModelBase : ICsharpClassGeneratorS
 
 public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGeneratorViewModelBase, IModelContainer<TModel>, ITemplateContextContainer
 {
-    protected CsharpClassGeneratorViewModelBase(ICsharpExpressionDumper csharpExpressionDumper)
-    {
-        Guard.IsNotNull(csharpExpressionDumper);
-
-        CsharpExpressionDumper = csharpExpressionDumper;
-    }
-
     public TModel? Model { get; set; }
-    public ICsharpExpressionDumper CsharpExpressionDumper { get; set; }
     public ITemplateContext Context { get; set; } = default!; // will always be injected in OnSetContext method
 
     protected ITemplateContext GetContext()

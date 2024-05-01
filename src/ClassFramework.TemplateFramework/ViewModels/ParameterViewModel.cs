@@ -3,10 +3,11 @@
 public class ParameterViewModel : AttributeContainerViewModelBase<Parameter>
 {
     public ParameterViewModel(ICsharpExpressionDumper csharpExpressionDumper)
-        : base(csharpExpressionDumper)
     {
+        CsharpExpressionDumper = csharpExpressionDumper;
     }
 
+    private ICsharpExpressionDumper CsharpExpressionDumper { get; }
     public string Prefix
     {
         get

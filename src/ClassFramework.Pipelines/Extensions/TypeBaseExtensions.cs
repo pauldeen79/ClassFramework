@@ -89,22 +89,22 @@ public static class TypeBaseExtensions
 
     public static IEnumerable<Result<FieldBuilder>> GetBuilderClassFields(
         this IType instance,
-        PipelineContext<IConcreteTypeBuilder, BuilderContext> context,
+        PipelineContext<BuilderContext> context,
         IFormattableStringParser formattableStringParser)
     {
         context = context.IsNotNull(nameof(context));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (!context.Context.HasBackingFields())
+        if (!context.Request.HasBackingFields())
         {
             yield break;
         }
 
         foreach (var property in instance.Properties.Where(x =>
-            instance.IsMemberValidForBuilderClass(x, context.Context.Settings)
-            && x.HasBackingFieldOnBuilder(context.Context.Settings)))
+            instance.IsMemberValidForBuilderClass(x, context.Request.Settings)
+            && x.HasBackingFieldOnBuilder(context.Request.Settings)))
         {
-            var builderArgumentTypeResult = property.GetBuilderArgumentTypeName(context.Context, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser);
+            var builderArgumentTypeResult = property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser);
 
             if (!builderArgumentTypeResult.IsSuccessful())
             {
@@ -113,8 +113,8 @@ public static class TypeBaseExtensions
             }
 
             yield return Result.Success(new FieldBuilder()
-                .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
-                .WithTypeName(builderArgumentTypeResult.Value!.ToString().FixCollectionTypeName(context.Context.Settings.BuilderNewCollectionTypeName).FixNullableTypeName(property))
+                .WithName($"_{property.Name.ToPascalCase(context.Request.FormatProvider.ToCultureInfo())}")
+                .WithTypeName(builderArgumentTypeResult.Value!.ToString().FixCollectionTypeName(context.Request.Settings.BuilderNewCollectionTypeName).FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
                 .AddGenericTypeArguments(property.GenericTypeArguments));

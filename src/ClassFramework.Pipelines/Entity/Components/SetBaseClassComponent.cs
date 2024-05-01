@@ -1,22 +1,19 @@
-﻿namespace ClassFramework.Pipelines.Entity.Features;
+﻿namespace ClassFramework.Pipelines.Entity.Components;
 
 public class SetBaseClassComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, EntityContext> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new SetBaseClassComponent();
 }
 
-public class SetBaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
+public class SetBaseClassComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Model is IBaseClassContainerBuilder baseClassContainerBuilder)
-        {
-            baseClassContainerBuilder.WithBaseClass(context.Context.SourceModel.GetEntityBaseClass(context.Context.Settings.EnableInheritance, context.Context.Settings.BaseClass));
-        }
+        context.Request.Builder.WithBaseClass(context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass));
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

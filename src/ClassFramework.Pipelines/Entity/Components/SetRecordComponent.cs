@@ -1,22 +1,19 @@
-﻿namespace ClassFramework.Pipelines.Entity.Features;
+﻿namespace ClassFramework.Pipelines.Entity.Components;
 
 public class SetRecordComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, EntityContext> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new SetRecordComponent();
 }
 
-public class SetRecordComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
+public class SetRecordComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Model is IRecordContainerBuilder recordContainerBuilder)
-        {
-            recordContainerBuilder.WithRecord(context.Context.Settings.CreateRecord);
-        }
+        context.Request.Builder.WithRecord(context.Request.Settings.CreateRecord);
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

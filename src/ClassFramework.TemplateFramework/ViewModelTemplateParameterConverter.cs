@@ -13,6 +13,8 @@ public class ViewModelTemplateParameterConverter : ITemplateParameterConverter
 
     public bool TryConvert(object? value, Type type, ITemplateEngineContext context, out object? convertedValue)
     {
+        Guard.IsNotNull(context);
+
         if (value is null)
         {
             convertedValue = null;
@@ -20,7 +22,11 @@ public class ViewModelTemplateParameterConverter : ITemplateParameterConverter
         }
 
         var viewModelItem = _factory.Invoke()
-            .Select(viewModel => new { ViewModel = viewModel, ModelProperty = viewModel.GetType().GetProperty(nameof(IModelContainer<object>.Model)) })
+            .Select(viewModel => new
+            {
+                ViewModel = viewModel,
+                ModelProperty = viewModel.GetType().GetProperty(nameof(IModelContainer<object>.Model)),
+            })
             .FirstOrDefault(x => x.ModelProperty is not null && x.ModelProperty.PropertyType.IsInstanceOfType(value));
 
         if (viewModelItem is null)

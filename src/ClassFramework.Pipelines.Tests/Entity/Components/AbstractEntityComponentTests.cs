@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
-public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Features.AbstractEntityComponent>
+public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components.AbstractEntityComponent>
 {
     public class Process : AbstractEntityComponentTests
     {
@@ -21,18 +21,18 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Features.A
             // Arrange
             var sourceModel = CreateModel(baseClass: string.Empty);
             var sut = CreateSut();
-            var model = new ClassBuilder().WithAbstract(false); // we want to make sure that the component updates the property
             var settings = CreateSettingsForEntity(
                 enableEntityInheritance: true,
                 isAbstract: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            context.Request.Builder.WithAbstract(false); // we want to make sure that the component updates the property
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Abstract.Should().BeTrue();
+            context.Request.Builder.Abstract.Should().BeTrue();
         }
 
         [Fact]
@@ -41,37 +41,18 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Features.A
             // Arrange
             var sourceModel = CreateModel(baseClass: string.Empty);
             var sut = CreateSut();
-            var model = new ClassBuilder().WithAbstract(true); // we want to make sure that the component updates the property
             var settings = CreateSettingsForEntity(
                 enableEntityInheritance: true,
                 isAbstract: false);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            context.Request.Builder.WithAbstract(true); // we want to make sure that the component updates the property
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Abstract.Should().BeFalse();
-        }
-
-        [Fact]
-        public async Task Returns_Success_When_Context_Model_Is_Not_Of_Type_ClassBuilder()
-        {
-            // Arrange
-            var sourceModel = CreateModel(baseClass: string.Empty);
-            var sut = CreateSut();
-            var model = new StructBuilder(); // no ClassBuilder, so can't set Abstract
-            var settings = CreateSettingsForEntity(
-                enableEntityInheritance: true,
-                isAbstract: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
-
-            // Act
-            var result = await sut.Process(context);
-
-            // Assert
-            result.IsSuccessful().Should().BeTrue();
+            context.Request.Builder.Abstract.Should().BeFalse();
         }
     }
 }

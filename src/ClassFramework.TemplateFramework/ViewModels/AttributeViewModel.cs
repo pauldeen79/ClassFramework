@@ -3,10 +3,11 @@
 public class AttributeViewModel : CsharpClassGeneratorViewModelBase<Domain.Attribute>
 {
     public AttributeViewModel(ICsharpExpressionDumper csharpExpressionDumper)
-        : base(csharpExpressionDumper)
     {
+        CsharpExpressionDumper = csharpExpressionDumper;
     }
 
+    private ICsharpExpressionDumper CsharpExpressionDumper { get; }
     public bool IsSingleLineAttributeContainer => GetParentModel() is Parameter;
 
     public string Name

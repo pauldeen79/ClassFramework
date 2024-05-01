@@ -3,10 +3,6 @@
 public abstract class CodeStatementViewModelBase<T> : CsharpClassGeneratorViewModelBase<T>
     where T : CodeStatementBase
 {
-    protected CodeStatementViewModelBase(ICsharpExpressionDumper csharpExpressionDumper) : base(csharpExpressionDumper)
-    {
-    }
-
     public int AdditionalIndents
     {
         get

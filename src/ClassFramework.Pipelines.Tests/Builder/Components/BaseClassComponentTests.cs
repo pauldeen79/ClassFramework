@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Components;
 
-public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseClassComponent>
+public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.BaseClassComponent>
 {
     public class Process : BaseClassComponentTests
     {
@@ -22,19 +22,18 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass:  null,
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.BaseClass.Should().Be("SomeClassBuilder");
+            context.Request.Builder.BaseClass.Should().Be("SomeClassBuilder");
         }
 
         [Fact]
@@ -44,20 +43,19 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(),
                 isAbstract: true,
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.BaseClass.Should().Be("SomeClassBuilder");
+            context.Request.Builder.BaseClass.Should().Be("SomeClassBuilder");
         }
 
         [Fact]
@@ -67,20 +65,19 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(),
                 isAbstract: false,
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.BaseClass.Should().Be("BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            context.Request.Builder.BaseClass.Should().Be("BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -90,21 +87,20 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(),
                 isAbstract: false,
                 baseClassBuilderNameSpace: "BaseBuilders",
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.BaseClass.Should().Be("BaseBuilders.BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            context.Request.Builder.BaseClass.Should().Be("BaseBuilders.BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -114,18 +110,17 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var sourceModel = CreateModel("MyBaseClass");
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 enableEntityInheritance: true).WithIsForAbstractBuilder();
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.BaseClass.Should().Be("MyBaseClassBuilder");
+            context.Request.Builder.BaseClass.Should().Be("MyBaseClassBuilder");
         }
 
         [Fact]
@@ -135,18 +130,17 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var sourceModel = CreateModel("MyBaseClass");
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 enableEntityInheritance: true).WithIsForAbstractBuilder();
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.BaseClass.Should().Be("MyBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            context.Request.Builder.BaseClass.Should().Be("MyBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -156,13 +150,12 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass: null,
                 enableEntityInheritance: true,
                 builderNameFormatString: "{Error}");
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
@@ -172,7 +165,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Features.BaseC
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
-            => new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new PipelineContext<BuilderContext>(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

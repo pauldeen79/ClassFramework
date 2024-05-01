@@ -61,8 +61,8 @@ public class PropertyCodeBodyModelTests : TestBase
             }
             object? parentModel = parentModelType switch
             {
-                "class" => new TypeViewModel(Fixture.Freeze<ICsharpExpressionDumper>()) { Model = new ClassBuilder().WithName("MyClass").Build() },
-                "interface" => new TypeViewModel(Fixture.Freeze<ICsharpExpressionDumper>()) { Model = new InterfaceBuilder().WithName("IMyInterface").Build() },
+                "class" => new TypeViewModel() { Model = new ClassBuilder().WithName("MyClass").Build() },
+                "interface" => new TypeViewModel() { Model = new InterfaceBuilder().WithName("IMyInterface").Build() },
                 "wrong_type" => new object(),
                 _ => throw new NotSupportedException("Only 'class', 'interface' and 'wrong_type' are supported as parentModelType")
             };

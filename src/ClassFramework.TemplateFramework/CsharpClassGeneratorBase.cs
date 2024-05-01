@@ -5,6 +5,8 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
 {
     protected override void OnSetContext(ITemplateContext value)
     {
+        Guard.IsNotNull(value);
+
         if (Model is ITemplateContextContainer container)
         {
             // Copy Context from template context to ViewModel

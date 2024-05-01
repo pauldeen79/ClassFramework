@@ -1,22 +1,19 @@
-﻿namespace ClassFramework.Pipelines.Entity.Features;
+﻿namespace ClassFramework.Pipelines.Entity.Components;
 
 public class AbstractEntityComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, EntityContext> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new AbstractEntityComponent();
 }
 
-public class AbstractEntityComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
+public class AbstractEntityComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Model is ClassBuilder cls)
-        {
-            cls.WithAbstract(context.Context.IsAbstract);
-        }
+        context.Request.Builder.WithAbstract(context.Request.IsAbstract);
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

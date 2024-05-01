@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Tests.Reflection.Components;
 
-public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetNameComponent>
+public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.SetNameComponent>
 {
     public class Process : SetNameComponentTests
     {
@@ -22,16 +22,15 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetN
             var sourceModel = typeof(MyClass);
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection();
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Name.Should().Be("MyClass");
+            context.Request.Builder.Name.Should().Be("MyClass");
         }
 
         [Fact]
@@ -41,16 +40,15 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetN
             var sourceModel = typeof(MyClass);
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection();
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Namespace.Should().Be("ClassFramework.Pipelines.Tests.Reflection");
+            context.Request.Builder.Namespace.Should().Be("ClassFramework.Pipelines.Tests.Reflection");
         }
 
         [Fact]
@@ -60,9 +58,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetN
             var sourceModel = typeof(MyClass);
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(nameFormatString: "{Error}");
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
@@ -79,9 +76,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetN
             var sourceModel = typeof(MyClass);
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(namespaceFormatString: "{Error}");
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
@@ -91,7 +87,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Features.SetN
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<TypeBaseBuilder, ReflectionContext> CreateContext(Type sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
-            => new(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+        private static PipelineContext<ReflectionContext> CreateContext(Type sourceModel, PipelineSettingsBuilder settings)
+            => new(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

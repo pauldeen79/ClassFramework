@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Tests.Reflection.Components;
 
-public class AddMethodsComponentTests : TestBase<Pipelines.Reflection.Features.AddMethodsComponent>
+public class AddMethodsComponentTests : TestBase<Pipelines.Reflection.Components.AddMethodsComponent>
 {
     public class Process : AddMethodsComponentTests
     {
@@ -21,16 +21,15 @@ public class AddMethodsComponentTests : TestBase<Pipelines.Reflection.Features.A
             // Arrange
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection();
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Methods.Should().ContainSingle();
+            context.Request.Builder.Methods.Should().ContainSingle();
         }
     }
 }

@@ -54,7 +54,7 @@ public abstract class TestBase : IDisposable
         return parser;
     }
 
-    protected static IConcreteType CreateModel(string baseClass = "")
+    protected static Class CreateModel(string baseClass = "")
         => new ClassBuilder()
             .WithName("SomeClass")
             .WithNamespace("SomeNamespace")
@@ -79,7 +79,7 @@ public abstract class TestBase : IDisposable
             .AddMethods(new MethodBuilder().WithName("MyMethod"))
             .BuildTyped();
 
-    protected static IConcreteType CreateGenericModel(bool addProperties)
+    protected static Class CreateGenericModel(bool addProperties)
         => new ClassBuilder()
             .WithName("MyClass")
             .WithNamespace("MyNamespace")
@@ -95,7 +95,7 @@ public abstract class TestBase : IDisposable
             )
             .BuildTyped();
 
-    protected static IConcreteType CreateModelWithCustomTypeProperties()
+    protected static Class CreateModelWithCustomTypeProperties()
         => new ClassBuilder()
             .WithName("MyClass")
             .WithNamespace("MySourceNamespace")
@@ -123,7 +123,7 @@ public abstract class TestBase : IDisposable
             .AddProperties(new PropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.IMyClass")).WithIsNullable())
             .BuildTyped();
 
-    protected static IConcreteType CreateModelWithPropertyThatHasAReservedName(Type propertyType)
+    protected static Class CreateModelWithPropertyThatHasAReservedName(Type propertyType)
         => new ClassBuilder()
             .WithName("SomeClass")
             .WithNamespace("SomeNamespace")

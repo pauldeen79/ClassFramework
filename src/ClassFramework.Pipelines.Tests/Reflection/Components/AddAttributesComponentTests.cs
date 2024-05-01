@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Tests.Reflection.Components;
 
-public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Features.AddAttributesComponent>
+public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Components.AddAttributesComponent>
 {
     [ExcludeFromCodeCoverage] // just adding an attribute here, so we can use this class as source model in our tests
     public class Process : AddAttributesComponentTests
@@ -22,16 +22,15 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Feature
             // Arrange
             var sourceModel = GetType();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(copyAttributePredicate: _ => true, copyAttributes: true);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
+            context.Request.Builder.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
         }
 
         [Fact]
@@ -40,16 +39,15 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Feature
             // Arrange
             var sourceModel = GetType();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(copyAttributePredicate: null, copyAttributes: true);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
+            context.Request.Builder.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
         }
 
         [Fact]
@@ -58,16 +56,15 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Feature
             // Arrange
             var sourceModel = GetType();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(copyAttributes: false);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Attributes.Should().BeEmpty();
+            context.Request.Builder.Attributes.Should().BeEmpty();
         }
     }
 }

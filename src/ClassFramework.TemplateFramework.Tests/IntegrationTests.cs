@@ -9,14 +9,18 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         var templateFactory = Fixture.Freeze<ITemplateFactory>();
         var templateProviderPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
+        var assemblyInfoContextService = Fixture.Freeze<IAssemblyInfoContextService>();
         _serviceProvider = new ServiceCollection()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddScoped(_ => assemblyInfoContextService)
             .AddCsharpExpressionDumper()
             .AddClassFrameworkTemplates()
             .AddParsers()
             .AddPipelines()
+            .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CsharpClassGeneratorPipelineCodeGenerationProviderBase).Assembly))
             .AddScoped(_ => templateFactory)
             .AddScoped(_ => templateProviderPluginFactory)
             .AddScoped<TestCodeGenerationProvider>()
@@ -42,13 +46,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<OverrideTypeBuilders>()
             .AddScoped<OverrideTypeEntities>()
             .AddScoped<TemplateFrameworkEntities>()
-            .BuildServiceProvider();
+            .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
         _scope = _serviceProvider.CreateScope();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Class()
+    public async Task Can_Generate_Code_For_Class()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -57,7 +61,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -149,7 +153,7 @@ namespace MyNamespace
     }
 
     [Fact]
-    public void Can_Generate_Code_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -158,7 +162,7 @@ namespace MyNamespace
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -190,7 +194,7 @@ namespace MyNamespace
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Abstractions_BuilderInterfaces_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Abstractions_BuilderInterfaces_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -199,7 +203,7 @@ namespace MyNamespace
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -225,7 +229,7 @@ namespace Test.Domain.Builders.Abstractions
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Abstractions_BuilderExtensions_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Abstractions_BuilderExtensions_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -234,7 +238,7 @@ namespace Test.Domain.Builders.Abstractions
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -262,7 +266,7 @@ namespace Test.Domain.Builders.Extensions
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Abstractions_Interfaces_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Abstractions_Interfaces_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -271,7 +275,7 @@ namespace Test.Domain.Builders.Extensions
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -296,7 +300,7 @@ namespace Test.Domain.Abstractions
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Entity_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Entity_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -305,7 +309,7 @@ namespace Test.Domain.Abstractions
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -348,7 +352,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Builder_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Builder_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -357,7 +361,7 @@ namespace Test.Domain
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -431,7 +435,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Builder_Extensions_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Builder_Extensions_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -440,7 +444,7 @@ namespace Test.Domain.Builders
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -475,7 +479,7 @@ namespace Test.Domain.Extensions
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Entity_PrivateSetters_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Entity_PrivateSetters_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -484,7 +488,7 @@ namespace Test.Domain.Extensions
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -529,7 +533,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Builder_PrivateSetters_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Builder_PrivateSetters_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -538,7 +542,7 @@ namespace Test.Domain
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -612,7 +616,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Entity_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Entity_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -621,7 +625,7 @@ namespace Test.Domain.Builders
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -664,7 +668,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Builder_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Builder_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -673,7 +677,7 @@ namespace Test.Domain
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -747,7 +751,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Entity_Interface_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Entity_Interface_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -756,7 +760,7 @@ namespace Test.Domain.Builders
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -789,7 +793,7 @@ namespace Test.Abstractions
     }
 
     [Fact]
-    public void Can_Generate_Code_For_BuilderInterface_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_BuilderInterface_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -798,7 +802,7 @@ namespace Test.Abstractions
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -833,7 +837,7 @@ namespace Test.Abstractions
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Entity_NoToBuilderMethod_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Entity_NoToBuilderMethod_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -842,7 +846,7 @@ namespace Test.Abstractions
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -880,7 +884,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Observable_Entity_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Observable_Entity_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -889,7 +893,7 @@ namespace Test.Domain
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -958,7 +962,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Observable_Builder_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Observable_Builder_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -967,7 +971,7 @@ namespace Test.Domain
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -1058,7 +1062,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Non_Core_Entity_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Non_Core_Entity_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1067,7 +1071,7 @@ namespace Test.Domain.Builders
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -1175,7 +1179,7 @@ namespace ClassFramework.TemplateFramework
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Abstract_Builder_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Abstract_Builder_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1184,7 +1188,7 @@ namespace ClassFramework.TemplateFramework
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -1221,7 +1225,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Abstract_Entity_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Abstract_Entity_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1230,7 +1234,7 @@ namespace Test.Domain.Builders
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -1262,7 +1266,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Abstract_Non_Generic_Builder_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Abstract_Non_Generic_Builder_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1271,7 +1275,7 @@ namespace Test.Domain
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -1328,7 +1332,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Override_Builder_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Override_Builder_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1337,7 +1341,7 @@ namespace Test.Domain.Builders
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -1398,7 +1402,7 @@ namespace Test.Domain.Builders.Types
     }
 
     [Fact]
-    public void Can_Generate_Code_For_Override_Entity_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Override_Entity_With_PipelineCodeGenerationProviderBase()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1407,7 +1411,7 @@ namespace Test.Domain.Builders.Types
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -1455,7 +1459,7 @@ namespace Test.Domain.Types
 
     private sealed class TestCodeGenerationProvider : CsharpClassGeneratorCodeGenerationProviderBase
     {
-        public TestCodeGenerationProvider(ICsharpExpressionDumper csharpExpressionDumper) : base(csharpExpressionDumper)
+        public TestCodeGenerationProvider(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
         {
         }
 
@@ -1491,7 +1495,7 @@ namespace Test.Domain.Types
 
     private sealed class TestPipelineCodeGenerationProvider : CsharpClassGeneratorPipelineCodeGenerationProviderBase
     {
-        public TestPipelineCodeGenerationProvider(ICsharpExpressionDumper csharpExpressionDumper, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionDumper, builderPipeline, builderExtensionPipeline, entityPipeline, reflectionPipeline, interfacePipeline)
+        public TestPipelineCodeGenerationProvider(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
         {
         }
 

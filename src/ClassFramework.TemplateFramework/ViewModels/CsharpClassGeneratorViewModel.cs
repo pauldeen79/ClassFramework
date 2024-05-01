@@ -2,11 +2,6 @@
 
 public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<IEnumerable<TypeBase>>
 {
-    public CsharpClassGeneratorViewModel(ICsharpExpressionDumper csharpExpressionDumper)
-        : base(csharpExpressionDumper)
-    {
-    }
-
     public IOrderedEnumerable<IGrouping<string, TypeBase>> Namespaces
         => GetModel().GroupBy(x => x.Namespace).OrderBy(x => x.Key);
 

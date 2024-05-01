@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Tests.Reflection.Components;
 
-public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Features.AddPropertiesComponent>
+public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Components.AddPropertiesComponent>
 {
     public class Process : AddPropertiesComponentTests
     {
@@ -21,16 +21,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Feature
             // Arrange
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection();
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.Should().ContainSingle();
+            context.Request.Builder.Properties.Should().ContainSingle();
         }
 
         [Fact]
@@ -39,27 +38,26 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Feature
             // Arrange
             var sut = CreateSut();
             var sourceModel = typeof(MyNullableClass);
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection();
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.Should().ContainSingle();
+            context.Request.Builder.Properties.Should().ContainSingle();
             //public Func<object, IEnumerable<object?>> MyDelegateProperty { get; set; } = default!;
             //model.Properties.Single().TypeName.Should().Be("System.Func<System.Object,System.Collections.Generic.IEnumerable<System.Object?>>");
-            model.Properties.Single().IsNullable.Should().BeFalse();
-            model.Properties.Single().GenericTypeArguments.Should().HaveCount(2);
-            model.Properties.Single().GenericTypeArguments[0].TypeName.Should().Be("System.Object");
-            model.Properties.Single().GenericTypeArguments[0].IsNullable.Should().BeFalse();
-            model.Properties.Single().GenericTypeArguments[0].GenericTypeArguments.Should().BeEmpty();
+            context.Request.Builder.Properties.Single().IsNullable.Should().BeFalse();
+            context.Request.Builder.Properties.Single().GenericTypeArguments.Should().HaveCount(2);
+            context.Request.Builder.Properties.Single().GenericTypeArguments[0].TypeName.Should().Be("System.Object");
+            context.Request.Builder.Properties.Single().GenericTypeArguments[0].IsNullable.Should().BeFalse();
+            context.Request.Builder.Properties.Single().GenericTypeArguments[0].GenericTypeArguments.Should().BeEmpty();
             //model.Properties.Single().GenericTypeArguments[1].TypeName.Should().Be("System.Collections.Generic.IEnumerable<System.Object?>");
-            model.Properties.Single().GenericTypeArguments[1].IsNullable.Should().BeFalse();
-            model.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Should().ContainSingle();
-            model.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Single().TypeName.Should().Be("System.Object");
+            context.Request.Builder.Properties.Single().GenericTypeArguments[1].IsNullable.Should().BeFalse();
+            context.Request.Builder.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Should().ContainSingle();
+            context.Request.Builder.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Single().TypeName.Should().Be("System.Object");
             //model.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Single().IsNullable.Should().BeTrue();
         }
     }

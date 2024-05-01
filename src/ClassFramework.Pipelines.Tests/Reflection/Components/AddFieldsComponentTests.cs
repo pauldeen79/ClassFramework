@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Tests.Reflection.Components;
 
-public class AddFieldsComponentTests : TestBase<Pipelines.Reflection.Features.AddFieldsComponent>
+public class AddFieldsComponentTests : TestBase<Pipelines.Reflection.Components.AddFieldsComponent>
 {
     public class Process : AddFieldsComponentTests
     {
@@ -21,24 +21,23 @@ public class AddFieldsComponentTests : TestBase<Pipelines.Reflection.Features.Ad
             // Arrange
             var sut = CreateSut();
             var sourceModel = typeof(MyFieldTestClass);
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(copyAttributes: true);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Fields.Should().HaveCount(2);
-            model.Fields.Select(x => x.Visibility).Should().AllBeEquivalentTo(Visibility.Public);
-            model.Fields.Select(x => x.ReadOnly).Should().BeEquivalentTo([false, true]);
-            model.Fields.Select(x => x.Name).Should().BeEquivalentTo("myField", "myReadOnlyField");
-            model.Fields.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
-            model.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo([false, true]);
-            model.Fields.Select(x => x.IsValueType).Should().BeEquivalentTo([true, false]);
-            model.Fields[0].Attributes.Should().ContainSingle();
-            model.Fields[model.Fields.Count - 1].Attributes.Should().BeEmpty();
+            context.Request.Builder.Fields.Should().HaveCount(2);
+            context.Request.Builder.Fields.Select(x => x.Visibility).Should().AllBeEquivalentTo(Visibility.Public);
+            context.Request.Builder.Fields.Select(x => x.ReadOnly).Should().BeEquivalentTo([false, true]);
+            context.Request.Builder.Fields.Select(x => x.Name).Should().BeEquivalentTo("myField", "myReadOnlyField");
+            context.Request.Builder.Fields.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
+            context.Request.Builder.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo([false, true]);
+            context.Request.Builder.Fields.Select(x => x.IsValueType).Should().BeEquivalentTo([true, false]);
+            context.Request.Builder.Fields[0].Attributes.Should().ContainSingle();
+            context.Request.Builder.Fields[context.Request.Builder.Fields.Count - 1].Attributes.Should().BeEmpty();
         }
     }
 }

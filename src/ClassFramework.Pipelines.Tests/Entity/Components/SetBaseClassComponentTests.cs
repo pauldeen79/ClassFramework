@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
-public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Features.SetBaseClassComponent>
+public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.SetBaseClassComponent>
 {
     public class Process : SetBaseClassComponentTests
     {
@@ -22,18 +22,17 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Features.Set
             var sourceModel = CreateModel(baseClass: string.Empty);
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(
                 baseClass:  null,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.BaseClass.Should().BeEmpty();
+            context.Request.Builder.BaseClass.Should().BeEmpty();
         }
 
         [Theory]
@@ -45,18 +44,17 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Features.Set
             var sourceModel = CreateModel(baseClass: sourceModelBaseClass);
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(
                 baseClass: new ClassBuilder().WithName("MyBaseClass").WithNamespace("MyBaseNamespace").BuildTyped(),
                 enableEntityInheritance: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.BaseClass.Should().Be("MyBaseNamespace.MyBaseClass");
+            context.Request.Builder.BaseClass.Should().Be("MyBaseNamespace.MyBaseClass");
         }
 
         [Fact]
@@ -66,18 +64,17 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Features.Set
             var sourceModel = CreateModel(baseClass: "MyBaseNamespace.MyBaseClass");
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(
                 baseClass: null,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.BaseClass.Should().Be("MyBaseNamespace.MyBaseClass");
+            context.Request.Builder.BaseClass.Should().Be("MyBaseNamespace.MyBaseClass");
         }
     }
 }

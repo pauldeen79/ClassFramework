@@ -2,10 +2,6 @@
 
 public class PropertyCodeBodyViewModel : CsharpClassGeneratorViewModelBase<PropertyCodeBodyModel>
 {
-    public PropertyCodeBodyViewModel(ICsharpExpressionDumper csharpExpressionDumper) : base(csharpExpressionDumper)
-    {
-    }
-
     public string Modifiers
         => GetModel().Modifiers;
 

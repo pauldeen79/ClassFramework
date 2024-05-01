@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Interface;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<InterfaceBuilder, InterfaceContext>>
+public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<InterfaceContext>>
 {
     public class Process : PipelineBuilderTests
     {
@@ -16,21 +16,20 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             CultureInfo.InvariantCulture
         );
 
-        private InterfaceBuilder Model { get; } = new();
-
         [Fact]
         public async Task Sets_Namespace_And_Name_According_To_Settings()
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Name.Should().Be("IMyClass");
-            Model.Namespace.Should().Be("MyNamespace");
+            context.Builder.Name.Should().Be("IMyClass");
+            context.Builder.Namespace.Should().Be("MyNamespace");
         }
 
         [Fact]
@@ -38,15 +37,16 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
-            Model.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
-            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.Collections.Generic.IReadOnlyCollection<System.String>");
+            context.Builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
+            context.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
+            context.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.Collections.Generic.IReadOnlyCollection<System.String>");
         }
 
         [Fact]
@@ -54,13 +54,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Methods.Should().ContainSingle();
+            context.Builder.Methods.Should().ContainSingle();
         }
 
         [Fact]
@@ -68,13 +69,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext(copyMethodPredicate: (_, _) => true);
 
             // Act
-            var result = await sut.Process(Model, CreateContext(copyMethodPredicate: (_, _) => true));
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Methods.Should().ContainSingle();
+            context.Builder.Methods.Should().ContainSingle();
         }
 
         [Fact]
@@ -82,13 +84,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext(copyMethodPredicate: (_, _) => false);
 
             // Act
-            var result = await sut.Process(Model, CreateContext(copyMethodPredicate: (_, _) => false));
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Methods.Should().BeEmpty();
+            context.Builder.Methods.Should().BeEmpty();
         }
 
         [Fact]
@@ -96,13 +99,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext(copyMethods: false);
 
             // Act
-            var result = await sut.Process(Model, CreateContext(copyMethods: false));
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Methods.Should().BeEmpty();
+            context.Builder.Methods.Should().BeEmpty();
         }
 
         [Fact]
@@ -110,20 +114,21 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.Process(Model, CreateContext(addProperties: false));
+            var result = await sut.Process(context);
+            var innerResult = result?.InnerResults.FirstOrDefault();
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("To create an interface, there must be at least one property");
+            innerResult.Should().NotBeNull();
+            innerResult!.Status.Should().Be(ResultStatus.Invalid);
+            innerResult.ErrorMessage.Should().Be("To create an interface, there must be at least one property");
         }
     }
 
     public class IntegrationTests : PipelineBuilderTests
     {
-        private InterfaceBuilder Model { get; } = new();
-
         [Fact]
         public async Task Creates_Interface_With_NamespaceMapping()
         {
@@ -137,18 +142,18 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             var sut = CreateSut().Build();
 
             // Act
-            var result = await sut.Process(Model, context);
+            var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
 
-            Model.Name.Should().Be("IMyClass");
-            Model.Namespace.Should().Be("MyNamespace");
-            Model.Interfaces.Should().BeEmpty();
+            context.Builder.Name.Should().Be("IMyClass");
+            context.Builder.Namespace.Should().Be("MyNamespace");
+            context.Builder.Interfaces.Should().BeEmpty();
 
-            Model.Fields.Should().BeEmpty();
+            context.Builder.Fields.Should().BeEmpty();
 
-            Model.Properties.Select(x => x.Name).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "Property1",
                 "Property2",
@@ -159,7 +164,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
                 "Property7",
                 "Property8"
             );
-            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
@@ -170,7 +175,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
                 "System.Collections.Generic.IReadOnlyCollection<MyNamespace.IMyClass>",
                 "System.Collections.Generic.IReadOnlyCollection<MyNamespace.IMyClass>"
             );
-            Model.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
                 new[]
                 {
@@ -184,14 +189,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
                     true
                 }
             );
-            Model.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
-            Model.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
-            Model.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
-            Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
-            Model.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
+            context.Builder.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
+            context.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
+            context.Builder.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
+            context.Builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
+            context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
         }
 
-        private static InterfaceContext CreateContext(IType model, PipelineSettingsBuilder settings)
+        private static InterfaceContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
             => new(model, settings.Build(), CultureInfo.InvariantCulture);
     }
 }

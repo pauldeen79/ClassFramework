@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
-public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Features.AddFullConstructorComponent>
+public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Components.AddFullConstructorComponent>
 {
     public class Process : AddFullConstructorComponentTests
     {
@@ -22,17 +22,16 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addNullChecks: false);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.Protected.Should().BeFalse();
             ctor.ChainCall.Should().BeEmpty();
             ctor.Parameters.Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
@@ -53,17 +52,16 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addNullChecks: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.Protected.Should().BeFalse();
             ctor.ChainCall.Should().BeEmpty();
             ctor.Parameters.Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
@@ -86,17 +84,16 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addNullChecks: true, useExceptionThrowIfNull: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.Protected.Should().BeFalse();
             ctor.ChainCall.Should().BeEmpty();
             ctor.Parameters.Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
@@ -119,17 +116,16 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addNullChecks: true, addBackingFields: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.Protected.Should().BeFalse();
             ctor.ChainCall.Should().BeEmpty();
             ctor.Parameters.Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
@@ -152,17 +148,16 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(validateArguments: ArgumentValidationType.IValidatableObject);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.Protected.Should().BeFalse();
             ctor.ChainCall.Should().BeEmpty();
             ctor.Parameters.Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
@@ -184,17 +179,16 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Featur
             var sourceModel = CreateModelWithCustomTypeProperties();
             InitializeParser();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(namespaceMappings: CreateNamespaceMappings());
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
+            context.Request.Builder.Constructors.Should().ContainSingle();
+            var ctor = context.Request.Builder.Constructors.Single();
             ctor.Protected.Should().BeFalse();
             ctor.ChainCall.Should().BeEmpty();
             ctor.Parameters.Select(x => x.Name).Should().BeEquivalentTo

@@ -2,10 +2,12 @@
 
 public class EnumerationMemberViewModel : CsharpClassGeneratorViewModelBase<EnumerationMember>
 {
-    public EnumerationMemberViewModel(ICsharpExpressionDumper csharpExpressionDumper) : base(csharpExpressionDumper)
+    public EnumerationMemberViewModel(ICsharpExpressionDumper csharpExpressionDumper)
     {
+        CsharpExpressionDumper = csharpExpressionDumper;
     }
 
+    private ICsharpExpressionDumper CsharpExpressionDumper { get; }
     public string ValueExpression
         => GetModel().Value is null
             ? string.Empty

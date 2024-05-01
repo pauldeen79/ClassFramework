@@ -1,61 +1,61 @@
-﻿namespace ClassFramework.Pipelines.Entity.Features;
+﻿namespace ClassFramework.Pipelines.Entity.Components;
 
 public class AddPropertiesComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, EntityContext> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new AddPropertiesComponent();
 }
 
-public class AddPropertiesComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
+public class AddPropertiesComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        var properties = context.Context.SourceModel
+        var properties = context.Request.SourceModel
             .Properties
-            .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
+            .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
             .ToArray();
 
-        context.Model.AddProperties(
+        context.Request.Builder.AddProperties(
             properties.Select
             (
-                property => context.Context.CreatePropertyForEntity(property)
+                property => context.Request.CreatePropertyForEntity(property)
                     .WithVirtual(property.Virtual)
                     .WithAbstract(property.Abstract)
                     .WithProtected(property.Protected)
                     .WithOverride(property.Override)
-                    .WithHasInitializer(property.HasInitializer && !(context.Context.Settings.AddSetters || context.Context.Settings.AddBackingFields || context.Context.Settings.CreateAsObservable))
-                    .WithHasSetter(context.Context.Settings.AddSetters || context.Context.Settings.AddBackingFields || context.Context.Settings.CreateAsObservable)
+                    .WithHasInitializer(property.HasInitializer && !(context.Request.Settings.AddSetters || context.Request.Settings.AddBackingFields || context.Request.Settings.CreateAsObservable))
+                    .WithHasSetter(context.Request.Settings.AddSetters || context.Request.Settings.AddBackingFields || context.Request.Settings.CreateAsObservable)
                     .WithGetterVisibility(property.GetterVisibility)
-                    .WithSetterVisibility(context.Context.Settings.SetterVisibility)
+                    .WithSetterVisibility(context.Request.Settings.SetterVisibility)
                     .WithInitializerVisibility(property.InitializerVisibility)
                     .WithExplicitInterfaceName(property.ExplicitInterfaceName)
                     .WithParentTypeFullName(property.ParentTypeFullName)
-                    .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
-                    .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))
+                    .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Request))
+                    .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Request))
             )
         );
 
-        if (context.Context.Settings.AddBackingFields || context.Context.Settings.CreateAsObservable)
+        if (context.Request.Settings.AddBackingFields || context.Request.Settings.CreateAsObservable)
         {
             AddBackingFields(context, properties);
         }
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 
-    private static void AddBackingFields(PipelineContext<IConcreteTypeBuilder, EntityContext> context, Property[] properties)
-        => context.Model.AddFields
+    private static void AddBackingFields(PipelineContext<EntityContext> context, Property[] properties)
+        => context.Request.Builder.AddFields
         (
             properties
                 .Select
                 (
                     property =>new FieldBuilder()
-                        .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
-                        .WithTypeName(context.Context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName)
-                            .FixCollectionTypeName(context.Context.Settings.CollectionTypeName
-                                .WhenNullOrEmpty(context.Context.Settings.EntityNewCollectionTypeName)
+                        .WithName($"_{property.Name.ToPascalCase(context.Request.FormatProvider.ToCultureInfo())}")
+                        .WithTypeName(context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName)
+                            .FixCollectionTypeName(context.Request.Settings.CollectionTypeName
+                                .WhenNullOrEmpty(context.Request.Settings.EntityNewCollectionTypeName)
                                 .WhenNullOrEmpty(typeof(List<>).WithoutGenerics()))
                         .FixNullableTypeName(property))
                         .WithIsNullable(property.IsNullable)

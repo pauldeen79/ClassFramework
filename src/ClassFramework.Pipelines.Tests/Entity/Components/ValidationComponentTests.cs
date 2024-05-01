@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
-public class ValidationComponentTests : TestBase<Pipelines.Entity.Features.ValidationComponent>
+public class ValidationComponentTests : TestBase<Pipelines.Entity.Components.ValidationComponent>
 {
     public class Process : ValidationComponentTests
     {
@@ -21,9 +21,8 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Features.Valid
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
@@ -38,9 +37,8 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Features.Valid
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").BuildTyped();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(allowGenerationWithoutProperties: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
@@ -55,11 +53,10 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Features.Valid
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").BuildTyped();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(
                 allowGenerationWithoutProperties: false,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);

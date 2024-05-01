@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.BuilderExtension;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcreteTypeBuilder, BuilderExtensionContext>>
+public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<BuilderExtensionContext>>
 {
     public class Process : PipelineBuilderTests
     {
@@ -17,20 +17,19 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 CultureInfo.InvariantCulture
             );
 
-        private ClassBuilder Model { get; } = new();
-
         [Fact]
         public async Task Sets_Partial()
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Partial.Should().BeTrue();
+            context.Builder.Partial.Should().BeTrue();
         }
 
         [Fact]
@@ -38,19 +37,20 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Methods.Where(x => x.Name == "WithProperty1").Should().ContainSingle();
-            var method = Model.Methods.Single(x => x.Name == "WithProperty1");
+            context.Builder.Methods.Where(x => x.Name == "WithProperty1").Should().ContainSingle();
+            var method = context.Builder.Methods.Single(x => x.Name == "WithProperty1");
             method.ReturnTypeName.Should().Be("T");
             method.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("instance.Property1 = property1;", "return instance;");
 
-            Model.Methods.Where(x => x.Name == "WithProperty2").Should().BeEmpty(); //only for the non-collection property
+            context.Builder.Methods.Where(x => x.Name == "WithProperty2").Should().BeEmpty(); //only for the non-collection property
         }
 
         [Fact]
@@ -58,13 +58,14 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext();
 
             // Act
-            var result = await sut.Process(Model, CreateContext());
+            var result = await sut.Process(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            var methods = Model.Methods.Where(x => x.Name == "AddProperty2");
+            var methods = context.Builder.Methods.Where(x => x.Name == "AddProperty2");
             methods.Where(x => x.Name == "AddProperty2").Should().HaveCount(2);
             methods.Select(x => x.ReturnTypeName).Should().AllBeEquivalentTo("T");
             methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).Should().BeEquivalentTo("T", "System.Collections.Generic.IEnumerable<System.String>", "T", "System.String[]");
@@ -82,13 +83,16 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         {
             // Arrange
             var sut = CreateSut().Build();
+            var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.Process(Model, CreateContext(addProperties: false));
+            var result = await sut.Process(context);
+            var innerResult = result?.InnerResults.FirstOrDefault();
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("To create a builder extensions class, there must be at least one property");
+            innerResult.Should().NotBeNull();
+            innerResult!.Status.Should().Be(ResultStatus.Invalid);
+            innerResult.ErrorMessage.Should().Be("To create a builder extensions class, there must be at least one property");
         }
     }
 }

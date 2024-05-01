@@ -1,19 +1,19 @@
-﻿namespace ClassFramework.Pipelines.Builder.Features;
+﻿namespace ClassFramework.Pipelines.Builder.Components;
 
 public class AddAttributesComponentBuilder : IBuilderComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
+    public IPipelineComponent<BuilderContext> Build()
         => new AddAttributesComponent();
 }
 
-public class AddAttributesComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
+public class AddAttributesComponent : IPipelineComponent<BuilderContext>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.AddAttributes(context.Context.GetAtributes(context.Context.SourceModel.Attributes));
+        context.Request.Builder.AddAttributes(context.Request.GetAtributes(context.Request.SourceModel.Attributes));
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

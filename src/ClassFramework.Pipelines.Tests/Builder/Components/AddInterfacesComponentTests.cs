@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Components;
 
-public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Features.AddInterfacesComponent>
+public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components.AddInterfacesComponent>
 {
     public class Process : AddInterfacesComponentTests
     {
@@ -21,16 +21,15 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Features.A
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").Build();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(copyInterfaces: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Interfaces.Should().BeEquivalentTo("IMyInterface");
+            context.Request.Builder.Interfaces.Should().BeEquivalentTo("IMyInterface");
         }
 
         [Fact]
@@ -45,16 +44,15 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Features.A
                     "IMyInterface2")
                 .Build();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(copyInterfaces: true, copyInterfacePredicate: x => x == "IMyInterface2");
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Interfaces.Should().BeEquivalentTo("IMyInterface2");
+            context.Request.Builder.Interfaces.Should().BeEquivalentTo("IMyInterface2");
         }
 
         [Fact]
@@ -63,19 +61,18 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Features.A
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").Build();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(copyInterfaces: false);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel,  settings);
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Interfaces.Should().BeEmpty();
+            context.Request.Builder.Interfaces.Should().BeEmpty();
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
-            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

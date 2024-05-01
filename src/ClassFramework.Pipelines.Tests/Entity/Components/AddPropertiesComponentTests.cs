@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
-public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.AddPropertiesComponent>
+public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.AddPropertiesComponent>
 {
     public class Process : AddPropertiesComponentTests
     {
@@ -21,16 +21,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2", "Property3");
+            context.Request.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2", "Property3");
         }
 
         [Fact]
@@ -39,16 +38,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             // Arrange
             var sourceModel = CreateModelWithCustomTypeProperties();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(namespaceMappings: [new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyMappedNamespace")]);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
+            context.Request.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
@@ -69,16 +67,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addSetters: addSetters);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(addSetters);
+            context.Request.Builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(addSetters);
         }
 
         [Theory]
@@ -91,16 +88,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addSetters: true, setterVisibility: setterVisibility);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.Select(x => x.SetterVisibility).Should().AllBeEquivalentTo(setterVisibility);
+            context.Request.Builder.Properties.Select(x => x.SetterVisibility).Should().AllBeEquivalentTo(setterVisibility);
         }
 
         [Fact]
@@ -120,16 +116,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
                             new AttributeBuilder().WithName("MyAttribute2"))
                 ).BuildTyped();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(copyAttributes: true, copyAttributePredicate: a => a.Name.EndsWith('2'));
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).Should().BeEquivalentTo("MyAttribute2");
+            context.Request.Builder.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).Should().BeEquivalentTo("MyAttribute2");
         }
 
         [Fact]
@@ -138,16 +133,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addBackingFields: false);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Fields.Should().BeEmpty();
+            context.Request.Builder.Fields.Should().BeEmpty();
         }
 
         [Fact]
@@ -156,16 +150,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addBackingFields: false);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
         }
 
         [Fact]
@@ -174,16 +167,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addBackingFields: false);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
         }
 
         [Fact]
@@ -192,16 +184,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addBackingFields: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Fields.Select(x => x.Name).Should().BeEquivalentTo("_property1", "_property2", "_property3");
+            context.Request.Builder.Fields.Select(x => x.Name).Should().BeEquivalentTo("_property1", "_property2", "_property3");
         }
 
         [Fact]
@@ -210,22 +201,21 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addBackingFields: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return _property1;",
                 "return _property2;",
                 "return _property3;"
             );
-            model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
                 "_property2 = value;",
@@ -239,22 +229,21 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addBackingFields: true, createAsObservable: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return _property1;",
                 "return _property2;",
                 "return _property3;"
             );
-            model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
                 "HandlePropertyChanged(nameof(Property1));",
@@ -271,16 +260,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addBackingFields: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
                 "_property2 = value;",
@@ -294,16 +282,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Features.Ad
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity(addBackingFields: true, addNullChecks: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
                 "_property2 = value ?? throw new System.ArgumentNullException(nameof(value));",

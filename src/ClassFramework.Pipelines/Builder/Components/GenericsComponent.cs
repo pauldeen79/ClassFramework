@@ -1,20 +1,20 @@
-﻿namespace ClassFramework.Pipelines.Builder.Features;
+﻿namespace ClassFramework.Pipelines.Builder.Components;
 
 public class GenericsComponentBuilder : IBuilderComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
+    public IPipelineComponent<BuilderContext> Build()
         => new GenericsComponent();
 }
 
-public class GenericsComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
+public class GenericsComponent : IPipelineComponent<BuilderContext>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.AddGenericTypeArguments(context.Context.SourceModel.GenericTypeArguments);
-        context.Model.AddGenericTypeArgumentConstraints(context.Context.SourceModel.GenericTypeArgumentConstraints);
+        context.Request.Builder.AddGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments);
+        context.Request.Builder.AddGenericTypeArgumentConstraints(context.Request.SourceModel.GenericTypeArgumentConstraints);
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

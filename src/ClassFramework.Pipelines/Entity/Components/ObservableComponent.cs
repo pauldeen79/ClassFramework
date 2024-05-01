@@ -1,38 +1,38 @@
-﻿namespace ClassFramework.Pipelines.Entity.Features;
+﻿namespace ClassFramework.Pipelines.Entity.Components;
 
 public class ObservableComponentBuilder : IEntityComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, EntityContext> Build()
+    public IPipelineComponent<EntityContext> Build()
         => new ObservableComponent();
 }
 
-public class ObservableComponent : IPipelineComponent<IConcreteTypeBuilder, EntityContext>
+public class ObservableComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CreateAsObservable
-            && !context.Context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
+        if (!context.Request.Settings.CreateAsObservable
+            && !context.Request.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
         {
-            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
-        if (context.Context.Settings.EnableInheritance
-            && context.Context.Settings.BaseClass is not null)
+        if (context.Request.Settings.EnableInheritance
+            && context.Request.Settings.BaseClass is not null)
         {
             // Already present in base class
-            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
-        if (!context.Context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
+        if (!context.Request.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
         {
             // Only add the interface when it's not present yet :)
-            context.Model.AddInterfaces(typeof(INotifyPropertyChanged));
+            context.Request.Builder.AddInterfaces(typeof(INotifyPropertyChanged));
         }
 
-        context.Model.AddObservableMembers();
+        context.Request.Builder.AddObservableMembers();
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

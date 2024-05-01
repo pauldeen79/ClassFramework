@@ -3,9 +3,11 @@
 public class FieldViewModel : AttributeContainerViewModelBase<Field>
 {
     public FieldViewModel(ICsharpExpressionDumper csharpExpressionDumper)
-        : base(csharpExpressionDumper)
     {
+        CsharpExpressionDumper = csharpExpressionDumper;
     }
+
+    private ICsharpExpressionDumper CsharpExpressionDumper { get; }
 
     public string Modifiers
         => GetModel().GetModifiers(Settings.CultureInfo);

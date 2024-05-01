@@ -196,7 +196,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer<string>(context: default!, new object(), string.Empty, string.Empty, string.Empty, formattableStringParser))
+            sut.Invoking(x => x.GetBuilderConstructorInitializer<string, string>(context: default!, new object(), string.Empty, string.Empty, string.Empty, formattableStringParser))
                .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
@@ -274,13 +274,21 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
                .Should().Throw<ArgumentNullException>().WithParameterName("metadataName");
         }
 
-        private sealed class TestContext : ContextBase<string>
+        private sealed class TestContext : ContextBase<string, string>
         {
             public TestContext(PipelineSettings settings, IFormatProvider formatProvider) : base(string.Empty, settings, formatProvider)
             {
             }
 
+            protected override IBuilder<string> CreateResponseBuilder() => new StringBuilderWrapper();
+
             protected override string NewCollectionTypeName => string.Empty;
+
+            private sealed class StringBuilderWrapper : IBuilder<string>
+            {
+                public StringBuilder Builder { get; } = new();
+                public string Build() => Builder.ToString();
+            }
         }
     }
 
@@ -312,13 +320,21 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             result.Value!.ToString().Should().Be("IReadOnlyCollection<Builders.{TypeName.GenericArguments.ClassName.NoGenerics}Builder{TypeName.CollectionItemType.GenericArgumentsWithBrackets}>");
         }
 
-        private sealed class TestContext : ContextBase<string>
+        private sealed class TestContext : ContextBase<string, string>
         {
             public TestContext(PipelineSettings settings, IFormatProvider formatProvider) : base(string.Empty, settings, formatProvider)
             {
             }
 
             protected override string NewCollectionTypeName => string.Empty;
+
+            protected override IBuilder<string> CreateResponseBuilder() => new StringBuilderWrapper();
+
+            private sealed class StringBuilderWrapper : IBuilder<string>
+            {
+                public StringBuilder Builder { get; } = new();
+                public string Build() => Builder.ToString();
+            }
         }
     }
 }

@@ -1,44 +1,44 @@
-﻿namespace ClassFramework.Pipelines.Builder.Features;
+﻿namespace ClassFramework.Pipelines.Builder.Components;
 
 public class ObservableComponentBuilder : IBuilderComponentBuilder
 {
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
+    public IPipelineComponent<BuilderContext> Build()
         => new ObservableComponent();
 }
 
-public class ObservableComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
+public class ObservableComponent : IPipelineComponent<BuilderContext>
 {
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CreateAsObservable
-            && !context.Context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
+        if (!context.Request.Settings.CreateAsObservable
+            && !context.Request.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
         {
-            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
-        if (context.Context.Settings.EnableInheritance
-            && context.Context.Settings.BaseClass is not null)
+        if (context.Request.Settings.EnableInheritance
+            && context.Request.Settings.BaseClass is not null)
         {
             // Already present in base class
-            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
-        if (context.Context.IsBuilderForAbstractEntity && context.Context.IsAbstractBuilder)
+        if (context.Request.IsBuilderForAbstractEntity && context.Request.IsAbstractBuilder)
         {
             // Already present in non-generic base class
-            return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+            return Task.FromResult(Result.Continue());
         }
 
-        if (!context.Context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
+        if (!context.Request.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
         {
             // Only add the interface when it's not present yet :)
-            context.Model.AddInterfaces(typeof(INotifyPropertyChanged));
+            context.Request.Builder.AddInterfaces(typeof(INotifyPropertyChanged));
         }
 
-        context.Model.AddObservableMembers();
+        context.Request.Builder.AddObservableMembers();
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

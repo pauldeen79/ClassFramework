@@ -1,8 +1,9 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension;
 
-public class BuilderExtensionContext : ContextBase<IType>
+public class BuilderExtensionContext : ContextBase<TypeBase, TypeBase>
+
 {
-    public BuilderExtensionContext(IType sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
+    public BuilderExtensionContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
         : base(sourceModel, settings, formatProvider)
     {
     }
@@ -11,4 +12,10 @@ public class BuilderExtensionContext : ContextBase<IType>
 
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
+
+    protected override IBuilder<TypeBase> CreateResponseBuilder() => _wrappedBuilder;
+
+    public ClassBuilder Builder => _wrappedBuilder.Builder;
+
+    private readonly ClassBuilderWrapper _wrappedBuilder = new();
 }

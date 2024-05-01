@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Builder.Features;
+﻿namespace ClassFramework.Pipelines.Builder.Components;
 
 public class BaseClassComponentBuilder : IBuilderComponentBuilder
 {
@@ -9,11 +9,11 @@ public class BaseClassComponentBuilder : IBuilderComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
+    public IPipelineComponent<BuilderContext> Build()
         => new BaseClassComponent(_formattableStringParser);
 }
 
-public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
+public class BaseClassComponent : IPipelineComponent<BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,37 +22,37 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        var baseClassResult = GetBuilderBaseClass(context.Context.SourceModel, context);
+        var baseClassResult = GetBuilderBaseClass(context.Request.SourceModel, context);
         if (!baseClassResult.IsSuccessful())
         {
-            return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(baseClassResult));
+            return Task.FromResult<Result>(baseClassResult);
         }
 
-        context.Model.WithBaseClass(baseClassResult.Value!);
+        context.Request.Builder.WithBaseClass(baseClassResult.Value!);
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 
-    private Result<FormattableStringParserResult> GetBuilderBaseClass(IType instance, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    private Result<FormattableStringParserResult> GetBuilderBaseClass(IType instance, PipelineContext<BuilderContext> context)
     {
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
-        var isNotForAbstractBuilder = context.Context.Settings.EnableInheritance
-            && context.Context.Settings.EnableBuilderInheritance
-            && context.Context.Settings.BaseClass is null
-            && !context.Context.Settings.IsForAbstractBuilder;
+        var isNotForAbstractBuilder = context.Request.Settings.EnableInheritance
+            && context.Request.Settings.EnableBuilderInheritance
+            && context.Request.Settings.BaseClass is null
+            && !context.Request.Settings.IsForAbstractBuilder;
 
-        var isAbstract = context.Context.Settings.EnableInheritance
-            && context.Context.Settings.EnableBuilderInheritance
-            && context.Context.Settings.BaseClass is not null
-            && !context.Context.Settings.IsForAbstractBuilder
-            && context.Context.Settings.IsAbstract;
+        var isAbstract = context.Request.Settings.EnableInheritance
+            && context.Request.Settings.EnableBuilderInheritance
+            && context.Request.Settings.BaseClass is not null
+            && !context.Request.Settings.IsForAbstractBuilder
+            && context.Request.Settings.IsAbstract;
 
-        var nameResult = _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, context);
+        var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context);
 
         if (!nameResult.IsSuccessful())
         {
@@ -64,28 +64,28 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
             return Result.Success<FormattableStringParserResult>($"{nameResult.Value}{genericTypeArgumentsString}");
         }
 
-        if (context.Context.Settings.EnableInheritance
-            && context.Context.Settings.EnableBuilderInheritance
-            && context.Context.Settings.BaseClass is not null
-            && !context.Context.Settings.IsForAbstractBuilder) // note that originally, this was only enabled when RemoveDuplicateWithMethods was true. But I don't know why you don't want this... The generics ensure that we don't have to duplicate them, right?
+        if (context.Request.Settings.EnableInheritance
+            && context.Request.Settings.EnableBuilderInheritance
+            && context.Request.Settings.BaseClass is not null
+            && !context.Request.Settings.IsForAbstractBuilder) // note that originally, this was only enabled when RemoveDuplicateWithMethods was true. But I don't know why you don't want this... The generics ensure that we don't have to duplicate them, right?
         {
             var inheritanceNameResult = _formattableStringParser.Parse
             (
-                context.Context.Settings.BuilderNameFormatString,
-                context.Context.FormatProvider,
-                new PipelineContext<IConcreteTypeBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))
+                context.Request.Settings.BuilderNameFormatString,
+                context.Request.FormatProvider,
+                new PipelineContext<BuilderContext>(new BuilderContext(context.Request.Settings.BaseClass!, context.Request.Settings, context.Request.FormatProvider))
             );
             if (!inheritanceNameResult.IsSuccessful())
             {
                 return inheritanceNameResult;
             }
 
-            return Result.Success<FormattableStringParserResult>($"{context.Context.Settings.BaseClassBuilderNameSpace.AppendWhenNotNullOrEmpty(".")}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
+            return Result.Success<FormattableStringParserResult>($"{context.Request.Settings.BaseClassBuilderNameSpace.AppendWhenNotNullOrEmpty(".")}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
         }
 
         return instance.GetCustomValueForInheritedClass
         (
-            context.Context.Settings.EnableInheritance,
+            context.Request.Settings.EnableInheritance,
             baseClassContainer =>
             {
                 var baseClassResult = GetBaseClassName(context, baseClassContainer);
@@ -94,22 +94,18 @@ public class BaseClassComponent : IPipelineComponent<IConcreteTypeBuilder, Build
                     return baseClassResult;
                 }
 
-                return Result.Success<FormattableStringParserResult>(context.Context.Settings.EnableBuilderInheritance
+                return Result.Success<FormattableStringParserResult>(context.Request.Settings.EnableBuilderInheritance
                     ? $"{baseClassResult.Value}{genericTypeArgumentsString}"
                     : $"{baseClassResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
             }
         );
     }
 
-    private Result<FormattableStringParserResult> GetBaseClassName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IBaseClassContainer baseClassContainer)
+    private Result<FormattableStringParserResult> GetBaseClassName(PipelineContext<BuilderContext> context, IBaseClassContainer baseClassContainer)
     {
-        var newContext = new PipelineContext<IConcreteTypeBuilder, BuilderContext>
-        (
-            context.Model,
-            new BuilderContext(CreateTypeBase(context.Context.MapTypeName(baseClassContainer.BaseClass!)), context.Context.Settings, context.Context.FormatProvider)
-        );
+        var newContext = new PipelineContext<BuilderContext>(new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!)), context.Request.Settings, context.Request.FormatProvider));
 
-        return _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, newContext);
+        return _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, newContext);
     }
 
     private static TypeBase CreateTypeBase(string baseClass)

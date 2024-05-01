@@ -3,11 +3,6 @@
 public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T>
     where T : IAttributesContainer, IParametersContainer, ICodeStatementsContainer, IVisibilityContainer, ISuppressWarningCodesContainer
 {
-    protected MethodViewModelBase(ICsharpExpressionDumper csharpExpressionDumper)
-        : base(csharpExpressionDumper)
-    {
-    }
-
     public string Modifiers
         => GetModel().GetModifiers(Settings.CultureInfo);
 

@@ -10,7 +10,11 @@ public class ServiceCollectionExtensionsTests
             // Arrange
             var serviceCollection = new ServiceCollection()
                 .AddCsharpExpressionDumper() // dependency of some templates
-                .AddClassFrameworkTemplates();
+                .AddParsers()
+                .AddPipelines()
+                .AddClassFrameworkTemplates()
+                .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CsharpClassGeneratorPipelineCodeGenerationProviderBase).Assembly))
+                ;
 
             // Act & Assert
             serviceCollection.Invoking(x =>

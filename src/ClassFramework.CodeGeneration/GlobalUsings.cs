@@ -30,6 +30,7 @@ global using CrossCutting.ProcessingPipeline;
 global using CrossCutting.Utilities.Parsers.Extensions;
 global using CsharpExpressionDumper.Abstractions;
 global using CsharpExpressionDumper.Core.Extensions;
+global using MediatR;
 global using Microsoft.Extensions.DependencyInjection;
 global using TemplateFramework.Abstractions.CodeGeneration;
 global using TemplateFramework.Core.CodeGeneration;

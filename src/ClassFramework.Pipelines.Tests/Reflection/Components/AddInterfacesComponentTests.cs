@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Tests.Reflection.Components;
 
-public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Features.AddInterfacesComponent>
+public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Components.AddInterfacesComponent>
 {
     public class Process : AddInterfacesComponentTests
     {
@@ -21,16 +21,15 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Feature
             // Arrange
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(copyInterfaces: false);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Interfaces.Should().BeEmpty();
+            context.Request.Builder.Interfaces.Should().BeEmpty();
         }
 
         [Fact]
@@ -39,16 +38,15 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Feature
             // Arrange
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(copyInterfaces: true);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Interfaces.Should().ContainSingle();
+            context.Request.Builder.Interfaces.Should().ContainSingle();
         }
 
         [Fact]
@@ -57,16 +55,15 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Feature
             // Arrange
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
-            var model = new ClassBuilder();
             var settings = CreateSettingsForReflection(copyInterfaces: false, copyInterfacePredicate: _ => false);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Interfaces.Should().BeEmpty();
+            context.Request.Builder.Interfaces.Should().BeEmpty();
         }
     }
 }

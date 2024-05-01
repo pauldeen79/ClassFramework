@@ -8,11 +8,10 @@ public class PipelineContextExtensionsTests : TestBase
         public void Returns_Invalid_On_Abstract_Class()
         {
             // Arrange
-            var model = new ClassBuilder();
             var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").WithAbstract().AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
             InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder().Build(), Fixture.Freeze<IFormatProvider>());
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
+            var context = new PipelineContext<BuilderContext>(builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
@@ -28,11 +27,10 @@ public class PipelineContextExtensionsTests : TestBase
         public void Rrturns_Invalid_On_Interface()
         {
             // Arrange
-            var model = new ClassBuilder();
             var sourceModel = new InterfaceBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
             InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder().Build(), Fixture.Freeze<IFormatProvider>());
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
+            var context = new PipelineContext<BuilderContext>(builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
@@ -48,11 +46,10 @@ public class PipelineContextExtensionsTests : TestBase
         public void Returns_Correct_Result_For_Class_With_Public_Parameterless_Constructor()
         {
             // Arrange
-            var model = new ClassBuilder();
             var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
             InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder().Build(), Fixture.Freeze<IFormatProvider>());
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
+            var context = new PipelineContext<BuilderContext>(builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
@@ -68,11 +65,10 @@ public class PipelineContextExtensionsTests : TestBase
         public void Returns_Correct_Result_For_Class_With_Public_Constructor_With_Parameters()
         {
             // Arrange
-            var model = new ClassBuilder();
             var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).AddConstructors(new ConstructorBuilder().AddParameter("myProperty", typeof(string))).Build();
             InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder().Build(), Fixture.Freeze<IFormatProvider>());
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
+            var context = new PipelineContext<BuilderContext>(builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
@@ -88,11 +84,10 @@ public class PipelineContextExtensionsTests : TestBase
         public void Returns_Correct_Result_For_Struct_With_Public_Parameterless_Constructor()
         {
             // Arrange
-            var model = new ClassBuilder();
             var sourceModel = new StructBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
             InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder().Build(), Fixture.Freeze<IFormatProvider>());
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
+            var context = new PipelineContext<BuilderContext>(builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
@@ -108,7 +103,6 @@ public class PipelineContextExtensionsTests : TestBase
         public void Returns_Correct_Result_For_Class_With_CustomEntityInstanciation_Metadata()
         {
             // Arrange
-            var model = new ClassBuilder();
             var sourceModel = new ClassBuilder()
                 .WithNamespace("MyNamespace")
                 .WithName("MyClass")
@@ -121,7 +115,7 @@ public class PipelineContextExtensionsTests : TestBase
                     .WithTargetType(sourceModel)
                     .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderEntityInstanciation).WithValue("Factory.DoSomething(this)")))
                 .Build(), Fixture.Freeze<IFormatProvider>());
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
+            var context = new PipelineContext<BuilderContext>(builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 

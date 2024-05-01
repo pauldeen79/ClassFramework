@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
-public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Features.AddGenericsComponent>
+public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.AddGenericsComponent>
 {
     public class Process : AddGenericsComponentTests
     {
@@ -21,17 +21,16 @@ public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Features.AddG
             // Arrange
             var sourceModel = CreateGenericModel(addProperties: false);
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.Process(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.GenericTypeArguments.Should().BeEquivalentTo("T");
-            model.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where T : class");
+            context.Request.Builder.GenericTypeArguments.Should().BeEquivalentTo("T");
+            context.Request.Builder.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where T : class");
         }
     }
 }

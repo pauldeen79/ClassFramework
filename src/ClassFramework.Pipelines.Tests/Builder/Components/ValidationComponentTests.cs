@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Components;
 
-public class ValidationComponentTests : TestBase<Pipelines.Builder.Features.ValidationComponent>
+public class ValidationComponentTests : TestBase<Pipelines.Builder.Components.ValidationComponent>
 {
     public class Process : ValidationComponentTests
     {
@@ -21,9 +21,8 @@ public class ValidationComponentTests : TestBase<Pipelines.Builder.Features.Vali
             // Arrange
             var sourceModel = CreateModel();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder();
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
@@ -38,9 +37,8 @@ public class ValidationComponentTests : TestBase<Pipelines.Builder.Features.Vali
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").BuildTyped();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(allowGenerationWithoutProperties: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
@@ -55,11 +53,10 @@ public class ValidationComponentTests : TestBase<Pipelines.Builder.Features.Vali
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").BuildTyped();
             var sut = CreateSut();
-            var model = new ClassBuilder();
             var settings = CreateSettingsForBuilder(
                 allowGenerationWithoutProperties: false,
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, model, settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);
@@ -68,7 +65,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Builder.Features.Vali
             result.Status.Should().Be(ResultStatus.Continue);
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
-            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Builder.Features;
+﻿namespace ClassFramework.Pipelines.Builder.Components;
 
 public class AbstractBuilderComponentBuilder : IBuilderComponentBuilder
 {
@@ -9,11 +9,11 @@ public class AbstractBuilderComponentBuilder : IBuilderComponentBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineComponent<IConcreteTypeBuilder, BuilderContext> Build()
+    public IPipelineComponent<BuilderContext> Build()
         => new AbstractBuilderComponent(_formattableStringParser);
 }
 
-public class AbstractBuilderComponent : IPipelineComponent<IConcreteTypeBuilder, BuilderContext>
+public class AbstractBuilderComponent : IPipelineComponent<BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,35 +22,30 @@ public class AbstractBuilderComponent : IPipelineComponent<IConcreteTypeBuilder,
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Task<Result<IConcreteTypeBuilder>> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, CancellationToken token)
+    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Context.IsBuilderForAbstractEntity /*&& context.Context.IsAbstractBuilder*/)
+        if (context.Request.IsBuilderForAbstractEntity /*&& context.Request.IsAbstractBuilder*/)
         {
-            var nameResult = _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, context);
+            var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context);
             if (!nameResult.IsSuccessful())
             {
-                return Task.FromResult(Result.FromExistingResult<IConcreteTypeBuilder>(nameResult));
+                return Task.FromResult<Result>(nameResult);
             }
 
-            if (context.Model is not ClassBuilder classBuilder)
-            {
-                return Task.FromResult(Result.Invalid<IConcreteTypeBuilder>($"You can only create abstract classes. The type of model ({context.Model.GetType().FullName}) is not a ClassBuilder"));
-            }
+            context.Request.Builder.WithAbstract();
 
-            classBuilder.WithAbstract();
-
-            if (!context.Context.Settings.IsForAbstractBuilder)
+            if (!context.Request.Settings.IsForAbstractBuilder)
             {
-                classBuilder
+                context.Request.Builder
                     .AddGenericTypeArguments("TBuilder", "TEntity")
-                    .AddGenericTypeArgumentConstraints($"where TEntity : {context.Context.SourceModel.GetFullName()}")
+                    .AddGenericTypeArgumentConstraints($"where TEntity : {context.Request.SourceModel.GetFullName()}")
                     .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity>")
                     .WithAbstract();
             }
         }
 
-        return Task.FromResult(Result.Continue<IConcreteTypeBuilder>());
+        return Task.FromResult(Result.Continue());
     }
 }

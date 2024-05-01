@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Reflection;
 
-public class PipelineBuilder : PipelineBuilder<TypeBaseBuilder, ReflectionContext>
+public class PipelineBuilder : PipelineBuilder<ReflectionContext>
 {
     public PipelineBuilder(IEnumerable<IReflectionComponentBuilder> reflectionComponentBuilders)
     {

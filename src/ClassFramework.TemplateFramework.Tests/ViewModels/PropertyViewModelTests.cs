@@ -240,7 +240,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
         public void Returns_True_When_Model_DefaultValue_Is_Filled()
         {
             // Arrange
-            Fixture.Freeze<ICsharpExpressionDumper>().Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns("formatted value");
+            Fixture.Freeze<ICsharpExpressionDumper>().Dump(Arg.Any<object?>()).Returns("formatted value");
             var sut = CreateSut();
             sut.Model = new PropertyBuilder()
                 .WithName("MyField")

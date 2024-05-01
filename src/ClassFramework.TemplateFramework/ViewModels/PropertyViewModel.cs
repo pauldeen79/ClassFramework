@@ -3,9 +3,11 @@
 public class PropertyViewModel : AttributeContainerViewModelBase<Property>
 {
     public PropertyViewModel(ICsharpExpressionDumper csharpExpressionDumper)
-        : base(csharpExpressionDumper)
     {
+        CsharpExpressionDumper = csharpExpressionDumper;
     }
+
+    private ICsharpExpressionDumper CsharpExpressionDumper { get; }
 
     public bool ShouldRenderModifiers
         => GetParentModel() is not Interface;
