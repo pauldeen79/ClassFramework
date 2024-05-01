@@ -2,7 +2,7 @@
 
 public class ImmutableInheritFromInterfacesCoreEntities : ImmutableInheritFromInterfacesCSharpClassBase
 {
-    public ImmutableInheritFromInterfacesCoreEntities(IMediator mediator) : base(mediator)
+    public ImmutableInheritFromInterfacesCoreEntities(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
     {
     }
 

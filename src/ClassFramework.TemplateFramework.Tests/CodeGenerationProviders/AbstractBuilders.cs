@@ -2,7 +2,7 @@
 
 public class AbstractBuilders : ImmutableCSharpClassBase
 {
-    public AbstractBuilders(IMediator mediator) : base(mediator)
+    public AbstractBuilders(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
     {
     }
 

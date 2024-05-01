@@ -4,7 +4,7 @@
 #pragma warning disable S125 // Sections of code should not be commented out
 public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
 {
-    protected ClassFrameworkCSharpClassBase(IMediator mediator) : base(mediator)
+    protected ClassFrameworkCSharpClassBase(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
     {
     }
 

@@ -12,9 +12,8 @@ public abstract class CsharpClassGeneratorViewModelBase : ICsharpClassGeneratorS
     }
 }
 
-public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGeneratorViewModelBase, IModelContainer<TModel>, ITemplateContextContainer, IMediatorContainer
+public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGeneratorViewModelBase, IModelContainer<TModel>, ITemplateContextContainer
 {
-    public IMediator Mediator { get; set; } = default!; // will always be injected in OnSetContext method
     public TModel? Model { get; set; }
     public ITemplateContext Context { get; set; } = default!; // will always be injected in OnSetContext method
 
@@ -32,18 +31,8 @@ public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGen
         return Model;
     }
 
-    protected IMediator GetMediator()
-    {
-        Guard.IsNotNull(Mediator);
-
-        return Mediator;
-    }
-
     protected object? GetParentModel()
         => GetContext().ParentContext?.Model;
-
-    protected string GetCsharpExpression(object? expression)
-        => GetMediator().Send(new CsharpExpressionRequest(expression)).GetAwaiter().GetResult();
 
     public string CreateIndentation(int additionalIndents = 0)
         => new string(' ', 4 * (GetContext().GetIndentCount() + additionalIndents));

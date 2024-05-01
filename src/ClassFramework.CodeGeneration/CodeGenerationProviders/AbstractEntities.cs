@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractEntities : ClassFrameworkCSharpClassBase
 {
-    public AbstractEntities(IMediator mediator) : base(mediator)
+    public AbstractEntities(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
     {
     }
 

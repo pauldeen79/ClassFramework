@@ -2,6 +2,13 @@
 
 public class PropertyViewModel : AttributeContainerViewModelBase<Property>
 {
+    public PropertyViewModel(ICsharpExpressionDumper csharpExpressionDumper)
+    {
+        CsharpExpressionDumper = csharpExpressionDumper;
+    }
+
+    private ICsharpExpressionDumper CsharpExpressionDumper { get; }
+
     public bool ShouldRenderModifiers
         => GetParentModel() is not Interface;
     
@@ -26,7 +33,7 @@ public class PropertyViewModel : AttributeContainerViewModelBase<Property>
         => GetModel().DefaultValue is not null;
 
     public string DefaultValueExpression
-        => GetCsharpExpression(GetModel().DefaultValue);
+        => CsharpExpressionDumper.Dump(GetModel().DefaultValue);
 
     public IEnumerable<PropertyCodeBodyModel> CodeBodyItems
     {

@@ -2,13 +2,16 @@
 
 public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGenerationProvider
 {
-    protected CsharpClassGeneratorCodeGenerationProviderBase(IMediator mediator)
+    protected CsharpClassGeneratorCodeGenerationProviderBase(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper)
     {
         Guard.IsNotNull(mediator);
+        Guard.IsNotNull(csharpExpressionDumper);
 
+        CsharpExpressionDumper = csharpExpressionDumper;
         Mediator = mediator;
     }
 
+    protected ICsharpExpressionDumper CsharpExpressionDumper { get; }
     protected IMediator Mediator { get; }
 
     public abstract string Path { get; }
@@ -24,7 +27,6 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
         => new CsharpClassGeneratorViewModel
         {
             Model = await GetModel(),
-            Mediator = Mediator,
             Settings = Settings
             //Context is filled in base class, on the property setter of Context (propagated to Model)
         };

@@ -2,7 +2,7 @@
 
 public class ImmutableInheritFromInterfacesAbstractionsBuilderInterfaces : ImmutableInheritFromInterfacesCSharpClassBase
 {
-    public ImmutableInheritFromInterfacesAbstractionsBuilderInterfaces(IMediator mediator) : base(mediator)
+    public ImmutableInheritFromInterfacesAbstractionsBuilderInterfaces(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
     {
     }
 

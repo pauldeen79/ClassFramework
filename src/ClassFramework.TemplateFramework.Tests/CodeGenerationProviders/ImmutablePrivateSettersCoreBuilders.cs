@@ -2,7 +2,7 @@
 
 public class ImmutablePrivateSettersCoreBuilders : ImmutablePrivateSettersCSharpClassBase
 {
-    public ImmutablePrivateSettersCoreBuilders(IMediator mediator) : base(mediator)
+    public ImmutablePrivateSettersCoreBuilders(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
     {
     }
 

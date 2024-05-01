@@ -2,7 +2,7 @@
 
 public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : CsharpClassGeneratorCodeGenerationProviderBase
 {
-    protected CsharpClassGeneratorPipelineCodeGenerationProviderBase(IMediator mediator) : base(mediator)
+    protected CsharpClassGeneratorPipelineCodeGenerationProviderBase(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
     {
     }
 

@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class CoreBuilders : ClassFrameworkCSharpClassBase
 {
-    public CoreBuilders(IMediator mediator) : base(mediator)
+    public CoreBuilders(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
     {
     }
 

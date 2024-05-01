@@ -1,7 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework;
 
 public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelContainer<TModel>
-    where TModel : ICsharpClassGeneratorSettingsContainer, IMediatorContainer
+    where TModel : ICsharpClassGeneratorSettingsContainer
 {
     protected override void OnSetContext(ITemplateContext value)
     {

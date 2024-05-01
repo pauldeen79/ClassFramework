@@ -1459,7 +1459,7 @@ namespace Test.Domain.Types
 
     private sealed class TestCodeGenerationProvider : CsharpClassGeneratorCodeGenerationProviderBase
     {
-        public TestCodeGenerationProvider(IMediator mediator) : base(mediator)
+        public TestCodeGenerationProvider(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
         {
         }
 
@@ -1495,7 +1495,7 @@ namespace Test.Domain.Types
 
     private sealed class TestPipelineCodeGenerationProvider : CsharpClassGeneratorPipelineCodeGenerationProviderBase
     {
-        public TestPipelineCodeGenerationProvider(IMediator mediator) : base(mediator)
+        public TestPipelineCodeGenerationProvider(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
         {
         }
 

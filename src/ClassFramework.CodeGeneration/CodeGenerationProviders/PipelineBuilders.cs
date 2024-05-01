@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class PipelineBuilders : ClassFrameworkCSharpClassBase
 {
-    public PipelineBuilders(IMediator mediator) : base(mediator)
+    public PipelineBuilders(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
     {
     }
 
