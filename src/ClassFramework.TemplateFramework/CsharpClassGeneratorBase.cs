@@ -13,16 +13,6 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
             container.Context = value;
         }
 
-        if (Model is not null)
-        {
-            // Copy Mediator from root template ViewModel to child ViewModel
-            var csharpClassGenerator = value.RootContext.Template as CsharpClassGenerator;
-            if (csharpClassGenerator is not null && csharpClassGenerator.Model is not null)
-            {
-                Model.Mediator = csharpClassGenerator.Model.Mediator;
-            }
-        }
-
         if (Model is not null && Model.Settings is null)
         {
             // Copy Settings from template context to ViewModel
