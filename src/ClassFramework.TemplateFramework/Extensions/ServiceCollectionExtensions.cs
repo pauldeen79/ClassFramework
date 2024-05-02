@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.TemplateFramework.Extensions;
+﻿using ClassFramework.TemplateFramework.CodeGenerationProviders;
+
+namespace ClassFramework.TemplateFramework.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -39,7 +41,9 @@ public static class ServiceCollectionExtensions
             .AddChildTemplate<UsingsTemplate>(typeof(UsingsModel))
             .AddChildTemplate<StringCodeStatementTemplate>(typeof(StringCodeStatement))
 
-             // Add request handlers for using pipelines from CsharpClassGeneratorPipelineCodeGenerationProviderBase
+            .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CsharpClassGeneratorPipelineCodeGenerationProviderBase).Assembly))
+
+            // Add request handlers for using pipelines from CsharpClassGeneratorPipelineCodeGenerationProviderBase
             .AddScoped<IRequestHandler<PipelineRequest<BuilderExtensionContext, TypeBase>, Result<TypeBase>>, ClassFrameworkPipelineRequestHandler<BuilderExtensionContext, TypeBase>>()
             .AddScoped<IRequestHandler<PipelineRequest<BuilderContext, TypeBase>, Result<TypeBase>>, ClassFrameworkPipelineRequestHandler<BuilderContext, TypeBase>>()
             .AddScoped<IRequestHandler<PipelineRequest<EntityContext, TypeBase>, Result<TypeBase>>, ClassFrameworkPipelineRequestHandler<EntityContext, TypeBase>>()

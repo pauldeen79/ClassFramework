@@ -14,7 +14,6 @@ internal static class Program
         var services = new ServiceCollection()
             .AddParsers()
             .AddPipelines()
-            .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CsharpClassGeneratorPipelineCodeGenerationProviderBase).Assembly))
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkCodeGeneration()
