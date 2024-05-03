@@ -11,9 +11,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsharpExpressionDumper.Abstractions" Version="1.5.2" />
-    <PackageReference Include="pauldeen79.CrossCutting.ProcessingPipeline" Version="8.1.0" />
-    <PackageReference Include="pauldeen79.CrossCutting.Utilities.Parsers" Version="5.1.0" />
+    <PackageReference Include="CsharpExpressionDumper.Abstractions" Version="1.5.3" />
+    <PackageReference Include="pauldeen79.CrossCutting.ProcessingPipeline" Version="8.1.1" />
+    <PackageReference Include="pauldeen79.CrossCutting.Utilities.Parsers" Version="5.1.1" />
   </ItemGroup>
 
   <ItemGroup>
