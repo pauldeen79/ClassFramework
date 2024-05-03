@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
     <PackageId>pauldeen79.ClassFramework.TemplateFramework</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/ClassFramework</RepositoryUrl>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +18,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClassFramework.Pipelines\ClassFramework.Pipelines.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
