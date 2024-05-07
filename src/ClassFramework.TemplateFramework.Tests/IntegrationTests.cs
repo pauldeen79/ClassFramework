@@ -1459,10 +1459,6 @@ namespace Test.Domain.Types
 
     private sealed class TestCodeGenerationProvider : CsharpClassGeneratorCodeGenerationProviderBase
     {
-        public TestCodeGenerationProvider(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
-        {
-        }
-
         public override Task<IEnumerable<TypeBase>> GetModel() => Task.FromResult<IEnumerable<TypeBase>>(
         [
             new ClassBuilder()

@@ -2,9 +2,17 @@
 
 public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : CsharpClassGeneratorCodeGenerationProviderBase
 {
-    protected CsharpClassGeneratorPipelineCodeGenerationProviderBase(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    protected CsharpClassGeneratorPipelineCodeGenerationProviderBase(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper)
     {
+        Guard.IsNotNull(mediator);
+        Guard.IsNotNull(csharpExpressionDumper);
+
+        CsharpExpressionDumper = csharpExpressionDumper;
+        Mediator = mediator;
     }
+
+    protected ICsharpExpressionDumper CsharpExpressionDumper { get; }
+    protected IMediator Mediator { get; }
 
     public override CsharpClassGeneratorSettings Settings
         => new CsharpClassGeneratorSettingsBuilder()
