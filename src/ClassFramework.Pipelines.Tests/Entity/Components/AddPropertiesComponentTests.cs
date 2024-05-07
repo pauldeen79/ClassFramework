@@ -75,7 +75,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(addSetters);
+            context.Request.Builder.Properties.Select(x => x.HasSetter).Should().BeEquivalentTo([ addSetters, addSetters, false]); // not on the collection property!
         }
 
         [Theory]
