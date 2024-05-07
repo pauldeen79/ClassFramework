@@ -12,9 +12,7 @@ public class ServiceCollectionExtensionsTests
                 .AddCsharpExpressionDumper() // dependency of some templates
                 .AddParsers()
                 .AddPipelines()
-                .AddClassFrameworkTemplates()
-                .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CsharpClassGeneratorPipelineCodeGenerationProviderBase).Assembly))
-                ;
+                .AddClassFrameworkTemplates();
 
             // Act & Assert
             serviceCollection.Invoking(x =>

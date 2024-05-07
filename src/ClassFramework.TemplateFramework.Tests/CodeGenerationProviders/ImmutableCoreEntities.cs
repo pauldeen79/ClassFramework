@@ -2,7 +2,7 @@
 
 public class ImmutableCoreEntities : ImmutableCSharpClassBase
 {
-    public ImmutableCoreEntities(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    public ImmutableCoreEntities(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
     {
     }
 

@@ -2,7 +2,7 @@
 
 public abstract class ImmutableInheritFromInterfacesCSharpClassBase : ImmutableCSharpClassBase
 {
-    protected ImmutableInheritFromInterfacesCSharpClassBase(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    protected ImmutableInheritFromInterfacesCSharpClassBase(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
     {
     }
 

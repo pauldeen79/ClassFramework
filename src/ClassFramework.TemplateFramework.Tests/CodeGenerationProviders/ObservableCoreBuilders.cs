@@ -2,7 +2,7 @@
 
 public class ObservableCoreBuilders : ObservableCSharpClassBase
 {
-    public ObservableCoreBuilders(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    public ObservableCoreBuilders(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
     {
     }
 

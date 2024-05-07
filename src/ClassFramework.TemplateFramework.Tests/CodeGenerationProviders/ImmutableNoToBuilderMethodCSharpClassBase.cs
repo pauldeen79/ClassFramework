@@ -2,7 +2,7 @@
 
 public abstract class ImmutableNoToBuilderMethodCSharpClassBase : ImmutableCSharpClassBase
 {
-    protected ImmutableNoToBuilderMethodCSharpClassBase(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    protected ImmutableNoToBuilderMethodCSharpClassBase(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
     {
     }
 

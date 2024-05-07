@@ -10,7 +10,8 @@ public static class ServiceCollectionExtensions
             .AddReflectionPipeline()
             .AddInterfacePipeline()
             .AddSharedPipelineComponents()
-            .AddParserComponents();
+            .AddParserComponents()
+            .AddPipelineService();
 
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
         => services
@@ -105,4 +106,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPlaceholderProcessor, InterfacePipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, ReflectionPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, PropertyProcessor>(); // needed for recursive calls to FormattableStringParser from PropertyProcessor...
+
+    private static IServiceCollection AddPipelineService(this IServiceCollection services)
+        => services
+            .AddScoped<IPipelineService, PipelineService>();
 }

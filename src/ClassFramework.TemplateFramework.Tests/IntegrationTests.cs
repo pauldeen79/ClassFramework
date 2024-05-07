@@ -20,7 +20,6 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddClassFrameworkTemplates()
             .AddParsers()
             .AddPipelines()
-            .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CsharpClassGeneratorPipelineCodeGenerationProviderBase).Assembly))
             .AddScoped(_ => templateFactory)
             .AddScoped(_ => templateProviderPluginFactory)
             .AddScoped<TestCodeGenerationProvider>()
@@ -1491,7 +1490,7 @@ namespace Test.Domain.Types
 
     private sealed class TestPipelineCodeGenerationProvider : CsharpClassGeneratorPipelineCodeGenerationProviderBase
     {
-        public TestPipelineCodeGenerationProvider(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+        public TestPipelineCodeGenerationProvider(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
         {
         }
 
