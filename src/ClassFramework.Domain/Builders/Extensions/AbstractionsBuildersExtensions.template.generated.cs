@@ -115,43 +115,6 @@ namespace ClassFramework.Domain.Builders.Extensions
             return instance;
         }
     }
-    public static partial class ExtendedVisibilityContainerBuilderExtensions
-    {
-        public static T WithStatic<T>(this T instance, bool @static = true)
-            where T : ClassFramework.Domain.Builders.Abstractions.IExtendedVisibilityContainerBuilder
-        {
-            instance.Static = @static;
-            return instance;
-        }
-
-        public static T WithVirtual<T>(this T instance, bool @virtual = true)
-            where T : ClassFramework.Domain.Builders.Abstractions.IExtendedVisibilityContainerBuilder
-        {
-            instance.Virtual = @virtual;
-            return instance;
-        }
-
-        public static T WithAbstract<T>(this T instance, bool @abstract = true)
-            where T : ClassFramework.Domain.Builders.Abstractions.IExtendedVisibilityContainerBuilder
-        {
-            instance.Abstract = @abstract;
-            return instance;
-        }
-
-        public static T WithProtected<T>(this T instance, bool @protected = true)
-            where T : ClassFramework.Domain.Builders.Abstractions.IExtendedVisibilityContainerBuilder
-        {
-            instance.Protected = @protected;
-            return instance;
-        }
-
-        public static T WithOverride<T>(this T instance, bool @override = true)
-            where T : ClassFramework.Domain.Builders.Abstractions.IExtendedVisibilityContainerBuilder
-        {
-            instance.Override = @override;
-            return instance;
-        }
-    }
     public static partial class GenericTypeArgumentsContainerBuilderExtensions
     {
         public static T AddGenericTypeArguments<T>(this T instance, System.Collections.Generic.IEnumerable<string> genericTypeArguments)
@@ -181,6 +144,50 @@ namespace ClassFramework.Domain.Builders.Extensions
         {
             if (genericTypeArgumentConstraints is null) throw new System.ArgumentNullException(nameof(genericTypeArgumentConstraints));
             foreach (var item in genericTypeArgumentConstraints) instance.GenericTypeArgumentConstraints.Add(item);
+            return instance;
+        }
+    }
+    public static partial class ModifiersContainerBuilderExtensions
+    {
+        public static T WithStatic<T>(this T instance, bool @static = true)
+            where T : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder
+        {
+            instance.Static = @static;
+            return instance;
+        }
+
+        public static T WithVirtual<T>(this T instance, bool @virtual = true)
+            where T : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder
+        {
+            instance.Virtual = @virtual;
+            return instance;
+        }
+
+        public static T WithAbstract<T>(this T instance, bool @abstract = true)
+            where T : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder
+        {
+            instance.Abstract = @abstract;
+            return instance;
+        }
+
+        public static T WithProtected<T>(this T instance, bool @protected = true)
+            where T : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder
+        {
+            instance.Protected = @protected;
+            return instance;
+        }
+
+        public static T WithOverride<T>(this T instance, bool @override = true)
+            where T : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder
+        {
+            instance.Override = @override;
+            return instance;
+        }
+
+        public static T WithNew<T>(this T instance, bool @new = true)
+            where T : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder
+        {
+            instance.New = @new;
             return instance;
         }
     }

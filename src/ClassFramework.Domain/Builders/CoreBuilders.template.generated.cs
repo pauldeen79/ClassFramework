@@ -174,7 +174,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class ConstructorBuilder : ClassFramework.Domain.Builders.Abstractions.IExtendedVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ICodeStatementsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParametersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class ConstructorBuilder : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ICodeStatementsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParametersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         private string _chainCall;
 
@@ -187,6 +187,8 @@ namespace ClassFramework.Domain.Builders
         private bool _protected;
 
         private bool _override;
+
+        private bool _new;
 
         private ClassFramework.Domain.Domains.Visibility _visibility;
 
@@ -279,6 +281,19 @@ namespace ClassFramework.Domain.Builders
             }
         }
 
+        public bool New
+        {
+            get
+            {
+                return _new;
+            }
+            set
+            {
+                _new = value;
+                HandlePropertyChanged(nameof(New));
+            }
+        }
+
         public ClassFramework.Domain.Domains.Visibility Visibility
         {
             get
@@ -364,6 +379,7 @@ namespace ClassFramework.Domain.Builders
             _abstract = source.Abstract;
             _protected = source.Protected;
             _override = source.Override;
+            _new = source.New;
             _visibility = source.Visibility;
             if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder())) _attributes.Add(item);
             if (source.CodeStatements is not null) foreach (var item in source.CodeStatements.Select(x => x.ToBuilder())) _codeStatements.Add(item);
@@ -383,7 +399,7 @@ namespace ClassFramework.Domain.Builders
 
         public ClassFramework.Domain.Constructor Build()
         {
-            return new ClassFramework.Domain.Constructor(ChainCall, Static, Virtual, Abstract, Protected, Override, Visibility, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), CodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), SuppressWarningCodes);
+            return new ClassFramework.Domain.Constructor(ChainCall, Static, Virtual, Abstract, Protected, Override, New, Visibility, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), CodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), SuppressWarningCodes);
         }
 
         partial void SetDefaultValues();
@@ -474,6 +490,12 @@ namespace ClassFramework.Domain.Builders
         public ClassFramework.Domain.Builders.ConstructorBuilder WithOverride(bool @override = true)
         {
             Override = @override;
+            return this;
+        }
+
+        public ClassFramework.Domain.Builders.ConstructorBuilder WithNew(bool @new = true)
+        {
+            New = @new;
             return this;
         }
 
@@ -733,7 +755,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class FieldBuilder : ClassFramework.Domain.Builders.Abstractions.IExtendedVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class FieldBuilder : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         private bool _readOnly;
 
@@ -750,6 +772,8 @@ namespace ClassFramework.Domain.Builders
         private bool _protected;
 
         private bool _override;
+
+        private bool _new;
 
         private ClassFramework.Domain.Domains.Visibility _visibility;
 
@@ -872,6 +896,19 @@ namespace ClassFramework.Domain.Builders
             {
                 _override = value;
                 HandlePropertyChanged(nameof(Override));
+            }
+        }
+
+        public bool New
+        {
+            get
+            {
+                return _new;
+            }
+            set
+            {
+                _new = value;
+                HandlePropertyChanged(nameof(New));
             }
         }
 
@@ -1012,6 +1049,7 @@ namespace ClassFramework.Domain.Builders
             _abstract = source.Abstract;
             _protected = source.Protected;
             _override = source.Override;
+            _new = source.New;
             _visibility = source.Visibility;
             _name = source.Name;
             if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder())) _attributes.Add(item);
@@ -1035,7 +1073,7 @@ namespace ClassFramework.Domain.Builders
 
         public ClassFramework.Domain.Field Build()
         {
-            return new ClassFramework.Domain.Field(ReadOnly, Constant, Event, Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), TypeName, IsNullable, IsValueType, GenericTypeArguments, DefaultValue, ParentTypeFullName);
+            return new ClassFramework.Domain.Field(ReadOnly, Constant, Event, Static, Virtual, Abstract, Protected, Override, New, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), TypeName, IsNullable, IsValueType, GenericTypeArguments, DefaultValue, ParentTypeFullName);
         }
 
         partial void SetDefaultValues();
@@ -1111,6 +1149,12 @@ namespace ClassFramework.Domain.Builders
         public ClassFramework.Domain.Builders.FieldBuilder WithOverride(bool @override = true)
         {
             Override = @override;
+            return this;
+        }
+
+        public ClassFramework.Domain.Builders.FieldBuilder WithNew(bool @new = true)
+        {
+            New = @new;
             return this;
         }
 
@@ -1237,7 +1281,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class MethodBuilder : ClassFramework.Domain.Builders.Abstractions.IExtendedVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ICodeStatementsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParametersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class MethodBuilder : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ICodeStatementsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParametersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         private string _returnTypeName;
 
@@ -1264,6 +1308,8 @@ namespace ClassFramework.Domain.Builders
         private bool _protected;
 
         private bool _override;
+
+        private bool _new;
 
         private ClassFramework.Domain.Domains.Visibility _visibility;
 
@@ -1459,6 +1505,19 @@ namespace ClassFramework.Domain.Builders
             }
         }
 
+        public bool New
+        {
+            get
+            {
+                return _new;
+            }
+            set
+            {
+                _new = value;
+                HandlePropertyChanged(nameof(New));
+            }
+        }
+
         public ClassFramework.Domain.Domains.Visibility Visibility
         {
             get
@@ -1626,6 +1685,7 @@ namespace ClassFramework.Domain.Builders
             _abstract = source.Abstract;
             _protected = source.Protected;
             _override = source.Override;
+            _new = source.New;
             _visibility = source.Visibility;
             _name = source.Name;
             if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder())) _attributes.Add(item);
@@ -1656,7 +1716,7 @@ namespace ClassFramework.Domain.Builders
 
         public ClassFramework.Domain.Method Build()
         {
-            return new ClassFramework.Domain.Method(ReturnTypeName, ReturnTypeIsNullable, ReturnTypeIsValueType, ReturnTypeGenericTypeArguments, Partial, ExtensionMethod, Operator, Async, Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), CodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), ExplicitInterfaceName, ParentTypeFullName, GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes);
+            return new ClassFramework.Domain.Method(ReturnTypeName, ReturnTypeIsNullable, ReturnTypeIsValueType, ReturnTypeGenericTypeArguments, Partial, ExtensionMethod, Operator, Async, Static, Virtual, Abstract, Protected, Override, New, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), CodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), ExplicitInterfaceName, ParentTypeFullName, GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes);
         }
 
         partial void SetDefaultValues();
@@ -1822,6 +1882,12 @@ namespace ClassFramework.Domain.Builders
         public ClassFramework.Domain.Builders.MethodBuilder WithOverride(bool @override = true)
         {
             Override = @override;
+            return this;
+        }
+
+        public ClassFramework.Domain.Builders.MethodBuilder WithNew(bool @new = true)
+        {
+            New = @new;
             return this;
         }
 
@@ -2131,7 +2197,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class PropertyBuilder : ClassFramework.Domain.Builders.Abstractions.IExtendedVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class PropertyBuilder : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         private bool _hasGetter;
 
@@ -2160,6 +2226,8 @@ namespace ClassFramework.Domain.Builders
         private bool _protected;
 
         private bool _override;
+
+        private bool _new;
 
         private ClassFramework.Domain.Domains.Visibility _visibility;
 
@@ -2373,6 +2441,19 @@ namespace ClassFramework.Domain.Builders
             }
         }
 
+        public bool New
+        {
+            get
+            {
+                return _new;
+            }
+            set
+            {
+                _new = value;
+                HandlePropertyChanged(nameof(New));
+            }
+        }
+
         public ClassFramework.Domain.Domains.Visibility Visibility
         {
             get
@@ -2533,6 +2614,7 @@ namespace ClassFramework.Domain.Builders
             _abstract = source.Abstract;
             _protected = source.Protected;
             _override = source.Override;
+            _new = source.New;
             _visibility = source.Visibility;
             _name = source.Name;
             if (source.Attributes is not null) foreach (var item in source.Attributes.Select(x => x.ToBuilder())) _attributes.Add(item);
@@ -2563,7 +2645,7 @@ namespace ClassFramework.Domain.Builders
 
         public ClassFramework.Domain.Property Build()
         {
-            return new ClassFramework.Domain.Property(HasGetter, HasSetter, HasInitializer, GetterVisibility, SetterVisibility, InitializerVisibility, GetterCodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), SetterCodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), InitializerCodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), TypeName, IsNullable, IsValueType, GenericTypeArguments, DefaultValue, ExplicitInterfaceName, ParentTypeFullName);
+            return new ClassFramework.Domain.Property(HasGetter, HasSetter, HasInitializer, GetterVisibility, SetterVisibility, InitializerVisibility, GetterCodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), SetterCodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), InitializerCodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Static, Virtual, Abstract, Protected, Override, New, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), TypeName, IsNullable, IsValueType, GenericTypeArguments, DefaultValue, ExplicitInterfaceName, ParentTypeFullName);
         }
 
         partial void SetDefaultValues();
@@ -2696,6 +2778,12 @@ namespace ClassFramework.Domain.Builders
         public ClassFramework.Domain.Builders.PropertyBuilder WithOverride(bool @override = true)
         {
             Override = @override;
+            return this;
+        }
+
+        public ClassFramework.Domain.Builders.PropertyBuilder WithNew(bool @new = true)
+        {
+            New = @new;
             return this;
         }
 

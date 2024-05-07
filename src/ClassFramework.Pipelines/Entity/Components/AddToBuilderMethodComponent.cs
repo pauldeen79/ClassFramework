@@ -114,7 +114,7 @@ public class AddToBuilderMethodComponent : IPipelineComponent<EntityContext>
         {
             return $"{concreteBuilderNamespaceResult.Value}.{context.Request.Settings.BaseClass.Name}Builder";
         }
-        else 
+        else
         {
             return builderConcreteTypeName;
         }

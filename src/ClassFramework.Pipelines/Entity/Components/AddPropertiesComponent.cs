@@ -26,7 +26,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
                     .WithProtected(property.Protected)
                     .WithOverride(property.Override)
                     .WithHasInitializer(property.HasInitializer && !(context.Request.Settings.AddSetters || context.Request.Settings.AddBackingFields || context.Request.Settings.CreateAsObservable))
-                    .WithHasSetter(context.Request.Settings.AddSetters || context.Request.Settings.AddBackingFields || context.Request.Settings.CreateAsObservable)
+                    .WithHasSetter((context.Request.Settings.AddSetters && !property.TypeName.IsCollectionTypeName()) || context.Request.Settings.AddBackingFields || context.Request.Settings.CreateAsObservable)
                     .WithGetterVisibility(property.GetterVisibility)
                     .WithSetterVisibility(context.Request.Settings.SetterVisibility)
                     .WithInitializerVisibility(property.InitializerVisibility)
@@ -51,7 +51,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
             properties
                 .Select
                 (
-                    property =>new FieldBuilder()
+                    property => new FieldBuilder()
                         .WithName($"_{property.Name.ToPascalCase(context.Request.FormatProvider.ToCultureInfo())}")
                         .WithTypeName(context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName)
                             .FixCollectionTypeName(context.Request.Settings.CollectionTypeName

@@ -16,7 +16,7 @@ public class ValidationComponent : IPipelineComponent<ReflectionContext>
         {
             return Task.FromResult(Result.Invalid("To create a class, there must be at least one property"));
         }
-        
+
         return Task.FromResult(Result.Continue());
     }
 }

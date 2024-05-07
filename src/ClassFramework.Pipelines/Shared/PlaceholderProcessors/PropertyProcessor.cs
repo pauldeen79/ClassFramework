@@ -33,7 +33,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor, IPlaceholderProc
             "EntityMemberName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.GetEntityMemberName(propertyContext.Settings.AddBackingFields || propertyContext.Settings.CreateAsObservable, propertyContext.FormatProvider.ToCultureInfo())),
             "InitializationExpression" => Result.Success<FormattableStringParserResult>(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo(), propertyContext.Settings.AddNullChecks, propertyContext.Settings.ValidateArguments, propertyContext.Settings.EnableNullableReferenceTypes)),
             "CollectionTypeName" => Result.Success<FormattableStringParserResult>(propertyContext.Settings.CollectionTypeName),
-            nameof (Property.TypeName) => Result.Success<FormattableStringParserResult>(typeName),
+            nameof(Property.TypeName) => Result.Success<FormattableStringParserResult>(typeName),
             $"{nameof(Property.TypeName)}.GenericArguments" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments()),
             $"{nameof(Property.TypeName)}.GenericArgumentsWithBrackets" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments(addBrackets: true)),
             $"{nameof(Property.TypeName)}.GenericArgumentsWithoutBrackets" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments(addBrackets: false)),

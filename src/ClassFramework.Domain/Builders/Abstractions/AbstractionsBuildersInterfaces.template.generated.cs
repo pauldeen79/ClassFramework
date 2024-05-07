@@ -84,7 +84,25 @@ namespace ClassFramework.Domain.Builders.Abstractions
             set;
         }
     }
-    public interface IExtendedVisibilityContainerBuilder : ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder
+    public interface IGenericTypeArgumentsContainerBuilder
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        System.Collections.ObjectModel.ObservableCollection<string> GenericTypeArguments
+        {
+            get;
+            set;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
+        System.Collections.ObjectModel.ObservableCollection<string> GenericTypeArgumentConstraints
+        {
+            get;
+            set;
+        }
+    }
+    public interface IModifiersContainerBuilder : ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder
     {
         bool Static
         {
@@ -115,20 +133,8 @@ namespace ClassFramework.Domain.Builders.Abstractions
             get;
             set;
         }
-    }
-    public interface IGenericTypeArgumentsContainerBuilder
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.ObjectModel.ObservableCollection<string> GenericTypeArguments
-        {
-            get;
-            set;
-        }
 
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.ObjectModel.ObservableCollection<string> GenericTypeArgumentConstraints
+        bool New
         {
             get;
             set;

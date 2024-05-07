@@ -81,7 +81,7 @@ public class AddDefaultConstructorComponent : IPipelineComponent<BuilderContext>
                 .Select(x => GenerateDefaultValueStatement(x, context))
                 .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
                 .ToArray();
-            
+
             var defaultValueErrorResult = Array.Find(defaultValueResults, x => !x.IsSuccessful());
             if (defaultValueErrorResult is not null)
             {
@@ -89,13 +89,13 @@ public class AddDefaultConstructorComponent : IPipelineComponent<BuilderContext>
             }
 
             ctor.AddStringCodeStatements(defaultValueResults.Select(x => x.Value!.ToString()));
-            
+
             var setDefaultValuesMethodNameResult = _formattableStringParser.Parse(context.Request.Settings.SetDefaultValuesMethodName, context.Request.FormatProvider, context);
             if (!setDefaultValuesMethodNameResult.IsSuccessful())
             {
                 return Result.FromExistingResult<ConstructorBuilder>(setDefaultValuesMethodNameResult);
             }
-            
+
             if (!string.IsNullOrEmpty(setDefaultValuesMethodNameResult.Value!.ToString()))
             {
                 ctor.AddStringCodeStatements($"{setDefaultValuesMethodNameResult.Value}();");

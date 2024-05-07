@@ -67,7 +67,7 @@ namespace ClassFramework.Domain
             return new ClassFramework.Domain.Builders.AttributeParameterBuilder(this);
         }
     }
-    public partial record Constructor : ClassFramework.Domain.Abstractions.IExtendedVisibilityContainer, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.ICodeStatementsContainer, ClassFramework.Domain.Abstractions.IParametersContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
+    public partial record Constructor : ClassFramework.Domain.Abstractions.IModifiersContainer, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.ICodeStatementsContainer, ClassFramework.Domain.Abstractions.IParametersContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         public string ChainCall
@@ -96,6 +96,11 @@ namespace ClassFramework.Domain
         }
 
         public bool Override
+        {
+            get;
+        }
+
+        public bool New
         {
             get;
         }
@@ -132,7 +137,7 @@ namespace ClassFramework.Domain
             get;
         }
 
-        public Constructor(string chainCall, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ClassFramework.Domain.Domains.Visibility visibility, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Attribute> attributes, System.Collections.Generic.IEnumerable<ClassFramework.Domain.CodeStatementBase> codeStatements, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Parameter> parameters, System.Collections.Generic.IEnumerable<string> suppressWarningCodes)
+        public Constructor(string chainCall, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, bool @new, ClassFramework.Domain.Domains.Visibility visibility, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Attribute> attributes, System.Collections.Generic.IEnumerable<ClassFramework.Domain.CodeStatementBase> codeStatements, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Parameter> parameters, System.Collections.Generic.IEnumerable<string> suppressWarningCodes)
         {
             this.ChainCall = chainCall;
             this.Static = @static;
@@ -140,6 +145,7 @@ namespace ClassFramework.Domain
             this.Abstract = @abstract;
             this.Protected = @protected;
             this.Override = @override;
+            this.New = @new;
             this.Visibility = visibility;
             this.Attributes = attributes is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Attribute>(attributes);
             this.CodeStatements = codeStatements is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.CodeStatementBase>(codeStatements);
@@ -227,7 +233,7 @@ namespace ClassFramework.Domain
             return new ClassFramework.Domain.Builders.EnumerationMemberBuilder(this);
         }
     }
-    public partial record Field : ClassFramework.Domain.Abstractions.IExtendedVisibilityContainer, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.ITypeContainer, ClassFramework.Domain.Abstractions.IDefaultValueContainer, ClassFramework.Domain.Abstractions.IParentTypeContainer
+    public partial record Field : ClassFramework.Domain.Abstractions.IModifiersContainer, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.ITypeContainer, ClassFramework.Domain.Abstractions.IDefaultValueContainer, ClassFramework.Domain.Abstractions.IParentTypeContainer
     {
         public bool ReadOnly
         {
@@ -265,6 +271,11 @@ namespace ClassFramework.Domain
         }
 
         public bool Override
+        {
+            get;
+        }
+
+        public bool New
         {
             get;
         }
@@ -321,7 +332,7 @@ namespace ClassFramework.Domain
             get;
         }
 
-        public Field(bool readOnly, bool constant, bool @event, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ClassFramework.Domain.Domains.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Attribute> attributes, string typeName, bool isNullable, bool isValueType, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Abstractions.ITypeContainer> genericTypeArguments, object? defaultValue, string parentTypeFullName)
+        public Field(bool readOnly, bool constant, bool @event, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, bool @new, ClassFramework.Domain.Domains.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Attribute> attributes, string typeName, bool isNullable, bool isValueType, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Abstractions.ITypeContainer> genericTypeArguments, object? defaultValue, string parentTypeFullName)
         {
             this.ReadOnly = readOnly;
             this.Constant = constant;
@@ -331,6 +342,7 @@ namespace ClassFramework.Domain
             this.Abstract = @abstract;
             this.Protected = @protected;
             this.Override = @override;
+            this.New = @new;
             this.Visibility = visibility;
             this.Name = name;
             this.Attributes = attributes is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Attribute>(attributes);
@@ -373,7 +385,7 @@ namespace ClassFramework.Domain
             return new ClassFramework.Domain.Builders.LiteralBuilder(this);
         }
     }
-    public partial record Method : ClassFramework.Domain.Abstractions.IExtendedVisibilityContainer, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.ICodeStatementsContainer, ClassFramework.Domain.Abstractions.IParametersContainer, ClassFramework.Domain.Abstractions.IExplicitInterfaceNameContainer, ClassFramework.Domain.Abstractions.IParentTypeContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
+    public partial record Method : ClassFramework.Domain.Abstractions.IModifiersContainer, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.ICodeStatementsContainer, ClassFramework.Domain.Abstractions.IParametersContainer, ClassFramework.Domain.Abstractions.IExplicitInterfaceNameContainer, ClassFramework.Domain.Abstractions.IParentTypeContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         public string ReturnTypeName
@@ -443,6 +455,11 @@ namespace ClassFramework.Domain
             get;
         }
 
+        public bool New
+        {
+            get;
+        }
+
         public ClassFramework.Domain.Domains.Visibility Visibility
         {
             get;
@@ -507,7 +524,7 @@ namespace ClassFramework.Domain
             get;
         }
 
-        public Method(string returnTypeName, bool returnTypeIsNullable, bool returnTypeIsValueType, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Abstractions.ITypeContainer> returnTypeGenericTypeArguments, bool partial, bool extensionMethod, bool @operator, bool async, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ClassFramework.Domain.Domains.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Attribute> attributes, System.Collections.Generic.IEnumerable<ClassFramework.Domain.CodeStatementBase> codeStatements, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Parameter> parameters, string explicitInterfaceName, string parentTypeFullName, System.Collections.Generic.IEnumerable<string> genericTypeArguments, System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<string> suppressWarningCodes)
+        public Method(string returnTypeName, bool returnTypeIsNullable, bool returnTypeIsValueType, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Abstractions.ITypeContainer> returnTypeGenericTypeArguments, bool partial, bool extensionMethod, bool @operator, bool async, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, bool @new, ClassFramework.Domain.Domains.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Attribute> attributes, System.Collections.Generic.IEnumerable<ClassFramework.Domain.CodeStatementBase> codeStatements, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Parameter> parameters, string explicitInterfaceName, string parentTypeFullName, System.Collections.Generic.IEnumerable<string> genericTypeArguments, System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<string> suppressWarningCodes)
         {
             this.ReturnTypeName = returnTypeName;
             this.ReturnTypeIsNullable = returnTypeIsNullable;
@@ -522,6 +539,7 @@ namespace ClassFramework.Domain
             this.Abstract = @abstract;
             this.Protected = @protected;
             this.Override = @override;
+            this.New = @new;
             this.Visibility = visibility;
             this.Name = name;
             this.Attributes = attributes is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Attribute>(attributes);
@@ -618,7 +636,7 @@ namespace ClassFramework.Domain
             return new ClassFramework.Domain.Builders.ParameterBuilder(this);
         }
     }
-    public partial record Property : ClassFramework.Domain.Abstractions.IExtendedVisibilityContainer, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.ITypeContainer, ClassFramework.Domain.Abstractions.IDefaultValueContainer, ClassFramework.Domain.Abstractions.IExplicitInterfaceNameContainer, ClassFramework.Domain.Abstractions.IParentTypeContainer
+    public partial record Property : ClassFramework.Domain.Abstractions.IModifiersContainer, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.ITypeContainer, ClassFramework.Domain.Abstractions.IDefaultValueContainer, ClassFramework.Domain.Abstractions.IExplicitInterfaceNameContainer, ClassFramework.Domain.Abstractions.IParentTypeContainer
     {
         [System.ComponentModel.DefaultValueAttribute(true)]
         public bool HasGetter
@@ -698,6 +716,11 @@ namespace ClassFramework.Domain
             get;
         }
 
+        public bool New
+        {
+            get;
+        }
+
         public ClassFramework.Domain.Domains.Visibility Visibility
         {
             get;
@@ -756,7 +779,7 @@ namespace ClassFramework.Domain
             get;
         }
 
-        public Property(bool hasGetter, bool hasSetter, bool hasInitializer, ClassFramework.Domain.Domains.SubVisibility getterVisibility, ClassFramework.Domain.Domains.SubVisibility setterVisibility, ClassFramework.Domain.Domains.SubVisibility initializerVisibility, System.Collections.Generic.IEnumerable<ClassFramework.Domain.CodeStatementBase> getterCodeStatements, System.Collections.Generic.IEnumerable<ClassFramework.Domain.CodeStatementBase> setterCodeStatements, System.Collections.Generic.IEnumerable<ClassFramework.Domain.CodeStatementBase> initializerCodeStatements, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ClassFramework.Domain.Domains.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Attribute> attributes, string typeName, bool isNullable, bool isValueType, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Abstractions.ITypeContainer> genericTypeArguments, object? defaultValue, string explicitInterfaceName, string parentTypeFullName)
+        public Property(bool hasGetter, bool hasSetter, bool hasInitializer, ClassFramework.Domain.Domains.SubVisibility getterVisibility, ClassFramework.Domain.Domains.SubVisibility setterVisibility, ClassFramework.Domain.Domains.SubVisibility initializerVisibility, System.Collections.Generic.IEnumerable<ClassFramework.Domain.CodeStatementBase> getterCodeStatements, System.Collections.Generic.IEnumerable<ClassFramework.Domain.CodeStatementBase> setterCodeStatements, System.Collections.Generic.IEnumerable<ClassFramework.Domain.CodeStatementBase> initializerCodeStatements, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, bool @new, ClassFramework.Domain.Domains.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Attribute> attributes, string typeName, bool isNullable, bool isValueType, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Abstractions.ITypeContainer> genericTypeArguments, object? defaultValue, string explicitInterfaceName, string parentTypeFullName)
         {
             this.HasGetter = hasGetter;
             this.HasSetter = hasSetter;
@@ -772,6 +795,7 @@ namespace ClassFramework.Domain
             this.Abstract = @abstract;
             this.Protected = @protected;
             this.Override = @override;
+            this.New = @new;
             this.Visibility = visibility;
             this.Name = name;
             this.Attributes = attributes is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Attribute>(attributes);
