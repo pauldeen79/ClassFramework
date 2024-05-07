@@ -6,18 +6,19 @@ public static class VisibilityContainerExtensions
         where T : IVisibilityContainer
     {
         var builder = new StringBuilder();
-        if (instance is IExtendedVisibilityContainer extendedVisibilityContainer)
+        if (instance is IModifiersContainer modifiersContainer)
         {
             var classMethod = instance as Method;
 
             if (classMethod is null || !classMethod.Partial)
             {
-                builder.AppendWithCondition("protected", extendedVisibilityContainer.Protected);
-                builder.AppendWithCondition(instance.Visibility.ToString().ToLower(cultureInfo), !(extendedVisibilityContainer.Protected && instance.Visibility != Visibility.Internal));
-                builder.AppendWithCondition("static", extendedVisibilityContainer.Static);
-                builder.AppendWithCondition("abstract", extendedVisibilityContainer.Abstract);
-                builder.AppendWithCondition("virtual", extendedVisibilityContainer.Virtual);
-                builder.AppendWithCondition("override", extendedVisibilityContainer.Override);
+                builder.AppendWithCondition("protected", modifiersContainer.Protected);
+                builder.AppendWithCondition(instance.Visibility.ToString().ToLower(cultureInfo), !(modifiersContainer.Protected && instance.Visibility != Visibility.Internal));
+                builder.AppendWithCondition("static", modifiersContainer.Static);
+                builder.AppendWithCondition("new", modifiersContainer.New);
+                builder.AppendWithCondition("abstract", modifiersContainer.Abstract);
+                builder.AppendWithCondition("virtual", modifiersContainer.Virtual);
+                builder.AppendWithCondition("override", modifiersContainer.Override);
 
                 var classField = instance as Field;
                 builder.AppendWithCondition("readonly", classField?.ReadOnly == true);

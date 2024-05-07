@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models;
 
-internal interface IProperty : Abstractions.IExtendedVisibilityContainer, Abstractions.INameContainer, Abstractions.IAttributesContainer, Abstractions.ITypeContainer, Abstractions.IDefaultValueContainer, Abstractions.IExplicitInterfaceNameContainer, Abstractions.IParentTypeContainer
+internal interface IProperty : Abstractions.IModifiersContainer, Abstractions.INameContainer, Abstractions.IAttributesContainer, Abstractions.ITypeContainer, Abstractions.IDefaultValueContainer, Abstractions.IExplicitInterfaceNameContainer, Abstractions.IParentTypeContainer
 {
     [DefaultValue(true)] bool HasGetter { get; }
     [DefaultValue(true)] bool HasSetter { get; }
