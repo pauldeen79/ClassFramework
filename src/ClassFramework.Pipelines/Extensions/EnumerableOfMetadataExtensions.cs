@@ -13,7 +13,7 @@ public static class EnumerableOfMetadataExtensions
         defaultValueDelegate = defaultValueDelegate.IsNotNull(nameof(defaultValueDelegate));
 
         var value = metadata.GetValue<object?>(metadataName, () => null).ToStringWithDefault();
-        
+
         return string.IsNullOrEmpty(value)
             ? defaultValueDelegate()
             : Result.Success(value);

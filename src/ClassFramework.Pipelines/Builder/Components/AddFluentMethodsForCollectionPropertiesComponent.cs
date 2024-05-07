@@ -84,7 +84,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent : IPipelineCompone
         {
             yield return Result.Success<FormattableStringParserResult>(context.Request.CreateArgumentNullException(property.Name.ToPascalCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()));
         }
-        
+
         yield return _formattableStringParser.Parse("return {BuilderAddMethodName}({NamePascalCsharpFriendlyName}.ToArray());", context.Request.FormatProvider, parentChildContext);
     }
 

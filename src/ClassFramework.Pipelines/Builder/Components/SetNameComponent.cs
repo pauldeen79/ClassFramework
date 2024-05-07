@@ -30,7 +30,7 @@ public class SetNameComponent : IPipelineComponent<BuilderContext>
         resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context));
         resultSetBuilder.Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetFormattableStringParserResult(MetadataNames.CustomBuilderNamespace, () => _formattableStringParser.Parse(context.Request.Settings.BuilderNamespaceFormatString, context.Request.FormatProvider, context)));
         var results = resultSetBuilder.Build();
-        
+
         var error = Array.Find(results, x => !x.Result.IsSuccessful());
         if (error is not null)
         {

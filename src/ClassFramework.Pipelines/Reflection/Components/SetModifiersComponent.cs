@@ -20,7 +20,7 @@ public class SetModifiersComponent : IPipelineComponent<ReflectionContext>
                 .WithPartial(context.Request.Settings.CreateAsPartial)
                 .WithAbstract(context.Request.SourceModel.IsAbstract);
         }
-        
+
         if (context.Request.Builder is IRecordContainerBuilder recordContainerBuilder)
         {
             recordContainerBuilder.WithRecord(context.Request.SourceModel.IsRecord());

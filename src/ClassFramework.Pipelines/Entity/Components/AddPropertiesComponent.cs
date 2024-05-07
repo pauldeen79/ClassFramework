@@ -51,7 +51,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
             properties
                 .Select
                 (
-                    property =>new FieldBuilder()
+                    property => new FieldBuilder()
                         .WithName($"_{property.Name.ToPascalCase(context.Request.FormatProvider.ToCultureInfo())}")
                         .WithTypeName(context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName)
                             .FixCollectionTypeName(context.Request.Settings.CollectionTypeName
