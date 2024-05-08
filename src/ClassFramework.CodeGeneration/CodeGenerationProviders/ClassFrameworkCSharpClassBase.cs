@@ -4,7 +4,7 @@
 #pragma warning disable S125 // Sections of code should not be commented out
 public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
 {
-    protected ClassFrameworkCSharpClassBase(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    protected ClassFrameworkCSharpClassBase(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 
@@ -43,10 +43,10 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
             .Concat(
             [
                 new TypenameMappingBuilder().WithSourceType(typeof(ArgumentValidationType)).WithTargetTypeName($"ClassFramework.Pipelines.Domains.{nameof(ArgumentValidationType)}"),
-                new TypenameMappingBuilder().WithSourceType(typeof(AttributeInitializerDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(AttributeInitializerDelegate)}"),
-                new TypenameMappingBuilder().WithSourceType(typeof(CopyMethodPredicate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(CopyMethodPredicate)}"),
-                new TypenameMappingBuilder().WithSourceType(typeof(InheritanceComparisonDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(InheritanceComparisonDelegate)}"),
-                new TypenameMappingBuilder().WithSourceType(typeof(ReflectionInheritanceComparisonDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(ReflectionInheritanceComparisonDelegate)}"),
+                new TypenameMappingBuilder().WithSourceType(typeof(Models.Pipelines.AttributeInitializerDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(Models.Pipelines.AttributeInitializerDelegate)}"),
+                new TypenameMappingBuilder().WithSourceType(typeof(Models.Pipelines.CopyMethodPredicate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(Models.Pipelines.CopyMethodPredicate)}"),
+                new TypenameMappingBuilder().WithSourceType(typeof(Models.Pipelines.InheritanceComparisonDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(Models.Pipelines.InheritanceComparisonDelegate)}"),
+                new TypenameMappingBuilder().WithSourceType(typeof(Models.Pipelines.ReflectionInheritanceComparisonDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(Models.Pipelines.ReflectionInheritanceComparisonDelegate)}"),
             ]);
 
     private IEnumerable<TypenameMappingBuilder> CreateCustomTypenameMappings(Type modelType, string entityNamespace, string builderNamespace) =>
@@ -59,10 +59,10 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
                 .WithTargetTypeName($"{entityNamespace}.{modelType.GetEntityClassName()}")
                 .AddMetadata
                 (
-                    new MetadataBuilder().WithValue(builderNamespace).WithName(Pipelines.MetadataNames.CustomBuilderNamespace),
-                    new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(Pipelines.MetadataNames.CustomBuilderName),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(Pipelines.MetadataNames.CustomBuilderSourceExpression),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
+                    new MetadataBuilder().WithValue(builderNamespace).WithName(MetadataNames.CustomBuilderNamespace),
+                    new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(MetadataNames.CustomBuilderName),
+                    new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
+                    new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
                 ),
         ];
 }

@@ -2,7 +2,7 @@
 
 public abstract class ImmutableCSharpClassBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
 {
-    protected ImmutableCSharpClassBase(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    protected ImmutableCSharpClassBase(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

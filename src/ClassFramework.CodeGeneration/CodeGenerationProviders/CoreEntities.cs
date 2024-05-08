@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class CoreEntities : ClassFrameworkCSharpClassBase
 {
-    public CoreEntities(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    public CoreEntities(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

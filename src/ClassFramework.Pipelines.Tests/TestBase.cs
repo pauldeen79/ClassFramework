@@ -157,7 +157,7 @@ public abstract class TestBase : IDisposable
         string? baseClassBuilderNameSpace = null,
         bool allowGenerationWithoutProperties = false,
         Class? baseClass = null,
-        ClassFramework.Pipelines.InheritanceComparisonDelegate? inheritanceComparisonDelegate = null,
+        InheritanceComparisonDelegate? inheritanceComparisonDelegate = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
         =>  CreateSettingsForEntity

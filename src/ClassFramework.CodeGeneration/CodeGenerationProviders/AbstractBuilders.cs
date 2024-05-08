@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractBuilders : ClassFrameworkCSharpClassBase
 {
-    public AbstractBuilders(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    public AbstractBuilders(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

@@ -2,7 +2,7 @@
 
 public class ImmutableCoreBuilderExtensions : ImmutableCSharpClassBase
 {
-    public ImmutableCoreBuilderExtensions(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    public ImmutableCoreBuilderExtensions(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

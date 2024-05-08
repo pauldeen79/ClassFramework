@@ -2,7 +2,7 @@
 
 public class AbstractNonGenericBuilders : ImmutableCSharpClassBase
 {
-    public AbstractNonGenericBuilders(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper) : base(mediator, csharpExpressionDumper)
+    public AbstractNonGenericBuilders(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

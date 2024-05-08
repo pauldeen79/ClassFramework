@@ -2,18 +2,6 @@
 
 public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGenerationProvider
 {
-    protected CsharpClassGeneratorCodeGenerationProviderBase(IMediator mediator, ICsharpExpressionDumper csharpExpressionDumper)
-    {
-        Guard.IsNotNull(mediator);
-        Guard.IsNotNull(csharpExpressionDumper);
-
-        CsharpExpressionDumper = csharpExpressionDumper;
-        Mediator = mediator;
-    }
-
-    protected ICsharpExpressionDumper CsharpExpressionDumper { get; }
-    protected IMediator Mediator { get; }
-
     public abstract string Path { get; }
     public abstract bool RecurseOnDeleteGeneratedFiles { get; }
     public abstract string LastGeneratedFilesFilename { get; }
@@ -38,7 +26,6 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
 
     public abstract Task<IEnumerable<TypeBase>> GetModel();
     public abstract CsharpClassGeneratorSettings Settings { get; }
-
 
     protected virtual string CurrentNamespace => Path.Replace('/', '.');
 }
