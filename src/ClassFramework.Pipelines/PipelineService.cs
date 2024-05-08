@@ -13,8 +13,7 @@ public class PipelineService : IPipelineService
         IPipeline<BuilderExtensionContext> builderExtensionPipeline,
         IPipeline<EntityContext> entityPipeline,
         IPipeline<InterfaceContext> interfacePipeline,
-        IPipeline<Reflection.ReflectionContext> reflectionPipeline
-        )
+        IPipeline<Reflection.ReflectionContext> reflectionPipeline)
     {
         _builderPipeline = builderPipeline;
         _builderExtensionPipeline = builderExtensionPipeline;
