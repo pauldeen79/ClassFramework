@@ -2,7 +2,7 @@
 
 public class AbstractEntities : ImmutableCSharpClassBase
 {
-    public AbstractEntities(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public AbstractEntities(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

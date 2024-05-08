@@ -2,7 +2,7 @@
 
 public class ImmutableCoreEntities : ImmutableCSharpClassBase
 {
-    public ImmutableCoreEntities(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public ImmutableCoreEntities(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

@@ -2,7 +2,7 @@
 
 public class ImmutableCoreBuilders : ImmutableCSharpClassBase
 {
-    public ImmutableCoreBuilders(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public ImmutableCoreBuilders(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

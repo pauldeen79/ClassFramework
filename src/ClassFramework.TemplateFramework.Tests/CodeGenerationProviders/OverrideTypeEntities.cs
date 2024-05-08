@@ -2,7 +2,7 @@
 
 public class OverrideTypeEntities : ImmutableCSharpClassBase
 {
-    public OverrideTypeEntities(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public OverrideTypeEntities(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

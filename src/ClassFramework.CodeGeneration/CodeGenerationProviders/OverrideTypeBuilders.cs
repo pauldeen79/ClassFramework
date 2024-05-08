@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class OverrideTypeBuilders : ClassFrameworkCSharpClassBase
 {
-    public OverrideTypeBuilders(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public OverrideTypeBuilders(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

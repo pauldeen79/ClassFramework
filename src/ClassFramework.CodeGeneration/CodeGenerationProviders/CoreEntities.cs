@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class CoreEntities : ClassFrameworkCSharpClassBase
 {
-    public CoreEntities(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public CoreEntities(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

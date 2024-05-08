@@ -2,7 +2,7 @@
 
 public class AbstractionsBuildersExtensions : ImmutableCSharpClassBase
 {
-    public AbstractionsBuildersExtensions(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public AbstractionsBuildersExtensions(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

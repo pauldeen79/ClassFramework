@@ -2,7 +2,7 @@
 
 public class ObservableCoreEntities : ObservableCSharpClassBase
 {
-    public ObservableCoreEntities(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public ObservableCoreEntities(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

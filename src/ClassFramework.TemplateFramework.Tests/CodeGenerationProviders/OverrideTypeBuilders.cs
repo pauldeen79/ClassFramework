@@ -2,7 +2,7 @@
 
 public class OverrideTypeBuilders : ImmutableCSharpClassBase
 {
-    public OverrideTypeBuilders(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public OverrideTypeBuilders(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractionsBuildersExtensions : ClassFrameworkCSharpClassBase
 {
-    public AbstractionsBuildersExtensions(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public AbstractionsBuildersExtensions(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

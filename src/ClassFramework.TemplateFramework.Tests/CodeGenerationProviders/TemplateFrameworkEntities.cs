@@ -2,7 +2,7 @@
 
 public class TemplateFrameworkEntities : ImmutableCSharpClassBase
 {
-    public TemplateFrameworkEntities(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public TemplateFrameworkEntities(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

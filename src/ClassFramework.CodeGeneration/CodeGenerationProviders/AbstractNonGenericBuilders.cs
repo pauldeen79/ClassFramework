@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractNonGenericBuilders : ClassFrameworkCSharpClassBase
 {
-    public AbstractNonGenericBuilders(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public AbstractNonGenericBuilders(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

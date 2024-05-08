@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class TemplateFrameworkBuilders : ClassFrameworkCSharpClassBase
 {
-    public TemplateFrameworkBuilders(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public TemplateFrameworkBuilders(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

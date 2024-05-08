@@ -2,7 +2,7 @@
 
 public class AbstractNonGenericBuilders : ImmutableCSharpClassBase
 {
-    public AbstractNonGenericBuilders(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public AbstractNonGenericBuilders(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

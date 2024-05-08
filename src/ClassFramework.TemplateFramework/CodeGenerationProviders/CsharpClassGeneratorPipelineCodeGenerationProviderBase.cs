@@ -2,16 +2,13 @@
 
 public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : CsharpClassGeneratorCodeGenerationProviderBase
 {
-    protected CsharpClassGeneratorPipelineCodeGenerationProviderBase(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper)
+    protected CsharpClassGeneratorPipelineCodeGenerationProviderBase(IPipelineService pipelineService)
     {
         Guard.IsNotNull(pipelineService);
-        Guard.IsNotNull(csharpExpressionDumper);
 
-        CsharpExpressionDumper = csharpExpressionDumper;
         PipelineService = pipelineService;
     }
 
-    protected ICsharpExpressionDumper CsharpExpressionDumper { get; }
     protected IPipelineService PipelineService { get; }
 
     public override CsharpClassGeneratorSettings Settings

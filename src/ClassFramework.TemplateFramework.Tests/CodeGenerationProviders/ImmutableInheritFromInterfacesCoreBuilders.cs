@@ -2,7 +2,7 @@
 
 public class ImmutableInheritFromInterfacesCoreBuilders : ImmutableInheritFromInterfacesCSharpClassBase
 {
-    public ImmutableInheritFromInterfacesCoreBuilders(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public ImmutableInheritFromInterfacesCoreBuilders(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 

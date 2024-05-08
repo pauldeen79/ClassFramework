@@ -2,7 +2,7 @@
 
 public class ImmutablePrivateSettersCoreBuilders : ImmutablePrivateSettersCSharpClassBase
 {
-    public ImmutablePrivateSettersCoreBuilders(IPipelineService pipelineService, ICsharpExpressionDumper csharpExpressionDumper) : base(pipelineService, csharpExpressionDumper)
+    public ImmutablePrivateSettersCoreBuilders(IPipelineService pipelineService) : base(pipelineService)
     {
     }
 
