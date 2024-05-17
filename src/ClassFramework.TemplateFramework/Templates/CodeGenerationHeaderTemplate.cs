@@ -2,14 +2,14 @@
 
 public sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<CodeGenerationHeaderViewModel>, IStringBuilderTemplate
 {
-    public void Render(StringBuilder builder)
+    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
         if (!Model.CreateCodeGenerationHeader)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         builder.AppendLine($$"""
@@ -23,5 +23,7 @@ public sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<Code
 // </auto-generated>
 // ------------------------------------------------------------------------------
 """);
+
+        return Task.CompletedTask;
     }
 }

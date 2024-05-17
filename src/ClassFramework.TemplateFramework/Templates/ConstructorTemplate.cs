@@ -2,12 +2,12 @@
 
 public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel>, IStringBuilderTemplate
 {
-    public void Render(StringBuilder builder)
+    public async Task Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        RenderChildTemplatesByModel(Model.Attributes, builder);
+        await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
 
         if (!Model.OmitCode)
         {
@@ -19,7 +19,7 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
         builder.Append(Model.Name);
         builder.Append("(");
 
-        RenderChildTemplatesByModel(Model.Parameters, builder);
+        await RenderChildTemplatesByModel(Model.Parameters, builder, cancellationToken).ConfigureAwait(false);
 
         builder.Append(")");
         builder.Append(Model.ChainCall);
@@ -30,7 +30,7 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
         }
         else
         {
-            builder.RenderMethodBody(Model.CreateIndentation(1), () => RenderChildTemplatesByModel(Model.CodeStatements, builder));
+            builder.RenderMethodBody(Model.CreateIndentation(1), async () => await RenderChildTemplatesByModel(Model.CodeStatements, builder, cancellationToken).ConfigureAwait(false));
             builder.RenderSuppressions(Model.SuppressWarningCodes, "restore", Model.CreateIndentation(1));
         }
     }

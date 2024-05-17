@@ -2,12 +2,12 @@
 
 public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, IStringBuilderTemplate
 {
-    public void Render(StringBuilder builder)
+    public async Task Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        RenderChildTemplatesByModel(Model.Attributes, builder);
+        await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
 
         builder.Append(Model.CreateIndentation(1));
 
@@ -24,7 +24,7 @@ public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, ISt
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("{");
 
-        RenderChildTemplatesByModel(Model.CodeBodyItems, builder);
+        await RenderChildTemplatesByModel(Model.CodeBodyItems, builder, cancellationToken).ConfigureAwait(false);
 
         builder.Append(Model.CreateIndentation(1));
         builder.Append("}");

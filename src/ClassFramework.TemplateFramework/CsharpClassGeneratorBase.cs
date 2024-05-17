@@ -23,20 +23,18 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
 
     public TModel? Model { get; set; }
 
-    protected void RenderChildTemplateByModel(object model, IGenerationEnvironment generationEnvironment)
+    protected async Task RenderChildTemplateByModel(object model, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(Context);
-        Context.Engine.RenderChildTemplate(model, generationEnvironment, Context, new TemplateByModelIdentifier(model));
+        await Context.Engine.RenderChildTemplate(model, generationEnvironment, Context, new TemplateByModelIdentifier(model), cancellationToken).ConfigureAwait(false);
     }
 
-    protected void RenderChildTemplatesByModel(IEnumerable models, StringBuilder builder)
-    {
-        RenderChildTemplatesByModel(models, new StringBuilderEnvironment(builder));
-    }
+    protected Task RenderChildTemplatesByModel(IEnumerable models, StringBuilder builder, CancellationToken cancellationToken)
+        => RenderChildTemplatesByModel(models, new StringBuilderEnvironment(builder), cancellationToken);
 
-    protected void RenderChildTemplatesByModel(IEnumerable models, IGenerationEnvironment generationEnvironment)
+    protected async Task RenderChildTemplatesByModel(IEnumerable models, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(Context);
-        Context.Engine.RenderChildTemplates(models, generationEnvironment, Context, model => new TemplateByModelIdentifier(model));
+        await Context.Engine.RenderChildTemplates(models, generationEnvironment, Context, model => new TemplateByModelIdentifier(model), cancellationToken).ConfigureAwait(false);
     }
 }

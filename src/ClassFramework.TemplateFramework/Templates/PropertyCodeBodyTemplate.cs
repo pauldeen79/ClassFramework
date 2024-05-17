@@ -2,7 +2,7 @@
 
 public class PropertyCodeBodyTemplate : CsharpClassGeneratorBase<PropertyCodeBodyViewModel>, IStringBuilderTemplate
 {
-    public void Render(StringBuilder builder)
+    public async Task Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(Model);
         Guard.IsNotNull(builder);
@@ -19,7 +19,7 @@ public class PropertyCodeBodyTemplate : CsharpClassGeneratorBase<PropertyCodeBod
             builder.AppendLine();
             builder.Append(Model.CreateIndentation(2));
             builder.AppendLine("{");
-            RenderChildTemplatesByModel(Model.CodeStatements, builder);
+            await RenderChildTemplatesByModel(Model.CodeStatements, builder, cancellationToken).ConfigureAwait(false);
             builder.Append(Model.CreateIndentation(2));
             builder.AppendLine("}");
         }

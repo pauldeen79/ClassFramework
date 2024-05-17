@@ -2,10 +2,12 @@
 
 public class NewLineTemplate : CsharpClassGeneratorBase<NewLineViewModel>, IStringBuilderTemplate
 {
-    public void Render(StringBuilder builder)
+    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
 
         builder.AppendLine();
+
+        return Task.CompletedTask;
     }
 }
