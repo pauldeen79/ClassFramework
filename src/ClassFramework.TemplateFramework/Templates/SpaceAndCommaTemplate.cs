@@ -2,10 +2,12 @@
 
 public class SpaceAndCommaTemplate : CsharpClassGeneratorBase<SpaceAndCommaViewModel>, IStringBuilderTemplate
 {
-    public void Render(StringBuilder builder)
+    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
 
         builder.Append(", ");
+
+        return Task.CompletedTask;
     }
 }

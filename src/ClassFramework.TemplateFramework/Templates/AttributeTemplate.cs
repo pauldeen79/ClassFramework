@@ -2,7 +2,7 @@
 
 public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewModel>, IStringBuilderTemplate
 {
-    public void Render(StringBuilder builder)
+    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -25,5 +25,7 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
         {
             builder.Append(" ");
         }
+
+        return Task.CompletedTask;
     }
 }

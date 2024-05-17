@@ -2,7 +2,7 @@
 
 public sealed class UsingsTemplate : CsharpClassGeneratorBase<UsingsViewModel>, IStringBuilderTemplate
 {
-    public void Render(StringBuilder builder)
+    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -18,5 +18,7 @@ public sealed class UsingsTemplate : CsharpClassGeneratorBase<UsingsViewModel>, 
         {
             builder.AppendLine();
         }
+
+        return Task.CompletedTask;
     }
 }

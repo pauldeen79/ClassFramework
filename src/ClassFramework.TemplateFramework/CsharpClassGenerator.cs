@@ -2,7 +2,7 @@
 
 public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
 {
-    public void Render(IMultipleContentBuilder builder)
+    public async Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -16,15 +16,15 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
             // Generate a single generation environment, so we create only a single file in the multiple content builder environment.
             singleStringBuilder = builder.AddContent(Context.DefaultFilename, Model.Settings.SkipWhenFileExists).Builder;
             generationEnvironment = new StringBuilderEnvironment(singleStringBuilder);
-            RenderHeader(generationEnvironment);
+            await RenderHeader(generationEnvironment, cancellationToken).ConfigureAwait(false);
         }
 
         singleStringBuilder?.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
-        RenderNamespaceHierarchy(generationEnvironment, singleStringBuilder);
+        await RenderNamespaceHierarchy(generationEnvironment, singleStringBuilder, cancellationToken).ConfigureAwait(false);
         singleStringBuilder?.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas);
     }
 
-    public void Render(StringBuilder builder)
+    public async Task Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -35,22 +35,22 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
         }
 
         var generationEnvironment = new StringBuilderEnvironment(builder);
-        RenderHeader(generationEnvironment);
+        await RenderHeader(generationEnvironment, cancellationToken).ConfigureAwait(false);
         generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
-        RenderNamespaceHierarchy(generationEnvironment, builder);
+        await RenderNamespaceHierarchy(generationEnvironment, builder, cancellationToken);
         generationEnvironment.Builder.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas);
     }
 
-    private void RenderHeader(IGenerationEnvironment generationEnvironment)
+    private async Task RenderHeader(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
-        RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment);
+        await RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment, cancellationToken);
         if (!Model.Settings.EnableGlobalUsings)
         {
-            RenderChildTemplateByModel(Model.Usings, generationEnvironment);
+            await RenderChildTemplateByModel(Model.Usings, generationEnvironment, cancellationToken);
         }
     }
 
-    private void RenderNamespaceHierarchy(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder)
+    private async Task RenderNamespaceHierarchy(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder, CancellationToken cancellationToken)
     {
         foreach (var @namespace in Model!.Namespaces)
         {
@@ -60,7 +60,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
                 singleStringBuilder.AppendLine("{"); // open namespace
             }
 
-            RenderChildTemplatesByModel(Model.GetTypes(@namespace), generationEnvironment);
+            await RenderChildTemplatesByModel(Model.GetTypes(@namespace), generationEnvironment, cancellationToken);
 
             if (singleStringBuilder is not null && !string.IsNullOrEmpty(@namespace.Key))
             {

@@ -2,7 +2,7 @@
 
 public class StringCodeStatementTemplate : CsharpClassGeneratorBase<StringCodeStatementViewModel>, IStringBuilderTemplate
 {
-    public void Render(StringBuilder builder)
+    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -10,5 +10,7 @@ public class StringCodeStatementTemplate : CsharpClassGeneratorBase<StringCodeSt
         builder.Append(Model.CreateIndentation(Model.AdditionalIndents));
 
         builder.AppendLine(Model.Statement);
+
+        return Task.CompletedTask;
     }
 }

@@ -2,7 +2,7 @@
 
 public class EnumerationMemberTemplate : CsharpClassGeneratorBase<EnumerationMemberViewModel>, IStringBuilderTemplate
 {
-    public void Render(StringBuilder builder)
+    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -11,5 +11,7 @@ public class EnumerationMemberTemplate : CsharpClassGeneratorBase<EnumerationMem
         builder.Append(Model.Name);
         builder.Append(Model.ValueExpression);
         builder.AppendLine(",");
+
+        return Task.CompletedTask;
     }
 }
