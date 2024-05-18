@@ -39,7 +39,7 @@ internal static class Program
 
         // Generate code
         var tasks = instances
-            .Select(x => engine.Generate(x, new MultipleContentBuilderEnvironment(), new CodeGenerationSettings(basePath, Path.Combine(x.Path, $"{x.GetType().Name}.template.generated.cs")), CancellationToken.None))
+            .Select(x => engine.Generate(x, new MultipleContentBuilderEnvironment(), new CodeGenerationSettings(basePath, Path.Combine(x.Path, $"{x.GetType().Name}.template.generated.cs"))))
             .ToArray();
         await Task.WhenAll(tasks).ConfigureAwait(false);
 
