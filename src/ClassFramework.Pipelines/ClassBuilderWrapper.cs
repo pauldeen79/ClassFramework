@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Builders;
+﻿namespace ClassFramework.Pipelines;
 
 public class ClassBuilderWrapper : IBuilder<Class>, IBuilder<IConcreteType>
 {
