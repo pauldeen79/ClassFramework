@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Builders;
+﻿namespace ClassFramework.Pipelines;
 
 public class InterfaceBuilderWrapper : IBuilder<Domain.Types.Interface>
 {
