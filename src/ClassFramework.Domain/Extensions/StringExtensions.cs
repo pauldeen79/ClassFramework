@@ -90,7 +90,7 @@ public static class StringExtensions
             _ => instance
                 .ReplaceGenericArgument("System.Char", WellKnownTypes.Char)
                 .ReplaceGenericArgument("System.String", WellKnownTypes.String)
-                .ReplaceGenericArgument("System.Boolean",  WellKnownTypes.Boolean)
+                .ReplaceGenericArgument("System.Boolean", WellKnownTypes.Boolean)
                 .ReplaceGenericArgument("System.Object", WellKnownTypes.Object)
                 .ReplaceGenericArgument("System.Decimal", WellKnownTypes.Decimal)
                 .ReplaceGenericArgument("System.Double", WellKnownTypes.Double)
@@ -98,7 +98,7 @@ public static class StringExtensions
                 .ReplaceGenericArgument("System.Byte", WellKnownTypes.Byte)
                 .ReplaceGenericArgument("System.SByte", WellKnownTypes.SignedByte)
                 .ReplaceGenericArgument("System.Int16", WellKnownTypes.Short)
-                .ReplaceGenericArgument("System.UInt16",  WellKnownTypes.UnsignedShort)
+                .ReplaceGenericArgument("System.UInt16", WellKnownTypes.UnsignedShort)
                 .ReplaceGenericArgument("System.Int32", WellKnownTypes.Int)
                 .ReplaceGenericArgument("System.UInt32", WellKnownTypes.UnsignedInt)
                 .ReplaceGenericArgument("System.Int64", WellKnownTypes.Long)
@@ -443,7 +443,7 @@ public static class StringExtensions
         "abstract",
         "as",
         "base",
-         WellKnownTypes.Boolean,
+        WellKnownTypes.Boolean,
         "break",
         WellKnownTypes.Byte,
         "case",
@@ -511,7 +511,7 @@ public static class StringExtensions
         WellKnownTypes.UnsignedLong,
         "unchecked",
         "unsafe",
-         WellKnownTypes.UnsignedShort,
+        WellKnownTypes.UnsignedShort,
         "using",
         "virtual",
         "void",
