@@ -2,7 +2,7 @@
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddPipelines(this IServiceCollection services)
+    public static IServiceCollection AddClassFrameworkPipelines(this IServiceCollection services)
         => services
             .AddBuilderPipeline()
             .AddBuilderExtensionPipeline()

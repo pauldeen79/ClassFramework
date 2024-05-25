@@ -19,7 +19,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddCsharpExpressionDumper()
             .AddClassFrameworkTemplates()
             .AddParsers()
-            .AddPipelines()
+            .AddClassFrameworkPipelines()
             .AddScoped(_ => templateFactory)
             .AddScoped(_ => templateProviderPluginFactory)
             .AddScoped<TestCodeGenerationProvider>()

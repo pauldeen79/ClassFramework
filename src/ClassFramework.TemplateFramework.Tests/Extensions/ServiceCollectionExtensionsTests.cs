@@ -11,7 +11,7 @@ public class ServiceCollectionExtensionsTests
             var serviceCollection = new ServiceCollection()
                 .AddCsharpExpressionDumper() // dependency of some templates
                 .AddParsers()
-                .AddPipelines()
+                .AddClassFrameworkPipelines()
                 .AddClassFrameworkTemplates();
 
             // Act & Assert

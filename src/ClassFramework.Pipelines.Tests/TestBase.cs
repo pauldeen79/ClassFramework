@@ -24,7 +24,7 @@ public abstract class TestBase : IDisposable
             {
                 Provider = new ServiceCollection()
                     .AddParsers()
-                    .AddPipelines()
+                    .AddClassFrameworkPipelines()
                     .AddCsharpExpressionDumper()
                     .BuildServiceProvider();
                 Scope = Provider.CreateScope();
