@@ -26,38 +26,38 @@ public class PipelineService : IPipelineService
     {
         context = context.IsNotNull(nameof(context));
         var result = await _builderExtensionPipeline.Process(context, cancellationToken).ConfigureAwait(false);
-        return ProccessResult(result, context.Builder, context.Builder.Build);
+        return ProcessResult(result, context.Builder, context.Builder.Build);
     }
 
     public async Task<Result<TypeBase>> Process(BuilderContext context, CancellationToken cancellationToken)
     {
         context = context.IsNotNull(nameof(context));
         var result = await _builderPipeline.Process(context, cancellationToken).ConfigureAwait(false);
-        return ProccessResult(result, context.Builder, context.Builder.Build);
+        return ProcessResult(result, context.Builder, context.Builder.Build);
     }
 
     public async Task<Result<TypeBase>> Process(EntityContext context, CancellationToken cancellationToken)
     {
         context = context.IsNotNull(nameof(context));
         var result = await _entityPipeline.Process(context, cancellationToken).ConfigureAwait(false);
-        return ProccessResult(result, context.Builder, context.Builder.Build);
+        return ProcessResult(result, context.Builder, context.Builder.Build);
     }
 
     public async Task<Result<Domain.Types.Interface>> Process(InterfaceContext context, CancellationToken cancellationToken)
     {
         context = context.IsNotNull(nameof(context));
         var result = await _interfacePipeline.Process(context, cancellationToken).ConfigureAwait(false);
-        return ProccessResult(result, context.Builder, context.Builder.BuildTyped);
+        return ProcessResult(result, context.Builder, context.Builder.BuildTyped);
     }
 
     public async Task<Result<TypeBase>> Process(Reflection.ReflectionContext context, CancellationToken cancellationToken)
     {
         context = context.IsNotNull(nameof(context));
         var result = await _reflectionPipeline.Process(context, cancellationToken).ConfigureAwait(false);
-        return ProccessResult(result, context.Builder, context.Builder.Build);
+        return ProcessResult(result, context.Builder, context.Builder.Build);
     }
 
-    private static Result<TResult> ProccessResult<TResult>(Result result, object responseBuilder, Func<TResult> dlg)
+    private static Result<TResult> ProcessResult<TResult>(Result result, object responseBuilder, Func<TResult> dlg)
     {
         if (!result.IsSuccessful())
         {
