@@ -2,7 +2,7 @@
 
 public class ContextBaseTests : TestBase
 {
-    protected ContextBase<string, string> CreateSut(PipelineSettings settings) => new TestContext(settings);
+    protected ContextBase<string> CreateSut(PipelineSettings settings) => new TestContext(settings);
 
     public class GetMappingMetadata : ContextBaseTests
     {
@@ -62,20 +62,12 @@ public class ContextBaseTests : TestBase
         }
     }
 
-    private sealed class TestContext : ContextBase<string, string>
+    private sealed class TestContext : ContextBase<string>
     {
         public TestContext(PipelineSettings settings) : base(string.Empty, settings, CultureInfo.InvariantCulture)
         {
         }
 
         protected override string NewCollectionTypeName => string.Empty;
-
-        protected override IBuilder<string> CreateResponseBuilder() => new StringBuilderWrapper();
-
-        private sealed class StringBuilderWrapper : IBuilder<string>
-        {
-            public StringBuilder Builder { get; } = new();
-            public string Build() => Builder.ToString();
-        }
     }
 }

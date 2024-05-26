@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Reflection;
 
-public class ReflectionContext : ContextBase<Type, TypeBase>
+public class ReflectionContext : ContextBase<Type>
 {
     public ReflectionContext(Type sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
         : base(sourceModel, settings, formatProvider)
@@ -9,8 +9,6 @@ public class ReflectionContext : ContextBase<Type, TypeBase>
     }
 
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
-
-    protected override IBuilder<TypeBase> CreateResponseBuilder() => _wrappedBuilder;
 
     public TypeBaseBuilder Builder => _wrappedBuilder.Builder;
 

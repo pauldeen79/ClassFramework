@@ -93,9 +93,9 @@ public static class PropertyExtensions
             || settings.CreateAsObservable;
     }
 
-    public static Result<FormattableStringParserResult> GetBuilderConstructorInitializer<TSourceModel, TBuilder>(
+    public static Result<FormattableStringParserResult> GetBuilderConstructorInitializer<TSourceModel>(
         this Property property,
-        ContextBase<TSourceModel, TBuilder> context,
+        ContextBase<TSourceModel> context,
         object parentChildContext,
         string mappedTypeName,
         string newCollectionTypeName,
