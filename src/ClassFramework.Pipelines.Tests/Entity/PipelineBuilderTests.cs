@@ -65,8 +65,6 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
 
     public class IntegrationTests : PipelineBuilderTests
     {
-        private ClassBuilder Model { get; } = new();
-
         [Fact]
         public async Task Creates_ReadOnly_Entity_With_NamespaceMapping()
         {
@@ -336,7 +334,32 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
 
             context.Builder.Methods.Should().ContainSingle(x => x.Name == "Validate");
         }
-        
+
+        [Fact]
+        public async Task Creates_Entity_With_IEquatable_Implementation()
+        {
+            // Arrange
+            var model = CreateModelWithCustomTypeProperties();
+            var settings = CreateSettingsForEntity(implementIEquatable: true);
+            var context = CreateContext(model, settings);
+
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = await sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+
+            context.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo(
+                "Equals",
+                "Equals",
+                "GetHashCode",
+                "==",
+                "!=",
+                "ToBuilder");
+        }
+
         private static EntityContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
             => new(model, settings.Build(), CultureInfo.InvariantCulture);
     }

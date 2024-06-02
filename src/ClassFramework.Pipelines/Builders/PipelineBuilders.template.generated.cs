@@ -213,6 +213,8 @@ namespace ClassFramework.Pipelines.Builders
 
         private bool _addSetters;
 
+        private bool _implementIEquatable;
+
         private bool _allowGenerationWithoutProperties;
 
         private System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.AttributeInitializerDelegate> _attributeInitializers;
@@ -406,6 +408,19 @@ namespace ClassFramework.Pipelines.Builders
             {
                 _addSetters = value;
                 HandlePropertyChanged(nameof(AddSetters));
+            }
+        }
+
+        public bool ImplementIEquatable
+        {
+            get
+            {
+                return _implementIEquatable;
+            }
+            set
+            {
+                _implementIEquatable = value;
+                HandlePropertyChanged(nameof(ImplementIEquatable));
             }
         }
 
@@ -1111,6 +1126,7 @@ namespace ClassFramework.Pipelines.Builders
             _addNullChecks = source.AddNullChecks;
             _addPublicParameterlessConstructor = source.AddPublicParameterlessConstructor;
             _addSetters = source.AddSetters;
+            _implementIEquatable = source.ImplementIEquatable;
             _allowGenerationWithoutProperties = source.AllowGenerationWithoutProperties;
             if (source.AttributeInitializers is not null) foreach (var item in source.AttributeInitializers) _attributeInitializers.Add(item);
             _baseClass = source.BaseClass?.ToBuilder()!;
@@ -1197,7 +1213,7 @@ namespace ClassFramework.Pipelines.Builders
 
         public ClassFramework.Pipelines.PipelineSettings Build()
         {
-            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, InheritFromInterfaces, CreateAsObservable, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), BuilderNewCollectionTypeName, EntityNewCollectionTypeName, NonCollectionInitializationStatementFormatString, CreateAsPartial, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseExceptionThrowIfNull, ValidateArguments, UseDefaultValueAttributeValuesForBuilderInitialization);
+            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, ImplementIEquatable, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, InheritFromInterfaces, CreateAsObservable, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), BuilderNewCollectionTypeName, EntityNewCollectionTypeName, NonCollectionInitializationStatementFormatString, CreateAsPartial, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseExceptionThrowIfNull, ValidateArguments, UseDefaultValueAttributeValuesForBuilderInitialization);
         }
 
         partial void SetDefaultValues();
@@ -1281,6 +1297,12 @@ namespace ClassFramework.Pipelines.Builders
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithAddSetters(bool addSetters = true)
         {
             AddSetters = addSetters;
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithImplementIEquatable(bool implementIEquatable = true)
+        {
+            ImplementIEquatable = implementIEquatable;
             return this;
         }
 

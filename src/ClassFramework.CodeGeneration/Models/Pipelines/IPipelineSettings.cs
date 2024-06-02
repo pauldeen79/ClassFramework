@@ -9,6 +9,7 @@ internal interface IPipelineSettings
     bool AddNullChecks { get; }
     bool AddPublicParameterlessConstructor { get; }
     bool AddSetters { get; }
+    bool ImplementIEquatable { get; }
     bool AllowGenerationWithoutProperties { get; }
     [Required] IReadOnlyCollection<AttributeInitializerDelegate> AttributeInitializers { get; }
     [ValidateObject] ITypeBase? BaseClass { get; }

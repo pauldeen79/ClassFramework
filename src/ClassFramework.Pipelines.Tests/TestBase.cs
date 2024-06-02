@@ -218,6 +218,7 @@ public abstract class TestBase : IDisposable
         bool addBackingFields = false,
         bool createAsObservable = false,
         bool inheritFromInterfaces = false,
+        bool implementIEquatable = false,
         SubVisibility setterVisibility = SubVisibility.InheritFromParent,
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
         IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
@@ -232,6 +233,7 @@ public abstract class TestBase : IDisposable
             .WithCreateAsObservable(createAsObservable)
             .WithInheritFromInterfaces(inheritFromInterfaces)
             .WithAddNullChecks(addNullChecks)
+            .WithImplementIEquatable(implementIEquatable)
             .WithUseExceptionThrowIfNull(useExceptionThrowIfNull)
             .WithEnableInheritance(enableEntityInheritance)
             .WithIsAbstract(isAbstract)
