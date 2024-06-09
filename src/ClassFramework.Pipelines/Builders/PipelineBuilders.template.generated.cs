@@ -313,6 +313,8 @@ namespace ClassFramework.Pipelines.Builders
 
         private bool _useExceptionThrowIfNull;
 
+        private bool _usePatternMatchingForNullChecks;
+
         private ClassFramework.Pipelines.Domains.ArgumentValidationType _validateArguments;
 
         private bool _useDefaultValueAttributeValuesForBuilderInitialization;
@@ -1089,6 +1091,20 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool UsePatternMatchingForNullChecks
+        {
+            get
+            {
+                return _usePatternMatchingForNullChecks;
+            }
+            set
+            {
+                _usePatternMatchingForNullChecks = value;
+                HandlePropertyChanged(nameof(UsePatternMatchingForNullChecks));
+            }
+        }
+
         public ClassFramework.Pipelines.Domains.ArgumentValidationType ValidateArguments
         {
             get
@@ -1191,6 +1207,7 @@ namespace ClassFramework.Pipelines.Builders
             if (source.TypenameMappings is not null) foreach (var item in source.TypenameMappings.Select(x => x.ToBuilder())) _typenameMappings.Add(item);
             _useBaseClassFromSourceModel = source.UseBaseClassFromSourceModel;
             _useExceptionThrowIfNull = source.UseExceptionThrowIfNull;
+            _usePatternMatchingForNullChecks = source.UsePatternMatchingForNullChecks;
             _validateArguments = source.ValidateArguments;
             _useDefaultValueAttributeValuesForBuilderInitialization = source.UseDefaultValueAttributeValuesForBuilderInitialization;
             _iEquatableItemType = source.IEquatableItemType;
@@ -1224,12 +1241,13 @@ namespace ClassFramework.Pipelines.Builders
             _setMethodNameFormatString = string.Empty;
             _toBuilderFormatString = string.Empty;
             _toTypedBuilderFormatString = string.Empty;
+            _usePatternMatchingForNullChecks = true;
             SetDefaultValues();
         }
 
         public ClassFramework.Pipelines.PipelineSettings Build()
         {
-            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, ImplementIEquatable, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, InheritFromInterfaces, CreateAsObservable, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), BuilderNewCollectionTypeName, EntityNewCollectionTypeName, NonCollectionInitializationStatementFormatString, CreateAsPartial, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseExceptionThrowIfNull, ValidateArguments, UseDefaultValueAttributeValuesForBuilderInitialization, IEquatableItemType);
+            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, ImplementIEquatable, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, InheritFromInterfaces, CreateAsObservable, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), BuilderNewCollectionTypeName, EntityNewCollectionTypeName, NonCollectionInitializationStatementFormatString, CreateAsPartial, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseExceptionThrowIfNull, UsePatternMatchingForNullChecks, ValidateArguments, UseDefaultValueAttributeValuesForBuilderInitialization, IEquatableItemType);
         }
 
         partial void SetDefaultValues();
@@ -1617,6 +1635,12 @@ namespace ClassFramework.Pipelines.Builders
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithUseExceptionThrowIfNull(bool useExceptionThrowIfNull = true)
         {
             UseExceptionThrowIfNull = useExceptionThrowIfNull;
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithUsePatternMatchingForNullChecks(bool usePatternMatchingForNullChecks = true)
+        {
+            UsePatternMatchingForNullChecks = usePatternMatchingForNullChecks;
             return this;
         }
 

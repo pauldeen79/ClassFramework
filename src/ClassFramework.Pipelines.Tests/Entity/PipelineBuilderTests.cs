@@ -155,6 +155,53 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
         }
 
         [Fact]
+        public async Task Creates_ReadOnly_Entity_With_NamespaceMapping_And_NullCHecks_Without_PatternMatching()
+        {
+            // Arrange
+            var model = CreateModelWithCustomTypeProperties();
+            var namespaceMappings = CreateNamespaceMappings();
+            var settings = CreateSettingsForEntity(
+                namespaceMappings: namespaceMappings,
+                addNullChecks: true,
+                enableNullableReferenceTypes: true,
+                newCollectionTypeName: typeof(IReadOnlyCollection<>).WithoutGenerics(),
+                collectionTypeName: typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
+                usePatternMatchingForNullChecks: false
+                );
+            var context = CreateContext(model, settings);
+
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = await sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+
+            context.Builder.Name.Should().Be("MyClass");
+            context.Builder.Namespace.Should().Be("MyNamespace");
+            context.Builder.Interfaces.Should().BeEmpty();
+
+            context.Builder.Constructors.Should().ContainSingle();
+            var copyConstructor = context.Builder.Constructors.Single();
+            copyConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "if (property3 == null) throw new System.ArgumentNullException(nameof(property3));",
+                "if (property5 == null) throw new System.ArgumentNullException(nameof(property5));",
+                "if (property7 == null) throw new System.ArgumentNullException(nameof(property7));",
+                "this.Property1 = property1;",
+                "this.Property2 = property2;",
+                "this.Property3 = property3;",
+                "this.Property4 = property4;",
+                "this.Property5 = property5;",
+                "this.Property6 = property6;",
+                "this.Property7 = new CrossCutting.Common.ReadOnlyValueCollection<MyNamespace.MyClass>(property7);",
+                "this.Property8 = property8 == null ? null : new CrossCutting.Common.ReadOnlyValueCollection<MyNamespace.MyClass>(property8);"
+            );
+        }
+
+        [Fact]
         public async Task Creates_Observable_Entity_With_NamespaceMapping()
         {
             // Arrange

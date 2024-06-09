@@ -242,6 +242,7 @@ public abstract class TestBase : IDisposable
         bool createAsObservable = false,
         bool inheritFromInterfaces = false,
         bool implementIEquatable = false,
+        bool usePatternMatchingForNullChecks = true,
         IEquatableItemType iEquatableItemType = IEquatableItemType.Properties,
         SubVisibility setterVisibility = SubVisibility.InheritFromParent,
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
@@ -266,6 +267,7 @@ public abstract class TestBase : IDisposable
             .WithValidateArguments(validateArguments)
             .WithCollectionTypeName(collectionTypeName)
             .WithAddFullConstructor(addFullConstructor)
+            .WithUsePatternMatchingForNullChecks(usePatternMatchingForNullChecks)
             .WithAddPublicParameterlessConstructor(addPublicParameterlessConstructor)
             .WithEntityNamespaceFormatString(entityNamespaceFormatString)
             .WithEntityNameFormatString(entityNameFormatString)

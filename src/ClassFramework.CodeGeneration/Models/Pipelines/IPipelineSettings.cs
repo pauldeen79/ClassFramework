@@ -59,6 +59,7 @@ internal interface IPipelineSettings
     [Required]IReadOnlyCollection<ITypenameMapping> TypenameMappings { get; }
     bool UseBaseClassFromSourceModel { get; }
     bool UseExceptionThrowIfNull { get; }
+    [DefaultValue(true)] bool UsePatternMatchingForNullChecks { get; }
     ArgumentValidationType ValidateArguments { get; }
     bool UseDefaultValueAttributeValuesForBuilderInitialization { get; }
     IEquatableItemType IEquatableItemType { get; }
