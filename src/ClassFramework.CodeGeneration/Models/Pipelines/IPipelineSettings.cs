@@ -61,4 +61,5 @@ internal interface IPipelineSettings
     bool UseExceptionThrowIfNull { get; }
     ArgumentValidationType ValidateArguments { get; }
     bool UseDefaultValueAttributeValuesForBuilderInitialization { get; }
+    IEquatableItemType IEquatableItemType { get; }
 }

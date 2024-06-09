@@ -37,6 +37,11 @@ public class AddEquatableMembersComponent : IPipelineComponent<EntityContext>
             return Task.FromResult<Result>(nameResult);
         }
 
+        var getHashCodeStatements =
+            context.Request.Settings.IEquatableItemType == IEquatableItemType.Fields
+            ? CreateHashCodeStatements(context.Request.SourceModel.Fields)
+            : CreateHashCodeStatements(context.Request.SourceModel.Properties);
+
         context.Request.Builder
             .AddInterfaces($"IEquatable<{nameResult.Value}>")
             .AddMethods(
@@ -53,7 +58,7 @@ public class AddEquatableMembersComponent : IPipelineComponent<EntityContext>
                     .AddParameter("other", nameResult.Value!)
                     .AddStringCodeStatements(
                         "if (other is null) return false;",
-                        $"return {CreateEqualsCode(context.Request.SourceModel)};"),
+                        $"return {CreateEqualsCode(context.Request.Settings.IEquatableItemType == IEquatableItemType.Fields ? context.Request.SourceModel.Fields : context.Request.SourceModel.Properties)};"),
 
                 new MethodBuilder()
                     .WithReturnType(typeof(int))
@@ -64,7 +69,7 @@ public class AddEquatableMembersComponent : IPipelineComponent<EntityContext>
                         "{",
                         "    int hash = 17;"
                     )
-                    .AddStringCodeStatements(context.Request.SourceModel.Fields.Select(x => $"    hash = hash * 23 + {CreateHashCodeStatement(x)};"))
+                    .AddStringCodeStatements(getHashCodeStatements)
                     .AddStringCodeStatements(
                         "    return hash;",
                         "}"),
@@ -76,7 +81,7 @@ public class AddEquatableMembersComponent : IPipelineComponent<EntityContext>
                     .WithOperator()
                     .AddParameter("left", context.Request.SourceModel.Name)
                     .AddParameter("right", context.Request.SourceModel.Name)
-                    .AddStringCodeStatements($"return EqualityComparer<{context.Request.SourceModel.Name}>.Default.Equals(left, right);"),
+                    .AddStringCodeStatements($"return {typeof(EqualityComparer<>).WithoutGenerics()}<{context.Request.SourceModel.Name}>.Default.Equals(left, right);"),
 
                 new MethodBuilder()
                     .WithName("!=")
@@ -90,54 +95,16 @@ public class AddEquatableMembersComponent : IPipelineComponent<EntityContext>
         return Task.FromResult(Result.Continue());
     }
 
-    private string CreateHashCodeStatement(Field field)
-        => field.IsNullable(true) // note that nullable reference type does not matter in this context, we just want to know if we can do a null check
-            ? $"{field.Name} is not null ? {field.Name}.GetHashCode() : 0"
-            : $"{field.Name}.GetHashCode()";
+    private IEnumerable<string> CreateHashCodeStatements<T>(IEnumerable<T> items)
+        where T : ITypeContainer, INameContainer
+        => items.Select(x => $"    hash = hash * 23 + {CreateHashCodeStatement(x)};");
 
-    private string CreateEqualsCode(TypeBase sourceModel)
-        => string.Join($"{Environment.NewLine}            && ", sourceModel.Fields.Select(x => $"{x.Name} == other.{x.Name}"));
+    private string CreateHashCodeStatement<T>(T item)
+        where T : ITypeContainer, INameContainer
+        => item.IsNullable(true) // note that nullable reference type setting does not matter in this context, we just want to know if we can do a null check
+            ? $"{item.Name} is not null ? {item.Name}.GetHashCode() : 0"
+            : $"{item.Name}.GetHashCode()";
+
+    private string CreateEqualsCode(IEnumerable<INameContainer> items)
+        => string.Join($"{Environment.NewLine}            && ", items.Select(x => $"{x.Name} == other.{x.Name}"));
 }
-/*
-public class MyClass : IEquatable<MyClass>
-{
-    public int Property1 { get; set; }
-    public string Property2 { get; set; }
-
-    public override bool Equals(object obj)
-    {
-        return Equals(obj as MyClass);
-    }
-
-    public bool Equals(MyClass other)
-    {
-        if (other == null) return false;
-        return Property1 == other.Property1 && Property2 == other.Property2;
-    }
-
-    public override int GetHashCode()
-    {
-        unchecked // Overflow is fine, just wrap
-        {
-            int hash = 17;
-            hash = hash * 23 + Property1.GetHashCode();
-            hash = hash * 23 + (Property2 != null ? Property2.GetHashCode() : 0);
-            return hash;
-        }
-    }
-
-    public static bool operator ==(MyClass left, MyClass right)
-    {
-        if (ReferenceEquals(left, null))
-            return ReferenceEquals(right, null);
-
-        return left.Equals(right);
-    }
-
-    public static bool operator !=(MyClass left, MyClass right)
-    {
-        return !(left == right);
-    }
-}
-
- */

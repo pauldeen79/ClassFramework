@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests;
+﻿using ClassFramework.Pipelines.Domains;
+
+namespace ClassFramework.Pipelines.Tests;
 
 public abstract class TestBase : IDisposable
 {
@@ -95,19 +97,40 @@ public abstract class TestBase : IDisposable
             )
             .BuildTyped();
 
-    protected static Class CreateModelWithCustomTypeProperties()
-        => new ClassBuilder()
+    protected static Class CreateModelWithCustomTypeProperties(IEquatableItemType itemType = IEquatableItemType.Properties)
+    {
+        var builder = new ClassBuilder()
             .WithName("MyClass")
-            .WithNamespace("MySourceNamespace")
-            .AddProperties(new PropertyBuilder().WithName("Property1").WithType(typeof(int)))
-            .AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithIsNullable())
-            .AddProperties(new PropertyBuilder().WithName("Property3").WithType(typeof(string)))
-            .AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(string)).WithIsNullable())
-            .AddProperties(new PropertyBuilder().WithName("Property5").WithTypeName("MySourceNamespace.MyClass"))
-            .AddProperties(new PropertyBuilder().WithName("Property6").WithTypeName("MySourceNamespace.MyClass").WithIsNullable())
-            .AddProperties(new PropertyBuilder().WithName("Property7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")))
-            .AddProperties(new PropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")).WithIsNullable())
-            .BuildTyped();
+            .WithNamespace("MySourceNamespace");
+
+        if (itemType == IEquatableItemType.Properties)
+        {
+            builder
+                .AddProperties(new PropertyBuilder().WithName("Property1").WithType(typeof(int)))
+                .AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithIsNullable())
+                .AddProperties(new PropertyBuilder().WithName("Property3").WithType(typeof(string)))
+                .AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(string)).WithIsNullable())
+                .AddProperties(new PropertyBuilder().WithName("Property5").WithTypeName("MySourceNamespace.MyClass"))
+                .AddProperties(new PropertyBuilder().WithName("Property6").WithTypeName("MySourceNamespace.MyClass").WithIsNullable())
+                .AddProperties(new PropertyBuilder().WithName("Property7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")))
+                .AddProperties(new PropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")).WithIsNullable());
+        }
+
+        if (itemType == IEquatableItemType.Fields)
+        {
+            builder
+                .AddFields(new FieldBuilder().WithName("_field1").WithType(typeof(int)))
+                .AddFields(new FieldBuilder().WithName("_field2").WithType(typeof(int)).WithIsNullable())
+                .AddFields(new FieldBuilder().WithName("_field3").WithType(typeof(string)))
+                .AddFields(new FieldBuilder().WithName("_field4").WithType(typeof(string)).WithIsNullable())
+                .AddFields(new FieldBuilder().WithName("_field5").WithTypeName("MySourceNamespace.MyClass"))
+                .AddFields(new FieldBuilder().WithName("_field6").WithTypeName("MySourceNamespace.MyClass").WithIsNullable())
+                .AddFields(new FieldBuilder().WithName("_field7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")))
+                .AddFields(new FieldBuilder().WithName("_field8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")).WithIsNullable());
+        }
+
+        return builder.BuildTyped();
+    }
 
     protected static Domain.Types.Interface CreateInterfaceModelWithCustomTypeProperties()
         => new InterfaceBuilder()
@@ -219,6 +242,7 @@ public abstract class TestBase : IDisposable
         bool createAsObservable = false,
         bool inheritFromInterfaces = false,
         bool implementIEquatable = false,
+        IEquatableItemType iEquatableItemType = IEquatableItemType.Properties,
         SubVisibility setterVisibility = SubVisibility.InheritFromParent,
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
         IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
@@ -234,6 +258,7 @@ public abstract class TestBase : IDisposable
             .WithInheritFromInterfaces(inheritFromInterfaces)
             .WithAddNullChecks(addNullChecks)
             .WithImplementIEquatable(implementIEquatable)
+            .WithIEquatableItemType(iEquatableItemType)
             .WithUseExceptionThrowIfNull(useExceptionThrowIfNull)
             .WithEnableInheritance(enableEntityInheritance)
             .WithIsAbstract(isAbstract)

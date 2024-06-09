@@ -43,6 +43,7 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
             .Concat(
             [
                 new TypenameMappingBuilder().WithSourceType(typeof(ArgumentValidationType)).WithTargetTypeName($"ClassFramework.Pipelines.Domains.{nameof(ArgumentValidationType)}"),
+                new TypenameMappingBuilder().WithSourceType(typeof(IEquatableItemType)).WithTargetTypeName($"ClassFramework.Pipelines.Domains.{nameof(IEquatableItemType)}"),
                 new TypenameMappingBuilder().WithSourceType(typeof(Models.Pipelines.AttributeInitializerDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(Models.Pipelines.AttributeInitializerDelegate)}"),
                 new TypenameMappingBuilder().WithSourceType(typeof(Models.Pipelines.CopyMethodPredicate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(Models.Pipelines.CopyMethodPredicate)}"),
                 new TypenameMappingBuilder().WithSourceType(typeof(Models.Pipelines.InheritanceComparisonDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(Models.Pipelines.InheritanceComparisonDelegate)}"),
