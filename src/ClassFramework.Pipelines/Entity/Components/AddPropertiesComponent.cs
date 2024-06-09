@@ -82,7 +82,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
         {
             if (context.Settings.CreateAsObservable)
             {
-                yield return new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !EqualityComparer<T>.Default.Equals(_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())}, value)");
+                yield return new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !EqualityComparer<T>.Default.Equals(_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())}, value);");
             }
             yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks, context.SourceModel)};");
             if (context.Settings.CreateAsObservable)

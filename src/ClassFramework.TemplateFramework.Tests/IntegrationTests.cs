@@ -921,7 +921,7 @@ namespace Test.Domain
             }
             set
             {
-                bool hasChanged = !EqualityComparer<T>.Default.Equals(_value, value)
+                bool hasChanged = !EqualityComparer<T>.Default.Equals(_value, value);
                 _value = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Value));
             }
@@ -935,7 +935,7 @@ namespace Test.Domain
             }
             set
             {
-                bool hasChanged = !EqualityComparer<T>.Default.Equals(_originalValue, value)
+                bool hasChanged = !EqualityComparer<T>.Default.Equals(_originalValue, value);
                 _originalValue = value;
                 if (hasChanged) HandlePropertyChanged(nameof(OriginalValue));
             }

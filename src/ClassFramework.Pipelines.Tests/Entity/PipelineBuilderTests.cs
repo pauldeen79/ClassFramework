@@ -342,27 +342,27 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
             context.Builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
             context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property1, value)",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property1, value);",
                 "_property1 = value;",
                 "if (hasChanged) HandlePropertyChanged(nameof(Property1));",
-                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property2, value)",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property2, value);",
                 "_property2 = value;",
                 "if (hasChanged) HandlePropertyChanged(nameof(Property2));",
-                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property3, value)",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property3, value);",
                 "_property3 = value ?? throw new System.ArgumentNullException(nameof(value));",
                 "if (hasChanged) HandlePropertyChanged(nameof(Property3));",
-                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property4, value)",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property4, value);",
                 "_property4 = value;", "if (hasChanged) HandlePropertyChanged(nameof(Property4));",
-                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property5, value)",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property5, value);",
                 "_property5 = value ?? throw new System.ArgumentNullException(nameof(value));",
                 "if (hasChanged) HandlePropertyChanged(nameof(Property5));",
-                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property6, value)",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property6, value);",
                 "_property6 = value;",
                 "if (hasChanged) HandlePropertyChanged(nameof(Property6));",
-                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property7, value)",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property7, value);",
                 "_property7 = value ?? throw new System.ArgumentNullException(nameof(value));",
                 "if (hasChanged) HandlePropertyChanged(nameof(Property7));",
-                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property8, value)",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property8, value);",
                 "_property8 = value;", "if (hasChanged) HandlePropertyChanged(nameof(Property8));"
             );
         }
