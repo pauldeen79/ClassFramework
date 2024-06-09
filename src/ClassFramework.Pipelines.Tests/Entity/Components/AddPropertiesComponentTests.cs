@@ -245,12 +245,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             );
             context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property1, value)",
                 "_property1 = value;",
-                "HandlePropertyChanged(nameof(Property1));",
+                "if (hasChanged) HandlePropertyChanged(nameof(Property1));",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property2, value)",
                 "_property2 = value;",
-                "HandlePropertyChanged(nameof(Property2));",
+                "if (hasChanged) HandlePropertyChanged(nameof(Property2));",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property3, value)",
                 "_property3 = value;",
-                "HandlePropertyChanged(nameof(Property3));"
+                "if (hasChanged) HandlePropertyChanged(nameof(Property3));"
             );
         }
 
