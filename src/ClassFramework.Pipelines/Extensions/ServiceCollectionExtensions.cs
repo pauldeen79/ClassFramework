@@ -57,6 +57,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IEntityComponentBuilder, Entity.Components.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IEntityComponentBuilder, Entity.Components.AbstractEntityComponentBuilder>()
             .AddScoped<IEntityComponentBuilder, Entity.Components.AddAttributesComponentBuilder>()
+            .AddScoped<IEntityComponentBuilder, Entity.Components.AddEquatableMembersComponentBuilder>()
             .AddScoped<IEntityComponentBuilder, Entity.Components.AddFullConstructorComponentBuilder>()
             .AddScoped<IEntityComponentBuilder, Entity.Components.AddGenericsComponentBuilder>()
             .AddScoped<IEntityComponentBuilder, Entity.Components.AddInterfacesComponentBuilder>()

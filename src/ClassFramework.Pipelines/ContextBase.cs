@@ -23,6 +23,14 @@ public abstract class ContextBase<TSourceModel> : ContextBase
 
     protected abstract string NewCollectionTypeName { get; }
 
+    public string NullCheck => Settings.UsePatternMatchingForNullChecks
+        ? "is null"
+        : "== null";
+
+    public string NotNullCheck => Settings.UsePatternMatchingForNullChecks
+        ? "is not null"
+        : "!= null";
+
     public string CreateArgumentNullException(string argumentName)
     {
         if (Settings.UseExceptionThrowIfNull)
@@ -30,7 +38,7 @@ public abstract class ContextBase<TSourceModel> : ContextBase
             return $"{typeof(ArgumentNullException).FullName}.ThrowIfNull({argumentName});";
         }
 
-        return $"if ({argumentName} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({argumentName}));";
+        return $"if ({argumentName} {NullCheck}) throw new {typeof(ArgumentNullException).FullName}(nameof({argumentName}));";
     }
 
     public string MapTypeName(string typeName, string alternateTypeMetadataName = "")

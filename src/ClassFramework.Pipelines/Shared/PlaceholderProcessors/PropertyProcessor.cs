@@ -31,7 +31,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor, IPlaceholderProc
             $"{nameof(Property.Name)}PascalCsharpFriendlyName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
             "BuilderMemberName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.GetBuilderMemberName(propertyContext.Settings, propertyContext.FormatProvider.ToCultureInfo())),
             "EntityMemberName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.GetEntityMemberName(propertyContext.Settings.AddBackingFields || propertyContext.Settings.CreateAsObservable, propertyContext.FormatProvider.ToCultureInfo())),
-            "InitializationExpression" => Result.Success<FormattableStringParserResult>(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo(), propertyContext.Settings.AddNullChecks, propertyContext.Settings.ValidateArguments, propertyContext.Settings.EnableNullableReferenceTypes)),
+            "InitializationExpression" => Result.Success<FormattableStringParserResult>(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo(), propertyContext.Settings, propertyContext.NullCheck)),
             "CollectionTypeName" => Result.Success<FormattableStringParserResult>(propertyContext.Settings.CollectionTypeName),
             nameof(Property.TypeName) => Result.Success<FormattableStringParserResult>(typeName),
             $"{nameof(Property.TypeName)}.GenericArguments" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments()),
@@ -58,27 +58,27 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor, IPlaceholderProc
         };
     }
 
-    private static string GetInitializationExpression(Property property, string typeName, string collectionTypeName, CultureInfo cultureInfo, bool addNullChecks, ArgumentValidationType validateArguments, bool enableNullableReferenceTypes)
+    private static string GetInitializationExpression(Property property, string typeName, string collectionTypeName, CultureInfo cultureInfo, PipelineSettings settings, string nullCheck)
     {
         collectionTypeName = collectionTypeName.IsNotNull(nameof(collectionTypeName));
 
         return typeName.FixTypeName().IsCollectionTypeName()
             && (collectionTypeName.Length == 0 || collectionTypeName != property.TypeName.WithoutProcessedGenerics())
-                ? GetCollectionFormatStringForInitialization(property, typeName, cultureInfo, collectionTypeName, addNullChecks, validateArguments, enableNullableReferenceTypes)
+                ? GetCollectionFormatStringForInitialization(property, typeName, cultureInfo, collectionTypeName, settings, nullCheck)
                 : property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName();
     }
 
-    private static string GetCollectionFormatStringForInitialization(Property property, string typeName, CultureInfo cultureInfo, string collectionTypeName, bool addNullChecks, ArgumentValidationType validateArguments, bool enableNullableReferenceTypes)
+    private static string GetCollectionFormatStringForInitialization(Property property, string typeName, CultureInfo cultureInfo, string collectionTypeName, PipelineSettings settings, string nullCheck)
     {
         collectionTypeName = collectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
 
         var genericTypeName = typeName.GetProcessedGenericArguments();
-        var nullSuffix = enableNullableReferenceTypes && !property.IsNullable
+        var nullSuffix = settings.EnableNullableReferenceTypes && !property.IsNullable
             ? "!"
             : string.Empty;
 
-        return property.IsNullable || (addNullChecks && validateArguments != ArgumentValidationType.None)
-            ? $"{property.Name.ToPascalCase(cultureInfo)} is null ? null{nullSuffix} : new {collectionTypeName}<{genericTypeName}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})"
+        return property.IsNullable || (settings.AddNullChecks && settings.ValidateArguments != ArgumentValidationType.None)
+            ? $"{property.Name.ToPascalCase(cultureInfo)} {nullCheck} ? null{nullSuffix} : new {collectionTypeName}<{genericTypeName}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})"
             : $"new {collectionTypeName}<{genericTypeName}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})";
     }
 

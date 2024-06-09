@@ -65,8 +65,6 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
 
     public class IntegrationTests : PipelineBuilderTests
     {
-        private ClassBuilder Model { get; } = new();
-
         [Fact]
         public async Task Creates_ReadOnly_Entity_With_NamespaceMapping()
         {
@@ -154,6 +152,53 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
             context.Builder.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
             context.Builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
             context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task Creates_ReadOnly_Entity_With_NamespaceMapping_And_NullCHecks_Without_PatternMatching()
+        {
+            // Arrange
+            var model = CreateModelWithCustomTypeProperties();
+            var namespaceMappings = CreateNamespaceMappings();
+            var settings = CreateSettingsForEntity(
+                namespaceMappings: namespaceMappings,
+                addNullChecks: true,
+                enableNullableReferenceTypes: true,
+                newCollectionTypeName: typeof(IReadOnlyCollection<>).WithoutGenerics(),
+                collectionTypeName: typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
+                usePatternMatchingForNullChecks: false
+                );
+            var context = CreateContext(model, settings);
+
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = await sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+
+            context.Builder.Name.Should().Be("MyClass");
+            context.Builder.Namespace.Should().Be("MyNamespace");
+            context.Builder.Interfaces.Should().BeEmpty();
+
+            context.Builder.Constructors.Should().ContainSingle();
+            var copyConstructor = context.Builder.Constructors.Single();
+            copyConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "if (property3 == null) throw new System.ArgumentNullException(nameof(property3));",
+                "if (property5 == null) throw new System.ArgumentNullException(nameof(property5));",
+                "if (property7 == null) throw new System.ArgumentNullException(nameof(property7));",
+                "this.Property1 = property1;",
+                "this.Property2 = property2;",
+                "this.Property3 = property3;",
+                "this.Property4 = property4;",
+                "this.Property5 = property5;",
+                "this.Property6 = property6;",
+                "this.Property7 = new CrossCutting.Common.ReadOnlyValueCollection<MyNamespace.MyClass>(property7);",
+                "this.Property8 = property8 == null ? null : new CrossCutting.Common.ReadOnlyValueCollection<MyNamespace.MyClass>(property8);"
+            );
         }
 
         [Fact]
@@ -297,22 +342,28 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
             context.Builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
             context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property1, value)",
                 "_property1 = value;",
-                "HandlePropertyChanged(nameof(Property1));",
+                "if (hasChanged) HandlePropertyChanged(nameof(Property1));",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property2, value)",
                 "_property2 = value;",
-                "HandlePropertyChanged(nameof(Property2));",
+                "if (hasChanged) HandlePropertyChanged(nameof(Property2));",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property3, value)",
                 "_property3 = value ?? throw new System.ArgumentNullException(nameof(value));",
-                "HandlePropertyChanged(nameof(Property3));",
-                "_property4 = value;",
-                "HandlePropertyChanged(nameof(Property4));",
+                "if (hasChanged) HandlePropertyChanged(nameof(Property3));",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property4, value)",
+                "_property4 = value;", "if (hasChanged) HandlePropertyChanged(nameof(Property4));",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property5, value)",
                 "_property5 = value ?? throw new System.ArgumentNullException(nameof(value));",
-                "HandlePropertyChanged(nameof(Property5));",
+                "if (hasChanged) HandlePropertyChanged(nameof(Property5));",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property6, value)",
                 "_property6 = value;",
-                "HandlePropertyChanged(nameof(Property6));",
+                "if (hasChanged) HandlePropertyChanged(nameof(Property6));",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property7, value)",
                 "_property7 = value ?? throw new System.ArgumentNullException(nameof(value));",
-                "HandlePropertyChanged(nameof(Property7));",
-                "_property8 = value;",
-                "HandlePropertyChanged(nameof(Property8));"
+                "if (hasChanged) HandlePropertyChanged(nameof(Property7));",
+                "bool hasChanged = !EqualityComparer<T>.Default.Equals(_property8, value)",
+                "_property8 = value;", "if (hasChanged) HandlePropertyChanged(nameof(Property8));"
             );
         }
 
@@ -336,7 +387,32 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
 
             context.Builder.Methods.Should().ContainSingle(x => x.Name == "Validate");
         }
-        
+
+        [Fact]
+        public async Task Creates_Entity_With_IEquatable_Implementation()
+        {
+            // Arrange
+            var model = CreateModelWithCustomTypeProperties();
+            var settings = CreateSettingsForEntity(implementIEquatable: true);
+            var context = CreateContext(model, settings);
+
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = await sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+
+            context.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo(
+                "Equals",
+                "Equals",
+                "GetHashCode",
+                "==",
+                "!=",
+                "ToBuilder");
+        }
+
         private static EntityContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
             => new(model, settings.Build(), CultureInfo.InvariantCulture);
     }

@@ -213,6 +213,8 @@ namespace ClassFramework.Pipelines.Builders
 
         private bool _addSetters;
 
+        private bool _implementIEquatable;
+
         private bool _allowGenerationWithoutProperties;
 
         private System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.AttributeInitializerDelegate> _attributeInitializers;
@@ -311,9 +313,13 @@ namespace ClassFramework.Pipelines.Builders
 
         private bool _useExceptionThrowIfNull;
 
+        private bool _usePatternMatchingForNullChecks;
+
         private ClassFramework.Pipelines.Domains.ArgumentValidationType _validateArguments;
 
         private bool _useDefaultValueAttributeValuesForBuilderInitialization;
+
+        private ClassFramework.Pipelines.Domains.IEquatableItemType _iEquatableItemType;
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -406,6 +412,19 @@ namespace ClassFramework.Pipelines.Builders
             {
                 _addSetters = value;
                 HandlePropertyChanged(nameof(AddSetters));
+            }
+        }
+
+        public bool ImplementIEquatable
+        {
+            get
+            {
+                return _implementIEquatable;
+            }
+            set
+            {
+                _implementIEquatable = value;
+                HandlePropertyChanged(nameof(ImplementIEquatable));
             }
         }
 
@@ -1072,6 +1091,20 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool UsePatternMatchingForNullChecks
+        {
+            get
+            {
+                return _usePatternMatchingForNullChecks;
+            }
+            set
+            {
+                _usePatternMatchingForNullChecks = value;
+                HandlePropertyChanged(nameof(UsePatternMatchingForNullChecks));
+            }
+        }
+
         public ClassFramework.Pipelines.Domains.ArgumentValidationType ValidateArguments
         {
             get
@@ -1098,6 +1131,19 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
+        public ClassFramework.Pipelines.Domains.IEquatableItemType IEquatableItemType
+        {
+            get
+            {
+                return _iEquatableItemType;
+            }
+            set
+            {
+                _iEquatableItemType = value;
+                HandlePropertyChanged(nameof(IEquatableItemType));
+            }
+        }
+
         public PipelineSettingsBuilder(ClassFramework.Pipelines.PipelineSettings source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
@@ -1111,6 +1157,7 @@ namespace ClassFramework.Pipelines.Builders
             _addNullChecks = source.AddNullChecks;
             _addPublicParameterlessConstructor = source.AddPublicParameterlessConstructor;
             _addSetters = source.AddSetters;
+            _implementIEquatable = source.ImplementIEquatable;
             _allowGenerationWithoutProperties = source.AllowGenerationWithoutProperties;
             if (source.AttributeInitializers is not null) foreach (var item in source.AttributeInitializers) _attributeInitializers.Add(item);
             _baseClass = source.BaseClass?.ToBuilder()!;
@@ -1160,8 +1207,10 @@ namespace ClassFramework.Pipelines.Builders
             if (source.TypenameMappings is not null) foreach (var item in source.TypenameMappings.Select(x => x.ToBuilder())) _typenameMappings.Add(item);
             _useBaseClassFromSourceModel = source.UseBaseClassFromSourceModel;
             _useExceptionThrowIfNull = source.UseExceptionThrowIfNull;
+            _usePatternMatchingForNullChecks = source.UsePatternMatchingForNullChecks;
             _validateArguments = source.ValidateArguments;
             _useDefaultValueAttributeValuesForBuilderInitialization = source.UseDefaultValueAttributeValuesForBuilderInitialization;
+            _iEquatableItemType = source.IEquatableItemType;
         }
 
         public PipelineSettingsBuilder()
@@ -1192,12 +1241,13 @@ namespace ClassFramework.Pipelines.Builders
             _setMethodNameFormatString = string.Empty;
             _toBuilderFormatString = string.Empty;
             _toTypedBuilderFormatString = string.Empty;
+            _usePatternMatchingForNullChecks = true;
             SetDefaultValues();
         }
 
         public ClassFramework.Pipelines.PipelineSettings Build()
         {
-            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, InheritFromInterfaces, CreateAsObservable, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), BuilderNewCollectionTypeName, EntityNewCollectionTypeName, NonCollectionInitializationStatementFormatString, CreateAsPartial, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseExceptionThrowIfNull, ValidateArguments, UseDefaultValueAttributeValuesForBuilderInitialization);
+            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, ImplementIEquatable, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, InheritFromInterfaces, CreateAsObservable, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), BuilderNewCollectionTypeName, EntityNewCollectionTypeName, NonCollectionInitializationStatementFormatString, CreateAsPartial, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseExceptionThrowIfNull, UsePatternMatchingForNullChecks, ValidateArguments, UseDefaultValueAttributeValuesForBuilderInitialization, IEquatableItemType);
         }
 
         partial void SetDefaultValues();
@@ -1281,6 +1331,12 @@ namespace ClassFramework.Pipelines.Builders
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithAddSetters(bool addSetters = true)
         {
             AddSetters = addSetters;
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithImplementIEquatable(bool implementIEquatable = true)
+        {
+            ImplementIEquatable = implementIEquatable;
             return this;
         }
 
@@ -1582,6 +1638,12 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithUsePatternMatchingForNullChecks(bool usePatternMatchingForNullChecks = true)
+        {
+            UsePatternMatchingForNullChecks = usePatternMatchingForNullChecks;
+            return this;
+        }
+
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithValidateArguments(ClassFramework.Pipelines.Domains.ArgumentValidationType validateArguments)
         {
             ValidateArguments = validateArguments;
@@ -1591,6 +1653,12 @@ namespace ClassFramework.Pipelines.Builders
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithUseDefaultValueAttributeValuesForBuilderInitialization(bool useDefaultValueAttributeValuesForBuilderInitialization = true)
         {
             UseDefaultValueAttributeValuesForBuilderInitialization = useDefaultValueAttributeValuesForBuilderInitialization;
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithIEquatableItemType(ClassFramework.Pipelines.Domains.IEquatableItemType iEquatableItemType)
+        {
+            IEquatableItemType = iEquatableItemType;
             return this;
         }
 

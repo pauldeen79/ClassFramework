@@ -112,6 +112,11 @@ namespace ClassFramework.Pipelines
             get;
         }
 
+        public bool ImplementIEquatable
+        {
+            get;
+        }
+
         public bool AllowGenerationWithoutProperties
         {
             get;
@@ -383,6 +388,12 @@ namespace ClassFramework.Pipelines
             get;
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool UsePatternMatchingForNullChecks
+        {
+            get;
+        }
+
         public ClassFramework.Pipelines.Domains.ArgumentValidationType ValidateArguments
         {
             get;
@@ -393,7 +404,12 @@ namespace ClassFramework.Pipelines
             get;
         }
 
-        public PipelineSettings(bool addBackingFields, bool addCopyConstructor, bool addFullConstructor, string addMethodNameFormatString, bool addNullChecks, bool addPublicParameterlessConstructor, bool addSetters, bool allowGenerationWithoutProperties, System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.AttributeInitializerDelegate> attributeInitializers, ClassFramework.Domain.TypeBase? baseClass, string baseClassBuilderNameSpace, string builderExtensionsCollectionCopyStatementFormatString, string builderExtensionsNameFormatString, string builderExtensionsNamespaceFormatString, string builderNameFormatString, string builderNamespaceFormatString, string buildMethodName, string buildTypedMethodName, string collectionCopyStatementFormatString, string collectionInitializationStatementFormatString, string collectionTypeName, System.Predicate<ClassFramework.Domain.Attribute>? copyAttributePredicate, bool copyAttributes, System.Predicate<string>? copyInterfacePredicate, bool copyInterfaces, ClassFramework.Pipelines.CopyMethodPredicate? copyMethodPredicate, bool copyMethods, bool inheritFromInterfaces, bool createAsObservable, bool createConstructors, bool createRecord, bool enableBuilderInheritance, bool enableInheritance, bool enableNullableReferenceTypes, string entityNameFormatString, string entityNamespaceFormatString, ClassFramework.Pipelines.InheritanceComparisonDelegate? inheritanceComparisonDelegate, ClassFramework.Pipelines.ReflectionInheritanceComparisonDelegate? inheritanceComparisonDelegateForReflection, bool isAbstract, bool isForAbstractBuilder, string nameFormatString, string namespaceFormatString, System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.NamespaceMapping> namespaceMappings, string builderNewCollectionTypeName, string entityNewCollectionTypeName, string nonCollectionInitializationStatementFormatString, bool createAsPartial, bool setDefaultValuesInEntityConstructor, string setDefaultValuesMethodName, string setMethodNameFormatString, ClassFramework.Domain.Domains.SubVisibility setterVisibility, string toBuilderFormatString, string toTypedBuilderFormatString, System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.TypenameMapping> typenameMappings, bool useBaseClassFromSourceModel, bool useExceptionThrowIfNull, ClassFramework.Pipelines.Domains.ArgumentValidationType validateArguments, bool useDefaultValueAttributeValuesForBuilderInitialization)
+        public ClassFramework.Pipelines.Domains.IEquatableItemType IEquatableItemType
+        {
+            get;
+        }
+
+        public PipelineSettings(bool addBackingFields, bool addCopyConstructor, bool addFullConstructor, string addMethodNameFormatString, bool addNullChecks, bool addPublicParameterlessConstructor, bool addSetters, bool implementIEquatable, bool allowGenerationWithoutProperties, System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.AttributeInitializerDelegate> attributeInitializers, ClassFramework.Domain.TypeBase? baseClass, string baseClassBuilderNameSpace, string builderExtensionsCollectionCopyStatementFormatString, string builderExtensionsNameFormatString, string builderExtensionsNamespaceFormatString, string builderNameFormatString, string builderNamespaceFormatString, string buildMethodName, string buildTypedMethodName, string collectionCopyStatementFormatString, string collectionInitializationStatementFormatString, string collectionTypeName, System.Predicate<ClassFramework.Domain.Attribute>? copyAttributePredicate, bool copyAttributes, System.Predicate<string>? copyInterfacePredicate, bool copyInterfaces, ClassFramework.Pipelines.CopyMethodPredicate? copyMethodPredicate, bool copyMethods, bool inheritFromInterfaces, bool createAsObservable, bool createConstructors, bool createRecord, bool enableBuilderInheritance, bool enableInheritance, bool enableNullableReferenceTypes, string entityNameFormatString, string entityNamespaceFormatString, ClassFramework.Pipelines.InheritanceComparisonDelegate? inheritanceComparisonDelegate, ClassFramework.Pipelines.ReflectionInheritanceComparisonDelegate? inheritanceComparisonDelegateForReflection, bool isAbstract, bool isForAbstractBuilder, string nameFormatString, string namespaceFormatString, System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.NamespaceMapping> namespaceMappings, string builderNewCollectionTypeName, string entityNewCollectionTypeName, string nonCollectionInitializationStatementFormatString, bool createAsPartial, bool setDefaultValuesInEntityConstructor, string setDefaultValuesMethodName, string setMethodNameFormatString, ClassFramework.Domain.Domains.SubVisibility setterVisibility, string toBuilderFormatString, string toTypedBuilderFormatString, System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.TypenameMapping> typenameMappings, bool useBaseClassFromSourceModel, bool useExceptionThrowIfNull, bool usePatternMatchingForNullChecks, ClassFramework.Pipelines.Domains.ArgumentValidationType validateArguments, bool useDefaultValueAttributeValuesForBuilderInitialization, ClassFramework.Pipelines.Domains.IEquatableItemType iEquatableItemType)
         {
             this.AddBackingFields = addBackingFields;
             this.AddCopyConstructor = addCopyConstructor;
@@ -402,6 +418,7 @@ namespace ClassFramework.Pipelines
             this.AddNullChecks = addNullChecks;
             this.AddPublicParameterlessConstructor = addPublicParameterlessConstructor;
             this.AddSetters = addSetters;
+            this.ImplementIEquatable = implementIEquatable;
             this.AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
             this.AttributeInitializers = attributeInitializers is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Pipelines.AttributeInitializerDelegate>(attributeInitializers);
             this.BaseClass = baseClass;
@@ -451,8 +468,10 @@ namespace ClassFramework.Pipelines
             this.TypenameMappings = typenameMappings is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Pipelines.TypenameMapping>(typenameMappings);
             this.UseBaseClassFromSourceModel = useBaseClassFromSourceModel;
             this.UseExceptionThrowIfNull = useExceptionThrowIfNull;
+            this.UsePatternMatchingForNullChecks = usePatternMatchingForNullChecks;
             this.ValidateArguments = validateArguments;
             this.UseDefaultValueAttributeValuesForBuilderInitialization = useDefaultValueAttributeValuesForBuilderInitialization;
+            this.IEquatableItemType = iEquatableItemType;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 

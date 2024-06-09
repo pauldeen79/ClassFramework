@@ -9,6 +9,7 @@ internal interface IPipelineSettings
     bool AddNullChecks { get; }
     bool AddPublicParameterlessConstructor { get; }
     bool AddSetters { get; }
+    bool ImplementIEquatable { get; }
     bool AllowGenerationWithoutProperties { get; }
     [Required] IReadOnlyCollection<AttributeInitializerDelegate> AttributeInitializers { get; }
     [ValidateObject] ITypeBase? BaseClass { get; }
@@ -58,6 +59,8 @@ internal interface IPipelineSettings
     [Required]IReadOnlyCollection<ITypenameMapping> TypenameMappings { get; }
     bool UseBaseClassFromSourceModel { get; }
     bool UseExceptionThrowIfNull { get; }
+    [DefaultValue(true)] bool UsePatternMatchingForNullChecks { get; }
     ArgumentValidationType ValidateArguments { get; }
     bool UseDefaultValueAttributeValuesForBuilderInitialization { get; }
+    IEquatableItemType IEquatableItemType { get; }
 }
