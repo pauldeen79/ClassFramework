@@ -62,6 +62,42 @@ public class ContextBaseTests : TestBase
         }
     }
 
+    public class NullCheck : ContextBaseTests
+    {
+        [Theory]
+        [InlineData(true, "is null")]
+        [InlineData(false, "== null")]
+        public void Returns_Correct_Result_Based_On_PatternMatching_Setting(bool usePatternMatchingForNullChecks, string expectedResult)
+        {
+            // Arrange
+            var sut = CreateSut(new PipelineSettingsBuilder().WithUsePatternMatchingForNullChecks(usePatternMatchingForNullChecks).Build());
+
+            // Act
+            var result = sut.NullCheck;
+
+            // Assert
+            result.Should().Be(expectedResult);
+        }
+    }
+
+    public class NotNullCheck : ContextBaseTests
+    {
+        [Theory]
+        [InlineData(true, "is not null")]
+        [InlineData(false, "!= null")]
+        public void Returns_Correct_Result_Based_On_PatternMatching_Setting(bool usePatternMatchingForNullChecks, string expectedResult)
+        {
+            // Arrange
+            var sut = CreateSut(new PipelineSettingsBuilder().WithUsePatternMatchingForNullChecks(usePatternMatchingForNullChecks).Build());
+
+            // Act
+            var result = sut.NotNullCheck;
+
+            // Assert
+            result.Should().Be(expectedResult);
+        }
+    }
+
     private sealed class TestContext : ContextBase<string>
     {
         public TestContext(PipelineSettings settings) : base(string.Empty, settings, CultureInfo.InvariantCulture)
