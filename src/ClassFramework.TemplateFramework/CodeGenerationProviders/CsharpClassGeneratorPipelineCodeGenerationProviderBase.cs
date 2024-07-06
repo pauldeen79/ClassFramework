@@ -452,18 +452,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     protected virtual bool SkipNamespaceOnTypenameMappings(string @namespace) => false;
 
-    protected static IEnumerable<MetadataBuilder> CreateTypenameMappingMetadata(Type entityType)
-        => CreateTypenameMappingMetadata($"{entityType.IsNotNull(nameof(entityType)).FullName.GetNamespaceWithDefault()}.Builders");
-
-    protected static IEnumerable<MetadataBuilder> CreateTypenameMappingMetadata(string buildersNamespace)
-        =>
-        [
-            new MetadataBuilder().WithValue(buildersNamespace).WithName(MetadataNames.CustomBuilderNamespace),
-            new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(MetadataNames.CustomBuilderName),
-            new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
-            new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
-        ];
-
     private string ReplaceStart(string fullNamespace, string baseNamespace, bool appendDot)
     {
         if (fullNamespace.Length == 0)
