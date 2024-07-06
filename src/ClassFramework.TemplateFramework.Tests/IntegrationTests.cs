@@ -40,6 +40,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableInheritFromInterfacesAbstractionsInterfaces>()
             .AddScoped<ImmutableInheritFromInterfacesAbstractionsBuilderInterfaces>()
             .AddScoped<ImmutableNoToBuilderMethodCoreEntities>()
+            .AddScoped<MappedTypeBuilders>()
+            .AddScoped<MappedTypeEntities>()
             .AddScoped<ObservableCoreBuilders>()
             .AddScoped<ObservableCoreEntities>()
             .AddScoped<OverrideTypeBuilders>()
@@ -1445,6 +1447,120 @@ namespace Test.Domain.Types
         public Test.Domain.Types.Builders.MyAbstractOverrideBuilder ToTypedBuilder()
         {
             return new Test.Domain.Types.Builders.MyAbstractOverrideBuilder(this);
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_Entity_With_TypenameMapping()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<MappedTypeEntities>();
+        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public partial class MyClass
+    {
+        public ClassFramework.TemplateFramework.Tests.SomeNamespace.IMyMappedType MyProperty
+        {
+            get;
+        }
+
+        public MyClass(ClassFramework.TemplateFramework.Tests.SomeNamespace.IMyMappedType myProperty)
+        {
+            this.MyProperty = myProperty;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public Test.Domain.Builders.MyClassBuilder ToBuilder()
+        {
+            return new Test.Domain.Builders.MyClassBuilder(this);
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_Builder_With_TypenameMapping()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<MappedTypeBuilders>();
+        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class MyClassBuilder
+    {
+        private ClassFramework.TemplateFramework.Tests.SomeNamespace.Builders.IMyMappedTypeBuilder _myProperty;
+
+        public ClassFramework.TemplateFramework.Tests.SomeNamespace.Builders.IMyMappedTypeBuilder MyProperty
+        {
+            get
+            {
+                return _myProperty;
+            }
+            set
+            {
+                _myProperty = value ?? throw new System.ArgumentNullException(nameof(value));
+            }
+        }
+
+        public MyClassBuilder(Test.Domain.MyClass source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _myProperty = source.MyProperty?.ToBuilder()!;
+        }
+
+        public MyClassBuilder()
+        {
+            _myProperty = default(ClassFramework.TemplateFramework.Tests.SomeNamespace.IMyMappedType)!;
+            SetDefaultValues();
+        }
+
+        public Test.Domain.MyClass Build()
+        {
+            return new Test.Domain.MyClass(MyProperty?.Build()!);
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.MyClassBuilder WithMyProperty(ClassFramework.TemplateFramework.Tests.SomeNamespace.Builders.IMyMappedTypeBuilder myProperty)
+        {
+            if (myProperty is null) throw new System.ArgumentNullException(nameof(myProperty));
+            MyProperty = myProperty;
+            return this;
         }
     }
 #nullable restore
