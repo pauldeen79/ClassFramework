@@ -50,7 +50,7 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
                 new TypenameMappingBuilder().WithSourceType(typeof(Models.Pipelines.ReflectionInheritanceComparisonDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(Models.Pipelines.ReflectionInheritanceComparisonDelegate)}"),
             ]);
 
-    private IEnumerable<TypenameMappingBuilder> CreateCustomTypenameMappings(Type modelType, string entityNamespace, string builderNamespace) =>
+    private IEnumerable<TypenameMappingBuilder> CreateCustomTypenameMappings(Type modelType, string entityNamespace, string buildersNamespace) =>
         [
             new TypenameMappingBuilder()
                 .WithSourceType(modelType)
@@ -58,13 +58,7 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
             new TypenameMappingBuilder()
                 .WithSourceTypeName($"{entityNamespace}.{modelType.GetEntityClassName()}")
                 .WithTargetTypeName($"{entityNamespace}.{modelType.GetEntityClassName()}")
-                .AddMetadata
-                (
-                    new MetadataBuilder().WithValue(builderNamespace).WithName(MetadataNames.CustomBuilderNamespace),
-                    new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(MetadataNames.CustomBuilderName),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
-                ),
+                .AddMetadata(CreateTypenameMappingMetadata(buildersNamespace)),
         ];
 }
 #pragma warning restore S125 // Sections of code should not be commented out
