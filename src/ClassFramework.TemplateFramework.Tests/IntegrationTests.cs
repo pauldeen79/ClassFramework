@@ -216,7 +216,7 @@ using System.Text;
 namespace Test.Domain.Builders.Abstractions
 {
 #nullable enable
-    public interface IMyAbstractionBuilder
+    public partial interface IMyAbstractionBuilder
     {
         string MyProperty
         {
@@ -288,7 +288,7 @@ using System.Text;
 namespace Test.Domain.Abstractions
 {
 #nullable enable
-    public interface IMyAbstraction
+    public partial interface IMyAbstraction
     {
         string MyProperty
         {
@@ -773,7 +773,7 @@ using System.Text;
 namespace Test.Abstractions
 {
 #nullable enable
-    public interface ILiteral
+    public partial interface ILiteral
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         string Value
@@ -815,7 +815,7 @@ using System.Text;
 namespace Test.Abstractions
 {
 #nullable enable
-    public interface ILiteralBuilder
+    public partial interface ILiteralBuilder
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         string Value
