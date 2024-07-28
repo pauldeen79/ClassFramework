@@ -96,6 +96,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IInterfaceComponentBuilder, Interface.Components.AddInterfacesComponentBuilder>()
             .AddScoped<IInterfaceComponentBuilder, Interface.Components.AddMethodsComponentBuilder>()
             .AddScoped<IInterfaceComponentBuilder, Interface.Components.AddPropertiesComponentBuilder>()
+            .AddScoped<IInterfaceComponentBuilder, Interface.Components.PartialComponentBuilder>()
             .AddScoped<IInterfaceComponentBuilder, Interface.Components.SetNameComponentBuilder>()
         ;
 
