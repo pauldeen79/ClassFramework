@@ -242,6 +242,58 @@ public class StringExtensionsTests
         actual.Should().Be(expectedResult);
     }
 
+    [Fact]
+    public void MakeGenericTypeName_Array_Returns_Correct_Result_Null()
+    {
+        // Arrange
+        string[] input = null!;
+
+        // Act
+        var actual = "MyClass".MakeGenericTypeName(input);
+
+        // Assert
+        actual.Should().Be("MyClass");
+    }
+
+    [Fact]
+    public void MakeGenericTypeName_Array_Returns_Correct_Result_Empty_Array()
+    {
+        // Arrange
+        string[] input = Array.Empty<string>();
+
+        // Act
+        var actual = "MyClass".MakeGenericTypeName(input);
+
+        // Assert
+        actual.Should().Be("MyClass");
+    }
+
+    [Fact]
+    public void MakeGenericTypeName_Array_Returns_Correct_Result_One_Item()
+    {
+        // Arrange
+        string[] input = ["Generic"];
+
+        // Act
+        var actual = "MyClass".MakeGenericTypeName(input);
+
+        // Assert
+        actual.Should().Be("MyClass<Generic>");
+    }
+
+    [Fact]
+    public void MakeGenericTypeName_Array_Returns_Correct_Result_Two_Items()
+    {
+        // Arrange
+        string[] input = ["Generic1", "Generic2"];
+
+        // Act
+        var actual = "MyClass".MakeGenericTypeName(input);
+
+        // Assert
+        actual.Should().Be("MyClass<Generic1,Generic2>");
+    }
+
     [Theory]
     [InlineData("", "A", "B", "")]
     [InlineData("ASomething", "A", "B", "ASomething")]

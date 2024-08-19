@@ -233,6 +233,11 @@ public static class StringExtensions
             ? instance
             : $"{instance}<{genericTypeParameter}>";
 
+    public static string MakeGenericTypeName(this string instance, params string[] genericTypeParameters)
+        => genericTypeParameters == null || genericTypeParameters.Length == 0
+            ? instance
+            : $"{instance}<{string.Join(",", genericTypeParameters)}>";
+
     public static string ReplaceSuffix(this string instance, string find, string replace, StringComparison stringComparison)
     {
         find = find.IsNotNull(nameof(find));
