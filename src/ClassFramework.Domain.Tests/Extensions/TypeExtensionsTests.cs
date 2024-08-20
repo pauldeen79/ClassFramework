@@ -400,4 +400,59 @@ public class TypeExtensionsTests
             result.Should().Be("MyClass");
         }
     }
+
+    public class ReplaceGenericTypeName
+    {
+        [Fact]
+        public void Returns_Correct_Result_Using_Single_Type()
+        {
+            // Arrange
+            var input = typeof(List<>);
+
+            // Act
+            var result = input.ReplaceGenericTypeName(typeof(string));
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.List<System.String>");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_Using_Multiple_Types()
+        {
+            // Arrange
+            var input = typeof(Dictionary<,>);
+
+            // Act
+            var result = input.ReplaceGenericTypeName(typeof(string), typeof(object));
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.Dictionary<System.String,System.Object>");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_Using_Single_String()
+        {
+            // Arrange
+            var input = typeof(List<>);
+
+            // Act
+            var result = input.ReplaceGenericTypeName(typeof(string).FullName!);
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.List<System.String>");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_Using_Multiple_Strings()
+        {
+            // Arrange
+            var input = typeof(Dictionary<,>);
+
+            // Act
+            var result = input.ReplaceGenericTypeName(typeof(string).FullName!, typeof(object).FullName!);
+
+            // Assert
+            result.Should().Be("System.Collections.Generic.Dictionary<System.String,System.Object>");
+        }
+    }
 }

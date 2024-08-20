@@ -22,8 +22,14 @@ public static class TypeExtensions
     public static string ReplaceGenericTypeName(this Type instance, Type genericArguments)
         => instance.WithoutGenerics().MakeGenericTypeName(genericArguments.IsNotNull(nameof(genericArguments)).FullName);
 
+    public static string ReplaceGenericTypeName(this Type instance, params Type[] genericArguments)
+        => instance.WithoutGenerics().MakeGenericTypeName(genericArguments.IsNotNull(nameof(genericArguments)).Select(x => x.FullName).ToArray());
+
     public static string ReplaceGenericTypeName(this Type instance, string genericArgumentsTypeName)
         => instance.WithoutGenerics().MakeGenericTypeName(genericArgumentsTypeName.IsNotNull(nameof(genericArgumentsTypeName)));
+
+    public static string ReplaceGenericTypeName(this Type instance, params string[] genericArgumentsTypeNames)
+        => instance.WithoutGenerics().MakeGenericTypeName(genericArgumentsTypeNames.IsNotNull(nameof(genericArgumentsTypeNames)));
 
     public static string GetTypeName(this Type type, MemberInfo declaringType)
     {

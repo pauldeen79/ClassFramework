@@ -32,138 +32,141 @@ public class StringExtensionsTests
         actual.Should().Be(expectedResult);
     }
 
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(" ", " ")]
-    [InlineData("System.Nullable`1[[System.Boolean, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]", "System.Nullable<System.Boolean>")]
-    [InlineData("MyNamespace.MyClass+MySubClass", "MyNamespace.MyClass.MySubClass")]
-    [InlineData("System.Boolean, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e", "System.Boolean")]
-    [InlineData("System.Nullable`1[[System.Boolean, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e", "System.Nullable<System.Boolean")]
-    public void FixTypeName_Returns_Correct_Result(string input, string expectedResult)
+    public class FixTypeName
     {
-        // Act
-        var actual = input.FixTypeName();
+        [Theory]
+        [InlineData("", "")]
+        [InlineData(" ", " ")]
+        [InlineData("System.Nullable`1[[System.Boolean, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]", "System.Nullable<System.Boolean>")]
+        [InlineData("MyNamespace.MyClass+MySubClass", "MyNamespace.MyClass.MySubClass")]
+        [InlineData("System.Boolean, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e", "System.Boolean")]
+        [InlineData("System.Nullable`1[[System.Boolean, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e", "System.Nullable<System.Boolean")]
+        public void Returns_Correct_Result(string input, string expectedResult)
+        {
+            // Act
+            var actual = input.FixTypeName();
 
-        // Assert
-        actual.Should().Be(expectedResult);
-    }
+            // Assert
+            actual.Should().Be(expectedResult);
+        }
 
-    [Fact]
-    public void FixTypeName_Returns_AnonymousType_When_Type_Is_Anonymous()
-    {
-        // Arrange
-        var typeName = new { Name = "Test" }.GetType().FullName;
+        [Fact]
+        public void Returns_AnonymousType_When_Type_Is_Anonymous()
+        {
+            // Arrange
+            var typeName = new { Name = "Test" }.GetType().FullName;
 
-        // Act
-        var actual = typeName.FixTypeName();
+            // Act
+            var actual = typeName.FixTypeName();
 
-        // Assert
-        actual.Should().Be("AnonymousType");
-    }
+            // Assert
+            actual.Should().Be("AnonymousType");
+        }
 
-    [Fact]
-    public void FixTypeName_Returns_AnonymousType_When_Type_Is_Anonymous_Array()
-    {
-        // Arrange
-        var typeName = new[] { new { Name = "Test" } }.GetType().FullName;
+        [Fact]
+        public void Returns_AnonymousType_When_Type_Is_Anonymous_Array()
+        {
+            // Arrange
+            var typeName = new[] { new { Name = "Test" } }.GetType().FullName;
 
-        // Act
-        var actual = typeName.FixTypeName();
+            // Act
+            var actual = typeName.FixTypeName();
 
-        // Assert
-        actual.Should().Be("AnonymousType[]");
-    }
+            // Assert
+            actual.Should().Be("AnonymousType[]");
+        }
 
-    [Fact]
-    public void FixTypeName_Returns_Correct_Result_For_NonGeneric_Type()
-    {
-        // Arrange
-        var input = typeof(int).FullName;
+        [Fact]
+        public void Returns_Correct_Result_For_NonGeneric_Type()
+        {
+            // Arrange
+            var input = typeof(int).FullName;
 
-        // Act
-        var actual = input.FixTypeName();
+            // Act
+            var actual = input.FixTypeName();
 
-        // Assert
-        actual.Should().Be("System.Int32");
-    }
+            // Assert
+            actual.Should().Be("System.Int32");
+        }
 
-    [Fact]
-    public void FixTypeName_Returns_Correct_Result_For_Nullable_Type()
-    {
-        // Arrange
-        var input = typeof(int?).FullName;
+        [Fact]
+        public void Returns_Correct_Result_For_Nullable_Type()
+        {
+            // Arrange
+            var input = typeof(int?).FullName;
 
-        // Act
-        var actual = input.FixTypeName();
+            // Act
+            var actual = input.FixTypeName();
 
-        // Assert
-        actual.Should().Be("System.Nullable<System.Int32>");
-    }
+            // Assert
+            actual.Should().Be("System.Nullable<System.Int32>");
+        }
 
-    [Fact]
-    public void FixTypeName_Returns_Correct_Result_For_Generic_Func()
-    {
-        // Arrange
-        var input = typeof(Func<int>).FullName;
+        [Fact]
+        public void Returns_Correct_Result_For_Generic_Func()
+        {
+            // Arrange
+            var input = typeof(Func<int>).FullName;
 
-        // Act
-        var actual = input.FixTypeName();
+            // Act
+            var actual = input.FixTypeName();
 
-        // Assert
-        actual.Should().Be("System.Func<System.Int32>");
-    }
+            // Assert
+            actual.Should().Be("System.Func<System.Int32>");
+        }
 
-    [Fact]
-    public void FixTypeName_Returns_Correct_Result_For_Nullable_Generic_Func()
-    {
-        // Arrange
-        var input = typeof(Func<int?>).FullName;
+        [Fact]
+        public void Returns_Correct_Result_For_Nullable_Generic_Func()
+        {
+            // Arrange
+            var input = typeof(Func<int?>).FullName;
 
-        // Act
-        var actual = input.FixTypeName();
+            // Act
+            var actual = input.FixTypeName();
 
-        // Assert
-        actual.Should().Be("System.Func<System.Nullable<System.Int32>>");
-    }
+            // Assert
+            actual.Should().Be("System.Func<System.Nullable<System.Int32>>");
+        }
 
-    [Fact]
-    public void FixTypeName_Returns_Correct_Result_For_Generic_Enumerable()
-    {
-        // Arrange
-        var input = typeof(IEnumerable<int>).FullName;
+        [Fact]
+        public void Returns_Correct_Result_For_Generic_Enumerable()
+        {
+            // Arrange
+            var input = typeof(IEnumerable<int>).FullName;
 
-        // Act
-        var actual = input.FixTypeName();
+            // Act
+            var actual = input.FixTypeName();
 
-        // Assert
-        actual.Should().Be("System.Collections.Generic.IEnumerable<System.Int32>");
-    }
+            // Assert
+            actual.Should().Be("System.Collections.Generic.IEnumerable<System.Int32>");
+        }
 
-    [Fact]
-    public void FixTypeName_Returns_Correct_Result_For_Nullable_Generic_Enumerable()
-    {
-        // Arrange
-        var input = typeof(IEnumerable<int?>).FullName;
+        [Fact]
+        public void Returns_Correct_Result_For_Nullable_Generic_Enumerable()
+        {
+            // Arrange
+            var input = typeof(IEnumerable<int?>).FullName;
 
-        // Act
-        var actual = input.FixTypeName();
+            // Act
+            var actual = input.FixTypeName();
 
-        // Assert
-        actual.Should().Be("System.Collections.Generic.IEnumerable<System.Nullable<System.Int32>>");
-    }
+            // Assert
+            actual.Should().Be("System.Collections.Generic.IEnumerable<System.Nullable<System.Int32>>");
+        }
 
-    [Fact]
-    public void FixTypeName_Returns_Correct_Result_For_Generics_With_Multiple_Generic_Parameters()
-    {
-        // Arrange
-        var input = typeof(Func<object?, IAsyncDisposable, object?>).FullName;
+        [Fact]
+        public void Returns_Correct_Result_For_Generics_With_Multiple_Generic_Parameters()
+        {
+            // Arrange
+            var input = typeof(Func<object?, IAsyncDisposable, object?>).FullName;
 
-        // Act
-        var actual = input.FixTypeName();
+            // Act
+            var actual = input.FixTypeName();
 
-        // Assert
-        //Note that nullable generic argument types are not recognized. I'm not sure how to fix this...
-        actual.Should().Be("System.Func<System.Object,System.IAsyncDisposable,System.Object>");
+            // Assert
+            //Note that nullable generic argument types are not recognized. I'm not sure how to fix this...
+            actual.Should().Be("System.Func<System.Object,System.IAsyncDisposable,System.Object>");
+        }
     }
 
     [Theory]
@@ -229,69 +232,72 @@ public class StringExtensionsTests
         actual.Should().Be(expectedResult);
     }
 
-    [Theory]
-    [InlineData("", "MyClass")]
-    [InlineData("Generic", "MyClass<Generic>")]
-    [InlineData("MyNamespace.Generic", "MyClass<MyNamespace.Generic>")]
-    public void MakeGenericTypeName_Returns_Correct_Result(string input, string expectedResult)
+    public class MakeGenericTypeName
     {
-        // Act
-        var actual = "MyClass".MakeGenericTypeName(input);
+        [Theory]
+        [InlineData("", "MyClass")]
+        [InlineData("Generic", "MyClass<Generic>")]
+        [InlineData("MyNamespace.Generic", "MyClass<MyNamespace.Generic>")]
+        public void Returns_Correct_Result(string input, string expectedResult)
+        {
+            // Act
+            var actual = "MyClass".MakeGenericTypeName(input);
 
-        // Assert
-        actual.Should().Be(expectedResult);
-    }
+            // Assert
+            actual.Should().Be(expectedResult);
+        }
 
-    [Fact]
-    public void MakeGenericTypeName_Array_Returns_Correct_Result_Null()
-    {
-        // Arrange
-        string[] input = null!;
+        [Fact]
+        public void Array_Returns_Correct_Result_Null()
+        {
+            // Arrange
+            string[] input = null!;
 
-        // Act
-        var actual = "MyClass".MakeGenericTypeName(input);
+            // Act
+            var actual = "MyClass".MakeGenericTypeName(input);
 
-        // Assert
-        actual.Should().Be("MyClass");
-    }
+            // Assert
+            actual.Should().Be("MyClass");
+        }
 
-    [Fact]
-    public void MakeGenericTypeName_Array_Returns_Correct_Result_Empty_Array()
-    {
-        // Arrange
-        string[] input = Array.Empty<string>();
+        [Fact]
+        public void Array_Returns_Correct_Result_Empty_Array()
+        {
+            // Arrange
+            string[] input = Array.Empty<string>();
 
-        // Act
-        var actual = "MyClass".MakeGenericTypeName(input);
+            // Act
+            var actual = "MyClass".MakeGenericTypeName(input);
 
-        // Assert
-        actual.Should().Be("MyClass");
-    }
+            // Assert
+            actual.Should().Be("MyClass");
+        }
 
-    [Fact]
-    public void MakeGenericTypeName_Array_Returns_Correct_Result_One_Item()
-    {
-        // Arrange
-        string[] input = ["Generic"];
+        [Fact]
+        public void Array_Returns_Correct_Result_One_Item()
+        {
+            // Arrange
+            string[] input = ["Generic"];
 
-        // Act
-        var actual = "MyClass".MakeGenericTypeName(input);
+            // Act
+            var actual = "MyClass".MakeGenericTypeName(input);
 
-        // Assert
-        actual.Should().Be("MyClass<Generic>");
-    }
+            // Assert
+            actual.Should().Be("MyClass<Generic>");
+        }
 
-    [Fact]
-    public void MakeGenericTypeName_Array_Returns_Correct_Result_Two_Items()
-    {
-        // Arrange
-        string[] input = ["Generic1", "Generic2"];
+        [Fact]
+        public void Array_Returns_Correct_Result_Two_Items()
+        {
+            // Arrange
+            string[] input = ["Generic1", "Generic2"];
 
-        // Act
-        var actual = "MyClass".MakeGenericTypeName(input);
+            // Act
+            var actual = "MyClass".MakeGenericTypeName(input);
 
-        // Assert
-        actual.Should().Be("MyClass<Generic1,Generic2>");
+            // Assert
+            actual.Should().Be("MyClass<Generic1,Generic2>");
+        }
     }
 
     [Theory]
@@ -506,32 +512,35 @@ public class StringExtensionsTests
         result.Should().Be(expectedResult);
     }
 
-    [Fact]
-    public void AbbreviateNamespaces_Returns_Value_Unchanged_When_Namespace_Is_Not_Supplied()
+    public class AbbreviateNamespaces
     {
-        // Arrange
-        var sut = "MyNamespace.MyClass";
-        var namespacesToAbbreviate = new[] { "System" };
+        [Fact]
+        public void Returns_Value_Unchanged_When_Namespace_Is_Not_Supplied()
+        {
+            // Arrange
+            var sut = "MyNamespace.MyClass";
+            var namespacesToAbbreviate = new[] { "System" };
 
-        // Act
-        var actual = sut.AbbreviateNamespaces(namespacesToAbbreviate);
+            // Act
+            var actual = sut.AbbreviateNamespaces(namespacesToAbbreviate);
 
-        // Assert
-        actual.Should().Be(sut);
-    }
+            // Assert
+            actual.Should().Be(sut);
+        }
 
-    [Fact]
-    public void AbbreviateNamespaces_Returns_Abbreviated_Value_When_Namespace_Is_Supplied()
-    {
-        // Arrange
-        var sut = "MyNamespace.MyClass";
-        var namespacesToAbbreviate = new[] { "MyNamespace" };
+        [Fact]
+        public void Returns_Abbreviated_Value_When_Namespace_Is_Supplied()
+        {
+            // Arrange
+            var sut = "MyNamespace.MyClass";
+            var namespacesToAbbreviate = new[] { "MyNamespace" };
 
-        // Act
-        var actual = sut.AbbreviateNamespaces(namespacesToAbbreviate);
+            // Act
+            var actual = sut.AbbreviateNamespaces(namespacesToAbbreviate);
 
-        // Assert
-        actual.Should().Be("MyClass");
+            // Assert
+            actual.Should().Be("MyClass");
+        }
     }
 
     [Theory,
@@ -635,5 +644,34 @@ public class StringExtensionsTests
 
         // Assert
         result.Should().Be(expectedResult);
+    }
+
+    public class ReplaceGenericTypeName
+    {
+        [Fact]
+        public void Returns_Correct_Result_With_Single_Argument()
+        {
+            // Arrange
+            var input = "MyTypeName<>";
+
+            // Act
+            var result = input.ReplaceGenericTypeName("MyGenericArgument");
+
+            // Assert
+            result.Should().Be("MyTypeName<MyGenericArgument>");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_With_Multiple_Arguments()
+        {
+            // Arrange
+            var input = "MyTypeName<>";
+
+            // Act
+            var result = input.ReplaceGenericTypeName("MyGenericArgument1", "MyGenericArgument2");
+
+            // Assert
+            result.Should().Be("MyTypeName<MyGenericArgument1,MyGenericArgument2>");
+        }
     }
 }
