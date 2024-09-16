@@ -42,6 +42,6 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
             builder.RenderSuppressions(Model.SuppressWarningCodes, "restore", Model.CreateIndentation(1));
         }
 
-        return result;
+        return Result.Success();
     }
 }
