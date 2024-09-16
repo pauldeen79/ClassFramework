@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewModel>, IStringBuilderTemplate
+public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -26,6 +26,6 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
             builder.Append(" ");
         }
 
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
 }

@@ -30,6 +30,7 @@ global using ClassFramework.TemplateFramework.ViewModels.CodeStatements;
 global using CommunityToolkit.Diagnostics;
 global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
+global using CrossCutting.Common.Results;
 global using CsharpExpressionDumper.Abstractions;
 global using Microsoft.Extensions.DependencyInjection;
 global using TemplateFramework.Abstractions;

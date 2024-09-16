@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel>, IStringBuilderTemplate
+public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public async Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -16,9 +16,15 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("{");
 
-        await RenderChildTemplatesByModel(Model.Members, builder, cancellationToken).ConfigureAwait(false);
+        var result = await RenderChildTemplatesByModel(Model.Members, builder, cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
 
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("}");
+
+        return Result.Success();
     }
 }

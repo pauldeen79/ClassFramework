@@ -1,13 +1,17 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, IStringBuilderTemplate
+public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public async Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
+        var result = await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
 
         builder.Append(Model.CreateIndentation(1));
 
@@ -24,7 +28,11 @@ public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, ISt
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("{");
 
-        await RenderChildTemplatesByModel(Model.CodeBodyItems, builder, cancellationToken).ConfigureAwait(false);
+        result = await RenderChildTemplatesByModel(Model.CodeBodyItems, builder, cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
 
         builder.Append(Model.CreateIndentation(1));
         builder.Append("}");
@@ -37,5 +45,7 @@ public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, ISt
         }
 
         builder.AppendLine();
+
+        return Result.Success();
     }
 }

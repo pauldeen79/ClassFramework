@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public sealed class UsingsTemplate : CsharpClassGeneratorBase<UsingsViewModel>, IStringBuilderTemplate
+public sealed class UsingsTemplate : CsharpClassGeneratorBase<UsingsViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -19,6 +19,6 @@ public sealed class UsingsTemplate : CsharpClassGeneratorBase<UsingsViewModel>, 
             builder.AppendLine();
         }
 
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
 }

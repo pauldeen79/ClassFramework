@@ -21,7 +21,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
 
     public IGenerationEnvironment CreateGenerationEnvironment()
         => Settings.GenerateMultipleFiles
-            ? new MultipleContentBuilderEnvironment()
+            ? new MultipleStringContentBuilderEnvironment()
             : new StringBuilderEnvironment();
 
     public abstract Task<IEnumerable<TypeBase>> GetModel();

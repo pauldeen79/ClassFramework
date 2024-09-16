@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public class PropertyCodeBodyTemplate : CsharpClassGeneratorBase<PropertyCodeBodyViewModel>, IStringBuilderTemplate
+public class PropertyCodeBodyTemplate : CsharpClassGeneratorBase<PropertyCodeBodyViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public async Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(Model);
         Guard.IsNotNull(builder);
@@ -19,9 +19,16 @@ public class PropertyCodeBodyTemplate : CsharpClassGeneratorBase<PropertyCodeBod
             builder.AppendLine();
             builder.Append(Model.CreateIndentation(2));
             builder.AppendLine("{");
-            await RenderChildTemplatesByModel(Model.CodeStatements, builder, cancellationToken).ConfigureAwait(false);
+            var result = await RenderChildTemplatesByModel(Model.CodeStatements, builder, cancellationToken).ConfigureAwait(false);
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
+
             builder.Append(Model.CreateIndentation(2));
             builder.AppendLine("}");
         }
+
+        return Result.Success();
     }
 }
