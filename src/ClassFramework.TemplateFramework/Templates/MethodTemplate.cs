@@ -51,7 +51,12 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IBuilde
         }
         else
         {
-            builder.RenderMethodBody(Model.CreateIndentation(1), async () => await RenderChildTemplatesByModel(Model.CodeStatements, builder, cancellationToken).ConfigureAwait(false));
+            result = await builder.RenderMethodBody(Model.CreateIndentation(1), () => RenderChildTemplatesByModel(Model.CodeStatements, builder, cancellationToken)).ConfigureAwait(false);
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
+
             builder.RenderSuppressions(Model.SuppressWarningCodes, "restore", Model.CreateIndentation(1));
         }
 

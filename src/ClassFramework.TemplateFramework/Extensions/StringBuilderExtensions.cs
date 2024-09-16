@@ -38,15 +38,22 @@ public static class StringBuilderExtensions
         }
     }
 
-    public static void RenderMethodBody(this StringBuilder builder, string indentation, Action innerAction)
+    public static async Task<Result> RenderMethodBody(this StringBuilder builder, string indentation, Func<Task<Result>> innerAction)
     {
         Guard.IsNotNull(innerAction);
 
         builder.AppendLine();
         builder.Append(indentation);
         builder.AppendLine("{");
-        innerAction();
+        var result = await innerAction();
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
+
         builder.Append(indentation);
         builder.AppendLine("}");
+
+        return Result.Success();
     }
 }
