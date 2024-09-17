@@ -28,24 +28,20 @@ public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, IBu
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("{");
 
-        result = await RenderChildTemplatesByModel(Model.CodeBodyItems, builder, cancellationToken).ConfigureAwait(false);
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
+        return (await RenderChildTemplatesByModel(Model.CodeBodyItems, builder, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(_ =>
+            {
+                builder.Append(Model.CreateIndentation(1));
+                builder.Append("}");
 
-        builder.Append(Model.CreateIndentation(1));
-        builder.Append("}");
+                if (Model.ShouldRenderDefaultValue)
+                {
+                    builder.Append(" = ");
+                    builder.Append(Model.DefaultValueExpression);
+                    builder.Append(";");
+                }
 
-        if (Model.ShouldRenderDefaultValue)
-        {
-            builder.Append(" = ");
-            builder.Append(Model.DefaultValueExpression);
-            builder.Append(";");
-        }
-
-        builder.AppendLine();
-
-        return Result.Success();
+                builder.AppendLine();
+            });
     }
 }

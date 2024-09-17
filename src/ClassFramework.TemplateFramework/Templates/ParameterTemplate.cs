@@ -7,23 +7,19 @@ public class ParameterTemplate : CsharpClassGeneratorBase<ParameterViewModel>, I
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        var result = await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
+        return (await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(_ =>
+            {
+                builder.Append(Model.Prefix);
+                builder.Append(Model.TypeName);
+                builder.Append(" ");
+                builder.Append(Model.Name);
 
-        builder.Append(Model.Prefix);
-        builder.Append(Model.TypeName);
-        builder.Append(" ");
-        builder.Append(Model.Name);
-
-        if (Model.ShouldRenderDefaultValue)
-        {
-            builder.Append(" = ");
-            builder.Append(Model.DefaultValueExpression);
-        }
-
-        return Result.Success();
+                if (Model.ShouldRenderDefaultValue)
+                {
+                    builder.Append(" = ");
+                    builder.Append(Model.DefaultValueExpression);
+                }
+            });
     }
 }

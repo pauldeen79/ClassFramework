@@ -12,6 +12,7 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IBuilde
         {
             return result;
         }
+
         if (!Model.OmitCode)
         {
             builder.RenderSuppressions(Model.SuppressWarningCodes, "disable", Model.CreateIndentation(1));

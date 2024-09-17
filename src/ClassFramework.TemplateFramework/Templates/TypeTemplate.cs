@@ -47,15 +47,8 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
             }
         }
 
-        result = await RenderTypeBase(generationEnvironment, cancellationToken).ConfigureAwait(false);
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
-
-        generationEnvironment.Builder.AppendLineWithCondition("}", Model.ShouldRenderNamespaceScope); // end namespace
-
-        return Result.Success();
+        return (await RenderTypeBase(generationEnvironment, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(_ => generationEnvironment.Builder.AppendLineWithCondition("}", Model.ShouldRenderNamespaceScope)); // end namespace
     }
 
     public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
@@ -94,26 +87,22 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
         {
             return result;
         }
-        
+
         // Subclasses
-        result = await RenderChildTemplatesByModel(Model.SubClasses, generationEnvironment, cancellationToken).ConfigureAwait(false);
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
+        return (await RenderChildTemplatesByModel(Model.SubClasses, generationEnvironment, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(_ =>
+            {
+                indentedBuilder.AppendLine("}"); // end class
 
-        indentedBuilder.AppendLine("}"); // end class
+                PopIndent(indentedBuilder);
 
-        PopIndent(indentedBuilder);
+                generationEnvironment.Builder.AppendLineWithCondition("#nullable restore", Model.ShouldRenderNullablePragmas);
 
-        generationEnvironment.Builder.AppendLineWithCondition("#nullable restore", Model.ShouldRenderNullablePragmas);
-
-        foreach (var suppression in Model.SuppressWarningCodes.Reverse())
-        {
-            generationEnvironment.Builder.AppendLine($"#pragma warning restore {suppression}");
-        }
-
-        return Result.Success();
+                foreach (var suppression in Model.SuppressWarningCodes.Reverse())
+                {
+                    generationEnvironment.Builder.AppendLine($"#pragma warning restore {suppression}");
+                }
+            });
     }
 
     private void PushIndent(IndentedStringBuilder indentedBuilder)

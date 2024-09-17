@@ -7,7 +7,11 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
+        var result = await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
 
         builder.Append(Model.CreateIndentation(1));
         builder.Append(Model.Modifiers);
@@ -16,15 +20,12 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("{");
 
-        var result = await RenderChildTemplatesByModel(Model.Members, builder, cancellationToken).ConfigureAwait(false);
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
+        return (await RenderChildTemplatesByModel(Model.Members, builder, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(_ =>
+            {
+                builder.Append(Model.CreateIndentation(1));
+                builder.AppendLine("}");
 
-        builder.Append(Model.CreateIndentation(1));
-        builder.AppendLine("}");
-
-        return Result.Success();
+            });
     }
 }

@@ -7,30 +7,27 @@ public class FieldTemplate : CsharpClassGeneratorBase<FieldViewModel>, IBuilderT
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        var result = await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
+        return (await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(_ =>
+            {
 
-        builder.Append(Model.CreateIndentation(1));
-        builder.Append(Model.Modifiers);
-        
-        if (Model.Event)
-        {
-            builder.Append("event ");
-        }
-        
-        builder.Append($"{Model.TypeName} {Model.Name}");
-        
-        if (Model.ShouldRenderDefaultValue)
-        {
-            builder.Append(" = ");
-            builder.Append(Model.DefaultValueExpression);
-        }
-        
-        builder.AppendLine(";");
+                builder.Append(Model.CreateIndentation(1));
+                builder.Append(Model.Modifiers);
 
-        return Result.Success();
+                if (Model.Event)
+                {
+                    builder.Append("event ");
+                }
+
+                builder.Append($"{Model.TypeName} {Model.Name}");
+
+                if (Model.ShouldRenderDefaultValue)
+                {
+                    builder.Append(" = ");
+                    builder.Append(Model.DefaultValueExpression);
+                }
+
+                builder.AppendLine(";");
+            });
     }
 }
