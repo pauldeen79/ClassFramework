@@ -16,7 +16,11 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
             // Generate a single generation environment, so we create only a single file in the multiple content builder environment.
             singleStringBuilder = builder.AddContent(Context.DefaultFilename, Model.Settings.SkipWhenFileExists).Builder;
             generationEnvironment = new StringBuilderEnvironment(singleStringBuilder);
-            await RenderHeader(generationEnvironment, cancellationToken).ConfigureAwait(false);
+            var result = await RenderHeader(generationEnvironment, cancellationToken).ConfigureAwait(false);
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
         }
 
         singleStringBuilder?.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
