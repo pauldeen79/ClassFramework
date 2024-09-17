@@ -123,4 +123,32 @@ public class CsharpClassGeneratorTests : TestBase
             result.Status.Should().Be(ResultStatus.Ok);
         }
     }
+
+    public class Render_MultipleContentBuilder : CsharpClassGeneratorTests
+    {
+        [Fact]
+        public async Task Returns_InnerResult_When_RenderHeader_Result_Is_Not_Successful()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var engine = Substitute.For<ITemplateEngine>();
+            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Error("Kaboom!"));
+            var context = Substitute.For<ITemplateContext>();
+            context.Engine.Returns(engine);
+            sut.Model = new CsharpClassGeneratorViewModel
+            {
+                Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false),
+                Model = Array.Empty<TypeBase>()
+            };
+            sut.Context = context;
+            var builder = new MultipleContentBuilder();
+
+            // Act
+            var result = await sut.Render(builder, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom!");
+        }
+    }
 }
