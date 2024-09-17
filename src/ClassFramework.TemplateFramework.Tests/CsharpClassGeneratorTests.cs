@@ -55,7 +55,32 @@ public class CsharpClassGeneratorTests
         }
 
         [Fact]
-        public async Task Returns_Success_When_All_Inner_Results_Are_Successful()
+        public async Task Returns_InnerResult_When_RenderNamespaceHierarchy_Result_Is_Not_Successful()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var engine = Substitute.For<ITemplateEngine>();
+            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is TypeBase ? Result.Error("Kaboom!") : Result.Success());
+            var context = Substitute.For<ITemplateContext>();
+            context.Engine.Returns(engine);
+            sut.Model = new CsharpClassGeneratorViewModel
+            {
+                Settings = CreateSettings().Build(),
+                Model = [new ClassBuilder().WithName("MyClass").Build()]
+            };
+            sut.Context = context;
+            var builder = new StringBuilder();
+
+            // Act
+            var result = await sut.Render(builder, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom!");
+        }
+
+        [Fact]
+        public async Task Returns_Success_When_All_Inner_Results_Are_Successful_Without_Global_Usings()
         {
             // Arrange
             var sut = CreateSut();
@@ -66,6 +91,30 @@ public class CsharpClassGeneratorTests
             sut.Model = new CsharpClassGeneratorViewModel
             {
                 Settings = CreateSettings().Build(),
+                Model = Array.Empty<TypeBase>()
+            };
+            sut.Context = context;
+            var builder = new StringBuilder();
+
+            // Act
+            var result = await sut.Render(builder, CancellationToken.None);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+        }
+
+        [Fact]
+        public async Task Returns_Success_When_All_Inner_Results_Are_Successful_With_Global_Usings()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var engine = Substitute.For<ITemplateEngine>();
+            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            var context = Substitute.For<ITemplateContext>();
+            context.Engine.Returns(engine);
+            sut.Model = new CsharpClassGeneratorViewModel
+            {
+                Settings = CreateSettings().WithEnableGlobalUsings().Build(),
                 Model = Array.Empty<TypeBase>()
             };
             sut.Context = context;
