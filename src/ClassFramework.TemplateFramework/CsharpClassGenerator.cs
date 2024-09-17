@@ -20,14 +20,8 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
         }
 
         singleStringBuilder?.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
-        var result = await RenderNamespaceHierarchy(generationEnvironment, singleStringBuilder, cancellationToken).ConfigureAwait(false);
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
-        singleStringBuilder?.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas);
-
-        return Result.Success();
+        return (await RenderNamespaceHierarchy(generationEnvironment, singleStringBuilder, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(_ => singleStringBuilder?.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas));
     }
 
     public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
@@ -48,7 +42,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
         }
 
         generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
-        result = await RenderNamespaceHierarchy(generationEnvironment, builder, cancellationToken);
+        result = await RenderNamespaceHierarchy(generationEnvironment, builder, cancellationToken).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -61,16 +55,15 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
     private async Task<Result> RenderHeader(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
-        var result = await RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment, cancellationToken);
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
-        
-        if (!Model.Settings.EnableGlobalUsings)
-        {
-            return await RenderChildTemplateByModel(Model.Usings, generationEnvironment, cancellationToken);
-        }
+        var result = await RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment, cancellationToken).ConfigureAwait(false);
+        _ = result.OnSuccess(async _ =>
+            {
+                if (!Model.Settings.EnableGlobalUsings)
+                {
+                    return await RenderChildTemplateByModel(Model.Usings, generationEnvironment, cancellationToken).ConfigureAwait(false);
+                }
+                return Result.Success();
+            });
 
         return Result.Success();
     }
@@ -85,7 +78,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
                 singleStringBuilder.AppendLine("{"); // open namespace
             }
 
-            var result = await RenderChildTemplatesByModel(Model.GetTypes(@namespace), generationEnvironment, cancellationToken);
+            var result = await RenderChildTemplatesByModel(Model.GetTypes(@namespace), generationEnvironment, cancellationToken).ConfigureAwait(false);
 
             if (!result.IsSuccessful())
             {

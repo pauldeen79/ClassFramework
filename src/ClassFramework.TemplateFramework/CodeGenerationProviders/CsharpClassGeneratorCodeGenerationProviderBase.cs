@@ -14,7 +14,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     public async Task<object?> CreateModel()
         => new CsharpClassGeneratorViewModel
         {
-            Model = await GetModel(),
+            Model = await GetModel().ConfigureAwait(false),
             Settings = Settings
             //Context is filled in base class, on the property setter of Context (propagated to Model)
         };

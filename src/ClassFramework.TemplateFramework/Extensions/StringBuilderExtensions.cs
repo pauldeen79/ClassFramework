@@ -45,7 +45,7 @@ public static class StringBuilderExtensions
         builder.AppendLine();
         builder.Append(indentation);
         builder.AppendLine("{");
-        var result = await innerAction();
+        var result = await innerAction().ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
