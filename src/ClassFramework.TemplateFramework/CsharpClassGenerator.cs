@@ -42,30 +42,21 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
         }
 
         generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
-        result = await RenderNamespaceHierarchy(generationEnvironment, builder, cancellationToken).ConfigureAwait(false);
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
-
-        generationEnvironment.Builder.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas);
-        
-        return Result.Success();
+        return (await RenderNamespaceHierarchy(generationEnvironment, builder, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(_ => generationEnvironment.Builder.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas));
     }
 
     private async Task<Result> RenderHeader(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         var result = await RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment, cancellationToken).ConfigureAwait(false);
-        _ = result.OnSuccess(async _ =>
+        return await result.OnSuccess(async _ =>
+        {
+            if (!Model.Settings.EnableGlobalUsings)
             {
-                if (!Model.Settings.EnableGlobalUsings)
-                {
-                    return await RenderChildTemplateByModel(Model.Usings, generationEnvironment, cancellationToken).ConfigureAwait(false);
-                }
-                return Result.Success();
-            });
-
-        return Result.Success();
+                return await RenderChildTemplateByModel(Model.Usings, generationEnvironment, cancellationToken).ConfigureAwait(false);
+            }
+            return Result.Success();
+        });
     }
 
     private async Task<Result> RenderNamespaceHierarchy(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder, CancellationToken cancellationToken)
