@@ -4,7 +4,7 @@ public static class ResultExtensions
 {
     public static T OnSuccess<T>(this T result, Action<T> successDelegate) where T : Result
     {
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        Guard.IsNotNull(successDelegate);
 
         if (result.IsSuccessful())
         {
@@ -16,7 +16,7 @@ public static class ResultExtensions
 
     public static async Task<T> OnSuccess<T>(this T result, Func<T, Task<T>> successDelegate) where T : Result
     {
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        Guard.IsNotNull(successDelegate);
 
         if (!result.IsSuccessful())
         {
@@ -28,7 +28,7 @@ public static class ResultExtensions
 
     public static T OnSuccess<T>(this T result, Func<T, T> successDelegate) where T : Result
     {
-        successDelegate = successDelegate.IsNotNull(nameof(successDelegate));
+        Guard.IsNotNull(successDelegate);
 
         if (!result.IsSuccessful())
         {

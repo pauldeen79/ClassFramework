@@ -31,7 +31,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
         if (Model.Settings.GenerateMultipleFiles)
         {
-            throw new NotSupportedException("Can't generate multiple files, because the generation environment has a single StringBuilder instance");
+            return Result.NotSupported("Can't generate multiple files, because the generation environment has a single StringBuilder instance");
         }
 
         var generationEnvironment = new StringBuilderEnvironment(builder);
