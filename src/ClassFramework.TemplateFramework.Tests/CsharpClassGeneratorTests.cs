@@ -1,12 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests;
 
-public class CsharpClassGeneratorTests
+public class CsharpClassGeneratorTests : TestBase
 {
     protected static CsharpClassGenerator CreateSut() => new();
-    protected static CsharpClassGeneratorSettingsBuilder CreateSettings()
-        => new CsharpClassGeneratorSettingsBuilder()
-            .WithEncoding(Encoding.UTF8)
-            .WithCultureInfo(CultureInfo.InvariantCulture);
 
     public class Render_StringBuilder : CsharpClassGeneratorTests
     {
@@ -17,7 +13,7 @@ public class CsharpClassGeneratorTests
             var sut = CreateSut();
             sut.Model = new CsharpClassGeneratorViewModel
             {
-                Settings = CreateSettings().WithGenerateMultipleFiles().Build(),
+                Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: true),
             };
             var builder = new StringBuilder();
 
@@ -40,7 +36,7 @@ public class CsharpClassGeneratorTests
             context.Engine.Returns(engine);
             sut.Model = new CsharpClassGeneratorViewModel
             {
-                Settings = CreateSettings().Build(),
+                Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false),
                 Model = Array.Empty<TypeBase>()
             };
             sut.Context = context;
@@ -65,7 +61,7 @@ public class CsharpClassGeneratorTests
             context.Engine.Returns(engine);
             sut.Model = new CsharpClassGeneratorViewModel
             {
-                Settings = CreateSettings().Build(),
+                Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false),
                 Model = [new ClassBuilder().WithName("MyClass").Build()]
             };
             sut.Context = context;
@@ -90,7 +86,7 @@ public class CsharpClassGeneratorTests
             context.Engine.Returns(engine);
             sut.Model = new CsharpClassGeneratorViewModel
             {
-                Settings = CreateSettings().Build(),
+                Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false, enableGlobalUsings: false),
                 Model = Array.Empty<TypeBase>()
             };
             sut.Context = context;
@@ -114,7 +110,7 @@ public class CsharpClassGeneratorTests
             context.Engine.Returns(engine);
             sut.Model = new CsharpClassGeneratorViewModel
             {
-                Settings = CreateSettings().WithEnableGlobalUsings().Build(),
+                Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false, enableGlobalUsings: true),
                 Model = Array.Empty<TypeBase>()
             };
             sut.Context = context;
