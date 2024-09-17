@@ -35,28 +35,26 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
         }
 
         var generationEnvironment = new StringBuilderEnvironment(builder);
-        var result = await RenderHeader(generationEnvironment, cancellationToken).ConfigureAwait(false);
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
-
-        generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
-        return (await RenderNamespaceHierarchy(generationEnvironment, builder, cancellationToken).ConfigureAwait(false))
-            .OnSuccess(_ => generationEnvironment.Builder.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas));
+        return await (await RenderHeader(generationEnvironment, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(async _ =>
+            {
+                generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
+                return (await RenderNamespaceHierarchy(generationEnvironment, builder, cancellationToken).ConfigureAwait(false))
+                    .OnSuccess(_ => generationEnvironment.Builder.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas));
+            }).ConfigureAwait(false);
     }
 
     private async Task<Result> RenderHeader(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
-        var result = await RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment, cancellationToken).ConfigureAwait(false);
-        return await result.OnSuccess(async _ =>
-        {
-            if (!Model.Settings.EnableGlobalUsings)
+        return await (await RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(async _ =>
             {
-                return await RenderChildTemplateByModel(Model.Usings, generationEnvironment, cancellationToken).ConfigureAwait(false);
-            }
-            return Result.Success();
-        });
+                if (!Model.Settings.EnableGlobalUsings)
+                {
+                    return await RenderChildTemplateByModel(Model.Usings, generationEnvironment, cancellationToken).ConfigureAwait(false);
+                }
+                return Result.Success();
+            }).ConfigureAwait(false);
     }
 
     private async Task<Result> RenderNamespaceHierarchy(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder, CancellationToken cancellationToken)
