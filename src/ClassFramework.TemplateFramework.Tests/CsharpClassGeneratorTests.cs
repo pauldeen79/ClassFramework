@@ -30,14 +30,12 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var sut = CreateSut();
             var engine = Substitute.For<ITemplateEngine>();
             engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Error("Kaboom!"));
-            var context = Substitute.For<ITemplateContext>();
-            context.Engine.Returns(engine);
             sut.Model = new CsharpClassGeneratorViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false),
                 Model = Array.Empty<TypeBase>()
             };
-            sut.Context = context;
+            sut.Context = CreateContext(engine, sut);
             var builder = new StringBuilder();
 
             // Act
@@ -55,14 +53,12 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var sut = CreateSut();
             var engine = Substitute.For<ITemplateEngine>();
             engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is TypeBase ? Result.Error("Kaboom!") : Result.Success());
-            var context = Substitute.For<ITemplateContext>();
-            context.Engine.Returns(engine);
             sut.Model = new CsharpClassGeneratorViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false),
                 Model = [new ClassBuilder().WithName("MyClass").Build()]
             };
-            sut.Context = context;
+            sut.Context = CreateContext(engine, sut);
             var builder = new StringBuilder();
 
             // Act
@@ -80,14 +76,12 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var sut = CreateSut();
             var engine = Substitute.For<ITemplateEngine>();
             engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
-            var context = Substitute.For<ITemplateContext>();
-            context.Engine.Returns(engine);
             sut.Model = new CsharpClassGeneratorViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false, enableGlobalUsings: false),
                 Model = Array.Empty<TypeBase>()
             };
-            sut.Context = context;
+            sut.Context = CreateContext(engine, sut);
             var builder = new StringBuilder();
 
             // Act
@@ -104,14 +98,12 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var sut = CreateSut();
             var engine = Substitute.For<ITemplateEngine>();
             engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
-            var context = Substitute.For<ITemplateContext>();
-            context.Engine.Returns(engine);
             sut.Model = new CsharpClassGeneratorViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false, enableGlobalUsings: true),
                 Model = Array.Empty<TypeBase>()
             };
-            sut.Context = context;
+            sut.Context = CreateContext(engine, sut);
             var builder = new StringBuilder();
 
             // Act
@@ -131,14 +123,12 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var sut = CreateSut();
             var engine = Substitute.For<ITemplateEngine>();
             engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Error("Kaboom!"));
-            var context = Substitute.For<ITemplateContext>();
-            context.Engine.Returns(engine);
             sut.Model = new CsharpClassGeneratorViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false),
                 Model = Array.Empty<TypeBase>()
             };
-            sut.Context = context;
+            sut.Context = CreateContext(engine, sut);
             var builder = new MultipleContentBuilder();
 
             // Act
