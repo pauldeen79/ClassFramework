@@ -1,9 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.Templates;
 
-public class CodeGenerationHeaderTemplateTests
+public class CodeGenerationHeaderTemplateTests : TemplateTestBase<CodeGenerationHeaderTemplate>
 {
-    protected static CodeGenerationHeaderTemplate CreateSut() => new();
-
     public class Render : CodeGenerationHeaderTemplateTests
     {
         [Fact]

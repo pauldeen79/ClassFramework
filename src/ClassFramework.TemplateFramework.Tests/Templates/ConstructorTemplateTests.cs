@@ -1,19 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.Templates;
 
-public class ConstructorTemplateTests : TestBase
+public class ConstructorTemplateTests : TemplateTestBase<ConstructorTemplate>
 {
-    protected static ConstructorTemplate CreateSut() => new();
-    protected static ITemplateContext CreateContext(ITemplateEngine engine)
-    {
-        var context = Substitute.For<ITemplateContext>();
-        context.Engine.Returns(engine);
-        var parentContext = Substitute.For<ITemplateContext>();
-        parentContext.ParentContext.Returns(default(ITemplateContext));
-        parentContext.Model.Returns(new ClassBuilder().WithName("MyClass").Build());
-        context.ParentContext.Returns(parentContext);
-        return context;
-    }
-
     public class Render : ConstructorTemplateTests
     {
         [Fact]
@@ -28,7 +16,7 @@ public class ConstructorTemplateTests : TestBase
             };
             var engine = Substitute.For<ITemplateEngine>();
             engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is Domain.Attribute ? Result.Error("Kaboom!") : Result.Success());
-            sut.Context = CreateContext(engine);
+            sut.Context = CreateContext(engine, sut);
             var builder = new StringBuilder();
 
             // Act
@@ -51,7 +39,7 @@ public class ConstructorTemplateTests : TestBase
             };
             var engine = Substitute.For<ITemplateEngine>();
             engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is Parameter ? Result.Error("Kaboom!") : Result.Success());
-            sut.Context = CreateContext(engine);
+            sut.Context = CreateContext(engine, sut);
             var builder = new StringBuilder();
 
             // Act
@@ -79,7 +67,7 @@ public class ConstructorTemplateTests : TestBase
             };
             var engine = Substitute.For<ITemplateEngine>();
             engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
-            sut.Context = CreateContext(engine);
+            sut.Context = CreateContext(engine, sut);
             var builder = new StringBuilder();
 
             // Act
@@ -117,7 +105,7 @@ public class ConstructorTemplateTests : TestBase
                     builder.AppendLine($"            {stringCodeStatement.Statement}");
                 }
             }));
-            sut.Context = CreateContext(engine);
+            sut.Context = CreateContext(engine, sut);
 
             // Act
             var result = await sut.Render(builder, CancellationToken.None);
@@ -159,7 +147,7 @@ public class ConstructorTemplateTests : TestBase
 
                 return Result.Success();
             });
-            sut.Context = CreateContext(engine);
+            sut.Context = CreateContext(engine, sut);
 
             // Act
             var result = await sut.Render(builder, CancellationToken.None);

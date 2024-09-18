@@ -30,6 +30,10 @@ public class TestBase
         => new TemplateContext(Fixture.Freeze<ITemplateEngine>(), Fixture.Freeze<ITemplateComponentRegistry>(), "default.cs", Fixture.Freeze<ITemplateIdentifier>(), template ?? new object(), model);
 }
 
+/// <summary>
+/// Base class for non-Template/Generator (i.e. ViewModel) unit tests. This base class uses AutoFixture acvitation, so with assigning fixtures to properties.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public abstract class TestBase<T> : TestBase
 {
     protected T CreateSut() => Fixture.Create<T>();

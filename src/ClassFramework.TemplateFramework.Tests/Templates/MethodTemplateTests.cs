@@ -1,22 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.Templates;
 
-public class MethodTemplateTests : TestBase
+public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
 {
-    protected static MethodTemplate CreateSut() => new();
-    protected static ITemplateContext CreateContext(ITemplateEngine engine, object template)
-    {
-        var context = Substitute.For<ITemplateContext>();
-        context.Engine.Returns(engine);
-        var parentContext = Substitute.For<ITemplateContext>();
-        parentContext.ParentContext.Returns(default(ITemplateContext));
-        parentContext.RootContext.Returns(parentContext);
-        parentContext.Model.Returns(new ClassBuilder().WithName("MyClass").Build());
-        parentContext.Template.Returns(template); // important to fill because otherwise you will get NullReferenceExceptions :)
-        context.ParentContext.Returns(parentContext);
-        context.RootContext.Returns(parentContext);
-        return context;
-    }
-
     public class Render : MethodTemplateTests
     {
         [Fact]

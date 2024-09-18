@@ -1,9 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests;
 
-public class CsharpClassGeneratorTests : TestBase
+public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
 {
-    protected static CsharpClassGenerator CreateSut() => new();
-
     public class Render_StringBuilder : CsharpClassGeneratorTests
     {
         [Fact]
