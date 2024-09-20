@@ -26,27 +26,27 @@ public static class ResultExtensions
         return result;
     }
 
-    public static async Task<T> OnSuccess<T>(this T result, Func<T, Task<T>> successDelegate) where T : Result
+    public static Task<T> OnSuccess<T>(this T result, Func<T, Task<T>> successDelegate) where T : Result
     {
         Guard.IsNotNull(successDelegate);
 
         if (!result.IsSuccessful())
         {
-            return result;
+            return Task.FromResult(result);
         }
 
-        return await successDelegate(result);
+        return successDelegate(result);
     }
 
-    public static async Task<T> OnSuccess<T>(this T result, Func<Task<T>> successDelegate) where T : Result
+    public static Task<T> OnSuccess<T>(this T result, Func<Task<T>> successDelegate) where T : Result
     {
         Guard.IsNotNull(successDelegate);
 
         if (!result.IsSuccessful())
         {
-            return result;
+            return Task.FromResult(result);
         }
 
-        return await successDelegate();
+        return successDelegate();
     }
 }
