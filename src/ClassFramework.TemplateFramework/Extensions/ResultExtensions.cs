@@ -49,16 +49,4 @@ public static class ResultExtensions
 
         return await successDelegate();
     }
-
-    public static T OnSuccess<T>(this T result, Func<T, T> successDelegate) where T : Result
-    {
-        Guard.IsNotNull(successDelegate);
-
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
-
-        return successDelegate(result);
-    }
 }
