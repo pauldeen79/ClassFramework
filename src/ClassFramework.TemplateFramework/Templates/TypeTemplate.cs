@@ -48,7 +48,7 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
         }
 
         return (await RenderTypeBase(generationEnvironment, cancellationToken).ConfigureAwait(false))
-            .OnSuccess(_ => generationEnvironment.Builder.AppendLineWithCondition("}", Model.ShouldRenderNamespaceScope)); // end namespace
+            .OnSuccess(() => generationEnvironment.Builder.AppendLineWithCondition("}", Model.ShouldRenderNamespaceScope)); // end namespace
     }
 
     public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
@@ -90,7 +90,7 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
 
         // Subclasses
         return (await RenderChildTemplatesByModel(Model.SubClasses, generationEnvironment, cancellationToken).ConfigureAwait(false))
-            .OnSuccess(_ =>
+            .OnSuccess(() =>
             {
                 indentedBuilder.AppendLine("}"); // end class
 

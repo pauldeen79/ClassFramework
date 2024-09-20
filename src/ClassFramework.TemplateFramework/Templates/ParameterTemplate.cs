@@ -8,7 +8,7 @@ public class ParameterTemplate : CsharpClassGeneratorBase<ParameterViewModel>, I
         Guard.IsNotNull(Model);
 
         return (await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false))
-            .OnSuccess(_ =>
+            .OnSuccess(() =>
             {
                 builder.Append(Model.Prefix);
                 builder.Append(Model.TypeName);

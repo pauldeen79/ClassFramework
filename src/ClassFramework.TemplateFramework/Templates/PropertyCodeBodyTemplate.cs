@@ -13,22 +13,19 @@ public class PropertyCodeBodyTemplate : CsharpClassGeneratorBase<PropertyCodeBod
         if (Model.OmitCode)
         {
             builder.AppendLine(";");
+            return Result.Success();
         }
         else
         {
             builder.AppendLine();
             builder.Append(Model.CreateIndentation(2));
             builder.AppendLine("{");
-            var result = await RenderChildTemplatesByModel(Model.CodeStatements, builder, cancellationToken).ConfigureAwait(false);
-            if (!result.IsSuccessful())
-            {
-                return result;
-            }
-
-            builder.Append(Model.CreateIndentation(2));
-            builder.AppendLine("}");
+            return (await RenderChildTemplatesByModel(Model.CodeStatements, builder, cancellationToken).ConfigureAwait(false))
+                .OnSuccess(() =>
+                {
+                    builder.Append(Model.CreateIndentation(2));
+                    builder.AppendLine("}");
+                });
         }
-
-        return Result.Success();
     }
 }

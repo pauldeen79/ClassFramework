@@ -25,7 +25,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
         singleStringBuilder?.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
         return (await RenderNamespaceHierarchy(generationEnvironment, singleStringBuilder, cancellationToken).ConfigureAwait(false))
-            .OnSuccess(_ => singleStringBuilder?.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas));
+            .OnSuccess(() => singleStringBuilder?.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas));
     }
 
     public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
@@ -40,18 +40,18 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
         var generationEnvironment = new StringBuilderEnvironment(builder);
         return await (await RenderHeader(generationEnvironment, cancellationToken).ConfigureAwait(false))
-            .OnSuccess(async _ =>
+            .OnSuccess(async () =>
             {
                 generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
                 return (await RenderNamespaceHierarchy(generationEnvironment, builder, cancellationToken).ConfigureAwait(false))
-                    .OnSuccess(_ => generationEnvironment.Builder.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas));
+                    .OnSuccess(() => generationEnvironment.Builder.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas));
             }).ConfigureAwait(false);
     }
 
     private async Task<Result> RenderHeader(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         return await (await RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment, cancellationToken).ConfigureAwait(false))
-            .OnSuccess(async _ =>
+            .OnSuccess(async () =>
             {
                 if (!Model.Settings.EnableGlobalUsings)
                 {

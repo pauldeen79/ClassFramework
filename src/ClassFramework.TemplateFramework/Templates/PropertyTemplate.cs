@@ -7,41 +7,39 @@ public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, IBu
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        var result = await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
-        if (!result.IsSuccessful())
-        {
-            return result;
-        }
-
-        builder.Append(Model.CreateIndentation(1));
-
-        if (Model.ShouldRenderModifiers)
-        {
-            builder.Append(Model.Modifiers);
-        }
-
-        builder.Append(Model.ExplicitInterfaceName);
-        builder.Append(Model.TypeName);
-        builder.Append(" ");
-        builder.AppendLine(Model.Name);
-
-        builder.Append(Model.CreateIndentation(1));
-        builder.AppendLine("{");
-
-        return (await RenderChildTemplatesByModel(Model.CodeBodyItems, builder, cancellationToken).ConfigureAwait(false))
-            .OnSuccess(_ =>
+        return await (await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(async () =>
             {
                 builder.Append(Model.CreateIndentation(1));
-                builder.Append("}");
 
-                if (Model.ShouldRenderDefaultValue)
+                if (Model.ShouldRenderModifiers)
                 {
-                    builder.Append(" = ");
-                    builder.Append(Model.DefaultValueExpression);
-                    builder.Append(";");
+                    builder.Append(Model.Modifiers);
                 }
 
-                builder.AppendLine();
-            });
+                builder.Append(Model.ExplicitInterfaceName);
+                builder.Append(Model.TypeName);
+                builder.Append(" ");
+                builder.AppendLine(Model.Name);
+
+                builder.Append(Model.CreateIndentation(1));
+                builder.AppendLine("{");
+
+                return (await RenderChildTemplatesByModel(Model.CodeBodyItems, builder, cancellationToken).ConfigureAwait(false))
+                    .OnSuccess(() =>
+                    {
+                        builder.Append(Model.CreateIndentation(1));
+                        builder.Append("}");
+
+                        if (Model.ShouldRenderDefaultValue)
+                        {
+                            builder.Append(" = ");
+                            builder.Append(Model.DefaultValueExpression);
+                            builder.Append(";");
+                        }
+
+                        builder.AppendLine();
+                    });
+            }).ConfigureAwait(false);
     }
 }

@@ -8,7 +8,7 @@ public class FieldTemplate : CsharpClassGeneratorBase<FieldViewModel>, IBuilderT
         Guard.IsNotNull(Model);
 
         return (await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false))
-            .OnSuccess(_ =>
+            .OnSuccess(() =>
             {
 
                 builder.Append(Model.CreateIndentation(1));
