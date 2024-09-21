@@ -37,7 +37,7 @@ internal static class Program
         // Generate code
         await Task.WhenAll(generators
             .Select(x => (CsharpClassGeneratorCodeGenerationProviderBase)scope.ServiceProvider.GetRequiredService(x))
-            .Select(x => engine.Generate(x, new MultipleContentBuilderEnvironment(), new CodeGenerationSettings(basePath, Path.Combine(x.Path, $"{x.GetType().Name}.template.generated.cs")))))
+            .Select(x => engine.Generate(x, new MultipleStringContentBuilderEnvironment(), new CodeGenerationSettings(basePath, Path.Combine(x.Path, $"{x.GetType().Name}.template.generated.cs")))))
             .ConfigureAwait(false);
 
         // Log output to console

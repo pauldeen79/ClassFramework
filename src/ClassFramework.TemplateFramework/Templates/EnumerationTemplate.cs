@@ -1,24 +1,29 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel>, IStringBuilderTemplate
+public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public async Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
+        return await (await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(async () =>
+            {
+                builder.Append(Model.CreateIndentation(1));
+                builder.Append(Model.Modifiers);
+                builder.Append("enum ");
+                builder.AppendLine(Model.Name);
+                builder.Append(Model.CreateIndentation(1));
+                builder.AppendLine("{");
 
-        builder.Append(Model.CreateIndentation(1));
-        builder.Append(Model.Modifiers);
-        builder.Append("enum ");
-        builder.AppendLine(Model.Name);
-        builder.Append(Model.CreateIndentation(1));
-        builder.AppendLine("{");
+                return (await RenderChildTemplatesByModel(Model.Members, builder, cancellationToken).ConfigureAwait(false))
+                    .OnSuccess(() =>
+                    {
+                        builder.Append(Model.CreateIndentation(1));
+                        builder.AppendLine("}");
 
-        await RenderChildTemplatesByModel(Model.Members, builder, cancellationToken).ConfigureAwait(false);
-
-        builder.Append(Model.CreateIndentation(1));
-        builder.AppendLine("}");
+                    });
+            }).ConfigureAwait(false);
     }
 }

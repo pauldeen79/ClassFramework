@@ -1,15 +1,15 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<CodeGenerationHeaderViewModel>, IStringBuilderTemplate
+public sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<CodeGenerationHeaderViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
         if (!Model.CreateCodeGenerationHeader)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(Result.Success());
         }
 
         builder.AppendLine($$"""
@@ -24,6 +24,6 @@ public sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<Code
 // ------------------------------------------------------------------------------
 """);
 
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
 }

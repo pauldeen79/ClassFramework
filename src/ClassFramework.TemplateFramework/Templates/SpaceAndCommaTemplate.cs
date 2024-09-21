@@ -1,13 +1,13 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public class SpaceAndCommaTemplate : CsharpClassGeneratorBase<SpaceAndCommaViewModel>, IStringBuilderTemplate
+public class SpaceAndCommaTemplate : CsharpClassGeneratorBase<SpaceAndCommaViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
 
         builder.Append(", ");
 
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
 }

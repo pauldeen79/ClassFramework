@@ -11,7 +11,7 @@ public class TestBase
         Fixture.Register(() => CreateCsharpClassGeneratorSettings(true));
     }
 
-    protected static CsharpClassGeneratorSettings CreateCsharpClassGeneratorSettings(bool generateMultipleFiles = true, bool enableNullableContext = true, string path = "")
+    protected static CsharpClassGeneratorSettings CreateCsharpClassGeneratorSettings(bool generateMultipleFiles = true, bool enableNullableContext = true, bool enableGlobalUsings = false, string path = "")
         => new CsharpClassGeneratorSettingsBuilder()
             .WithRecurseOnDeleteGeneratedFiles(false)
             .WithLastGeneratedFilesFilename(string.Empty)
@@ -19,6 +19,7 @@ public class TestBase
             .WithGenerateMultipleFiles(generateMultipleFiles)
             //.WithSkipWhenFileExists(false) // default value
             .WithCreateCodeGenerationHeader(true)
+            .WithEnableGlobalUsings(enableGlobalUsings)
             .WithEnableNullableContext(enableNullableContext)
             .WithCultureInfo(CultureInfo.InvariantCulture)
             .WithEnvironmentVersion("1.0.0")
@@ -29,6 +30,10 @@ public class TestBase
         => new TemplateContext(Fixture.Freeze<ITemplateEngine>(), Fixture.Freeze<ITemplateComponentRegistry>(), "default.cs", Fixture.Freeze<ITemplateIdentifier>(), template ?? new object(), model);
 }
 
+/// <summary>
+/// Base class for non-Template/Generator (i.e. ViewModel) unit tests. This base class uses AutoFixture acvitation, so with assigning fixtures to properties.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public abstract class TestBase<T> : TestBase
 {
     protected T CreateSut() => Fixture.Create<T>();

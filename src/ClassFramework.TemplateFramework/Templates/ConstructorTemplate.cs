@@ -1,13 +1,17 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel>, IStringBuilderTemplate
+public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public async Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
+        var result = await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
 
         if (!Model.OmitCode)
         {
@@ -19,7 +23,11 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
         builder.Append(Model.Name);
         builder.Append("(");
 
-        await RenderChildTemplatesByModel(Model.Parameters, builder, cancellationToken).ConfigureAwait(false);
+        result = await RenderChildTemplatesByModel(Model.Parameters, builder, cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
 
         builder.Append(")");
         builder.Append(Model.ChainCall);
@@ -30,8 +38,15 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
         }
         else
         {
-            builder.RenderMethodBody(Model.CreateIndentation(1), async () => await RenderChildTemplatesByModel(Model.CodeStatements, builder, cancellationToken).ConfigureAwait(false));
+            result = await builder.RenderMethodBody(Model.CreateIndentation(1), () => RenderChildTemplatesByModel(Model.CodeStatements, builder, cancellationToken)).ConfigureAwait(false);
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
+
             builder.RenderSuppressions(Model.SuppressWarningCodes, "restore", Model.CreateIndentation(1));
         }
+
+        return Result.Success();
     }
 }

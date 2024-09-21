@@ -1,14 +1,15 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
+public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMultipleContentBuilderTemplate, IBuilderTemplate<StringBuilder>
 {
-    public async Task Render(IMultipleContentBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> Render(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
         StringBuilderEnvironment generationEnvironment;
+        Result result;
 
         if (!Model.Settings.GenerateMultipleFiles)
         {
@@ -24,10 +25,19 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
             var filename = $"{Model.FilenamePrefix}{Model.Name}{Model.Settings.FilenameSuffix}.cs";
             var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
             generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
-            await RenderChildTemplateByModel(Model.CodeGenerationHeaders, generationEnvironment, cancellationToken).ConfigureAwait(false);
+            result = await RenderChildTemplateByModel(Model.CodeGenerationHeaders, generationEnvironment, cancellationToken).ConfigureAwait(false);
+            if (!result.IsSuccessful())
+            {
+                return result;
+            }
+
             if (!Model.Settings.EnableGlobalUsings)
             {
-                await RenderChildTemplateByModel(Model.Usings(), generationEnvironment, cancellationToken).ConfigureAwait(false);
+                result = await RenderChildTemplateByModel(Model.Usings(), generationEnvironment, cancellationToken).ConfigureAwait(false);
+                if (!result.IsSuccessful())
+                {
+                    return result;
+                }
             }
 
             if (Model.ShouldRenderNamespaceScope)
@@ -37,21 +47,20 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
             }
         }
 
-        await RenderTypeBase(generationEnvironment, cancellationToken).ConfigureAwait(false);
-
-        generationEnvironment.Builder.AppendLineWithCondition("}", Model.ShouldRenderNamespaceScope); // end namespace
+        return (await RenderTypeBase(generationEnvironment, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(() => generationEnvironment.Builder.AppendLineWithCondition("}", Model.ShouldRenderNamespaceScope)); // end namespace
     }
 
-    public async Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
         var generationEnvironment = new StringBuilderEnvironment(builder);
-        await RenderTypeBase(generationEnvironment, cancellationToken).ConfigureAwait(false);
+        return await RenderTypeBase(generationEnvironment, cancellationToken).ConfigureAwait(false);
     }
 
-    private async Task RenderTypeBase(StringBuilderEnvironment generationEnvironment, CancellationToken cancellationToken)
+    private async Task<Result> RenderTypeBase(StringBuilderEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model!.ShouldRenderNullablePragmas);
 
@@ -63,27 +72,37 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
         var indentedBuilder = new IndentedStringBuilder(generationEnvironment.Builder);
         PushIndent(indentedBuilder);
 
-        await RenderChildTemplatesByModel(Model.Attributes, generationEnvironment, cancellationToken).ConfigureAwait(false);
+        var result = await RenderChildTemplatesByModel(Model.Attributes, generationEnvironment, cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
 
         indentedBuilder.AppendLine($"{Model.Modifiers}{Model.ContainerType} {Model.Name}{Model.GenericTypeArguments}{Model.InheritedClasses}{Model.GenericTypeArgumentConstraints}");
         indentedBuilder.AppendLine("{"); // start class
 
         // Fields, Properties, Methods, Constructors, Enumerations
-        await RenderChildTemplatesByModel(Model.Members, generationEnvironment, cancellationToken).ConfigureAwait(false);
+        result = await RenderChildTemplatesByModel(Model.Members, generationEnvironment, cancellationToken).ConfigureAwait(false);
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
 
         // Subclasses
-        await RenderChildTemplatesByModel(Model.SubClasses, generationEnvironment, cancellationToken).ConfigureAwait(false);
+        return (await RenderChildTemplatesByModel(Model.SubClasses, generationEnvironment, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(() =>
+            {
+                indentedBuilder.AppendLine("}"); // end class
 
-        indentedBuilder.AppendLine("}"); // end class
+                PopIndent(indentedBuilder);
 
-        PopIndent(indentedBuilder);
+                generationEnvironment.Builder.AppendLineWithCondition("#nullable restore", Model.ShouldRenderNullablePragmas);
 
-        generationEnvironment.Builder.AppendLineWithCondition("#nullable restore", Model.ShouldRenderNullablePragmas);
-
-        foreach (var suppression in Model.SuppressWarningCodes.Reverse())
-        {
-            generationEnvironment.Builder.AppendLine($"#pragma warning restore {suppression}");
-        }
+                foreach (var suppression in Model.SuppressWarningCodes.Reverse())
+                {
+                    generationEnvironment.Builder.AppendLine($"#pragma warning restore {suppression}");
+                }
+            });
     }
 
     private void PushIndent(IndentedStringBuilder indentedBuilder)

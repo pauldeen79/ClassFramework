@@ -131,11 +131,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
         return (await models.SelectAsync(async x =>
         {
-            var context = new EntityContext(x, await CreateEntityPipelineSettings(entitiesNamespace), Settings.CultureInfo);
+            var context = new EntityContext(x, await CreateEntityPipelineSettings(entitiesNamespace).ConfigureAwait(false), Settings.CultureInfo);
             var entity = (await PipelineService.Process(context))
                 .GetValueOrThrow();
 
-            return await CreateBuilderClass(entity, buildersNamespace, entitiesNamespace);
+            return await CreateBuilderClass(entity, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
         })).ToArray();
     }
 
@@ -153,7 +153,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             var @interface = (await PipelineService.Process(context))
                 .GetValueOrThrow();
 
-            return await CreateBuilderExtensionsClass(@interface, buildersNamespace, entitiesNamespace, buildersExtensionsNamespace);
+            return await CreateBuilderExtensionsClass(@interface, buildersNamespace, entitiesNamespace, buildersExtensionsNamespace).ConfigureAwait(false);
         })).ToArray();
     }
 
@@ -170,7 +170,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             var typeBase = (await PipelineService.Process(context))
                 .GetValueOrThrow();
 
-            return await CreateNonGenericBuilderClass(typeBase, buildersNamespace, entitiesNamespace);
+            return await CreateNonGenericBuilderClass(typeBase, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
         })).ToArray();
     }
 
@@ -272,7 +272,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private static bool DefaultCopyAttributePredicate(Domain.Attribute attribute)
         => attribute.Name != typeof(CsharpTypeNameAttribute).FullName;
 
-    protected ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
+    protected static ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
         => secondCondition
             ? validateArgumentsInConstructor
             : ArgumentValidationType.None;
@@ -300,7 +300,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         bool? overrideAddNullChecks = null,
         string entityNameFormatString = "{Class.NameNoInterfacePrefix}")
     {
-        var baseClass = await GetBaseClass();
+        var baseClass = await GetBaseClass().ConfigureAwait(false);
+
         return new PipelineSettingsBuilder()
             .WithAddSetters(AddSetters)
             .WithAddBackingFields(AddBackingFields)
@@ -464,7 +465,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
         ];
 
-    private string ReplaceStart(string fullNamespace, string baseNamespace, bool appendDot)
+    private static string ReplaceStart(string fullNamespace, string baseNamespace, bool appendDot)
     {
         if (fullNamespace.Length == 0)
         {
@@ -541,7 +542,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         string nameFormatString = "{Class.Name}",
         CopyMethodPredicate? copyMethodPredicate = null)
     {
-        return (await PipelineService.Process(new InterfaceContext(typeBase, await CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(await GetBaseClass()), copyMethodPredicate, addSetters, nameFormatString), Settings.CultureInfo)))
+        return (await PipelineService.Process(new InterfaceContext(typeBase, await CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(await GetBaseClass()), copyMethodPredicate, addSetters, nameFormatString), Settings.CultureInfo)).ConfigureAwait(false))
             .GetValueOrThrow();
     }
 }

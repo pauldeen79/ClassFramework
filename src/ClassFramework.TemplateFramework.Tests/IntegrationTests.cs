@@ -58,7 +58,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TestCodeGenerationProvider>();
-        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var generationEnvironment = new MultipleStringContentBuilderEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -159,7 +159,7 @@ namespace MyNamespace
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TestPipelineCodeGenerationProvider>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -200,7 +200,7 @@ namespace MyNamespace
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<AbstractionsBuildersInterfaces>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -235,7 +235,7 @@ namespace Test.Domain.Builders.Abstractions
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<AbstractionsBuildersExtensions>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -272,7 +272,7 @@ namespace Test.Domain.Builders.Extensions
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<AbstractionsInterfaces>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -306,7 +306,7 @@ namespace Test.Domain.Abstractions
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreEntities>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -358,7 +358,7 @@ namespace Test.Domain
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreBuilders>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -441,7 +441,7 @@ namespace Test.Domain.Builders
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreBuilderExtensions>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -485,7 +485,7 @@ namespace Test.Domain.Extensions
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutablePrivateSettersCoreEntities>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -539,7 +539,7 @@ namespace Test.Domain
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutablePrivateSettersCoreBuilders>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -622,7 +622,7 @@ namespace Test.Domain.Builders
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableInheritFromInterfacesCoreEntities>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -674,7 +674,7 @@ namespace Test.Domain
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableInheritFromInterfacesCoreBuilders>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -757,7 +757,7 @@ namespace Test.Domain.Builders
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableInheritFromInterfacesAbstractionsInterfaces>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -799,7 +799,7 @@ namespace Test.Abstractions
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableInheritFromInterfacesAbstractionsBuilderInterfaces>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -843,7 +843,7 @@ namespace Test.Abstractions
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableNoToBuilderMethodCoreEntities>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -890,7 +890,7 @@ namespace Test.Domain
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ObservableCoreEntities>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -970,7 +970,7 @@ namespace Test.Domain
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ObservableCoreBuilders>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -1070,7 +1070,7 @@ namespace Test.Domain.Builders
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TemplateFrameworkEntities>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -1187,7 +1187,7 @@ namespace ClassFramework.TemplateFramework
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<AbstractBuilders>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -1233,7 +1233,7 @@ namespace Test.Domain.Builders
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<AbstractEntities>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -1274,7 +1274,7 @@ namespace Test.Domain
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<AbstractNonGenericBuilders>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -1340,7 +1340,7 @@ namespace Test.Domain.Builders
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<OverrideTypeBuilders>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -1410,7 +1410,7 @@ namespace Test.Domain.Builders.Types
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<OverrideTypeEntities>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -1460,7 +1460,7 @@ namespace Test.Domain.Types
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<MappedTypeEntities>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
@@ -1505,7 +1505,7 @@ namespace Test.Domain
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<MappedTypeBuilders>();
-        var generationEnvironment = (MultipleContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act

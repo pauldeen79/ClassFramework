@@ -12,7 +12,7 @@
   <ItemGroup>
     <PackageReference Include="CsharpExpressionDumper.Core" Version="1.5.3" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="0.11.1" />
+    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>

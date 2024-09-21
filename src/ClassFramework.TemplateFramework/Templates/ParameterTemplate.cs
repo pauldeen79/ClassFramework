@@ -1,23 +1,25 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public class ParameterTemplate : CsharpClassGeneratorBase<ParameterViewModel>, IStringBuilderTemplate
+public class ParameterTemplate : CsharpClassGeneratorBase<ParameterViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public async Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
+        return (await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false))
+            .OnSuccess(() =>
+            {
+                builder.Append(Model.Prefix);
+                builder.Append(Model.TypeName);
+                builder.Append(" ");
+                builder.Append(Model.Name);
 
-        builder.Append(Model.Prefix);
-        builder.Append(Model.TypeName);
-        builder.Append(" ");
-        builder.Append(Model.Name);
-
-        if (Model.ShouldRenderDefaultValue)
-        {
-            builder.Append(" = ");
-            builder.Append(Model.DefaultValueExpression);
-        }
+                if (Model.ShouldRenderDefaultValue)
+                {
+                    builder.Append(" = ");
+                    builder.Append(Model.DefaultValueExpression);
+                }
+            });
     }
 }

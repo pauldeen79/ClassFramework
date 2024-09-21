@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates.CodeStatements;
 
-public class StringCodeStatementTemplate : CsharpClassGeneratorBase<StringCodeStatementViewModel>, IStringBuilderTemplate
+public class StringCodeStatementTemplate : CsharpClassGeneratorBase<StringCodeStatementViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public Task Render(StringBuilder builder, CancellationToken cancellationToken)
+    public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -11,6 +11,6 @@ public class StringCodeStatementTemplate : CsharpClassGeneratorBase<StringCodeSt
 
         builder.AppendLine(Model.Statement);
 
-        return Task.CompletedTask;
+        return Task.FromResult(Result.Success());
     }
 }
