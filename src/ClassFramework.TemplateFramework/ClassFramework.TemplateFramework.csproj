@@ -11,8 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="pauldeen79.TemplateFramework.Core" Version="1.0.0" />
-    <PackageReference Include="pauldeen79.TemplateFramework.TemplateProviders.ChildTemplateProvider" Version="1.0.0" />
+    <PackageReference Include="pauldeen79.TemplateFramework.Core" Version="1.0.1" />
+    <PackageReference Include="pauldeen79.TemplateFramework.TemplateProviders.ChildTemplateProvider" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
