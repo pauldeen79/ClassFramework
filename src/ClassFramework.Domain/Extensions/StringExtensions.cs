@@ -373,12 +373,13 @@ public static class StringExtensions
 
     public static string AppendNullableAnnotation(this string instance,
                                                   bool isNullable,
-                                                  bool enableNullableReferenceTypes)
+                                                  bool enableNullableReferenceTypes,
+                                                  bool isValueType)
         => !string.IsNullOrEmpty(instance)
             && !instance.StartsWith(typeof(Nullable<>).WithoutGenerics())
             && !instance.EndsWith("?")
             && isNullable
-            && enableNullableReferenceTypes
+            && (isValueType || enableNullableReferenceTypes)
                 ? $"{instance}?"
                 : instance;
 

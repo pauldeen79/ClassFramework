@@ -8,7 +8,7 @@ public class MethodViewModel : MethodViewModelBase<Method>
     public string ReturnTypeName
         => GetModel().ReturnTypeName
             .GetCsharpFriendlyTypeName()
-            .AppendNullableAnnotation(Model!.ReturnTypeIsNullable, Settings.EnableNullableContext)
+            .AppendNullableAnnotation(Model!.ReturnTypeIsNullable, Settings.EnableNullableContext, Model.ReturnTypeIsValueType)
             .AbbreviateNamespaces(GetContext().GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate)
             .WhenNullOrEmpty("void");
 

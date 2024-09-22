@@ -572,15 +572,16 @@ public class StringExtensionsTests
     }
     
     [Theory]
-    [InlineData("System.String", false, false, "System.String")]
-    [InlineData("System.String", true, false, "System.String")]
-    [InlineData("System.String", true, true, "System.String?")]
-    [InlineData("System.String?", true, true, "System.String?")]
-    [InlineData("System.Nullable<System.Int32>", true, true, "System.Nullable<System.Int32>")]
-    public void AppendNullableAnnotation_Returns_Correct_Result(string typeName, bool isNullable, bool enableNullableReferenceTypes, string expectedResult)
+    [InlineData("System.String", false, false, false, "System.String")]
+    [InlineData("System.String", true, false, false, "System.String")]
+    [InlineData("System.String", true, true, false, "System.String?")]
+    [InlineData("System.String?", true, true, false, "System.String?")]
+    [InlineData("System.Nullable<System.Int32>", true, true, false, "System.Nullable<System.Int32>")]
+    [InlineData("System.Nullable<System.Int32>", true, false, true, "System.Nullable<System.Int32>")]
+    public void AppendNullableAnnotation_Returns_Correct_Result(string typeName, bool isNullable, bool enableNullableReferenceTypes, bool isValueType, string expectedResult)
     {
         // Act
-        var result = typeName.AppendNullableAnnotation(isNullable, enableNullableReferenceTypes);
+        var result = typeName.AppendNullableAnnotation(isNullable, enableNullableReferenceTypes, isValueType);
 
         // Assert
         result.Should().Be(expectedResult);
