@@ -2,7 +2,7 @@
 
 public static partial class BaseClassContainerBuilderExtensions
 {
-    public static IBaseClassContainerBuilder WithBaseClass<T>(this T instance, Type baseClassType)
+    public static T WithBaseClass<T>(this T instance, Type baseClassType)
         where T : IBaseClassContainerBuilder
         => instance.WithBaseClass(baseClassType.IsNotNull(nameof(baseClassType)).FullName);
 }
