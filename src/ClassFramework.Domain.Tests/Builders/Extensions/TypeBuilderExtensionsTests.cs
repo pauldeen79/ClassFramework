@@ -31,6 +31,49 @@ public class TypeBuilderExtensionsTests : TestBase<ClassBuilder>
         }
     }
 
+    public class WithFullName : TypeBuilderExtensionsTests
+    {
+        [Fact]
+        public void Throws_On_Null_FullName()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act & Assert
+            sut.Invoking(x => x.WithFullName(fullName: null!))
+               .Should().Throw<ArgumentNullException>()
+               .WithParameterName("fullName");
+        }
+
+        [Fact]
+        public void Sets_Information_Correctly_On_FullName_With_Namespace()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.WithFullName("MyNamespace.MyType");
+
+            // Assert
+            result.Namespace.Should().Be("MyNamespace");
+            result.Name.Should().Be("MyType");
+        }
+
+        [Fact]
+        public void Sets_Information_Correctly_On_FullName_Without_Namespace()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var result = sut.WithFullName("MyType");
+
+            // Assert
+            result.Namespace.Should().BeEmpty();
+            result.Name.Should().Be("MyType");
+        }
+    }
+
     public class AddInterfaces : TypeBuilderExtensionsTests
     {
         [Fact]

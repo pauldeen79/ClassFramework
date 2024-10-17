@@ -12,6 +12,18 @@ public static partial class TypeBuilderExtensions
         where T : ITypeBuilder
         => instance.AddInterfaces(interfaces.IsNotNull(nameof(interfaces)).ToArray());
 
+    public static T WithFullName<T>(this T instance, string fullName)
+        where T : ITypeBuilder
+    {
+        ArgumentGuard.IsNotNull(fullName, nameof(fullName));
+        var ns = fullName.GetNamespaceWithDefault();
+        var name = fullName.GetClassName();
+
+        return instance
+            .WithNamespace(ns)
+            .WithName(name);
+    }
+
     public static IReadOnlyCollection<ConstructorBuilder> GetConstructors<T>(this T instance)
         where T : ITypeBuilder
         => instance is IConstructorsContainerBuilder constructorsContainerBuilder
