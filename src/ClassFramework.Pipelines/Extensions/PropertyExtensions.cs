@@ -65,7 +65,7 @@ public static class PropertyExtensions
 
         if (property.HasBackingFieldOnBuilder(settings))
         {
-            return $"_{property.Name.ToPascalCase(cultureInfo)}";
+            return $"_{property.Name.ToCamelCase(cultureInfo)}";
         }
 
         return property.Name;
@@ -77,7 +77,7 @@ public static class PropertyExtensions
 
         if (addBackingFields)
         {
-            return $"_{property.Name.ToPascalCase(cultureInfo)}";
+            return $"_{property.Name.ToCamelCase(cultureInfo)}";
         }
 
         return property.Name;

@@ -59,8 +59,10 @@ public class PropertyProcessorTests : TestBase<PropertyProcessor>
         [InlineData("Name", "Delegate")]
         [InlineData("NameLower", "delegate")]
         [InlineData("NameUpper", "DELEGATE")]
-        [InlineData("NamePascal", "delegate")]
-        [InlineData("NamePascalCsharpFriendlyName", "@delegate")]
+        [InlineData("NamePascal", "Delegate")]
+        [InlineData("NamePascalCsharpFriendlyName", "Delegate")]
+        [InlineData("NameCamel", "delegate")]
+        [InlineData("NameCamelCsharpFriendlyName", "@delegate")]
         [InlineData("DefaultValue", "default(System.Collections.Generic.List<System.String>)")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {

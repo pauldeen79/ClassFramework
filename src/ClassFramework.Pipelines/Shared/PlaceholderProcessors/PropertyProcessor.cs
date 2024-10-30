@@ -29,6 +29,8 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor, IPlaceholderProc
             $"{nameof(Property.Name)}Upper" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToUpper(formatProvider.ToCultureInfo())),
             $"{nameof(Property.Name)}Pascal" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo())),
             $"{nameof(Property.Name)}PascalCsharpFriendlyName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
+            $"{nameof(Property.Name)}Camel" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToCamelCase(formatProvider.ToCultureInfo())),
+            $"{nameof(Property.Name)}CamelCsharpFriendlyName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToCamelCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
             "BuilderMemberName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.GetBuilderMemberName(propertyContext.Settings, propertyContext.FormatProvider.ToCultureInfo())),
             "EntityMemberName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.GetEntityMemberName(propertyContext.Settings.AddBackingFields || propertyContext.Settings.CreateAsObservable, propertyContext.FormatProvider.ToCultureInfo())),
             "InitializationExpression" => Result.Success<FormattableStringParserResult>(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo(), propertyContext.Settings, propertyContext.NullCheck)),
@@ -65,7 +67,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor, IPlaceholderProc
         return typeName.FixTypeName().IsCollectionTypeName()
             && (collectionTypeName.Length == 0 || collectionTypeName != property.TypeName.WithoutProcessedGenerics())
                 ? GetCollectionFormatStringForInitialization(property, typeName, cultureInfo, collectionTypeName, settings, nullCheck)
-                : property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName();
+                : property.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName();
     }
 
     private static string GetCollectionFormatStringForInitialization(Property property, string typeName, CultureInfo cultureInfo, string collectionTypeName, PipelineSettings settings, string nullCheck)
@@ -78,8 +80,8 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor, IPlaceholderProc
             : string.Empty;
 
         return property.IsNullable || (settings.AddNullChecks && settings.ValidateArguments != ArgumentValidationType.None)
-            ? $"{property.Name.ToPascalCase(cultureInfo)} {nullCheck} ? null{nullSuffix} : new {collectionTypeName}<{genericTypeName}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})"
-            : $"new {collectionTypeName}<{genericTypeName}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})";
+            ? $"{property.Name.ToCamelCase(cultureInfo)} {nullCheck} ? null{nullSuffix} : new {collectionTypeName}<{genericTypeName}>({property.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName()})"
+            : $"new {collectionTypeName}<{genericTypeName}>({property.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName()})";
     }
 
     private static string WithoutInterfacePrefix(string className)

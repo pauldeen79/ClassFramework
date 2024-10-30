@@ -75,7 +75,7 @@ public class AddPropertiesComponent : IPipelineComponent<BuilderContext>
     {
         if (property.HasBackingFieldOnBuilder(context.Settings))
         {
-            yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())};");
+            yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())};");
         }
     }
 
@@ -83,7 +83,7 @@ public class AddPropertiesComponent : IPipelineComponent<BuilderContext>
     {
         if (property.HasBackingFieldOnBuilder(context.Settings))
         {
-            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks, context.SourceModel)};");
+            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks, context.SourceModel)};");
             if (context.Settings.CreateAsObservable)
             {
                 yield return new StringCodeStatementBuilder().WithStatement($"HandlePropertyChanged(nameof({property.Name}));");

@@ -371,11 +371,11 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
                 new TypenameMappingBuilder()
                     .WithSourceType(typeof(int))
                     .WithTargetType(typeof(int))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{Name} = {NamePascal}; // custom")),
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{Name} = {NameCamel}; // custom")),
                 new TypenameMappingBuilder()
                     .WithSourceType(typeof(string))
                     .WithTargetType(typeof(string))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{Name} = {NamePascal}; // custom"))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{Name} = {NameCamel}; // custom"))
             ]);
             var context = CreateContext(sourceModel, settings);
 

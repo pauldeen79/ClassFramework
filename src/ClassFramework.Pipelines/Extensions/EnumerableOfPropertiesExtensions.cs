@@ -10,7 +10,7 @@ public static class EnumerableOfPropertiesExtensions
             .Select
             (
                 property => new ParameterBuilder()
-                    .WithName(property.Name.ToPascalCase(formatProvider.ToCultureInfo()))
+                    .WithName(property.Name.ToCamelCase(formatProvider.ToCultureInfo()))
                     .WithTypeName(mapTypeNameDelegate(property.TypeName).FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics()))
                     .SetTypeContainerPropertiesFrom(property)
             );

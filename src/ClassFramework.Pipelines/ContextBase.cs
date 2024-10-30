@@ -115,7 +115,7 @@ public abstract class ContextBase<TSourceModel> : ContextBase
                 ? $"if (source.{childContext.Name} is not null) "
                 : string.Empty),
             "NullCheck.Argument" => Result.Success<FormattableStringParserResult>(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
-                ? CreateArgumentNullException(childContext.Name.ToPascalCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())
+                ? CreateArgumentNullException(childContext.Name.ToCamelCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())
                 : string.Empty),
             "NullableRequiredSuffix" => Result.Success<FormattableStringParserResult>(!Settings.AddNullChecks && !childContext.IsValueType && childContext.IsNullable && Settings.EnableNullableReferenceTypes && !isGenericArgument
                 ? "!"
@@ -237,7 +237,7 @@ public abstract class ContextBase<TSourceModel> : ContextBase
         resultSetBuilder.Add("MethodName", () => formattableStringParser.Parse(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext));
         resultSetBuilder.Add(NamedResults.BuilderName, () => formattableStringParser.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext));
         resultSetBuilder.Add("ArgumentNullCheck", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), FormatProvider, parentChildContext));
-        resultSetBuilder.Add("BuilderWithExpression", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix}{Name} = {NamePascalCsharpFriendlyName};"), FormatProvider, parentChildContext));
+        resultSetBuilder.Add("BuilderWithExpression", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix}{Name} = {NameCamelCsharpFriendlyName};"), FormatProvider, parentChildContext));
 
         return resultSetBuilder.Build();
     }
@@ -266,7 +266,7 @@ public abstract class ContextBase<TSourceModel> : ContextBase
         typeName = typeName.IsNotNull(nameof(typeName));
 
         return new ParameterBuilder()
-            .WithName(property.Name.ToPascalCase(FormatProvider.ToCultureInfo()))
+            .WithName(property.Name.ToCamelCase(FormatProvider.ToCultureInfo()))
             .WithTypeName(typeName)
             .SetTypeContainerPropertiesFrom(property)
             .WithDefaultValue(GetMappingMetadata(property.TypeName).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null));

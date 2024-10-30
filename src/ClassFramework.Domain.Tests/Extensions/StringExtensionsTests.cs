@@ -3,21 +3,6 @@
 public class StringExtensionsTests
 {
     [Theory]
-    [InlineData("", "")]
-    [InlineData("something", "something")]
-    [InlineData("Something", "something")]
-    [InlineData("a", "a")]
-    [InlineData("A", "a")]
-    public void ToPascalCase_Returns_Correct_Result(string input, string expectedResult)
-    {
-        // Act
-        var actual = input.ToPascalCase(CultureInfo.InvariantCulture);
-
-        // Assert
-        actual.Should().Be(expectedResult);
-    }
-
-    [Theory]
     [InlineData("", "''")]
     [InlineData(" ", "' '")]
     [InlineData("something", "'something'")]

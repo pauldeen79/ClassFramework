@@ -69,7 +69,7 @@ public class AddFullConstructorComponent : IPipelineComponent<EntityContext>
                 context.Request.SourceModel.Properties
                     .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
                     .Where(property => context.Request.Settings.AddNullChecks && context.Request.Settings.AddValidationCode() == ArgumentValidationType.None && context.Request.GetMappingMetadata(property.TypeName).GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
-                    .Select(property => context.Request.CreateArgumentNullException(property.Name.ToPascalCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
+                    .Select(property => context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
             .AddStringCodeStatements(initializationResults.Select(x => x.Value!.ToString()))
             .AddStringCodeStatements(context.Request.CreateEntityValidationCode())

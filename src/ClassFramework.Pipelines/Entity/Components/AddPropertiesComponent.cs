@@ -52,7 +52,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
                 .Select
                 (
                     property => new FieldBuilder()
-                        .WithName($"_{property.Name.ToPascalCase(context.Request.FormatProvider.ToCultureInfo())}")
+                        .WithName($"_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())}")
                         .WithTypeName(context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName)
                             .FixCollectionTypeName(context.Request.Settings.CollectionTypeName
                                 .WhenNullOrEmpty(context.Request.Settings.EntityNewCollectionTypeName)
@@ -70,7 +70,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
     {
         if (context.Settings.AddBackingFields || context.Settings.CreateAsObservable)
         {
-            yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())};");
+            yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())};");
         }
     }
 
@@ -82,9 +82,9 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
         {
             if (context.Settings.CreateAsObservable)
             {
-                yield return new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !EqualityComparer<{context.CreatePropertyForEntity(property).TypeName}>.Default.Equals(_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())}, value);");
+                yield return new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !EqualityComparer<{context.CreatePropertyForEntity(property).TypeName}>.Default.Equals(_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())}, value);");
             }
-            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks, context.SourceModel)};");
+            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks, context.SourceModel)};");
             if (context.Settings.CreateAsObservable)
             {
                 yield return new StringCodeStatementBuilder().WithStatement($"if (hasChanged) HandlePropertyChanged(nameof({property.Name}));");

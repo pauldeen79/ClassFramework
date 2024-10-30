@@ -113,7 +113,7 @@ public static class TypeBaseExtensions
             }
 
             yield return Result.Success(new FieldBuilder()
-                .WithName($"_{property.Name.ToPascalCase(context.Request.FormatProvider.ToCultureInfo())}")
+                .WithName($"_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())}")
                 .WithTypeName(builderArgumentTypeResult.Value!.ToString().FixCollectionTypeName(context.Request.Settings.BuilderNewCollectionTypeName).FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)

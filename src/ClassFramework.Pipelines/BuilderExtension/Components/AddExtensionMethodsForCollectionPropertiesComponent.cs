@@ -78,10 +78,10 @@ public class AddExtensionMethodsForCollectionPropertiesComponent : IPipelineComp
     {
         if (context.Request.Settings.AddNullChecks)
         {
-            yield return Result.Success<FormattableStringParserResult>(context.Request.CreateArgumentNullException(property.Name.ToPascalCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()));
+            yield return Result.Success<FormattableStringParserResult>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()));
         }
 
-        yield return _formattableStringParser.Parse("return instance.{BuilderAddMethodName}<T>({NamePascalCsharpFriendlyName}.ToArray());", context.Request.FormatProvider, parentChildContext);
+        yield return _formattableStringParser.Parse("return instance.{BuilderAddMethodName}<T>({NameCamelCsharpFriendlyName}.ToArray());", context.Request.FormatProvider, parentChildContext);
     }
 
     private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderExtensionContext> context, Property property)
