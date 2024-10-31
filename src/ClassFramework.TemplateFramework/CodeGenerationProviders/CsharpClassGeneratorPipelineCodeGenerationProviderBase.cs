@@ -296,7 +296,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 : null)
             .Chain(x =>
             {
-                foreach (var initializer in GetAttributeInitializers())
+                foreach (var initializer in GetAttributeInitializers().Reverse())
                 {
                     x.AttributeInitializers.Insert(0, initializer);
                 }

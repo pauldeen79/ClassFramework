@@ -101,21 +101,18 @@ public partial class PipelineSettingsBuilder
 
             return new AttributeBuilder()
                 .WithName(x.GetType())
-                .AddParameters(ctor.GetParameters().Select(y => new AttributeParameterBuilder().WithName(y.Name).WithValue(GetValue(x, y.Name))))
+                .AddParameters(ctor.GetParameters().Select(y => new AttributeParameterBuilder().WithValue(GetValue(x, y.Name))))
                 .Build();
         });
     }
 
-    private object? GetValue(System.Attribute x, string name)
+    private static object? GetValue(System.Attribute sourceAttribute, string name)
     {
-        var type = x.GetType();
-        var prop = type.GetProperty(name.ToPascalCase(CultureInfo.InvariantCulture));
-        if (prop is not null)
-        {
-            return prop.GetValue(x);
-        }
+        var prop = sourceAttribute.GetType().GetProperty(name.ToPascalCase(CultureInfo.InvariantCulture));
 
-        return null;
+        return prop is not null
+            ? prop.GetValue(sourceAttribute)
+            : null;
     }
 
     private static ConstructorInfo? GetConstructor(Type type)
