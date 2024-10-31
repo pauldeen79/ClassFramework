@@ -89,10 +89,39 @@ public partial class PipelineSettingsBuilder
             new AttributeBuilder().WithName(defaultValueAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(defaultValueAttribute.Value))
                 .Build()));
+        
         // Fallback as latest
-        AttributeInitializers.Add(x => Array.Exists(x.GetType().GetConstructors(), y => y.GetParameters().Length == 0)
-            ? new AttributeBuilder().WithName(x.GetType()).Build()
-            : null);
+        AttributeInitializers.Add(x =>
+        {
+            var ctor = GetConstructor(x.GetType());
+            if (ctor is null)
+            {
+                return null;
+            }
+
+            return new AttributeBuilder()
+                .WithName(x.GetType())
+                .AddParameters(ctor.GetParameters().Select(y => new AttributeParameterBuilder().WithName(y.Name).WithValue(GetValue(x, y.Name))))
+                .Build();
+        });
+    }
+
+    private object? GetValue(System.Attribute x, string name)
+    {
+        var type = x.GetType();
+        var prop = type.GetProperty(name.ToPascalCase(CultureInfo.InvariantCulture));
+        if (prop is not null)
+        {
+            return prop.GetValue(x);
+        }
+
+        return null;
+    }
+
+    private static ConstructorInfo? GetConstructor(Type type)
+    {
+        // If multiple constructors are present, then take the one with the most arguments
+        return type.GetConstructors().OrderByDescending(x => x.GetParameters().Length).FirstOrDefault();
     }
 
     private static IEnumerable<AttributeParameterBuilder> ErrorMessage(ValidationAttribute validationAttribute)
