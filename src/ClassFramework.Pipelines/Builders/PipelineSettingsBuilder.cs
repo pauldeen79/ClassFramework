@@ -82,8 +82,8 @@ public partial class PipelineSettingsBuilder
                 .Build()));
         AttributeInitializers.Add(x => GetInitializer<ValidationAttribute>(x, validationAttribute => Array.Exists(x.GetType().GetConstructors(), y => y.GetParameters().Length == 0)
             ? new AttributeBuilder().WithName(validationAttribute.GetType())
-                .AddParameters(ErrorMessage(validationAttribute)).
-                Build()
+                .AddParameters(ErrorMessage(validationAttribute))
+                .Build()
             : null));
         AttributeInitializers.Add(x => GetInitializer<DefaultValueAttribute>(x, defaultValueAttribute =>
             new AttributeBuilder().WithName(defaultValueAttribute.GetType())
