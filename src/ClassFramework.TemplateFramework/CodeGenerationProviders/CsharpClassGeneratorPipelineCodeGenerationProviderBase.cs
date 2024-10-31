@@ -98,8 +98,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetTypes().Where(IsAbstractType);
 
-    protected virtual IEnumerable<AttributeInitializerDelegate> GetAttributeInitializers() => Enumerable.Empty<AttributeInitializerDelegate>();
-
     /// <summary>
     /// Gets the base typename, based on a derived class.
     /// </summary>
@@ -279,7 +277,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             ? validateArgumentsInConstructor
             : ArgumentValidationType.None;
 
-    private PipelineSettings CreateReflectionPipelineSettings()
+    protected virtual PipelineSettings CreateReflectionPipelineSettings()
         => new PipelineSettingsBuilder()
             .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
             .WithCopyAttributes(CopyAttributes)
@@ -294,13 +292,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .AddAttributeInitializers(x => x is CsharpTypeNameAttribute csharpTypeNameAttribute
                 ? new AttributeBuilder().WithName(csharpTypeNameAttribute.GetType()).AddParameters(new AttributeParameterBuilder().WithValue(csharpTypeNameAttribute.TypeName)).Build()
                 : null)
-            .Chain(x =>
-            {
-                foreach (var initializer in GetAttributeInitializers().Reverse())
-                {
-                    x.AttributeInitializers.Insert(0, initializer);
-                }
-            })
             .Build();
 
     private async Task<PipelineSettings> CreateEntityPipelineSettings(
