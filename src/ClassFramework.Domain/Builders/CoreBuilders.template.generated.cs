@@ -103,7 +103,7 @@ namespace ClassFramework.Domain.Builders
     {
         private string _name;
 
-        private object _value;
+        private object? _value;
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -121,7 +121,7 @@ namespace ClassFramework.Domain.Builders
             }
         }
 
-        public object Value
+        public object? Value
         {
             get
             {
@@ -129,7 +129,7 @@ namespace ClassFramework.Domain.Builders
             }
             set
             {
-                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+                _value = value;
                 HandlePropertyChanged(nameof(Value));
             }
         }
@@ -144,7 +144,6 @@ namespace ClassFramework.Domain.Builders
         public AttributeParameterBuilder()
         {
             _name = string.Empty;
-            _value = new System.Object();
             SetDefaultValues();
         }
 
@@ -162,9 +161,8 @@ namespace ClassFramework.Domain.Builders
             return this;
         }
 
-        public ClassFramework.Domain.Builders.AttributeParameterBuilder WithValue(object value)
+        public ClassFramework.Domain.Builders.AttributeParameterBuilder WithValue(object? value)
         {
-            if (value is null) throw new System.ArgumentNullException(nameof(value));
             Value = value;
             return this;
         }

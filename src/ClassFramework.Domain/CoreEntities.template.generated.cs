@@ -50,12 +50,12 @@ namespace ClassFramework.Domain
             get;
         }
 
-        public object Value
+        public object? Value
         {
             get;
         }
 
-        public AttributeParameter(string name, object value)
+        public AttributeParameter(string name, object? value)
         {
             this.Name = name;
             this.Value = value;

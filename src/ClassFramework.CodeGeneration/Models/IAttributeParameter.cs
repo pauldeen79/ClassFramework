@@ -3,5 +3,5 @@
 internal interface IAttributeParameter
 {
     [Required(AllowEmptyStrings = true)] string Name { get; }
-    object Value { get; }
+    object? Value { get; }
 }

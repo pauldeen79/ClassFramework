@@ -82,17 +82,43 @@ public partial class PipelineSettingsBuilder
                 .Build()));
         AttributeInitializers.Add(x => GetInitializer<ValidationAttribute>(x, validationAttribute => Array.Exists(x.GetType().GetConstructors(), y => y.GetParameters().Length == 0)
             ? new AttributeBuilder().WithName(validationAttribute.GetType())
-                .AddParameters(ErrorMessage(validationAttribute)).
-                Build()
+                .AddParameters(ErrorMessage(validationAttribute))
+                .Build()
             : null));
         AttributeInitializers.Add(x => GetInitializer<DefaultValueAttribute>(x, defaultValueAttribute =>
             new AttributeBuilder().WithName(defaultValueAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(defaultValueAttribute.Value))
                 .Build()));
+        
         // Fallback as latest
-        AttributeInitializers.Add(x => Array.Exists(x.GetType().GetConstructors(), y => y.GetParameters().Length == 0)
-            ? new AttributeBuilder().WithName(x.GetType()).Build()
-            : null);
+        AttributeInitializers.Add(x =>
+        {
+            var ctor = GetConstructor(x.GetType());
+            if (ctor is null)
+            {
+                return null;
+            }
+
+            return new AttributeBuilder()
+                .WithName(x.GetType())
+                .AddParameters(ctor.GetParameters().Select(y => new AttributeParameterBuilder().WithValue(GetValue(x, y.Name))))
+                .Build();
+        });
+    }
+
+    private static object? GetValue(System.Attribute sourceAttribute, string name)
+    {
+        var prop = sourceAttribute.GetType().GetProperty(name.ToPascalCase(CultureInfo.InvariantCulture));
+
+        return prop is not null
+            ? prop.GetValue(sourceAttribute)
+            : null;
+    }
+
+    private static ConstructorInfo? GetConstructor(Type type)
+    {
+        // If multiple constructors are present, then take the one with the most arguments
+        return type.GetConstructors().OrderByDescending(x => x.GetParameters().Length).FirstOrDefault();
     }
 
     private static IEnumerable<AttributeParameterBuilder> ErrorMessage(ValidationAttribute validationAttribute)

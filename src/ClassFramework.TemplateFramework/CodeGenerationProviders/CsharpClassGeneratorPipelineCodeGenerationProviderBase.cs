@@ -277,7 +277,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             ? validateArgumentsInConstructor
             : ArgumentValidationType.None;
 
-    private PipelineSettings CreateReflectionPipelineSettings()
+    protected virtual PipelineSettings CreateReflectionPipelineSettings()
         => new PipelineSettingsBuilder()
             .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
             .WithCopyAttributes(CopyAttributes)
