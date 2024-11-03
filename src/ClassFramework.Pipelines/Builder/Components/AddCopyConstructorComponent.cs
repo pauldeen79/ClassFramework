@@ -161,7 +161,7 @@ public class AddCopyConstructorComponent : IPipelineComponent<BuilderContext>
             new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
         );
 
-    private string ProcessCreateBuilderInitializationCode(string result, bool isCollectionTypeName)
+    private static string ProcessCreateBuilderInitializationCode(string result, bool isCollectionTypeName)
     {
         if (!isCollectionTypeName)
         {

@@ -99,12 +99,12 @@ public class AddEquatableMembersComponent : IPipelineComponent<EntityContext>
         where T : ITypeContainer, INameContainer
         => items.Select(x => $"    hash = hash * 23 + {CreateHashCodeStatement(x, notNullCheck)};");
 
-    private string CreateHashCodeStatement<T>(T item, string notNullCheck)
+    private static string CreateHashCodeStatement<T>(T item, string notNullCheck)
         where T : ITypeContainer, INameContainer
         => item.IsNullable(true) // note that nullable reference type setting does not matter in this context, we just want to know if we can do a null check
             ? $"{item.Name} {notNullCheck} ? {item.Name}.GetHashCode() : 0"
             : $"{item.Name}.GetHashCode()";
 
-    private string CreateEqualsCode(IEnumerable<INameContainer> items)
+    private static string CreateEqualsCode(IEnumerable<INameContainer> items)
         => string.Join($"{Environment.NewLine}            && ", items.Select(x => $"{x.Name} == other.{x.Name}"));
 }

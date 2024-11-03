@@ -11,7 +11,9 @@ public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<I
     public UsingsModel Usings
         => new UsingsModel(GetModel());
 
+#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
     public IEnumerable<TypeBase> GetTypes(IEnumerable<TypeBase> @namespace)
+#pragma warning restore S2325 // Methods and properties that don't access instance data should be static
         => @namespace.OrderBy(typeBase => typeBase.Name);
 
     public bool ShouldRenderNullablePragmas

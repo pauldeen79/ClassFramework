@@ -51,7 +51,7 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
                 new TypenameMappingBuilder().WithSourceType(typeof(Models.Pipelines.ReflectionInheritanceComparisonDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(Models.Pipelines.ReflectionInheritanceComparisonDelegate)}"),
             ]);
 
-    private IEnumerable<TypenameMappingBuilder> CreateCustomTypenameMappings(Type modelType, string entityNamespace, string buildersNamespace) =>
+    private static IEnumerable<TypenameMappingBuilder> CreateCustomTypenameMappings(Type modelType, string entityNamespace, string buildersNamespace) =>
         [
             new TypenameMappingBuilder()
                 .WithSourceType(modelType)
