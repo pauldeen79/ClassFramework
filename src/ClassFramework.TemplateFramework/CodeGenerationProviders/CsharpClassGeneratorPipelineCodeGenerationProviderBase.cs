@@ -22,6 +22,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCreateCodeGenerationHeader(CreateCodeGenerationHeader)
             .WithEnableNullableContext(EnableNullableContext)
             .WithEnableNullablePragmas(EnableNullablePragmas)
+            .WithEnableGlobalUsings(EnableGlobalUsings)
             .WithFilenameSuffix(FilenameSuffix)
             .WithEnvironmentVersion(EnvironmentVersion)
             .WithSkipWhenFileExists(SkipWhenFileExists)
@@ -73,6 +74,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool GenerateMultipleFiles => true;
     protected virtual bool EnableNullableContext => true;
     protected virtual bool EnableNullablePragmas => true;
+    protected virtual bool EnableGlobalUsings => false;
     protected virtual CultureInfo CultureInfo => CultureInfo.InvariantCulture;
     protected virtual Predicate<Domain.Attribute>? CopyAttributePredicate => null;
     protected virtual Predicate<string>? CopyInterfacePredicate => null;

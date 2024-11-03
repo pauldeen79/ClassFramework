@@ -22,6 +22,7 @@ public abstract class ClassFrameworkCSharpClassBase : CsharpClassGeneratorPipeli
     protected override bool CopyInterfaces => true;
     protected override bool CreateRecord => true;
     protected override bool GenerateMultipleFiles => false;
+    protected override bool EnableGlobalUsings => true;
     //protected override string ToBuilderFormatString => string.Empty;
     //protected override string ToTypedBuilderFormatString => string.Empty;
     //protected override bool AddCopyConstructor => false;
