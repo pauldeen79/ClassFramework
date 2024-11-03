@@ -39,6 +39,8 @@ namespace ClassFramework.TemplateFramework.Builders
 
         private bool _enableNullableContext;
 
+        private bool _enableNullablePragmas;
+
         private bool _enableGlobalUsings;
 
         private System.Collections.ObjectModel.ObservableCollection<string> _customUsings;
@@ -196,6 +198,20 @@ namespace ClassFramework.TemplateFramework.Builders
             }
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool EnableNullablePragmas
+        {
+            get
+            {
+                return _enableNullablePragmas;
+            }
+            set
+            {
+                _enableNullablePragmas = value;
+                HandlePropertyChanged(nameof(EnableNullablePragmas));
+            }
+        }
+
         public bool EnableGlobalUsings
         {
             get
@@ -253,6 +269,7 @@ namespace ClassFramework.TemplateFramework.Builders
             _environmentVersion = source.EnvironmentVersion;
             _filenameSuffix = source.FilenameSuffix;
             _enableNullableContext = source.EnableNullableContext;
+            _enableNullablePragmas = source.EnableNullablePragmas;
             _enableGlobalUsings = source.EnableGlobalUsings;
             if (source.CustomUsings is not null) foreach (var item in source.CustomUsings) _customUsings.Add(item);
             if (source.NamespacesToAbbreviate is not null) foreach (var item in source.NamespacesToAbbreviate) _namespacesToAbbreviate.Add(item);
@@ -268,12 +285,13 @@ namespace ClassFramework.TemplateFramework.Builders
             _cultureInfo = default(System.Globalization.CultureInfo)!;
             _environmentVersion = string.Empty;
             _filenameSuffix = string.Empty;
+            _enableNullablePragmas = true;
             SetDefaultValues();
         }
 
         public ClassFramework.TemplateFramework.CsharpClassGeneratorSettings Build()
         {
-            return new ClassFramework.TemplateFramework.CsharpClassGeneratorSettings(RecurseOnDeleteGeneratedFiles, LastGeneratedFilesFilename, Encoding, Path, CultureInfo, GenerateMultipleFiles, SkipWhenFileExists, CreateCodeGenerationHeader, EnvironmentVersion, FilenameSuffix, EnableNullableContext, EnableGlobalUsings, CustomUsings, NamespacesToAbbreviate);
+            return new ClassFramework.TemplateFramework.CsharpClassGeneratorSettings(RecurseOnDeleteGeneratedFiles, LastGeneratedFilesFilename, Encoding, Path, CultureInfo, GenerateMultipleFiles, SkipWhenFileExists, CreateCodeGenerationHeader, EnvironmentVersion, FilenameSuffix, EnableNullableContext, EnableNullablePragmas, EnableGlobalUsings, CustomUsings, NamespacesToAbbreviate);
         }
 
         partial void SetDefaultValues();
@@ -373,6 +391,12 @@ namespace ClassFramework.TemplateFramework.Builders
         public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithEnableNullableContext(bool enableNullableContext = true)
         {
             EnableNullableContext = enableNullableContext;
+            return this;
+        }
+
+        public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithEnableNullablePragmas(bool enableNullablePragmas = true)
+        {
+            EnableNullablePragmas = enableNullablePragmas;
             return this;
         }
 

@@ -94,6 +94,25 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             // Assert
             result.Should().BeTrue();
         }
+
+        [Fact]
+        public void Returns_False_When_EnableNullableContext_Is_Set_To_True_And_Context_Is_Not_Nested_Type_But_EnableNullablePragmas_Is_Set_To_False()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var settings = CreateCsharpClassGeneratorSettings(enableNullableContext: true, enableNullablePragmas: false);
+            sut.Settings = settings;
+            var templateContext = Fixture.Create<ITemplateContext>();
+            templateContext.Model.Returns(new ClassBuilder().WithName("MyClass").Build());
+            templateContext.ParentContext.Returns(default(ITemplateContext));
+            sut.Context = templateContext;
+
+            // Act
+            var result = sut.ShouldRenderNullablePragmas;
+
+            // Assert
+            result.Should().BeFalse();
+        }
     }
 
     public class ShouldRenderNamespaceScope : TypeViewModelTests

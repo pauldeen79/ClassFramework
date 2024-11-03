@@ -78,6 +78,12 @@ namespace ClassFramework.TemplateFramework
             get;
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool EnableNullablePragmas
+        {
+            get;
+        }
+
         public bool EnableGlobalUsings
         {
             get;
@@ -95,7 +101,7 @@ namespace ClassFramework.TemplateFramework
             get;
         }
 
-        public CsharpClassGeneratorSettings(bool recurseOnDeleteGeneratedFiles, string lastGeneratedFilesFilename, System.Text.Encoding encoding, string path, System.Globalization.CultureInfo cultureInfo, bool generateMultipleFiles, bool skipWhenFileExists, bool createCodeGenerationHeader, string environmentVersion, string filenameSuffix, bool enableNullableContext, bool enableGlobalUsings, System.Collections.Generic.IEnumerable<string> customUsings, System.Collections.Generic.IEnumerable<string> namespacesToAbbreviate)
+        public CsharpClassGeneratorSettings(bool recurseOnDeleteGeneratedFiles, string lastGeneratedFilesFilename, System.Text.Encoding encoding, string path, System.Globalization.CultureInfo cultureInfo, bool generateMultipleFiles, bool skipWhenFileExists, bool createCodeGenerationHeader, string environmentVersion, string filenameSuffix, bool enableNullableContext, bool enableNullablePragmas, bool enableGlobalUsings, System.Collections.Generic.IEnumerable<string> customUsings, System.Collections.Generic.IEnumerable<string> namespacesToAbbreviate)
         {
             this.RecurseOnDeleteGeneratedFiles = recurseOnDeleteGeneratedFiles;
             this.LastGeneratedFilesFilename = lastGeneratedFilesFilename;
@@ -108,6 +114,7 @@ namespace ClassFramework.TemplateFramework
             this.EnvironmentVersion = environmentVersion;
             this.FilenameSuffix = filenameSuffix;
             this.EnableNullableContext = enableNullableContext;
+            this.EnableNullablePragmas = enableNullablePragmas;
             this.EnableGlobalUsings = enableGlobalUsings;
             this.CustomUsings = customUsings is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(customUsings);
             this.NamespacesToAbbreviate = namespacesToAbbreviate is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(namespacesToAbbreviate);

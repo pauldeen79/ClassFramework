@@ -9,6 +9,7 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
             var settings = GetSettings();
 
             return settings.EnableNullableContext
+                && settings.EnableNullablePragmas
                 && settings.GenerateMultipleFiles // only needed when generating multiple files, because else it will be done only in the header and footer of the generated file
                 && GetContext().GetIndentCount() == 1; // note: only for root level, because it gets rendered in the same file
         }

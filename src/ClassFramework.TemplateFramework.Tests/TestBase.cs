@@ -11,7 +11,12 @@ public class TestBase
         Fixture.Register(() => CreateCsharpClassGeneratorSettings(true));
     }
 
-    protected static CsharpClassGeneratorSettings CreateCsharpClassGeneratorSettings(bool generateMultipleFiles = true, bool enableNullableContext = true, bool enableGlobalUsings = false, string path = "")
+    protected static CsharpClassGeneratorSettings CreateCsharpClassGeneratorSettings(
+        bool generateMultipleFiles = true,
+        bool enableNullableContext = true,
+        bool enableNullablePragmas = true,
+        bool enableGlobalUsings = false,
+        string path = "")
         => new CsharpClassGeneratorSettingsBuilder()
             .WithRecurseOnDeleteGeneratedFiles(false)
             .WithLastGeneratedFilesFilename(string.Empty)
@@ -21,6 +26,7 @@ public class TestBase
             .WithCreateCodeGenerationHeader(true)
             .WithEnableGlobalUsings(enableGlobalUsings)
             .WithEnableNullableContext(enableNullableContext)
+            .WithEnableNullablePragmas(enableNullablePragmas)
             .WithCultureInfo(CultureInfo.InvariantCulture)
             .WithEnvironmentVersion("1.0.0")
             .WithPath(path)
