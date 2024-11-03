@@ -95,7 +95,7 @@ public class AddEquatableMembersComponent : IPipelineComponent<EntityContext>
         return Task.FromResult(Result.Continue());
     }
 
-    private IEnumerable<string> CreateHashCodeStatements<T>(IEnumerable<T> items, string notNullCheck)
+    private static IEnumerable<string> CreateHashCodeStatements<T>(IEnumerable<T> items, string notNullCheck)
         where T : ITypeContainer, INameContainer
         => items.Select(x => $"    hash = hash * 23 + {CreateHashCodeStatement(x, notNullCheck)};");
 
