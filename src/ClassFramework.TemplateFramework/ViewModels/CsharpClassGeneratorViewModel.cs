@@ -23,6 +23,7 @@ public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<I
             var settings = GetSettings();
 
             return settings.EnableNullableContext
+                && settings.EnableNullablePragmas
                 && !settings.GenerateMultipleFiles; // only needed when generating single file
         }
     }
