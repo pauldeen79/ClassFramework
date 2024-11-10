@@ -130,7 +130,7 @@ public static class PropertyExtensions
 
         return Result.Success<FormattableStringParserResult>(builderArgumentTypeResult.Value!.ToString()
             .FixCollectionTypeName(newCollectionTypeName)
-            .GetCollectionInitializeStatement(result.Value?.ToString().Replace("source.[Name]", "x").Replace("[Name]", property.Name) ?? string.Empty).Replace("[Name]", property.Name)
+            .GetCollectionInitializeStatement(result.Value?.ToString().Replace($"source.{PlaceholderNames.NamePlaceholder}", "x").Replace(PlaceholderNames.NamePlaceholder, property.Name) ?? string.Empty).Replace(PlaceholderNames.NamePlaceholder, property.Name)
             .GetCsharpFriendlyTypeName());
     }
 
