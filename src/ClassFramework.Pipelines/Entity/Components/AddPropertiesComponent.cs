@@ -64,9 +64,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
                 )
         );
 
-    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(
-        Property property,
-        EntityContext context)
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, EntityContext context)
     {
         if (context.Settings.AddBackingFields || context.Settings.CreateAsObservable)
         {
@@ -74,17 +72,20 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
         }
     }
 
-    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(
-        Property property,
-        EntityContext context)
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(Property property, EntityContext context)
     {
         if (context.Settings.AddBackingFields || context.Settings.CreateAsObservable)
         {
             if (context.Settings.CreateAsObservable)
             {
-                yield return new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !EqualityComparer<{context.CreatePropertyForEntity(property).TypeName}>.Default.Equals(_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())}, value);");
+                var nullSuffix = context.Settings.EnableNullableReferenceTypes && !property.IsValueType
+                    ? "!"
+                    : string.Empty;
+                yield return new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !EqualityComparer<{context.CreatePropertyForEntity(property).TypeName}>.Default.Equals(_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});");
             }
+
             yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks, context.SourceModel)};");
+
             if (context.Settings.CreateAsObservable)
             {
                 yield return new StringCodeStatementBuilder().WithStatement($"if (hasChanged) HandlePropertyChanged(nameof({property.Name}));");
