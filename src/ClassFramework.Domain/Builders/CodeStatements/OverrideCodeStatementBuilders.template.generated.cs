@@ -23,8 +23,9 @@ namespace ClassFramework.Domain.Builders.CodeStatements
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_statement!, value!);
                 _statement = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(Statement));
+                if (hasChanged) HandlePropertyChanged(nameof(Statement));
             }
         }
 

@@ -26,8 +26,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Object>.Default.Equals(_value!, value!);
                 _value = value;
-                HandlePropertyChanged(nameof(Value));
+                if (hasChanged) HandlePropertyChanged(nameof(Value));
             }
         }
 
@@ -40,8 +41,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_name!, value!);
                 _name = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(Name));
+                if (hasChanged) HandlePropertyChanged(nameof(Name));
             }
         }
 
@@ -102,8 +104,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_sourceNamespace!, value!);
                 _sourceNamespace = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(SourceNamespace));
+                if (hasChanged) HandlePropertyChanged(nameof(SourceNamespace));
             }
         }
 
@@ -116,8 +119,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_targetNamespace!, value!);
                 _targetNamespace = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(TargetNamespace));
+                if (hasChanged) HandlePropertyChanged(nameof(TargetNamespace));
             }
         }
 
@@ -131,8 +135,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<ClassFramework.Pipelines.Builders.MetadataBuilder>>.Default.Equals(_metadata!, value!);
                 _metadata = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(Metadata));
+                if (hasChanged) HandlePropertyChanged(nameof(Metadata));
             }
         }
 
@@ -326,8 +331,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_addBackingFields, value);
                 _addBackingFields = value;
-                HandlePropertyChanged(nameof(AddBackingFields));
+                if (hasChanged) HandlePropertyChanged(nameof(AddBackingFields));
             }
         }
 
@@ -339,8 +345,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_addCopyConstructor, value);
                 _addCopyConstructor = value;
-                HandlePropertyChanged(nameof(AddCopyConstructor));
+                if (hasChanged) HandlePropertyChanged(nameof(AddCopyConstructor));
             }
         }
 
@@ -352,8 +359,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_addFullConstructor, value);
                 _addFullConstructor = value;
-                HandlePropertyChanged(nameof(AddFullConstructor));
+                if (hasChanged) HandlePropertyChanged(nameof(AddFullConstructor));
             }
         }
 
@@ -366,8 +374,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_addMethodNameFormatString!, value!);
                 _addMethodNameFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(AddMethodNameFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(AddMethodNameFormatString));
             }
         }
 
@@ -379,8 +388,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_addNullChecks, value);
                 _addNullChecks = value;
-                HandlePropertyChanged(nameof(AddNullChecks));
+                if (hasChanged) HandlePropertyChanged(nameof(AddNullChecks));
             }
         }
 
@@ -392,8 +402,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_addPublicParameterlessConstructor, value);
                 _addPublicParameterlessConstructor = value;
-                HandlePropertyChanged(nameof(AddPublicParameterlessConstructor));
+                if (hasChanged) HandlePropertyChanged(nameof(AddPublicParameterlessConstructor));
             }
         }
 
@@ -405,8 +416,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_addSetters, value);
                 _addSetters = value;
-                HandlePropertyChanged(nameof(AddSetters));
+                if (hasChanged) HandlePropertyChanged(nameof(AddSetters));
             }
         }
 
@@ -418,8 +430,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_implementIEquatable, value);
                 _implementIEquatable = value;
-                HandlePropertyChanged(nameof(ImplementIEquatable));
+                if (hasChanged) HandlePropertyChanged(nameof(ImplementIEquatable));
             }
         }
 
@@ -431,8 +444,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_allowGenerationWithoutProperties, value);
                 _allowGenerationWithoutProperties = value;
-                HandlePropertyChanged(nameof(AllowGenerationWithoutProperties));
+                if (hasChanged) HandlePropertyChanged(nameof(AllowGenerationWithoutProperties));
             }
         }
 
@@ -445,8 +459,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.AttributeInitializerDelegate>>.Default.Equals(_attributeInitializers!, value!);
                 _attributeInitializers = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(AttributeInitializers));
+                if (hasChanged) HandlePropertyChanged(nameof(AttributeInitializers));
             }
         }
 
@@ -459,8 +474,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Domain.Builders.TypeBaseBuilder>.Default.Equals(_baseClass!, value!);
                 _baseClass = value;
-                HandlePropertyChanged(nameof(BaseClass));
+                if (hasChanged) HandlePropertyChanged(nameof(BaseClass));
             }
         }
 
@@ -473,8 +489,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_baseClassBuilderNameSpace!, value!);
                 _baseClassBuilderNameSpace = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(BaseClassBuilderNameSpace));
+                if (hasChanged) HandlePropertyChanged(nameof(BaseClassBuilderNameSpace));
             }
         }
 
@@ -487,8 +504,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_builderExtensionsCollectionCopyStatementFormatString!, value!);
                 _builderExtensionsCollectionCopyStatementFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(BuilderExtensionsCollectionCopyStatementFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(BuilderExtensionsCollectionCopyStatementFormatString));
             }
         }
 
@@ -501,8 +519,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_builderExtensionsNameFormatString!, value!);
                 _builderExtensionsNameFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(BuilderExtensionsNameFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(BuilderExtensionsNameFormatString));
             }
         }
 
@@ -515,8 +534,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_builderExtensionsNamespaceFormatString!, value!);
                 _builderExtensionsNamespaceFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(BuilderExtensionsNamespaceFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(BuilderExtensionsNamespaceFormatString));
             }
         }
 
@@ -529,8 +549,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_builderNameFormatString!, value!);
                 _builderNameFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(BuilderNameFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(BuilderNameFormatString));
             }
         }
 
@@ -543,8 +564,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_builderNamespaceFormatString!, value!);
                 _builderNamespaceFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(BuilderNamespaceFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(BuilderNamespaceFormatString));
             }
         }
 
@@ -557,8 +579,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_buildMethodName!, value!);
                 _buildMethodName = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(BuildMethodName));
+                if (hasChanged) HandlePropertyChanged(nameof(BuildMethodName));
             }
         }
 
@@ -571,8 +594,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_buildTypedMethodName!, value!);
                 _buildTypedMethodName = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(BuildTypedMethodName));
+                if (hasChanged) HandlePropertyChanged(nameof(BuildTypedMethodName));
             }
         }
 
@@ -585,8 +609,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_collectionCopyStatementFormatString!, value!);
                 _collectionCopyStatementFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(CollectionCopyStatementFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(CollectionCopyStatementFormatString));
             }
         }
 
@@ -599,8 +624,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_collectionInitializationStatementFormatString!, value!);
                 _collectionInitializationStatementFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(CollectionInitializationStatementFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(CollectionInitializationStatementFormatString));
             }
         }
 
@@ -613,8 +639,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_collectionTypeName!, value!);
                 _collectionTypeName = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(CollectionTypeName));
+                if (hasChanged) HandlePropertyChanged(nameof(CollectionTypeName));
             }
         }
 
@@ -626,8 +653,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Predicate<ClassFramework.Domain.Attribute>?>.Default.Equals(_copyAttributePredicate!, value!);
                 _copyAttributePredicate = value;
-                HandlePropertyChanged(nameof(CopyAttributePredicate));
+                if (hasChanged) HandlePropertyChanged(nameof(CopyAttributePredicate));
             }
         }
 
@@ -639,8 +667,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_copyAttributes, value);
                 _copyAttributes = value;
-                HandlePropertyChanged(nameof(CopyAttributes));
+                if (hasChanged) HandlePropertyChanged(nameof(CopyAttributes));
             }
         }
 
@@ -652,8 +681,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Predicate<System.String>?>.Default.Equals(_copyInterfacePredicate!, value!);
                 _copyInterfacePredicate = value;
-                HandlePropertyChanged(nameof(CopyInterfacePredicate));
+                if (hasChanged) HandlePropertyChanged(nameof(CopyInterfacePredicate));
             }
         }
 
@@ -665,8 +695,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_copyInterfaces, value);
                 _copyInterfaces = value;
-                HandlePropertyChanged(nameof(CopyInterfaces));
+                if (hasChanged) HandlePropertyChanged(nameof(CopyInterfaces));
             }
         }
 
@@ -678,8 +709,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Pipelines.CopyMethodPredicate>.Default.Equals(_copyMethodPredicate!, value!);
                 _copyMethodPredicate = value;
-                HandlePropertyChanged(nameof(CopyMethodPredicate));
+                if (hasChanged) HandlePropertyChanged(nameof(CopyMethodPredicate));
             }
         }
 
@@ -691,8 +723,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_copyMethods, value);
                 _copyMethods = value;
-                HandlePropertyChanged(nameof(CopyMethods));
+                if (hasChanged) HandlePropertyChanged(nameof(CopyMethods));
             }
         }
 
@@ -704,8 +737,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_inheritFromInterfaces, value);
                 _inheritFromInterfaces = value;
-                HandlePropertyChanged(nameof(InheritFromInterfaces));
+                if (hasChanged) HandlePropertyChanged(nameof(InheritFromInterfaces));
             }
         }
 
@@ -717,8 +751,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_createAsObservable, value);
                 _createAsObservable = value;
-                HandlePropertyChanged(nameof(CreateAsObservable));
+                if (hasChanged) HandlePropertyChanged(nameof(CreateAsObservable));
             }
         }
 
@@ -730,8 +765,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_createConstructors, value);
                 _createConstructors = value;
-                HandlePropertyChanged(nameof(CreateConstructors));
+                if (hasChanged) HandlePropertyChanged(nameof(CreateConstructors));
             }
         }
 
@@ -743,8 +779,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_createRecord, value);
                 _createRecord = value;
-                HandlePropertyChanged(nameof(CreateRecord));
+                if (hasChanged) HandlePropertyChanged(nameof(CreateRecord));
             }
         }
 
@@ -756,8 +793,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_enableBuilderInheritance, value);
                 _enableBuilderInheritance = value;
-                HandlePropertyChanged(nameof(EnableBuilderInheritance));
+                if (hasChanged) HandlePropertyChanged(nameof(EnableBuilderInheritance));
             }
         }
 
@@ -769,8 +807,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_enableInheritance, value);
                 _enableInheritance = value;
-                HandlePropertyChanged(nameof(EnableInheritance));
+                if (hasChanged) HandlePropertyChanged(nameof(EnableInheritance));
             }
         }
 
@@ -782,8 +821,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_enableNullableReferenceTypes, value);
                 _enableNullableReferenceTypes = value;
-                HandlePropertyChanged(nameof(EnableNullableReferenceTypes));
+                if (hasChanged) HandlePropertyChanged(nameof(EnableNullableReferenceTypes));
             }
         }
 
@@ -796,8 +836,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_entityNameFormatString!, value!);
                 _entityNameFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(EntityNameFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(EntityNameFormatString));
             }
         }
 
@@ -810,8 +851,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_entityNamespaceFormatString!, value!);
                 _entityNamespaceFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(EntityNamespaceFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(EntityNamespaceFormatString));
             }
         }
 
@@ -823,8 +865,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Pipelines.InheritanceComparisonDelegate>.Default.Equals(_inheritanceComparisonDelegate!, value!);
                 _inheritanceComparisonDelegate = value;
-                HandlePropertyChanged(nameof(InheritanceComparisonDelegate));
+                if (hasChanged) HandlePropertyChanged(nameof(InheritanceComparisonDelegate));
             }
         }
 
@@ -836,8 +879,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Pipelines.ReflectionInheritanceComparisonDelegate>.Default.Equals(_inheritanceComparisonDelegateForReflection!, value!);
                 _inheritanceComparisonDelegateForReflection = value;
-                HandlePropertyChanged(nameof(InheritanceComparisonDelegateForReflection));
+                if (hasChanged) HandlePropertyChanged(nameof(InheritanceComparisonDelegateForReflection));
             }
         }
 
@@ -849,8 +893,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_isAbstract, value);
                 _isAbstract = value;
-                HandlePropertyChanged(nameof(IsAbstract));
+                if (hasChanged) HandlePropertyChanged(nameof(IsAbstract));
             }
         }
 
@@ -862,8 +907,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_isForAbstractBuilder, value);
                 _isForAbstractBuilder = value;
-                HandlePropertyChanged(nameof(IsForAbstractBuilder));
+                if (hasChanged) HandlePropertyChanged(nameof(IsForAbstractBuilder));
             }
         }
 
@@ -876,8 +922,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_nameFormatString!, value!);
                 _nameFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(NameFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(NameFormatString));
             }
         }
 
@@ -890,8 +937,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_namespaceFormatString!, value!);
                 _namespaceFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(NamespaceFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(NamespaceFormatString));
             }
         }
 
@@ -904,8 +952,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<ClassFramework.Pipelines.Builders.NamespaceMappingBuilder>>.Default.Equals(_namespaceMappings!, value!);
                 _namespaceMappings = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(NamespaceMappings));
+                if (hasChanged) HandlePropertyChanged(nameof(NamespaceMappings));
             }
         }
 
@@ -918,8 +967,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_builderNewCollectionTypeName!, value!);
                 _builderNewCollectionTypeName = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(BuilderNewCollectionTypeName));
+                if (hasChanged) HandlePropertyChanged(nameof(BuilderNewCollectionTypeName));
             }
         }
 
@@ -932,8 +982,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_entityNewCollectionTypeName!, value!);
                 _entityNewCollectionTypeName = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(EntityNewCollectionTypeName));
+                if (hasChanged) HandlePropertyChanged(nameof(EntityNewCollectionTypeName));
             }
         }
 
@@ -946,8 +997,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_nonCollectionInitializationStatementFormatString!, value!);
                 _nonCollectionInitializationStatementFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(NonCollectionInitializationStatementFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(NonCollectionInitializationStatementFormatString));
             }
         }
 
@@ -959,8 +1011,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_createAsPartial, value);
                 _createAsPartial = value;
-                HandlePropertyChanged(nameof(CreateAsPartial));
+                if (hasChanged) HandlePropertyChanged(nameof(CreateAsPartial));
             }
         }
 
@@ -972,8 +1025,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_setDefaultValuesInEntityConstructor, value);
                 _setDefaultValuesInEntityConstructor = value;
-                HandlePropertyChanged(nameof(SetDefaultValuesInEntityConstructor));
+                if (hasChanged) HandlePropertyChanged(nameof(SetDefaultValuesInEntityConstructor));
             }
         }
 
@@ -986,8 +1040,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_setDefaultValuesMethodName!, value!);
                 _setDefaultValuesMethodName = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(SetDefaultValuesMethodName));
+                if (hasChanged) HandlePropertyChanged(nameof(SetDefaultValuesMethodName));
             }
         }
 
@@ -1000,8 +1055,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_setMethodNameFormatString!, value!);
                 _setMethodNameFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(SetMethodNameFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(SetMethodNameFormatString));
             }
         }
 
@@ -1013,8 +1069,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Domain.Domains.SubVisibility>.Default.Equals(_setterVisibility, value);
                 _setterVisibility = value;
-                HandlePropertyChanged(nameof(SetterVisibility));
+                if (hasChanged) HandlePropertyChanged(nameof(SetterVisibility));
             }
         }
 
@@ -1027,8 +1084,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_toBuilderFormatString!, value!);
                 _toBuilderFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(ToBuilderFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(ToBuilderFormatString));
             }
         }
 
@@ -1041,8 +1099,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_toTypedBuilderFormatString!, value!);
                 _toTypedBuilderFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(ToTypedBuilderFormatString));
+                if (hasChanged) HandlePropertyChanged(nameof(ToTypedBuilderFormatString));
             }
         }
 
@@ -1055,8 +1114,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<ClassFramework.Pipelines.Builders.TypenameMappingBuilder>>.Default.Equals(_typenameMappings!, value!);
                 _typenameMappings = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(TypenameMappings));
+                if (hasChanged) HandlePropertyChanged(nameof(TypenameMappings));
             }
         }
 
@@ -1068,8 +1128,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_useBaseClassFromSourceModel, value);
                 _useBaseClassFromSourceModel = value;
-                HandlePropertyChanged(nameof(UseBaseClassFromSourceModel));
+                if (hasChanged) HandlePropertyChanged(nameof(UseBaseClassFromSourceModel));
             }
         }
 
@@ -1081,8 +1142,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_useExceptionThrowIfNull, value);
                 _useExceptionThrowIfNull = value;
-                HandlePropertyChanged(nameof(UseExceptionThrowIfNull));
+                if (hasChanged) HandlePropertyChanged(nameof(UseExceptionThrowIfNull));
             }
         }
 
@@ -1095,8 +1157,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_usePatternMatchingForNullChecks, value);
                 _usePatternMatchingForNullChecks = value;
-                HandlePropertyChanged(nameof(UsePatternMatchingForNullChecks));
+                if (hasChanged) HandlePropertyChanged(nameof(UsePatternMatchingForNullChecks));
             }
         }
 
@@ -1108,8 +1171,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Pipelines.Domains.ArgumentValidationType>.Default.Equals(_validateArguments, value);
                 _validateArguments = value;
-                HandlePropertyChanged(nameof(ValidateArguments));
+                if (hasChanged) HandlePropertyChanged(nameof(ValidateArguments));
             }
         }
 
@@ -1121,8 +1185,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_useDefaultValueAttributeValuesForBuilderInitialization, value);
                 _useDefaultValueAttributeValuesForBuilderInitialization = value;
-                HandlePropertyChanged(nameof(UseDefaultValueAttributeValuesForBuilderInitialization));
+                if (hasChanged) HandlePropertyChanged(nameof(UseDefaultValueAttributeValuesForBuilderInitialization));
             }
         }
 
@@ -1134,8 +1199,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Pipelines.Domains.IEquatableItemType>.Default.Equals(_iEquatableItemType, value);
                 _iEquatableItemType = value;
-                HandlePropertyChanged(nameof(IEquatableItemType));
+                if (hasChanged) HandlePropertyChanged(nameof(IEquatableItemType));
             }
         }
 
@@ -1681,8 +1747,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_sourceTypeName!, value!);
                 _sourceTypeName = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(SourceTypeName));
+                if (hasChanged) HandlePropertyChanged(nameof(SourceTypeName));
             }
         }
 
@@ -1695,8 +1762,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_targetTypeName!, value!);
                 _targetTypeName = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(TargetTypeName));
+                if (hasChanged) HandlePropertyChanged(nameof(TargetTypeName));
             }
         }
 
@@ -1710,8 +1778,9 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<ClassFramework.Pipelines.Builders.MetadataBuilder>>.Default.Equals(_metadata!, value!);
                 _metadata = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(Metadata));
+                if (hasChanged) HandlePropertyChanged(nameof(Metadata));
             }
         }
 

@@ -923,7 +923,7 @@ namespace Test.Domain
             }
             set
             {
-                bool hasChanged = !EqualityComparer<System.String>.Default.Equals(_value!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_value!, value!);
                 _value = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(Value));
             }
@@ -937,7 +937,7 @@ namespace Test.Domain
             }
             set
             {
-                bool hasChanged = !EqualityComparer<System.Object>.Default.Equals(_originalValue!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Object>.Default.Equals(_originalValue!, value!);
                 _originalValue = value;
                 if (hasChanged) HandlePropertyChanged(nameof(OriginalValue));
             }
@@ -1003,8 +1003,9 @@ namespace Test.Domain.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_value!, value!);
                 _value = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(Value));
+                if (hasChanged) HandlePropertyChanged(nameof(Value));
             }
         }
 
@@ -1016,8 +1017,9 @@ namespace Test.Domain.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Object>.Default.Equals(_originalValue!, value!);
                 _originalValue = value;
-                HandlePropertyChanged(nameof(OriginalValue));
+                if (hasChanged) HandlePropertyChanged(nameof(OriginalValue));
             }
         }
 
@@ -1304,8 +1306,9 @@ namespace Test.Domain.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_myBaseProperty!, value!);
                 _myBaseProperty = value;
-                HandlePropertyChanged(nameof(MyBaseProperty));
+                if (hasChanged) HandlePropertyChanged(nameof(MyBaseProperty));
             }
         }
 
@@ -1368,8 +1371,9 @@ namespace Test.Domain.Builders.Types
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_myOverrideProperty!, value!);
                 _myOverrideProperty = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(MyOverrideProperty));
+                if (hasChanged) HandlePropertyChanged(nameof(MyOverrideProperty));
             }
         }
 

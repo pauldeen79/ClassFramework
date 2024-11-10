@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Builder.Components;
+﻿using ClassFramework.Pipelines.Extensions;
+
+namespace ClassFramework.Pipelines.Builder.Components;
 
 public class AddPropertiesComponentBuilder : IBuilderComponentBuilder
 {
@@ -57,8 +59,8 @@ public class AddPropertiesComponent : IPipelineComponent<BuilderContext>
                 .AddAttributes(property.Attributes
                     .Where(_ => context.Request.Settings.CopyAttributes)
                     .Select(x => context.Request.MapAttribute(x).ToBuilder()))
-                .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Request))
-                .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Request))
+                .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context))
+                .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context))
             );
         }
 
@@ -71,22 +73,31 @@ public class AddPropertiesComponent : IPipelineComponent<BuilderContext>
         return Task.FromResult(Result.Continue());
     }
 
-    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, BuilderContext context)
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, PipelineContext<BuilderContext> context)
     {
-        if (property.HasBackingFieldOnBuilder(context.Settings))
+        if (property.HasBackingFieldOnBuilder(context.Request.Settings))
         {
-            yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())};");
+            yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())};");
         }
     }
 
-    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(Property property, BuilderContext context)
+    private IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(Property property, PipelineContext<BuilderContext> context)
     {
-        if (property.HasBackingFieldOnBuilder(context.Settings))
+        if (property.HasBackingFieldOnBuilder(context.Request.Settings))
         {
-            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks, context.SourceModel)};");
-            if (context.Settings.CreateAsObservable)
+            if (context.Request.Settings.CreateAsObservable)
             {
-                yield return new StringCodeStatementBuilder().WithStatement($"HandlePropertyChanged(nameof({property.Name}));");
+                var nullSuffix = context.Request.Settings.EnableNullableReferenceTypes && !property.IsValueType
+                    ? "!"
+                    : string.Empty;
+                yield return new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !{typeof(EqualityComparer<>).WithoutGenerics()}<{property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser).Value}>.Default.Equals(_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});");
+            }
+
+            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Request.Settings.AddNullChecks, context.Request.SourceModel)};");
+            
+            if (context.Request.Settings.CreateAsObservable)
+            {
+                yield return new StringCodeStatementBuilder().WithStatement($"if (hasChanged) HandlePropertyChanged(nameof({property.Name}));");
             }
         }
     }

@@ -81,7 +81,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
                 var nullSuffix = context.Settings.EnableNullableReferenceTypes && !property.IsValueType
                     ? "!"
                     : string.Empty;
-                yield return new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !EqualityComparer<{context.CreatePropertyForEntity(property).TypeName}>.Default.Equals(_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});");
+                yield return new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !{typeof(EqualityComparer<>).WithoutGenerics()}<{context.CreatePropertyForEntity(property).TypeName}>.Default.Equals(_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});");
             }
 
             yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks, context.SourceModel)};");

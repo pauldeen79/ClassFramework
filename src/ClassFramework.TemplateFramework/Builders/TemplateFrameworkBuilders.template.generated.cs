@@ -52,8 +52,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_recurseOnDeleteGeneratedFiles, value);
                 _recurseOnDeleteGeneratedFiles = value;
-                HandlePropertyChanged(nameof(RecurseOnDeleteGeneratedFiles));
+                if (hasChanged) HandlePropertyChanged(nameof(RecurseOnDeleteGeneratedFiles));
             }
         }
 
@@ -66,8 +67,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_lastGeneratedFilesFilename!, value!);
                 _lastGeneratedFilesFilename = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(LastGeneratedFilesFilename));
+                if (hasChanged) HandlePropertyChanged(nameof(LastGeneratedFilesFilename));
             }
         }
 
@@ -80,8 +82,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Text.Encoding>.Default.Equals(_encoding!, value!);
                 _encoding = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(Encoding));
+                if (hasChanged) HandlePropertyChanged(nameof(Encoding));
             }
         }
 
@@ -94,8 +97,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_path!, value!);
                 _path = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(Path));
+                if (hasChanged) HandlePropertyChanged(nameof(Path));
             }
         }
 
@@ -108,8 +112,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Globalization.CultureInfo>.Default.Equals(_cultureInfo!, value!);
                 _cultureInfo = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(CultureInfo));
+                if (hasChanged) HandlePropertyChanged(nameof(CultureInfo));
             }
         }
 
@@ -121,8 +126,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_generateMultipleFiles, value);
                 _generateMultipleFiles = value;
-                HandlePropertyChanged(nameof(GenerateMultipleFiles));
+                if (hasChanged) HandlePropertyChanged(nameof(GenerateMultipleFiles));
             }
         }
 
@@ -134,8 +140,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_skipWhenFileExists, value);
                 _skipWhenFileExists = value;
-                HandlePropertyChanged(nameof(SkipWhenFileExists));
+                if (hasChanged) HandlePropertyChanged(nameof(SkipWhenFileExists));
             }
         }
 
@@ -147,8 +154,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_createCodeGenerationHeader, value);
                 _createCodeGenerationHeader = value;
-                HandlePropertyChanged(nameof(CreateCodeGenerationHeader));
+                if (hasChanged) HandlePropertyChanged(nameof(CreateCodeGenerationHeader));
             }
         }
 
@@ -161,8 +169,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_environmentVersion!, value!);
                 _environmentVersion = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(EnvironmentVersion));
+                if (hasChanged) HandlePropertyChanged(nameof(EnvironmentVersion));
             }
         }
 
@@ -175,8 +184,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_filenameSuffix!, value!);
                 _filenameSuffix = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(FilenameSuffix));
+                if (hasChanged) HandlePropertyChanged(nameof(FilenameSuffix));
             }
         }
 
@@ -188,8 +198,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_enableNullableContext, value);
                 _enableNullableContext = value;
-                HandlePropertyChanged(nameof(EnableNullableContext));
+                if (hasChanged) HandlePropertyChanged(nameof(EnableNullableContext));
             }
         }
 
@@ -202,8 +213,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_enableNullablePragmas, value);
                 _enableNullablePragmas = value;
-                HandlePropertyChanged(nameof(EnableNullablePragmas));
+                if (hasChanged) HandlePropertyChanged(nameof(EnableNullablePragmas));
             }
         }
 
@@ -215,8 +227,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_enableGlobalUsings, value);
                 _enableGlobalUsings = value;
-                HandlePropertyChanged(nameof(EnableGlobalUsings));
+                if (hasChanged) HandlePropertyChanged(nameof(EnableGlobalUsings));
             }
         }
 
@@ -229,8 +242,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.ObjectModel.ObservableCollection<System.String>>.Default.Equals(_customUsings!, value!);
                 _customUsings = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(CustomUsings));
+                if (hasChanged) HandlePropertyChanged(nameof(CustomUsings));
             }
         }
 
@@ -243,8 +257,9 @@ namespace ClassFramework.TemplateFramework.Builders
             }
             set
             {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.ObjectModel.ObservableCollection<System.String>>.Default.Equals(_namespacesToAbbreviate!, value!);
                 _namespacesToAbbreviate = value ?? throw new System.ArgumentNullException(nameof(value));
-                HandlePropertyChanged(nameof(NamespacesToAbbreviate));
+                if (hasChanged) HandlePropertyChanged(nameof(NamespacesToAbbreviate));
             }
         }
 
