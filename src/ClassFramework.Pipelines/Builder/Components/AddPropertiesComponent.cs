@@ -1,6 +1,4 @@
-﻿using ClassFramework.Pipelines.Extensions;
-
-namespace ClassFramework.Pipelines.Builder.Components;
+﻿namespace ClassFramework.Pipelines.Builder.Components;
 
 public class AddPropertiesComponentBuilder : IBuilderComponentBuilder
 {

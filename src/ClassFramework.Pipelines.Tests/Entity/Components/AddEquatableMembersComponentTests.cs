@@ -1,6 +1,4 @@
-﻿using ClassFramework.Pipelines.Domains;
-
-namespace ClassFramework.Pipelines.Tests.Entity.Components;
+﻿namespace ClassFramework.Pipelines.Tests.Entity.Components;
 
 public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Components.AddEquatableMembersComponent>
 {

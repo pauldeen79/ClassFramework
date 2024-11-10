@@ -1,6 +1,4 @@
-﻿using ClassFramework.Pipelines.Domains;
-
-namespace ClassFramework.Pipelines.Tests;
+﻿namespace ClassFramework.Pipelines.Tests;
 
 public abstract class TestBase : IDisposable
 {
