@@ -29,7 +29,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute") });
+            context.Request.Builder.Attributes.Should().BeEquivalentTo([new AttributeBuilder().WithName("MyAttribute")]);
         }
 
         [Fact]
@@ -52,7 +52,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute2") });
+            context.Request.Builder.Attributes.Should().BeEquivalentTo([new AttributeBuilder().WithName("MyAttribute2")]);
         }
 
         [Fact]

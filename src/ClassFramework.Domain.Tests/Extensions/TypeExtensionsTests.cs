@@ -208,7 +208,7 @@ public class TypeExtensionsTests
         [CsharpTypeName("System.Collections.Generic.IReadOnlyCollection<System.Func<System.Object?>>")]
         public IReadOnlyCollection<Func<object?>> MyNullableProperty3 { get; } = new ReadOnlyCollection<Func<object?>>(Array.Empty<Func<object?>>());
         [CsharpTypeName("System.Func<System.Collections.Generic.IEnumerable<System.Object?>>")]
-        public Func<IEnumerable<object?>> MyNullableProperty4 { get; } = new Func<IEnumerable<object?>>(() => Enumerable.Empty<object?>());
+        public Func<IEnumerable<object?>> MyNullableProperty4 { get; } = new Func<IEnumerable<object?>>(() => []);
         public IEnumerable<string> MyNullableProperty5 { get; } = default!;
         public IReadOnlyCollection<IMyObject> MyProperty6 { get; } = default!;
         public Func<object?, string?> MyNullableProperty7 { get; } = default!;
@@ -338,24 +338,24 @@ public class TypeExtensionsTests
             (
                 "MyNamespace",
                 default,
-                Enumerable.Empty<string>(),
-                Enumerable.Empty<Field>(),
-                Enumerable.Empty<Property>(),
-                Enumerable.Empty<Method>(),
+                [],
+                [],
+                [],
+                [],
                 default,
                 "MyClass",
-                Enumerable.Empty<Attribute>(),
-                Enumerable.Empty<string>(),
-                Enumerable.Empty<string>(),
-                Enumerable.Empty<string>(),
+                [],
+                [],
+                [],
+                [],
                 default,
                 default,
                 default,
-                Enumerable.Empty<Constructor>(),
+                [],
                 default,
                 string.Empty,
-                Enumerable.Empty<Enumeration>(),
-                Enumerable.Empty<TypeBase>()
+                [],
+                []
             );
 
             // Act
@@ -373,24 +373,24 @@ public class TypeExtensionsTests
             (
                 string.Empty,
                 default,
-                Enumerable.Empty<string>(),
-                Enumerable.Empty<Field>(),
-                Enumerable.Empty<Property>(),
-                Enumerable.Empty<Method>(),
+                [],
+                [],
+                [],
+                [],
                 default,
                 "MyClass",
-                Enumerable.Empty<Attribute>(),
-                Enumerable.Empty<string>(),
-                Enumerable.Empty<string>(),
-                Enumerable.Empty<string>(),
+                [],
+                [],
+                [],
+                [],
                 default,
                 default,
                 default,
-                Enumerable.Empty<Constructor>(),
+                [],
                 default,
                 string.Empty,
-                Enumerable.Empty<Enumeration>(),
-                Enumerable.Empty<TypeBase>()
+                [],
+                []
             );
 
             // Act

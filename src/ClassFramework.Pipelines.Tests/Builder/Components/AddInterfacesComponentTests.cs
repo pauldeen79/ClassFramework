@@ -62,7 +62,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").Build();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyInterfaces: false);
-            var context = CreateContext(sourceModel,  settings);
+            var context = CreateContext(sourceModel, settings);
 
             // Act
             var result = await sut.Process(context);

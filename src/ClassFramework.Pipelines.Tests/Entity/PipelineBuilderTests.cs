@@ -4,8 +4,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
 {
     public class Process : PipelineBuilderTests
     {
-        private EntityContext CreateContext(bool addProperties = true) => new EntityContext
-        (
+        private EntityContext CreateContext(bool addProperties = true) => new(
             CreateGenericModel(addProperties),
             CreateSettingsForEntity
             (
@@ -86,7 +85,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            
+
             context.Builder.Name.Should().Be("MyClass");
             context.Builder.Namespace.Should().Be("MyNamespace");
             context.Builder.Interfaces.Should().BeEmpty();
@@ -135,8 +134,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
             );
             context.Builder.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
-                new[]
-                {
+                [
                     false,
                     true,
                     false,
@@ -145,7 +143,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                     true,
                     false,
                     true
-                }
+                ]
             );
             context.Builder.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
             context.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
@@ -229,7 +227,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            
+
             context.Builder.Name.Should().Be("MyClass");
             context.Builder.Namespace.Should().Be("MyNamespace");
             context.Builder.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
@@ -276,8 +274,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
             );
             context.Builder.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
-                new[]
-                {
+                [
                     false,
                     true,
                     false,
@@ -287,7 +284,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                     true,
                     false,
                     true
-                }
+                ]
             );
 
             context.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo
@@ -314,8 +311,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
             );
             context.Builder.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
-                new[]
-                {
+                [
                     false,
                     true,
                     false,
@@ -324,7 +320,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                     true,
                     false,
                     true
-                }
+                ]
             );
             context.Builder.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
             context.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo

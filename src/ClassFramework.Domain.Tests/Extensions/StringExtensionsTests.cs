@@ -249,7 +249,7 @@ public class StringExtensionsTests
         public void Array_Returns_Correct_Result_Empty_Array()
         {
             // Arrange
-            string[] input = Array.Empty<string>();
+            string[] input = [];
 
             // Act
             var actual = "MyClass".MakeGenericTypeName(input);

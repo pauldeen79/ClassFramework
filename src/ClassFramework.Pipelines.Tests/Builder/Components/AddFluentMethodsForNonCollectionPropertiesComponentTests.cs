@@ -14,7 +14,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             sut.Awaiting(x => x.Process(context: null!))
                .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
-        
+
         [Fact]
         public async Task Does_Not_Add_Method_When_SetMethodNameFormatString_Is_Empty()
         {

@@ -1,11 +1,6 @@
 ﻿namespace ClassFramework.Pipelines;
 
-internal sealed class StringLiteral : IStringLiteral
+internal sealed class StringLiteral(string value) : IStringLiteral
 {
-    public StringLiteral(string value)
-    {
-        Value = value.IsNotNull(nameof(value));
-    }
-
-    public string Value { get; }
+    public string Value { get; } = value.IsNotNull(nameof(value));
 }

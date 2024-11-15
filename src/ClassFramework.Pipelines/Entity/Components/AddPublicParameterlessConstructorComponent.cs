@@ -1,26 +1,16 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddPublicParameterlessConstructorComponentBuilder : IEntityComponentBuilder
+public class AddPublicParameterlessConstructorComponentBuilder(IFormattableStringParser formattableStringParser) : IEntityComponentBuilder
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-
-    public AddPublicParameterlessConstructorComponentBuilder(IFormattableStringParser formattableStringParser)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-    }
+    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
     public IPipelineComponent<EntityContext> Build()
         => new AddPublicParameterlessConstructorComponent(_formattableStringParser);
 }
 
-public class AddPublicParameterlessConstructorComponent : IPipelineComponent<EntityContext>
+public class AddPublicParameterlessConstructorComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<EntityContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-
-    public AddPublicParameterlessConstructorComponent(IFormattableStringParser formattableStringParser)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-    }
+    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
     public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {

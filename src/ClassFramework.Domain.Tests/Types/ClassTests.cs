@@ -14,24 +14,24 @@ public class ClassTests
             (
                 string.Empty,
                 default,
-                Enumerable.Empty<string>(),
-                Enumerable.Empty<Field>(),
-                Enumerable.Empty<Property>(),
-                Enumerable.Empty<Method>(),
+                [],
+                [],
+                [],
+                [],
                 default,
                 name: null!,
-                Enumerable.Empty<Attribute>(),
-                Enumerable.Empty<string>(),
-                Enumerable.Empty<string>(),
-                Enumerable.Empty<string>(),
+                [],
+                [],
+                [],
+                [],
                 default,
                 default,
                 default,
-                Enumerable.Empty<Domain.Constructor>(),
+                [],
                 default,
                 string.Empty,
-                Enumerable.Empty<Enumeration>(),
-                Enumerable.Empty<TypeBase>()
+                [],
+                []
             ))
             .Should().Throw<ValidationException>();
         }

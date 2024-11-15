@@ -5,8 +5,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
     public class Process : PipelineBuilderTests
     {
         private BuilderExtensionContext CreateContext(bool addProperties = true)
-            => new BuilderExtensionContext
-            (
+            => new(
                 CreateGenericModel(addProperties),
                 CreateSettingsForBuilder
                 (

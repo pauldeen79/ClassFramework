@@ -12,7 +12,7 @@ public static class ObjectArrayExtensions
 
         if (!copyAttributesEnabled)
         {
-            return Enumerable.Empty<AttributeBuilder>();
+            return [];
         }
 
         return attributes

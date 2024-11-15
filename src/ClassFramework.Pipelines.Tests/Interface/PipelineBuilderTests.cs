@@ -4,8 +4,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
 {
     public class Process : PipelineBuilderTests
     {
-        private InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, CopyMethodPredicate? copyMethodPredicate = null) => new InterfaceContext
-        (
+        private InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, CopyMethodPredicate? copyMethodPredicate = null) => new(
             CreateInterfaceModel(addProperties),
             CreateSettingsForInterface
             (
@@ -177,8 +176,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             );
             context.Builder.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
-                new[]
-                {
+                [
                     false,
                     true,
                     false,
@@ -187,7 +185,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
                     true,
                     false,
                     true
-                }
+                ]
             );
             context.Builder.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
             context.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();

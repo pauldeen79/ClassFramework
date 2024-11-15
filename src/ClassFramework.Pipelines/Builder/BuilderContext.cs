@@ -1,12 +1,7 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public class BuilderContext : ContextBase<TypeBase>
+public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<TypeBase>(sourceModel, settings, formatProvider)
 {
-    public BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
-        : base(sourceModel, settings, formatProvider)
-    {
-    }
-
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
 
@@ -23,7 +18,7 @@ public class BuilderContext : ContextBase<TypeBase>
                 "#pragma warning disable CS8604 // Possible null reference argument.",
                 "#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.",
             ]
-            : Array.Empty<string>();
+            : [];
 
     public string[] CreatePragmaWarningRestoreStatementsForBuildMethod()
         => NeedsPragmasForBuildMethod()
@@ -32,7 +27,7 @@ public class BuilderContext : ContextBase<TypeBase>
                 "#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.",
                 "#pragma warning restore CS8604 // Possible null reference argument.",
             ]
-            : Array.Empty<string>();
+            : [];
 
     public bool HasBackingFields()
         => !(IsAbstractBuilder || !Settings.AddNullChecks)

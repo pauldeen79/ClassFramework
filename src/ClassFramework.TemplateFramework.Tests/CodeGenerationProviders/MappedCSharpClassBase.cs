@@ -1,11 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public abstract class MappedCSharpClassBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
+public abstract class MappedCSharpClassBase(IPipelineService pipelineService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(pipelineService)
 {
-    protected MappedCSharpClassBase(IPipelineService pipelineService) : base(pipelineService)
-    {
-    }
-
     public override bool RecurseOnDeleteGeneratedFiles => false;
     public override string LastGeneratedFilesFilename => string.Empty;
     public override Encoding Encoding => Encoding.UTF8;

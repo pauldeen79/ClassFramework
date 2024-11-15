@@ -1,26 +1,16 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddFluentMethodsForNonCollectionPropertiesComponentBuilder : IBuilderComponentBuilder
+public class AddFluentMethodsForNonCollectionPropertiesComponentBuilder(IFormattableStringParser formattableStringParser) : IBuilderComponentBuilder
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-
-    public AddFluentMethodsForNonCollectionPropertiesComponentBuilder(IFormattableStringParser formattableStringParser)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-    }
+    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
     public IPipelineComponent<BuilderContext> Build()
         => new AddFluentMethodsForNonCollectionPropertiesComponent(_formattableStringParser);
 }
 
-public class AddFluentMethodsForNonCollectionPropertiesComponent : IPipelineComponent<BuilderContext>
+public class AddFluentMethodsForNonCollectionPropertiesComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-
-    public AddFluentMethodsForNonCollectionPropertiesComponent(IFormattableStringParser formattableStringParser)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-    }
+    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
     public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {

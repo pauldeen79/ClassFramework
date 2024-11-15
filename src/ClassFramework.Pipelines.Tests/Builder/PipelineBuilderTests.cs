@@ -4,9 +4,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
 {
     public class Process : PipelineBuilderTests
     {
-        private BuilderContext CreateContext(bool addProperties = true, bool createAsObservable = false)
-            => new BuilderContext
-            (
+        private static BuilderContext CreateContext(bool addProperties = true, bool createAsObservable = false)
+            => new(
                 CreateGenericModel(addProperties),
                 CreateSettingsForBuilder
                 (
@@ -80,7 +79,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
             result.Status.Should().Be(ResultStatus.Ok);
             context.Builder.Constructors.Should().NotBeEmpty();
         }
-        
+
         [Fact]
         public async Task Adds_GenericTypeArguments()
         {
@@ -310,8 +309,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
             );
             context.Builder.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
-                new[]
-                {
+                [
                     false,
                     true,
                     false,
@@ -320,7 +318,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
                     true,
                     false,
                     true
-                }
+                ]
             );
         }
 

@@ -279,7 +279,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             result.Status.Should().Be(ResultStatus.Error);
             result.ErrorMessage.Should().Be("Kaboom");
         }
-        
+
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
             => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }

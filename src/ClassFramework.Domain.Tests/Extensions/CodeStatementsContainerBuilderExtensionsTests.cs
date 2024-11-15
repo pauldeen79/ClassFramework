@@ -14,7 +14,7 @@ public class CodeStatementsContainerBuilderExtensionsTests : TestBase<TestCodeSt
             var result = sut.NotImplemented();
 
             // Assert
-            result.CodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("throw new System.NotImplementedException();") });
+            result.CodeStatements.Should().BeEquivalentTo([new StringCodeStatementBuilder().WithStatement("throw new System.NotImplementedException();")]);
         }
     }
 
@@ -30,7 +30,7 @@ public class CodeStatementsContainerBuilderExtensionsTests : TestBase<TestCodeSt
             var result = sut.AddStringCodeStatements(new[] { "// code goes here" }.AsEnumerable());
 
             // Assert
-            result.CodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("// code goes here") });
+            result.CodeStatements.Should().BeEquivalentTo([new StringCodeStatementBuilder().WithStatement("// code goes here")]);
         }
     }
 }

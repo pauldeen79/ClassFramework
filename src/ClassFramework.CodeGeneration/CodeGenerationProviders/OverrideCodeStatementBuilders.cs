@@ -1,12 +1,8 @@
 ﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class OverrideCodeStatementBuilders : ClassFrameworkCSharpClassBase
+public class OverrideCodeStatementBuilders(IPipelineService pipelineService) : ClassFrameworkCSharpClassBase(pipelineService)
 {
-    public OverrideCodeStatementBuilders(IPipelineService pipelineService) : base(pipelineService)
-    {
-    }
-
     public override string Path => "ClassFramework.Domain/Builders/CodeStatements";
 
     protected override bool EnableEntityInheritance => true;

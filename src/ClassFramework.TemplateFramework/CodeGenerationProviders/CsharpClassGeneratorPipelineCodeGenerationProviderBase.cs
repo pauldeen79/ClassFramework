@@ -89,9 +89,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
             );
 
-    protected virtual string[] GetModelAbstractBaseTyped() => Array.Empty<string>();
+    protected virtual string[] GetModelAbstractBaseTyped() => [];
 
-    protected virtual string[] GetExternalCustomBuilderTypes() => Array.Empty<string>();
+    protected virtual string[] GetExternalCustomBuilderTypes() => [];
 
     protected virtual string[] GetCustomBuilderTypes()
         => GetPureAbstractModels()
@@ -401,7 +401,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     }
 
     protected virtual IEnumerable<NamespaceMappingBuilder> CreateAdditionalNamespaceMappings()
-        => Enumerable.Empty<NamespaceMappingBuilder>();
+        => [];
     
     protected IEnumerable<TypenameMappingBuilder> CreateTypenameMappings()
         => GetType().Assembly.GetTypes()
@@ -447,7 +447,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         .Concat(CreateAdditionalTypenameMappings());
 
     protected virtual IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
-         => Enumerable.Empty<TypenameMappingBuilder>();
+         => [];
 
     protected virtual bool IsAbstractType(Type type)
     {

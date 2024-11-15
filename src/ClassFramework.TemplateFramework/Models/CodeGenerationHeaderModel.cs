@@ -1,13 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework.Models;
 
-public class CodeGenerationHeaderModel
+public class CodeGenerationHeaderModel(bool createCodeGenerationHeader, string? environmentVersion)
 {
-    public CodeGenerationHeaderModel(bool createCodeGenerationHeader, string? environmentVersion)
-    {
-        CreateCodeGenerationHeader = createCodeGenerationHeader;
-        EnvironmentVersion = environmentVersion;
-    }
-
-    public bool CreateCodeGenerationHeader { get; }
-    public string? EnvironmentVersion { get; }
+    public bool CreateCodeGenerationHeader { get; } = createCodeGenerationHeader;
+    public string? EnvironmentVersion { get; } = environmentVersion;
 }

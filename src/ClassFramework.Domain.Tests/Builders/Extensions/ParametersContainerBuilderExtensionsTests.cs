@@ -58,7 +58,7 @@ public class ParametersContainerBuilderExtensionsTests : TestBase<MethodBuilder>
             var result = sut.AddParameter("Name", typeof(int));
 
             // Assert
-            result.Parameters.Should().BeEquivalentTo(new[] { new ParameterBuilder().WithName("Name").WithTypeName("System.Int32").WithIsValueType().Build() });
+            result.Parameters.Should().BeEquivalentTo([new ParameterBuilder().WithName("Name").WithTypeName("System.Int32").WithIsValueType().Build()]);
         }
 
         [Fact]
@@ -71,7 +71,7 @@ public class ParametersContainerBuilderExtensionsTests : TestBase<MethodBuilder>
             var result = sut.AddParameter("Name", typeof(int), true);
 
             // Assert
-            result.Parameters.Should().BeEquivalentTo(new[] { new ParameterBuilder().WithName("Name").WithTypeName("System.Int32").WithIsNullable().WithIsValueType().Build() });
+            result.Parameters.Should().BeEquivalentTo([new ParameterBuilder().WithName("Name").WithTypeName("System.Int32").WithIsNullable().WithIsValueType().Build()]);
         }
 
         [Fact]
@@ -84,7 +84,7 @@ public class ParametersContainerBuilderExtensionsTests : TestBase<MethodBuilder>
             var result = sut.AddParameter("Name", "System.Int32");
 
             // Assert
-            result.Parameters.Should().BeEquivalentTo(new[] { new ParameterBuilder().WithName("Name").WithTypeName("System.Int32").Build() });
+            result.Parameters.Should().BeEquivalentTo([new ParameterBuilder().WithName("Name").WithTypeName("System.Int32").Build()]);
         }
 
         [Fact]
@@ -97,7 +97,7 @@ public class ParametersContainerBuilderExtensionsTests : TestBase<MethodBuilder>
             var result = sut.AddParameter("Name", "System.Int32", true);
 
             // Assert
-            result.Parameters.Should().BeEquivalentTo(new[] { new ParameterBuilder().WithName("Name").WithTypeName("System.Int32").WithIsNullable().Build() });
+            result.Parameters.Should().BeEquivalentTo([new ParameterBuilder().WithName("Name").WithTypeName("System.Int32").WithIsNullable().Build()]);
         }
     }
 }

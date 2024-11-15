@@ -1,12 +1,7 @@
 ﻿namespace ClassFramework.Pipelines.Interface;
 
-public class InterfaceContext : ContextBase<TypeBase>
+public class InterfaceContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<TypeBase>(sourceModel, settings, formatProvider)
 {
-    public InterfaceContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
-        : base(sourceModel, settings, formatProvider)
-    {
-    }
-
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
 
     public InterfaceBuilder Builder => _wrappedBuilder.Builder;

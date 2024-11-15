@@ -1,15 +1,8 @@
 ﻿namespace ClassFramework.Pipelines;
 
-public class PropertyContext : ContextBase<Property>
+public class PropertyContext(Property model, PipelineSettings settings, IFormatProvider formatProvider, string typeName, string newCollectionTypeName) : ContextBase<Property>(model, settings, formatProvider)
 {
-    public PropertyContext(Property model, PipelineSettings settings, IFormatProvider formatProvider, string typeName, string newCollectionTypeName)
-        : base(model, settings, formatProvider)
-    {
-        TypeName = typeName.IsNotNull(nameof(typeName));
-        NewCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
-    }
+    public string TypeName { get; } = typeName.IsNotNull(nameof(typeName));
 
-    public string TypeName { get; }
-
-    protected override string NewCollectionTypeName { get; }
+    protected override string NewCollectionTypeName { get; } = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
 }

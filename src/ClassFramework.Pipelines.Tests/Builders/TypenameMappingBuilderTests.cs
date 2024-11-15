@@ -25,7 +25,7 @@ public class TypenameMappingBuilderTests : TestBase<TypenameMappingBuilder>
             var result = sut.AddMetadata(name: "Name", value: "Value");
 
             // Assert
-            result.Metadata.Should().BeEquivalentTo(new[] { new Metadata(name: "Name", value: "Value") });
+            result.Metadata.Should().BeEquivalentTo([new Metadata(name: "Name", value: "Value")]);
         }
     }
 }

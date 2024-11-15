@@ -274,12 +274,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
                .Should().Throw<ArgumentNullException>().WithParameterName("metadataName");
         }
 
-        private sealed class TestContext : ContextBase<string>
+        private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider)
         {
-            public TestContext(PipelineSettings settings, IFormatProvider formatProvider) : base(string.Empty, settings, formatProvider)
-            {
-            }
-
             protected override string NewCollectionTypeName => string.Empty;
         }
     }
@@ -312,12 +308,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             result.Value!.ToString().Should().Be("IReadOnlyCollection<Builders.{TypeName.GenericArguments.ClassName.NoGenerics}Builder{TypeName.CollectionItemType.GenericArgumentsWithBrackets}>");
         }
 
-        private sealed class TestContext : ContextBase<string>
+        private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider)
         {
-            public TestContext(PipelineSettings settings, IFormatProvider formatProvider) : base(string.Empty, settings, formatProvider)
-            {
-            }
-
             protected override string NewCollectionTypeName => string.Empty;
         }
     }

@@ -1,11 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public abstract class ObservableCSharpClassBase : ImmutableCSharpClassBase
+public abstract class ObservableCSharpClassBase(IPipelineService pipelineService) : ImmutableCSharpClassBase(pipelineService)
 {
-    protected ObservableCSharpClassBase(IPipelineService pipelineService) : base(pipelineService)
-    {
-    }
-
     protected override Type EntityCollectionType => typeof(ObservableCollection<>);
     protected override Type EntityConcreteCollectionType => typeof(ObservableCollection<>);
     protected override Type BuilderCollectionType => typeof(ObservableCollection<>);

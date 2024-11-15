@@ -14,7 +14,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Compone
             sut.Awaiting(x => x.Process(context: null!))
                .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
-        
+
         [Fact]
         public async Task Does_Not_Copy_Interfaces_When_CopyInterfaces_Is_False()
         {

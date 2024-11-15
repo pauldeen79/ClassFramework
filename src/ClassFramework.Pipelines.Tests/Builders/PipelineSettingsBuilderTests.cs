@@ -16,7 +16,7 @@ public class PipelineSettingsBuilderTests
             // Assert
             result.Name.Should().Be(typeof(StringLengthAttribute).FullName);
             result.Parameters.Select(x => x.Name).Should().BeEquivalentTo(string.Empty, "MinimumLength");
-            result.Parameters.Select(x => x.Value).Should().BeEquivalentTo([ 10, 10 ]);
+            result.Parameters.Select(x => x.Value).Should().BeEquivalentTo([10, 10]);
         }
 
         [Fact]
@@ -151,12 +151,8 @@ public class PipelineSettingsBuilderTests
             public List<int> Property { get; set; } = default!;
         }
 
-        private sealed class TestContext : ContextBase<string>
+        private sealed class TestContext(PipelineSettings settings) : ContextBase<string>(string.Empty, settings, CultureInfo.CurrentCulture)
         {
-            public TestContext(PipelineSettings settings) : base(string.Empty, settings, CultureInfo.CurrentCulture)
-            {
-            }
-
             protected override string NewCollectionTypeName => string.Empty;
         }
     }

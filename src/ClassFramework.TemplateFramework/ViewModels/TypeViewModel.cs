@@ -32,10 +32,10 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
         => GetModel().SuppressWarningCodes;
 
     public CodeGenerationHeaderModel CodeGenerationHeaders
-        => new CodeGenerationHeaderModel(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion);
+        => new(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion);
 
     public UsingsModel Usings()
-        => new UsingsModel([GetModel()]);
+        => new([GetModel()]);
 
     public IEnumerable<object> Members
     {
@@ -71,7 +71,7 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
         {
             if (GetModel() is not ISubClassesContainer subClassesContainer)
             {
-                return Enumerable.Empty<object>();
+                return [];
             }
 
             return subClassesContainer.SubClasses.SelectMany(item => new object[] { new NewLineModel(), item });
