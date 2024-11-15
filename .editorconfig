@@ -168,6 +168,9 @@ dotnet_diagnostic.CA1822.severity = none
 # CA1308: Normalize strings to uppercase
 dotnet_diagnostic.CA1308.severity = none
 
+# CA1515: Because an application's API isn't typically referenced from outside the assembly, types can be made internal (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1515)
+dotnet_diagnostic.CA1515.severity = none
+
 [*Test*.cs]
 dotnet_diagnostic.CA1052.severity = none
 dotnet_diagnostic.CA1034.severity = none
