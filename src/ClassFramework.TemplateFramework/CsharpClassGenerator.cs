@@ -50,7 +50,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
     private async Task<Result> RenderHeader(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
-        return await (await RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment, cancellationToken).ConfigureAwait(false))
+        return await (await RenderChildTemplateByModel(Model!.CodeGenerationHeaderModel, generationEnvironment, cancellationToken).ConfigureAwait(false))
             .OnSuccess(async () =>
             {
                 if (!Model.Settings.EnableGlobalUsings)
