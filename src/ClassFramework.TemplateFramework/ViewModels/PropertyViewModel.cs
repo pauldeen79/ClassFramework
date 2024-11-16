@@ -4,7 +4,7 @@ public class PropertyViewModel(ICsharpExpressionDumper csharpExpressionDumper) :
 {
     public bool ShouldRenderModifiers
         => GetParentModel() is not Interface;
-    
+
     public string TypeName
         => GetModel().TypeName
             .GetCsharpFriendlyTypeName()

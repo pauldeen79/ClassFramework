@@ -8,7 +8,7 @@ public static class StringBuilderExtensions
         {
             return builder;
         }
-        
+
         return builder.AppendLine(value);
     }
 

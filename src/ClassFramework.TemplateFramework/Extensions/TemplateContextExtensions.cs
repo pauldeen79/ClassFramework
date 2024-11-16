@@ -33,7 +33,7 @@ public static class TemplateContextExtensions
             {
                 throw new NotSupportedException("Only 10 nested levels of sub classes are supported");
             }
-            
+
             count += GetCount(context.ParentContext, recursionLevel + 1);
         }
 

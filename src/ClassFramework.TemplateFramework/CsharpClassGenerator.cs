@@ -85,4 +85,5 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
         }
 
         return Result.Success();
-    }}
+    }
+}
