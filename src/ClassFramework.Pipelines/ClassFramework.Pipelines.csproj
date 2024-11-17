@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsharpExpressionDumper.Abstractions" Version="1.5.4" />
+    <PackageReference Include="CsharpExpressionDumper.Abstractions" Version="1.5.5" />
     <PackageReference Include="pauldeen79.CrossCutting.ProcessingPipeline" Version="8.2.3" />
     <PackageReference Include="pauldeen79.CrossCutting.Utilities.Parsers" Version="5.4.0" />
   </ItemGroup>
