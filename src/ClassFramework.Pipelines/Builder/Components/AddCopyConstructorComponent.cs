@@ -1,30 +1,18 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddCopyConstructorComponentBuilder : IBuilderComponentBuilder
+public class AddCopyConstructorComponentBuilder(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper) : IBuilderComponentBuilder
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-    private readonly ICsharpExpressionDumper _csharpExpressionDumper;
-
-    public AddCopyConstructorComponentBuilder(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-        _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
-    }
+    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
     public IPipelineComponent<BuilderContext> Build()
         => new AddCopyConstructorComponent(_formattableStringParser, _csharpExpressionDumper);
 }
 
-public class AddCopyConstructorComponent : IPipelineComponent<BuilderContext>
+public class AddCopyConstructorComponent(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-    private readonly ICsharpExpressionDumper _csharpExpressionDumper;
-
-    public AddCopyConstructorComponent(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-        _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
-    }
+    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
     public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {

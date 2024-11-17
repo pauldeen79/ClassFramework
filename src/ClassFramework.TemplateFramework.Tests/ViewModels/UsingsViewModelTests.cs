@@ -17,7 +17,7 @@ public class UsingsViewModelTests : TestBase<UsingsViewModel>
         {
             // Arrange
             var sut = CreateSut();
-            sut.Model = new UsingsModel(new TypeBase[] { new ClassBuilder().WithName("MyClass").Build() });
+            sut.Model = new UsingsModel([new ClassBuilder().WithName("MyClass").Build()]);
             sut.Settings = CreateCsharpClassGeneratorSettings();
 
             // Act
@@ -40,7 +40,7 @@ public class UsingsViewModelTests : TestBase<UsingsViewModel>
             var cls = new ClassBuilder()
                 .WithName("MyClass")
                 .Build();
-            sut.Model = new UsingsModel(new TypeBase[] { cls });
+            sut.Model = new UsingsModel([cls]);
 
             // Act
             var result = sut.Usings.ToArray();

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest-All</AnalysisLevel>
@@ -11,8 +11,8 @@
 
   <ItemGroup>
     <PackageReference Include="CsharpExpressionDumper.Core" Version="1.5.4" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="1.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>

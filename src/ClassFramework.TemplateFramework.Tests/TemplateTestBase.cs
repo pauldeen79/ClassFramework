@@ -7,7 +7,7 @@
 public class TemplateTestBase<T> : TestBase
     where T : new()
 {
-    protected static T CreateSut() => new T();
+    protected static T CreateSut() => new();
 
     protected static ITemplateContext CreateContext(ITemplateEngine engine, object template)
     {

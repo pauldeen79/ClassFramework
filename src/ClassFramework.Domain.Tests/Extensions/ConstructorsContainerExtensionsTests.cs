@@ -23,7 +23,7 @@ public class ConstructorsContainerExtensionsTests : TestBase
         {
             // Arrange
             var sut = Fixture.Freeze<IConstructorsContainer>();
-            sut.Constructors.Returns(new[] { new Constructor(string.Empty, default, default, default, default, default, default, Domains.Visibility.Public, Enumerable.Empty<Attribute>(), Enumerable.Empty<CodeStatementBase>(), Enumerable.Empty<Parameter>(), Enumerable.Empty<string>()) });
+            sut.Constructors.Returns([new Constructor(string.Empty, default, default, default, default, default, default, Domains.Visibility.Public, [], [], [], [])]);
 
             // Act
             var result = sut.HasPublicParameterlessConstructor();
@@ -37,7 +37,7 @@ public class ConstructorsContainerExtensionsTests : TestBase
         {
             // Arrange
             var sut = Fixture.Freeze<IConstructorsContainer>();
-            sut.Constructors.Returns(new[] { new Constructor(string.Empty, default, default, default, default, default, default, Domains.Visibility.Private, Enumerable.Empty<Attribute>(), Enumerable.Empty<CodeStatementBase>(), Enumerable.Empty<Parameter>(), Enumerable.Empty<string>()) });
+            sut.Constructors.Returns([new Constructor(string.Empty, default, default, default, default, default, default, Domains.Visibility.Private, [], [], [], [])]);
 
             // Act
             var result = sut.HasPublicParameterlessConstructor();
@@ -51,7 +51,7 @@ public class ConstructorsContainerExtensionsTests : TestBase
         {
             // Arrange
             var sut = Fixture.Freeze<IConstructorsContainer>();
-            sut.Constructors.Returns(new[] { new Constructor(string.Empty, default, default, default, default, default, default, Domains.Visibility.Public, Enumerable.Empty<Attribute>(), Enumerable.Empty<CodeStatementBase>(), [new Parameter(default, default, default, "System.String", default, default, Enumerable.Empty<ITypeContainer>(), Enumerable.Empty<Attribute>(), "arg", default)], Enumerable.Empty<string>()) });
+            sut.Constructors.Returns([new Constructor(string.Empty, default, default, default, default, default, default, Domains.Visibility.Public, [], [], [new Parameter(default, default, default, "System.String", default, default, [], [], "arg", default)], [])]);
 
             // Act
             var result = sut.HasPublicParameterlessConstructor();

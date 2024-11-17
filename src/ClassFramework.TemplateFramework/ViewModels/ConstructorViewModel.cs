@@ -5,7 +5,7 @@ public class ConstructorViewModel : MethodViewModelBase<Constructor>
     public string Name
     {
         get
-        {   
+        {
             var parentModel = GetParentModel();
 
             if (parentModel is not IType nameContainer)

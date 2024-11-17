@@ -98,12 +98,8 @@ public class ContextBaseTests : TestBase
         }
     }
 
-    private sealed class TestContext : ContextBase<string>
+    private sealed class TestContext(PipelineSettings settings) : ContextBase<string>(string.Empty, settings, CultureInfo.InvariantCulture)
     {
-        public TestContext(PipelineSettings settings) : base(string.Empty, settings, CultureInfo.InvariantCulture)
-        {
-        }
-
         protected override string NewCollectionTypeName => string.Empty;
     }
 }

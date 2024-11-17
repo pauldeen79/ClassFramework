@@ -40,7 +40,7 @@ public abstract class TestBase : IDisposable
         var parser = Fixture.Freeze<IFormattableStringParser>();
         var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
         csharpExpressionDumper.Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
-        
+
         // Pass through real IFormattableStringParser implementation, with all placeholder processors and stuff in our ClassFramework.Pipelines project.
         // One exception: If we supply "{Error}" as placeholder, then simply return an error with the error message "Kaboom".
         parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
@@ -49,7 +49,7 @@ public abstract class TestBase : IDisposable
                 : FormattableStringParser.Parse(x.ArgAt<string>(0), x.ArgAt<IFormatProvider>(1), x.ArgAt<object?>(2))
                     .Transform(x => x.ErrorMessage == "Unknown placeholder in value: Error"
                         ? Result.Error<FormattableStringParserResult>("Kaboom")
-                        : x ));
+                        : x));
 
         return parser;
     }
@@ -181,7 +181,7 @@ public abstract class TestBase : IDisposable
         InheritanceComparisonDelegate? inheritanceComparisonDelegate = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
-        =>  CreateSettingsForEntity
+        => CreateSettingsForEntity
             (
                 enableEntityInheritance: enableEntityInheritance,
                 addNullChecks: addNullChecks,

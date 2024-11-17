@@ -30,7 +30,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
+            context.Request.Builder.Attributes.Should().BeEquivalentTo([new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute")]);
         }
 
         [Fact]
@@ -47,7 +47,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
+            context.Request.Builder.Attributes.Should().BeEquivalentTo([new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute")]);
         }
 
         [Fact]

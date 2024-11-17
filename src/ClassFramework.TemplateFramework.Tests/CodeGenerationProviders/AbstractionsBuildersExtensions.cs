@@ -1,11 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class AbstractionsBuildersExtensions : ImmutableCSharpClassBase
+public class AbstractionsBuildersExtensions(IPipelineService pipelineService) : ImmutableCSharpClassBase(pipelineService)
 {
-    public AbstractionsBuildersExtensions(IPipelineService pipelineService) : base(pipelineService)
-    {
-    }
-
     public override async Task<IEnumerable<TypeBase>> GetModel() => await GetBuilderExtensions(await GetAbstractionsInterfaces().ConfigureAwait(false), "Test.Domain.Builders.Abstractions", "Test.Domain.Abstractions", "Test.Domain.Builders.Extensions").ConfigureAwait(false);
 
     public override string Path => "Test.Domain/Builders/Extensions";

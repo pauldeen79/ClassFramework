@@ -74,7 +74,7 @@ public class PropertyBuilderTests : TestBase<PropertyBuilder>
             var result = sut.GetterNotImplemented();
 
             // Assert
-            result.GetterCodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("throw new System.NotImplementedException();") });
+            result.GetterCodeStatements.Should().BeEquivalentTo([new StringCodeStatementBuilder().WithStatement("throw new System.NotImplementedException();")]);
         }
     }
 
@@ -90,7 +90,7 @@ public class PropertyBuilderTests : TestBase<PropertyBuilder>
             var result = sut.SetterNotImplemented();
 
             // Assert
-            result.SetterCodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("throw new System.NotImplementedException();") });
+            result.SetterCodeStatements.Should().BeEquivalentTo([new StringCodeStatementBuilder().WithStatement("throw new System.NotImplementedException();")]);
         }
     }
 
@@ -106,7 +106,7 @@ public class PropertyBuilderTests : TestBase<PropertyBuilder>
             var result = sut.InitializerNotImplemented();
 
             // Assert
-            result.InitializerCodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("throw new System.NotImplementedException();") });
+            result.InitializerCodeStatements.Should().BeEquivalentTo([new StringCodeStatementBuilder().WithStatement("throw new System.NotImplementedException();")]);
         }
     }
 
@@ -122,7 +122,7 @@ public class PropertyBuilderTests : TestBase<PropertyBuilder>
             var result = sut.AddGetterStringCodeStatements(new[] { "// code goes here" }.AsEnumerable());
 
             // Assert
-            result.GetterCodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("// code goes here") });
+            result.GetterCodeStatements.Should().BeEquivalentTo([new StringCodeStatementBuilder().WithStatement("// code goes here")]);
         }
     }
 
@@ -138,7 +138,7 @@ public class PropertyBuilderTests : TestBase<PropertyBuilder>
             var result = sut.AddSetterStringCodeStatements(new[] { "// code goes here" }.AsEnumerable());
 
             // Assert
-            result.SetterCodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("// code goes here") });
+            result.SetterCodeStatements.Should().BeEquivalentTo([new StringCodeStatementBuilder().WithStatement("// code goes here")]);
         }
     }
 
@@ -154,7 +154,7 @@ public class PropertyBuilderTests : TestBase<PropertyBuilder>
             var result = sut.AddInitializerStringCodeStatements(new[] { "// code goes here" }.AsEnumerable());
 
             // Assert
-            result.InitializerCodeStatements.Should().BeEquivalentTo(new[] { new StringCodeStatementBuilder().WithStatement("// code goes here") });
+            result.InitializerCodeStatements.Should().BeEquivalentTo([new StringCodeStatementBuilder().WithStatement("// code goes here")]);
         }
     }
 }

@@ -1,26 +1,16 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class SetNameComponentBuilder : IEntityComponentBuilder
+public class SetNameComponentBuilder(IFormattableStringParser formattableStringParser) : IEntityComponentBuilder
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-
-    public SetNameComponentBuilder(IFormattableStringParser formattableStringParser)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-    }
+    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
     public IPipelineComponent<EntityContext> Build()
         => new SetNameComponent(_formattableStringParser);
 }
 
-public class SetNameComponent : IPipelineComponent<EntityContext>
+public class SetNameComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<EntityContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-
-    public SetNameComponent(IFormattableStringParser formattableStringParser)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-    }
+    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
     public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
     {

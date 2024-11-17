@@ -1,13 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Entity.PlaceholderProcessors;
 
-public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
+public class EntityPipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors) : IPlaceholderProcessor
 {
-    private readonly IEnumerable<IPipelinePlaceholderProcessor> _pipelinePlaceholderProcessors;
-
-    public EntityPipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
-    {
-        _pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
-    }
+    private readonly IEnumerable<IPipelinePlaceholderProcessor> _pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
 
     public int Order => 10;
 

@@ -21,15 +21,15 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Reflect
             // Assert
             result.IsSuccessful().Should().BeTrue();
 
-           context.Builder.Attributes.Should().ContainSingle();
-           context.Builder.Attributes.Single().Name.Should().Be("System.ComponentModel.DisplayNameAttribute");
+            context.Builder.Attributes.Should().ContainSingle();
+            context.Builder.Attributes.Single().Name.Should().Be("System.ComponentModel.DisplayNameAttribute");
 
-           context.Builder.Interfaces.Should().BeEquivalentTo("MyNamespace.IMyInterface");
+            context.Builder.Interfaces.Should().BeEquivalentTo("MyNamespace.IMyInterface");
 
-           context.Builder.Name.Should().Be(nameof(MyClass));
-           context.Builder.Namespace.Should().Be("MyNamespace");
+            context.Builder.Name.Should().Be(nameof(MyClass));
+            context.Builder.Namespace.Should().Be("MyNamespace");
 
-           context.Builder.Visibility.Should().Be(Visibility.Public);
+            context.Builder.Visibility.Should().Be(Visibility.Public);
         }
 
         [Fact]
@@ -49,13 +49,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Reflect
             // Assert
             result.IsSuccessful().Should().BeTrue();
 
-           context.Builder.Attributes.Should().BeEmpty();
-           context.Builder.Interfaces.Should().BeEmpty();
+            context.Builder.Attributes.Should().BeEmpty();
+            context.Builder.Interfaces.Should().BeEmpty();
 
-           context.Builder.Name.Should().Be(nameof(IMyInterface));
-           context.Builder.Namespace.Should().Be("MyNamespace");
+            context.Builder.Name.Should().Be(nameof(IMyInterface));
+            context.Builder.Namespace.Should().Be("MyNamespace");
 
-           context.Builder.Visibility.Should().Be(Visibility.Public);
+            context.Builder.Visibility.Should().Be(Visibility.Public);
         }
 
         [Fact]
@@ -75,13 +75,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Reflect
             // Assert
             result.IsSuccessful().Should().BeTrue();
 
-           context.Builder.Attributes.Should().BeEmpty();
-           context.Builder.Interfaces.Should().BeEmpty();
+            context.Builder.Attributes.Should().BeEmpty();
+            context.Builder.Interfaces.Should().BeEmpty();
 
-           context.Builder.Name.Should().Be(nameof(IMyInternalInterface));
-           context.Builder.Namespace.Should().Be("MyNamespace");
+            context.Builder.Name.Should().Be(nameof(IMyInternalInterface));
+            context.Builder.Namespace.Should().Be("MyNamespace");
 
-           context.Builder.Visibility.Should().Be(Visibility.Internal);
+            context.Builder.Visibility.Should().Be(Visibility.Internal);
         }
 
         [Fact]

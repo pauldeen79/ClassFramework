@@ -1,11 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class OverrideTypeBuilders : ImmutableCSharpClassBase
+public class OverrideTypeBuilders(IPipelineService pipelineService) : ImmutableCSharpClassBase(pipelineService)
 {
-    public OverrideTypeBuilders(IPipelineService pipelineService) : base(pipelineService)
-    {
-    }
-
     public override string Path => "Test.Domain/Builders/Types";
 
     protected override bool EnableEntityInheritance => true;

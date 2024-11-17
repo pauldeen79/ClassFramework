@@ -23,7 +23,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(
-                baseClass:  null,
+                baseClass: null,
                 enableEntityInheritance: true);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 

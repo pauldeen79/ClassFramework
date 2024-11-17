@@ -1,13 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class ParameterViewModel : AttributeContainerViewModelBase<Parameter>
+public class ParameterViewModel(ICsharpExpressionDumper csharpExpressionDumper) : AttributeContainerViewModelBase<Parameter>
 {
-    public ParameterViewModel(ICsharpExpressionDumper csharpExpressionDumper)
-    {
-        CsharpExpressionDumper = csharpExpressionDumper;
-    }
-
-    private ICsharpExpressionDumper CsharpExpressionDumper { get; }
     public string Prefix
     {
         get
@@ -44,5 +38,5 @@ public class ParameterViewModel : AttributeContainerViewModelBase<Parameter>
         => GetModel().DefaultValue is not null;
 
     public string DefaultValueExpression
-        => CsharpExpressionDumper.Dump(GetModel().DefaultValue);
+        => csharpExpressionDumper.Dump(GetModel().DefaultValue);
 }

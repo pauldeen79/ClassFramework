@@ -24,7 +24,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
-                baseClass:  null,
+                baseClass: null,
                 enableEntityInheritance: true);
             var context = CreateContext(sourceModel, settings);
 
@@ -166,6 +166,6 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new PipelineContext<BuilderContext>(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

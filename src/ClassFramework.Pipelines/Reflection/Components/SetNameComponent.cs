@@ -1,26 +1,16 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class SetNameComponentBuilder : IReflectionComponentBuilder
+public class SetNameComponentBuilder(IFormattableStringParser formattableStringParser) : IReflectionComponentBuilder
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-
-    public SetNameComponentBuilder(IFormattableStringParser formattableStringParser)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-    }
+    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
     public IPipelineComponent<ReflectionContext> Build()
         => new SetNameComponent(_formattableStringParser);
 }
 
-public class SetNameComponent : IPipelineComponent<ReflectionContext>
+public class SetNameComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<ReflectionContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-
-    public SetNameComponent(IFormattableStringParser formattableStringParser)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-    }
+    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
     public Task<Result> Process(PipelineContext<ReflectionContext> context, CancellationToken token)
     {

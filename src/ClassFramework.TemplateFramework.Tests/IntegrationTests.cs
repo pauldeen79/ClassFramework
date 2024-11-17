@@ -1610,12 +1610,8 @@ namespace Test.Domain.Builders
             .Build();
     }
 
-    private sealed class TestPipelineCodeGenerationProvider : CsharpClassGeneratorPipelineCodeGenerationProviderBase
+    private sealed class TestPipelineCodeGenerationProvider(IPipelineService pipelineService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(pipelineService)
     {
-        public TestPipelineCodeGenerationProvider(IPipelineService pipelineService) : base(pipelineService)
-        {
-        }
-
         public override string Path => string.Empty;
         public override bool RecurseOnDeleteGeneratedFiles => false;
         public override string LastGeneratedFilesFilename => string.Empty;

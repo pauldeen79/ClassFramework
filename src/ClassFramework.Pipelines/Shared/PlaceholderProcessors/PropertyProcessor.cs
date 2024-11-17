@@ -1,15 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Shared.PlaceholderProcessors;
 
-public class PropertyProcessor : IPipelinePlaceholderProcessor, IPlaceholderProcessor
+public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) : IPipelinePlaceholderProcessor, IPlaceholderProcessor
 {
-    private readonly ICsharpExpressionDumper _csharpExpressionDumper;
+    private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
     public int Order => 30;
-
-    public PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper)
-    {
-        _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
-    }
 
     public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {

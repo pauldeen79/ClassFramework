@@ -35,5 +35,5 @@ public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGen
         => GetContext().ParentContext?.Model;
 
     public string CreateIndentation(int additionalIndents = 0)
-        => new string(' ', 4 * (GetContext().GetIndentCount() + additionalIndents));
+        => new(' ', 4 * (GetContext().GetIndentCount() + additionalIndents));
 }

@@ -68,7 +68,7 @@ public static class TypeBaseExtensions
         if (ctor is null)
         {
             // No public constructor, so we can't add properties to initialization.
-            return Enumerable.Empty<Property>();
+            return [];
         }
 
         if (context.IsBuilderForOverrideEntity && context.Settings.BaseClass is not null)

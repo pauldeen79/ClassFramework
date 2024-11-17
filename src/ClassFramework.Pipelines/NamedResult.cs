@@ -1,13 +1,7 @@
 ﻿namespace ClassFramework.Pipelines;
 
-public class NamedResult<T>
+public class NamedResult<T>(string name, T result)
 {
-    public string Name { get; }
-    public T Result { get; }
-
-    public NamedResult(string name, T result)
-    {
-        Name = name.IsNotNull(nameof(name));
-        Result = result.IsNotNull(nameof(result));
-    }
+    public string Name { get; } = name.IsNotNull(nameof(name));
+    public T Result { get; } = result.IsNotNull(nameof(result));
 }

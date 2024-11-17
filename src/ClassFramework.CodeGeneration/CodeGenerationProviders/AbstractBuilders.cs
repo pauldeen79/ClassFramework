@@ -1,12 +1,8 @@
 ﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class AbstractBuilders : ClassFrameworkCSharpClassBase
+public class AbstractBuilders(IPipelineService pipelineService) : ClassFrameworkCSharpClassBase(pipelineService)
 {
-    public AbstractBuilders(IPipelineService pipelineService) : base(pipelineService)
-    {
-    }
-
     public override async Task<IEnumerable<TypeBase>> GetModel() => await GetBuilders(await GetAbstractModels().ConfigureAwait(false), "ClassFramework.Domain.Builders", "ClassFramework.Domain").ConfigureAwait(false);
 
     public override string Path => "ClassFramework.Domain/Builders";

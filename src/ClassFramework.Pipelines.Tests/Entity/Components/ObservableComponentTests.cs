@@ -52,9 +52,9 @@ public class ObservableComponentTests : TestBase<Pipelines.Entity.Components.Obs
             context.Request.Builder.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
             context.Request.Builder.Fields.Select(x => x.Name).Should().BeEquivalentTo("PropertyChanged");
             context.Request.Builder.Fields.Select(x => x.TypeName).Should().BeEquivalentTo("System.ComponentModel.PropertyChangedEventHandler");
-            context.Request.Builder.Fields.Select(x => x.Event).Should().BeEquivalentTo(new[] { true });
-            context.Request.Builder.Fields.Select(x => x.Visibility).Should().BeEquivalentTo(new[] { Visibility.Public });
-            context.Request.Builder.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo(new[] { true });
+            context.Request.Builder.Fields.Select(x => x.Event).Should().BeEquivalentTo([true]);
+            context.Request.Builder.Fields.Select(x => x.Visibility).Should().BeEquivalentTo([Visibility.Public]);
+            context.Request.Builder.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo([true]);
         }
     }
 }

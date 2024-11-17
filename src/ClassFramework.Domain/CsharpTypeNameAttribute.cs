@@ -1,12 +1,7 @@
 ﻿namespace ClassFramework.Domain;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
-public sealed class CsharpTypeNameAttribute : System.Attribute
+public sealed class CsharpTypeNameAttribute(string typeName) : System.Attribute
 {
-    public string TypeName { get; }
-
-    public CsharpTypeNameAttribute(string typeName)
-    {
-        TypeName = typeName;
-    }
+    public string TypeName { get; } = typeName;
 }

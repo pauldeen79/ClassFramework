@@ -1,13 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder.PlaceholderProcessors;
 
-public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
+public class BuilderPipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors) : IPlaceholderProcessor
 {
-    private readonly IEnumerable<IPipelinePlaceholderProcessor> _pipelinePlaceholderProcessors;
-
-    public BuilderPipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
-    {
-        _pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
-    }
+    private readonly IEnumerable<IPipelinePlaceholderProcessor> _pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
 
     public int Order => 20;
 

@@ -1,12 +1,8 @@
 ﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class OverrideTypeEntities : ClassFrameworkCSharpClassBase
+public class OverrideTypeEntities(IPipelineService pipelineService) : ClassFrameworkCSharpClassBase(pipelineService)
 {
-    public OverrideTypeEntities(IPipelineService pipelineService) : base(pipelineService)
-    {
-    }
-
     public override string Path => "ClassFramework.Domain/Types";
 
     protected override bool EnableEntityInheritance => true;

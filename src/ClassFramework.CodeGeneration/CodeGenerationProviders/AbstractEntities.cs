@@ -1,12 +1,8 @@
 ﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class AbstractEntities : ClassFrameworkCSharpClassBase
+public class AbstractEntities(IPipelineService pipelineService) : ClassFrameworkCSharpClassBase(pipelineService)
 {
-    public AbstractEntities(IPipelineService pipelineService) : base(pipelineService)
-    {
-    }
-
     public override async Task<IEnumerable<TypeBase>> GetModel() => await GetEntities(await GetAbstractModels().ConfigureAwait(false), "ClassFramework.Domain").ConfigureAwait(false);
 
     public override string Path => "ClassFramework.Domain";

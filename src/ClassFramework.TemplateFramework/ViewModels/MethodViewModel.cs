@@ -35,12 +35,12 @@ public class MethodViewModel : MethodViewModelBase<Method>
             {
                 return "operator " + model.Name;
             }
-            
+
             if (model.IsInterfaceMethod())
             {
                 return model.Name.RemoveInterfacePrefix().Sanitize();
             }
-            
+
             return model.Name.Sanitize().GetCsharpFriendlyName();
         }
     }

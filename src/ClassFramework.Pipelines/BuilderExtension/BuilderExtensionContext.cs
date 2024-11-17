@@ -1,13 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension;
 
-public class BuilderExtensionContext : ContextBase<TypeBase>
+public class BuilderExtensionContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<TypeBase>(sourceModel, settings, formatProvider)
 
 {
-    public BuilderExtensionContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
-        : base(sourceModel, settings, formatProvider)
-    {
-    }
-
     protected override string NewCollectionTypeName => Settings.BuilderNewCollectionTypeName;
 
     public IEnumerable<Property> GetSourceProperties()

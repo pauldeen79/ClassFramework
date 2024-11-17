@@ -1,25 +1,14 @@
 ﻿namespace ClassFramework.Pipelines;
 
-public abstract class ContextBase
+public abstract class ContextBase(PipelineSettings settings, IFormatProvider formatProvider)
 {
-    public PipelineSettings Settings { get; }
-    public IFormatProvider FormatProvider { get; }
-
-    protected ContextBase(PipelineSettings settings, IFormatProvider formatProvider)
-    {
-        Settings = settings.IsNotNull(nameof(settings));
-        FormatProvider = formatProvider.IsNotNull(nameof(formatProvider));
-    }
+    public PipelineSettings Settings { get; } = settings.IsNotNull(nameof(settings));
+    public IFormatProvider FormatProvider { get; } = formatProvider.IsNotNull(nameof(formatProvider));
 }
 
-public abstract class ContextBase<TSourceModel> : ContextBase
+public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : ContextBase(settings, formatProvider)
 {
-    protected ContextBase(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : base(settings, formatProvider)
-    {
-        SourceModel = sourceModel.IsNotNull(nameof(sourceModel));
-    }
-
-    public TSourceModel SourceModel { get; }
+    public TSourceModel SourceModel { get; } = sourceModel.IsNotNull(nameof(sourceModel));
 
     protected abstract string NewCollectionTypeName { get; }
 
@@ -55,7 +44,7 @@ public abstract class ContextBase<TSourceModel> : ContextBase
     {
         if (!Settings.CopyAttributes)
         {
-            return Enumerable.Empty<AttributeBuilder>();
+            return [];
         }
 
         return attributes
@@ -181,7 +170,7 @@ public abstract class ContextBase<TSourceModel> : ContextBase
                 .SelectMany(x => x.Metadata);
         }
 
-        return Enumerable.Empty<Metadata>();
+        return [];
     }
 
     public IEnumerable<string> CreateEntityValidationCode()

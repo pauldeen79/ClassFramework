@@ -33,11 +33,11 @@ public class AttributeBuilderTests : TestBase<AttributeBuilder>
 
             // Assert
             actual.Name.Should().Be(typeof(GeneratedCodeAttribute).FullName);
-            actual.Parameters.Should().BeEquivalentTo(new[]
-            {
+            actual.Parameters.Should().BeEquivalentTo(
+            [
                 new AttributeParameterBuilder().WithValue("MyGenerator"),
                 new AttributeParameterBuilder().WithValue("1.0.0.0")
-            });
+            ]);
         }
     }
 

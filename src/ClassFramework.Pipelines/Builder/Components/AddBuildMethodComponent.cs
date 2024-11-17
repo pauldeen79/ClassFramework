@@ -1,30 +1,18 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddBuildMethodComponentBuilder : IBuilderComponentBuilder
+public class AddBuildMethodComponentBuilder(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper) : IBuilderComponentBuilder
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-    private readonly ICsharpExpressionDumper _csharpExpressionDumper;
-
-    public AddBuildMethodComponentBuilder(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-        _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
-    }
+    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
     public IPipelineComponent<BuilderContext> Build()
         => new AddBuildMethodComponent(_formattableStringParser, _csharpExpressionDumper);
 }
 
-public class AddBuildMethodComponent : IPipelineComponent<BuilderContext>
+public class AddBuildMethodComponent(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser;
-    private readonly ICsharpExpressionDumper _csharpExpressionDumper;
-
-    public AddBuildMethodComponent(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper)
-    {
-        _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-        _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
-    }
+    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
     public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
     {
@@ -75,7 +63,7 @@ public class AddBuildMethodComponent : IPipelineComponent<BuilderContext>
             .AddStringCodeStatements
             (
                 context.Request.IsBuilderForAbstractEntity
-                    ? Array.Empty<string>()
+                    ? []
                     : [$"return {instanciationResult.Value};"]
             )
             .AddStringCodeStatements(context.Request.CreatePragmaWarningRestoreStatementsForBuildMethod()));
