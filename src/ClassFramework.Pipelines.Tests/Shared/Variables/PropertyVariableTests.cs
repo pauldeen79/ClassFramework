@@ -79,6 +79,20 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         result.ErrorMessage.Should().Be("Could not get property from context, because the context type null is not supported");
     }
 
+    [Fact]
+    public void Supplying_Unknown_Property_Name_Gives_Continue_Result()
+    {
+        // Arrange
+        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("property.WrongPropertyName", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Continue);
+    }
+
     private static Property CreateProperty()
         => new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
 }
