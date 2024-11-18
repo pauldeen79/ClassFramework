@@ -13,7 +13,6 @@ public abstract class IntegrationTestBase<T> : TestBase
             .AddCsharpExpressionDumper()
             .AddSingleton<IFunctionResultParser, PropertyNameResultParser>()
             .AddSingleton<IFunctionResultParser, ToCamelCaseResultParser>()
-            .AddSingleton<IVariable, PropertyNameVariable>()
             .BuildServiceProvider();
         Scope = Provider.CreateScope();
     }
@@ -52,24 +51,6 @@ public abstract class IntegrationTestBase<T> : TestBase
             }
 
             return Result.Success<object?>(valueResult.Value.ToStringWithDefault().ToCamelCase(functionParseResult.FormatProvider.ToCultureInfo()));
-        }
-    }
-
-    private sealed class PropertyNameVariable : IVariable
-    {
-        public Result<object?> Process(string variable, object? context)
-        {
-            if (variable == "property.Name")
-            {
-                if (context is PropertyContext propertyContext)
-                {
-                    return Result.Success<object?>(propertyContext.SourceModel.Name);
-                }
-
-                return Result.Invalid<object?>("Could not get property name from context, because the context is not of type PropertyContext");
-            }
-
-            return Result.Continue<object?>();
         }
     }
 }
