@@ -15,6 +15,6 @@ public class PropertyVariable : IVariable
             PropertyContext propertyContext => Result.Success(valueDelegate(propertyContext.SourceModel)),
             ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContextBuilder => Result.Success(valueDelegate(parentChildContextBuilder.ChildContext)),
             ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContextBuilderExtension => Result.Success(valueDelegate(parentChildContextBuilderExtension.ChildContext)),
-            _ => Result.Invalid<object?>($"Could not get property from context, because the context type {context?.GetType().FullName} is not supported")
+            _ => Result.Invalid<object?>($"Could not get property from context, because the context type {context?.GetType().FullName ?? "null"} is not supported")
         };
 }

@@ -64,6 +64,21 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         result.ErrorMessage.Should().Be("Could not get property from context, because the context type System.Object is not supported");
     }
 
+    [Fact]
+    public void Supplying_Null_Context_Gives_Invalid_Result()
+    {
+        // Arrange
+        var context = default(object?);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("property.Name", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Invalid);
+        result.ErrorMessage.Should().Be("Could not get property from context, because the context type null is not supported");
+    }
+
     private static Property CreateProperty()
         => new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
 }
