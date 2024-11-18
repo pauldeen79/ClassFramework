@@ -3,31 +3,18 @@
 public class PropertyVariable : IVariable
 {
     public Result<object?> Process(string variableExpression, object? context)
-    {
-        return variableExpression switch
+        => variableExpression switch
         {
             $"property.{nameof(Property.Name)}" => GetValueFromProperty(context, x => x.Name),
             _ => Result.Continue<object?>()
         };
-    }
 
     private static Result<object?> GetValueFromProperty(object? context, Func<Property, object?> valueDelegate)
-    {
-        if (context is PropertyContext propertyContext)
+        => context switch
         {
-            return Result.Success<object?>(valueDelegate(propertyContext.SourceModel));
-        }
-
-        if (context is ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContextBuilder)
-        {
-            return Result.Success<object?>(valueDelegate(parentChildContextBuilder.ChildContext));
-        }
-
-        if (context is ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContextBuilderExtension)
-        {
-            return Result.Success<object?>(valueDelegate(parentChildContextBuilderExtension.ChildContext));
-        }
-
-        return Result.Invalid<object?>($"Could not get property from context, because the context type {context?.GetType().FullName} is not supported");
-    }
+            PropertyContext propertyContext => Result.Success(valueDelegate(propertyContext.SourceModel)),
+            ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContextBuilder => Result.Success(valueDelegate(parentChildContextBuilder.ChildContext)),
+            ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContextBuilderExtension => Result.Success(valueDelegate(parentChildContextBuilderExtension.ChildContext)),
+            _ => Result.Invalid<object?>($"Could not get property from context, because the context type {context?.GetType().FullName} is not supported")
+        };
 }
