@@ -11,8 +11,8 @@ public abstract class IntegrationTestBase<T> : TestBase
             .AddParsers()
             .AddClassFrameworkPipelines()
             .AddCsharpExpressionDumper()
+            .AddExpressionParser()
             .AddSingleton<IFunctionResultParser, PropertyNameResultParser>()
-            .AddSingleton<IFunctionResultParser, ToCamelCaseResultParser>()
             .BuildServiceProvider();
         Scope = Provider.CreateScope();
     }
@@ -32,25 +32,6 @@ public abstract class IntegrationTestBase<T> : TestBase
             }
 
             return Result.Invalid<object?>("Could not get property name from context, because the context is not of type PropertyContext");
-        }
-    }
-
-    private sealed class ToCamelCaseResultParser : IFunctionResultParser
-    {
-        public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
-        {
-            if (functionParseResult.FunctionName != "ToCamelCase")
-            {
-                return Result.Continue<object?>();
-            }
-
-            var valueResult = functionParseResult.Arguments.First().GetValueResult(context, evaluator, parser, functionParseResult.FormatProvider);
-            if (!valueResult.IsSuccessful())
-            {
-                return valueResult;
-            }
-
-            return Result.Success<object?>(valueResult.Value.ToStringWithDefault().ToCamelCase(functionParseResult.FormatProvider.ToCultureInfo()));
         }
     }
 }
