@@ -40,7 +40,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{Name}");
+            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{$property.Name}");
             var context = CreateContext(sourceModel, settings);
 
             // Act
@@ -70,7 +70,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{Name}", typenameMappings:
+            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{$property.Name}", typenameMappings:
             [
                 new TypenameMappingBuilder()
                     .WithSourceType(typeof(int))
@@ -108,7 +108,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
-                addMethodNameFormatString: "Add{Name}");
+                addMethodNameFormatString: "Add{$property.Name}");
             var context = CreateContext(sourceModel, settings);
 
             // Act
@@ -141,7 +141,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
-                addMethodNameFormatString: "Add{Name}");
+                addMethodNameFormatString: "Add{$property.Name}");
             var context = CreateContext(sourceModel, settings);
 
             // Act
@@ -175,7 +175,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableEntityInheritance: true,
-                addMethodNameFormatString: "Add{Name}");
+                addMethodNameFormatString: "Add{$property.Name}");
             var context = CreateContext(sourceModel, settings);
 
             // Act

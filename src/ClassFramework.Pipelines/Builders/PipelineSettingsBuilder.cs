@@ -6,8 +6,8 @@ public partial class PipelineSettingsBuilder
     {
         AddCopyConstructor = true;
         SetDefaultValuesInEntityConstructor = true;
-        SetMethodNameFormatString = "With{Name}";
-        AddMethodNameFormatString = "Add{Name}";
+        SetMethodNameFormatString = "With{$property.Name}";
+        AddMethodNameFormatString = "Add{$property.Name}";
         BuilderNamespaceFormatString = "{Namespace}.Builders";
         BuilderNameFormatString = "{Class.Name}Builder";
         BuildMethodName = "Build";
@@ -15,11 +15,11 @@ public partial class PipelineSettingsBuilder
         SetDefaultValuesMethodName = "SetDefaultValues";
         BuilderNewCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection";
         CollectionInitializationStatementFormatString = "{NullCheck.Source.Argument}foreach (var item in source.[SourceExpression]) {BuilderMemberName}.Add(item)";
-        CollectionCopyStatementFormatString = "foreach (var item in {NameCamelCsharpFriendlyName}) {InstancePrefix}{Name}.Add(item);";
+        CollectionCopyStatementFormatString = "foreach (var item in {NameCamelCsharpFriendlyName}) {InstancePrefix}{$property.Name}.Add(item);";
         NonCollectionInitializationStatementFormatString = "source.[SourceExpression]"; // note that we are not prefixing {NullCheck.Source.Argument}, because we can simply always copy the value, regardless if it's null :)
         BuilderExtensionsNamespaceFormatString = "{Namespace}.Builders.Extensions";
         BuilderExtensionsNameFormatString = "{Class.NameNoInterfacePrefix}BuilderExtensions";
-        BuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {NameCamelCsharpFriendlyName}) {InstancePrefix}{Name}.Add(item);";
+        BuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {NameCamelCsharpFriendlyName}) {InstancePrefix}{$property.Name}.Add(item);";
         EntityNamespaceFormatString = "{Namespace}";
         EntityNameFormatString = "{Class.Name}";
         ToBuilderFormatString = "ToBuilder";

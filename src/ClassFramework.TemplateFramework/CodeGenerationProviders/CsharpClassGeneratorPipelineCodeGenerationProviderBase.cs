@@ -58,8 +58,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool IsAbstract => false;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
     protected virtual bool AllowGenerationWithoutProperties => true;
-    protected virtual string SetMethodNameFormatString => "With{Name}";
-    protected virtual string AddMethodNameFormatString => "Add{Name}";
+    protected virtual string SetMethodNameFormatString => "With{$property.Name}";
+    protected virtual string AddMethodNameFormatString => "Add{$property.Name}";
     protected virtual string ToBuilderFormatString => "ToBuilder";
     protected virtual string ToTypedBuilderFormatString => "ToTypedBuilder";
     protected virtual string BuildMethodName => "Build";

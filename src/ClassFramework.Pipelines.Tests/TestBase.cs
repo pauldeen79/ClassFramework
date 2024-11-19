@@ -26,6 +26,7 @@ public abstract class TestBase : IDisposable
                     .AddParsers()
                     .AddClassFrameworkPipelines()
                     .AddCsharpExpressionDumper()
+                    .AddExpressionParser()
                     .BuildServiceProvider();
                 Scope = Provider.CreateScope();
                 _formattableStringParser = Scope.ServiceProvider.GetRequiredService<IFormattableStringParser>();
