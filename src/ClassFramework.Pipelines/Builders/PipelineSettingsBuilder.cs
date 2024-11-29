@@ -89,7 +89,7 @@ public partial class PipelineSettingsBuilder
             new AttributeBuilder().WithName(defaultValueAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(defaultValueAttribute.Value))
                 .Build()));
-        
+
         // Fallback as latest
         AttributeInitializers.Add(x =>
         {

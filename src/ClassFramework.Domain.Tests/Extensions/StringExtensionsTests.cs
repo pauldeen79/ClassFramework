@@ -461,7 +461,7 @@ public class StringExtensionsTests
     [InlineData("Custom.List<System.String>", "", "Custom.List<System.String>")]
     [InlineData("Custom.List<System.String>", "System.Collections.Generic.List", "System.Collections.Generic.List<System.String>")]
     [InlineData("System.String[]", "System.Collections.Generic.List", "System.Collections.Generic.List<System.String>")]
-    public void FixCollectionTypeName_Returns_Correct_Result(string typeName, string newCollectionTypeName,string expectedResult)
+    public void FixCollectionTypeName_Returns_Correct_Result(string typeName, string newCollectionTypeName, string expectedResult)
     {
         // Act
         var result = typeName.FixCollectionTypeName(newCollectionTypeName);
@@ -555,7 +555,7 @@ public class StringExtensionsTests
         // Assert
         actual.Should().Be(expected);
     }
-    
+
     [Theory]
     [InlineData("System.String", false, false, false, "System.String")]
     [InlineData("System.String", true, false, false, "System.String")]

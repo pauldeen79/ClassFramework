@@ -45,7 +45,7 @@ internal interface IPipelineSettings
     bool IsForAbstractBuilder { get; }
     [Required(AllowEmptyStrings = true)] string NameFormatString { get; }
     [Required(AllowEmptyStrings = true)] string NamespaceFormatString { get; }
-    [Required]IReadOnlyCollection<INamespaceMapping> NamespaceMappings { get; }
+    [Required] IReadOnlyCollection<INamespaceMapping> NamespaceMappings { get; }
     [Required(AllowEmptyStrings = true)] string BuilderNewCollectionTypeName { get; }
     [Required(AllowEmptyStrings = true)] string EntityNewCollectionTypeName { get; }
     [Required(AllowEmptyStrings = true)] string NonCollectionInitializationStatementFormatString { get; }
@@ -56,7 +56,7 @@ internal interface IPipelineSettings
     SubVisibility SetterVisibility { get; }
     [Required(AllowEmptyStrings = true)] string ToBuilderFormatString { get; }
     [Required(AllowEmptyStrings = true)] string ToTypedBuilderFormatString { get; }
-    [Required]IReadOnlyCollection<ITypenameMapping> TypenameMappings { get; }
+    [Required] IReadOnlyCollection<ITypenameMapping> TypenameMappings { get; }
     bool UseBaseClassFromSourceModel { get; }
     bool UseExceptionThrowIfNull { get; }
     [DefaultValue(true)] bool UsePatternMatchingForNullChecks { get; }
