@@ -9,7 +9,7 @@ public partial class PipelineSettingsBuilder
         SetMethodNameFormatString = "With{$property.Name}";
         AddMethodNameFormatString = "Add{$property.Name}";
         BuilderNamespaceFormatString = "{Namespace}.Builders";
-        BuilderNameFormatString = "{Class.Name}Builder";
+        BuilderNameFormatString = "{$class.Name}Builder";
         BuildMethodName = "Build";
         BuildTypedMethodName = "BuildTyped";
         SetDefaultValuesMethodName = "SetDefaultValues";
@@ -21,12 +21,12 @@ public partial class PipelineSettingsBuilder
         BuilderExtensionsNameFormatString = "{Class.NameNoInterfacePrefix}BuilderExtensions";
         BuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {NameCamelCsharpFriendlyName}) {InstancePrefix}{$property.Name}.Add(item);";
         EntityNamespaceFormatString = "{Namespace}";
-        EntityNameFormatString = "{Class.Name}";
+        EntityNameFormatString = "{$class.Name}";
         ToBuilderFormatString = "ToBuilder";
         ToTypedBuilderFormatString = "ToTypedBuilder";
         EntityNewCollectionTypeName = typeof(List<>).WithoutGenerics();
         NamespaceFormatString = "{Namespace}";
-        NameFormatString = "{Class.Name}";
+        NameFormatString = "{$class.Name}";
         UseBaseClassFromSourceModel = true;
         CreateAsPartial = true;
         CreateConstructors = true;
