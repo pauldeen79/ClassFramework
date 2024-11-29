@@ -403,7 +403,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(builderNameFormatString: "My{Class.Name}Builder");
+            var settings = CreateSettingsForBuilder(builderNameFormatString: "My{$class.Name}Builder");
             var context = CreateContext(sourceModel, settings);
 
             // Act
