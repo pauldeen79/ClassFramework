@@ -13,7 +13,7 @@ public partial class PipelineSettingsBuilder
         BuildMethodName = "Build";
         BuildTypedMethodName = "BuildTyped";
         SetDefaultValuesMethodName = "SetDefaultValues";
-        BuilderNewCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection";
+        BuilderNewCollectionTypeName = typeof(IReadOnlyCollection<>).WithoutGenerics();
         CollectionInitializationStatementFormatString = "{NullCheck.Source.Argument}foreach (var item in source.[SourceExpression]) {BuilderMemberName}.Add(item)";
         CollectionCopyStatementFormatString = "foreach (var item in {NameCamelCsharpFriendlyName}) {InstancePrefix}{$property.Name}.Add(item);";
         NonCollectionInitializationStatementFormatString = "source.[SourceExpression]"; // note that we are not prefixing {NullCheck.Source.Argument}, because we can simply always copy the value, regardless if it's null :)
@@ -24,7 +24,7 @@ public partial class PipelineSettingsBuilder
         EntityNameFormatString = "{Class.Name}";
         ToBuilderFormatString = "ToBuilder";
         ToTypedBuilderFormatString = "ToTypedBuilder";
-        EntityNewCollectionTypeName = "System.Collections.Generic.List";
+        EntityNewCollectionTypeName = typeof(List<>).WithoutGenerics();
         NamespaceFormatString = "{Namespace}";
         NameFormatString = "{Class.Name}";
         UseBaseClassFromSourceModel = true;
@@ -107,13 +107,7 @@ public partial class PipelineSettingsBuilder
     }
 
     private static object? GetValue(System.Attribute sourceAttribute, string name)
-    {
-        var prop = sourceAttribute.GetType().GetProperty(name.ToPascalCase(CultureInfo.InvariantCulture));
-
-        return prop is not null
-            ? prop.GetValue(sourceAttribute)
-            : null;
-    }
+        => sourceAttribute.GetType().GetProperty(name.ToPascalCase(CultureInfo.InvariantCulture))?.GetValue(sourceAttribute);
 
     private static ConstructorInfo? GetConstructor(Type type)
     {
