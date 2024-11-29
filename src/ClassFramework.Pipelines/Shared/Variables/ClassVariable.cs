@@ -13,8 +13,6 @@ public class ClassVariable : IVariable
         => context switch
         {
             PipelineContext<BuilderContext> builderContext => Result.Success(valueDelegate(new ClassWrapper(builderContext.Request.SourceModel))),
-            PipelineContext<BuilderExtensionContext> builderExtensionContext => Result.Success(valueDelegate(new ClassWrapper(builderExtensionContext.Request.SourceModel))),
-            PipelineContext<EntityContext> entityContext => Result.Success(valueDelegate(new ClassWrapper(entityContext.Request.SourceModel))),
             PipelineContext<InterfaceContext> interfaceContext => Result.Success(valueDelegate(new ClassWrapper(interfaceContext.Request.SourceModel))),
             PipelineContext<Reflection.ReflectionContext> reflectionContext => Result.Success(valueDelegate(new ClassWrapper(reflectionContext.Request.SourceModel))),
             ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContextBuilder => Result.Success(valueDelegate(new ClassWrapper(parentChildContextBuilder.ParentContext.Request.SourceModel))),
