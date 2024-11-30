@@ -36,7 +36,7 @@ public class ReflectionContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false);
-            var sut = new BuilderContext(CreateModel(), settings.Build(), CultureInfo.InvariantCulture);
+            var sut = new BuilderContext(CreateClass(), settings.Build(), CultureInfo.InvariantCulture);
 
             // Act & Assert
             sut.Invoking(x => x.MapTypeName(typeName: null!))

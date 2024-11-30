@@ -55,7 +55,7 @@ public abstract class TestBase : IDisposable
         return parser;
     }
 
-    protected static Class CreateModel(string baseClass = "")
+    protected static Class CreateClass(string baseClass = "")
         => new ClassBuilder()
             .WithName("SomeClass")
             .WithNamespace("SomeNamespace")
@@ -65,7 +65,7 @@ public abstract class TestBase : IDisposable
             .AddProperties(new PropertyBuilder().WithName("Property3").WithType(typeof(List<int>)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
             .BuildTyped();
 
-    protected static Domain.Types.Interface CreateInterfaceModel(bool addProperties)
+    protected static Domain.Types.Interface CreateInterface(bool addProperties)
         => new InterfaceBuilder()
             .WithName("IMyClass")
             .WithNamespace("MyNamespace")
@@ -80,7 +80,7 @@ public abstract class TestBase : IDisposable
             .AddMethods(new MethodBuilder().WithName("MyMethod"))
             .BuildTyped();
 
-    protected static Class CreateGenericModel(bool addProperties)
+    protected static Class CreateGenericClass(bool addProperties)
         => new ClassBuilder()
             .WithName("MyClass")
             .WithNamespace("MyNamespace")
@@ -96,7 +96,7 @@ public abstract class TestBase : IDisposable
             )
             .BuildTyped();
 
-    protected static Class CreateModelWithCustomTypeProperties(IEquatableItemType itemType = IEquatableItemType.Properties)
+    protected static Class CreateClassWithCustomTypeProperties(IEquatableItemType itemType = IEquatableItemType.Properties)
     {
         var builder = new ClassBuilder()
             .WithName("MyClass")
@@ -131,7 +131,7 @@ public abstract class TestBase : IDisposable
         return builder.BuildTyped();
     }
 
-    protected static Domain.Types.Interface CreateInterfaceModelWithCustomTypeProperties()
+    protected static Domain.Types.Interface CreateInterfaceWithCustomTypeProperties()
         => new InterfaceBuilder()
             .WithName("IMyClass")
             .WithNamespace("MySourceNamespace")
@@ -145,12 +145,15 @@ public abstract class TestBase : IDisposable
             .AddProperties(new PropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.IMyClass")).WithIsNullable())
             .BuildTyped();
 
-    protected static Class CreateModelWithPropertyThatHasAReservedName(Type propertyType)
+    protected static Class CreateClassWithPropertyThatHasAReservedName(Type propertyType)
         => new ClassBuilder()
             .WithName("SomeClass")
             .WithNamespace("SomeNamespace")
             .AddProperties(new PropertyBuilder().WithName("Delegate").WithType(propertyType))
             .BuildTyped();
+
+    protected static Property CreateProperty()
+        => new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
 
     protected static PipelineSettingsBuilder CreateSettingsForBuilder(
         bool enableBuilderInheritance = false,
@@ -170,7 +173,7 @@ public abstract class TestBase : IDisposable
         IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
         string setMethodNameFormatString = "With{$property.Name}",
         string addMethodNameFormatString = "Add{$property.Name}",
-        string builderNamespaceFormatString = "{Namespace}.Builders",
+        string builderNamespaceFormatString = "{$class.Namespace}.Builders",
         string builderNameFormatString = "{$class.Name}Builder",
         string buildMethodName = "Build",
         string buildTypedMethodName = "BuildTyped",
@@ -229,7 +232,7 @@ public abstract class TestBase : IDisposable
         bool allowGenerationWithoutProperties = false,
         bool isAbstract = false,
         Class? baseClass = null,
-        string entityNamespaceFormatString = "{Namespace}",
+        string entityNamespaceFormatString = "{$class.Namespace}",
         string entityNameFormatString = "{$class.Name}",
         string toBuilderFormatString = "ToBuilder",
         string toTypedBuilderFormatString = "ToTypedBuilder",
@@ -289,7 +292,7 @@ public abstract class TestBase : IDisposable
         bool allowGenerationWithoutProperties = false,
         bool isAbstract = false,
         Class? baseClass = null,
-        string entityNamespaceFormatString = "{Namespace}",
+        string entityNamespaceFormatString = "{$class.Namespace}",
         string entityNameFormatString = "{$class.Name}",
         string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
         bool createRecord = false,
@@ -319,7 +322,7 @@ public abstract class TestBase : IDisposable
         bool createConstructors = true,
         bool enableEntityInheritance = false,
         bool isAbstract = false,
-        string namespaceFormatString = "{Namespace}",
+        string namespaceFormatString = "{$class.Namespace}",
         string nameFormatString = "{$class.Name}",
         Class? baseClass = null,
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
@@ -351,7 +354,7 @@ public abstract class TestBase : IDisposable
         bool allowGenerationWithoutProperties = false,
         bool enableEntityInheritance = false,
         bool isAbstract = false,
-        string namespaceFormatString = "{Namespace}",
+        string namespaceFormatString = "{$class.Namespace}",
         string nameFormatString = "{$class.Name}",
         string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
         Class? baseClass = null,

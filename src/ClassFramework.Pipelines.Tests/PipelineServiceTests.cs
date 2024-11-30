@@ -13,7 +13,7 @@ public class PipelineServiceTests : TestBase<PipelineService>
             // thus, we are creating an invalid result 8-)
             pipeline.Process(Arg.Any<BuilderContext>(), Arg.Any<CancellationToken>()).Returns(x => Result.Success());
             var sut = CreateSut();
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var settings = CreateSettingsForBuilder().Build();
             var context = new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture);
 
@@ -31,7 +31,7 @@ public class PipelineServiceTests : TestBase<PipelineService>
             var pipeline = Fixture.Freeze<IPipeline<BuilderContext>>();
             pipeline.Process(Arg.Any<BuilderContext>(), Arg.Any<CancellationToken>()).Returns(x => Result.Error("Kaboom!"));
             var sut = CreateSut();
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var settings = CreateSettingsForBuilder().Build();
             var context = new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture);
 
@@ -55,7 +55,7 @@ public class PipelineServiceTests : TestBase<PipelineService>
                 return Result.Success("Kaboom!");
             });
             var sut = CreateSut();
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var settings = CreateSettingsForBuilder().Build();
             var context = new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture);
 

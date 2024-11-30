@@ -19,7 +19,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         public async Task Does_Not_Add_Method_When_SetMethodNameFormatString_Is_Empty()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setMethodNameFormatString: string.Empty);
@@ -37,7 +37,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         public async Task Adds_Method_When_SetMethodNameFormatString_Is_Not_Empty()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{$property.Name}");
@@ -68,7 +68,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         public async Task Adds_Method_When_SetMethodNameFormatString_Is_Not_Empty_CsharpFriendlyName()
         {
             // Arrange
-            var sourceModel = CreateModelWithPropertyThatHasAReservedName(typeof(int));
+            var sourceModel = CreateClassWithPropertyThatHasAReservedName(typeof(int));
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{$property.Name}");
@@ -97,7 +97,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         public async Task Adds_Method_With_Default_ArgumentNullChecks_When_SetMethodNameFormatString_Is_Not_Empty()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -131,7 +131,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         public async Task Adds_Method_Without_ArgumentNullChecks_When_Property_Has_TypeName_T()
         {
             // Arrange
-            var sourceModel = CreateModel()
+            var sourceModel = CreateClass()
                 .ToTypedBuilder()
                 .With(x => x.Properties.First(y => y.Name == "Property2").TypeName = "T")
                 .AddGenericTypeArguments("T")
@@ -168,7 +168,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         public async Task Adds_Method_Without_ArgumentNullChecks_When_Property_Has_TypeName_Func_T()
         {
             // Arrange
-            var sourceModel = CreateModel()
+            var sourceModel = CreateClass()
                 .ToTypedBuilder()
                 .With(x => x.Properties.First(y => y.Name == "Property2").TypeName = "System.Func<T>")
                 .AddGenericTypeArguments("T")
@@ -206,7 +206,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         public async Task Adds_Method_With_Custom_ArgumentNullChecks_When_SetMethodNameFormatString_Is_Not_Empty()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -252,7 +252,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         public async Task Adds_Method_For_BuilderForAbstractEntity()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -285,7 +285,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         public async Task Uses_CustomBuilderArgumentType_When_Present()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{$property.Name}", typenameMappings:
@@ -329,7 +329,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             // Note that this doesn't seem logical for this unit test, but in code generation the Literal is needed for correct formatting of literal values.
             // If you would use a string without wrapping it in a Literal, then it will get formatted to "customDefaultValue" which may not be what you want.
             // Or, in case you just want a default boolean value, you might also use true and false directly, without wrapping it in a Literal...
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{$property.Name}", typenameMappings:
@@ -363,7 +363,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         public async Task Uses_CustomBuilderWithExpression_When_Present()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{$property.Name}", typenameMappings:
@@ -400,7 +400,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         public async Task Uses_Correct_BuilderNameFormatString()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(builderNameFormatString: "My{$class.Name}Builder");
@@ -419,7 +419,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         public async Task Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(typenameMappings:

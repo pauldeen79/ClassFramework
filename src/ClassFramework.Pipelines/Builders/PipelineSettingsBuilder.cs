@@ -8,7 +8,7 @@ public partial class PipelineSettingsBuilder
         SetDefaultValuesInEntityConstructor = true;
         SetMethodNameFormatString = "With{$property.Name}";
         AddMethodNameFormatString = "Add{$property.Name}";
-        BuilderNamespaceFormatString = "{Namespace}.Builders";
+        BuilderNamespaceFormatString = "{$class.Namespace}.Builders";
         BuilderNameFormatString = "{$class.Name}Builder";
         BuildMethodName = "Build";
         BuildTypedMethodName = "BuildTyped";
@@ -17,15 +17,15 @@ public partial class PipelineSettingsBuilder
         CollectionInitializationStatementFormatString = "{NullCheck.Source.Argument}foreach (var item in source.[SourceExpression]) {BuilderMemberName}.Add(item)";
         CollectionCopyStatementFormatString = "foreach (var item in {NameCamelCsharpFriendlyName}) {InstancePrefix}{$property.Name}.Add(item);";
         NonCollectionInitializationStatementFormatString = "source.[SourceExpression]"; // note that we are not prefixing {NullCheck.Source.Argument}, because we can simply always copy the value, regardless if it's null :)
-        BuilderExtensionsNamespaceFormatString = "{Namespace}.Builders.Extensions";
+        BuilderExtensionsNamespaceFormatString = "{$class.Namespace}.Builders.Extensions";
         BuilderExtensionsNameFormatString = "{Class.NameNoInterfacePrefix}BuilderExtensions";
         BuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {NameCamelCsharpFriendlyName}) {InstancePrefix}{$property.Name}.Add(item);";
-        EntityNamespaceFormatString = "{Namespace}";
+        EntityNamespaceFormatString = "{$class.Namespace}";
         EntityNameFormatString = "{$class.Name}";
         ToBuilderFormatString = "ToBuilder";
         ToTypedBuilderFormatString = "ToTypedBuilder";
         EntityNewCollectionTypeName = typeof(List<>).WithoutGenerics();
-        NamespaceFormatString = "{Namespace}";
+        NamespaceFormatString = "{$class.Namespace}";
         NameFormatString = "{$class.Name}";
         UseBaseClassFromSourceModel = true;
         CreateAsPartial = true;

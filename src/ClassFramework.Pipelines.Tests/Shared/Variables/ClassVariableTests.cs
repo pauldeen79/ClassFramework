@@ -3,7 +3,7 @@
 public class ClassVariableTests : TestBase<ClassVariable>
 {
     [Fact]
-    public void Can_Get_ClassName_From_PropertyContext()
+    public void Can_Get_ClassName_From_BuilderContext()
     {
         // Arrange
         var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
@@ -15,6 +15,98 @@ public class ClassVariableTests : TestBase<ClassVariable>
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be(context.Request.SourceModel.Name);
+    }
+
+    [Fact]
+    public void Can_Get_ClassName_From_BuilderExtensionContext()
+    {
+        // Arrange
+        var context = new PipelineContext<BuilderExtensionContext>(new BuilderExtensionContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("class.Name", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.Request.SourceModel.Name);
+    }
+
+    [Fact]
+    public void Can_Get_ClassName_From_EntityContext()
+    {
+        // Arrange
+        var context = new PipelineContext<EntityContext>(new EntityContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("class.Name", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.Request.SourceModel.Name);
+    }
+
+    [Fact]
+    public void Can_Get_ClassName_From_InterfaceContext()
+    {
+        // Arrange
+        var context = new PipelineContext<InterfaceContext>(new InterfaceContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("class.Name", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.Request.SourceModel.Name);
+    }
+
+    [Fact]
+    public void Can_Get_ClassName_From_ReflectionContext()
+    {
+        // Arrange
+        var context = new PipelineContext<ReflectionContext>(new ReflectionContext(GetType(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("class.Name", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(GetType().Name);
+    }
+
+    [Fact]
+    public void Can_Get_PropertyName_From_ParentChildContext_Of_BuilderContext()
+    {
+        // Arrange
+        var settings = new PipelineSettingsBuilder().Build();
+        var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(new ClassBuilder().WithName("MyClass").Build(), settings, CultureInfo.InvariantCulture)), CreateProperty(), settings);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("class.Name", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.ParentContext.Request.SourceModel.Name);
+    }
+
+    [Fact]
+    public void Can_Get_PropertyName_From_ParentChildContext_Of_BuilderExtensionContext()
+    {
+        // Arrange
+        var settings = new PipelineSettingsBuilder().Build();
+        var context = new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(new PipelineContext<BuilderExtensionContext>(new BuilderExtensionContext(new ClassBuilder().WithName("MyClass").Build(), settings, CultureInfo.InvariantCulture)), CreateProperty(), settings);
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("class.Name", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.ParentContext.Request.SourceModel.Name);
     }
 
     [Fact]
@@ -60,7 +152,4 @@ public class ClassVariableTests : TestBase<ClassVariable>
         // Assert
         result.Status.Should().Be(ResultStatus.Continue);
     }
-
-    private static TypeBase CreateClass()
-        => new ClassBuilder().WithName("MyClass").Build();
 }

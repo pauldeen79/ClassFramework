@@ -19,7 +19,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         public async Task Returns_Continue_When_ImplementIEquatable_Is_False()
         {
             // Arrange
-            var sourceModel = CreateModelWithCustomTypeProperties();
+            var sourceModel = CreateClassWithCustomTypeProperties();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: false);
@@ -37,7 +37,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         public async Task Returns_Error_When_Parsing_NameFormatString_Is_Not_Successful()
         {
             // Arrange
-            var sourceModel = CreateModelWithCustomTypeProperties();
+            var sourceModel = CreateClassWithCustomTypeProperties();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "{Error}", implementIEquatable: true);
@@ -55,7 +55,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         public async Task Returns_Success_When_Parsing_NameFormatString_Is_Succesful()
         {
             // Arrange
-            var sourceModel = CreateModelWithCustomTypeProperties();
+            var sourceModel = CreateClassWithCustomTypeProperties();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true);
@@ -73,7 +73,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         public async Task Generates_Correct_GetHashCode_Method_For_Both_Nullable_And_Non_Nullable_Properties()
         {
             // Arrange
-            var sourceModel = CreateModelWithCustomTypeProperties(itemType: IEquatableItemType.Properties);
+            var sourceModel = CreateClassWithCustomTypeProperties(itemType: IEquatableItemType.Properties);
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true, iEquatableItemType: IEquatableItemType.Properties);
@@ -105,7 +105,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         public async Task Generates_Correct_GetHashCode_Method_For_Both_Nullable_And_Non_Nullable_Fields()
         {
             // Arrange
-            var sourceModel = CreateModelWithCustomTypeProperties(itemType: IEquatableItemType.Fields);
+            var sourceModel = CreateClassWithCustomTypeProperties(itemType: IEquatableItemType.Fields);
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true, iEquatableItemType: IEquatableItemType.Fields);

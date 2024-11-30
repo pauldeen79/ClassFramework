@@ -19,7 +19,7 @@ public class ObservableComponentTests : TestBase<Pipelines.Entity.Components.Obs
         public async Task Does_Not_Add_Interface_And_Event_When_CreateAsObservable_Is_False()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(createAsObservable: false);
@@ -38,7 +38,7 @@ public class ObservableComponentTests : TestBase<Pipelines.Entity.Components.Obs
         public async Task Adds_Interface_And_Event_When_CreateAsObservable_Is_True()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(createAsObservable: true);

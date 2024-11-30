@@ -19,7 +19,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
         public async Task Does_Not_Set_BaseClass_For_EntityInheritance_When_SourceModel_And_EntitySettings_Do_Not_Have_A_BaseClass()
         {
             // Arrange
-            var sourceModel = CreateModel(baseClass: string.Empty);
+            var sourceModel = CreateClass(baseClass: string.Empty);
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(
@@ -41,7 +41,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
         public async Task Sets_BaseClass_For_EntityInheritance_From_EntitySettings_When_Specified(string sourceModelBaseClass)
         {
             // Arrange
-            var sourceModel = CreateModel(baseClass: sourceModelBaseClass);
+            var sourceModel = CreateClass(baseClass: sourceModelBaseClass);
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(
@@ -61,7 +61,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
         public async Task Sets_BaseClass_For_EntityInheritance_From_Source_When_Specified()
         {
             // Arrange
-            var sourceModel = CreateModel(baseClass: "MyBaseNamespace.MyBaseClass");
+            var sourceModel = CreateClass(baseClass: "MyBaseNamespace.MyBaseClass");
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(

@@ -6,10 +6,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
     {
         private BuilderExtensionContext CreateContext(bool addProperties = true)
             => new(
-                CreateGenericModel(addProperties),
+                CreateGenericClass(addProperties),
                 CreateSettingsForBuilder
                 (
-                    builderNamespaceFormatString: "{Namespace}.Builders",
+                    builderNamespaceFormatString: "{$class.Namespace}.Builders",
                     allowGenerationWithoutProperties: false,
                     copyAttributes: true
                 ).Build(),

@@ -19,7 +19,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         public async Task Does_Not_Add_Method_When_AddMethodNameFormatString_Is_Empty()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addMethodNameFormatString: string.Empty);
@@ -37,7 +37,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         public async Task Adds_Methods_When_AddMethodNameFormatString_Is_Not_Empty()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{$property.Name}");
@@ -67,7 +67,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         public async Task Adds_Methods_With_CustomBuilderArgumentType_When_Present()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{$property.Name}", typenameMappings:
@@ -103,7 +103,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         public async Task Adds_Methods_With_ArgumentNullChecks()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -136,7 +136,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         public async Task Adds_Methods_With_ArgumentNullChecks_CsharpFriendlyName()
         {
             // Arrange
-            var sourceModel = CreateModelWithPropertyThatHasAReservedName(typeof(List<int>));
+            var sourceModel = CreateClassWithPropertyThatHasAReservedName(typeof(List<int>));
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -170,7 +170,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         public async Task Adds_Method_For_BuilderForAbstractEntity()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -204,7 +204,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         public async Task Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Succesful(bool addNullChecks, ArgumentValidationType validateArguments)
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: addNullChecks, validateArguments: validateArguments, typenameMappings:
@@ -228,7 +228,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         public async Task Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(builderNameFormatString: "{Error}");
@@ -246,7 +246,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         public async Task Returns_Error_When_Parsing_AddMethodNameFormatString_Is_Not_Succesful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addMethodNameFormatString: "{Error}");
@@ -264,7 +264,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         public async Task Returns_Error_When_Parsing_CustomBuilderArgumentNullCheckExpression_Is_Not_Succesful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: true, typenameMappings:
@@ -288,7 +288,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         public async Task Returns_Error_When_Parsing_CustomBuilderArgumentNullCheckExpression_Is_Not_Succesful_Using_Enumerable_CollectionType()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: true, newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics(), typenameMappings:

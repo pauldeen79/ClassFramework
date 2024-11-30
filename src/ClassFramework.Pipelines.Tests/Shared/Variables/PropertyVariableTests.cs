@@ -92,7 +92,4 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         // Assert
         result.Status.Should().Be(ResultStatus.Continue);
     }
-
-    private static Property CreateProperty()
-        => new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
 }
