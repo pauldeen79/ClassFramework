@@ -41,5 +41,6 @@ global using CrossCutting.Common.Results;
 global using CrossCutting.ProcessingPipeline;
 global using CrossCutting.Utilities.Parsers;
 global using CrossCutting.Utilities.Parsers.Contracts;
+global using CrossCutting.Utilities.Parsers.Extensions;
 global using CsharpExpressionDumper.Abstractions;
 global using Microsoft.Extensions.DependencyInjection;

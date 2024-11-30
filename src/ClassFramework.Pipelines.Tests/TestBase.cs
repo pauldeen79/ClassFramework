@@ -44,10 +44,10 @@ public abstract class TestBase : IDisposable
 
         // Pass through real IFormattableStringParser implementation, with all placeholder processors and stuff in our ClassFramework.Pipelines project.
         // One exception: If we supply "{Error}" as placeholder, then simply return an error with the error message "Kaboom".
-        parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+        parser.Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>())
               .Returns(x => x.ArgAt<string>(0) == "{Error}"
                 ? Result.Error<FormattableStringParserResult>("Kaboom")
-                : FormattableStringParser.Parse(x.ArgAt<string>(0), x.ArgAt<IFormatProvider>(1), x.ArgAt<object?>(2))
+                : FormattableStringParser.Parse(x.ArgAt<string>(0), x.ArgAt<FormattableStringParserSettings>(1), x.ArgAt<object?>(2))
                     .Transform(x => x.ErrorMessage == "Unknown placeholder in value: Error"
                         ? Result.Error<FormattableStringParserResult>("Kaboom")
                         : x));

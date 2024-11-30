@@ -53,7 +53,7 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
         {
             // Arrange
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            formattableStringParser.Parse("MyEntityNamespaceFormatString", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace"));
+            formattableStringParser.Parse("MyEntityNamespaceFormatString", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace"));
             var sut = CreateSut();
             var context = new PipelineContext<EntityContext>(new EntityContext(CreateModel().BuildTyped(), new PipelineSettingsBuilder().WithEntityNamespaceFormatString("MyEntityNamespaceFormatString").Build(), CultureInfo.InvariantCulture));
 
