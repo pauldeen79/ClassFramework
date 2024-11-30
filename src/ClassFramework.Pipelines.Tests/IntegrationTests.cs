@@ -6,7 +6,7 @@ public class IntegrationTests : IntegrationTestBase<IFormattableStringParser>
     public void Can_Use_FormattableStringParser_With_PlaceholderProcessors_To_Get_Formatted_String()
     {
         // Arrange
-        var formatString = "foreach (var item in {NameCamelCsharpFriendlyName}) {Name}.Add(item);";
+        var formatString = "foreach (var item in {NameCamelCsharpFriendlyName}) {$property.Name}.Add(item);";
         var sut = CreateSut();
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
         var pipelineSettings = new PipelineSettingsBuilder().Build();

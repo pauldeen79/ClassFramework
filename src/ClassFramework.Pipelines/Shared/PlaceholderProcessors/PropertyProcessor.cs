@@ -19,12 +19,7 @@ public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) :
 
         return value switch
         {
-            nameof(Property.Name) => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name),
-            $"{nameof(Property.Name)}Lower" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToLower(formatProvider.ToCultureInfo())),
-            $"{nameof(Property.Name)}Upper" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToUpper(formatProvider.ToCultureInfo())),
-            $"{nameof(Property.Name)}Pascal" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo())),
             $"{nameof(Property.Name)}PascalCsharpFriendlyName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
-            $"{nameof(Property.Name)}Camel" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToCamelCase(formatProvider.ToCultureInfo())),
             $"{nameof(Property.Name)}CamelCsharpFriendlyName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToCamelCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
             "BuilderMemberName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.GetBuilderMemberName(propertyContext.Settings, propertyContext.FormatProvider.ToCultureInfo())),
             "EntityMemberName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.GetEntityMemberName(propertyContext.Settings.AddBackingFields || propertyContext.Settings.CreateAsObservable, propertyContext.FormatProvider.ToCultureInfo())),
