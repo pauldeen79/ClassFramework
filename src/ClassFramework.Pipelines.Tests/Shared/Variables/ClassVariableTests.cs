@@ -78,7 +78,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
     }
 
     [Fact]
-    public void Can_Get_PropertyName_From_ParentChildContext_Of_BuilderContext()
+    public void Can_Get_ClassName_From_ParentChildContext_Of_BuilderContext()
     {
         // Arrange
         var settings = new PipelineSettingsBuilder().Build();
@@ -94,7 +94,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
     }
 
     [Fact]
-    public void Can_Get_PropertyName_From_ParentChildContext_Of_BuilderExtensionContext()
+    public void Can_Get_ClassName_From_ParentChildContext_Of_BuilderExtensionContext()
     {
         // Arrange
         var settings = new PipelineSettingsBuilder().Build();
@@ -107,6 +107,21 @@ public class ClassVariableTests : TestBase<ClassVariable>
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
         result.Value.Should().Be(context.ParentContext.Request.SourceModel.Name);
+    }
+
+    [Fact]
+    public void Can_Get_ClassFullName_From_BuilderContext()
+    {
+        // Arrange
+        var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("class.FullName", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.Request.SourceModel.GetFullName());
     }
 
     [Fact]
