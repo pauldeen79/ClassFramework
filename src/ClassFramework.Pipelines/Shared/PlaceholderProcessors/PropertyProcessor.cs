@@ -21,8 +21,6 @@ public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) :
         {
             $"{nameof(Property.Name)}PascalCsharpFriendlyName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
             $"{nameof(Property.Name)}CamelCsharpFriendlyName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.Name.ToCamelCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
-            "BuilderMemberName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.GetBuilderMemberName(propertyContext.Settings, propertyContext.FormatProvider.ToCultureInfo())),
-            "EntityMemberName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.GetEntityMemberName(propertyContext.Settings.AddBackingFields || propertyContext.Settings.CreateAsObservable, propertyContext.FormatProvider.ToCultureInfo())),
             "InitializationExpression" => Result.Success<FormattableStringParserResult>(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo(), propertyContext.Settings, propertyContext.NullCheck)),
             "CollectionTypeName" => Result.Success<FormattableStringParserResult>(propertyContext.Settings.CollectionTypeName),
             nameof(Property.TypeName) => Result.Success<FormattableStringParserResult>(typeName),

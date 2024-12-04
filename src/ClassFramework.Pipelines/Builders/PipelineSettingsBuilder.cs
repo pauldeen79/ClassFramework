@@ -14,7 +14,7 @@ public partial class PipelineSettingsBuilder
         BuildTypedMethodName = "BuildTyped";
         SetDefaultValuesMethodName = "SetDefaultValues";
         BuilderNewCollectionTypeName = typeof(IReadOnlyCollection<>).WithoutGenerics();
-        CollectionInitializationStatementFormatString = "{NullCheck.Source.Argument}foreach (var item in source.[SourceExpression]) {BuilderMemberName}.Add(item)";
+        CollectionInitializationStatementFormatString = "{NullCheck.Source.Argument}foreach (var item in source.[SourceExpression]) {$property.builderMemberName}.Add(item)";
         CollectionCopyStatementFormatString = "foreach (var item in {NameCamelCsharpFriendlyName}) {$instancePrefix}{$property.Name}.Add(item);";
         NonCollectionInitializationStatementFormatString = "source.[SourceExpression]"; // note that we are not prefixing {NullCheck.Source.Argument}, because we can simply always copy the value, regardless if it's null :)
         BuilderExtensionsNamespaceFormatString = "{$class.Namespace}.Builders.Extensions";
