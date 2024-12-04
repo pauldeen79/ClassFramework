@@ -125,6 +125,21 @@ public class ClassVariableTests : TestBase<ClassVariable>
     }
 
     [Fact]
+    public void Can_Get_ClassFullName_From_ReflectionContext()
+    {
+        // Arrange
+        var context = new PipelineContext<ReflectionContext>(new ReflectionContext(GetType(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("class.FullName", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(GetType().FullName);
+    }
+
+    [Fact]
     public void Supplying_Unknown_Context_Type_Gives_Invalid_Result()
     {
         // Arrange
