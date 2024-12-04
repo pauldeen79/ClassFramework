@@ -21,7 +21,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         public async Task Adds_Default_Constructor_For_Abstract_Builder(bool hasBaseClass, bool expectedProtected, bool expectedCodeStatements)
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -61,7 +61,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         public async Task Adds_Default_Constructor_For_Non_Abstract_Builder()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -93,7 +93,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         public async Task Adds_Default_Constructor_For_Non_Abstract_Builder_With_Backing_Fields()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -127,7 +127,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         public async Task Adds_Default_Constructor_For_Non_Abstract_Builder_With_CollectionType_Enumerable()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -160,7 +160,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         public async Task Adds_Default_Constructor_For_Non_Abstract_Builder_With_BaseClass()
         {
             // Arrange
-            var sourceModel = CreateModel("MyBaseClass");
+            var sourceModel = CreateClass("MyBaseClass");
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -192,7 +192,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         public async Task Adds_Default_Constructor_Without_DefaultValue_Initialization_When_SetDefaultValues_Is_Set_To_False()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -223,7 +223,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         public async Task Adds_SetDefaultValues_Partial_Method_When_SetDefaultValues_Is_Set_To_True()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setDefaultValues: true);
@@ -245,7 +245,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         public async Task Does_Not_Add_SetDefaultValues_Partial_Method_When_SetDefaultValues_Is_Set_To_False()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setDefaultValues: false);
@@ -263,7 +263,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         public async Task Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Successful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -291,7 +291,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         public async Task Returns_Error_When_Parsing_DefaultValueStatement_Is_Not_Successful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(

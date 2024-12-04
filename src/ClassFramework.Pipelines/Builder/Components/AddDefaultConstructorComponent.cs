@@ -106,7 +106,7 @@ public class AddDefaultConstructorComponent(IFormattableStringParser formattable
     private Result<FormattableStringParserResult> GenerateDefaultValueStatement(Property property, PipelineContext<BuilderContext> context)
         => _formattableStringParser.Parse
         (
-            "{BuilderMemberName} = {DefaultValue};",
+            "{$property.builderMemberName} = {DefaultValue};",
             context.Request.FormatProvider,
             new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
         );

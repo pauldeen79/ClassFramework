@@ -19,7 +19,7 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components
         public async Task Updates_IsAbstract_To_True_When_SourceModel_Is_Abstract()
         {
             // Arrange
-            var sourceModel = CreateModel(baseClass: string.Empty);
+            var sourceModel = CreateClass(baseClass: string.Empty);
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(
                 enableEntityInheritance: true,
@@ -39,7 +39,7 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components
         public async Task Updates_IsAbstract_To_False_When_SourceModel_Is_Not_Abstract()
         {
             // Arrange
-            var sourceModel = CreateModel(baseClass: string.Empty);
+            var sourceModel = CreateClass(baseClass: string.Empty);
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(
                 enableEntityInheritance: true,

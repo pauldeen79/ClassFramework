@@ -19,7 +19,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         public async Task Sets_BaseClass_For_BuilderInheritance_And_Not_For_Abstract_Builder_No_BaseClass()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -40,7 +40,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         public async Task Sets_BaseClass_For_BuilderInheritance_And_Not_For_Abstract_Builder_With_BaseClass_And_Abstract()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -62,7 +62,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         public async Task Sets_BaseClass_For_BuilderInheritance_And_Not_For_Abstract_Builder_With_BaseClass_And_Not_Abstract_No_Builders_Namespace()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -84,7 +84,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         public async Task Sets_BaseClass_For_BuilderInheritance_And_Not_For_Abstract_Builder_With_BaseClass_And_Not_Abstract_Builders_Namespace()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -107,7 +107,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         public async Task Sets_BaseClass_For_BuilderInheritance_For_Abstract_Builder_With_BaseClass()
         {
             // Arrange
-            var sourceModel = CreateModel("MyBaseClass");
+            var sourceModel = CreateClass("MyBaseClass");
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -127,7 +127,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         public async Task Sets_BaseClass_For_No_BuilderInheritance_For_Abstract_Builder_With_BaseClass()
         {
             // Arrange
-            var sourceModel = CreateModel("MyBaseClass");
+            var sourceModel = CreateClass("MyBaseClass");
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -147,7 +147,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         public async Task Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(

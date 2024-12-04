@@ -19,7 +19,7 @@ public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.Ad
         public async Task Adds_Generics_When_Available()
         {
             // Arrange
-            var sourceModel = CreateGenericModel(addProperties: false);
+            var sourceModel = CreateGenericClass(addProperties: false);
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));

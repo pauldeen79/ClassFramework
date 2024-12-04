@@ -153,7 +153,7 @@ public class AddCopyConstructorComponent(IFormattableStringParser formattableStr
     {
         if (!isCollectionTypeName)
         {
-            return $"{{BuilderMemberName}} = {result}";
+            return $"{{$property.builderMemberName}} = {result}";
         }
 
         return result;

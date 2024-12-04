@@ -24,7 +24,7 @@ public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(Model, new BuilderContext(CreateModel(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(Model, new BuilderContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -36,17 +36,9 @@ public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
         [Theory]
         [InlineData("Name", "SomeClass")]
         [InlineData("NameNoInterfacePrefix", "SomeClass")]
-        [InlineData("NameLower", "someclass")]
-        [InlineData("NameUpper", "SOMECLASS")]
-        [InlineData("NamePascal", "SomeClass")]
-        [InlineData("NameCamel", "someClass")]
         [InlineData("Namespace", "SomeNamespace")]
         [InlineData("FullName", "SomeNamespace.SomeClass")]
         [InlineData("Class.Name", "SomeClass")]
-        [InlineData("Class.NameLower", "someclass")]
-        [InlineData("Class.NameUpper", "SOMECLASS")]
-        [InlineData("Class.NamePascal", "SomeClass")]
-        [InlineData("Class.NameCamel", "someClass")]
         [InlineData("Class.Namespace", "SomeNamespace")]
         [InlineData("Class.FullName", "SomeNamespace.SomeClass")]
         [InlineData("Class.NameNoInterfacePrefix", "SomeClass")]
@@ -54,7 +46,7 @@ public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<IType>(CreateModel());
+            var context = new PipelineContext<IType>(CreateClass());
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());

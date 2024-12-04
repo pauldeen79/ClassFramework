@@ -5,7 +5,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
     public class Process : PipelineBuilderTests
     {
         private InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, CopyMethodPredicate? copyMethodPredicate = null) => new(
-            CreateInterfaceModel(addProperties),
+            CreateInterface(addProperties),
             CreateSettingsForInterface
             (
                 allowGenerationWithoutProperties: false,
@@ -132,7 +132,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         public async Task Creates_Interface_With_NamespaceMapping()
         {
             // Arrange
-            var model = CreateInterfaceModelWithCustomTypeProperties();
+            var model = CreateInterfaceWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
             var settings = CreateSettingsForInterface(
                 namespaceMappings: namespaceMappings);

@@ -30,7 +30,6 @@ public class EntityPipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholder
         PipelineContext<EntityContext> pipelineContext)
         => value switch
         {
-            "EntityNamespace" => formattableStringParser.Parse(pipelineContext.Request.Settings.EntityNamespaceFormatString, pipelineContext.Request.FormatProvider, pipelineContext.Request),
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(pipelineContext.Request.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<FormattableStringParserResult>()
         };
@@ -42,10 +41,6 @@ public class EntityPipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholder
         ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContext)
         => value switch
         {
-            "EntityNamespace" => formattableStringParser.Parse(parentChildContext.ParentContext.Request.Settings.EntityNamespaceFormatString, parentChildContext.ParentContext.Request.FormatProvider, parentChildContext.ParentContext.Request),
-            "NullableRequiredSuffix" => Result.Success<FormattableStringParserResult>(!parentChildContext.ParentContext.Request.Settings.AddNullChecks && !parentChildContext.ChildContext.IsValueType && !parentChildContext.ChildContext.IsNullable && parentChildContext.ParentContext.Request.Settings.EnableNullableReferenceTypes
-                ? "!"
-                : string.Empty),
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PropertyContext(parentChildContext.ChildContext, parentChildContext.Settings, formatProvider, parentChildContext.ParentContext.Request.MapTypeName(parentChildContext.ChildContext.TypeName), parentChildContext.Settings.EntityNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(parentChildContext.ParentContext.Request.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<FormattableStringParserResult>()
