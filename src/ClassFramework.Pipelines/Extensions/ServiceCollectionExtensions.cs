@@ -20,6 +20,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelinePlaceholderProcessor, TypeProcessor>()
             .AddScoped<IVariable, ClassVariable>()
             .AddScoped<IVariable, InstancePrefixVariable>()
+            .AddScoped<IVariable, NullableRequiredSuffixVariable>()
             .AddScoped<IVariable, PropertyVariable>();
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)

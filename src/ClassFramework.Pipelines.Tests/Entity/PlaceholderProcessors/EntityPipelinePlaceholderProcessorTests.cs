@@ -4,7 +4,7 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
 {
     public class Process : EntityPipelinePlaceholderProcessorTests
     {
-        private ClassBuilder CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
+        private static ClassBuilder CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
 
         [Fact]
         public void Throws_On_Null_FormattableStringParser()
@@ -45,24 +45,6 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
 
             // Assert
             result.Should().BeSameAs(externalResult);
-        }
-
-        [Theory]
-        [InlineData("EntityNamespace", "MyNamespace")]
-        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_PipelineContext(string value, string expectedValue)
-        {
-            // Arrange
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            formattableStringParser.Parse("MyEntityNamespaceFormatString", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace"));
-            var sut = CreateSut();
-            var context = new PipelineContext<EntityContext>(new EntityContext(CreateModel().BuildTyped(), new PipelineSettingsBuilder().WithEntityNamespaceFormatString("MyEntityNamespaceFormatString").Build(), CultureInfo.InvariantCulture));
-
-            // Act
-            var result = sut.Process(value, CultureInfo.InvariantCulture, context, formattableStringParser);
-
-            // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value!.ToString().Should().Be(expectedValue);
         }
     }
 }

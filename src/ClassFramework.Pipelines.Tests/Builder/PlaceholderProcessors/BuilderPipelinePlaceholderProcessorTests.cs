@@ -4,8 +4,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
 {
     public class Process : BuilderPipelinePlaceholderProcessorTests
     {
-        private Property CreatePropertyModel(bool isNullable = false) => new PropertyBuilder().WithName("Delegate").WithType(typeof(List<string>)).WithIsNullable(isNullable).Build();
-        private ClassBuilder CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
+        private static Property CreatePropertyModel(bool isNullable = false) => new PropertyBuilder().WithName("Delegate").WithType(typeof(List<string>)).WithIsNullable(isNullable).Build();
+        private static ClassBuilder CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
 
         [Fact]
         public void Throws_On_Null_FormattableStringParser()
@@ -128,8 +128,6 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
         }
 
         [Theory]
-        [InlineData("NullableRequiredSuffix", true, "!")]
-        [InlineData("NullableRequiredSuffix", false, "")]
         [InlineData("NullableSuffix", true, "?")]
         [InlineData("NullableSuffix", false, "")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value_Depending_On_IsNullable(string value, bool isNullable, string expectedResult)
