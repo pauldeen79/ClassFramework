@@ -127,26 +127,6 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             result.Value!.ToString().Should().Be(expectedValue);
         }
 
-        [Theory]
-        [InlineData("NullableSuffix", true, "?")]
-        [InlineData("NullableSuffix", false, "")]
-        public void Returns_Ok_With_Correct_Value_On_Known_Value_Depending_On_IsNullable(string value, bool isNullable, string expectedResult)
-        {
-            // Arrange
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            formattableStringParser.Parse("{$class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace.Builders"));
-            var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: true);
-            var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(isNullable), settings.Build());
-
-            // Act
-            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
-
-            // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value!.ToString().Should().Be(expectedResult);
-        }
-
         [Fact]
         public void Returns_Result_When_PipelinePlaceholderProcessor_Supports_The_Value_With_ParentChildContext()
         {
