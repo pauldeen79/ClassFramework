@@ -21,7 +21,9 @@ public static class ServiceCollectionExtensions
             .AddScoped<IVariable, ClassVariable>()
             .AddScoped<IVariable, InstancePrefixVariable>()
             .AddScoped<IVariable, NullableRequiredSuffixVariable>()
-            .AddScoped<IVariable, PropertyVariable>();
+            .AddScoped<IVariable, PropertyVariable>()
+            .AddScoped<IFunctionResultParser, CsharpFriendlyNameFunction>()
+            .AddScoped<IFunctionResultParser, CsharpFriendlyTypeNameFunction>();
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
