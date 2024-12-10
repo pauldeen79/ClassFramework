@@ -21,9 +21,14 @@ internal static class FunctionBase
             return result;
         }
 
+        if (result.Value is null)
+        {
+            return Result.Invalid<object?>($"{functionName} requires argument of type string, but the value was null");
+        }
+
         if (result.Value is not string s)
         {
-            return Result.Invalid<object?>($"{functionName} does not support type {result.Value?.GetType().FullName}, only string is supported");
+            return Result.Invalid<object?>($"{functionName} does not support type {result.Value.GetType().FullName}, only string is supported");
         }
 
         return Result.Success<object?>(functionDelegate(s));
