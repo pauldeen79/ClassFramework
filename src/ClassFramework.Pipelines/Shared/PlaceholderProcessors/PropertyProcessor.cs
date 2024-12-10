@@ -19,7 +19,7 @@ public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) :
 
         return value switch
         {
-            "InitializationExpression" => Result.Success<FormattableStringParserResult>(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo(), propertyContext.Settings, propertyContext.NullCheck)),
+            "InitializationExpression" => formattableStringParser.Parse(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings.CollectionTypeName, propertyContext.Settings, propertyContext.NullCheck), formatProvider, context),
             "CollectionTypeName" => Result.Success<FormattableStringParserResult>(propertyContext.Settings.CollectionTypeName),
             nameof(Property.TypeName) => Result.Success<FormattableStringParserResult>(typeName),
             $"{nameof(Property.TypeName)}.GenericArguments" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments()),
@@ -45,17 +45,17 @@ public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) :
         };
     }
 
-    private static string GetInitializationExpression(Property property, string typeName, string collectionTypeName, CultureInfo cultureInfo, PipelineSettings settings, string nullCheck)
+    private static string GetInitializationExpression(Property property, string typeName, string collectionTypeName, PipelineSettings settings, string nullCheck)
     {
         collectionTypeName = collectionTypeName.IsNotNull(nameof(collectionTypeName));
 
         return typeName.FixTypeName().IsCollectionTypeName()
             && (collectionTypeName.Length == 0 || collectionTypeName != property.TypeName.WithoutProcessedGenerics())
-                ? GetCollectionFormatStringForInitialization(property, typeName, cultureInfo, collectionTypeName, settings, nullCheck)
-                : property.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName();
+                ? GetCollectionFormatStringForInitialization(property, typeName, collectionTypeName, settings, nullCheck)
+                : "{CsharpFriendlyName(ToCamelCase($property.Name))}";
     }
 
-    private static string GetCollectionFormatStringForInitialization(Property property, string typeName, CultureInfo cultureInfo, string collectionTypeName, PipelineSettings settings, string nullCheck)
+    private static string GetCollectionFormatStringForInitialization(Property property, string typeName, string collectionTypeName, PipelineSettings settings, string nullCheck)
     {
         collectionTypeName = collectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
 
@@ -65,8 +65,8 @@ public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) :
             : string.Empty;
 
         return property.IsNullable || (settings.AddNullChecks && settings.ValidateArguments != ArgumentValidationType.None)
-            ? $"{property.Name.ToCamelCase(cultureInfo)} {nullCheck} ? null{nullSuffix} : new {collectionTypeName}<{genericTypeName}>({property.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName()})"
-            : $"new {collectionTypeName}<{genericTypeName}>({property.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName()})";
+            ? $"{{ToCamelCase($property.Name)}} {nullCheck} ? null{nullSuffix} : new {collectionTypeName}<{genericTypeName}>({{CsharpFriendlyName(ToCamelCase($property.Name))}})"
+            : $"new {collectionTypeName}<{genericTypeName}>({{CsharpFriendlyName(ToCamelCase($property.Name))}})";
     }
 
     private static string WithoutInterfacePrefix(string className)

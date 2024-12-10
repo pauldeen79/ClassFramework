@@ -4,7 +4,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
 {
     public class Process : PipelineBuilderTests
     {
-        private EntityContext CreateContext(bool addProperties = true) => new(
+        private static EntityContext CreateContext(bool addProperties = true) => new(
             CreateGenericClass(addProperties),
             CreateSettingsForEntity
             (
