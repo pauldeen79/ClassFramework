@@ -50,6 +50,51 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     }
 
     [Fact]
+    public void Can_Get_BuilderMemberName_From_PropertyContext()
+    {
+        // Arrange
+        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("property.BuilderMemberName", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.SourceModel.Name);
+    }
+
+    [Fact]
+    public void Can_Get_EntityMemberName_From_PropertyContext()
+    {
+        // Arrange
+        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("property.EntityMemberName", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.SourceModel.Name);
+    }
+
+    [Fact]
+    public void Can_Get_NullableRequiredSuffix_From_PropertyContext()
+    {
+        // Arrange
+        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("property.NullableRequiredSuffix", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(string.Empty);
+    }
+
+    [Fact]
     public void Supplying_Unknown_Context_Type_Gives_Invalid_Result()
     {
         // Arrange
