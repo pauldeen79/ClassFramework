@@ -251,7 +251,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
             .WithCopyMethodPredicate(CopyMethodPredicate)
-            .WithEntityNameFormatString("{Class.NameNoInterfacePrefix}")
+            .WithEntityNameFormatString("{$class.NameNoInterfacePrefix}")
             .WithEntityNamespaceFormatString(@namespace)
             .WithEnableInheritance()
             .WithIsAbstract()
@@ -307,7 +307,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         string entitiesNamespace,
         ArgumentValidationType? forceValidateArgumentsInConstructor = null,
         bool? overrideAddNullChecks = null,
-        string entityNameFormatString = "{Class.NameNoInterfacePrefix}")
+        string entityNameFormatString = "{$class.NameNoInterfacePrefix}")
     {
         var baseClass = await GetBaseClass().ConfigureAwait(false);
 
@@ -514,7 +514,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Build();
 
     private async Task<TypeBase> CreateEntity(TypeBase typeBase, string entitiesNamespace)
-        => (await PipelineService.Process(new EntityContext(typeBase, await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{Class.NameNoInterfacePrefix}").ConfigureAwait(false), Settings.CultureInfo)).ConfigureAwait(false))
+        => (await PipelineService.Process(new EntityContext(typeBase, await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{$class.NameNoInterfacePrefix}").ConfigureAwait(false), Settings.CultureInfo)).ConfigureAwait(false))
             .GetValueOrThrow();
 
     private async Task<TypeBase> CreateBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
