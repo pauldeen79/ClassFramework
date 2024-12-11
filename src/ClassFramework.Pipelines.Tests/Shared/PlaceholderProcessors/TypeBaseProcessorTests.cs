@@ -34,13 +34,7 @@ public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
         }
 
         [Theory]
-        [InlineData("Name", "SomeClass")]
         [InlineData("NameNoInterfacePrefix", "SomeClass")]
-        [InlineData("Namespace", "SomeNamespace")]
-        [InlineData("FullName", "SomeNamespace.SomeClass")]
-        [InlineData("Class.Name", "SomeClass")]
-        [InlineData("Class.Namespace", "SomeNamespace")]
-        [InlineData("Class.FullName", "SomeNamespace.SomeClass")]
         [InlineData("Class.NameNoInterfacePrefix", "SomeClass")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {

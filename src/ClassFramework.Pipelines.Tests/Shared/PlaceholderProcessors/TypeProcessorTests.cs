@@ -39,15 +39,9 @@ public class TypeProcessorTests : TestBase<TypeProcessor>
         }
 
         [Theory]
-        [InlineData("Name", "SomeClass")]
         [InlineData("NameNoInterfacePrefix", "SomeClass")]
-        [InlineData("Namespace", "ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors")]
-        [InlineData("FullName", "ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors.SomeClass")]
         [InlineData("GenericArgumentsWithBrackets", "")]
         [InlineData("GenericArgumentsWithoutBrackets", "")]
-        [InlineData("Class.Name", "SomeClass")]
-        [InlineData("Class.Namespace", "ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors")]
-        [InlineData("Class.FullName", "ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors.SomeClass")]
         [InlineData("Class.NameNoInterfacePrefix", "SomeClass")]
         [InlineData("Class.GenericArgumentsWithBrackets", "")]
         [InlineData("Class.GenericArgumentsWithoutBrackets", "")]
