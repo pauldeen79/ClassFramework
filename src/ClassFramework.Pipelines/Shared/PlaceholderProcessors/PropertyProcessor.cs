@@ -60,12 +60,9 @@ public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) :
         collectionTypeName = collectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
 
         var genericTypeName = typeName.GetProcessedGenericArguments();
-        var nullSuffix = settings.EnableNullableReferenceTypes && !property.IsNullable
-            ? "!"
-            : string.Empty;
 
         return property.IsNullable || (settings.AddNullChecks && settings.ValidateArguments != ArgumentValidationType.None)
-            ? $"{{ToCamelCase($property.Name)}} {nullCheck} ? null{nullSuffix} : new {collectionTypeName}<{genericTypeName}>({{CsharpFriendlyName(ToCamelCase($property.Name))}})"
+            ? $"{{ToCamelCase($property.Name)}} {nullCheck} ? null{{$property.NullableRequiredSuffix}} : new {collectionTypeName}<{genericTypeName}>({{CsharpFriendlyName(ToCamelCase($property.Name))}})"
             : $"new {collectionTypeName}<{genericTypeName}>({{CsharpFriendlyName(ToCamelCase($property.Name))}})";
     }
 

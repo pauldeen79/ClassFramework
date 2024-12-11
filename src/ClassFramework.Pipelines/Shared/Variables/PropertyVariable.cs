@@ -6,8 +6,9 @@ public class PropertyVariable : IVariable
         => variableExpression switch
         {
             $"property.{nameof(Property.Name)}" => GetValueFromProperty(context, (_, _, property) => property.Name),
-            $"property.builderMemberName" => GetValueFromProperty(context, (settings, culture, property) => property.GetBuilderMemberName(settings, culture)),
-            $"property.entityMemberName" => GetValueFromProperty(context, (settings, culture, property) => property.GetEntityMemberName(settings.AddBackingFields || settings.CreateAsObservable, culture)),
+            "property.BuilderMemberName" => GetValueFromProperty(context, (settings, culture, property) => property.GetBuilderMemberName(settings, culture)),
+            "property.EntityMemberName" => GetValueFromProperty(context, (settings, culture, property) => property.GetEntityMemberName(settings.AddBackingFields || settings.CreateAsObservable, culture)),
+            "property.NullableRequiredSuffix" => GetValueFromProperty(context, (settings, _, property) => GetNullableRequiredSuffix(settings, property)),
             _ => Result.Continue<object?>()
         };
 
@@ -20,4 +21,9 @@ public class PropertyVariable : IVariable
             ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity => Result.Success(valueDelegate(parentChildContextEntity.Settings, parentChildContextEntity.ParentContext.Request.FormatProvider.ToCultureInfo(), parentChildContextEntity.ChildContext)),
             _ => Result.Invalid<object?>($"Could not get property from context, because the context type {context?.GetType().FullName ?? "null"} is not supported")
         };
+
+    private static string GetNullableRequiredSuffix(PipelineSettings settings, Property property)
+        => !settings.AddNullChecks && !property.IsValueType && !property.IsNullable && settings.EnableNullableReferenceTypes
+            ? "!"
+            : string.Empty;
 }

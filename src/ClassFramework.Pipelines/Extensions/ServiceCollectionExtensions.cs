@@ -20,7 +20,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelinePlaceholderProcessor, TypeProcessor>()
             .AddScoped<IVariable, ClassVariable>()
             .AddScoped<IVariable, InstancePrefixVariable>()
-            .AddScoped<IVariable, NullableRequiredSuffixVariable>()
             .AddScoped<IVariable, PropertyVariable>()
             .AddScoped<IFunctionResultParser, CsharpFriendlyNameFunction>()
             .AddScoped<IFunctionResultParser, CsharpFriendlyTypeNameFunction>();
