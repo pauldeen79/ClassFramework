@@ -8,7 +8,7 @@ public class PropertyCodeBodyModelTests : TestBase
         public void Throws_On_Null_Verb()
         {
             // Act & Assert
-            this.Invoking(_ => new PropertyCodeBodyModel( verb: null!, default, default, default, Array.Empty<CodeStatementBase>(), CultureInfo.InvariantCulture))
+            this.Invoking(_ => new PropertyCodeBodyModel(verb: null!, default, default, default, Array.Empty<CodeStatementBase>(), CultureInfo.InvariantCulture))
                 .Should().Throw<ArgumentNullException>().WithParameterName("verb");
         }
 

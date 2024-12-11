@@ -71,7 +71,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IFormattableStr
             yield return Result.Success<FormattableStringParserResult>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()));
         }
 
-        yield return _formattableStringParser.Parse("return instance.{BuilderAddMethodName}<T>({NameCamelCsharpFriendlyName}.ToArray());", context.Request.FormatProvider, parentChildContext);
+        yield return _formattableStringParser.Parse("return instance.{BuilderAddMethodName}<T>({CsharpFriendlyName(ToCamelCase($property.Name))}.ToArray());", context.Request.FormatProvider, parentChildContext);
     }
 
     private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderExtensionContext> context, Property property)

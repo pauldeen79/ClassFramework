@@ -82,7 +82,7 @@ public class AddPropertiesComponent(IFormattableStringParser formattableStringPa
             }
 
             yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Request.Settings.AddNullChecks, context.Request.SourceModel)};");
-            
+
             if (context.Request.Settings.CreateAsObservable)
             {
                 yield return new StringCodeStatementBuilder().WithStatement($"if (hasChanged) HandlePropertyChanged(nameof({property.Name}));");

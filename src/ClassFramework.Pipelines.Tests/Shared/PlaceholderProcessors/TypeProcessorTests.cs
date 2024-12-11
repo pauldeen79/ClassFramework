@@ -29,7 +29,7 @@ public class TypeProcessorTests : TestBase<TypeProcessor>
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<Type, BuilderContext>(Model, new BuilderContext(CreateModel(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<Type, BuilderContext>(Model, new BuilderContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -39,24 +39,8 @@ public class TypeProcessorTests : TestBase<TypeProcessor>
         }
 
         [Theory]
-        [InlineData("Name", "SomeClass")]
-        [InlineData("NameNoInterfacePrefix", "SomeClass")]
-        [InlineData("NameLower", "someclass")]
-        [InlineData("NameUpper", "SOMECLASS")]
-        [InlineData("NamePascal", "SomeClass")]
-        [InlineData("NameCamel", "someClass")]
-        [InlineData("Namespace", "ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors")]
-        [InlineData("FullName", "ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors.SomeClass")]
         [InlineData("GenericArgumentsWithBrackets", "")]
         [InlineData("GenericArgumentsWithoutBrackets", "")]
-        [InlineData("Class.Name", "SomeClass")]
-        [InlineData("Class.NameLower", "someclass")]
-        [InlineData("Class.NameUpper", "SOMECLASS")]
-        [InlineData("Class.NamePascal", "SomeClass")]
-        [InlineData("Class.NameCamel", "someClass")]
-        [InlineData("Class.Namespace", "ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors")]
-        [InlineData("Class.FullName", "ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors.SomeClass")]
-        [InlineData("Class.NameNoInterfacePrefix", "SomeClass")]
         [InlineData("Class.GenericArgumentsWithBrackets", "")]
         [InlineData("Class.GenericArgumentsWithoutBrackets", "")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
@@ -64,23 +48,6 @@ public class TypeProcessorTests : TestBase<TypeProcessor>
             // Arrange
             var sut = CreateSut();
             var context = new PipelineContext<Type>(Model);
-
-            // Act
-            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
-
-            // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value!.ToString().Should().Be(expectedValue);
-        }
-
-        [Theory]
-        [InlineData("NameNoInterfacePrefix", "MyInterface")]
-        [InlineData("Class.NameNoInterfacePrefix", "MyInterface")]
-        public void Returns_Ok_With_NoInterfacePrefix_When_Model_Is_Interface(string value, string expectedValue)
-        {
-            // Arrange
-            var sut = CreateSut();
-            var context = new PipelineContext<Type>(typeof(IMyInterface));
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());

@@ -17,7 +17,12 @@ public static class ServiceCollectionExtensions
         => services
             .AddScoped<IPipelinePlaceholderProcessor, PropertyProcessor>()
             .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>()
-            .AddScoped<IPipelinePlaceholderProcessor, TypeProcessor>();
+            .AddScoped<IPipelinePlaceholderProcessor, TypeProcessor>()
+            .AddScoped<IVariable, ClassVariable>()
+            .AddScoped<IVariable, InstancePrefixVariable>()
+            .AddScoped<IVariable, PropertyVariable>()
+            .AddScoped<IFunctionResultParser, CsharpFriendlyNameFunction>()
+            .AddScoped<IFunctionResultParser, CsharpFriendlyTypeNameFunction>();
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services

@@ -21,7 +21,7 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetR
         public async Task Sets_Record_Based_On_Setting(bool createRecordSettingValue, bool expectedRecordValue)
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(createRecord: createRecordSettingValue);

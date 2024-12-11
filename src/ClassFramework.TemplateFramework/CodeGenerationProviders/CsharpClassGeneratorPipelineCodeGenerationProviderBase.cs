@@ -58,8 +58,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool IsAbstract => false;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
     protected virtual bool AllowGenerationWithoutProperties => true;
-    protected virtual string SetMethodNameFormatString => "With{Name}";
-    protected virtual string AddMethodNameFormatString => "Add{Name}";
+    protected virtual string SetMethodNameFormatString => "With{$property.Name}";
+    protected virtual string AddMethodNameFormatString => "Add{$property.Name}";
     protected virtual string ToBuilderFormatString => "ToBuilder";
     protected virtual string ToTypedBuilderFormatString => "ToTypedBuilder";
     protected virtual string BuildMethodName => "Build";
@@ -124,7 +124,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return (await models.SelectAsync(async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{Class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false)).ConfigureAwait(false)).ToArray();
+        return (await models.SelectAsync(async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false)).ConfigureAwait(false)).ToArray();
     }
 
     protected async Task<TypeBase[]> GetBuilders(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
@@ -186,7 +186,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(interfacesNamespace);
 
         return (await (await GetBuilders(models, buildersNamespace, entitiesNamespace).ConfigureAwait(false))
-                .SelectAsync(async x => await CreateInterface(x, interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{Class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false))
+                .SelectAsync(async x => await CreateInterface(x, interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false))
                 .ConfigureAwait(false)).ToArray();
     }
 
@@ -251,7 +251,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
             .WithCopyMethodPredicate(CopyMethodPredicate)
-            .WithEntityNameFormatString("{Class.NameNoInterfacePrefix}")
+            .WithEntityNameFormatString("{$class.NameNoInterfacePrefix}")
             .WithEntityNamespaceFormatString(@namespace)
             .WithEnableInheritance()
             .WithIsAbstract()
@@ -307,7 +307,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         string entitiesNamespace,
         ArgumentValidationType? forceValidateArgumentsInConstructor = null,
         bool? overrideAddNullChecks = null,
-        string entityNameFormatString = "{Class.NameNoInterfacePrefix}")
+        string entityNameFormatString = "{$class.NameNoInterfacePrefix}")
     {
         var baseClass = await GetBaseClass().ConfigureAwait(false);
 
@@ -354,7 +354,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         InheritanceComparisonDelegate? inheritanceComparisonDelegate,
         CopyMethodPredicate? copyMethodPredicate,
         bool addSetters,
-        string nameFormatString = "{Class.Name}")
+        string nameFormatString = "{$class.Name}")
         => new PipelineSettingsBuilder()
             .WithNamespaceFormatString(interfacesNamespace)
             .WithNameFormatString(nameFormatString)
@@ -514,7 +514,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Build();
 
     private async Task<TypeBase> CreateEntity(TypeBase typeBase, string entitiesNamespace)
-        => (await PipelineService.Process(new EntityContext(typeBase, await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{Class.NameNoInterfacePrefix}").ConfigureAwait(false), Settings.CultureInfo)).ConfigureAwait(false))
+        => (await PipelineService.Process(new EntityContext(typeBase, await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{$class.NameNoInterfacePrefix}").ConfigureAwait(false), Settings.CultureInfo)).ConfigureAwait(false))
             .GetValueOrThrow();
 
     private async Task<TypeBase> CreateBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
@@ -548,7 +548,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         string interfacesNamespace,
         string newCollectionTypeName,
         bool addSetters,
-        string nameFormatString = "{Class.Name}",
+        string nameFormatString = "{$class.Name}",
         CopyMethodPredicate? copyMethodPredicate = null)
     {
         return (await PipelineService.Process(new InterfaceContext(typeBase, await CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(await GetBaseClass().ConfigureAwait(false)), copyMethodPredicate, addSetters, nameFormatString).ConfigureAwait(false), Settings.CultureInfo)).ConfigureAwait(false))

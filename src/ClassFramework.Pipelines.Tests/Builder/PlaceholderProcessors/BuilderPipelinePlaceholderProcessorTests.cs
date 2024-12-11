@@ -4,8 +4,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
 {
     public class Process : BuilderPipelinePlaceholderProcessorTests
     {
-        private Property CreatePropertyModel(bool isNullable = false) => new PropertyBuilder().WithName("Delegate").WithType(typeof(List<string>)).WithIsNullable(isNullable).Build();
-        private ClassBuilder CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
+        private static Property CreatePropertyModel(bool isNullable = false) => new PropertyBuilder().WithName("Delegate").WithType(typeof(List<string>)).WithIsNullable(isNullable).Build();
+        private static ClassBuilder CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
 
         [Fact]
         public void Throws_On_Null_FormattableStringParser()
@@ -57,7 +57,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
         {
             // Arrange
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace.Builders"));
+            formattableStringParser.Parse("{$class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace.Builders"));
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: true, validateArguments: ArgumentValidationType.None);
             var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
@@ -76,7 +76,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
         {
             // Arrange
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace.Builders"));
+            formattableStringParser.Parse("{$class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace.Builders"));
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: true, validateArguments: ArgumentValidationType.IValidatableObject);
             var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
@@ -96,7 +96,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
         {
             // Arrange
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace.Builders"));
+            formattableStringParser.Parse("{$class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace.Builders"));
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: false);
             var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
@@ -115,7 +115,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
         {
             // Arrange
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace.Builders"));
+            formattableStringParser.Parse("{$class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace.Builders"));
             var sut = CreateSut();
             var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), CreateSettingsForBuilder(addNullChecks: true).Build(), CultureInfo.InvariantCulture));
 
@@ -125,28 +125,6 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
             result.Value!.ToString().Should().Be(expectedValue);
-        }
-
-        [Theory]
-        [InlineData("NullableRequiredSuffix", true, "!")]
-        [InlineData("NullableRequiredSuffix", false, "")]
-        [InlineData("NullableSuffix", true, "?")]
-        [InlineData("NullableSuffix", false, "")]
-        public void Returns_Ok_With_Correct_Value_On_Known_Value_Depending_On_IsNullable(string value, bool isNullable, string expectedResult)
-        {
-            // Arrange
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success<FormattableStringParserResult>("MyNamespace.Builders"));
-            var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: true);
-            var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(isNullable), settings.Build());
-
-            // Act
-            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
-
-            // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value!.ToString().Should().Be(expectedResult);
         }
 
         [Fact]

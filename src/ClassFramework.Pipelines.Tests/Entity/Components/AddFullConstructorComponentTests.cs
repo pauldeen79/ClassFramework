@@ -19,7 +19,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
         public async Task Adds_Constructor_Without_NullChecks()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addNullChecks: false);
@@ -49,7 +49,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
         public async Task Adds_Constructor_With_NullChecks()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addNullChecks: true);
@@ -81,7 +81,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
         public async Task Adds_Constructor_With_NullChecks_And_ExceptionThrowIfNull()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addNullChecks: true, useExceptionThrowIfNull: true);
@@ -113,7 +113,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
         public async Task Adds_Constructor_With_NullChecks_And_BackingFields()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addNullChecks: true, addBackingFields: true);
@@ -145,7 +145,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
         public async Task Adds_Constructor_With_DomainValidation()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(validateArguments: ArgumentValidationType.IValidatableObject);
@@ -176,7 +176,7 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
         public async Task Adds_Constructor_With_TypeMapping()
         {
             // Arrange
-            var sourceModel = CreateModelWithCustomTypeProperties();
+            var sourceModel = CreateClassWithCustomTypeProperties();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(namespaceMappings: CreateNamespaceMappings());

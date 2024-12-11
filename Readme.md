@@ -6,7 +6,7 @@ If you want to create a C# class structure based on a model, this framework is f
 We are using the following dependencies:
 - CsharpExpressionDumper, to generate c# code for values
 - CrossCutting.ProcessingPipeline, for extendable pipelines for transformation of classes and interfaces
-- CrossCutting.Utilities.Parsers, for parsing named format strings like ``{Name}Builder``
+- CrossCutting.Utilities.Parsers, for parsing named format strings like ``{$property.Name}Builder``
 - TemplateFramework, to translate the domain model to actual c# code files
 
 The Domain and Pipelines packages target .NET Standard 2.0, so you can use it anywhere. Because of the dependency to TemplateFramework, we target some projects to .NET 8.0.

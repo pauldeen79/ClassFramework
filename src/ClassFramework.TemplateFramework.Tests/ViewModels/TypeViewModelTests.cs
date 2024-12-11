@@ -247,7 +247,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
                .Should().Throw<ArgumentNullException>()
                .WithParameterName("Model");
         }
-        
+
         [Fact]
         public void Includes_Fields_When_Present()
         {

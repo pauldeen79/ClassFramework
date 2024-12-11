@@ -54,8 +54,8 @@ public class AddPublicParameterlessConstructorComponent(IFormattableStringParser
         => _formattableStringParser.Parse
         (
             property.TypeName.FixTypeName().IsCollectionTypeName()
-                ? "{EntityMemberName} = new {CollectionTypeName}<{TypeName.GenericArguments}>();"
-                : "{EntityMemberName} = {DefaultValue};",
+                ? "{$property.EntityMemberName} = new {CollectionTypeName}<{TypeName.GenericArguments}>();"
+                : "{$property.EntityMemberName} = {DefaultValue};",
             context.Request.FormatProvider,
             new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings)
         ).TransformValue(x => x.ToString());

@@ -19,7 +19,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Builder.Components.Va
         public async Task Returns_Continue_When_Properties_Are_Found()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, settings);

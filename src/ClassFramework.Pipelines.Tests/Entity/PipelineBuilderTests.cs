@@ -4,8 +4,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
 {
     public class Process : PipelineBuilderTests
     {
-        private EntityContext CreateContext(bool addProperties = true) => new(
-            CreateGenericModel(addProperties),
+        private static EntityContext CreateContext(bool addProperties = true) => new(
+            CreateGenericClass(addProperties),
             CreateSettingsForEntity
             (
                 allowGenerationWithoutProperties: false
@@ -68,7 +68,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
         public async Task Creates_ReadOnly_Entity_With_NamespaceMapping()
         {
             // Arrange
-            var model = CreateModelWithCustomTypeProperties();
+            var model = CreateClassWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
             var settings = CreateSettingsForEntity(
                 namespaceMappings: namespaceMappings,
@@ -156,7 +156,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
         public async Task Creates_ReadOnly_Entity_With_NamespaceMapping_And_NullCHecks_Without_PatternMatching()
         {
             // Arrange
-            var model = CreateModelWithCustomTypeProperties();
+            var model = CreateClassWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
             var settings = CreateSettingsForEntity(
                 namespaceMappings: namespaceMappings,
@@ -203,7 +203,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
         public async Task Creates_Observable_Entity_With_NamespaceMapping()
         {
             // Arrange
-            var model = CreateModelWithCustomTypeProperties();
+            var model = CreateClassWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
             var typenameMappings = CreateTypenameMappings();
             var settings = CreateSettingsForEntity(
@@ -367,7 +367,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
         public async Task Creates_Entity_With_Custom_Validation()
         {
             // Arrange
-            var model = CreateModelWithCustomTypeProperties();
+            var model = CreateClassWithCustomTypeProperties();
             var settings = CreateSettingsForEntity(
                 addNullChecks: true,
                 validateArguments: ArgumentValidationType.CustomValidationCode);
@@ -388,7 +388,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
         public async Task Creates_Entity_With_IEquatable_Implementation()
         {
             // Arrange
-            var model = CreateModelWithCustomTypeProperties();
+            var model = CreateClassWithCustomTypeProperties();
             var settings = CreateSettingsForEntity(implementIEquatable: true);
             var context = CreateContext(model, settings);
 

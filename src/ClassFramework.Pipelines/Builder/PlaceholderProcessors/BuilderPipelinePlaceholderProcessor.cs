@@ -17,11 +17,6 @@ public class BuilderPipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholde
 
         if (context is ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContext)
         {
-            if (value == "InstancePrefix")
-            {
-                return Result.Success<FormattableStringParserResult>(string.Empty);
-            }
-
             return parentChildContext.ParentContext.Request.GetBuilderPlaceholderProcessorResultForParentChildContext(value, formattableStringParser, parentChildContext.ParentContext.Request, parentChildContext.ParentContext.Request.SourceModel, parentChildContext.ChildContext, parentChildContext.ParentContext.Request.SourceModel, _pipelinePlaceholderProcessors);
         }
 

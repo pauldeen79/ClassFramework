@@ -16,7 +16,7 @@ public class BuilderContextTests : TestBase
         public void Throws_On_Null_Settings()
         {
             // Act & Assert
-            this.Invoking(_ => new BuilderContext(sourceModel: CreateModel(), settings: null!, CultureInfo.InvariantCulture))
+            this.Invoking(_ => new BuilderContext(sourceModel: CreateClass(), settings: null!, CultureInfo.InvariantCulture))
                 .Should().Throw<ArgumentNullException>().WithParameterName("settings");
         }
 
@@ -24,7 +24,7 @@ public class BuilderContextTests : TestBase
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            this.Invoking(_ => new BuilderContext(sourceModel: CreateModel(), new PipelineSettingsBuilder().Build(), formatProvider: null!))
+            this.Invoking(_ => new BuilderContext(sourceModel: CreateClass(), new PipelineSettingsBuilder().Build(), formatProvider: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
         }
     }
@@ -36,7 +36,7 @@ public class BuilderContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false).Build();
-            var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
+            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.CreatePragmaWarningDisableStatementsForBuildMethod();
@@ -50,7 +50,7 @@ public class BuilderContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: true).Build();
-            var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
+            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.CreatePragmaWarningDisableStatementsForBuildMethod();
@@ -71,7 +71,7 @@ public class BuilderContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false).Build();
-            var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
+            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.CreatePragmaWarningRestoreStatementsForBuildMethod();
@@ -85,7 +85,7 @@ public class BuilderContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: true).Build();
-            var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
+            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.CreatePragmaWarningRestoreStatementsForBuildMethod();
@@ -106,7 +106,7 @@ public class BuilderContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false).Build();
-            var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
+            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
             sut.Invoking(x => x.MapTypeName(typeName: null!))
@@ -122,7 +122,7 @@ public class BuilderContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false).Build();
-            var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
+            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
             sut.Invoking(x => x.MapAttribute(attribute: null!))
