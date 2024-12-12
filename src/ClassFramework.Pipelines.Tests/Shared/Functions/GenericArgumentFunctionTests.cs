@@ -81,18 +81,15 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var functionParseResult = new FunctionParseResultBuilder()
                 .WithFunctionName("GenericArguments")
                 .WithFormatProvider(CultureInfo.InvariantCulture)
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionParseResultBuilder().WithFunctionName("Error")))
-                .AddArguments(new LiteralArgumentBuilder().WithValue("kaboom"))
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionParseResultBuilder().WithFunctionName("Success")))
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionParseResultBuilder().WithFunctionName("Kaboom")))
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionParseResultEvaluator>();
             evaluator
                 .Evaluate(Arg.Any<FunctionParseResult>(), Arg.Any<IExpressionParser>(), Arg.Any<object?>())
-                .Returns(Result.Error<object?>("Kaboom"));
+                .Returns(x => x.ArgAt<FunctionParseResult>(0).FunctionName == "Success" ? Result.Success<object?>("Success") : Result.Error<object?>("Kaboom"));
             var parser = Fixture.Freeze<IExpressionParser>();
-            parser
-                .Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
-                .Returns(Result.Error<object?>("Kaboom"));
             var sut = CreateSut();
 
             // Act
