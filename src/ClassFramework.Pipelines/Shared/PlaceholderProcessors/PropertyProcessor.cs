@@ -19,7 +19,7 @@ public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) :
 
         return value switch
         {
-            "InitializationExpression" => formattableStringParser.Parse(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings.CollectionTypeName, propertyContext.Settings), formatProvider, context),
+            "InitializationExpression" => formattableStringParser.Parse(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings), formatProvider, context),
             "CollectionTypeName" => Result.Success<FormattableStringParserResult>(propertyContext.Settings.CollectionTypeName),
             nameof(Property.TypeName) => Result.Success<FormattableStringParserResult>(typeName),
             $"{nameof(Property.TypeName)}.GenericArguments.ClassName" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments().GetClassName()),
@@ -42,19 +42,17 @@ public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) :
         };
     }
 
-    private static string GetInitializationExpression(Property property, string typeName, string collectionTypeName, PipelineSettings settings)
+    private static string GetInitializationExpression(Property property, string typeName, PipelineSettings settings)
     {
-        collectionTypeName = collectionTypeName.IsNotNull(nameof(collectionTypeName));
-
         return typeName.FixTypeName().IsCollectionTypeName()
-            && (collectionTypeName.Length == 0 || collectionTypeName != property.TypeName.WithoutProcessedGenerics())
-                ? GetCollectionFormatStringForInitialization(property, typeName, collectionTypeName, settings)
+            && (settings.CollectionTypeName.Length == 0 || settings.CollectionTypeName != property.TypeName.WithoutProcessedGenerics())
+                ? GetCollectionFormatStringForInitialization(property, typeName, settings)
                 : "{CsharpFriendlyName(ToCamelCase($property.Name))}";
     }
 
-    private static string GetCollectionFormatStringForInitialization(Property property, string typeName, string collectionTypeName, PipelineSettings settings)
+    private static string GetCollectionFormatStringForInitialization(Property property, string typeName, PipelineSettings settings)
     {
-        collectionTypeName = collectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
+        var collectionTypeName = settings.CollectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
 
         var genericTypeName = typeName.GetProcessedGenericArguments();
 
