@@ -388,7 +388,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .AddMetadata
             (
                 new MetadataBuilder().WithValue(InheritFromInterfaces ? $"{RootNamespace}.Builders" : $"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderInterfaceNamespace),
-                new MetadataBuilder().WithValue("{TypeName.ClassName.NoGenerics}Builder{TypeName.GenericArgumentsWithBrackets}").WithName(MetadataNames.CustomBuilderInterfaceName),
+                new MetadataBuilder().WithValue("{TypeName.ClassName.NoGenerics}Builder{GenericArguments($property.TypeName, true)}").WithName(MetadataNames.CustomBuilderInterfaceName),
                 new MetadataBuilder().WithValue(InheritFromInterfaces ? $"{RootNamespace}.Builders" : $"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderParentTypeNamespace),
                 new MetadataBuilder().WithValue("{ParentTypeName.ClassName.NoGenerics}Builder{ParentTypeName.GenericArgumentsWithBrackets}").WithName(MetadataNames.CustomBuilderParentTypeName)
             );

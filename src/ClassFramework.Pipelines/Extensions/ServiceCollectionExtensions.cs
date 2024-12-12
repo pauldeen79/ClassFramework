@@ -22,7 +22,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<IVariable, InstancePrefixVariable>()
             .AddScoped<IVariable, PropertyVariable>()
             .AddScoped<IFunctionResultParser, CsharpFriendlyNameFunction>()
-            .AddScoped<IFunctionResultParser, CsharpFriendlyTypeNameFunction>();
+            .AddScoped<IFunctionResultParser, CsharpFriendlyTypeNameFunction>()
+            .AddScoped<IFunctionResultParser, GenericArgumentsFunction>();
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
@@ -102,8 +103,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IInterfaceComponentBuilder, Interface.Components.AddMethodsComponentBuilder>()
             .AddScoped<IInterfaceComponentBuilder, Interface.Components.AddPropertiesComponentBuilder>()
             .AddScoped<IInterfaceComponentBuilder, Interface.Components.PartialComponentBuilder>()
-            .AddScoped<IInterfaceComponentBuilder, Interface.Components.SetNameComponentBuilder>()
-        ;
+            .AddScoped<IInterfaceComponentBuilder, Interface.Components.SetNameComponentBuilder>();
 
     private static IServiceCollection AddParserComponents(this IServiceCollection services)
         => services

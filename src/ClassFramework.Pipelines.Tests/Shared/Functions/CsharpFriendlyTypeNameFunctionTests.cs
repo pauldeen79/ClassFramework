@@ -96,7 +96,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("CsharpFriendlyTypeName does not support type System.Int32, only string is supported");
+            result.ErrorMessage.Should().Be("CsharpFriendlyTypeName function does not support type System.Int32, only string is supported");
         }
 
         [Fact]
@@ -122,7 +122,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("CsharpFriendlyTypeName requires argument of type string, but the value was null");
+            result.ErrorMessage.Should().Be("CsharpFriendlyTypeName function requires argument of type string, but the value was null");
         }
 
         [Fact]

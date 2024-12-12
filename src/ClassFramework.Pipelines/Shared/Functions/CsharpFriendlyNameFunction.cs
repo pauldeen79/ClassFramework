@@ -6,6 +6,6 @@ public class CsharpFriendlyNameFunction : IFunctionResultParser
     {
         functionParseResult = functionParseResult.IsNotNull(nameof(functionParseResult));
 
-        return FunctionBase.Parse(functionParseResult, context, evaluator, parser, "CsharpFriendlyName", s => s.GetCsharpFriendlyName());
+        return FunctionBase.Parse(functionParseResult, context, evaluator, parser, "CsharpFriendlyName", s => Result.Success<object?>(s.GetCsharpFriendlyName()));
     }
 }

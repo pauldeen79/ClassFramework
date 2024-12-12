@@ -95,6 +95,21 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     }
 
     [Fact]
+    public void Can_Get_PropertyTypeName_From_PropertyContext()
+    {
+        // Arrange
+        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("property.TypeName", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.SourceModel.TypeName);
+    }
+
+    [Fact]
     public void Supplying_Unknown_Context_Type_Gives_Invalid_Result()
     {
         // Arrange

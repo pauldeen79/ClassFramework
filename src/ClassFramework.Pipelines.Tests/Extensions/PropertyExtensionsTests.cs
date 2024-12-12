@@ -292,7 +292,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
                     .WithSourceTypeName("ITypedExpression")
                     .WithTargetTypeName("ITypedExpression")
                     .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderNamespace).WithValue("Builders"))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderName).WithValue("{TypeName.ClassName.NoGenerics}Builder{TypeName.GenericArgumentsWithBrackets}"))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderName).WithValue("{TypeName.ClassName.NoGenerics}Builder{GenericArguments($property.TypeName, true)}"))
                 ).Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var context = new TestContext(settings, formatProvider);
