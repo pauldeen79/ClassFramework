@@ -4,13 +4,6 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
 {
     public PipelineSettings Settings { get; } = settings.IsNotNull(nameof(settings));
     public IFormatProvider FormatProvider { get; } = formatProvider.IsNotNull(nameof(formatProvider));
-}
-
-public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : ContextBase(settings, formatProvider)
-{
-    public TSourceModel SourceModel { get; } = sourceModel.IsNotNull(nameof(sourceModel));
-
-    protected abstract string NewCollectionTypeName { get; }
 
     public string NullCheck => Settings.UsePatternMatchingForNullChecks
         ? "is null"
@@ -19,6 +12,13 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
     public string NotNullCheck => Settings.UsePatternMatchingForNullChecks
         ? "is not null"
         : "!= null";
+}
+
+public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : ContextBase(settings, formatProvider)
+{
+    public TSourceModel SourceModel { get; } = sourceModel.IsNotNull(nameof(sourceModel));
+
+    protected abstract string NewCollectionTypeName { get; }
 
     public string CreateArgumentNullException(string argumentName)
     {
