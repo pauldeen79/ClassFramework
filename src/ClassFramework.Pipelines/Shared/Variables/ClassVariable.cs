@@ -8,7 +8,6 @@ public class ClassVariable : IVariable
             $"class.{nameof(Class.Name)}" => GetValueFromClass(context, x => x.Name),
             $"class.{nameof(Class.Namespace)}" => GetValueFromClass(context, x => x.Namespace),
             "class.FullName" => GetValueFromClass(context, x => x.FullName),
-            $"class.{nameof(Class.Name)}NoInterfacePrefix" => GetValueFromClass(context, x => x.NameNoInterfacePrefix),
             _ => Result.Continue<object?>()
         };
 
@@ -46,6 +45,5 @@ public class ClassVariable : IVariable
         public string Name => _type?.Name ?? _typeBase!.Name;
         public string Namespace => _type?.Namespace ?? _typeBase!.Namespace;
         public string FullName => _type?.FullName ?? _typeBase!.GetFullName();
-        public string NameNoInterfacePrefix => _type?.WithoutInterfacePrefix() ?? _typeBase!.WithoutInterfacePrefix();
     }
 }

@@ -24,7 +24,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<IVariable, PropertyVariable>()
             .AddScoped<IFunctionResultParser, CsharpFriendlyNameFunction>()
             .AddScoped<IFunctionResultParser, CsharpFriendlyTypeNameFunction>()
-            .AddScoped<IFunctionResultParser, GenericArgumentsFunction>();
+            .AddScoped<IFunctionResultParser, GenericArgumentsFunction>()
+            .AddScoped<IFunctionResultParser, NoInterfacePrefixFunction>();
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
