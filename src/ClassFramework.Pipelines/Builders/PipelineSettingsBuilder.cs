@@ -15,11 +15,11 @@ public partial class PipelineSettingsBuilder
         SetDefaultValuesMethodName = "SetDefaultValues";
         BuilderNewCollectionTypeName = typeof(IReadOnlyCollection<>).WithoutGenerics();
         CollectionInitializationStatementFormatString = "{NullCheck.Source.Argument}foreach (var item in source.[SourceExpression]) {$property.BuilderMemberName}.Add(item)";
-        CollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(ToCamelCase($property.Name))}) {$instancePrefix}{$property.Name}.Add(item);";
+        CollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(ToCamelCase($property.Name))}) {InstancePrefix()}{$property.Name}.Add(item);";
         NonCollectionInitializationStatementFormatString = "source.[SourceExpression]"; // note that we are not prefixing {NullCheck.Source.Argument}, because we can simply always copy the value, regardless if it's null :)
         BuilderExtensionsNamespaceFormatString = "{$class.Namespace}.Builders.Extensions";
         BuilderExtensionsNameFormatString = "{NoInterfacePrefix($class.Name)}BuilderExtensions";
-        BuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(ToCamelCase($property.Name))}) {$instancePrefix}{$property.Name}.Add(item);";
+        BuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(ToCamelCase($property.Name))}) {InstancePrefix()}{$property.Name}.Add(item);";
         EntityNamespaceFormatString = "{$class.Namespace}";
         EntityNameFormatString = "{$class.Name}";
         ToBuilderFormatString = "ToBuilder";

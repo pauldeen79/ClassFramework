@@ -220,7 +220,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         resultSetBuilder.Add("MethodName", () => formattableStringParser.Parse(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext));
         resultSetBuilder.Add(NamedResults.BuilderName, () => formattableStringParser.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext));
         resultSetBuilder.Add("ArgumentNullCheck", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), FormatProvider, parentChildContext));
-        resultSetBuilder.Add("BuilderWithExpression", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{$instancePrefix}{$property.Name} = {CsharpFriendlyName(ToCamelCase($property.Name))};"), FormatProvider, parentChildContext));
+        resultSetBuilder.Add("BuilderWithExpression", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{$property.Name} = {CsharpFriendlyName(ToCamelCase($property.Name))};"), FormatProvider, parentChildContext));
 
         return resultSetBuilder.Build();
     }

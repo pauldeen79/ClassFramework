@@ -6,7 +6,7 @@ public class GenericArgumentsFunction : IFunctionResultParser
     {
         functionParseResult = functionParseResult.IsNotNull(nameof(functionParseResult));
 
-        return FunctionBase.Parse(functionParseResult, context, evaluator, parser, "GenericArguments", s =>
+        return FunctionBase.ParseFromStringArgument(functionParseResult, context, evaluator, parser, "GenericArguments", s =>
         {
             var addBrackets = false;
             if (functionParseResult.Arguments.Count >= 2)

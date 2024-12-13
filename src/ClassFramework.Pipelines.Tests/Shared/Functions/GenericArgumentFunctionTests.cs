@@ -181,6 +181,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             result.Status.Should().Be(ResultStatus.Invalid);
             result.ErrorMessage.Should().Be("GenericArguments function second argument (add brackets) should be boolean");
         }
+
         [Fact]
         public void Returns_Success_When_Argument_ValueResult_Is_Of_Type_String()
         {

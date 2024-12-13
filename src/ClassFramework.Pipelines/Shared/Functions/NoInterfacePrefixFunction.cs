@@ -6,6 +6,6 @@ public class NoInterfacePrefixFunction : IFunctionResultParser
     {
         functionParseResult = functionParseResult.IsNotNull(nameof(functionParseResult));
 
-        return FunctionBase.Parse(functionParseResult, context, evaluator, parser, "NoInterfacePrefix", s => Result.Success<object?>(s.WithoutInterfacePrefix()));
+        return FunctionBase.ParseFromStringArgument(functionParseResult, context, evaluator, parser, "NoInterfacePrefix", s => Result.Success<object?>(s.WithoutInterfacePrefix()));
     }
 }

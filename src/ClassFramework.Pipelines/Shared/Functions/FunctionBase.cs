@@ -2,7 +2,7 @@
 
 internal static class FunctionBase
 {
-    internal static Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, string functionName, Func<string, Result<object?>> functionDelegate)
+    internal static Result<object?> ParseFromStringArgument(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, string functionName, Func<string, Result<object?>> functionDelegate)
     {
         if (functionParseResult.FunctionName != functionName)
         {
@@ -32,5 +32,20 @@ internal static class FunctionBase
         }
 
         return functionDelegate(s);
+    }
+
+    internal static Result<object?> ParseFromContext(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, string functionName, Func<ContextBase, Result<object?>> functionDelegate)
+    {
+        if (functionParseResult.FunctionName != functionName)
+        {
+            return Result.Continue<object?>();
+        }
+
+        return context switch
+        {
+            ContextBase contextBase => functionDelegate(contextBase),
+            ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity => functionDelegate(parentChildContextEntity.ParentContext.Request),
+            _ => Result.Invalid<object?>($"{functionName} function does not support type {context?.GetType().FullName ?? "null"}, only ContextBase is supported")
+        };
     }
 }

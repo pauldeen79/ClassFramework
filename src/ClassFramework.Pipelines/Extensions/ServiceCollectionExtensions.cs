@@ -19,13 +19,13 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>()
             .AddScoped<IPipelinePlaceholderProcessor, TypeProcessor>()
             .AddScoped<IVariable, ClassVariable>()
-            .AddScoped<IVariable, InstancePrefixVariable>()
-            .AddScoped<IVariable, NullCheckVariable>()
             .AddScoped<IVariable, PropertyVariable>()
             .AddScoped<IFunctionResultParser, CsharpFriendlyNameFunction>()
             .AddScoped<IFunctionResultParser, CsharpFriendlyTypeNameFunction>()
             .AddScoped<IFunctionResultParser, GenericArgumentsFunction>()
-            .AddScoped<IFunctionResultParser, NoInterfacePrefixFunction>();
+            .AddScoped<IFunctionResultParser, InstancePrefixFunction>()
+            .AddScoped<IFunctionResultParser, NoInterfacePrefixFunction>()
+            .AddScoped<IFunctionResultParser, NullCheckFunction>();
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services

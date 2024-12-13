@@ -45,7 +45,7 @@ public class PropertyVariable : IVariable
         var genericTypeName = typeName.GetProcessedGenericArguments();
 
         return property.IsNullable || (settings.AddNullChecks && settings.ValidateArguments != ArgumentValidationType.None)
-            ? $"{{ToCamelCase($property.Name)}} {{$nullCheck}} ? null{{$property.NullableRequiredSuffix}} : new {collectionTypeName}<{genericTypeName}>({{CsharpFriendlyName(ToCamelCase($property.Name))}}{{$property.NullableRequiredSuffix}})"
+            ? $"{{ToCamelCase($property.Name)}} {{NullCheck()}} ? null{{$property.NullableRequiredSuffix}} : new {collectionTypeName}<{genericTypeName}>({{CsharpFriendlyName(ToCamelCase($property.Name))}}{{$property.NullableRequiredSuffix}})"
             : $"new {collectionTypeName}<{genericTypeName}>({{CsharpFriendlyName(ToCamelCase($property.Name))}}{{$property.NullableRequiredSuffix}})";
     }
 }
