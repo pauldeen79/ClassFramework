@@ -19,7 +19,6 @@ public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) :
 
         return value switch
         {
-            "InitializationExpression" => formattableStringParser.Parse(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings), formatProvider, context),
             "CollectionTypeName" => Result.Success<FormattableStringParserResult>(propertyContext.Settings.CollectionTypeName),
             nameof(Property.TypeName) => Result.Success<FormattableStringParserResult>(typeName),
             $"{nameof(Property.TypeName)}.GenericArguments.ClassName" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments().GetClassName()),
@@ -40,25 +39,6 @@ public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) :
             "BuilderAddMethodName" => formattableStringParser.Parse(propertyContext.Settings.AddMethodNameFormatString, formatProvider, propertyContext),
             _ => Result.Continue<FormattableStringParserResult>()
         };
-    }
-
-    private static string GetInitializationExpression(Property property, string typeName, PipelineSettings settings)
-    {
-        return typeName.FixTypeName().IsCollectionTypeName()
-            && (settings.CollectionTypeName.Length == 0 || settings.CollectionTypeName != property.TypeName.WithoutProcessedGenerics())
-                ? GetCollectionFormatStringForInitialization(property, typeName, settings)
-                : "{CsharpFriendlyName(ToCamelCase($property.Name))}{$property.NullableRequiredSuffix}";
-    }
-
-    private static string GetCollectionFormatStringForInitialization(Property property, string typeName, PipelineSettings settings)
-    {
-        var collectionTypeName = settings.CollectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
-
-        var genericTypeName = typeName.GetProcessedGenericArguments();
-
-        return property.IsNullable || (settings.AddNullChecks && settings.ValidateArguments != ArgumentValidationType.None)
-            ? $"{{ToCamelCase($property.Name)}} {{$nullCheck}} ? null{{$property.NullableRequiredSuffix}} : new {collectionTypeName}<{genericTypeName}>({{CsharpFriendlyName(ToCamelCase($property.Name))}}{{$property.NullableRequiredSuffix}})"
-            : $"new {collectionTypeName}<{genericTypeName}>({{CsharpFriendlyName(ToCamelCase($property.Name))}}{{$property.NullableRequiredSuffix}})";
     }
 
     private static string WithoutInterfacePrefix(string className)

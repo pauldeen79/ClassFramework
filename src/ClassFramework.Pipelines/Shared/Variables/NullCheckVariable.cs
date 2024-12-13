@@ -6,10 +6,14 @@ public class NullCheckVariable : IVariable
     {
         if (variableExpression == "nullCheck")
         {
-            var value = context is ContextBase contextBase
-                ? contextBase.NullCheck
-                : string.Empty;
+            var value = context switch
+            {
+                ContextBase contextBase => contextBase.NullCheck,
+                ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity => parentChildContextEntity.ParentContext.Request.NullCheck,
+                _ => string.Empty
+            };
 
+            
             return Result.Success<object?>(value);
         }
 

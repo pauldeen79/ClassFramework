@@ -41,7 +41,7 @@ public class AddFullConstructorComponent(IFormattableStringParser formattableStr
     {
         var initializationResults = context.Request.SourceModel.Properties
             .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
-            .Select(property => _formattableStringParser.Parse("this.{$property.EntityMemberName} = {InitializationExpression};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings)))
+            .Select(property => _formattableStringParser.Parse("this.{$property.EntityMemberName} = {$property.InitializationExpression};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings)))
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 

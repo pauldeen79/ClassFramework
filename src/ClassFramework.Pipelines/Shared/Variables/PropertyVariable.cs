@@ -10,6 +10,8 @@ public class PropertyVariable : IVariable
             "property.BuilderMemberName" => GetValueFromProperty(context, (settings, culture, property, _) => property.GetBuilderMemberName(settings, culture)),
             "property.EntityMemberName" => GetValueFromProperty(context, (settings, culture, property, _) => property.GetEntityMemberName(settings.AddBackingFields || settings.CreateAsObservable, culture)),
             "property.NullableRequiredSuffix" => GetValueFromProperty(context, (settings, _, property, _) => GetNullableRequiredSuffix(settings, property)),
+            "property.InitializationExpression" => GetValueFromProperty(context, (settings, _, property, typeName) => GetInitializationExpression(property, typeName, settings)),
+
             _ => Result.Continue<object?>()
         };
 
@@ -27,4 +29,23 @@ public class PropertyVariable : IVariable
         => !settings.AddNullChecks && !property.IsValueType && !property.IsNullable && settings.EnableNullableReferenceTypes
             ? "!"
             : string.Empty;
+
+    private static string GetInitializationExpression(Property property, string typeName, PipelineSettings settings)
+    {
+        return typeName.FixTypeName().IsCollectionTypeName()
+            && (settings.CollectionTypeName.Length == 0 || settings.CollectionTypeName != property.TypeName.WithoutProcessedGenerics())
+                ? GetCollectionFormatStringForInitialization(property, typeName, settings)
+                : "{CsharpFriendlyName(ToCamelCase($property.Name))}{$property.NullableRequiredSuffix}";
+    }
+
+    private static string GetCollectionFormatStringForInitialization(Property property, string typeName, PipelineSettings settings)
+    {
+        var collectionTypeName = settings.CollectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
+
+        var genericTypeName = typeName.GetProcessedGenericArguments();
+
+        return property.IsNullable || (settings.AddNullChecks && settings.ValidateArguments != ArgumentValidationType.None)
+            ? $"{{ToCamelCase($property.Name)}} {{$nullCheck}} ? null{{$property.NullableRequiredSuffix}} : new {collectionTypeName}<{genericTypeName}>({{CsharpFriendlyName(ToCamelCase($property.Name))}}{{$property.NullableRequiredSuffix}})"
+            : $"new {collectionTypeName}<{genericTypeName}>({{CsharpFriendlyName(ToCamelCase($property.Name))}}{{$property.NullableRequiredSuffix}})";
+    }
 }
