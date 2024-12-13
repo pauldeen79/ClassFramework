@@ -6,15 +6,12 @@ public class NullCheckVariable : IVariable
     {
         if (variableExpression == "nullCheck")
         {
-            var value = context switch
+            return context switch
             {
-                ContextBase contextBase => contextBase.NullCheck,
-                ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity => parentChildContextEntity.ParentContext.Request.NullCheck,
-                _ => string.Empty
+                ContextBase contextBase => Result.Success<object?>(contextBase.NullCheck),
+                ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity => Result.Success<object?>(parentChildContextEntity.ParentContext.Request.NullCheck),
+                _ => Result.Invalid<object?>($"Could not get null check from context, because the context type {context?.GetType().FullName ?? "null"} is not supported")
             };
-
-            
-            return Result.Success<object?>(value);
         }
 
         return Result.Continue<object?>();
