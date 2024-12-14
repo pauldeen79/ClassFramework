@@ -16,8 +16,6 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
         => services
             .AddScoped<IPipelinePlaceholderProcessor, PropertyProcessor>()
-            .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>()
-            .AddScoped<IPipelinePlaceholderProcessor, TypeProcessor>()
             .AddScoped<IVariable, ClassVariable>()
             .AddScoped<IVariable, CollectionTypeNameVariable>()
             .AddScoped<IVariable, PropertyVariable>()
