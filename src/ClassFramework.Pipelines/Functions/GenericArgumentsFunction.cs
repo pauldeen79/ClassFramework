@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Shared.Functions;
+﻿namespace ClassFramework.Pipelines.Functions;
 
 public class GenericArgumentsFunction : IFunctionResultParser
 {

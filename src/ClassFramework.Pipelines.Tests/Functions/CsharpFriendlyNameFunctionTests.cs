@@ -1,8 +1,8 @@
-﻿namespace ClassFramework.Pipelines.Tests.Shared.Functions;
+﻿namespace ClassFramework.Pipelines.Tests.Functions;
 
-public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNameFunction>
+public class CsharpFriendlyNameFunctionTests : TestBase<CsharpFriendlyNameFunction>
 {
-    public class Parse : CsharpFriendlyTypeNameFunctionTests
+    public class Parse : CsharpFriendlyNameFunctionTests
     {
         [Fact]
         public void Returns_Continue_When_FunctionName_Is_Invalid()
@@ -31,7 +31,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
             // Arrange
             InitializeParser();
             var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("CsharpFriendlyTypeName")
+                .WithFunctionName("CsharpFriendlyName")
                 .WithFormatProvider(CultureInfo.InvariantCulture)
                 .Build();
             object? context = default;
@@ -44,7 +44,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("CsharpFriendlyTypeName function requires one argument");
+            result.ErrorMessage.Should().Be("CsharpFriendlyName function requires one argument");
         }
 
         [Fact]
@@ -53,7 +53,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
             // Arrange
             InitializeParser();
             var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("CsharpFriendlyTypeName")
+                .WithFunctionName("CsharpFriendlyName")
                 .WithFormatProvider(CultureInfo.InvariantCulture)
                 .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionParseResultBuilder().WithFunctionName("Error")))
                 .Build();
@@ -79,7 +79,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
             // Arrange
             InitializeParser();
             var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("CsharpFriendlyTypeName")
+                .WithFunctionName("CsharpFriendlyName")
                 .WithFormatProvider(CultureInfo.InvariantCulture)
                 .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionParseResultBuilder().WithFunctionName("Error")))
                 .Build();
@@ -96,7 +96,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("CsharpFriendlyTypeName function does not support type System.Int32, only string is supported");
+            result.ErrorMessage.Should().Be("CsharpFriendlyName function does not support type System.Int32, only string is supported");
         }
 
         [Fact]
@@ -105,7 +105,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
             // Arrange
             InitializeParser();
             var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("CsharpFriendlyTypeName")
+                .WithFunctionName("CsharpFriendlyName")
                 .WithFormatProvider(CultureInfo.InvariantCulture)
                 .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionParseResultBuilder().WithFunctionName("Error")))
                 .Build();
@@ -122,7 +122,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("CsharpFriendlyTypeName function requires argument of type string, but the value was null");
+            result.ErrorMessage.Should().Be("CsharpFriendlyName function requires argument of type string, but the value was null");
         }
 
         [Fact]
@@ -131,7 +131,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
             // Arrange
             InitializeParser();
             var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("CsharpFriendlyTypeName")
+                .WithFunctionName("CsharpFriendlyName")
                 .WithFormatProvider(CultureInfo.InvariantCulture)
                 .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionParseResultBuilder().WithFunctionName("Error")))
                 .Build();
@@ -139,7 +139,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
             var evaluator = Fixture.Freeze<IFunctionParseResultEvaluator>();
             evaluator
                 .Evaluate(Arg.Any<FunctionParseResult>(), Arg.Any<IExpressionParser>(), Arg.Any<object?>())
-                .Returns(Result.Success<object?>(typeof(string).FullName));
+                .Returns(Result.Success<object?>("delegate"));
             var parser = Fixture.Freeze<IExpressionParser>();
             var sut = CreateSut();
 
@@ -148,7 +148,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("string");
+            result.Value.Should().Be("@delegate");
         }
     }
 }

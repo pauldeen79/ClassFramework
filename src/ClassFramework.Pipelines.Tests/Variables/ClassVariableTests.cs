@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.Shared.Variables;
+﻿namespace ClassFramework.Pipelines.Tests.Variables;
 
 public class ClassVariableTests : TestBase<ClassVariable>
 {

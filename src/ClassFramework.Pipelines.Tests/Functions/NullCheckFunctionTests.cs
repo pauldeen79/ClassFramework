@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.Shared.Functions;
+﻿namespace ClassFramework.Pipelines.Tests.Functions;
 
 public class NullCheckFunctionTests : TestBase<NullCheckFunction>
 {
@@ -45,7 +45,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("NullCheck function does not support type ClassFramework.Pipelines.Tests.Shared.Functions.NullCheckFunctionTests, only ContextBase is supported");
+            result.ErrorMessage.Should().Be("NullCheck function does not support type ClassFramework.Pipelines.Tests.Functions.NullCheckFunctionTests+Parse, only ContextBase is supported");
         }
 
         [Fact]

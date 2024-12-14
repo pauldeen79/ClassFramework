@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Shared.Variables;
+﻿namespace ClassFramework.Pipelines.Variables;
 
 public class PropertyVariable : IVariable
 {

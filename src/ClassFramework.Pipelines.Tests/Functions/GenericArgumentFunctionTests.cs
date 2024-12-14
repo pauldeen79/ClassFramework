@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.Shared.Functions;
+﻿namespace ClassFramework.Pipelines.Tests.Functions;
 
 public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
 {
