@@ -4,6 +4,10 @@ internal static class FunctionBase
 {
     internal static Result<object?> ParseFromStringArgument(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, string functionName, Func<string, Result<object?>> functionDelegate)
     {
+        functionParseResult = functionParseResult.IsNotNull(nameof(functionParseResult));
+        evaluator = evaluator.IsNotNull(nameof(evaluator));
+        parser = parser.IsNotNull(nameof(parser));
+
         if (functionParseResult.FunctionName != functionName)
         {
             return Result.Continue<object?>();
@@ -34,8 +38,10 @@ internal static class FunctionBase
         return functionDelegate(s);
     }
 
-    internal static Result<object?> ParseFromContext(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, string functionName, Func<ContextBase, Result<object?>> functionDelegate)
+    internal static Result<object?> ParseFromContext(FunctionParseResult functionParseResult, object? context, string functionName, Func<ContextBase, Result<object?>> functionDelegate)
     {
+        functionParseResult = functionParseResult.IsNotNull(nameof(functionParseResult));
+        
         if (functionParseResult.FunctionName != functionName)
         {
             return Result.Continue<object?>();

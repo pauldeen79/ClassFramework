@@ -21,10 +21,13 @@ public static class ServiceCollectionExtensions
             .AddScoped<IVariable, ClassVariable>()
             .AddScoped<IVariable, CollectionTypeNameVariable>()
             .AddScoped<IVariable, PropertyVariable>()
+            .AddScoped<IFunctionResultParser, ClassNameFunction>()
             .AddScoped<IFunctionResultParser, CsharpFriendlyNameFunction>()
             .AddScoped<IFunctionResultParser, CsharpFriendlyTypeNameFunction>()
             .AddScoped<IFunctionResultParser, GenericArgumentsFunction>()
             .AddScoped<IFunctionResultParser, InstancePrefixFunction>()
+            .AddScoped<IFunctionResultParser, NamespaceFunction>()
+            .AddScoped<IFunctionResultParser, NoGenericsFunction>()
             .AddScoped<IFunctionResultParser, NoInterfacePrefixFunction>()
             .AddScoped<IFunctionResultParser, NullCheckFunction>();
 

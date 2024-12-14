@@ -20,15 +20,8 @@ public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) :
         return value switch
         {
             nameof(Property.TypeName) => Result.Success<FormattableStringParserResult>(typeName),
-            $"{nameof(Property.TypeName)}.GenericArguments.ClassName" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments().GetClassName()),
-            $"{nameof(Property.TypeName)}.GenericArguments.ClassName.NoGenerics" => Result.Success<FormattableStringParserResult>(typeName.GetProcessedGenericArguments().GetClassName().WithoutProcessedGenerics()),
             $"{nameof(Property.TypeName)}.CollectionItemType.GenericArgumentsWithBrackets" => Result.Success<FormattableStringParserResult>(typeName.GetCollectionItemType().GetProcessedGenericArguments(addBrackets: true)),
             $"{nameof(Property.TypeName)}.CollectionItemType.GenericArgumentsWithoutBrackets" => Result.Success<FormattableStringParserResult>(typeName.GetCollectionItemType().GetProcessedGenericArguments(addBrackets: false)),
-            $"{nameof(Property.TypeName)}.ClassName" => Result.Success<FormattableStringParserResult>(typeName.GetClassName()),
-            $"{nameof(Property.TypeName)}.ClassName.NoGenerics" => Result.Success<FormattableStringParserResult>(typeName.GetClassName().WithoutProcessedGenerics()),
-            $"{nameof(Property.TypeName)}.ClassName.NoInterfacePrefix" => Result.Success<FormattableStringParserResult>(WithoutInterfacePrefix(typeName.GetClassName())),
-            $"{nameof(Property.TypeName)}.Namespace" => Result.Success<FormattableStringParserResult>(typeName.GetNamespaceWithDefault()),
-            $"{nameof(Property.TypeName)}.NoGenerics" => Result.Success<FormattableStringParserResult>(typeName.WithoutProcessedGenerics()),
             "ParentTypeName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.ParentTypeFullName),
             "ParentTypeName.ClassName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.ParentTypeFullName.GetClassName()),
             "ParentTypeName.ClassName.NoGenerics" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.ParentTypeFullName.GetClassName().WithoutProcessedGenerics()),
@@ -39,11 +32,4 @@ public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) :
             _ => Result.Continue<FormattableStringParserResult>()
         };
     }
-
-    private static string WithoutInterfacePrefix(string className)
-        => className.StartsWith("I")
-        && className.Length >= 2
-        && className.Substring(1, 1).Equals(className.Substring(1, 1).ToUpperInvariant(), StringComparison.Ordinal)
-            ? className.Substring(1)
-            : className;
 }

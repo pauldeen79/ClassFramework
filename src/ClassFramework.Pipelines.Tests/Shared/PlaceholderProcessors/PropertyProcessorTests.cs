@@ -46,13 +46,8 @@ public class PropertyProcessorTests : TestBase<PropertyProcessor>
 
         [Theory]
         [InlineData("TypeName", "System.Collections.Generic.List<System.String>")]
-        [InlineData("TypeName.GenericArguments.ClassName", "String")]
-        [InlineData("TypeName.GenericArguments.ClassName.NoGenerics", "String")]
         [InlineData("TypeName.CollectionItemType.GenericArgumentsWithBrackets", "")]
         [InlineData("TypeName.CollectionItemType.GenericArgumentsWithoutBrackets", "")]
-        [InlineData("TypeName.ClassName", "List<System.String>")]
-        [InlineData("TypeName.Namespace", "System.Collections.Generic")]
-        [InlineData("TypeName.NoGenerics", "System.Collections.Generic.List")]
         [InlineData("DefaultValue", "default(System.Collections.Generic.List<System.String>)")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {

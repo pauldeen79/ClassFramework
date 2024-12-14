@@ -160,11 +160,11 @@ public static class PropertyExtensions
                 {
                     if (!string.IsNullOrEmpty(property.TypeName.FixTypeName().GetCollectionItemType().GetProcessedGenericArguments()))
                     {
-                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}").Replace("{TypeName.ClassName.NoGenerics}", "{TypeName.GenericArguments.ClassName.NoGenerics}").Replace("{GenericArguments($property.TypeName, true)}", "{TypeName.CollectionItemType.GenericArgumentsWithBrackets}")}>";
+                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}").Replace("{NoGenerics(ClassName($property.TypeName))}", "{NoGenerics(ClassName(GenericArguments($property.TypeName)))}").Replace("{GenericArguments($property.TypeName, true)}", "{TypeName.CollectionItemType.GenericArgumentsWithBrackets}")}>";
                     }
                     else
                     {
-                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}").Replace("{TypeName.ClassName.NoGenerics}", "{TypeName.GenericArguments.ClassName.NoGenerics}")}>";
+                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}").Replace("{NoGenerics(ClassName($property.TypeName))}", "{NoGenerics(ClassName(GenericArguments($property.TypeName)))}")}>";
                     }
                 }
             }
@@ -207,7 +207,7 @@ public static class PropertyExtensions
 
         if (property.TypeName.FixTypeName().IsCollectionTypeName())
         {
-            newTypeName = newTypeName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}");
+            newTypeName = newTypeName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}");
         }
 
         var newFullName = $"{ns}.{newTypeName}";

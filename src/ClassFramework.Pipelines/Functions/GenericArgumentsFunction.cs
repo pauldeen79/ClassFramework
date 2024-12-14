@@ -3,10 +3,7 @@
 public class GenericArgumentsFunction : IFunctionResultParser
 {
     public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
-    {
-        functionParseResult = functionParseResult.IsNotNull(nameof(functionParseResult));
-
-        return FunctionBase.ParseFromStringArgument(functionParseResult, context, evaluator, parser, "GenericArguments", s =>
+        => FunctionBase.ParseFromStringArgument(functionParseResult, context, evaluator, parser, "GenericArguments", s =>
         {
             var addBrackets = false;
             if (functionParseResult.Arguments.Count >= 2)
@@ -27,5 +24,4 @@ public class GenericArgumentsFunction : IFunctionResultParser
 
             return Result.Success<object?>(s.GetProcessedGenericArguments(addBrackets));
         });
-    }
 }

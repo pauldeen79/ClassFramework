@@ -292,7 +292,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
                     .WithSourceTypeName("ITypedExpression")
                     .WithTargetTypeName("ITypedExpression")
                     .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderNamespace).WithValue("Builders"))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderName).WithValue("{TypeName.ClassName.NoGenerics}Builder{GenericArguments($property.TypeName, true)}"))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderName).WithValue("{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}"))
                 ).Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var context = new TestContext(settings, formatProvider);
@@ -305,7 +305,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value!.ToString().Should().Be("IReadOnlyCollection<Builders.{TypeName.GenericArguments.ClassName.NoGenerics}Builder{TypeName.CollectionItemType.GenericArgumentsWithBrackets}>");
+            result.Value!.ToString().Should().Be("IReadOnlyCollection<Builders.{NoGenerics(ClassName(GenericArguments($property.TypeName)))}Builder{TypeName.CollectionItemType.GenericArgumentsWithBrackets}>");
         }
 
         private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider)
