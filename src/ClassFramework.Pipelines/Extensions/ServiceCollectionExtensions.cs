@@ -27,7 +27,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<IFunctionResultParser, NamespaceFunction>()
             .AddScoped<IFunctionResultParser, NoGenericsFunction>()
             .AddScoped<IFunctionResultParser, NoInterfacePrefixFunction>()
-            .AddScoped<IFunctionResultParser, NullCheckFunction>();
+            .AddScoped<IFunctionResultParser, NullCheckFunction>()
+            .AddScoped<IObjectResolver, PropertyResolver>();
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services

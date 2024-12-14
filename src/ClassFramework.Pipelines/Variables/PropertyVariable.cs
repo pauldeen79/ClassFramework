@@ -2,15 +2,24 @@
 
 public class PropertyVariable : IVariable
 {
+    private readonly IObjectResolver _objectResolver;
+
+    public PropertyVariable(IObjectResolver objectResolver)
+    {
+        ArgumentGuard.IsNotNull(objectResolver, nameof(objectResolver));
+
+        _objectResolver = objectResolver;
+    }
+
     public Result<object?> Process(string variableExpression, object? context)
         => variableExpression switch
         {
-            $"property.{nameof(Property.Name)}" => VariableBase.GetValueFromProperty(context, (_, _, property, _) => property.Name),
-            $"property.{nameof(Property.TypeName)}" => VariableBase.GetValueFromProperty(context, (_, _, _, typeName) => typeName),
-            "property.BuilderMemberName" => VariableBase.GetValueFromProperty(context, (settings, culture, property, _) => property.GetBuilderMemberName(settings, culture)),
-            "property.EntityMemberName" => VariableBase.GetValueFromProperty(context, (settings, culture, property, _) => property.GetEntityMemberName(settings.AddBackingFields || settings.CreateAsObservable, culture)),
-            "property.NullableRequiredSuffix" => VariableBase.GetValueFromProperty(context, (settings, _, property, _) => GetNullableRequiredSuffix(settings, property)),
-            "property.InitializationExpression" => VariableBase.GetValueFromProperty(context, (settings, _, property, typeName) => GetInitializationExpression(property, typeName, settings)),
+            $"property.{nameof(Property.Name)}" => VariableBase.GetValueFromProperty(_objectResolver, context, (_, _, property, _) => property.Name),
+            $"property.{nameof(Property.TypeName)}" => VariableBase.GetValueFromProperty(_objectResolver, context, (_, _, _, typeName) => typeName),
+            "property.BuilderMemberName" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, culture, property, _) => property.GetBuilderMemberName(settings, culture)),
+            "property.EntityMemberName" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, culture, property, _) => property.GetEntityMemberName(settings.AddBackingFields || settings.CreateAsObservable, culture)),
+            "property.NullableRequiredSuffix" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, _, property, _) => GetNullableRequiredSuffix(settings, property)),
+            "property.InitializationExpression" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, _, property, typeName) => GetInitializationExpression(property, typeName, settings)),
             _ => Result.Continue<object?>()
         };
 

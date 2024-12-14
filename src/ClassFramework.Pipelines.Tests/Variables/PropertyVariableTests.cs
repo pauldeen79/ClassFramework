@@ -7,6 +7,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     {
         // Arrange
         var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
         var sut = CreateSut();
 
         // Act
@@ -23,6 +25,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         // Arrange
         var settings = new PipelineSettingsBuilder().Build();
         var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(new ClassBuilder().WithName("MyClass").Build(), settings, CultureInfo.InvariantCulture)), CreateProperty(), settings);
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.ChildContext));
         var sut = CreateSut();
 
         // Act
@@ -39,6 +43,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         // Arrange
         var settings = new PipelineSettingsBuilder().Build();
         var context = new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(new PipelineContext<BuilderExtensionContext>(new BuilderExtensionContext(new ClassBuilder().WithName("MyClass").Build(), settings, CultureInfo.InvariantCulture)), CreateProperty(), settings);
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.ChildContext));
         var sut = CreateSut();
 
         // Act
@@ -54,6 +60,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     {
         // Arrange
         var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
         var sut = CreateSut();
 
         // Act
@@ -69,6 +77,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     {
         // Arrange
         var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
         var sut = CreateSut();
 
         // Act
@@ -84,6 +94,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     {
         // Arrange
         var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
         var sut = CreateSut();
 
         // Act
@@ -99,6 +111,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     {
         // Arrange
         var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
         var sut = CreateSut();
 
         // Act
@@ -110,33 +124,19 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     }
 
     [Fact]
-    public void Supplying_Unknown_Context_Type_Gives_Invalid_Result()
-    {
-        // Arrange
-        var context = new object();
-        var sut = CreateSut();
-
-        // Act
-        var result = sut.Process("property.Name", context);
-
-        // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not get property from context, because the context type System.Object is not supported");
-    }
-
-    [Fact]
-    public void Supplying_Null_Context_Gives_Invalid_Result()
+    public void Returns_Non_Succesful_Result_From_ObjectResolver()
     {
         // Arrange
         var context = default(object?);
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.NotFound<Property>());
         var sut = CreateSut();
 
         // Act
         var result = sut.Process("property.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Invalid);
-        result.ErrorMessage.Should().Be("Could not get property from context, because the context type null is not supported");
+        result.Status.Should().Be(ResultStatus.NotFound);
     }
 
     [Fact]
@@ -144,6 +144,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     {
         // Arrange
         var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
         var sut = CreateSut();
 
         // Act
