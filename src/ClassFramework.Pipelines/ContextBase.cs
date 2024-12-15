@@ -14,7 +14,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         : "!= null";
 }
 
-public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : ContextBase(settings, formatProvider)
+public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : ContextBase(settings, formatProvider), ITypeNameMapper
 {
     public TSourceModel SourceModel { get; } = sourceModel.IsNotNull(nameof(sourceModel));
 
@@ -30,7 +30,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         return $"if ({argumentName} {NullCheck}) throw new {typeof(ArgumentNullException).FullName}(nameof({argumentName}));";
     }
 
-    public string MapTypeName(string typeName, string alternateTypeMetadataName = "")
+    public string MapTypeName(string typeName, string alternateTypeMetadataName)
     {
         typeName = typeName.IsNotNull(nameof(typeName));
 
@@ -57,7 +57,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         attribute = attribute.IsNotNull(nameof(attribute));
 
         return new AttributeBuilder(attribute)
-            .WithName(MapTypeName(attribute.Name.FixTypeName()))
+            .WithName(MapTypeName(attribute.Name.FixTypeName(), string.Empty))
             .Build();
     }
 
@@ -113,7 +113,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         Result<FormattableStringParserResult> Default(string value, IFormattableStringParser formattableStringParser, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
         {
             var pipelinePlaceholderProcessorsArray = pipelinePlaceholderProcessors.ToArray();
-            return pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, context.FormatProvider, new PropertyContext(childContext, Settings, context.FormatProvider, MapTypeName(childContext.TypeName), Settings.BuilderNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+            return pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, context.FormatProvider, new PropertyContext(childContext, Settings, context.FormatProvider, MapTypeName(childContext.TypeName, string.Empty), Settings.BuilderNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, context.FormatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<FormattableStringParserResult>();
         }
@@ -127,7 +127,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .WithName(property.Name)
             .WithTypeName(MapTypeName(property.TypeName
                 .FixCollectionTypeName(Settings.EntityNewCollectionTypeName)
-                .FixNullableTypeName(property)))
+                .FixNullableTypeName(property), string.Empty))
             .WithIsNullable(property.IsNullable)
             .WithIsValueType(property.IsValueType)
             .AddGenericTypeArguments(property.GenericTypeArguments)
