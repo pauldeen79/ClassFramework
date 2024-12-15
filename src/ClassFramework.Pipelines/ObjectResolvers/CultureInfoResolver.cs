@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.ObjectResolvers;
 
-public class CultureInfoResolver : IObjectResolver
+public class CultureInfoResolver : IObjectResolverProcessor
 {
     public Result<T> Resolve<T>(object? sourceObject)
         => typeof(T) == typeof(CultureInfo)

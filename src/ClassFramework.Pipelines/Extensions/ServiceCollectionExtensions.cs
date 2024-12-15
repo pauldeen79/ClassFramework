@@ -28,10 +28,10 @@ public static class ServiceCollectionExtensions
             .AddScoped<IFunctionResultParser, NoGenericsFunction>()
             .AddScoped<IFunctionResultParser, NoInterfacePrefixFunction>()
             .AddScoped<IFunctionResultParser, NullCheckFunction>()
-            .AddScoped<IObjectResolver, CultureInfoResolver>()
-            .AddScoped<IObjectResolver, PipelineSettingsResolver>()
-            .AddScoped<IObjectResolver, PropertyResolver>()
-            .AddScoped<IObjectResolver, TypeNameMapperResolver>();
+            .AddScoped<IObjectResolverProcessor, CultureInfoResolver>()
+            .AddScoped<IObjectResolverProcessor, PipelineSettingsResolver>()
+            .AddScoped<IObjectResolverProcessor, PropertyResolver>()
+            .AddScoped<IObjectResolverProcessor, TypeNameMapperResolver>();
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services

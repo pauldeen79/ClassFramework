@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.ObjectResolvers;
 
-public class PropertyResolver : IObjectResolver
+public class PropertyResolver : IObjectResolverProcessor
 {
     public Result<T> Resolve<T>(object? sourceObject)
         => typeof(T) == typeof(Property)
