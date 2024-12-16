@@ -158,6 +158,39 @@ public class ClassVariableTests : TestBase<ClassVariable>
     }
 
     [Fact]
+    public void Can_Get_ClassNamespace_From_BuilderContext()
+    {
+        // Arrange
+        var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<ClassModel>(Arg.Any<object?>()).Returns(Result.Success(new ClassModel(context.Request.SourceModel)));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("class.Namespace", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.Request.SourceModel.Namespace);
+    }
+
+    [Fact]
+    public void Returns_Non_Succesful_Result_From_ObjectResolver()
+    {
+        // Arrange
+        var context = default(object?);
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<ClassModel>(Arg.Any<object?>()).Returns(Result.NotFound<ClassModel>());
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("class.Name", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.NotFound);
+    }
+
+    [Fact]
     public void Supplying_Unknown_Property_Name_Gives_Continue_Result()
     {
         // Arrange
