@@ -31,6 +31,7 @@ global using ClassFramework.Pipelines.Functions;
 global using ClassFramework.Pipelines.Interface;
 global using ClassFramework.Pipelines.Interface.Components.Abstractions;
 global using ClassFramework.Pipelines.Interface.PlaceholderProcessors;
+global using ClassFramework.Pipelines.Models;
 global using ClassFramework.Pipelines.ObjectResolvers;
 global using ClassFramework.Pipelines.Reflection.Components.Abstractions;
 global using ClassFramework.Pipelines.Reflection.PlaceholderProcessors;

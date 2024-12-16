@@ -26,6 +26,7 @@ global using ClassFramework.Pipelines.Entity.PlaceholderProcessors;
 global using ClassFramework.Pipelines.Extensions;
 global using ClassFramework.Pipelines.Functions;
 global using ClassFramework.Pipelines.Interface;
+global using ClassFramework.Pipelines.Models;
 global using ClassFramework.Pipelines.ObjectResolvers;
 global using ClassFramework.Pipelines.Reflection;
 global using ClassFramework.Pipelines.Reflection.PlaceholderProcessors;

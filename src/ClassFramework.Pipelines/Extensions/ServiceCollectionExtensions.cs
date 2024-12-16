@@ -28,6 +28,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IFunctionResultParser, NoGenericsFunction>()
             .AddScoped<IFunctionResultParser, NoInterfacePrefixFunction>()
             .AddScoped<IFunctionResultParser, NullCheckFunction>()
+            .AddScoped<IObjectResolverProcessor, ClassModelResolver>()
             .AddScoped<IObjectResolverProcessor, CultureInfoResolver>()
             .AddScoped<IObjectResolverProcessor, PipelineSettingsResolver>()
             .AddScoped<IObjectResolverProcessor, PropertyResolver>()
