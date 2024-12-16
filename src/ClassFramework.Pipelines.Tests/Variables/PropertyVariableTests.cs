@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Extensions;
-
-namespace ClassFramework.Pipelines.Tests.Variables;
+﻿namespace ClassFramework.Pipelines.Tests.Variables;
 
 public class PropertyVariableTests : TestBase<PropertyVariable>
 {
