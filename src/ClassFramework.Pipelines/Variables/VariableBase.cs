@@ -4,31 +4,24 @@ internal static class VariableBase
 {
     internal static Result<object?> GetValueFromProperty(IObjectResolver objectResolver, object? context, Func<PipelineSettings, CultureInfo, Property, string, object?> valueDelegate)
     {
-        //TODO: Refactor to use getting the results lazy, and getting the first non-successful result and return that
-        var propertyResult = objectResolver.Resolve<Property>(context);
-        if (!propertyResult.IsSuccessful())
+        var resultSetBuilder = new NamedResultSetBuilder<object?>();
+        resultSetBuilder.Add(nameof(Property), () => objectResolver.Resolve<Property>(context).TryCast<object?>());
+        resultSetBuilder.Add(nameof(PipelineSettings), () => objectResolver.Resolve<PipelineSettings>(context).TryCast<object?>());
+        resultSetBuilder.Add(nameof(CultureInfo), () => objectResolver.Resolve<CultureInfo>(context).TryCast<object?>());
+        resultSetBuilder.Add(nameof(ITypeNameMapper), () => objectResolver.Resolve<ITypeNameMapper>(context).TryCast<object?>());
+        var results = resultSetBuilder.Build();
+
+        var error = Array.Find(results, x => !x.Result.IsSuccessful());
+        if (error is not null)
         {
-            return Result.FromExistingResult<object?>(propertyResult);
+            // Error in resolving dependencies
+            return Result.FromExistingResult<object?>(error.Result);
         }
 
-        var pipelineSettingsResult = objectResolver.Resolve<PipelineSettings>(context);
-        if (!pipelineSettingsResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(pipelineSettingsResult);
-        }
-
-        var cultureInfoResult = objectResolver.Resolve<CultureInfo>(context);
-        if (!cultureInfoResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(cultureInfoResult);
-        }
-
-        var typeNameMapperResult = objectResolver.Resolve<ITypeNameMapper>(context);
-        if (!typeNameMapperResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<object?>(typeNameMapperResult);
-        }
-        
-        return Result.Success(valueDelegate(pipelineSettingsResult.Value!, cultureInfoResult.Value!, propertyResult.Value!, typeNameMapperResult.Value!.MapTypeName(propertyResult.Value!.TypeName)));
+        var property = (Property)results.First(x => x.Name == nameof(Property)).Result.Value!;
+        var pipelineSettings = (PipelineSettings)results.First(x => x.Name == nameof(PipelineSettings)).Result.Value!;
+        var cultureInfo = (CultureInfo)results.First(x => x.Name == nameof(CultureInfo)).Result.Value!;
+        var typeNameMapper = (ITypeNameMapper)results.First(x => x.Name == nameof(ITypeNameMapper)).Result.Value!;
+        return Result.Success(valueDelegate(pipelineSettings, cultureInfo, property, typeNameMapper.MapTypeName(property.TypeName)));
     }
 }
