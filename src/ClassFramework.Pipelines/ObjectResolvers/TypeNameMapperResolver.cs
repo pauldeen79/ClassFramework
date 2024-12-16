@@ -10,7 +10,7 @@ public class TypeNameMapperResolver : IObjectResolverProcessor
                 ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContextBuilder => Result.Success((T)(object)parentChildContextBuilder.ParentContext.Request),
                 ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContextBuilderExtension => Result.Success((T)(object)parentChildContextBuilderExtension.ParentContext.Request),
                 ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity => Result.Success((T)(object)parentChildContextEntity.ParentContext.Request),
-                _ => Result.NotSupported<T>($"Could not get typename mappe from context, because the context type {sourceObject?.GetType().FullName ?? "null"} is not supported")
+                _ => Result.NotSupported<T>($"Could not get typename mapper from context, because the context type {sourceObject?.GetType().FullName ?? "null"} is not supported")
             }
             : Result.Continue<T>();
 
