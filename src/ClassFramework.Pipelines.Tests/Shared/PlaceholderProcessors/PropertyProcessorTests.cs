@@ -45,7 +45,6 @@ public class PropertyProcessorTests : TestBase<PropertyProcessor>
         }
 
         [Theory]
-        [InlineData("TypeName", "System.Collections.Generic.List<System.String>")]
         [InlineData("TypeName.CollectionItemType.GenericArgumentsWithBrackets", "")]
         [InlineData("TypeName.CollectionItemType.GenericArgumentsWithoutBrackets", "")]
         [InlineData("DefaultValue", "default(System.Collections.Generic.List<System.String>)")]

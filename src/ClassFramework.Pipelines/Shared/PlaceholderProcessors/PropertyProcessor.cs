@@ -19,7 +19,6 @@ public class PropertyProcessor(ICsharpExpressionDumper csharpExpressionDumper) :
 
         return value switch
         {
-            nameof(Property.TypeName) => Result.Success<FormattableStringParserResult>(typeName),
             $"{nameof(Property.TypeName)}.CollectionItemType.GenericArgumentsWithBrackets" => Result.Success<FormattableStringParserResult>(typeName.GetCollectionItemType().GetProcessedGenericArguments(addBrackets: true)),
             $"{nameof(Property.TypeName)}.CollectionItemType.GenericArgumentsWithoutBrackets" => Result.Success<FormattableStringParserResult>(typeName.GetCollectionItemType().GetProcessedGenericArguments(addBrackets: false)),
             "ParentTypeName" => Result.Success<FormattableStringParserResult>(propertyContext.SourceModel.ParentTypeFullName),
