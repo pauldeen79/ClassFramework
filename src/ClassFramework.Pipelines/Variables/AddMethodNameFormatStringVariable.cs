@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Variables;
 
-public class CollectionTypeNameVariable : IVariable
+public class AddMethodNameFormatStringVariable : IVariable
 {
     private readonly IObjectResolver _objectResolver;
 
-    public CollectionTypeNameVariable(IObjectResolver objectResolver)
+    public AddMethodNameFormatStringVariable(IObjectResolver objectResolver)
     {
         ArgumentGuard.IsNotNull(objectResolver, nameof(objectResolver));
 
@@ -14,7 +14,7 @@ public class CollectionTypeNameVariable : IVariable
     public Result<object?> Process(string variableExpression, object? context)
         => variableExpression switch
         {
-            "collectionTypeName" => VariableBase.GetValueFromSettings(_objectResolver, context, settings => settings.CollectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())),
+            "addMethodNameFormatString" => VariableBase.GetValueFromSettings(_objectResolver, context, settings => settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())),
             _ => Result.Continue<object?>()
         };
 }

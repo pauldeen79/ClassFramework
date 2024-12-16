@@ -24,4 +24,15 @@ internal static class VariableBase
         var typeNameMapper = (ITypeNameMapper)results.First(x => x.Name == nameof(ITypeNameMapper)).Result.Value!;
         return Result.Success(valueDelegate(pipelineSettings, cultureInfo, property, typeNameMapper.MapTypeName(property.TypeName)));
     }
+
+    internal static Result<object?> GetValueFromSettings(IObjectResolver objectResolver, object? context, Func<PipelineSettings, object?> valueDelegate)
+    {
+        var pipelineSettingsResult = objectResolver.Resolve<PipelineSettings>(context);
+        if (!pipelineSettingsResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<object?>(pipelineSettingsResult);
+        }
+
+        return Result.Success(valueDelegate(pipelineSettingsResult.Value!));
+    }
 }
