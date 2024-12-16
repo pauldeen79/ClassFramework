@@ -18,7 +18,7 @@ public class AbstractBuilderComponent(IFormattableStringParser formattableString
 
         if (context.Request.IsBuilderForAbstractEntity /*&& context.Request.IsAbstractBuilder*/)
         {
-            var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context);
+            var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
             if (!nameResult.IsSuccessful())
             {
                 return Task.FromResult<Result>(nameResult);

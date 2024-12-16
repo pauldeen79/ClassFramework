@@ -35,10 +35,10 @@ public class ClassModelResolverTests : TestBase<ClassModelResolver>
         }
 
         [Fact]
-        public void Returns_Success_On_PipelineContext_Of_BuilderContext()
+        public void Returns_Success_On_BuilderContext()
         {
             // Arrange
-            var sourceObject = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+            var sourceObject = new BuilderContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture);
             var sut = CreateSut();
 
             // Act
@@ -50,10 +50,10 @@ public class ClassModelResolverTests : TestBase<ClassModelResolver>
         }
 
         [Fact]
-        public void Returns_Success_On_PipelineContext_Of_BuilderExtensionContext()
+        public void Returns_Success_On_BuilderExtensionContext()
         {
             // Arrange
-            var sourceObject = new PipelineContext<BuilderExtensionContext>(new BuilderExtensionContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+            var sourceObject = new BuilderExtensionContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture);
             var sut = CreateSut();
 
             // Act
@@ -65,10 +65,10 @@ public class ClassModelResolverTests : TestBase<ClassModelResolver>
         }
 
         [Fact]
-        public void Returns_Success_On_PipelineContext_Of_EntityContext()
+        public void Returns_Success_On_EntityContext()
         {
             // Arrange
-            var sourceObject = new PipelineContext<EntityContext>(new EntityContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+            var sourceObject = new EntityContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture);
             var sut = CreateSut();
 
             // Act
@@ -80,10 +80,10 @@ public class ClassModelResolverTests : TestBase<ClassModelResolver>
         }
 
         [Fact]
-        public void Returns_Success_On_PipelineContext_Of_InterfaceContext()
+        public void Returns_Success_On_InterfaceContext()
         {
             // Arrange
-            var sourceObject = new PipelineContext<InterfaceContext>(new InterfaceContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+            var sourceObject = new InterfaceContext(CreateClass(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture);
             var sut = CreateSut();
 
             // Act
@@ -95,10 +95,10 @@ public class ClassModelResolverTests : TestBase<ClassModelResolver>
         }
 
         [Fact]
-        public void Returns_Success_On_PipelineContext_Of_ReflectionContext()
+        public void Returns_Success_On_ReflectionContext()
         {
             // Arrange
-            var sourceObject = new PipelineContext<ReflectionContext>(new ReflectionContext(GetType(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+            var sourceObject = new ReflectionContext(GetType(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture);
             var sut = CreateSut();
 
             // Act

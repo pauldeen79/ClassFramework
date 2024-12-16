@@ -6,11 +6,11 @@ public class ClassModelResolver : IObjectResolverProcessor
         => typeof(T) == typeof(ClassModel)
             ? sourceObject switch
             {
-                PipelineContext<BuilderContext> builderContext => Result.Success((T)(object)new ClassModel(builderContext.Request.SourceModel)),
-                PipelineContext<BuilderExtensionContext> builderExtensionContext => Result.Success((T)(object)new ClassModel(builderExtensionContext.Request.SourceModel)),
-                PipelineContext<EntityContext> entityContext => Result.Success((T)(object)new ClassModel(entityContext.Request.SourceModel)),
-                PipelineContext<InterfaceContext> interfaceContext => Result.Success((T)(object)new ClassModel(interfaceContext.Request.SourceModel)),
-                PipelineContext<Reflection.ReflectionContext> reflectionContext => Result.Success((T)(object)new ClassModel(reflectionContext.Request.SourceModel)),
+                BuilderContext builderContext => Result.Success((T)(object)new ClassModel(builderContext.SourceModel)),
+                BuilderExtensionContext builderExtensionContext => Result.Success((T)(object)new ClassModel(builderExtensionContext.SourceModel)),
+                EntityContext entityContext => Result.Success((T)(object)new ClassModel(entityContext.SourceModel)),
+                InterfaceContext interfaceContext => Result.Success((T)(object)new ClassModel(interfaceContext.SourceModel)),
+                Reflection.ReflectionContext reflectionContext => Result.Success((T)(object)new ClassModel(reflectionContext.SourceModel)),
                 ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContextBuilder => Result.Success((T)(object)new ClassModel(parentChildContextBuilder.ParentContext.Request.SourceModel)),
                 ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContextBuilderExtension => Result.Success((T)(object)new ClassModel(parentChildContextBuilderExtension.ParentContext.Request.SourceModel)),
                 ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity => Result.Success((T)(object)new ClassModel(parentChildContextEntity.ParentContext.Request.SourceModel)),

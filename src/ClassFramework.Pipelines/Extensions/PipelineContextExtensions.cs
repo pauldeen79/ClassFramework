@@ -11,7 +11,7 @@ public static class PipelineContextExtensions
             .GetStringValue(MetadataNames.CustomBuilderEntityInstanciation);
         if (!string.IsNullOrEmpty(customEntityInstanciation))
         {
-            return formattableStringParser.Parse(customEntityInstanciation, context.Request.FormatProvider, context);
+            return formattableStringParser.Parse(customEntityInstanciation, context.Request.FormatProvider, context.Request);
         }
 
         if (context.Request.SourceModel is not IConstructorsContainer constructorsContainer)

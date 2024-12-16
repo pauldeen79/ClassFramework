@@ -42,7 +42,7 @@ public class BaseClassComponent(IFormattableStringParser formattableStringParser
             && !context.Request.Settings.IsForAbstractBuilder
             && context.Request.Settings.IsAbstract;
 
-        var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context);
+        var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
 
         if (!nameResult.IsSuccessful())
         {
@@ -63,7 +63,7 @@ public class BaseClassComponent(IFormattableStringParser formattableStringParser
             (
                 context.Request.Settings.BuilderNameFormatString,
                 context.Request.FormatProvider,
-                new PipelineContext<BuilderContext>(new BuilderContext(context.Request.Settings.BaseClass!, context.Request.Settings, context.Request.FormatProvider))
+                new BuilderContext(context.Request.Settings.BaseClass!, context.Request.Settings, context.Request.FormatProvider)
             );
             if (!inheritanceNameResult.IsSuccessful())
             {
@@ -92,11 +92,7 @@ public class BaseClassComponent(IFormattableStringParser formattableStringParser
     }
 
     private Result<FormattableStringParserResult> GetBaseClassName(PipelineContext<BuilderContext> context, IBaseClassContainer baseClassContainer)
-    {
-        var newContext = new PipelineContext<BuilderContext>(new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!)), context.Request.Settings, context.Request.FormatProvider));
-
-        return _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, newContext);
-    }
+        => _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!)), context.Request.Settings, context.Request.FormatProvider));
 
     private static TypeBase CreateTypeBase(string baseClass)
         => new ClassBuilder()

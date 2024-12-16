@@ -21,7 +21,7 @@ public class AddEquatableMembersComponent(IFormattableStringParser formattableSt
             return Task.FromResult(Result.Continue());
         }
 
-        var nameResult = _formattableStringParser.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context);
+        var nameResult = _formattableStringParser.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request);
         if (!nameResult.IsSuccessful())
         {
             return Task.FromResult<Result>(nameResult);
