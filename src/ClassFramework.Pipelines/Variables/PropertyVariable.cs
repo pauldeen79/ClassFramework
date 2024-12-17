@@ -19,6 +19,7 @@ public class PropertyVariable : IVariable
         {
             $"property.{nameof(Property.Name)}" => VariableBase.GetValueFromProperty(_objectResolver, context, (_, _, property, _, _) => property.Name),
             $"property.{nameof(Property.TypeName)}" => VariableBase.GetValueFromProperty(_objectResolver, context, (_, _, _, typeName, _) => typeName),
+            $"property.{nameof(Property.ParentTypeFullName)}" => VariableBase.GetValueFromProperty(_objectResolver, context, (_, _, property, typeName, _) => property.ParentTypeFullName),
             "property.BuilderMemberName" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, culture, property, _, _) => property.GetBuilderMemberName(settings, culture)),
             "property.EntityMemberName" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, culture, property, _, _) => property.GetEntityMemberName(settings.AddBackingFields || settings.CreateAsObservable, culture)),
             "property.NullableRequiredSuffix" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, _, property, _, _) => GetNullableRequiredSuffix(settings, property)),

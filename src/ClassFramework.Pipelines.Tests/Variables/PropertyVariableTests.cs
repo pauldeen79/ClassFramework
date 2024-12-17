@@ -152,6 +152,27 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     }
 
     [Fact]
+    public void Can_Get_ParentTypeFullName_From_PropertyContext()
+    {
+        // Arrange
+        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
+        resolver.Resolve<PipelineSettings>(Arg.Any<object?>()).Returns(Result.Success(context.Settings));
+        resolver.Resolve<CultureInfo>(Arg.Any<object?>()).Returns(Result.Success(context.FormatProvider.ToCultureInfo()));
+        resolver.Resolve<ITypeNameMapper>(Arg.Any<object?>()).Returns(Result.Success<ITypeNameMapper>(context));
+        resolver.Resolve<MappedContextBase>(Arg.Any<object?>()).Returns(Result.Success<MappedContextBase>(context));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("property.ParentTypeFullName", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.SourceModel.ParentTypeFullName);
+    }
+
+    [Fact]
     public void Returns_Non_Succesful_Result_From_ObjectResolver()
     {
         // Arrange
