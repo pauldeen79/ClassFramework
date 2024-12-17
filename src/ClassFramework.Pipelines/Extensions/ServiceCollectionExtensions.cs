@@ -15,7 +15,6 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
         => services
-            .AddScoped<IPipelinePlaceholderProcessor, PropertyProcessor>()
             .AddScoped<IVariable, AddMethodNameFormatStringVariable>()
             .AddScoped<IVariable, ClassVariable>()
             .AddScoped<IVariable, CollectionTypeNameVariable>()
@@ -123,8 +122,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPlaceholderProcessor, BuilderExtensionPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, InterfacePipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholderProcessor, ReflectionPipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholderProcessor, PropertyProcessor>(); // needed for recursive calls to FormattableStringParser from PropertyProcessor...
+            .AddScoped<IPlaceholderProcessor, ReflectionPipelinePlaceholderProcessor>();
 
     private static IServiceCollection AddPipelineService(this IServiceCollection services)
         => services
