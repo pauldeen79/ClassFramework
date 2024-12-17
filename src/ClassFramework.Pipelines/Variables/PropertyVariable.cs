@@ -3,23 +3,27 @@
 public class PropertyVariable : IVariable
 {
     private readonly IObjectResolver _objectResolver;
+    private readonly ICsharpExpressionDumper _csharpExpressionDumper;
 
-    public PropertyVariable(IObjectResolver objectResolver)
+    public PropertyVariable(IObjectResolver objectResolver, ICsharpExpressionDumper csharpExpressionDumper)
     {
         ArgumentGuard.IsNotNull(objectResolver, nameof(objectResolver));
+        ArgumentGuard.IsNotNull(csharpExpressionDumper, nameof(csharpExpressionDumper));
 
         _objectResolver = objectResolver;
+        _csharpExpressionDumper = csharpExpressionDumper;
     }
 
     public Result<object?> Process(string variableExpression, object? context)
         => variableExpression switch
         {
-            $"property.{nameof(Property.Name)}" => VariableBase.GetValueFromProperty(_objectResolver, context, (_, _, property, _) => property.Name),
-            $"property.{nameof(Property.TypeName)}" => VariableBase.GetValueFromProperty(_objectResolver, context, (_, _, _, typeName) => typeName),
-            "property.BuilderMemberName" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, culture, property, _) => property.GetBuilderMemberName(settings, culture)),
-            "property.EntityMemberName" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, culture, property, _) => property.GetEntityMemberName(settings.AddBackingFields || settings.CreateAsObservable, culture)),
-            "property.NullableRequiredSuffix" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, _, property, _) => GetNullableRequiredSuffix(settings, property)),
-            "property.InitializationExpression" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, _, property, typeName) => GetInitializationExpression(property, typeName, settings)),
+            $"property.{nameof(Property.Name)}" => VariableBase.GetValueFromProperty(_objectResolver, context, (_, _, property, _, _) => property.Name),
+            $"property.{nameof(Property.TypeName)}" => VariableBase.GetValueFromProperty(_objectResolver, context, (_, _, _, typeName, _) => typeName),
+            "property.BuilderMemberName" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, culture, property, _, _) => property.GetBuilderMemberName(settings, culture)),
+            "property.EntityMemberName" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, culture, property, _, _) => property.GetEntityMemberName(settings.AddBackingFields || settings.CreateAsObservable, culture)),
+            "property.NullableRequiredSuffix" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, _, property, _, _) => GetNullableRequiredSuffix(settings, property)),
+            "property.InitializationExpression" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, _, property, typeName, _) => GetInitializationExpression(property, typeName, settings)),
+            "property.DefaultValue" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, _, property, typeName, mappedContextBase) => property.GetDefaultValue(_csharpExpressionDumper, typeName, mappedContextBase)),
             _ => Result.Continue<object?>()
         };
 

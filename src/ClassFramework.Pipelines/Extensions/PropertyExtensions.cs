@@ -2,7 +2,7 @@
 
 public static class PropertyExtensions
 {
-    public static string GetDefaultValue<TSourceModel>(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, ContextBase<TSourceModel> context)
+    public static string GetDefaultValue(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, MappedContextBase context)
     {
         csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
         context = context.IsNotNull(nameof(context));

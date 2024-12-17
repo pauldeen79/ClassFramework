@@ -31,6 +31,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IFunctionResultParser, NullCheckFunction>()
             .AddScoped<IObjectResolverProcessor, ClassModelResolver>()
             .AddScoped<IObjectResolverProcessor, CultureInfoResolver>()
+            .AddScoped<IObjectResolverProcessor, MappedContextBaseResolver>()
             .AddScoped<IObjectResolverProcessor, PipelineSettingsResolver>()
             .AddScoped<IObjectResolverProcessor, PropertyResolver>()
             .AddScoped<IObjectResolverProcessor, TypeNameMapperResolver>();

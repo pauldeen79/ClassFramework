@@ -7,17 +7,6 @@ public class PropertyProcessorTests : TestBase<PropertyProcessor>
         private static Property CreateModel() => new PropertyBuilder().WithName("Delegate").WithType(typeof(List<string>)).Build();
 
         [Fact]
-        public void Throws_On_Null_FormattableStringParser()
-        {
-            // Arrange
-            var sut = CreateSut();
-
-            // Act & Assert
-            sut.Invoking(x => x.Process("Placeholder", CultureInfo.InvariantCulture, null, formattableStringParser: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
-        }
-
-        [Fact]
         public void Returns_Continue_When_Context_Is_Not_ParentChildContext()
         {
             // Arrange
@@ -47,7 +36,6 @@ public class PropertyProcessorTests : TestBase<PropertyProcessor>
         [Theory]
         [InlineData("TypeName.CollectionItemType.GenericArgumentsWithBrackets", "")]
         [InlineData("TypeName.CollectionItemType.GenericArgumentsWithoutBrackets", "")]
-        [InlineData("DefaultValue", "default(System.Collections.Generic.List<System.String>)")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {
             // Arrange
