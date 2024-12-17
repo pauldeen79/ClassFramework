@@ -26,6 +26,7 @@ public abstract class TestBase : IDisposable
                     .AddParsers()
                     .AddClassFrameworkPipelines()
                     .AddCsharpExpressionDumper()
+                    .AddExpressionParser()
                     .BuildServiceProvider();
                 Scope = Provider.CreateScope();
                 _formattableStringParser = Scope.ServiceProvider.GetRequiredService<IFormattableStringParser>();
@@ -43,10 +44,10 @@ public abstract class TestBase : IDisposable
 
         // Pass through real IFormattableStringParser implementation, with all placeholder processors and stuff in our ClassFramework.Pipelines project.
         // One exception: If we supply "{Error}" as placeholder, then simply return an error with the error message "Kaboom".
-        parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+        parser.Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>())
               .Returns(x => x.ArgAt<string>(0) == "{Error}"
                 ? Result.Error<FormattableStringParserResult>("Kaboom")
-                : FormattableStringParser.Parse(x.ArgAt<string>(0), x.ArgAt<IFormatProvider>(1), x.ArgAt<object?>(2))
+                : FormattableStringParser.Parse(x.ArgAt<string>(0), x.ArgAt<FormattableStringParserSettings>(1), x.ArgAt<object?>(2))
                     .Transform(x => x.ErrorMessage == "Unknown placeholder in value: Error"
                         ? Result.Error<FormattableStringParserResult>("Kaboom")
                         : x));
@@ -54,7 +55,7 @@ public abstract class TestBase : IDisposable
         return parser;
     }
 
-    protected static Class CreateModel(string baseClass = "")
+    protected static Class CreateClass(string baseClass = "")
         => new ClassBuilder()
             .WithName("SomeClass")
             .WithNamespace("SomeNamespace")
@@ -64,7 +65,7 @@ public abstract class TestBase : IDisposable
             .AddProperties(new PropertyBuilder().WithName("Property3").WithType(typeof(List<int>)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
             .BuildTyped();
 
-    protected static Domain.Types.Interface CreateInterfaceModel(bool addProperties)
+    protected static Domain.Types.Interface CreateInterface(bool addProperties)
         => new InterfaceBuilder()
             .WithName("IMyClass")
             .WithNamespace("MyNamespace")
@@ -79,7 +80,7 @@ public abstract class TestBase : IDisposable
             .AddMethods(new MethodBuilder().WithName("MyMethod"))
             .BuildTyped();
 
-    protected static Class CreateGenericModel(bool addProperties)
+    protected static Class CreateGenericClass(bool addProperties)
         => new ClassBuilder()
             .WithName("MyClass")
             .WithNamespace("MyNamespace")
@@ -95,7 +96,7 @@ public abstract class TestBase : IDisposable
             )
             .BuildTyped();
 
-    protected static Class CreateModelWithCustomTypeProperties(IEquatableItemType itemType = IEquatableItemType.Properties)
+    protected static Class CreateClassWithCustomTypeProperties(IEquatableItemType itemType = IEquatableItemType.Properties)
     {
         var builder = new ClassBuilder()
             .WithName("MyClass")
@@ -130,7 +131,7 @@ public abstract class TestBase : IDisposable
         return builder.BuildTyped();
     }
 
-    protected static Domain.Types.Interface CreateInterfaceModelWithCustomTypeProperties()
+    protected static Domain.Types.Interface CreateInterfaceWithCustomTypeProperties()
         => new InterfaceBuilder()
             .WithName("IMyClass")
             .WithNamespace("MySourceNamespace")
@@ -144,12 +145,15 @@ public abstract class TestBase : IDisposable
             .AddProperties(new PropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.IMyClass")).WithIsNullable())
             .BuildTyped();
 
-    protected static Class CreateModelWithPropertyThatHasAReservedName(Type propertyType)
+    protected static Class CreateClassWithPropertyThatHasAReservedName(Type propertyType)
         => new ClassBuilder()
             .WithName("SomeClass")
             .WithNamespace("SomeNamespace")
             .AddProperties(new PropertyBuilder().WithName("Delegate").WithType(propertyType))
             .BuildTyped();
+
+    protected static Property CreateProperty()
+        => new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
 
     protected static PipelineSettingsBuilder CreateSettingsForBuilder(
         bool enableBuilderInheritance = false,
@@ -167,10 +171,10 @@ public abstract class TestBase : IDisposable
         string newCollectionTypeName = "System.Collections.Generic.List",
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
         IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
-        string setMethodNameFormatString = "With{Name}",
-        string addMethodNameFormatString = "Add{Name}",
-        string builderNamespaceFormatString = "{Namespace}.Builders",
-        string builderNameFormatString = "{Class.Name}Builder",
+        string setMethodNameFormatString = "With{$property.Name}",
+        string addMethodNameFormatString = "Add{$property.Name}",
+        string builderNamespaceFormatString = "{$class.Namespace}.Builders",
+        string builderNameFormatString = "{$class.Name}Builder",
         string buildMethodName = "Build",
         string buildTypedMethodName = "BuildTyped",
         string setDefaultValuesMethodName = "SetDefaultValues",
@@ -228,8 +232,8 @@ public abstract class TestBase : IDisposable
         bool allowGenerationWithoutProperties = false,
         bool isAbstract = false,
         Class? baseClass = null,
-        string entityNamespaceFormatString = "{Namespace}",
-        string entityNameFormatString = "{Class.Name}",
+        string entityNamespaceFormatString = "{$class.Namespace}",
+        string entityNameFormatString = "{$class.Name}",
         string toBuilderFormatString = "ToBuilder",
         string toTypedBuilderFormatString = "ToTypedBuilder",
         string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
@@ -288,8 +292,8 @@ public abstract class TestBase : IDisposable
         bool allowGenerationWithoutProperties = false,
         bool isAbstract = false,
         Class? baseClass = null,
-        string entityNamespaceFormatString = "{Namespace}",
-        string entityNameFormatString = "{Class.Name}",
+        string entityNamespaceFormatString = "{$class.Namespace}",
+        string entityNameFormatString = "{$class.Name}",
         string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
         bool createRecord = false,
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
@@ -318,8 +322,8 @@ public abstract class TestBase : IDisposable
         bool createConstructors = true,
         bool enableEntityInheritance = false,
         bool isAbstract = false,
-        string namespaceFormatString = "{Namespace}",
-        string nameFormatString = "{Class.Name}",
+        string namespaceFormatString = "{$class.Namespace}",
+        string nameFormatString = "{$class.Name}",
         Class? baseClass = null,
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
         IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
@@ -350,8 +354,8 @@ public abstract class TestBase : IDisposable
         bool allowGenerationWithoutProperties = false,
         bool enableEntityInheritance = false,
         bool isAbstract = false,
-        string namespaceFormatString = "{Namespace}",
-        string nameFormatString = "{Class.Name}",
+        string namespaceFormatString = "{$class.Namespace}",
+        string nameFormatString = "{$class.Name}",
         string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
         Class? baseClass = null,
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
@@ -382,7 +386,7 @@ public abstract class TestBase : IDisposable
         [
             new NamespaceMappingBuilder().WithSourceNamespace(sourceNamespace).WithTargetNamespace("MyNamespace")
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderNamespace).WithValue("MyNamespace.Builders"))
-                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderName).WithValue("{TypeName.ClassName}Builder"))
+                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderName).WithValue("{ClassName($property.TypeName)}Builder"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomEntityNamespace).WithValue("MyNamespace"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]"))
@@ -404,7 +408,7 @@ public abstract class TestBase : IDisposable
                 .AddMetadata
                 (
                     new MetadataBuilder().WithValue("ExpressionFramework.Domain.Builders.Evaluatables").WithName(MetadataNames.CustomBuilderNamespace),
-                    new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(MetadataNames.CustomBuilderName),
+                    new MetadataBuilder().WithValue("{ClassName($property.TypeName)}Builder").WithName(MetadataNames.CustomBuilderName),
                     new MetadataBuilder().WithValue("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.[Name])").WithName(MetadataNames.CustomBuilderConstructorInitializeExpression),
                     new MetadataBuilder().WithValue(new Literal("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder()", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
                     new MetadataBuilder().WithValue("[Name][NullableSuffix].BuildTyped()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
@@ -415,7 +419,7 @@ public abstract class TestBase : IDisposable
                 .AddMetadata
                 (
                     new MetadataBuilder().WithValue("ExpressionFramework.Domain.Builders").WithName(MetadataNames.CustomBuilderNamespace),
-                    new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(MetadataNames.CustomBuilderName),
+                    new MetadataBuilder().WithValue("{ClassName($property.TypeName)}Builder").WithName(MetadataNames.CustomBuilderName),
                     new MetadataBuilder().WithValue("ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(source.[Name])").WithName(MetadataNames.CustomBuilderConstructorInitializeExpression),
                     new MetadataBuilder().WithValue(new Literal("default(ExpressionFramework.Domain.Builders.ExpressionBuilder)!", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
                     new MetadataBuilder().WithValue($"[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression)

@@ -19,7 +19,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
         public async Task Sets_Name_Property()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
@@ -37,7 +37,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
         public async Task Sets_Namespace_Property()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
@@ -55,7 +55,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
         public async Task Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(builderNameFormatString: "{Error}");
@@ -73,7 +73,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
         public async Task Returns_Error_When_Parsing_BuilderNameSpaceFormatString_Is_Not_Succesful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(builderNamespaceFormatString: "{Error}");

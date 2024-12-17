@@ -19,7 +19,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
         public async Task Adds_Build_Method_When_EnableBuilderInheritance_And_IsAbstract_Are_Both_True()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(enableBuilderInheritance: true, isAbstract: true);
             var context = CreateContext(sourceModel, settings);
@@ -37,7 +37,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
         public async Task Adds_Build_Method_When_IsBuilderForAbstractEntity_Is_False()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
@@ -62,7 +62,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
         public async Task Adds_Build_And_BuildTyped_Methods_When_IsBuilderForAbstractEntity_Is_True()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(enableEntityInheritance: true);
@@ -96,7 +96,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
         public async Task Returns_Error_When_Parsing_EntityInstanciation_Is_Not_Successful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(typenameMappings:

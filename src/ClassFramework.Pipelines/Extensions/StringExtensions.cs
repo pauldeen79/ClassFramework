@@ -57,6 +57,52 @@ public static class StringExtensions
         return $"{typeName}{suffix}";
     }
 
+    public static string MapNamespace(this string? ns, PipelineSettings settings)
+    {
+        settings = settings.IsNotNull(nameof(settings));
+
+        if (!string.IsNullOrEmpty(ns))
+        {
+            // i.e. SourceNamespace.T => TargetNamespace.T
+            var namespaceMapping = settings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
+            if (namespaceMapping is not null)
+            {
+                return namespaceMapping.TargetNamespace;
+            }
+        }
+
+        return ns ?? string.Empty;
+    }
+
+    public static string FixNullableTypeName(this string typeName, ITypeContainer typeContainer)
+    {
+        typeContainer = typeContainer.IsNotNull(nameof(typeContainer));
+
+        if (!typeName.StartsWith("System.Nullable", StringComparison.Ordinal) && typeContainer.IsNullable && typeContainer.IsValueType)
+        {
+            return typeof(Nullable<>).ReplaceGenericTypeName(typeName);
+        }
+
+        return typeName;
+    }
+
+    public static string WithoutInterfacePrefix(this string typeClassName)
+        => typeClassName.StartsWith("I")
+            && typeClassName.Length >= 2
+            && typeClassName.Substring(1, 1).Equals(typeClassName.Substring(1, 1).ToUpperInvariant(), StringComparison.Ordinal)
+                ? typeClassName.Substring(1)
+                : typeClassName;
+
+    public static string AppendWhenNotNullOrEmpty(this string? instance, string valueToAppend)
+    {
+        if (string.IsNullOrEmpty(instance))
+        {
+            return string.Empty;
+        }
+
+        return string.Concat(instance!, valueToAppend);
+    }
+
     private static string MapTypeUsingGenerics(string typeName, PipelineSettings settings, string newCollectionTypeName, string alternateTypeMetadataName, string genericArguments)
     {
         var mappedGenericArgumentsBuilder = new StringBuilder();
@@ -88,44 +134,5 @@ public static class StringExtensions
         }
 
         return typeName.MapTypeName(settings, newCollectionTypeName, string.Empty);
-    }
-
-    public static string MapNamespace(this string? ns, PipelineSettings settings)
-    {
-        settings = settings.IsNotNull(nameof(settings));
-
-        if (!string.IsNullOrEmpty(ns))
-        {
-            // i.e. SourceNamespace.T => TargetNamespace.T
-            var namespaceMapping = settings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
-            if (namespaceMapping is not null)
-            {
-                return namespaceMapping.TargetNamespace;
-            }
-        }
-
-        return ns ?? string.Empty;
-    }
-
-    public static string FixNullableTypeName(this string typeName, ITypeContainer typeContainer)
-    {
-        typeContainer = typeContainer.IsNotNull(nameof(typeContainer));
-
-        if (!typeName.StartsWith("System.Nullable", StringComparison.Ordinal) && typeContainer.IsNullable && typeContainer.IsValueType)
-        {
-            return typeof(Nullable<>).ReplaceGenericTypeName(typeName);
-        }
-
-        return typeName;
-    }
-
-    public static string AppendWhenNotNullOrEmpty(this string? instance, string valueToAppend)
-    {
-        if (string.IsNullOrEmpty(instance))
-        {
-            return string.Empty;
-        }
-
-        return string.Concat(instance!, valueToAppend);
     }
 }

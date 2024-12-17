@@ -15,9 +15,26 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
         => services
-            .AddScoped<IPipelinePlaceholderProcessor, PropertyProcessor>()
-            .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>()
-            .AddScoped<IPipelinePlaceholderProcessor, TypeProcessor>();
+            .AddScoped<IVariable, AddMethodNameFormatStringVariable>()
+            .AddScoped<IVariable, ClassVariable>()
+            .AddScoped<IVariable, CollectionTypeNameVariable>()
+            .AddScoped<IVariable, PropertyVariable>()
+            .AddScoped<IFunctionResultParser, ClassNameFunction>()
+            .AddScoped<IFunctionResultParser, CollectionItemTypeFunction>()
+            .AddScoped<IFunctionResultParser, CsharpFriendlyNameFunction>()
+            .AddScoped<IFunctionResultParser, CsharpFriendlyTypeNameFunction>()
+            .AddScoped<IFunctionResultParser, GenericArgumentsFunction>()
+            .AddScoped<IFunctionResultParser, InstancePrefixFunction>()
+            .AddScoped<IFunctionResultParser, NamespaceFunction>()
+            .AddScoped<IFunctionResultParser, NoGenericsFunction>()
+            .AddScoped<IFunctionResultParser, NoInterfacePrefixFunction>()
+            .AddScoped<IFunctionResultParser, NullCheckFunction>()
+            .AddScoped<IObjectResolverProcessor, ClassModelResolver>()
+            .AddScoped<IObjectResolverProcessor, CultureInfoResolver>()
+            .AddScoped<IObjectResolverProcessor, MappedContextBaseResolver>()
+            .AddScoped<IObjectResolverProcessor, PipelineSettingsResolver>()
+            .AddScoped<IObjectResolverProcessor, PropertyResolver>()
+            .AddScoped<IObjectResolverProcessor, TypeNameMapperResolver>();
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
@@ -97,8 +114,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IInterfaceComponentBuilder, Interface.Components.AddMethodsComponentBuilder>()
             .AddScoped<IInterfaceComponentBuilder, Interface.Components.AddPropertiesComponentBuilder>()
             .AddScoped<IInterfaceComponentBuilder, Interface.Components.PartialComponentBuilder>()
-            .AddScoped<IInterfaceComponentBuilder, Interface.Components.SetNameComponentBuilder>()
-        ;
+            .AddScoped<IInterfaceComponentBuilder, Interface.Components.SetNameComponentBuilder>();
 
     private static IServiceCollection AddParserComponents(this IServiceCollection services)
         => services
@@ -106,8 +122,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPlaceholderProcessor, BuilderExtensionPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, InterfacePipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholderProcessor, ReflectionPipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholderProcessor, PropertyProcessor>(); // needed for recursive calls to FormattableStringParser from PropertyProcessor...
+            .AddScoped<IPlaceholderProcessor, ReflectionPipelinePlaceholderProcessor>();
 
     private static IServiceCollection AddPipelineService(this IServiceCollection services)
         => services

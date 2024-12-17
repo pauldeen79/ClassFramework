@@ -4,13 +4,6 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
 {
     public PipelineSettings Settings { get; } = settings.IsNotNull(nameof(settings));
     public IFormatProvider FormatProvider { get; } = formatProvider.IsNotNull(nameof(formatProvider));
-}
-
-public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : ContextBase(settings, formatProvider)
-{
-    public TSourceModel SourceModel { get; } = sourceModel.IsNotNull(nameof(sourceModel));
-
-    protected abstract string NewCollectionTypeName { get; }
 
     public string NullCheck => Settings.UsePatternMatchingForNullChecks
         ? "is null"
@@ -30,15 +23,122 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         return $"if ({argumentName} {NullCheck}) throw new {typeof(ArgumentNullException).FullName}(nameof({argumentName}));";
     }
 
-    public string MapTypeName(string typeName, string alternateTypeMetadataName = "")
+    public string MapNamespace(string? ns)
+        => ns.MapNamespace(Settings);
+
+    public void AddNullChecks(MethodBuilder builder, NamedResult<Result<FormattableStringParserResult>>[] results)
+    {
+        builder = builder.IsNotNull(nameof(builder));
+        results = results.IsNotNull(nameof(results));
+
+        if (Settings.AddNullChecks)
+        {
+            var nullCheckStatement = results.First(x => x.Name == "ArgumentNullCheck").Result.Value!;
+            if (!string.IsNullOrEmpty(nullCheckStatement))
+            {
+                builder.AddStringCodeStatements(nullCheckStatement);
+            }
+        }
+    }
+
+    protected TypenameMapping[] GetTypenameMappings(string typeName)
+    {
+        var typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName).ToArray();
+        if (typeNameMappings.Length == 0 && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
+        {
+            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
+            {
+                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutProcessedGenerics()).ToArray();
+            }
+            else
+            {
+                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType()).ToArray();
+            }
+        }
+
+        if (typeNameMappings.Length == 0 && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
+        {
+            typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.WithoutProcessedGenerics()).ToArray();
+        }
+
+        return typeNameMappings;
+    }
+
+    protected static string GetNamespace(string typeName)
+    {
+        if (typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
+        {
+            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
+            {
+                return typeName.GetCollectionItemType().WithoutProcessedGenerics().GetNamespaceWithDefault();
+            }
+            else
+            {
+                return typeName.GetCollectionItemType().GetNamespaceWithDefault();
+            }
+        }
+
+        return typeName.GetNamespaceWithDefault();
+    }
+
+    public Domain.Attribute InitializeDelegate(System.Attribute sourceAttribute)
+        => Settings.AttributeInitializers
+            .Select(x => x(sourceAttribute))
+            .FirstOrDefault(x => x is not null)
+                ?? throw new NotSupportedException($"Attribute not supported by initializer:");
+
+    public IEnumerable<string> CreateEntityValidationCode()
+    {
+        var argumentValidationType = Settings.AddValidationCode();
+
+        if (argumentValidationType == ArgumentValidationType.IValidatableObject)
+        {
+            yield return $"{typeof(Validator).FullName}.{nameof(Validator.ValidateObject)}(this, new {typeof(ValidationContext).FullName}(this, null, null), true);";
+        }
+        else if (argumentValidationType == ArgumentValidationType.CustomValidationCode)
+        {
+            yield return "Validate();";
+        }
+    }
+
+    public IEnumerable<Metadata> GetMappingMetadata(string typeName)
+    {
+        typeName = typeName.IsNotNull(nameof(typeName)).FixTypeName();
+
+        var typeNameMappings = GetTypenameMappings(typeName);
+        if (typeNameMappings.Length > 0)
+        {
+            return typeNameMappings.SelectMany(x => x.Metadata);
+        }
+
+        var ns = GetNamespace(typeName);
+
+        if (!string.IsNullOrEmpty(ns))
+        {
+            return Settings.NamespaceMappings
+                .Where(x => x.SourceNamespace == ns)
+                .SelectMany(x => x.Metadata);
+        }
+
+        return [];
+    }
+}
+
+public abstract class MappedContextBase(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase(settings, formatProvider)
+{
+    protected abstract string NewCollectionTypeName { get; }
+
+    public string MapTypeName(string typeName, string alternateTypeMetadataName)
     {
         typeName = typeName.IsNotNull(nameof(typeName));
 
         return typeName.MapTypeName(Settings, NewCollectionTypeName, alternateTypeMetadataName);
     }
+}
 
-    public string MapNamespace(string? ns)
-        => ns.MapNamespace(Settings);
+public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : MappedContextBase(settings, formatProvider), ITypeNameMapper
+{
+    public TSourceModel SourceModel { get; } = sourceModel.IsNotNull(nameof(sourceModel));
 
     public IEnumerable<AttributeBuilder> GetAtributes(IReadOnlyCollection<Domain.Attribute> attributes)
     {
@@ -57,7 +157,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         attribute = attribute.IsNotNull(nameof(attribute));
 
         return new AttributeBuilder(attribute)
-            .WithName(MapTypeName(attribute.Name.FixTypeName()))
+            .WithName(MapTypeName(attribute.Name.FixTypeName(), string.Empty))
             .Build();
     }
 
@@ -106,12 +206,6 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             "NullCheck.Argument" => Result.Success<FormattableStringParserResult>(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
                 ? CreateArgumentNullException(childContext.Name.ToCamelCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())
                 : string.Empty),
-            "NullableRequiredSuffix" => Result.Success<FormattableStringParserResult>(!Settings.AddNullChecks && !childContext.IsValueType && childContext.IsNullable && Settings.EnableNullableReferenceTypes && !isGenericArgument
-                ? "!"
-                : string.Empty),
-            "NullableSuffix" => Result.Success<FormattableStringParserResult>(childContext.IsNullable && (childContext.IsValueType || Settings.EnableNullableReferenceTypes)
-                ? "?"
-                : string.Empty),
             "BuildersNamespace" => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, context.FormatProvider, context),
             _ => Default(value, formattableStringParser, childContext, sourceModel, pipelinePlaceholderProcessors)
         };
@@ -119,7 +213,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         Result<FormattableStringParserResult> Default(string value, IFormattableStringParser formattableStringParser, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
         {
             var pipelinePlaceholderProcessorsArray = pipelinePlaceholderProcessors.ToArray();
-            return pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, context.FormatProvider, new PropertyContext(childContext, Settings, context.FormatProvider, MapTypeName(childContext.TypeName), Settings.BuilderNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+            return pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, context.FormatProvider, new PropertyContext(childContext, Settings, context.FormatProvider, MapTypeName(childContext.TypeName, string.Empty), Settings.BuilderNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, context.FormatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<FormattableStringParserResult>();
         }
@@ -133,7 +227,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .WithName(property.Name)
             .WithTypeName(MapTypeName(property.TypeName
                 .FixCollectionTypeName(Settings.EntityNewCollectionTypeName)
-                .FixNullableTypeName(property)))
+                .FixNullableTypeName(property), string.Empty))
             .WithIsNullable(property.IsNullable)
             .WithIsValueType(property.IsValueType)
             .AddGenericTypeArguments(property.GenericTypeArguments)
@@ -143,48 +237,6 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .WithStatic(property.Static)
             .WithVisibility(property.Visibility)
             .WithParentTypeFullName(property.ParentTypeFullName);
-    }
-
-    public Domain.Attribute InitializeDelegate(System.Attribute sourceAttribute)
-        => Settings.AttributeInitializers
-            .Select(x => x(sourceAttribute))
-            .FirstOrDefault(x => x is not null)
-                ?? throw new NotSupportedException($"Attribute not supported by initializer:");
-
-    public IEnumerable<Metadata> GetMappingMetadata(string typeName)
-    {
-        typeName = typeName.IsNotNull(nameof(typeName)).FixTypeName();
-
-        var typeNameMappings = GetTypenameMappings(typeName);
-        if (typeNameMappings.Length > 0)
-        {
-            return typeNameMappings.SelectMany(x => x.Metadata);
-        }
-
-        var ns = GetNamespace(typeName);
-
-        if (!string.IsNullOrEmpty(ns))
-        {
-            return Settings.NamespaceMappings
-                .Where(x => x.SourceNamespace == ns)
-                .SelectMany(x => x.Metadata);
-        }
-
-        return [];
-    }
-
-    public IEnumerable<string> CreateEntityValidationCode()
-    {
-        var argumentValidationType = Settings.AddValidationCode();
-
-        if (argumentValidationType == ArgumentValidationType.IValidatableObject)
-        {
-            yield return $"{typeof(Validator).FullName}.{nameof(Validator.ValidateObject)}(this, new {typeof(ValidationContext).FullName}(this, null, null), true);";
-        }
-        else if (argumentValidationType == ArgumentValidationType.CustomValidationCode)
-        {
-            yield return "Validate();";
-        }
     }
 
     public NamedResult<Result<FormattableStringParserResult>>[] GetResultsForBuilderCollectionProperties(
@@ -226,7 +278,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         resultSetBuilder.Add("MethodName", () => formattableStringParser.Parse(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext));
         resultSetBuilder.Add(NamedResults.BuilderName, () => formattableStringParser.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext));
         resultSetBuilder.Add("ArgumentNullCheck", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), FormatProvider, parentChildContext));
-        resultSetBuilder.Add("BuilderWithExpression", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix}{Name} = {NameCamelCsharpFriendlyName};"), FormatProvider, parentChildContext));
+        resultSetBuilder.Add("BuilderWithExpression", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{$property.Name} = {CsharpFriendlyName(ToCamelCase($property.Name))};"), FormatProvider, parentChildContext));
 
         return resultSetBuilder.Build();
     }
@@ -259,60 +311,5 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .WithTypeName(typeName)
             .SetTypeContainerPropertiesFrom(property)
             .WithDefaultValue(GetMappingMetadata(property.TypeName).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null));
-    }
-
-    public void AddNullChecks(MethodBuilder builder, NamedResult<Result<FormattableStringParserResult>>[] results)
-    {
-        builder = builder.IsNotNull(nameof(builder));
-        results = results.IsNotNull(nameof(results));
-
-        if (Settings.AddNullChecks)
-        {
-            var nullCheckStatement = results.First(x => x.Name == "ArgumentNullCheck").Result.Value!;
-            if (!string.IsNullOrEmpty(nullCheckStatement))
-            {
-                builder.AddStringCodeStatements(nullCheckStatement);
-            }
-        }
-    }
-
-    private TypenameMapping[] GetTypenameMappings(string typeName)
-    {
-        var typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName).ToArray();
-        if (typeNameMappings.Length == 0 && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
-        {
-            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
-            {
-                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutProcessedGenerics()).ToArray();
-            }
-            else
-            {
-                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType()).ToArray();
-            }
-        }
-
-        if (typeNameMappings.Length == 0 && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
-        {
-            typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.WithoutProcessedGenerics()).ToArray();
-        }
-
-        return typeNameMappings;
-    }
-
-    private static string GetNamespace(string typeName)
-    {
-        if (typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
-        {
-            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
-            {
-                return typeName.GetCollectionItemType().WithoutProcessedGenerics().GetNamespaceWithDefault();
-            }
-            else
-            {
-                return typeName.GetCollectionItemType().GetNamespaceWithDefault();
-            }
-        }
-
-        return typeName.GetNamespaceWithDefault();
     }
 }

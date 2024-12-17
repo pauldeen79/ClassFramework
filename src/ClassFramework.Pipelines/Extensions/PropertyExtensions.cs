@@ -2,7 +2,7 @@
 
 public static class PropertyExtensions
 {
-    public static string GetDefaultValue<TSourceModel>(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, ContextBase<TSourceModel> context)
+    public static string GetDefaultValue(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, MappedContextBase context)
     {
         csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
         context = context.IsNotNull(nameof(context));
@@ -160,11 +160,11 @@ public static class PropertyExtensions
                 {
                     if (!string.IsNullOrEmpty(property.TypeName.FixTypeName().GetCollectionItemType().GetProcessedGenericArguments()))
                     {
-                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}").Replace("{TypeName.ClassName.NoGenerics}", "{TypeName.GenericArguments.ClassName.NoGenerics}").Replace("{TypeName.GenericArgumentsWithBrackets}", "{TypeName.CollectionItemType.GenericArgumentsWithBrackets}")}>";
+                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}").Replace("{NoGenerics(ClassName($property.TypeName))}", "{NoGenerics(ClassName(GenericArguments($property.TypeName)))}").Replace("{GenericArguments($property.TypeName, true)}", "{GenericArguments(CollectionItemType($property.TypeName), true)}")}>";
                     }
                     else
                     {
-                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}").Replace("{TypeName.ClassName.NoGenerics}", "{TypeName.GenericArguments.ClassName.NoGenerics}")}>";
+                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}").Replace("{NoGenerics(ClassName($property.TypeName))}", "{NoGenerics(ClassName(GenericArguments($property.TypeName)))}")}>";
                     }
                 }
             }
@@ -203,11 +203,11 @@ public static class PropertyExtensions
             return Result.Success<FormattableStringParserResult>(context.Request.MapTypeName(property.ParentTypeFullName.FixTypeName()));
         }
 
-        var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ParentTypeName.ClassName}");
+        var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ClassName($property.ParentTypeFullName)}");
 
         if (property.TypeName.FixTypeName().IsCollectionTypeName())
         {
-            newTypeName = newTypeName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}");
+            newTypeName = newTypeName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}");
         }
 
         var newFullName = $"{ns}.{newTypeName}";

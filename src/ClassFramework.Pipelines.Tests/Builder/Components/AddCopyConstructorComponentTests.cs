@@ -21,7 +21,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
         public async Task Adds_Copy_Constructor_For_Abstract_Builder(bool hasBaseClass)
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -52,7 +52,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
         public async Task Adds_Copy_Constructor_For_Non_Abstract_Builder()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -88,7 +88,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
         public async Task Adds_Copy_Constructor_For_Non_Abstract_Builder_With_BaseClass()
         {
             // Arrange
-            var sourceModel = CreateModel("MyBaseClass");
+            var sourceModel = CreateClass("MyBaseClass");
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -124,7 +124,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
         public async Task Adds_Copy_Constructor_For_Non_Abstract_Builder_With_NullChecks()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -162,7 +162,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
         public async Task Returns_Error_When_Parsing_CustomBuilderConstructorInitializeExpression_Is_Not_Successful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -190,7 +190,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
         public async Task Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Successful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(

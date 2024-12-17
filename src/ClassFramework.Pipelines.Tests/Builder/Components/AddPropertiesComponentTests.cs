@@ -19,7 +19,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         public async Task Does_Not_Add_Properties_On_Abstract_Builder()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(enableBuilderInheritance: true, isAbstract: true);
             var context = CreateContext(sourceModel, settings);
@@ -36,7 +36,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         public async Task Adds_Properties_On_Non_Abstract_Builder()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -60,7 +60,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         public async Task Uses_CustomBuilderArgumentType_When_Present()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -88,7 +88,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         public async Task Replaces_CollectionTypeName_Correctly()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
@@ -111,7 +111,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         public async Task Adds_Attributes_To_Properties_From_SourceModel_Properties_When_CopyAttributes_Is_True()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyAttributes: true);
@@ -130,7 +130,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         public async Task Does_Not_Add_Attributes_To_Properties_From_SourceModel_Properties_When_CopyAttributes_Is_False()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyAttributes: false);
@@ -148,7 +148,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         public async Task Does_Not_Add_CodeStatements_To_Properties_When_AddNullChecks_Is_False()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: false);
@@ -259,7 +259,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         public async Task Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Succesful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(

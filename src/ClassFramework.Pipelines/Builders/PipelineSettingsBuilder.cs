@@ -6,27 +6,27 @@ public partial class PipelineSettingsBuilder
     {
         AddCopyConstructor = true;
         SetDefaultValuesInEntityConstructor = true;
-        SetMethodNameFormatString = "With{Name}";
-        AddMethodNameFormatString = "Add{Name}";
-        BuilderNamespaceFormatString = "{Namespace}.Builders";
-        BuilderNameFormatString = "{Class.Name}Builder";
+        SetMethodNameFormatString = "With{$property.Name}";
+        AddMethodNameFormatString = "Add{$property.Name}";
+        BuilderNamespaceFormatString = "{$class.Namespace}.Builders";
+        BuilderNameFormatString = "{$class.Name}Builder";
         BuildMethodName = "Build";
         BuildTypedMethodName = "BuildTyped";
         SetDefaultValuesMethodName = "SetDefaultValues";
-        BuilderNewCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection";
-        CollectionInitializationStatementFormatString = "{NullCheck.Source.Argument}foreach (var item in source.[SourceExpression]) {BuilderMemberName}.Add(item)";
-        CollectionCopyStatementFormatString = "foreach (var item in {NameCamelCsharpFriendlyName}) {InstancePrefix}{Name}.Add(item);";
+        BuilderNewCollectionTypeName = typeof(IReadOnlyCollection<>).WithoutGenerics();
+        CollectionInitializationStatementFormatString = "{NullCheck.Source.Argument}foreach (var item in source.[SourceExpression]) {$property.BuilderMemberName}.Add(item)";
+        CollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(ToCamelCase($property.Name))}) {InstancePrefix()}{$property.Name}.Add(item);";
         NonCollectionInitializationStatementFormatString = "source.[SourceExpression]"; // note that we are not prefixing {NullCheck.Source.Argument}, because we can simply always copy the value, regardless if it's null :)
-        BuilderExtensionsNamespaceFormatString = "{Namespace}.Builders.Extensions";
-        BuilderExtensionsNameFormatString = "{Class.NameNoInterfacePrefix}BuilderExtensions";
-        BuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {NameCamelCsharpFriendlyName}) {InstancePrefix}{Name}.Add(item);";
-        EntityNamespaceFormatString = "{Namespace}";
-        EntityNameFormatString = "{Class.Name}";
+        BuilderExtensionsNamespaceFormatString = "{$class.Namespace}.Builders.Extensions";
+        BuilderExtensionsNameFormatString = "{NoInterfacePrefix($class.Name)}BuilderExtensions";
+        BuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(ToCamelCase($property.Name))}) {InstancePrefix()}{$property.Name}.Add(item);";
+        EntityNamespaceFormatString = "{$class.Namespace}";
+        EntityNameFormatString = "{$class.Name}";
         ToBuilderFormatString = "ToBuilder";
         ToTypedBuilderFormatString = "ToTypedBuilder";
-        EntityNewCollectionTypeName = "System.Collections.Generic.List";
-        NamespaceFormatString = "{Namespace}";
-        NameFormatString = "{Class.Name}";
+        EntityNewCollectionTypeName = typeof(List<>).WithoutGenerics();
+        NamespaceFormatString = "{$class.Namespace}";
+        NameFormatString = "{$class.Name}";
         UseBaseClassFromSourceModel = true;
         CreateAsPartial = true;
         CreateConstructors = true;
@@ -89,7 +89,7 @@ public partial class PipelineSettingsBuilder
             new AttributeBuilder().WithName(defaultValueAttribute.GetType())
                 .AddParameters(new AttributeParameterBuilder().WithValue(defaultValueAttribute.Value))
                 .Build()));
-        
+
         // Fallback as latest
         AttributeInitializers.Add(x =>
         {
@@ -107,13 +107,7 @@ public partial class PipelineSettingsBuilder
     }
 
     private static object? GetValue(System.Attribute sourceAttribute, string name)
-    {
-        var prop = sourceAttribute.GetType().GetProperty(name.ToPascalCase(CultureInfo.InvariantCulture));
-
-        return prop is not null
-            ? prop.GetValue(sourceAttribute)
-            : null;
-    }
+        => sourceAttribute.GetType().GetProperty(name.ToPascalCase(CultureInfo.InvariantCulture))?.GetValue(sourceAttribute);
 
     private static ConstructorInfo? GetConstructor(Type type)
     {

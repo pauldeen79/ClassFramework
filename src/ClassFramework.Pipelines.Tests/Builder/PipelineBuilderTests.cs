@@ -6,10 +6,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
     {
         private static BuilderContext CreateContext(bool addProperties = true, bool createAsObservable = false)
             => new(
-                CreateGenericModel(addProperties),
+                CreateGenericClass(addProperties),
                 CreateSettingsForBuilder
                 (
-                    builderNamespaceFormatString: "{Namespace}.Builders",
+                    builderNamespaceFormatString: "{$class.Namespace}.Builders",
                     allowGenerationWithoutProperties: false,
                     copyAttributes: true,
                     createAsObservable: createAsObservable
@@ -230,7 +230,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         public async Task Creates_Builder_With_NamespaceMapping()
         {
             // Arrange
-            var model = CreateModelWithCustomTypeProperties();
+            var model = CreateClassWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
             var typenameMappings = CreateTypenameMappings();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true, typenameMappings: typenameMappings, namespaceMappings: namespaceMappings, addNullChecks: true, enableNullableReferenceTypes: true);

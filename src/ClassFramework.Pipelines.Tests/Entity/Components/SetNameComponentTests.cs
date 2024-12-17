@@ -19,7 +19,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
         public async Task Sets_Name_Property_With_Default_FormatString()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
@@ -37,7 +37,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
         public async Task Sets_Name_Property_With_Custom_FormatString()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "CustomClassName");
@@ -55,7 +55,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
         public async Task Sets_Namespace_Property_With_Default_FormatString()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
@@ -73,7 +73,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
         public async Task Sets_Namespace_Property_With_Custom_FormatString()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "CustomNamespace");
@@ -91,7 +91,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
         public async Task Returns_Error_When_Parsing_NameFormatString_Is_Not_Successful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "{Error}");
@@ -109,7 +109,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
         public async Task Returns_Error_When_Parsing_NamespaceFormatString_Is_Not_Successful()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "{Error}");

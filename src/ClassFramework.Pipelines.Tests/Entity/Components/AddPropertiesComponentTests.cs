@@ -19,7 +19,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
         public async Task Adds_Properties_From_SourceModel()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
@@ -36,7 +36,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
         public async Task Maps_TypeNames_Correctly()
         {
             // Arrange
-            var sourceModel = CreateModelWithCustomTypeProperties();
+            var sourceModel = CreateClassWithCustomTypeProperties();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(namespaceMappings: [new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyMappedNamespace")]);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
@@ -65,7 +65,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
         public async Task Adds_Setters_When_Specified_In_Settings(bool addSetters)
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addSetters: addSetters);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
@@ -86,7 +86,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
         public async Task Sets_SetterVisibility_From_Settings(SubVisibility setterVisibility)
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addSetters: true, setterVisibility: setterVisibility);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
@@ -131,7 +131,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
         public async Task Does_Not_Add_Fields_When_AddBackingFields_Is_False()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
@@ -148,7 +148,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
         public async Task Does_Not_Add_Property_GetterCodeStatements_When_AddBackingFields_Is_False()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
@@ -165,7 +165,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
         public async Task Does_Not_Add_Property_SetterCodeStatements_When_AddBackingFields_Is_False()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
@@ -182,7 +182,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
         public async Task Adds_Fields_When_AddBackingFields_Is_True()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
@@ -199,7 +199,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
         public async Task Adds_Property_GetterCodeStatements_Without_PropertyChanged_Calls_When_AddBackingFields_Is_True_And_CreateAsObservable_Is_False()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
@@ -227,7 +227,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
         public async Task Adds_Property_GetterCodeStatements_With_ProperyChanged_Calls_When_AddBackingFields_Is_True_And_CreateAsObservable_Is_True()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true, createAsObservable: true);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
@@ -261,7 +261,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
         public async Task Adds_Property_SetterCodeStatements_When_AddBackingFields_Is_True()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
@@ -283,7 +283,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
         public async Task Adds_Property_SetterCodeStatements_With_NullChecks_When_AddBackingFields_Is_True_And_AddNullChecks_Is_True()
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true, addNullChecks: true);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
