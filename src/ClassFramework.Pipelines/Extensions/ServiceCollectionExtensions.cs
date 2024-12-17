@@ -21,6 +21,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IVariable, CollectionTypeNameVariable>()
             .AddScoped<IVariable, PropertyVariable>()
             .AddScoped<IFunctionResultParser, ClassNameFunction>()
+            .AddScoped<IFunctionResultParser, CollectionItemTypeFunction>()
             .AddScoped<IFunctionResultParser, CsharpFriendlyNameFunction>()
             .AddScoped<IFunctionResultParser, CsharpFriendlyTypeNameFunction>()
             .AddScoped<IFunctionResultParser, GenericArgumentsFunction>()

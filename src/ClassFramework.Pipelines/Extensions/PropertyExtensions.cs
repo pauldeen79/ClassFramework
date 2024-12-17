@@ -160,7 +160,7 @@ public static class PropertyExtensions
                 {
                     if (!string.IsNullOrEmpty(property.TypeName.FixTypeName().GetCollectionItemType().GetProcessedGenericArguments()))
                     {
-                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}").Replace("{NoGenerics(ClassName($property.TypeName))}", "{NoGenerics(ClassName(GenericArguments($property.TypeName)))}").Replace("{GenericArguments($property.TypeName, true)}", "{TypeName.CollectionItemType.GenericArgumentsWithBrackets}")}>";
+                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}").Replace("{NoGenerics(ClassName($property.TypeName))}", "{NoGenerics(ClassName(GenericArguments($property.TypeName)))}").Replace("{GenericArguments($property.TypeName, true)}", "{GenericArguments(CollectionItemType($property.TypeName), true)}")}>";
                     }
                     else
                     {

@@ -305,7 +305,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            result.Value!.ToString().Should().Be("IReadOnlyCollection<Builders.{NoGenerics(ClassName(GenericArguments($property.TypeName)))}Builder{TypeName.CollectionItemType.GenericArgumentsWithBrackets}>");
+            result.Value!.ToString().Should().Be("IReadOnlyCollection<Builders.{NoGenerics(ClassName(GenericArguments($property.TypeName)))}Builder{GenericArguments(CollectionItemType($property.TypeName), true)}>");
         }
 
         private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider)

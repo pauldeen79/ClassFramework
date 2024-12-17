@@ -32,25 +32,5 @@ public class PropertyProcessorTests : TestBase<PropertyProcessor>
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
         }
-
-        [Theory]
-        [InlineData("TypeName.CollectionItemType.GenericArgumentsWithBrackets", "")]
-        [InlineData("TypeName.CollectionItemType.GenericArgumentsWithoutBrackets", "")]
-        public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
-        {
-            // Arrange
-            var formattableStringParser = InitializeParser();
-            var sut = CreateSut();
-            var settings = new PipelineSettingsBuilder().Build();
-            var model = CreateModel();
-            var context = new PropertyContext(model, settings, CultureInfo.InvariantCulture, model.TypeName, string.Empty);
-
-            // Act
-            var result = sut.Process(value, CultureInfo.InvariantCulture, context, formattableStringParser);
-
-            // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value!.ToString().Should().Be(expectedValue);
-        }
     }
 }
