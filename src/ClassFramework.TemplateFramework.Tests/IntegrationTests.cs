@@ -34,6 +34,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableCoreBuilders>()
             .AddScoped<ImmutableCoreBuilderExtensions>()
             .AddScoped<ImmutableCoreEntities>()
+            .AddScoped<ImmutableCoreErrorBuilders>()
             .AddScoped<ImmutablePrivateSettersCoreBuilders>()
             .AddScoped<ImmutablePrivateSettersCoreEntities>()
             .AddScoped<ImmutableInheritFromInterfacesCoreBuilders>()
@@ -434,6 +435,21 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
+    }
+
+    [Fact]
+    public async Task Can_Get_Useful_ErrorMessage_When_Generating_Code_For_Builder_With_PipelineCodeGenerationProviderBase_Goes_Wrong()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreErrorBuilders>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act & Assert
+        await engine
+            .Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None))
+            .Should().ThrowAsync<InvalidOperationException>().WithMessage("[NotSupported] Unknown variable found: property.Kaboom");
     }
 
     [Fact]
