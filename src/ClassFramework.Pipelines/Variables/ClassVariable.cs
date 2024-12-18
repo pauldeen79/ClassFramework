@@ -13,9 +13,9 @@ public class ClassVariable : IVariable
     public Result<object?> Process(string variableExpression, object? context)
         => variableExpression switch
         {
-            $"class.{nameof(Class.Name)}" => GetValueFromClass(context, x => x.Name),
+            $"class.{nameof(Class.Name)}" => GetValueFromClass(context, x => x.Name.WithoutGenerics()),
             $"class.{nameof(Class.Namespace)}" => GetValueFromClass(context, x => x.Namespace),
-            "class.FullName" => GetValueFromClass(context, x => x.FullName),
+            "class.FullName" => GetValueFromClass(context, x => x.FullName.WithoutGenerics()),
             _ => Result.Continue<object?>()
         };
 
