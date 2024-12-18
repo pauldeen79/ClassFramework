@@ -101,16 +101,16 @@ namespace ClassFramework.Domain
         {
             this.Namespace = @namespace!;
             this.Partial = partial;
-            this.Interfaces = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(interfaces)!;
-            this.Fields = new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Field>(fields)!;
-            this.Properties = new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Property>(properties)!;
-            this.Methods = new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Method>(methods)!;
+            this.Interfaces = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(interfaces);
+            this.Fields = new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Field>(fields);
+            this.Properties = new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Property>(properties);
+            this.Methods = new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Method>(methods);
             this.Visibility = visibility;
             this.Name = name!;
-            this.Attributes = new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Attribute>(attributes)!;
-            this.GenericTypeArguments = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(genericTypeArguments)!;
-            this.GenericTypeArgumentConstraints = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(genericTypeArgumentConstraints)!;
-            this.SuppressWarningCodes = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(suppressWarningCodes)!;
+            this.Attributes = new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Attribute>(attributes);
+            this.GenericTypeArguments = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(genericTypeArguments);
+            this.GenericTypeArgumentConstraints = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(genericTypeArgumentConstraints);
+            this.SuppressWarningCodes = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(suppressWarningCodes);
         }
 
         public abstract ClassFramework.Domain.Builders.TypeBaseBuilder ToBuilder();

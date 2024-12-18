@@ -41,6 +41,11 @@ public class PropertyVariable : IVariable
 
     private static string GetCollectionFormatStringForInitialization(Property property, PipelineSettings settings)
         => property.IsNullable || (settings.AddNullChecks && settings.ValidateArguments != ArgumentValidationType.None)
-            ? "{ToCamelCase($property.Name)} {NullCheck()} ? null{$property.NullableRequiredSuffix} : new {$collectionTypeName}<{GenericArguments($property.TypeName)}>({CsharpFriendlyName(ToCamelCase($property.Name))}{$property.NullableRequiredSuffix})"
-            : "new {$collectionTypeName}<{GenericArguments($property.TypeName)}>({CsharpFriendlyName(ToCamelCase($property.Name))}{$property.NullableRequiredSuffix})";
+            ? $"{{ToCamelCase($property.Name)}} {{NullCheck()}} ? null{GetPropertyInitializationNullSuffix(property, settings)} : new {{$collectionTypeName}}<{{GenericArguments($property.TypeName)}}>({{CsharpFriendlyName(ToCamelCase($property.Name))}})"
+            : $"new {{$collectionTypeName}}<{{GenericArguments($property.TypeName)}}>({{CsharpFriendlyName(ToCamelCase($property.Name))}})";
+
+    private static string GetPropertyInitializationNullSuffix(Property property, PipelineSettings settings)
+        => settings.EnableNullableReferenceTypes && !property.IsNullable
+            ? "!"
+            : string.Empty;
 }
