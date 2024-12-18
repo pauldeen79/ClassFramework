@@ -1351,7 +1351,7 @@ namespace Test.Domain.Builders
         await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1407,6 +1407,60 @@ namespace Test.Domain.Builders.Types
 #nullable restore
 }
 ");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders.Types
+{
+#nullable enable
+    public partial class MyGenericOverrideBuilder<T> : AbstractBaseBuilder<MyGenericOverrideBuilder<T>, Test.Domain.Types.MyGenericOverride<T>>
+    {
+        private T _myOverrideProperty;
+
+        public T MyOverrideProperty
+        {
+            get
+            {
+                return _myOverrideProperty;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<T>.Default.Equals(_myOverrideProperty!, value!);
+                _myOverrideProperty = value;
+                if (hasChanged) HandlePropertyChanged(nameof(MyOverrideProperty));
+            }
+        }
+
+        public MyGenericOverrideBuilder(Test.Domain.Types.MyGenericOverride<T> source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _myOverrideProperty = source.MyOverrideProperty;
+        }
+
+        public MyGenericOverrideBuilder() : base()
+        {
+            _myOverrideProperty = default(T)!;
+            SetDefaultValues();
+        }
+
+        public override Test.Domain.Types.MyGenericOverride<T> BuildTyped()
+        {
+            return new Test.Domain.Types.MyGenericOverride<T>(MyOverrideProperty, MyBaseProperty);
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.Types.MyGenericOverrideBuilder<T> WithMyOverrideProperty(T myOverrideProperty)
+        {
+            MyOverrideProperty = myOverrideProperty;
+            return this;
+        }
+    }
+#nullable restore
+}
+");
     }
 
     [Fact]
@@ -1422,7 +1476,7 @@ namespace Test.Domain.Builders.Types
         await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1452,6 +1506,40 @@ namespace Test.Domain.Types
         public Test.Domain.Types.Builders.MyAbstractOverrideBuilder ToTypedBuilder()
         {
             return new Test.Domain.Types.Builders.MyAbstractOverrideBuilder(this);
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Types
+{
+#nullable enable
+    public partial class MyGenericOverride<T> : Test.Domain.AbstractBase
+    {
+        public T MyOverrideProperty
+        {
+            get;
+        }
+
+        public MyGenericOverride(T myOverrideProperty, string myBaseProperty) : base(myBaseProperty)
+        {
+            this.MyOverrideProperty = myOverrideProperty;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override Test.Domain.Builders.AbstractBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public Test.Domain.Types.Builders.MyGenericOverrideBuilder<T> ToTypedBuilder()
+        {
+            return new Test.Domain.Types.Builders.MyGenericOverrideBuilder<T>(this);
         }
     }
 #nullable restore

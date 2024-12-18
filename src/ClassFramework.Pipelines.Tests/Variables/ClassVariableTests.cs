@@ -205,4 +205,55 @@ public class ClassVariableTests : TestBase<ClassVariable>
         // Assert
         result.Status.Should().Be(ResultStatus.Continue);
     }
+
+    [Fact]
+    public void ClassName_Removes_Generics_On_Reflection()
+    {
+        // Arrange
+        var context = new PipelineContext<ReflectionContext>(new ReflectionContext(typeof(List<int>), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<ClassModel>(Arg.Any<object?>()).Returns(Result.Success(new ClassModel(context.Request.SourceModel)));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("class.Name", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.Request.SourceModel.Name.WithoutGenerics());
+    }
+
+    [Fact]
+    public void ClassName_Removes_Generics_On_TypeBase()
+    {
+        // Arrange
+        var context = new PipelineContext<BuilderContext>(new BuilderContext(new ClassBuilder().WithName(typeof(List<int>).Name).Build(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<ClassModel>(Arg.Any<object?>()).Returns(Result.Success(new ClassModel(context.Request.SourceModel)));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("class.Name", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.Request.SourceModel.Name.WithoutGenerics());
+    }
+
+    [Fact]
+    public void FullName_Removes_Generics_On_Reflection()
+    {
+        // Arrange
+        var context = new PipelineContext<ReflectionContext>(new ReflectionContext(typeof(List<int>), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
+        var resolver = Fixture.Freeze<IObjectResolver>();
+        resolver.Resolve<ClassModel>(Arg.Any<object?>()).Returns(Result.Success(new ClassModel(context.Request.SourceModel)));
+        var sut = CreateSut();
+
+        // Act
+        var result = sut.Process("class.FullName", context);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        result.Value.Should().Be(context.Request.SourceModel.FullName!.WithoutGenerics());
+    }
 }
