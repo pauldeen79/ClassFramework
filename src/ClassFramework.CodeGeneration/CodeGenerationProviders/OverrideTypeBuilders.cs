@@ -9,6 +9,6 @@ public class OverrideTypeBuilders(IPipelineService pipelineService) : ClassFrame
     protected override bool CreateAsObservable => true;
     protected override async Task<TypeBase?> GetBaseClass() => await CreateBaseClass(typeof(ITypeBase), "ClassFramework.Domain").ConfigureAwait(false);
 
-    public override async Task<IEnumerable<TypeBase>> GetModel()
+    public override async Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
         => await GetBuilders(await GetOverrideModels(typeof(ITypeBase)).ConfigureAwait(false), "ClassFramework.Domain.Builders.Types", "ClassFramework.Domain.Types").ConfigureAwait(false);
 }

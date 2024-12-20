@@ -2,7 +2,7 @@
 
 public class AbstractBuilders(IPipelineService pipelineService) : ImmutableCSharpClassBase(pipelineService)
 {
-    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetBuilders(await GetAbstractModels().ConfigureAwait(false), "Test.Domain.Builders", "Test.Domain").ConfigureAwait(false);
+    public override async Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => await GetBuilders(await GetAbstractModels().ConfigureAwait(false), "Test.Domain.Builders", "Test.Domain").ConfigureAwait(false);
 
     public override string Path => "Test.Domain/Builders";
 

@@ -1685,7 +1685,7 @@ namespace Test.Domain.Builders
 
     private sealed class TestCodeGenerationProvider : CsharpClassGeneratorCodeGenerationProviderBase
     {
-        public override Task<IEnumerable<TypeBase>> GetModel() => Task.FromResult<IEnumerable<TypeBase>>(
+        public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => Task.FromResult<IEnumerable<TypeBase>>(
         [
             new ClassBuilder()
                 .WithNamespace("MyNamespace")
@@ -1722,7 +1722,7 @@ namespace Test.Domain.Builders
         public override string LastGeneratedFilesFilename => string.Empty;
         public override Encoding Encoding => Encoding.UTF8;
 
-        public override Task<IEnumerable<TypeBase>> GetModel() => Task.FromResult<IEnumerable<TypeBase>>(
+        public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => Task.FromResult<IEnumerable<TypeBase>>(
         [
             new InterfaceBuilder()
                 .WithName("IMyEntity")

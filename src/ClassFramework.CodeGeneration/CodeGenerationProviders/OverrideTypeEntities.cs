@@ -8,6 +8,6 @@ public class OverrideTypeEntities(IPipelineService pipelineService) : ClassFrame
     protected override bool EnableEntityInheritance => true;
     protected override async Task<TypeBase?> GetBaseClass() => await CreateBaseClass(typeof(ITypeBase), "ClassFramework.Domain").ConfigureAwait(false);
 
-    public override async Task<IEnumerable<TypeBase>> GetModel()
+    public override async Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
         => await GetEntities(await GetOverrideModels(typeof(ITypeBase)).ConfigureAwait(false), "ClassFramework.Domain.Types").ConfigureAwait(false);
 }
