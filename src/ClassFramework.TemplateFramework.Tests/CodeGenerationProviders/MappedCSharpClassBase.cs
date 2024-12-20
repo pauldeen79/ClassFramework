@@ -25,7 +25,7 @@ public abstract class MappedCSharpClassBase(IPipelineService pipelineService) : 
             .AddMetadata(CreateTypenameMappingMetadata(typeof(IMyMappedType)));
     }
 
-    protected async Task<TypeBase[]> GetTypeNamedModels()
+    protected async Task<Result<IEnumerable<TypeBase>>> GetTypeNamedModels()
     => await GetNonCoreModels($"{CodeGenerationRootNamespace}.SomeNamespace").ConfigureAwait(false);
 
 }
