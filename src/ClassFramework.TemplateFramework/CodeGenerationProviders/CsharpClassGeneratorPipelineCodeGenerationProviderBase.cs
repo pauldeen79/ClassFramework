@@ -121,7 +121,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         }
 
         var entitiesResults = (await modelsResult.Value!.SelectAsync(x => CreateEntity(x, entitiesNamespace)).ConfigureAwait(false)).ToArray();
-        return Result.Aggregate(entitiesResults, Result.Success(entitiesResults.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create entities, see inner results for details"));
+        return Result.Aggregate(entitiesResults, Result.Success(entitiesResults.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create entities. See the inner results for more details."));
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetEntityInterfaces(Result<IEnumerable<TypeBase>> modelsResult, string entitiesNamespace, string interfacesNamespace)
@@ -136,7 +136,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         }
 
         var interfaceResults = (await modelsResult.Value!.SelectAsync(async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false)).ConfigureAwait(false)).ToArray();
-        return Result.Aggregate(interfaceResults, Result.Success(interfaceResults.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create interfaces, see inner results for details"));
+        return Result.Aggregate(interfaceResults, Result.Success(interfaceResults.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create interfaces. See the inner results for more details."));
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetBuilders(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace)
@@ -157,7 +157,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             return await CreateBuilderClass(entityResult, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
         }).ConfigureAwait(false);
 
-        return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create builders, see inner results for details"));
+        return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create builders. See the inner results for more details."));
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetBuilderExtensions(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
@@ -179,7 +179,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             return await CreateBuilderExtensionsClass(interfaceResult.TryCast<TypeBase>(), buildersNamespace, entitiesNamespace, buildersExtensionsNamespace).ConfigureAwait(false);
         }).ConfigureAwait(false);
 
-        return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create builder extensions, see inner results for details"));
+        return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create builder extensions. See the inner results for more details."));
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetNonGenericBuilders(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace)
@@ -200,7 +200,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             return await CreateNonGenericBuilderClass(typeBaseResult, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
         }).ConfigureAwait(false);
 
-        return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create non generic builders, see inner results for details"));
+        return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create non generic builders. See the inner results for more details."));
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetBuilderInterfaces(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace, string interfacesNamespace)
@@ -226,7 +226,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             return await CreateInterface(Result.Success(x), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false);
         }).ConfigureAwait(false);
 
-        return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create builder interfaces, see inner results for details"));
+        return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create builder interfaces. See the inner results for more details."));
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetCoreModels()
@@ -237,7 +237,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .ConfigureAwait(false))
             .ToArray();
 
-        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create core models, see inner results for details"));
+        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create core models. See the inner results for more details."));
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetNonCoreModels(string @namespace)
@@ -248,7 +248,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .ConfigureAwait(false))
             .ToArray();
 
-        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create non core models, see inner results for details"));
+        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create non core models. See the inner results for more details."));
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetAbstractionsInterfaces()
@@ -259,7 +259,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .ConfigureAwait(false))
             .ToArray();
 
-        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract interfaces, see inner results for details"));
+        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract interfaces. See the inner results for more details."));
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetAbstractModels()
@@ -269,7 +269,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .ConfigureAwait(false))
             .ToArray();
 
-        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract models, see inner results for details"));
+        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract models. See the inner results for more details."));
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetOverrideModels(Type abstractType)
@@ -282,7 +282,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .ConfigureAwait(false))
                 .ToArray();
 
-        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create override models, see inner results for details"));
+        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create override models. See the inner results for more details."));
     }
 
     protected async Task<Result<TypeBase>> CreateBaseClass(Type type, string @namespace)

@@ -446,10 +446,18 @@ namespace Test.Domain.Builders
         var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
-        // Act & Assert
-        await engine
-            .Awaiting(x => x.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None))
-            .Should().ThrowAsync<InvalidOperationException>().WithMessage("[NotSupported] Unknown variable found: property.Kaboom");
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Could not create builders. See the inner results for more details.");
+        result.InnerResults.Should().ContainSingle();
+        result.InnerResults.First().Status.Should().Be(ResultStatus.Error);
+        result.InnerResults.First().ErrorMessage.Should().Be("An error occured while processing the pipeline. See the inner results for more details.");
+        result.InnerResults.First().InnerResults.Should().ContainSingle();
+        result.InnerResults.First().InnerResults.First().Status.Should().Be(ResultStatus.NotSupported);
+        result.InnerResults.First().InnerResults.First().ErrorMessage.Should().Be("Unknown variable found: property.Kaboom");
     }
 
     [Fact]
@@ -1685,20 +1693,21 @@ namespace Test.Domain.Builders
 
     private sealed class TestCodeGenerationProvider : CsharpClassGeneratorCodeGenerationProviderBase
     {
-        public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => Task.FromResult<IEnumerable<TypeBase>>(
-        [
-            new ClassBuilder()
-                .WithNamespace("MyNamespace")
-                .WithName("MyClass")
-                .AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute)))
-                .AddFields(new FieldBuilder().WithName("_myField").WithType(typeof(string)).WithIsNullable().WithReadOnly().WithDefaultValue("default value").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))))
-                .AddEnums(new EnumerationBuilder().WithName("MyEnumeration").AddMembers(new EnumerationMemberBuilder().WithName("Value1").WithValue(0), new EnumerationMemberBuilder().WithName("Value2").WithValue(1)).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))))
-                .AddConstructors(new ConstructorBuilder().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))).AddParameters(new ParameterBuilder().WithName("myField").WithType(typeof(string)).WithIsNullable().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))), new ParameterBuilder().WithName("second").WithType(typeof(bool))).AddStringCodeStatements("// code goes here", "// second line"))
-                .AddMethods(new MethodBuilder().WithName("Method1").WithReturnType(typeof(string)).WithReturnTypeIsNullable().AddStringCodeStatements("// code goes here", "// second line").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))))
-                .AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().WithNew().AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("return _myField;")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("_myField = value;")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))))
-                .AddSubClasses(new ClassBuilder().WithName("MySubClass").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))).AddProperties(new PropertyBuilder().WithName("MySubProperty").WithType(typeof(string)).AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute)))).AddSubClasses(new ClassBuilder().WithName("MySubSubClass").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))).AddProperties(new PropertyBuilder().WithName("MySubSubProperty").WithType(typeof(string)).AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))))))
-                .Build()
-        ]);
+        public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => Task.FromResult<Result<IEnumerable<TypeBase>>>(
+            Result.Success<IEnumerable<TypeBase>>(
+                [
+                    new ClassBuilder()
+                        .WithNamespace("MyNamespace")
+                        .WithName("MyClass")
+                        .AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute)))
+                        .AddFields(new FieldBuilder().WithName("_myField").WithType(typeof(string)).WithIsNullable().WithReadOnly().WithDefaultValue("default value").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))))
+                        .AddEnums(new EnumerationBuilder().WithName("MyEnumeration").AddMembers(new EnumerationMemberBuilder().WithName("Value1").WithValue(0), new EnumerationMemberBuilder().WithName("Value2").WithValue(1)).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))))
+                        .AddConstructors(new ConstructorBuilder().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))).AddParameters(new ParameterBuilder().WithName("myField").WithType(typeof(string)).WithIsNullable().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))), new ParameterBuilder().WithName("second").WithType(typeof(bool))).AddStringCodeStatements("// code goes here", "// second line"))
+                        .AddMethods(new MethodBuilder().WithName("Method1").WithReturnType(typeof(string)).WithReturnTypeIsNullable().AddStringCodeStatements("// code goes here", "// second line").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))))
+                        .AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().WithNew().AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("return _myField;")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("_myField = value;")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))))
+                        .AddSubClasses(new ClassBuilder().WithName("MySubClass").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))).AddProperties(new PropertyBuilder().WithName("MySubProperty").WithType(typeof(string)).AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute)))).AddSubClasses(new ClassBuilder().WithName("MySubSubClass").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))).AddProperties(new PropertyBuilder().WithName("MySubSubProperty").WithType(typeof(string)).AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute))))))
+                        .Build()
+                ]));
 
         public override string Path => string.Empty;
         public override bool RecurseOnDeleteGeneratedFiles => false;
@@ -1722,20 +1731,21 @@ namespace Test.Domain.Builders
         public override string LastGeneratedFilesFilename => string.Empty;
         public override Encoding Encoding => Encoding.UTF8;
 
-        public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => Task.FromResult<IEnumerable<TypeBase>>(
-        [
-            new InterfaceBuilder()
-                .WithName("IMyEntity")
-                .WithNamespace("MyNamespace")
-                .AddProperties(
-                    new PropertyBuilder()
-                        .WithName("MySingleProperty")
-                        .WithType(typeof(string)),
-                    new PropertyBuilder()
-                        .WithName("MyCollectionProperty")
-                        .WithType(typeof(IEnumerable<string>)))
-                .Build()
-        ]);
+        public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => Task.FromResult<Result<IEnumerable<TypeBase>>>(
+            Result.Success<IEnumerable<TypeBase>>(
+                [
+                    new InterfaceBuilder()
+                        .WithName("IMyEntity")
+                        .WithNamespace("MyNamespace")
+                        .AddProperties(
+                            new PropertyBuilder()
+                                .WithName("MySingleProperty")
+                                .WithType(typeof(string)),
+                            new PropertyBuilder()
+                                .WithName("MyCollectionProperty")
+                                .WithType(typeof(IEnumerable<string>)))
+                        .Build()
+                ]));
 
         protected override string ProjectName => "UnitTest";
         protected override Type EntityCollectionType => typeof(IReadOnlyCollection<>);
