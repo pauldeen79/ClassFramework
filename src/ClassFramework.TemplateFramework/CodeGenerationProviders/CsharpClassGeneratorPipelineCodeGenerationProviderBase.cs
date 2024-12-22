@@ -563,69 +563,54 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Build());
     }
 
-    private async Task<Result<PipelineSettings>> CreateBuilderInterfacePipelineSettings(string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
-    {
-        var entitySettingsResult = await CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()).ConfigureAwait(false);
-        if (!entitySettingsResult.IsSuccessful())
-        {
-            return Result.Error<PipelineSettings>([entitySettingsResult], "Could not create entity settings, see inner results for details");
-        }
-
-        return Result.Success(new PipelineSettingsBuilder(entitySettingsResult.Value!)
-            .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
-            .WithBuilderNamespaceFormatString(buildersNamespace)
-            .WithBuilderExtensionsNamespaceFormatString(buildersExtensionsNamespace)
-            .WithSetMethodNameFormatString(SetMethodNameFormatString)
-            .WithAddMethodNameFormatString(AddMethodNameFormatString)
-            .WithEnableBuilderInheritance(EnableBuilderInhericance)
-            .Build());
-    }
+    private Task<Result<PipelineSettings>> CreateBuilderInterfacePipelineSettings(string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
+        => ProcessSettingsResult(CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()),
+            settings =>
+            Task.FromResult(Result.Success(new PipelineSettingsBuilder(settings)
+                    .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
+                    .WithBuilderNamespaceFormatString(buildersNamespace)
+                    .WithBuilderExtensionsNamespaceFormatString(buildersExtensionsNamespace)
+                    .WithSetMethodNameFormatString(SetMethodNameFormatString)
+                    .WithAddMethodNameFormatString(AddMethodNameFormatString)
+                    .WithEnableBuilderInheritance(EnableBuilderInhericance)
+                    .Build())
+            ));
 
     private async Task<Result<TypeBase>> CreateEntity(TypeBase typeBase, string entitiesNamespace)
-    {
-        var entitySettingsResult = await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{NoInterfacePrefix($class.Name)}").ConfigureAwait(false);
-        if (!entitySettingsResult.IsSuccessful())
-        {
-            return Result.Error<TypeBase>([entitySettingsResult], "Could not create entity settings, see inner results for details");
-        }
-
-        return await PipelineService.Process(new EntityContext(typeBase, entitySettingsResult.Value!, Settings.CultureInfo)).ConfigureAwait(false);
-    }
+        => await ProcessSettingsResult(CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{NoInterfacePrefix($class.Name)}"),
+            async settings =>
+            {
+                return await PipelineService.Process(new EntityContext(typeBase, settings, Settings.CultureInfo)).ConfigureAwait(false);
+            }).ConfigureAwait(false);
 
     private async Task<Result<TypeBase>> CreateBuilderClass(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace)
         => await typeBaseResult.OnSuccess(async () =>
         {
-            var builderSettingsResult = await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ConfigureAwait(false);
-            if (!builderSettingsResult.IsSuccessful())
-            {
-                return Result.Error<TypeBase>([builderSettingsResult], "Could not create builder settings, see inner results for details");
-            }
-
-            return await PipelineService.Process(new BuilderContext(typeBaseResult.Value!, builderSettingsResult.Value!, Settings.CultureInfo)).ConfigureAwait(false);
+            return await ProcessSettingsResult(CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace),
+                async settings =>
+                {
+                    return await PipelineService.Process(new BuilderContext(typeBaseResult.Value!, settings, Settings.CultureInfo)).ConfigureAwait(false);
+                }).ConfigureAwait(false);
         }).ConfigureAwait(false);
 
     private async Task<Result<TypeBase>> CreateBuilderExtensionsClass(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
         => await typeBaseResult.OnSuccess(async () =>
         {
-            var builderInterfaceSettingsResult = await CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace, buildersExtensionsNamespace).ConfigureAwait(false);
-            if (!builderInterfaceSettingsResult.IsSuccessful())
-            {
-                return Result.Error<TypeBase>([builderInterfaceSettingsResult], "Could not create builder interface settings, see inner results for details");
-            }
-
-            return await PipelineService.Process(new BuilderExtensionContext(typeBaseResult.Value!, builderInterfaceSettingsResult.Value!, Settings.CultureInfo)).ConfigureAwait(false);
+            return await ProcessSettingsResult(CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace, buildersExtensionsNamespace),
+                async settings =>
+                {
+                    return await PipelineService.Process(new BuilderExtensionContext(typeBaseResult.Value!, settings, Settings.CultureInfo)).ConfigureAwait(false);
+                }).ConfigureAwait(false);
         }).ConfigureAwait(false);
 
     private async Task<Result<TypeBase>> CreateNonGenericBuilderClass(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace)
         => await typeBaseResult.OnSuccess(async () =>
         {
-            var builderSettings = await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ConfigureAwait(false);
-            if (!builderSettings.IsSuccessful())
-            {
-                return Result.Error<TypeBase>([builderSettings], "Could not create builder settings, see inner results for details");
-            }
-
-            return await PipelineService.Process(new BuilderContext(typeBaseResult.Value!, builderSettings.Value!.ToBuilder().WithIsForAbstractBuilder().Build(), Settings.CultureInfo)).ConfigureAwait(false);
+            return await ProcessSettingsResult(CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace),
+                async settings =>
+                {
+                    return await PipelineService.Process(new BuilderContext(typeBaseResult.Value!, settings.ToBuilder().WithIsForAbstractBuilder().Build(), Settings.CultureInfo)).ConfigureAwait(false);
+                }).ConfigureAwait(false);
         }).ConfigureAwait(false);
 
     private bool? GetOverrideAddNullChecks()
