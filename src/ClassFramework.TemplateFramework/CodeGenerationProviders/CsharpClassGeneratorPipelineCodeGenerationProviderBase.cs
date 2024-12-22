@@ -110,13 +110,15 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return ProcessModelsResult(modelsResult, modelsResult.Value!.SelectAsync(x => CreateEntity(x, entitiesNamespace)), "entities");
     }
 
-    protected Task<Result<IEnumerable<TypeBase>>> GetEntityInterfaces(Result<IEnumerable<TypeBase>> modelsResult, string entitiesNamespace, string interfacesNamespace)
+    protected async Task<Result<IEnumerable<TypeBase>>> GetEntityInterfaces(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string entitiesNamespace, string interfacesNamespace)
     {
-        Guard.IsNotNull(modelsResult);
+        Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return ProcessModelsResult(modelsResult, modelsResult.Value!.SelectAsync(async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false)), "interfaces");
+        var modelsResult = await modelsResultTask.ConfigureAwait(false);
+
+        return await ProcessModelsResult(modelsResult, modelsResult.Value!.SelectAsync(async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false)), "interfaces").ConfigureAwait(false);
     }
 
     protected Task<Result<IEnumerable<TypeBase>>> GetBuilders(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace)
