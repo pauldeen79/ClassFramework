@@ -191,20 +191,17 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             return modelsResult;
         }
 
-        var settingsResult = await settingsTask.ConfigureAwait(false);
-        if (!settingsResult.IsSuccessful())
+        return await ProcessSettingsResult(settingsTask, async settings =>
         {
-            return Result.Error<IEnumerable<TypeBase>>([settingsResult], "Could not create settings, see inner results for details");
-        }
+            var results = await successTask(settings).ConfigureAwait(false);
 
-        var results = await successTask(settingsResult.Value!).ConfigureAwait(false);
-
-        return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, $"Could not create {resultType}. See the inner results for more details."));
+            return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, $"Could not create {resultType}. See the inner results for more details."));
+        }).ConfigureAwait(false);
     }
 
-    protected async Task<Result<T>> ProcessBaseClassResult<T>(Func<TypeBase?, Task<Result<T>>> continuationTask)
+    protected async Task<Result<T>> ProcessBaseClassResult<T>(Func<TypeBase?, Task<Result<T>>> successTask)
     {
-        Guard.IsNotNull(continuationTask);
+        Guard.IsNotNull(successTask);
 
         var baseClassResult = await GetBaseClass().ConfigureAwait(false);
         if (!baseClassResult.IsSuccessful() && baseClassResult.Status != ResultStatus.NotFound)
@@ -212,7 +209,21 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             return Result.Error<T>([baseClassResult], "Could not get base class, see inner results for details");
         }
 
-        return await continuationTask(baseClassResult.Value).ConfigureAwait(false);
+        return await successTask(baseClassResult.Value).ConfigureAwait(false);
+    }
+
+    protected static async Task<Result<T>> ProcessSettingsResult<T>(Task<Result<PipelineSettings>> settingsTask, Func<PipelineSettings, Task<Result<T>>> successTask)
+    {
+        Guard.IsNotNull(settingsTask);
+        Guard.IsNotNull(successTask);
+
+        var settingsResult = await settingsTask.ConfigureAwait(false);
+        if (!settingsResult.IsSuccessful())
+        {
+            return Result.Error<T>([settingsResult], "Could not create settings, see inner results for details");
+        }
+
+        return await successTask(settingsResult.Value!).ConfigureAwait(false);
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetCoreModels()
@@ -655,19 +666,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             return typeBaseResult;
         }
 
-        var baseClassResult = await GetBaseClass().ConfigureAwait(false);
-        if (!baseClassResult.IsSuccessful() && baseClassResult.Status != ResultStatus.NotFound)
+        return await ProcessBaseClassResult(async baseClass =>
         {
-            return Result.Error<TypeBase>([baseClassResult], "Could not get base class, see inner results for details");
-        }
-
-        var interfaceSettingsResult = await CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(baseClassResult.Value!), copyMethodPredicate, addSetters, nameFormatString).ConfigureAwait(false);
-        if (!interfaceSettingsResult.IsSuccessful())
-        {
-            return Result.Error<TypeBase>([interfaceSettingsResult], "Could not create interface settings, see inner results for details");
-        }
-
-        return (await PipelineService.Process(new InterfaceContext(typeBaseResult.Value!, interfaceSettingsResult.Value!, Settings.CultureInfo)).ConfigureAwait(false))
-            .TryCast<TypeBase>();
+            return await ProcessSettingsResult(CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(baseClass), copyMethodPredicate, addSetters, nameFormatString), async settings =>
+            {
+                return (await PipelineService.Process(new InterfaceContext(typeBaseResult.Value!, settings, Settings.CultureInfo)).ConfigureAwait(false))
+                .TryCast<TypeBase>();
+            }).ConfigureAwait(false);
+        }).ConfigureAwait(false);
     }
 }
