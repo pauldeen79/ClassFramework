@@ -186,17 +186,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(settingsTask);
         Guard.IsNotNull(successTask);
 
-        if (!modelsResult.IsSuccessful())
-        {
-            return modelsResult;
-        }
+        return await modelsResult.OnSuccess(
+            () => ProcessSettingsResult(settingsTask, async settings =>
+            {
+                var results = await successTask(settings).ConfigureAwait(false);
 
-        return await ProcessSettingsResult(settingsTask, async settings =>
-        {
-            var results = await successTask(settings).ConfigureAwait(false);
-
-            return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, $"Could not create {resultType}. See the inner results for more details."));
-        }).ConfigureAwait(false);
+                return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, $"Could not create {resultType}. See the inner results for more details."));
+            })).ConfigureAwait(false);
     }
 
     protected async Task<Result<T>> ProcessBaseClassResult<T>(Func<TypeBase?, Task<Result<T>>> successTask)
