@@ -279,7 +279,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
         var reflectionSettings = CreateReflectionPipelineSettings();
         var typeBaseResult = await PipelineService.Process(new ReflectionContext(type, reflectionSettings, Settings.CultureInfo)).ConfigureAwait(false);
-        var typeBase = typeBaseResult.GetValueOrThrow();
+        if (!typeBaseResult.IsSuccessful())
+        {
+            return Result.Error<TypeBase>([typeBaseResult], "Could not create base class, see inner results for details");
+        }
 
         var entitySettings = new PipelineSettingsBuilder()
             .WithAddSetters(AddSetters)
@@ -318,7 +321,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
             .Build();
 
-        return await PipelineService.Process(new EntityContext(typeBase, entitySettings, Settings.CultureInfo)).ConfigureAwait(false);
+        return await PipelineService.Process(new EntityContext(typeBaseResult.Value!, entitySettings, Settings.CultureInfo)).ConfigureAwait(false);
     }
 
     private static bool DefaultCopyAttributePredicate(Domain.Attribute attribute)
