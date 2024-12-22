@@ -102,14 +102,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetTypes().Where(IsAbstractType);
 
-    /// <summary>
-    /// Gets the base typename, based on a derived class.
-    /// </summary>
-    /// <param name="className">The typename to get the base classname from.</param>
-    /// <returns>Base classname when found, otherwise string.Empty</returns>
-    protected string GetEntityClassName(string className)
-        => Array.Find(GetCustomBuilderTypes(), x => className.EndsWith(x, StringComparison.InvariantCulture)) ?? string.Empty;
-
     protected async Task<Result<IEnumerable<TypeBase>>> GetEntities(Result<IEnumerable<TypeBase>> modelsResult, string entitiesNamespace)
     {
         Guard.IsNotNull(modelsResult);
