@@ -180,19 +180,19 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected static Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Result<IEnumerable<TypeBase>> modelsResult, Task<IEnumerable<Result<TypeBase>>> successTask, string resultType)
         => ProcessModelsResult(modelsResult, Task.FromResult(Result.Continue<PipelineSettings>()), _ => successTask, resultType);
 
-    protected static async Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Result<IEnumerable<TypeBase>> modelsResult, Task<Result<PipelineSettings>> settingsTask, Func<PipelineSettings, Task<IEnumerable<Result<TypeBase>>>> successTask, string resultType)
+    protected static Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Result<IEnumerable<TypeBase>> modelsResult, Task<Result<PipelineSettings>> settingsTask, Func<PipelineSettings, Task<IEnumerable<Result<TypeBase>>>> successTask, string resultType)
     {
         Guard.IsNotNull(modelsResult);
         Guard.IsNotNull(settingsTask);
         Guard.IsNotNull(successTask);
 
-        return await modelsResult.OnSuccess(
+        return modelsResult.OnSuccess(
             () => ProcessSettingsResult(settingsTask, async settings =>
             {
                 var results = await successTask(settings).ConfigureAwait(false);
 
                 return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, $"Could not create {resultType}. See the inner results for more details."));
-            })).ConfigureAwait(false);
+            }));
     }
 
     protected async Task<Result<T>> ProcessBaseClassResult<T>(Func<TypeBase?, Task<Result<T>>> successTask)
@@ -224,43 +224,39 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetCoreModels()
     {
-        var modelsResult = (await GetType().Assembly.GetTypes()
+        var modelsResult = await GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
             .SelectAsync(GetModel)
-            .ConfigureAwait(false))
-            .ToArray();
+            .ConfigureAwait(false);
 
         return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create core models. See the inner results for more details."));
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetNonCoreModels(string @namespace)
     {
-        var modelsResult = (await GetType().Assembly.GetTypes()
+        var modelsResult = await GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == @namespace && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
             .SelectAsync(GetModel)
-            .ConfigureAwait(false))
-            .ToArray();
+            .ConfigureAwait(false);
 
         return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create non core models. See the inner results for more details."));
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetAbstractionsInterfaces()
     {
-        var modelsResult = (await GetType().Assembly.GetTypes()
+        var modelsResult = await GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
             .SelectAsync(GetModel)
-            .ConfigureAwait(false))
-            .ToArray();
+            .ConfigureAwait(false);
 
         return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract interfaces. See the inner results for more details."));
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetAbstractModels()
     {
-        var modelsResult = (await GetPureAbstractModels()
+        var modelsResult = await GetPureAbstractModels()
             .SelectAsync(GetModel)
-            .ConfigureAwait(false))
-            .ToArray();
+            .ConfigureAwait(false);
 
         return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract models. See the inner results for more details."));
     }
@@ -269,11 +265,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     {
         Guard.IsNotNull(abstractType);
 
-        var modelsResult = (await GetType().Assembly.GetTypes()
+        var modelsResult = await GetType().Assembly.GetTypes()
                 .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y == abstractType))
                 .SelectAsync(GetModel)
-                .ConfigureAwait(false))
-                .ToArray();
+                .ConfigureAwait(false);
 
         return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create override models. See the inner results for more details."));
     }
@@ -555,15 +550,14 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     private Task<Result<PipelineSettings>> CreateBuilderInterfacePipelineSettings(string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
         => ProcessSettingsResult(CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()),
-            settings =>
-            Task.FromResult(Result.Success(new PipelineSettingsBuilder(settings)
-                    .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
-                    .WithBuilderNamespaceFormatString(buildersNamespace)
-                    .WithBuilderExtensionsNamespaceFormatString(buildersExtensionsNamespace)
-                    .WithSetMethodNameFormatString(SetMethodNameFormatString)
-                    .WithAddMethodNameFormatString(AddMethodNameFormatString)
-                    .WithEnableBuilderInheritance(EnableBuilderInhericance)
-                    .Build())
+            settings => Task.FromResult(Result.Success(new PipelineSettingsBuilder(settings)
+                .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
+                .WithBuilderNamespaceFormatString(buildersNamespace)
+                .WithBuilderExtensionsNamespaceFormatString(buildersExtensionsNamespace)
+                .WithSetMethodNameFormatString(SetMethodNameFormatString)
+                .WithAddMethodNameFormatString(AddMethodNameFormatString)
+                .WithEnableBuilderInheritance(EnableBuilderInhericance)
+                .Build())
             ));
 
     private Task<Result<TypeBase>> CreateEntity(TypeBase typeBase, string entitiesNamespace)
