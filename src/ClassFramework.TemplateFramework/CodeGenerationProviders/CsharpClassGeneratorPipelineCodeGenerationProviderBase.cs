@@ -119,24 +119,18 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return ProcessModelsResult(modelsResult, modelsResult.Value!.SelectAsync(async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false)), "interfaces");
     }
 
-    protected async Task<Result<IEnumerable<TypeBase>>> GetBuilders(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace)
+    protected Task<Result<IEnumerable<TypeBase>>> GetBuilders(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace)
     {
         Guard.IsNotNull(modelsResult);
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
 
-        var entitySettingsResult = await CreateEntityPipelineSettings(entitiesNamespace).ConfigureAwait(false);
-        if (!entitySettingsResult.IsSuccessful())
+        return ProcessModelsResult(modelsResult, CreateEntityPipelineSettings(entitiesNamespace), settings => modelsResult.Value!.SelectAsync(async x =>
         {
-            return Result.Error<IEnumerable<TypeBase>>([entitySettingsResult], "Could not create entity settings, see inner results for details");
-        }
-
-        return await ProcessModelsResult(modelsResult, modelsResult.Value!.SelectAsync(async x =>
-        {
-            var context = new EntityContext(x, entitySettingsResult.Value!, Settings.CultureInfo);
+            var context = new EntityContext(x, settings, Settings.CultureInfo);
             var entityResult = await PipelineService.Process(context).ConfigureAwait(false);
             return await CreateBuilderClass(entityResult, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
-        }), "builders").ConfigureAwait(false);
+        }), "builders");
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetBuilderExtensions(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
@@ -152,38 +146,26 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             return Result.Error<IEnumerable<TypeBase>>([baseClassResult], "Could not get base class, see inner results for details");
         }
 
-        var interfaceSettingsResult = await CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, CreateInheritanceComparisonDelegate(baseClassResult.Value!), null, true).ConfigureAwait(false);
-        if (!interfaceSettingsResult.IsSuccessful())
+        return await ProcessModelsResult(modelsResult, CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, CreateInheritanceComparisonDelegate(baseClassResult.Value!), null, true), settings => modelsResult.Value!.SelectAsync(async x =>
         {
-            return Result.Error<IEnumerable<TypeBase>>([interfaceSettingsResult], "Could not create interface settings, see inner results for details");
-        }
-
-        return await ProcessModelsResult(modelsResult, modelsResult.Value!.SelectAsync(async x =>
-        {
-            var context = new InterfaceContext(x, interfaceSettingsResult.Value!, Settings.CultureInfo);
+            var context = new InterfaceContext(x, settings, Settings.CultureInfo);
             var interfaceResult = await PipelineService.Process(context).ConfigureAwait(false);
             return await CreateBuilderExtensionsClass(interfaceResult.TryCast<TypeBase>(), buildersNamespace, entitiesNamespace, buildersExtensionsNamespace).ConfigureAwait(false);
         }), "builder extensions").ConfigureAwait(false);
     }
 
-    protected async Task<Result<IEnumerable<TypeBase>>> GetNonGenericBuilders(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace)
+    protected Task<Result<IEnumerable<TypeBase>>> GetNonGenericBuilders(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace)
     {
         Guard.IsNotNull(modelsResult);
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
 
-        var entitySettingsResult = await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()).ConfigureAwait(false);
-        if (!entitySettingsResult.IsSuccessful())
+        return ProcessModelsResult(modelsResult, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), settings => modelsResult.Value!.SelectAsync(async x =>
         {
-            return Result.Error<IEnumerable<TypeBase>>([entitySettingsResult], "Could not create entity settings, see inner results for details");
-        }
-
-        return await ProcessModelsResult(modelsResult, modelsResult.Value!.SelectAsync(async x =>
-        {
-            var context = new EntityContext(x, entitySettingsResult.Value!, Settings.CultureInfo);
+            var context = new EntityContext(x, settings, Settings.CultureInfo);
             var typeBaseResult = await PipelineService.Process(context).ConfigureAwait(false);
             return await CreateNonGenericBuilderClass(typeBaseResult, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
-        }), "non generic builders").ConfigureAwait(false);
+        }), "non generic builders");
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetBuilderInterfaces(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace, string interfacesNamespace)
@@ -201,9 +183,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         }), "builder interfaces").ConfigureAwait(false);
     }
 
-    protected static async Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Result<IEnumerable<TypeBase>> modelsResult, Task<IEnumerable<Result<TypeBase>>> successTask, string resultType)
+    protected static Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Result<IEnumerable<TypeBase>> modelsResult, Task<IEnumerable<Result<TypeBase>>> successTask, string resultType)
+        => ProcessModelsResult(modelsResult, Task.FromResult(Result.Continue<PipelineSettings>()), _ => successTask, resultType);
+
+    protected static async Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Result<IEnumerable<TypeBase>> modelsResult, Task<Result<PipelineSettings>> settingsTask, Func<PipelineSettings, Task<IEnumerable<Result<TypeBase>>>> successTask, string resultType)
     {
         Guard.IsNotNull(modelsResult);
+        Guard.IsNotNull(settingsTask);
         Guard.IsNotNull(successTask);
 
         if (!modelsResult.IsSuccessful())
@@ -211,7 +197,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             return modelsResult;
         }
 
-        var results = await successTask.ConfigureAwait(false);
+        var settingsResult = await settingsTask.ConfigureAwait(false);
+        if (!settingsResult.IsSuccessful())
+        {
+            return Result.Error<IEnumerable<TypeBase>>([settingsResult], "Could not create settings, see inner results for details");
+        }
+
+        var results = await successTask(settingsResult.Value!).ConfigureAwait(false);
 
         return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, $"Could not create {resultType}. See the inner results for more details."));
     }
@@ -595,7 +587,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             return Result.Error<TypeBase>([entitySettingsResult], "Could not create entity settings, see inner results for details");
         }
 
-        return await PipelineService.Process(new EntityContext(typeBase!, entitySettingsResult.Value!, Settings.CultureInfo)).ConfigureAwait(false);
+        return await PipelineService.Process(new EntityContext(typeBase, entitySettingsResult.Value!, Settings.CultureInfo)).ConfigureAwait(false);
     }
 
     private async Task<Result<TypeBase>> CreateBuilderClass(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace)
