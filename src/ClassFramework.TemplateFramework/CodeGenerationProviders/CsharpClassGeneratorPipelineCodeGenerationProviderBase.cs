@@ -593,52 +593,40 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     }
 
     private async Task<Result<TypeBase>> CreateBuilderClass(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace)
-    {
-        if (!typeBaseResult.IsSuccessful())
+        => await typeBaseResult.OnSuccess(async () =>
         {
-            return typeBaseResult;
-        }
+            var builderSettingsResult = await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ConfigureAwait(false);
+            if (!builderSettingsResult.IsSuccessful())
+            {
+                return Result.Error<TypeBase>([builderSettingsResult], "Could not create builder settings, see inner results for details");
+            }
 
-        var builderSettingsResult = await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ConfigureAwait(false);
-        if (!builderSettingsResult.IsSuccessful())
-        {
-            return Result.Error<TypeBase>([builderSettingsResult], "Could not create builder settings, see inner results for details");
-        }
-
-        return await PipelineService.Process(new BuilderContext(typeBaseResult.Value!, builderSettingsResult.Value!, Settings.CultureInfo)).ConfigureAwait(false);
-    }
+            return await PipelineService.Process(new BuilderContext(typeBaseResult.Value!, builderSettingsResult.Value!, Settings.CultureInfo)).ConfigureAwait(false);
+        }).ConfigureAwait(false);
 
     private async Task<Result<TypeBase>> CreateBuilderExtensionsClass(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
-    {
-        if (!typeBaseResult.IsSuccessful())
+        => await typeBaseResult.OnSuccess(async () =>
         {
-            return typeBaseResult;
-        }
+            var builderInterfaceSettingsResult = await CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace, buildersExtensionsNamespace).ConfigureAwait(false);
+            if (!builderInterfaceSettingsResult.IsSuccessful())
+            {
+                return Result.Error<TypeBase>([builderInterfaceSettingsResult], "Could not create builder interface settings, see inner results for details");
+            }
 
-        var builderInterfaceSettingsResult = await CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace, buildersExtensionsNamespace).ConfigureAwait(false);
-        if (!builderInterfaceSettingsResult.IsSuccessful())
-        {
-            return Result.Error<TypeBase>([builderInterfaceSettingsResult], "Could not create builder interface settings, see inner results for details");
-        }
-
-        return await PipelineService.Process(new BuilderExtensionContext(typeBaseResult.Value!, builderInterfaceSettingsResult.Value!, Settings.CultureInfo)).ConfigureAwait(false);
-    }
+            return await PipelineService.Process(new BuilderExtensionContext(typeBaseResult.Value!, builderInterfaceSettingsResult.Value!, Settings.CultureInfo)).ConfigureAwait(false);
+        }).ConfigureAwait(false);
 
     private async Task<Result<TypeBase>> CreateNonGenericBuilderClass(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace)
-    {
-        if (!typeBaseResult.IsSuccessful())
+        => await typeBaseResult.OnSuccess(async () =>
         {
-            return typeBaseResult;
-        }
+            var builderSettings = await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ConfigureAwait(false);
+            if (!builderSettings.IsSuccessful())
+            {
+                return Result.Error<TypeBase>([builderSettings], "Could not create builder settings, see inner results for details");
+            }
 
-        var builderSettings = await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ConfigureAwait(false);
-        if (!builderSettings.IsSuccessful())
-        {
-            return Result.Error<TypeBase>([builderSettings], "Could not create builder settings, see inner results for details");
-        }
-
-        return await PipelineService.Process(new BuilderContext(typeBaseResult.Value!, builderSettings.Value!.ToBuilder().WithIsForAbstractBuilder().Build(), Settings.CultureInfo)).ConfigureAwait(false);
-    }
+            return await PipelineService.Process(new BuilderContext(typeBaseResult.Value!, builderSettings.Value!.ToBuilder().WithIsForAbstractBuilder().Build(), Settings.CultureInfo)).ConfigureAwait(false);
+        }).ConfigureAwait(false);
 
     private bool? GetOverrideAddNullChecks()
     {
@@ -660,19 +648,15 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         bool addSetters,
         string nameFormatString = "{$class.Name}",
         CopyMethodPredicate? copyMethodPredicate = null)
-    {
-        if (!typeBaseResult.IsSuccessful())
-        {
-            return typeBaseResult;
-        }
-
-        return await ProcessBaseClassResult(async baseClass =>
-        {
-            return await ProcessSettingsResult(CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(baseClass), copyMethodPredicate, addSetters, nameFormatString), async settings =>
+            => await typeBaseResult.OnSuccess(async () =>
             {
-                return (await PipelineService.Process(new InterfaceContext(typeBaseResult.Value!, settings, Settings.CultureInfo)).ConfigureAwait(false))
-                .TryCast<TypeBase>();
+                return await ProcessBaseClassResult(async baseClass =>
+                {
+                    return await ProcessSettingsResult(CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(baseClass), copyMethodPredicate, addSetters, nameFormatString), async settings =>
+                    {
+                        return (await PipelineService.Process(new InterfaceContext(typeBaseResult.Value!, settings, Settings.CultureInfo)).ConfigureAwait(false))
+                        .TryCast<TypeBase>();
+                    }).ConfigureAwait(false);
+                }).ConfigureAwait(false);
             }).ConfigureAwait(false);
-        }).ConfigureAwait(false);
-    }
 }
