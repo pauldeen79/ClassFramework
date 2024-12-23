@@ -276,9 +276,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(abstractType);
 
         var modelsResult = await GetType().Assembly.GetTypes()
-                .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y == abstractType))
-                .SelectAsync(GetModel)
-                .ConfigureAwait(false);
+            .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y == abstractType))
+            .SelectAsync(GetModel)
+            .ConfigureAwait(false);
 
         return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create override models. See the inner results for more details."));
     }
