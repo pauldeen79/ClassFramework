@@ -102,12 +102,14 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetTypes().Where(IsAbstractType);
 
-    protected Task<Result<IEnumerable<TypeBase>>> GetEntities(Result<IEnumerable<TypeBase>> modelsResult, string entitiesNamespace)
+    protected async Task<Result<IEnumerable<TypeBase>>> GetEntities(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string entitiesNamespace)
     {
-        Guard.IsNotNull(modelsResult);
+        Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(entitiesNamespace);
 
-        return ProcessModelsResult(modelsResult, modelsResult.Value!.SelectAsync(x => CreateEntity(x, entitiesNamespace)), "entities");
+        var modelsResult = await modelsResultTask.ConfigureAwait(false);
+
+        return await ProcessModelsResult(modelsResult, modelsResult.Value!.SelectAsync(x => CreateEntity(x, entitiesNamespace)), "entities").ConfigureAwait(false);
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetEntityInterfaces(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string entitiesNamespace, string interfacesNamespace)
@@ -121,57 +123,63 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return await ProcessModelsResult(modelsResult, modelsResult.Value!.SelectAsync(async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false)), "interfaces").ConfigureAwait(false);
     }
 
-    protected Task<Result<IEnumerable<TypeBase>>> GetBuilders(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace)
+    protected async Task<Result<IEnumerable<TypeBase>>> GetBuilders(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
     {
-        Guard.IsNotNull(modelsResult);
+        Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
 
-        return ProcessModelsResult(modelsResult, CreateEntityPipelineSettings(entitiesNamespace), settings => modelsResult.Value!.SelectAsync(async x =>
+        var modelsResult = await modelsResultTask.ConfigureAwait(false);
+
+        return await ProcessModelsResult(modelsResult, CreateEntityPipelineSettings(entitiesNamespace), settings => modelsResult.Value!.SelectAsync(async x =>
         {
             var context = new EntityContext(x, settings, Settings.CultureInfo);
             var entityResult = await PipelineService.Process(context).ConfigureAwait(false);
             return await CreateBuilderClass(entityResult, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
-        }), "builders");
+        }), "builders").ConfigureAwait(false);
     }
 
-    protected Task<Result<IEnumerable<TypeBase>>> GetBuilderExtensions(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
+    protected async Task<Result<IEnumerable<TypeBase>>> GetBuilderExtensions(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
     {
-        Guard.IsNotNull(modelsResult);
+        Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(buildersExtensionsNamespace);
 
-        return ProcessBaseClassResult(baseClass => ProcessModelsResult(modelsResult, CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, CreateInheritanceComparisonDelegate(baseClass), null, true), settings => modelsResult.Value!.SelectAsync(async x =>
+        var modelsResult = await modelsResultTask.ConfigureAwait(false);
+
+        return await ProcessBaseClassResult(baseClass => ProcessModelsResult(modelsResult, CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, CreateInheritanceComparisonDelegate(baseClass), null, true), settings => modelsResult.Value!.SelectAsync(async x =>
         {
             var context = new InterfaceContext(x, settings, Settings.CultureInfo);
             var interfaceResult = await PipelineService.Process(context).ConfigureAwait(false);
             return await CreateBuilderExtensionsClass(interfaceResult.TryCast<TypeBase>(), buildersNamespace, entitiesNamespace, buildersExtensionsNamespace).ConfigureAwait(false);
-        }), "builder extensions"));
+        }), "builder extensions")).ConfigureAwait(false);
     }
 
-    protected Task<Result<IEnumerable<TypeBase>>> GetNonGenericBuilders(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace)
+    protected async Task<Result<IEnumerable<TypeBase>>> GetNonGenericBuilders(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
     {
-        Guard.IsNotNull(modelsResult);
+        Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
 
-        return ProcessModelsResult(modelsResult, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), settings => modelsResult.Value!.SelectAsync(async x =>
+        var modelsResult = await modelsResultTask.ConfigureAwait(false);
+
+        return await ProcessModelsResult(modelsResult, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), settings => modelsResult.Value!.SelectAsync(async x =>
         {
             var context = new EntityContext(x, settings, Settings.CultureInfo);
             var typeBaseResult = await PipelineService.Process(context).ConfigureAwait(false);
             return await CreateNonGenericBuilderClass(typeBaseResult, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
-        }), "non generic builders");
+        }), "non generic builders").ConfigureAwait(false);
     }
 
-    protected async Task<Result<IEnumerable<TypeBase>>> GetBuilderInterfaces(Result<IEnumerable<TypeBase>> modelsResult, string buildersNamespace, string entitiesNamespace, string interfacesNamespace)
+    protected async Task<Result<IEnumerable<TypeBase>>> GetBuilderInterfaces(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace, string interfacesNamespace)
     {
-        Guard.IsNotNull(modelsResult);
+        Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        var buildersResult = await GetBuilders(modelsResult, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
+        var buildersResult = await GetBuilders(modelsResultTask, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
 
         return await ProcessModelsResult(buildersResult, buildersResult.Value!.SelectAsync(async x =>
         {

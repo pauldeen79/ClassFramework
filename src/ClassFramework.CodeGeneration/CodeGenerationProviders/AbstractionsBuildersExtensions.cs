@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractionsBuildersExtensions(IPipelineService pipelineService) : ClassFrameworkCSharpClassBase(pipelineService)
 {
-    public override async Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => await GetBuilderExtensions(await GetAbstractionsInterfaces().ConfigureAwait(false), "ClassFramework.Domain.Builders.Abstractions", "ClassFramework.Domain.Abstractions", "ClassFramework.Domain.Builders.Extensions").ConfigureAwait(false);
+    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => GetBuilderExtensions(GetAbstractionsInterfaces(), "ClassFramework.Domain.Builders.Abstractions", "ClassFramework.Domain.Abstractions", "ClassFramework.Domain.Builders.Extensions");
 
     public override string Path => "ClassFramework.Domain/Builders/Extensions";
 

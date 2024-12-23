@@ -23,11 +23,11 @@ public abstract class ClassFrameworkCSharpClassBase(IPipelineService pipelineSer
     //protected override string ToTypedBuilderFormatString => string.Empty;
     //protected override bool AddCopyConstructor => false;
 
-    protected async Task<Result<IEnumerable<TypeBase>>> GetPipelineModels()
-        => await GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.Pipelines").ConfigureAwait(false);
+    protected Task<Result<IEnumerable<TypeBase>>> GetPipelineModels()
+        => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.Pipelines");
 
-    protected async Task<Result<IEnumerable<TypeBase>>> GetTemplateFrameworkModels()
-        => await GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework").ConfigureAwait(false);
+    protected Task<Result<IEnumerable<TypeBase>>> GetTemplateFrameworkModels()
+        => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework");
 
     protected override bool SkipNamespaceOnTypenameMappings(string @namespace)
         => @namespace.In($"{CodeGenerationRootNamespace}.Models.Pipelines",

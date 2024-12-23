@@ -4,7 +4,7 @@ public class ImmutableCoreErrorBuilders(IPipelineService pipelineService) : Immu
 {
     protected override string SetMethodNameFormatString => "With{$property.Kaboom}";
 
-    public override async Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => await GetBuilders(await GetCoreModels().ConfigureAwait(false), "Test.Domain.Builders", "Test.Domain").ConfigureAwait(false);
+    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => GetBuilders(GetCoreModels(), "Test.Domain.Builders", "Test.Domain");
 
     public override string Path => "Test.Domain/Builders";
 }
