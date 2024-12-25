@@ -192,18 +192,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
         var modelsResult = await modelsResultTask.ConfigureAwait(false);
 
-        return await ProcessModelsResult(modelsResult, Task.FromResult(Result.Continue<PipelineSettings>()), async settings => await modelsResult.Value!.SelectAsync(x => successTask(x)).ConfigureAwait(false), resultType).ConfigureAwait(false);
+        return await ProcessModelsResult(modelsResult, Task.FromResult(Result.Continue<PipelineSettings>()), async _ => await modelsResult.Value!.SelectAsync(x => successTask(x)).ConfigureAwait(false), resultType).ConfigureAwait(false);
     }
-
-    //protected static async Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, Task<Result<PipelineSettings>> settingsTask, Func<TypeBase, Task<Result<TypeBase>>> successTask, string resultType)
-    //{
-    //    Guard.IsNotNull(modelsResultTask);
-    //    Guard.IsNotNull(settingsTask);
-
-    //    var modelsResult = await modelsResultTask.ConfigureAwait(false);
-
-    //    return await ProcessModelsResult(modelsResult, settingsTask, async _ => await modelsResult.Value!.SelectAsync(x => successTask(x)).ConfigureAwait(false), resultType).ConfigureAwait(false);
-    //}
 
     protected static Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Result<IEnumerable<TypeBase>> modelsResult, Task<Result<PipelineSettings>> settingsTask, Func<PipelineSettings, Task<IEnumerable<Result<TypeBase>>>> successTask, string resultType)
     {
