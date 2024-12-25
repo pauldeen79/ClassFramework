@@ -169,7 +169,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return await ProcessModelsResult(modelsResultTask, async x =>
+        var buildersResultTask = GetBuilders(modelsResultTask, buildersNamespace, entitiesNamespace);
+
+        return await ProcessModelsResult(buildersResultTask, async x =>
         {
             return await CreateInterface(Result.Success(x), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false);
         }, "builder interfaces").ConfigureAwait(false);
