@@ -140,14 +140,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(buildersExtensionsNamespace);
 
-        var modelsResult = await modelsResultTask.ConfigureAwait(false);
-
-        return await ProcessBaseClassResult(baseClass => ProcessModelsResult(modelsResult, CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, CreateInheritanceComparisonDelegate(baseClass), null, true), settings => modelsResult.Value!.SelectAsync(async x =>
+        return await ProcessBaseClassResult(baseClass => ProcessModelsResult(modelsResultTask, CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, CreateInheritanceComparisonDelegate(baseClass), null, true), async (settings, x) =>
         {
             var context = new InterfaceContext(x, settings, Settings.CultureInfo);
             var interfaceResult = await PipelineService.Process(context).ConfigureAwait(false);
             return await CreateBuilderExtensionsClass(interfaceResult.TryCast<TypeBase>(), buildersNamespace, entitiesNamespace, buildersExtensionsNamespace).ConfigureAwait(false);
-        }), "builder extensions")).ConfigureAwait(false);
+        }, "builder extensions")).ConfigureAwait(false);
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetNonGenericBuilders(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
@@ -156,14 +154,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
 
-        var modelsResult = await modelsResultTask.ConfigureAwait(false);
-
-        return await ProcessModelsResult(modelsResult, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), settings => modelsResult.Value!.SelectAsync(async x =>
+        return await ProcessModelsResult(modelsResultTask, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), async (settings, x) =>
         {
             var context = new EntityContext(x, settings, Settings.CultureInfo);
             var typeBaseResult = await PipelineService.Process(context).ConfigureAwait(false);
             return await CreateNonGenericBuilderClass(typeBaseResult, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
-        }), "non generic builders").ConfigureAwait(false);
+        }, "non generic builders").ConfigureAwait(false);
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetBuilderInterfaces(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace, string interfacesNamespace)
@@ -173,16 +169,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        var buildersResult = await GetBuilders(modelsResultTask, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
-
-        return await ProcessModelsResult(buildersResult, buildersResult.Value!.SelectAsync(async x =>
+        return await ProcessModelsResult(modelsResultTask, async x =>
         {
             return await CreateInterface(Result.Success(x), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false);
-        }), "builder interfaces").ConfigureAwait(false);
+        }, "builder interfaces").ConfigureAwait(false);
     }
-
-    protected static Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Result<IEnumerable<TypeBase>> modelsResult, Task<IEnumerable<Result<TypeBase>>> successTask, string resultType)
-        => ProcessModelsResult(modelsResult, Task.FromResult(Result.Continue<PipelineSettings>()), _ => successTask, resultType);
 
     protected static async Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, Func<TypeBase, Task<Result<TypeBase>>> successTask, string resultType)
     {
