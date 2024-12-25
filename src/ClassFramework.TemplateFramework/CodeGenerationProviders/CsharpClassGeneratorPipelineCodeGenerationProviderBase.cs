@@ -125,14 +125,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
 
-        var modelsResult = await modelsResultTask.ConfigureAwait(false);
-
-        return await ProcessModelsResult(modelsResult, CreateEntityPipelineSettings(entitiesNamespace), settings => modelsResult.Value!.SelectAsync(async x =>
+        return await ProcessModelsResult(modelsResultTask, CreateEntityPipelineSettings(entitiesNamespace), async (settings, x) =>
         {
             var context = new EntityContext(x, settings, Settings.CultureInfo);
             var entityResult = await PipelineService.Process(context).ConfigureAwait(false);
             return await CreateBuilderClass(entityResult, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
-        }), "builders").ConfigureAwait(false);
+        }, "builders").ConfigureAwait(false);
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetBuilderExtensions(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
@@ -208,6 +206,27 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
                 return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, $"Could not create {resultType}. See the inner results for more details."));
             }));
+    }
+
+    protected static async Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, Task<Result<PipelineSettings>> settingsTask, Func<PipelineSettings, TypeBase, Task<Result<TypeBase>>> successTask, string resultType)
+    {
+        Guard.IsNotNull(modelsResultTask);
+        Guard.IsNotNull(settingsTask);
+        Guard.IsNotNull(successTask);
+
+        var modelsResult = await modelsResultTask.ConfigureAwait(false);
+
+        return await modelsResult.OnSuccess(
+            async () =>
+            {
+                var results = await modelsResult.Value!.SelectAsync(x => ProcessSettingsResult(settingsTask, settings => successTask(settings, x))).ConfigureAwait(false);
+                return Result.Aggregate
+                (
+                    results,
+                    Result.Success(results.Select(x => x.Value!)),
+                    y => Result.Error<IEnumerable<TypeBase>>(y, $"Could not create {resultType}. See the inner results for more details.")
+                );
+            }).ConfigureAwait(false);
     }
 
     protected async Task<Result<T>> ProcessBaseClassResult<T>(Func<TypeBase?, Task<Result<T>>> successTask)
