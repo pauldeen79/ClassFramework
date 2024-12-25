@@ -169,12 +169,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        var buildersResultTask = GetBuilders(modelsResultTask, buildersNamespace, entitiesNamespace);
-
-        return await ProcessModelsResult(buildersResultTask, async x =>
-        {
-            return await CreateInterface(Result.Success(x), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false);
-        }, "builder interfaces").ConfigureAwait(false);
+        return await ProcessModelsResult
+        (
+            GetBuilders(modelsResultTask, buildersNamespace, entitiesNamespace),
+            async x => await CreateInterface(Result.Success(x), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false),
+            "builder interfaces"
+        ).ConfigureAwait(false);
     }
 
     protected static async Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, Func<TypeBase, Task<Result<TypeBase>>> successTask, string resultType)
