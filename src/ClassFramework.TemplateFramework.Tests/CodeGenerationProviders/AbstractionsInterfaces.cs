@@ -4,7 +4,7 @@ public class AbstractionsInterfaces(IPipelineService pipelineService) : Immutabl
 {
     public override string Path => "Test.Domain/Abstractions";
 
-    public override async Task<IEnumerable<TypeBase>> GetModel() => await GetEntityInterfaces(await GetAbstractionsInterfaces().ConfigureAwait(false), "Test.Domain", "Test.Domain.Abstractions").ConfigureAwait(false);
+    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => GetEntityInterfaces(GetAbstractionsInterfaces(), "Test.Domain", "Test.Domain.Abstractions");
 
     protected override bool EnableEntityInheritance => true;
 }

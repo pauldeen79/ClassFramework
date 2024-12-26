@@ -46,3 +46,20 @@ E.g. System.Func<System.Object, System.Int32, System.Object?>
 Just create a delegate for this, and add this to the type mapping.
 
 If you still get errors, you could use the CsharpTypeNameAttribute to decorate your property/field/parameter.
+
+# Upgrading to version 0.19
+
+Most methods in the CsharpClassGeneratorPipelineCodeGenerationProviderBase class have wrapped their result in a Result<T> type.
+So, for example, IEnumerable<TypeBase> becomes Result<IEnumerable<TypeBase>>.
+
+For example, this code:
+```C#
+Task<IEnumerable<TypeBase>> GetModel()
+```
+
+has changed to:
+```C#
+Task<Result<IEnumerable<TypeBase>>>
+```
+
+This way, you can return errors and halt program flow with Result.Error instead of throwing exceptions.

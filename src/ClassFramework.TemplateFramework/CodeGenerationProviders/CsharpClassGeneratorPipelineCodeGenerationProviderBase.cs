@@ -1,5 +1,4 @@
-﻿
-namespace ClassFramework.TemplateFramework.CodeGenerationProviders;
+﻿namespace ClassFramework.TemplateFramework.CodeGenerationProviders;
 
 public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : CsharpClassGeneratorCodeGenerationProviderBase
 {
@@ -55,7 +54,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.IValidatableObject;
     protected virtual bool EnableEntityInheritance => false;
     protected virtual bool EnableBuilderInhericance => false;
-    protected virtual Task<TypeBase?> GetBaseClass() => Task.FromResult(default(TypeBase?));
+    protected virtual Task<Result<TypeBase>> GetBaseClass() => Task.FromResult(Result.NotFound<TypeBase>());
     protected virtual bool IsAbstract => false;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
     protected virtual bool AllowGenerationWithoutProperties => true;
@@ -103,187 +102,181 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetTypes().Where(IsAbstractType);
 
-    /// <summary>
-    /// Gets the base typename, based on a derived class.
-    /// </summary>
-    /// <param name="className">The typename to get the base classname from.</param>
-    /// <returns>Base classname when found, otherwise string.Empty</returns>
-    protected string GetEntityClassName(string className)
-        => Array.Find(GetCustomBuilderTypes(), x => className.EndsWith(x, StringComparison.InvariantCulture)) ?? string.Empty;
-
-    protected async Task<TypeBase[]> GetEntities(TypeBase[] models, string entitiesNamespace)
+    protected Task<Result<IEnumerable<TypeBase>>> GetEntities(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string entitiesNamespace)
     {
-        Guard.IsNotNull(models);
+        Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(entitiesNamespace);
 
-        return (await models.SelectAsync(x => CreateEntity(x, entitiesNamespace)).ConfigureAwait(false)).ToArray();
+        return ProcessModelsResult(modelsResultTask, x => CreateEntity(x, entitiesNamespace), "entities");
     }
 
-    protected async Task<TypeBase[]> GetEntityInterfaces(TypeBase[] models, string entitiesNamespace, string interfacesNamespace)
+    protected async Task<Result<IEnumerable<TypeBase>>> GetEntityInterfaces(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string entitiesNamespace, string interfacesNamespace)
     {
-        Guard.IsNotNull(models);
+        Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return (await models.SelectAsync(async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false)).ConfigureAwait(false)).ToArray();
+        return await ProcessModelsResult(modelsResultTask, async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
     }
 
-    protected async Task<TypeBase[]> GetBuilders(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
+    protected async Task<Result<IEnumerable<TypeBase>>> GetBuilders(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
     {
-        Guard.IsNotNull(models);
+        Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
 
-        return (await models.SelectAsync(async x =>
+        return await ProcessModelsResult(modelsResultTask, CreateEntityPipelineSettings(entitiesNamespace), async (settings, x) =>
         {
-            var context = new EntityContext(x, await CreateEntityPipelineSettings(entitiesNamespace).ConfigureAwait(false), Settings.CultureInfo);
+            var context = new EntityContext(x, settings, Settings.CultureInfo);
             var entityResult = await PipelineService.Process(context).ConfigureAwait(false);
-            var entity = entityResult.GetValueOrThrow();
-
-            return await CreateBuilderClass(entity, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
-        }).ConfigureAwait(false)).ToArray();
+            return await CreateBuilderClass(entityResult, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
+        }, "builders").ConfigureAwait(false);
     }
 
-    protected async Task<TypeBase[]> GetBuilderExtensions(TypeBase[] models, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
+    protected async Task<Result<IEnumerable<TypeBase>>> GetBuilderExtensions(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
     {
-        Guard.IsNotNull(models);
+        Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(buildersExtensionsNamespace);
 
-        return (await models.SelectAsync(async x =>
+        return await ProcessBaseClassResult(baseClass => ProcessModelsResult(modelsResultTask, CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, CreateInheritanceComparisonDelegate(baseClass), null, true), async (settings, x) =>
         {
-            var context = new InterfaceContext(x, await CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, CreateInheritanceComparisonDelegate(await GetBaseClass().ConfigureAwait(false)), null, true).ConfigureAwait(false), Settings.CultureInfo);
+            var context = new InterfaceContext(x, settings, Settings.CultureInfo);
             var interfaceResult = await PipelineService.Process(context).ConfigureAwait(false);
-            var @interface = interfaceResult.GetValueOrThrow();
-
-            return await CreateBuilderExtensionsClass(@interface, buildersNamespace, entitiesNamespace, buildersExtensionsNamespace).ConfigureAwait(false);
-        }).ConfigureAwait(false)).ToArray();
+            return await CreateBuilderExtensionsClass(interfaceResult.TryCast<TypeBase>(), buildersNamespace, entitiesNamespace, buildersExtensionsNamespace).ConfigureAwait(false);
+        }, "builder extensions")).ConfigureAwait(false);
     }
 
-    protected async Task<TypeBase[]> GetNonGenericBuilders(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
+    protected async Task<Result<IEnumerable<TypeBase>>> GetNonGenericBuilders(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
     {
-        Guard.IsNotNull(models);
+        Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
 
-        return (await models.SelectAsync(async x =>
+        return await ProcessModelsResult(modelsResultTask, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), async (settings, x) =>
         {
-            var context = new EntityContext(x, await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()).ConfigureAwait(false), Settings.CultureInfo);
+            var context = new EntityContext(x, settings, Settings.CultureInfo);
             var typeBaseResult = await PipelineService.Process(context).ConfigureAwait(false);
-            var typeBase = typeBaseResult.GetValueOrThrow();
-
-            return await CreateNonGenericBuilderClass(typeBase, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
-        }).ConfigureAwait(false)).ToArray();
+            return await CreateNonGenericBuilderClass(typeBaseResult, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
+        }, "non generic builders").ConfigureAwait(false);
     }
 
-    protected async Task<TypeBase[]> GetBuilderInterfaces(TypeBase[] models, string buildersNamespace, string entitiesNamespace, string interfacesNamespace)
+    protected async Task<Result<IEnumerable<TypeBase>>> GetBuilderInterfaces(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace, string interfacesNamespace)
     {
-        Guard.IsNotNull(models);
+        Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return (await (await GetBuilders(models, buildersNamespace, entitiesNamespace).ConfigureAwait(false))
-                .SelectAsync(async x => await CreateInterface(x, interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false))
-                .ConfigureAwait(false)).ToArray();
+        return await ProcessModelsResult
+        (
+            GetBuilders(modelsResultTask, buildersNamespace, entitiesNamespace),
+            async x => await CreateInterface(Result.Success(x), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false),
+            "builder interfaces"
+        ).ConfigureAwait(false);
     }
 
-    protected async Task<TypeBase[]> GetCoreModels()
-        => (await GetType().Assembly.GetTypes()
+    protected async Task<Result<IEnumerable<TypeBase>>> GetCoreModels()
+    {
+        var modelsResult = await GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
             .SelectAsync(GetModel)
-            .ConfigureAwait(false)
-           ).ToArray();
+            .ConfigureAwait(false);
 
-    protected async Task<TypeBase[]> GetNonCoreModels(string @namespace)
-        => (await GetType().Assembly.GetTypes()
+        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create core models. See the inner results for more details."));
+    }
+
+    protected async Task<Result<IEnumerable<TypeBase>>> GetNonCoreModels(string @namespace)
+    {
+        Guard.IsNotNull(@namespace);
+
+        var modelsResult = await GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == @namespace && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
             .SelectAsync(GetModel)
-            .ConfigureAwait(false)
-           ).ToArray();
+            .ConfigureAwait(false);
 
-    protected async Task<TypeBase[]> GetAbstractionsInterfaces()
-        => (await GetType().Assembly.GetTypes()
+        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create non core models. See the inner results for more details."));
+    }
+
+    protected async Task<Result<IEnumerable<TypeBase>>> GetAbstractionsInterfaces()
+    {
+        var modelsResult = await GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
             .SelectAsync(GetModel)
-            .ConfigureAwait(false)
-           ).ToArray();
+            .ConfigureAwait(false);
 
-    protected async Task<TypeBase[]> GetAbstractModels()
-        => (await GetPureAbstractModels()
+        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract interfaces. See the inner results for more details."));
+    }
+
+    protected async Task<Result<IEnumerable<TypeBase>>> GetAbstractModels()
+    {
+        var modelsResult = await GetPureAbstractModels()
             .SelectAsync(GetModel)
-            .ConfigureAwait(false)
-           ).ToArray();
+            .ConfigureAwait(false);
 
-    protected async Task<TypeBase[]> GetOverrideModels(Type abstractType)
+        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract models. See the inner results for more details."));
+    }
+
+    protected async Task<Result<IEnumerable<TypeBase>>> GetOverrideModels(Type abstractType)
     {
         Guard.IsNotNull(abstractType);
 
-        return (await GetType().Assembly.GetTypes()
-                .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y == abstractType))
-                .SelectAsync(GetModel)
-                .ConfigureAwait(false)
-               ).ToArray();
+        var modelsResult = await GetType().Assembly.GetTypes()
+            .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y == abstractType))
+            .SelectAsync(GetModel)
+            .ConfigureAwait(false);
+
+        return Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create override models. See the inner results for more details."));
     }
 
-    protected async Task<TypeBase> CreateBaseClass(Type type, string @namespace)
+    protected async Task<Result<TypeBase>> CreateBaseClass(Type type, string @namespace)
     {
         Guard.IsNotNull(type);
         Guard.IsNotNull(@namespace);
 
-        var reflectionSettings = CreateReflectionPipelineSettings();
-        var typeBaseResult = await PipelineService.Process(new ReflectionContext(type, reflectionSettings, Settings.CultureInfo)).ConfigureAwait(false);
-        var typeBase = typeBaseResult.GetValueOrThrow();
+        return await ProcessBaseClassResult(PipelineService.Process(new ReflectionContext(type, CreateReflectionPipelineSettings(), Settings.CultureInfo)), async typeBaseResult =>
+        {
+            var entitySettings = new PipelineSettingsBuilder()
+               .WithAddSetters(AddSetters)
+               .WithAddBackingFields(AddBackingFields)
+               .WithSetterVisibility(SetterVisibility)
+               .WithCreateAsObservable(CreateAsObservable)
+               .WithCreateRecord(CreateRecord)
+               .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+               .WithCopyAttributes(CopyAttributes)
+               .WithCopyInterfaces(CopyInterfaces)
+               .WithCopyMethods(CopyMethods)
+               .WithInheritFromInterfaces(InheritFromInterfaces)
+               .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
+               .WithCopyInterfacePredicate(CopyInterfacePredicate)
+               .WithCopyMethodPredicate(CopyMethodPredicate)
+               .WithEntityNameFormatString("{NoInterfacePrefix($class.Name)}")
+               .WithEntityNamespaceFormatString(@namespace)
+               .WithEnableInheritance()
+               .WithIsAbstract()
+               .WithBaseClass(null)
+               .WithInheritanceComparisonDelegate(
+                   (parentNameContainer, typeBase)
+                       => parentNameContainer is not null
+                       && typeBase is not null
+                       && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
+                           || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
+                           || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
+                           || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
+                       ))
+               .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
+               .WithEnableNullableReferenceTypes()
+               .AddTypenameMappings(CreateTypenameMappings())
+               .AddNamespaceMappings(CreateNamespaceMappings())
+               .WithValidateArguments(ValidateArgumentsInConstructor)
+               .WithAddNullChecks(AddNullChecks)
+               .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
+               .Build();
 
-        var entitySettings = new PipelineSettingsBuilder()
-            .WithAddSetters(AddSetters)
-            .WithAddBackingFields(AddBackingFields)
-            .WithSetterVisibility(SetterVisibility)
-            .WithCreateAsObservable(CreateAsObservable)
-            .WithCreateRecord(CreateRecord)
-            .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
-            .WithCopyAttributes(CopyAttributes)
-            .WithCopyInterfaces(CopyInterfaces)
-            .WithCopyMethods(CopyMethods)
-            .WithInheritFromInterfaces(InheritFromInterfaces)
-            .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
-            .WithCopyInterfacePredicate(CopyInterfacePredicate)
-            .WithCopyMethodPredicate(CopyMethodPredicate)
-            .WithEntityNameFormatString("{NoInterfacePrefix($class.Name)}")
-            .WithEntityNamespaceFormatString(@namespace)
-            .WithEnableInheritance()
-            .WithIsAbstract()
-            .WithBaseClass(null)
-            .WithInheritanceComparisonDelegate(
-                (parentNameContainer, typeBase)
-                    => parentNameContainer is not null
-                    && typeBase is not null
-                    && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
-                        || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
-                        || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
-                        || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
-                    ))
-            .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
-            .WithEnableNullableReferenceTypes()
-            .AddTypenameMappings(CreateTypenameMappings())
-            .AddNamespaceMappings(CreateNamespaceMappings())
-            .WithValidateArguments(ValidateArgumentsInConstructor)
-            .WithAddNullChecks(AddNullChecks)
-            .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
-            .Build();
-
-        var baseClassResult = await PipelineService.Process(new EntityContext(typeBase, entitySettings, Settings.CultureInfo)).ConfigureAwait(false);
-        return baseClassResult.GetValueOrThrow(GenerateErrorMessage(baseClassResult));
+            return await PipelineService.Process(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo)).ConfigureAwait(false);
+        }).ConfigureAwait(false);
     }
-
-    private static bool DefaultCopyAttributePredicate(Domain.Attribute attribute)
-        => attribute.Name != typeof(CsharpTypeNameAttribute).FullName;
-
-    protected static ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
-        => secondCondition
-            ? validateArgumentsInConstructor
-            : ArgumentValidationType.None;
 
     protected virtual PipelineSettings CreateReflectionPipelineSettings()
         => new PipelineSettingsBuilder()
@@ -300,79 +293,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .AddAttributeInitializers(x => x is CsharpTypeNameAttribute csharpTypeNameAttribute
                 ? new AttributeBuilder().WithName(csharpTypeNameAttribute.GetType()).AddParameters(new AttributeParameterBuilder().WithValue(csharpTypeNameAttribute.TypeName)).Build()
                 : null)
-            .Build();
-
-    private async Task<PipelineSettings> CreateEntityPipelineSettings(
-        string entitiesNamespace,
-        ArgumentValidationType? forceValidateArgumentsInConstructor = null,
-        bool? overrideAddNullChecks = null,
-        string entityNameFormatString = "{NoInterfacePrefix($class.Name)}")
-    {
-        var baseClass = await GetBaseClass().ConfigureAwait(false);
-
-        return new PipelineSettingsBuilder()
-            .WithAddSetters(AddSetters)
-            .WithAddBackingFields(AddBackingFields)
-            .WithSetterVisibility(SetterVisibility)
-            .WithCreateAsObservable(CreateAsObservable)
-            .WithCreateRecord(CreateRecord)
-            .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
-            .WithCopyAttributes(CopyAttributes)
-            .WithCopyInterfaces(CopyInterfaces)
-            .WithCopyMethods(CopyMethods)
-            .WithInheritFromInterfaces(InheritFromInterfaces)
-            .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
-            .WithCopyInterfacePredicate(CopyInterfacePredicate)
-            .WithCopyMethodPredicate(CopyMethodPredicate)
-            .WithEntityNameFormatString(entityNameFormatString)
-            .WithEntityNamespaceFormatString(entitiesNamespace)
-            .WithToBuilderFormatString(ToBuilderFormatString)
-            .WithToTypedBuilderFormatString(ToTypedBuilderFormatString)
-            .WithBuildMethodName(BuildMethodName)
-            .WithBuildTypedMethodName(BuildTypedMethodName)
-            .WithEnableInheritance(EnableEntityInheritance)
-            .WithIsAbstract(IsAbstract)
-            .WithBaseClass(baseClass?.ToBuilder())
-            .WithInheritanceComparisonDelegate(CreateInheritanceComparisonDelegate(baseClass))
-            .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
-            .WithEnableNullableReferenceTypes()
-            .AddTypenameMappings(CreateTypenameMappings())
-            .AddNamespaceMappings(CreateNamespaceMappings())
-            .WithValidateArguments(forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && baseClass is null)))
-            .WithCollectionTypeName(EntityConcreteCollectionType.WithoutGenerics())
-            .WithAddFullConstructor(AddFullConstructor)
-            .WithAddPublicParameterlessConstructor(AddPublicParameterlessConstructor)
-            .WithAddNullChecks(overrideAddNullChecks ?? false)
-            .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
-            .Build();
-    }
-
-    private async Task<PipelineSettings> CreateInterfacePipelineSettings(
-        string interfacesNamespace,
-        string newCollectionTypeName,
-        InheritanceComparisonDelegate? inheritanceComparisonDelegate,
-        CopyMethodPredicate? copyMethodPredicate,
-        bool addSetters,
-        string nameFormatString = "{$class.Name}")
-        => new PipelineSettingsBuilder()
-            .WithNamespaceFormatString(interfacesNamespace)
-            .WithNameFormatString(nameFormatString)
-            .WithEnableInheritance(EnableEntityInheritance)
-            .WithIsAbstract(IsAbstract)
-            .WithBaseClass((await GetBaseClass().ConfigureAwait(false))?.ToBuilder())
-            .WithInheritanceComparisonDelegate(inheritanceComparisonDelegate)
-            .WithEntityNewCollectionTypeName(newCollectionTypeName)
-            .AddTypenameMappings(CreateTypenameMappings())
-            .AddNamespaceMappings(CreateNamespaceMappings())
-            .WithCopyAttributes(CopyAttributes)
-            .WithCopyInterfaces(CopyInterfaces)
-            .WithCopyMethods(CopyMethods || copyMethodPredicate != null)
-            .WithInheritFromInterfaces(InheritFromInterfaces)
-            .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
-            .WithCopyInterfacePredicate(CopyInterfacePredicate)
-            .WithCopyMethodPredicate(copyMethodPredicate ?? CopyMethodPredicate)
-            .WithAddSetters(addSetters)
-            .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
             .Build();
 
     protected IEnumerable<NamespaceMappingBuilder> CreateNamespaceMappings()
@@ -456,22 +376,261 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool IsAbstractType(Type type)
     {
         Guard.IsNotNull(type);
+
         return type.IsInterface && type.Namespace == $"{CodeGenerationRootNamespace}.Models" && type.Name.EndsWith("Base");
     }
 
     protected virtual bool SkipNamespaceOnTypenameMappings(string @namespace) => false;
 
+    protected static ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
+        => secondCondition
+            ? validateArgumentsInConstructor
+            : ArgumentValidationType.None;
+
     protected static IEnumerable<MetadataBuilder> CreateTypenameMappingMetadata(Type entityType)
-        => CreateTypenameMappingMetadata($"{entityType.IsNotNull(nameof(entityType)).FullName.GetNamespaceWithDefault()}.Builders");
+    {
+        Guard.IsNotNull(entityType);
+
+        return CreateTypenameMappingMetadata($"{entityType.FullName.GetNamespaceWithDefault()}.Builders");
+    }
 
     protected static IEnumerable<MetadataBuilder> CreateTypenameMappingMetadata(string buildersNamespace)
-        =>
+    {
+        Guard.IsNotNull(buildersNamespace);
+
+        return 
         [
             new MetadataBuilder().WithValue(buildersNamespace).WithName(MetadataNames.CustomBuilderNamespace),
             new MetadataBuilder().WithValue("{ClassName($property.TypeName)}Builder").WithName(MetadataNames.CustomBuilderName),
             new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
             new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
         ];
+    }
+
+    private Task<Result<PipelineSettings>> CreateEntityPipelineSettings(
+        string entitiesNamespace,
+        ArgumentValidationType? forceValidateArgumentsInConstructor = null,
+        bool? overrideAddNullChecks = null,
+        string entityNameFormatString = "{NoInterfacePrefix($class.Name)}")
+        => ProcessBaseClassResult(baseClass => Task.FromResult(Result.Success(new PipelineSettingsBuilder()
+            .WithAddSetters(AddSetters)
+            .WithAddBackingFields(AddBackingFields)
+            .WithSetterVisibility(SetterVisibility)
+            .WithCreateAsObservable(CreateAsObservable)
+            .WithCreateRecord(CreateRecord)
+            .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+            .WithCopyAttributes(CopyAttributes)
+            .WithCopyInterfaces(CopyInterfaces)
+            .WithCopyMethods(CopyMethods)
+            .WithInheritFromInterfaces(InheritFromInterfaces)
+            .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
+            .WithCopyInterfacePredicate(CopyInterfacePredicate)
+            .WithCopyMethodPredicate(CopyMethodPredicate)
+            .WithEntityNameFormatString(entityNameFormatString)
+            .WithEntityNamespaceFormatString(entitiesNamespace)
+            .WithToBuilderFormatString(ToBuilderFormatString)
+            .WithToTypedBuilderFormatString(ToTypedBuilderFormatString)
+            .WithBuildMethodName(BuildMethodName)
+            .WithBuildTypedMethodName(BuildTypedMethodName)
+            .WithEnableInheritance(EnableEntityInheritance)
+            .WithIsAbstract(IsAbstract)
+            .WithBaseClass(baseClass?.ToBuilder())
+            .WithInheritanceComparisonDelegate(CreateInheritanceComparisonDelegate(baseClass))
+            .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
+            .WithEnableNullableReferenceTypes()
+            .AddTypenameMappings(CreateTypenameMappings())
+            .AddNamespaceMappings(CreateNamespaceMappings())
+            .WithValidateArguments(forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && baseClass is null)))
+            .WithCollectionTypeName(EntityConcreteCollectionType.WithoutGenerics())
+            .WithAddFullConstructor(AddFullConstructor)
+            .WithAddPublicParameterlessConstructor(AddPublicParameterlessConstructor)
+            .WithAddNullChecks(overrideAddNullChecks ?? false)
+            .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
+            .Build())));
+
+    private Task<Result<PipelineSettings>> CreateInterfacePipelineSettings(
+        string interfacesNamespace,
+        string newCollectionTypeName,
+        InheritanceComparisonDelegate? inheritanceComparisonDelegate,
+        CopyMethodPredicate? copyMethodPredicate,
+        bool addSetters,
+        string nameFormatString = "{$class.Name}")
+        => ProcessBaseClassResult(baseClass => Task.FromResult(Result.Success(new PipelineSettingsBuilder()
+            .WithNamespaceFormatString(interfacesNamespace)
+            .WithNameFormatString(nameFormatString)
+            .WithEnableInheritance(EnableEntityInheritance)
+            .WithIsAbstract(IsAbstract)
+            .WithBaseClass(baseClass?.ToBuilder())
+            .WithInheritanceComparisonDelegate(inheritanceComparisonDelegate)
+            .WithEntityNewCollectionTypeName(newCollectionTypeName)
+            .AddTypenameMappings(CreateTypenameMappings())
+            .AddNamespaceMappings(CreateNamespaceMappings())
+            .WithCopyAttributes(CopyAttributes)
+            .WithCopyInterfaces(CopyInterfaces)
+            .WithCopyMethods(CopyMethods || copyMethodPredicate != null)
+            .WithInheritFromInterfaces(InheritFromInterfaces)
+            .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
+            .WithCopyInterfacePredicate(CopyInterfacePredicate)
+            .WithCopyMethodPredicate(copyMethodPredicate ?? CopyMethodPredicate)
+            .WithAddSetters(addSetters)
+            .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+            .Build())));
+
+    private Task<Result<PipelineSettings>> CreateBuilderPipelineSettings(string buildersNamespace, string entitiesNamespace)
+        => ProcessSettingsResult(CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()),
+            settings => Task.FromResult(Result.Success(new PipelineSettingsBuilder(settings)
+                .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
+                .WithBuilderNamespaceFormatString(buildersNamespace)
+                .WithSetMethodNameFormatString(SetMethodNameFormatString)
+                .WithAddMethodNameFormatString(AddMethodNameFormatString)
+                .WithEnableBuilderInheritance(EnableBuilderInhericance)
+                .WithBaseClassBuilderNameSpace(BaseClassBuilderNamespace)
+                .WithAddCopyConstructor(AddCopyConstructor)
+                .WithSetDefaultValuesInEntityConstructor(SetDefaultValues)
+                .Build())
+            ));
+
+    private Task<Result<PipelineSettings>> CreateBuilderInterfacePipelineSettings(string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
+        => ProcessSettingsResult(CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()),
+            settings => Task.FromResult(Result.Success(new PipelineSettingsBuilder(settings)
+                .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
+                .WithBuilderNamespaceFormatString(buildersNamespace)
+                .WithBuilderExtensionsNamespaceFormatString(buildersExtensionsNamespace)
+                .WithSetMethodNameFormatString(SetMethodNameFormatString)
+                .WithAddMethodNameFormatString(AddMethodNameFormatString)
+                .WithEnableBuilderInheritance(EnableBuilderInhericance)
+                .Build())
+            ));
+
+    private Task<Result<TypeBase>> CreateEntity(TypeBase typeBase, string entitiesNamespace)
+        => ProcessSettingsResult(
+            CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{NoInterfacePrefix($class.Name)}"),
+            settings => PipelineService.Process(new EntityContext(typeBase, settings, Settings.CultureInfo)));
+
+    private Task<Result<TypeBase>> CreateBuilderClass(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace)
+        => typeBaseResult.OnSuccess(
+            () => ProcessSettingsResult(
+                CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace),
+                settings => PipelineService.Process(new BuilderContext(typeBaseResult.Value!, settings, Settings.CultureInfo)))
+            );
+
+    private Task<Result<TypeBase>> CreateBuilderExtensionsClass(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
+        => typeBaseResult.OnSuccess(
+            () => ProcessSettingsResult(
+                CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace, buildersExtensionsNamespace),
+                settings => PipelineService.Process(new BuilderExtensionContext(typeBaseResult.Value!, settings, Settings.CultureInfo)))
+            );
+
+    private Task<Result<TypeBase>> CreateNonGenericBuilderClass(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace)
+        => typeBaseResult.OnSuccess(
+            () => ProcessSettingsResult(
+                CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace),
+                settings => PipelineService.Process(new BuilderContext(typeBaseResult.Value!, settings.ToBuilder().WithIsForAbstractBuilder().Build(), Settings.CultureInfo)))
+            );
+
+    private bool? GetOverrideAddNullChecks()
+    {
+        if (AddNullChecks || ValidateArgumentsInConstructor == ArgumentValidationType.None)
+        {
+            return true;
+        }
+
+        return null;
+    }
+
+    private Task<Result<TypeBase>> GetModel(Type type)
+        => PipelineService.Process(new ReflectionContext(type, CreateReflectionPipelineSettings(), Settings.CultureInfo));
+
+    private Task<Result<TypeBase>> CreateInterface(
+        Result<TypeBase> typeBaseResult,
+        string interfacesNamespace,
+        string newCollectionTypeName,
+        bool addSetters,
+        string nameFormatString = "{$class.Name}",
+        CopyMethodPredicate? copyMethodPredicate = null)
+            => typeBaseResult.OnSuccess(
+                () => ProcessBaseClassResult(
+                    baseClass => ProcessSettingsResult(CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(baseClass), copyMethodPredicate, addSetters, nameFormatString), async settings =>
+                        (await PipelineService.Process(new InterfaceContext(typeBaseResult.Value!, settings, Settings.CultureInfo)).ConfigureAwait(false)).TryCast<TypeBase>()
+                    )
+                )
+            );
+
+    private Task<Result<T>> ProcessBaseClassResult<T>(Func<TypeBase?, Task<Result<T>>> successTask)
+        => ProcessBaseClassResult(GetBaseClass(), successTask);
+
+    private static async Task<Result<T>> ProcessBaseClassResult<T>(Task<Result<TypeBase>> baseClassResultTask, Func<TypeBase?, Task<Result<T>>> successTask)
+    {
+        Guard.IsNotNull(baseClassResultTask);
+        Guard.IsNotNull(successTask);
+
+        var baseClassResult = await baseClassResultTask.ConfigureAwait(false);
+        if (!baseClassResult.IsSuccessful() && baseClassResult.Status != ResultStatus.NotFound)
+        {
+            return Result.Error<T>([baseClassResult], "Could not get base class, see inner results for details");
+        }
+
+        return await successTask(baseClassResult.Value).ConfigureAwait(false);
+    }
+
+    private static async Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, Task<Result<PipelineSettings>> settingsTask, Func<PipelineSettings, TypeBase, Task<Result<TypeBase>>> successTask, string resultType)
+    {
+        Guard.IsNotNull(modelsResultTask);
+        Guard.IsNotNull(settingsTask);
+        Guard.IsNotNull(successTask);
+
+        var modelsResult = await modelsResultTask.ConfigureAwait(false);
+
+        return await modelsResult.OnSuccess(
+            async () =>
+            {
+                var results = await modelsResult.Value!.SelectAsync(x => ProcessSettingsResult(settingsTask, settings => successTask(settings, x))).ConfigureAwait(false);
+                return Result.Aggregate
+                (
+                    results,
+                    Result.Success(results.Select(x => x.Value!)),
+                    y => Result.Error<IEnumerable<TypeBase>>(y, $"Could not create {resultType}. See the inner results for more details.")
+                );
+            }).ConfigureAwait(false);
+    }
+
+    private static async Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, Func<TypeBase, Task<Result<TypeBase>>> successTask, string resultType)
+    {
+        Guard.IsNotNull(modelsResultTask);
+
+        var modelsResult = await modelsResultTask.ConfigureAwait(false);
+
+        return await ProcessModelsResult(modelsResult, Task.FromResult(Result.Continue<PipelineSettings>()), async _ => await modelsResult.Value!.SelectAsync(x => successTask(x)).ConfigureAwait(false), resultType).ConfigureAwait(false);
+    }
+
+    private static Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Result<IEnumerable<TypeBase>> modelsResult, Task<Result<PipelineSettings>> settingsTask, Func<PipelineSettings, Task<IEnumerable<Result<TypeBase>>>> successTask, string resultType)
+    {
+        Guard.IsNotNull(modelsResult);
+        Guard.IsNotNull(settingsTask);
+        Guard.IsNotNull(successTask);
+
+        return modelsResult.OnSuccess(
+            () => ProcessSettingsResult(settingsTask, async settings =>
+            {
+                var results = await successTask(settings).ConfigureAwait(false);
+
+                return Result.Aggregate(results, Result.Success(results.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, $"Could not create {resultType}. See the inner results for more details."));
+            }));
+    }
+
+    private static async Task<Result<T>> ProcessSettingsResult<T>(Task<Result<PipelineSettings>> settingsTask, Func<PipelineSettings, Task<Result<T>>> successTask)
+    {
+        Guard.IsNotNull(settingsTask);
+        Guard.IsNotNull(successTask);
+
+        var settingsResult = await settingsTask.ConfigureAwait(false);
+        if (!settingsResult.IsSuccessful())
+        {
+            return Result.Error<T>([settingsResult], "Could not create settings, see inner results for details");
+        }
+
+        return await successTask(settingsResult.Value!).ConfigureAwait(false);
+    }
 
     private static string ReplaceStart(string fullNamespace, string baseNamespace, bool appendDot)
     {
@@ -490,87 +649,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return string.Empty;
     }
 
-    private async Task<PipelineSettings> CreateBuilderPipelineSettings(string buildersNamespace, string entitiesNamespace)
-        => new PipelineSettingsBuilder(await CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()).ConfigureAwait(false))
-            .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
-            .WithBuilderNamespaceFormatString(buildersNamespace)
-            .WithSetMethodNameFormatString(SetMethodNameFormatString)
-            .WithAddMethodNameFormatString(AddMethodNameFormatString)
-            .WithEnableBuilderInheritance(EnableBuilderInhericance)
-            .WithBaseClassBuilderNameSpace(BaseClassBuilderNamespace)
-            .WithAddCopyConstructor(AddCopyConstructor)
-            .WithSetDefaultValuesInEntityConstructor(SetDefaultValues)
-            .Build();
-
-    private async Task<PipelineSettings> CreateBuilderInterfacePipelineSettings(string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
-        => new PipelineSettingsBuilder(await CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()).ConfigureAwait(false))
-            .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
-            .WithBuilderNamespaceFormatString(buildersNamespace)
-            .WithBuilderExtensionsNamespaceFormatString(buildersExtensionsNamespace)
-            .WithSetMethodNameFormatString(SetMethodNameFormatString)
-            .WithAddMethodNameFormatString(AddMethodNameFormatString)
-            .WithEnableBuilderInheritance(EnableBuilderInhericance)
-            .Build();
-
-    private async Task<TypeBase> CreateEntity(TypeBase typeBase, string entitiesNamespace)
-    {
-        var entityResult = await PipelineService.Process(new EntityContext(typeBase, await CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{NoInterfacePrefix($class.Name)}").ConfigureAwait(false), Settings.CultureInfo)).ConfigureAwait(false);
-        return entityResult.GetValueOrThrow(GenerateErrorMessage(entityResult));
-    }
-
-    private async Task<TypeBase> CreateBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
-    {
-        var builderResult = await PipelineService.Process(new BuilderContext(typeBase, await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ConfigureAwait(false), Settings.CultureInfo)).ConfigureAwait(false);
-        return builderResult.GetValueOrThrow(GenerateErrorMessage(builderResult));
-    }
-
-    private async Task<TypeBase> CreateBuilderExtensionsClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
-    {
-        var builderExtensionResult = await PipelineService.Process(new BuilderExtensionContext(typeBase, await CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace, buildersExtensionsNamespace).ConfigureAwait(false), Settings.CultureInfo)).ConfigureAwait(false);
-        return builderExtensionResult.GetValueOrThrow(GenerateErrorMessage(builderExtensionResult));
-    }
-
-    private async Task<TypeBase> CreateNonGenericBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
-    {
-        var nonGenericBuilderResult = await PipelineService.Process(new BuilderContext(typeBase, (await CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ConfigureAwait(false)).ToBuilder().WithIsForAbstractBuilder().Build(), Settings.CultureInfo)).ConfigureAwait(false);
-        return nonGenericBuilderResult.GetValueOrThrow(GenerateErrorMessage(nonGenericBuilderResult));
-    }
-
-    private bool? GetOverrideAddNullChecks()
-    {
-        if (AddNullChecks || ValidateArgumentsInConstructor == ArgumentValidationType.None)
-        {
-            return true;
-        }
-
-        return null;
-    }
-
-    private async Task<TypeBase> GetModel(Type type)
-    {
-        var modelResult = await PipelineService.Process(new ReflectionContext(type, CreateReflectionPipelineSettings(), Settings.CultureInfo)).ConfigureAwait(false);
-        return modelResult.GetValueOrThrow(GenerateErrorMessage(modelResult));
-    }
-
-    private async Task<TypeBase> CreateInterface(
-        TypeBase typeBase,
-        string interfacesNamespace,
-        string newCollectionTypeName,
-        bool addSetters,
-        string nameFormatString = "{$class.Name}",
-        CopyMethodPredicate? copyMethodPredicate = null)
-    {
-        var interfaceResult = await PipelineService.Process(new InterfaceContext(typeBase, await CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(await GetBaseClass().ConfigureAwait(false)), copyMethodPredicate, addSetters, nameFormatString).ConfigureAwait(false), Settings.CultureInfo)).ConfigureAwait(false);
-        return interfaceResult.GetValueOrThrow(GenerateErrorMessage(interfaceResult));
-    }
-
-    private static string GenerateErrorMessage(Result result)
-    {
-        if (result.IsSuccessful())
-        {
-            return string.Empty;
-        }
-
-        return string.Join(Environment.NewLine, result.InnerResults.Select(x => $"[{x.Status}] {x.ErrorMessage}"));
-    }
+    private static bool DefaultCopyAttributePredicate(Domain.Attribute attribute)
+        => attribute.Name != typeof(CsharpTypeNameAttribute).FullName;
 }

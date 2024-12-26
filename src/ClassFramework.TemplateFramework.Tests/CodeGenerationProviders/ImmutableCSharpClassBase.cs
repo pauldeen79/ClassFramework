@@ -17,7 +17,7 @@ public abstract class ImmutableCSharpClassBase(IPipelineService pipelineService)
     protected override bool CopyInterfaces => true;
     protected override bool CreateCodeGenerationHeader => false;
 
-    protected async Task<TypeBase[]> GetTemplateFrameworkModels()
+    protected async Task<Result<IEnumerable<TypeBase>>> GetTemplateFrameworkModels()
         => await GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework").ConfigureAwait(false);
 
     protected override bool SkipNamespaceOnTypenameMappings(string @namespace)
