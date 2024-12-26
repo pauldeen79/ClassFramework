@@ -36,6 +36,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableCoreEntities>()
             .AddScoped<ImmutableCoreErrorBuilders>()
             .AddScoped<ImmutableCoreModelErrorBuilders>()
+            .AddScoped<ImmutableCoreBaseClassErrorBuilders>()
             .AddScoped<ImmutablePrivateSettersCoreBuilders>()
             .AddScoped<ImmutablePrivateSettersCoreEntities>()
             .AddScoped<ImmutableInheritFromInterfacesCoreBuilders>()
@@ -476,6 +477,29 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
         result.ErrorMessage.Should().Be("Kaboom");
+    }
+
+    [Fact]
+    public async Task Can_Get_Useful_ErrorMessage_When_Creating_BaseClass_For_Builder_With_PipelineCodeGenerationProviderBase_Goes_Wrong()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreBaseClassErrorBuilders>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Error);
+        result.ErrorMessage.Should().Be("Could not create builders. See the inner results for more details.");
+        result.InnerResults.Should().ContainSingle();
+        result.InnerResults.First().ErrorMessage.Should().Be("Could not create settings, see inner results for details");
+        result.InnerResults.First().InnerResults.Should().ContainSingle();
+        result.InnerResults.First().InnerResults.First().ErrorMessage.Should().Be("Could not get base class, see inner results for details");
+        result.InnerResults.First().InnerResults.First().InnerResults.Should().ContainSingle();
+        result.InnerResults.First().InnerResults.First().InnerResults.First().ErrorMessage.Should().Be("Kaboom");
     }
 
     [Fact]
