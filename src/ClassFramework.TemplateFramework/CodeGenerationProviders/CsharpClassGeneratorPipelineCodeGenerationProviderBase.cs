@@ -222,11 +222,15 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             }).ConfigureAwait(false);
     }
 
-    protected async Task<Result<T>> ProcessBaseClassResult<T>(Func<TypeBase?, Task<Result<T>>> successTask)
+    protected Task<Result<T>> ProcessBaseClassResult<T>(Func<TypeBase?, Task<Result<T>>> successTask)
+        => ProcessBaseClassResult(GetBaseClass(), successTask);
+
+    protected static async Task<Result<T>> ProcessBaseClassResult<T>(Task<Result<TypeBase>> baseClassResultTask, Func<TypeBase?, Task<Result<T>>> successTask)
     {
+        Guard.IsNotNull(baseClassResultTask);
         Guard.IsNotNull(successTask);
 
-        var baseClassResult = await GetBaseClass().ConfigureAwait(false);
+        var baseClassResult = await baseClassResultTask.ConfigureAwait(false);
         if (!baseClassResult.IsSuccessful() && baseClassResult.Status != ResultStatus.NotFound)
         {
             return Result.Error<T>([baseClassResult], "Could not get base class, see inner results for details");
@@ -305,51 +309,47 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(type);
         Guard.IsNotNull(@namespace);
 
-        var reflectionSettings = CreateReflectionPipelineSettings();
-        var typeBaseResult = await PipelineService.Process(new ReflectionContext(type, reflectionSettings, Settings.CultureInfo)).ConfigureAwait(false);
-        if (!typeBaseResult.IsSuccessful())
+        return await ProcessBaseClassResult(PipelineService.Process(new ReflectionContext(type, CreateReflectionPipelineSettings(), Settings.CultureInfo)), async typeBaseResult =>
         {
-            return Result.Error<TypeBase>([typeBaseResult], "Could not create base class, see inner results for details");
-        }
+            var entitySettings = new PipelineSettingsBuilder()
+               .WithAddSetters(AddSetters)
+               .WithAddBackingFields(AddBackingFields)
+               .WithSetterVisibility(SetterVisibility)
+               .WithCreateAsObservable(CreateAsObservable)
+               .WithCreateRecord(CreateRecord)
+               .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+               .WithCopyAttributes(CopyAttributes)
+               .WithCopyInterfaces(CopyInterfaces)
+               .WithCopyMethods(CopyMethods)
+               .WithInheritFromInterfaces(InheritFromInterfaces)
+               .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
+               .WithCopyInterfacePredicate(CopyInterfacePredicate)
+               .WithCopyMethodPredicate(CopyMethodPredicate)
+               .WithEntityNameFormatString("{NoInterfacePrefix($class.Name)}")
+               .WithEntityNamespaceFormatString(@namespace)
+               .WithEnableInheritance()
+               .WithIsAbstract()
+               .WithBaseClass(null)
+               .WithInheritanceComparisonDelegate(
+                   (parentNameContainer, typeBase)
+                       => parentNameContainer is not null
+                       && typeBase is not null
+                       && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
+                           || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
+                           || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
+                           || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
+                       ))
+               .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
+               .WithEnableNullableReferenceTypes()
+               .AddTypenameMappings(CreateTypenameMappings())
+               .AddNamespaceMappings(CreateNamespaceMappings())
+               .WithValidateArguments(ValidateArgumentsInConstructor)
+               .WithAddNullChecks(AddNullChecks)
+               .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
+               .Build();
 
-        var entitySettings = new PipelineSettingsBuilder()
-            .WithAddSetters(AddSetters)
-            .WithAddBackingFields(AddBackingFields)
-            .WithSetterVisibility(SetterVisibility)
-            .WithCreateAsObservable(CreateAsObservable)
-            .WithCreateRecord(CreateRecord)
-            .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
-            .WithCopyAttributes(CopyAttributes)
-            .WithCopyInterfaces(CopyInterfaces)
-            .WithCopyMethods(CopyMethods)
-            .WithInheritFromInterfaces(InheritFromInterfaces)
-            .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
-            .WithCopyInterfacePredicate(CopyInterfacePredicate)
-            .WithCopyMethodPredicate(CopyMethodPredicate)
-            .WithEntityNameFormatString("{NoInterfacePrefix($class.Name)}")
-            .WithEntityNamespaceFormatString(@namespace)
-            .WithEnableInheritance()
-            .WithIsAbstract()
-            .WithBaseClass(null)
-            .WithInheritanceComparisonDelegate(
-                (parentNameContainer, typeBase)
-                    => parentNameContainer is not null
-                    && typeBase is not null
-                    && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
-                        || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
-                        || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
-                        || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
-                    ))
-            .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
-            .WithEnableNullableReferenceTypes()
-            .AddTypenameMappings(CreateTypenameMappings())
-            .AddNamespaceMappings(CreateNamespaceMappings())
-            .WithValidateArguments(ValidateArgumentsInConstructor)
-            .WithAddNullChecks(AddNullChecks)
-            .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
-            .Build();
-
-        return await PipelineService.Process(new EntityContext(typeBaseResult.Value!, entitySettings, Settings.CultureInfo)).ConfigureAwait(false);
+            return await PipelineService.Process(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo)).ConfigureAwait(false);
+        }).ConfigureAwait(false);
     }
 
     private static bool DefaultCopyAttributePredicate(Domain.Attribute attribute)
