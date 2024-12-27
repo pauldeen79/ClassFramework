@@ -30,7 +30,7 @@ global using CrossCutting.Common.Results;
 global using CrossCutting.Utilities.Parsers.Extensions;
 global using CsharpExpressionDumper.Abstractions;
 global using CsharpExpressionDumper.Core.Extensions;
-global using ExpressionFramework.Parser;
+global using ExpressionFramework.Parser.Extensions;
 global using FluentAssertions;
 global using Microsoft.Extensions.DependencyInjection;
 global using NSubstitute;
