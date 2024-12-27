@@ -66,9 +66,10 @@ public sealed class IntegrationTests : TestBase, IDisposable
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -167,9 +168,10 @@ namespace MyNamespace
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -208,9 +210,10 @@ namespace MyNamespace
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -243,9 +246,10 @@ namespace Test.Domain.Builders.Abstractions
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -280,9 +284,10 @@ namespace Test.Domain.Builders.Extensions
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -314,9 +319,10 @@ namespace Test.Domain.Abstractions
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -366,9 +372,10 @@ namespace Test.Domain
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -512,9 +519,10 @@ namespace Test.Domain.Builders
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -556,9 +564,10 @@ namespace Test.Domain.Extensions
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -610,9 +619,10 @@ namespace Test.Domain
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -693,9 +703,10 @@ namespace Test.Domain.Builders
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -745,9 +756,10 @@ namespace Test.Domain
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -828,9 +840,10 @@ namespace Test.Domain.Builders
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -870,9 +883,10 @@ namespace Test.Abstractions
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -914,9 +928,10 @@ namespace Test.Abstractions
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -961,9 +976,10 @@ namespace Test.Domain
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -1041,9 +1057,10 @@ namespace Test.Domain
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -1143,9 +1160,10 @@ namespace Test.Domain.Builders
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -1260,9 +1278,10 @@ namespace ClassFramework.TemplateFramework
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -1306,9 +1325,10 @@ namespace Test.Domain.Builders
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -1347,9 +1367,10 @@ namespace Test.Domain
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -1414,9 +1435,10 @@ namespace Test.Domain.Builders
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -1539,9 +1561,10 @@ namespace Test.Domain.Builders.Types
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -1623,9 +1646,10 @@ namespace Test.Domain.Types
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
@@ -1668,9 +1692,10 @@ namespace Test.Domain
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
 
         // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Should().ContainSingle();
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
