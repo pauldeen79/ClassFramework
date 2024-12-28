@@ -48,7 +48,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         {
             if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
             {
-                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutProcessedGenerics()).ToArray();
+                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutGenerics()).ToArray();
             }
             else
             {
@@ -58,7 +58,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
 
         if (typeNameMappings.Length == 0 && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
         {
-            typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.WithoutProcessedGenerics()).ToArray();
+            typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.WithoutGenerics()).ToArray();
         }
 
         return typeNameMappings;
@@ -70,7 +70,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         {
             if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
             {
-                return typeName.GetCollectionItemType().WithoutProcessedGenerics().GetNamespaceWithDefault();
+                return typeName.GetCollectionItemType().WithoutGenerics().GetNamespaceWithDefault();
             }
             else
             {

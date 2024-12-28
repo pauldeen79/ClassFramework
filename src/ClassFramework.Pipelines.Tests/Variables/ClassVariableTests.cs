@@ -220,7 +220,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(Domain.Extensions.StringExtensions.WithoutGenerics(context.Request.SourceModel.Name));
+        result.Value.Should().Be(Domain.Extensions.StringExtensions.WithoutTypeGenerics(context.Request.SourceModel.Name));
     }
 
     [Fact]
@@ -237,7 +237,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(Domain.Extensions.StringExtensions.WithoutGenerics(context.Request.SourceModel.Name));
+        result.Value.Should().Be(Domain.Extensions.StringExtensions.WithoutTypeGenerics(context.Request.SourceModel.Name));
     }
 
     [Fact]
@@ -254,6 +254,6 @@ public class ClassVariableTests : TestBase<ClassVariable>
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(Domain.Extensions.StringExtensions.WithoutGenerics(context.Request.SourceModel.FullName!));
+        result.Value.Should().Be(Domain.Extensions.StringExtensions.WithoutTypeGenerics(context.Request.SourceModel.FullName!));
     }
 }

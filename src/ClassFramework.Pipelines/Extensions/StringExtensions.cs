@@ -116,7 +116,7 @@ public static class StringExtensions
             mappedGenericArgumentsBuilder.Append(item.MapTypeName(settings, string.Empty, alternateTypeMetadataName));
         }
 
-        return $"{typeName.FixTypeName().WithoutProcessedGenerics().MapTypeName(settings, newCollectionTypeName, alternateTypeMetadataName)}<{mappedGenericArgumentsBuilder}>";
+        return $"{typeName.FixTypeName().WithoutGenerics().MapTypeName(settings, newCollectionTypeName, alternateTypeMetadataName)}<{mappedGenericArgumentsBuilder}>";
     }
 
     private static string MapTypeUsingAlternateTypeMetadata(string typeName, PipelineSettings settings, string newCollectionTypeName, string alternateTypeMetadataName)

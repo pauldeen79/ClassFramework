@@ -10,7 +10,7 @@ public class IntegrationTests : IntegrationTestBase<IFormattableStringParser>
         var sut = CreateSut();
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
         var pipelineSettings = new PipelineSettingsBuilder().Build();
-        var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutProcessedGenerics());
+        var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutGenerics());
 
         // Act
         var result = sut.Parse(formatString, CultureInfo.InvariantCulture, propertyContext);
@@ -28,7 +28,7 @@ public class IntegrationTests : IntegrationTestBase<IFormattableStringParser>
         var sut = CreateSut();
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
         var pipelineSettings = new PipelineSettingsBuilder().Build();
-        var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutProcessedGenerics());
+        var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutGenerics());
 
         // Act
         var result = sut.Parse(formatString, CultureInfo.InvariantCulture, propertyContext);
@@ -46,7 +46,7 @@ public class IntegrationTests : IntegrationTestBase<IFormattableStringParser>
         var sut = CreateSut();
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
         var pipelineSettings = new PipelineSettingsBuilder().Build();
-        var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutProcessedGenerics());
+        var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutGenerics());
 
         // Act
         var result = sut.Parse(formatString, CultureInfo.InvariantCulture, propertyContext);

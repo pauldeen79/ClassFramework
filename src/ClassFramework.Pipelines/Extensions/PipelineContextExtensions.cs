@@ -73,7 +73,7 @@ public static class PipelineContextExtensions
                 ),
                 CollectionInitializer = context.Request.GetMappingMetadata
                     (
-                        property.TypeName.FixTypeName().WithoutProcessedGenerics() // i.e. List<> etc.
+                        property.TypeName.FixTypeName().WithoutGenerics() // i.e. List<> etc.
                     ).GetStringValue(MetadataNames.CustomCollectionInitialization, () => "[Expression]"),
                 Suffix = property.GetSuffix(context.Request.Settings.EnableNullableReferenceTypes, csharpExpressionDumper, context.Request)
             }
@@ -117,7 +117,7 @@ public static class PipelineContextExtensions
 
     private static string GetCollectionBuilderPropertyExpression(string? value, Property sourceProperty, string collectionInitializer, string suffix)
         => collectionInitializer
-            .Replace("[Type]", sourceProperty.TypeName.FixTypeName().WithoutProcessedGenerics())
+            .Replace("[Type]", sourceProperty.TypeName.FixTypeName().WithoutGenerics())
             .Replace("[Generics]", sourceProperty.TypeName.FixTypeName().GetProcessedGenericArguments(addBrackets: true))
             .Replace("[Expression]", $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty).Replace("[ForcedNullableSuffix]", sourceProperty.IsValueType ? string.Empty : "!")})");
 

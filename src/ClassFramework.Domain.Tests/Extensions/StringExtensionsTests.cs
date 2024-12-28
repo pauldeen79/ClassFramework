@@ -488,10 +488,10 @@ public class StringExtensionsTests
     [InlineData("System.String", "System.String")]
     [InlineData("System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]", "System.Collections.Generic.List")]
     [InlineData("System.Collections.Generic.List<System.String>", "System.Collections.Generic.List<System.String>")] // note that you need WithoutProcessedGenerics to get the thing you want...
-    public void WithoutGenerics_Returns_Correct_Result(string typeName, string expectedResult)
+    public void WithoutTypeGenerics_Returns_Correct_Result(string typeName, string expectedResult)
     {
         // Act
-        var result = typeName.WithoutGenerics();
+        var result = typeName.WithoutTypeGenerics();
 
         // Assert
         result.Should().Be(expectedResult);

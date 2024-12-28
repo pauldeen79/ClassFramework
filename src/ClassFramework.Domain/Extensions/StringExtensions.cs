@@ -312,7 +312,7 @@ public static class StringExtensions
     /// </summary>
     /// <param name="typeName">Typename with or without generics</param>
     /// <returns>Typename without generics (`1)</returns>
-    public static string WithoutGenerics(this string instance)
+    public static string WithoutTypeGenerics(this string instance)
     {
         var index = instance.IndexOf('`');
         return index == -1
@@ -325,7 +325,7 @@ public static class StringExtensions
     /// </summary>
     /// <param name="typeName">Typename with or without generics</param>
     /// <returns>Typename without generics (<)</returns>
-    public static string WithoutProcessedGenerics(this string instance)
+    public static string WithoutGenerics(this string instance)
     {
         var index = instance.IndexOf('<');
         return index == -1
@@ -350,7 +350,7 @@ public static class StringExtensions
             return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{typeof(object).FullName}>()";
         }
 
-        if (typeName.WithoutProcessedGenerics() == typeof(IEnumerable<>).WithoutGenerics() && !isNullable)
+        if (typeName.WithoutGenerics() == typeof(IEnumerable<>).WithoutGenerics() && !isNullable)
         {
             return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{typeName.GetProcessedGenericArguments(addBrackets: true)}()";
         }
@@ -392,14 +392,14 @@ public static class StringExtensions
     }
 
     public static string ReplaceGenericTypeName(this string instance, string genericArguments)
-        => instance == instance.WithoutProcessedGenerics()
+        => instance == instance.WithoutGenerics()
             ? instance
-            : instance.WithoutProcessedGenerics().MakeGenericTypeName(genericArguments);
+            : instance.WithoutGenerics().MakeGenericTypeName(genericArguments);
 
     public static string ReplaceGenericTypeName(this string instance, params string[] genericArguments)
-        => instance == instance.WithoutProcessedGenerics()
+        => instance == instance.WithoutGenerics()
             ? instance
-            : instance.WithoutProcessedGenerics().MakeGenericTypeName(genericArguments);
+            : instance.WithoutGenerics().MakeGenericTypeName(genericArguments);
 
     public static string GetNamespacePrefix(this string instance)
         => string.IsNullOrEmpty(instance)

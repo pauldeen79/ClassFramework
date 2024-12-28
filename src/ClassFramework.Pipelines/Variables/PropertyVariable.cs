@@ -35,7 +35,7 @@ public class PropertyVariable : IVariable
 
     private static string GetInitializationExpression(Property property, string typeName, PipelineSettings settings)
         => typeName.FixTypeName().IsCollectionTypeName()
-            && (settings.CollectionTypeName.Length == 0 || settings.CollectionTypeName != property.TypeName.WithoutProcessedGenerics())
+            && (settings.CollectionTypeName.Length == 0 || settings.CollectionTypeName != property.TypeName.WithoutGenerics())
                 ? GetCollectionFormatStringForInitialization(property, settings)
                 : "{CsharpFriendlyName(ToCamelCase($property.Name))}{$property.NullableRequiredSuffix}";
 

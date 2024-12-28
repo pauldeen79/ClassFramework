@@ -79,7 +79,7 @@ public static class TypeExtensions
 
     public static string WithoutInterfacePrefix(this Type instance)
     {
-        var name = instance.Name.WithoutGenerics();
+        var name = instance.Name.WithoutTypeGenerics();
 
         return instance.IsInterface
                 && name.StartsWith("I")
