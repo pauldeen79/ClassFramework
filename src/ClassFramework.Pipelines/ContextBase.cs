@@ -26,14 +26,14 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
     public string MapNamespace(string? ns)
         => ns.MapNamespace(Settings);
 
-    public void AddNullChecks(MethodBuilder builder, NamedResult<Result<FormattableStringParserResult>>[] results)
+    public void AddNullChecks(MethodBuilder builder, Dictionary<string, Result<FormattableStringParserResult>> results)
     {
         builder = builder.IsNotNull(nameof(builder));
         results = results.IsNotNull(nameof(results));
 
         if (Settings.AddNullChecks)
         {
-            var nullCheckStatement = results.First(x => x.Name == "ArgumentNullCheck").Result.Value!;
+            var nullCheckStatement = results["ArgumentNullCheck"].Value!;
             if (!string.IsNullOrEmpty(nullCheckStatement))
             {
                 builder.AddStringCodeStatements(nullCheckStatement);
@@ -239,7 +239,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .WithParentTypeFullName(property.ParentTypeFullName);
     }
 
-    public NamedResult<Result<FormattableStringParserResult>>[] GetResultsForBuilderCollectionProperties(
+    public Dictionary<string, Result<FormattableStringParserResult>> GetResultsForBuilderCollectionProperties(
         Property property,
         object parentChildContext,
         IFormattableStringParser formattableStringParser,
@@ -252,18 +252,17 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         enumerableOverloadCode = enumerableOverloadCode.IsNotNull(nameof(enumerableOverloadCode));
         arrayOverloadCode = arrayOverloadCode.IsNotNull(nameof(arrayOverloadCode));
 
-        var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
-        resultSetBuilder.Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser));
-        resultSetBuilder.Add(NamedResults.Namespace, () => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext));
-        resultSetBuilder.Add(NamedResults.BuilderName, () => formattableStringParser.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext));
-        resultSetBuilder.Add("AddMethodName", () => formattableStringParser.Parse(Settings.AddMethodNameFormatString, FormatProvider, parentChildContext));
-        resultSetBuilder.AddRange("EnumerableOverload", () => enumerableOverloadCode);
-        resultSetBuilder.AddRange("ArrayOverload", () => arrayOverloadCode);
-
-        return resultSetBuilder.Build();
+        return new ResultDictionaryBuilder<FormattableStringParserResult>()
+            .Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser))
+            .Add(NamedResults.Namespace, () => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext))
+            .Add(NamedResults.BuilderName, () => formattableStringParser.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext))
+            .Add("AddMethodName", () => formattableStringParser.Parse(Settings.AddMethodNameFormatString, FormatProvider, parentChildContext))
+            .AddRange("EnumerableOverload.{0}", () => enumerableOverloadCode)
+            .AddRange("ArrayOverload.{0}", () => arrayOverloadCode)
+            .Build();
     }
 
-    public NamedResult<Result<FormattableStringParserResult>>[] GetResultsForBuilderNonCollectionProperties(
+    public Dictionary<string, Result<FormattableStringParserResult>> GetResultsForBuilderNonCollectionProperties(
         Property property,
         object parentChildContext,
         IFormattableStringParser formattableStringParser)
@@ -272,15 +271,14 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
-        resultSetBuilder.Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser));
-        resultSetBuilder.Add(NamedResults.Namespace, () => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext));
-        resultSetBuilder.Add("MethodName", () => formattableStringParser.Parse(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext));
-        resultSetBuilder.Add(NamedResults.BuilderName, () => formattableStringParser.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext));
-        resultSetBuilder.Add("ArgumentNullCheck", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), FormatProvider, parentChildContext));
-        resultSetBuilder.Add("BuilderWithExpression", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{$property.Name} = {CsharpFriendlyName(ToCamelCase($property.Name))};"), FormatProvider, parentChildContext));
-
-        return resultSetBuilder.Build();
+        return new ResultDictionaryBuilder<FormattableStringParserResult>()
+            .Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser))
+            .Add(NamedResults.Namespace, () => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext))
+            .Add("MethodName", () => formattableStringParser.Parse(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext))
+            .Add(NamedResults.BuilderName, () => formattableStringParser.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext))
+            .Add("ArgumentNullCheck", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), FormatProvider, parentChildContext))
+            .Add("BuilderWithExpression", () => formattableStringParser.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{$property.Name} = {CsharpFriendlyName(ToCamelCase($property.Name))};"), FormatProvider, parentChildContext))
+            .Build();
     }
 
     public string GetMappedTypeName(Type type, MemberInfo declaringType)

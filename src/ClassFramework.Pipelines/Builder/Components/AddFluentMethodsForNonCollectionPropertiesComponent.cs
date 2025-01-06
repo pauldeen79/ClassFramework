@@ -27,25 +27,25 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IFormattableStr
 
             var results = context.Request.GetResultsForBuilderNonCollectionProperties(property, parentChildContext, _formattableStringParser);
 
-            var error = Array.Find(results, x => !x.Result.IsSuccessful());
+            var error = results.GetError();
             if (error is not null)
             {
                 // Error in formattable string parsing
-                return Task.FromResult<Result>(error.Result);
+                return Task.FromResult<Result>(error);
             }
 
             var builder = new MethodBuilder()
-                .WithName(results.First(x => x.Name == "MethodName").Result.Value!)
+                .WithName(results["MethodName"].Value!)
                 .WithReturnTypeName(context.Request.IsBuilderForAbstractEntity
                       ? $"TBuilder{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
-                      : $"{results.First(x => x.Name == "Namespace").Result.Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!));
+                      : $"{results["Namespace"].Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results["BuilderName"].Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results["TypeName"].Value!));
 
             context.Request.AddNullChecks(builder, results);
 
             builder.AddStringCodeStatements
             (
-                results.First(x => x.Name == "BuilderWithExpression").Result.Value!,
+                results["BuilderWithExpression"].Value!,
                 context.Request.ReturnValueStatementForFluentMethod
             );
 

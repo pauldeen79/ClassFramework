@@ -23,27 +23,27 @@ public class AddPropertiesComponent(IFormattableStringParser formattableStringPa
 
         foreach (var property in context.Request.SourceModel.Properties.Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)))
         {
-            var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
-            resultSetBuilder.Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser));
-            resultSetBuilder.Add(NamedResults.ParentTypeName, () => property.GetBuilderParentTypeName(context, _formattableStringParser));
-            var results = resultSetBuilder.Build();
+            var results = new ResultDictionaryBuilder<FormattableStringParserResult>()
+                .Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser))
+                .Add(NamedResults.ParentTypeName, () => property.GetBuilderParentTypeName(context, _formattableStringParser))
+                .Build();
 
-            var error = Array.Find(results, x => !x.Result.IsSuccessful());
+            var error = results.GetError();
             if (error is not null)
             {
                 // Error in formattable string parsing
-                return Task.FromResult<Result>(error.Result);
+                return Task.FromResult<Result>(error);
             }
 
             context.Request.Builder.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
-                .WithTypeName(results.First(x => x.Name == NamedResults.TypeName).Result.Value!.ToString()
+                .WithTypeName(results[NamedResults.TypeName].Value!.ToString()
                     .FixCollectionTypeName(context.Request.Settings.BuilderNewCollectionTypeName)
                     .FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
                 .AddGenericTypeArguments(property.GenericTypeArguments)
-                .WithParentTypeFullName(results.First(x => x.Name == NamedResults.ParentTypeName).Result.Value!)
+                .WithParentTypeFullName(results[NamedResults.ParentTypeName].Value!)
                 .AddAttributes(property.Attributes
                     .Where(_ => context.Request.Settings.CopyAttributes)
                     .Select(x => context.Request.MapAttribute(x).ToBuilder()))

@@ -45,17 +45,17 @@ public class AddCopyConstructorComponent(IFormattableStringParser formattableStr
 
     private Result<ConstructorBuilder> CreateCopyConstructor(PipelineContext<BuilderContext> context)
     {
-        var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
-        resultSetBuilder.Add("NullCheck.Source", () => _formattableStringParser.Parse("{NullCheck.Source}", context.Request.FormatProvider, context));
-        resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request));
-        resultSetBuilder.Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetFormattableStringParserResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)));
-        var results = resultSetBuilder.Build();
+        var results = new ResultDictionaryBuilder<FormattableStringParserResult>()
+            .Add("NullCheck.Source", () => _formattableStringParser.Parse("{NullCheck.Source}", context.Request.FormatProvider, context))
+            .Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request))
+            .Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetFormattableStringParserResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)))
+            .Build();
 
-        var error = Array.Find(results, x => !x.Result.IsSuccessful());
+        var error = results.GetError();
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Result.FromExistingResult<ConstructorBuilder>(error.Result);
+            return Result.FromExistingResult<ConstructorBuilder>(error);
         }
 
         var initializationCodeResults = GetInitializationCodeResults(context);
@@ -72,18 +72,18 @@ public class AddCopyConstructorComponent(IFormattableStringParser formattableStr
             return Result.FromExistingResult<ConstructorBuilder>(initializerErrorResult.Item2);
         }
 
-        var name = results.First(x => x.Name == NamedResults.Name).Result.Value!.ToString();
-        name = FixEntityName(context, name, $"{results.First(x => x.Name == NamedResults.Namespace).Result.Value!.ToString().AppendWhenNotNullOrEmpty(".")}{name}");
+        var name = results[NamedResults.Name].Value!.ToString();
+        name = FixEntityName(context, name, $"{results[NamedResults.Namespace].Value!.ToString().AppendWhenNotNullOrEmpty(".")}{name}");
         var nsPlusPrefix = context.Request.Settings.InheritFromInterfaces
             ? string.Empty
-            : results.First(x => x.Name == NamedResults.Namespace).Result.Value!.ToString().AppendWhenNotNullOrEmpty(".");
+            : results[NamedResults.Namespace].Value!.ToString().AppendWhenNotNullOrEmpty(".");
 
         return Result.Success(new ConstructorBuilder()
             .WithChainCall(CreateBuilderClassCopyConstructorChainCall(context.Request.SourceModel, context.Request.Settings))
             .WithProtected(context.Request.IsBuilderForAbstractEntity)
             .AddStringCodeStatements
             (
-                new[] { results.First(x => x.Name == "NullCheck.Source").Result.Value!.ToString() }.Where(x => !string.IsNullOrEmpty(x))
+                new[] { results["NullCheck.Source"].Value!.ToString() }.Where(x => !string.IsNullOrEmpty(x))
             )
             .AddParameters
             (
