@@ -33,7 +33,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
         var methodName = results["ToBuilderMethodName"].Value!;
         if (string.IsNullOrEmpty(methodName))
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         var typedMethodName = results["ToTypedBuilderMethodName"].Value!;
@@ -87,7 +87,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
                     .AddStringCodeStatements($"return new {builderConcreteTypeName}(this);"));
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private static string GetBuilderTypeName(PipelineContext<EntityContext> context, Result<string> builderInterfaceNamespaceResult, Result<string> concreteBuilderNamespaceResult, string builderConcreteName, string builderConcreteTypeName)

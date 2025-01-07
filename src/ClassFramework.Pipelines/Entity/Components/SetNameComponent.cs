@@ -32,6 +32,6 @@ public class SetNameComponent(IFormattableStringParser formattableStringParser) 
             .WithName(results[NamedResults.Name].Value!)
             .WithNamespace(context.Request.MapNamespace(results[NamedResults.Namespace].Value!));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

@@ -18,7 +18,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IFormattable
 
         if (string.IsNullOrEmpty(context.Request.Settings.SetMethodNameFormatString))
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         foreach (var property in context.Request.GetSourceProperties().Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
@@ -57,6 +57,6 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IFormattable
             context.Request.Builder.AddMethods(builder);
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

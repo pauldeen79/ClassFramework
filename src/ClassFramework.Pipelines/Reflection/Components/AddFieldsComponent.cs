@@ -14,7 +14,7 @@ public class AddFieldsComponent : IPipelineComponent<ReflectionContext>
 
         context.Request.Builder.AddFields(GetFields(context));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private static IEnumerable<FieldBuilder> GetFields(PipelineContext<ReflectionContext> context)

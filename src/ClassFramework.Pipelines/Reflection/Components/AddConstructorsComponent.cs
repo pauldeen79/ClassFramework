@@ -15,12 +15,12 @@ public class AddConstructorsComponent : IPipelineComponent<ReflectionContext>
         if (!context.Request.Settings.CreateConstructors
             || context.Request.Builder is not IConstructorsContainerBuilder constructorsContainerBuilder)
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         constructorsContainerBuilder.AddConstructors(GetConstructors(context));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private static IEnumerable<ConstructorBuilder> GetConstructors(PipelineContext<ReflectionContext> context)

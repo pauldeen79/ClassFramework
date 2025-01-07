@@ -18,7 +18,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IFormattableStr
 
         if (string.IsNullOrEmpty(context.Request.Settings.SetMethodNameFormatString))
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         foreach (var property in context.Request.GetSourceProperties().Where(x => context.Request.IsValidForFluentMethod(x) && !x.TypeName.FixTypeName().IsCollectionTypeName()))
@@ -52,6 +52,6 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IFormattableStr
             context.Request.Builder.AddMethods(builder);
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

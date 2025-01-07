@@ -18,7 +18,7 @@ public class AddPublicParameterlessConstructorComponent(IFormattableStringParser
 
         if (!context.Request.Settings.AddPublicParameterlessConstructor)
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         var ctorResult = CreateEntityConstructor(context);
@@ -29,7 +29,7 @@ public class AddPublicParameterlessConstructorComponent(IFormattableStringParser
 
         context.Request.Builder.AddConstructors(ctorResult.Value!);
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<EntityContext> context)

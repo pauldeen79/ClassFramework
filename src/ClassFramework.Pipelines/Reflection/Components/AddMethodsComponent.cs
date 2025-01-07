@@ -14,7 +14,7 @@ public class AddMethodsComponent : IPipelineComponent<ReflectionContext>
 
         context.Request.Builder.AddMethods(GetMethods(context));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private static IEnumerable<MethodBuilder> GetMethods(PipelineContext<ReflectionContext> context)

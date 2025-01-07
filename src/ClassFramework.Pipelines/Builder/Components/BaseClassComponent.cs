@@ -24,7 +24,7 @@ public class BaseClassComponent(IFormattableStringParser formattableStringParser
 
         context.Request.Builder.WithBaseClass(baseClassResult.Value!);
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private Result<FormattableStringParserResult> GetBuilderBaseClass(IType instance, PipelineContext<BuilderContext> context)

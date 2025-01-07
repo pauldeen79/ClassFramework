@@ -14,7 +14,7 @@ public class AddMethodsComponent : IPipelineComponent<InterfaceContext>
 
         if (!context.Request.Settings.CopyMethods)
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         context.Request.Builder.AddMethods(context.Request.SourceModel.Methods
@@ -24,7 +24,7 @@ public class AddMethodsComponent : IPipelineComponent<InterfaceContext>
                 .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = context.Request.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
             ));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }
 

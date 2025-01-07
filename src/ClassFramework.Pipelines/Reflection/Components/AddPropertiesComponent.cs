@@ -14,7 +14,7 @@ public class AddPropertiesComponent : IPipelineComponent<ReflectionContext>
 
         context.Request.Builder.AddProperties(GetProperties(context));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private static IEnumerable<PropertyBuilder> GetProperties(PipelineContext<ReflectionContext> context)

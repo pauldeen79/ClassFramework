@@ -16,7 +16,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Components.Val
         }
 
         [Fact]
-        public async Task Returns_Continue_When_Properties_Are_Found()
+        public async Task Returns_Ok_When_Properties_Are_Found()
         {
             // Arrange
             var sourceModel = CreateClass();
@@ -28,11 +28,11 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Components.Val
             var result = await sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.Should().Be(ResultStatus.Ok);
         }
 
         [Fact]
-        public async Task Returns_Continue_When_Properties_Are_Not_Found_But_AllowGenerationWithoutProperties_Is_True()
+        public async Task Returns_Ok_When_Properties_Are_Not_Found_But_AllowGenerationWithoutProperties_Is_True()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").BuildTyped();
@@ -44,11 +44,11 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Components.Val
             var result = await sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.Should().Be(ResultStatus.Ok);
         }
 
         [Fact]
-        public async Task Returns_Continue_When_Properties_Are_Not_Found_But_EnableInheritance_Is_True()
+        public async Task Returns_Ok_When_Properties_Are_Not_Found_But_EnableInheritance_Is_True()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("MyClass").BuildTyped();
@@ -62,7 +62,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Components.Val
             var result = await sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.Should().Be(ResultStatus.Ok);
         }
     }
 }

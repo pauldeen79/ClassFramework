@@ -18,7 +18,7 @@ public class AddEquatableMembersComponent(IFormattableStringParser formattableSt
 
         if (!context.Request.Settings.ImplementIEquatable)
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         var nameResult = _formattableStringParser.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request);
@@ -82,7 +82,7 @@ public class AddEquatableMembersComponent(IFormattableStringParser formattableSt
                     .AddParameter("right", context.Request.SourceModel.Name)
                     .AddStringCodeStatements("return !(left == right);"));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private static IEnumerable<string> CreateHashCodeStatements<T>(IEnumerable<T> items, string notNullCheck)

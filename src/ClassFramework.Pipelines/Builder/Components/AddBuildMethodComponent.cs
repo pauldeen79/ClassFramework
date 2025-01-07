@@ -45,7 +45,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                     .WithReturnTypeName("TEntity"));
             }
 
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         var instanciationResult = context.CreateEntityInstanciation(_formattableStringParser, _csharpExpressionDumper, string.Empty);
@@ -78,7 +78,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                 .AddStringCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private static string GetName(PipelineContext<BuilderContext> context)

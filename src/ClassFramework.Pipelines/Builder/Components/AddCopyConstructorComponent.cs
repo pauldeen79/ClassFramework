@@ -20,7 +20,7 @@ public class AddCopyConstructorComponent(IFormattableStringParser formattableStr
 
         if (!context.Request.Settings.AddCopyConstructor)
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         if (context.Request.Settings.EnableBuilderInheritance
@@ -40,7 +40,7 @@ public class AddCopyConstructorComponent(IFormattableStringParser formattableStr
             context.Request.Builder.AddConstructors(copyConstructorResult.Value!);
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private Result<ConstructorBuilder> CreateCopyConstructor(PipelineContext<BuilderContext> context)

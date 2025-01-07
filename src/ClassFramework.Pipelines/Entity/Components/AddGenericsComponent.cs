@@ -16,6 +16,6 @@ public class AddGenericsComponent : IPipelineComponent<EntityContext>
             .AddGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments)
             .AddGenericTypeArgumentConstraints(context.Request.SourceModel.GenericTypeArgumentConstraints);
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

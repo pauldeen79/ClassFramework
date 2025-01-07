@@ -14,7 +14,7 @@ public class AddInterfacesComponent : IPipelineComponent<InterfaceContext>
 
         if (!context.Request.Settings.CopyInterfaces)
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         context.Request.Builder.AddInterfaces(context.Request.SourceModel.Interfaces
@@ -22,6 +22,6 @@ public class AddInterfacesComponent : IPipelineComponent<InterfaceContext>
             .Select(x => context.Request.MapTypeName(x.FixTypeName()))
             .Where(x => !string.IsNullOrEmpty(x)));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

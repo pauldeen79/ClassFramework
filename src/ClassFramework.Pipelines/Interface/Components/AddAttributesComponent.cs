@@ -14,13 +14,13 @@ public class AddAttributesComponent : IPipelineComponent<InterfaceContext>
 
         if (!context.Request.Settings.CopyAttributes)
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         context.Request.Builder.AddAttributes(context.Request.SourceModel.Attributes
             .Where(x => context.Request.Settings.CopyAttributePredicate?.Invoke(x) ?? true)
             .Select(x => context.Request.MapAttribute(x).ToBuilder()));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

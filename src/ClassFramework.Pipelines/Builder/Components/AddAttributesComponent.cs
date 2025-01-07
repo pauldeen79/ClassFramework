@@ -14,6 +14,6 @@ public class AddAttributesComponent : IPipelineComponent<BuilderContext>
 
         context.Request.Builder.AddAttributes(context.Request.GetAtributes(context.Request.SourceModel.Attributes));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

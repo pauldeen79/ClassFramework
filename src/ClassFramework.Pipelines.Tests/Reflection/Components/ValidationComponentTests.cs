@@ -16,7 +16,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Reflection.Components
         }
 
         [Fact]
-        public async Task Returns_Continue_When_Properties_Are_Found()
+        public async Task Returns_Ok_When_Properties_Are_Found()
         {
             // Arrange
             var sourceModel = typeof(MyClass);
@@ -28,11 +28,11 @@ public class ValidationComponentTests : TestBase<Pipelines.Reflection.Components
             var result = await sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.Should().Be(ResultStatus.Ok);
         }
 
         [Fact]
-        public async Task Returns_Continue_When_Properties_Are_Not_Found_But_AllowGenerationWithoutProperties_Is_True()
+        public async Task Returns_Ok_When_Properties_Are_Not_Found_But_AllowGenerationWithoutProperties_Is_True()
         {
             // Arrange
             var sourceModel = typeof(MyClass);
@@ -44,7 +44,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Reflection.Components
             var result = await sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.Should().Be(ResultStatus.Ok);
         }
     }
 }

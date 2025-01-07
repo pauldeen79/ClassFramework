@@ -18,7 +18,7 @@ public class AddFullConstructorComponent(IFormattableStringParser formattableStr
 
         if (!context.Request.Settings.AddFullConstructor)
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         var ctorResult = CreateEntityConstructor(context);
@@ -34,7 +34,7 @@ public class AddFullConstructorComponent(IFormattableStringParser formattableStr
             context.Request.Builder.AddMethods(new MethodBuilder().WithName("Validate").WithPartial().WithVisibility(Visibility.Private));
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<EntityContext> context)

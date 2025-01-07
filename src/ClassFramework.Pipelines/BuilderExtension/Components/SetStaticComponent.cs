@@ -14,6 +14,6 @@ public class SetStaticComponent : IPipelineComponent<BuilderExtensionContext>
 
         context.Request.Builder.WithStatic();
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

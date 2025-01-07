@@ -14,7 +14,7 @@ public class AddAttributesComponent : IPipelineComponent<ReflectionContext>
 
         if (!context.Request.Settings.CopyAttributes)
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         context.Request.Builder.AddAttributes(context.Request.SourceModel.GetCustomAttributes(true).ToAttributes(
@@ -22,6 +22,6 @@ public class AddAttributesComponent : IPipelineComponent<ReflectionContext>
             context.Request.Settings.CopyAttributes,
             context.Request.Settings.CopyAttributePredicate));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

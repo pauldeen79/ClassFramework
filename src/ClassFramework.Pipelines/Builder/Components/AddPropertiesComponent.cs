@@ -18,7 +18,7 @@ public class AddPropertiesComponent(IFormattableStringParser formattableStringPa
 
         if (context.Request.IsAbstractBuilder)
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         foreach (var property in context.Request.SourceModel.Properties.Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)))
@@ -58,7 +58,7 @@ public class AddPropertiesComponent(IFormattableStringParser formattableStringPa
             .GetBuilderClassFields(context, _formattableStringParser)
             .Select(x => x.GetValueOrThrow()));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, PipelineContext<BuilderContext> context)

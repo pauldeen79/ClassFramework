@@ -14,6 +14,6 @@ public class SetRecordComponent : IPipelineComponent<EntityContext>
 
         context.Request.Builder.WithRecord(context.Request.Settings.CreateRecord);
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

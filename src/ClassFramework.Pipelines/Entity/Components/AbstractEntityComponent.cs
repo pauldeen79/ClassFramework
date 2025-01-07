@@ -14,6 +14,6 @@ public class AbstractEntityComponent : IPipelineComponent<EntityContext>
 
         context.Request.Builder.WithAbstract(context.Request.IsAbstract);
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

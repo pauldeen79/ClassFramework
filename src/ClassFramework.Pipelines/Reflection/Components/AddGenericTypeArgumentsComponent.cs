@@ -14,6 +14,6 @@ public class AddGenericTypeArgumentsComponent : IPipelineComponent<ReflectionCon
 
         context.Request.Builder.AddGenericTypeArguments(context.Request.SourceModel.GetGenericTypeArgumentTypeNames());
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

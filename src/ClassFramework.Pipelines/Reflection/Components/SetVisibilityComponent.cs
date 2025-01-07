@@ -23,6 +23,6 @@ public class SetVisibilityComponent : IPipelineComponent<ReflectionContext>
                 : Visibility.Private);
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

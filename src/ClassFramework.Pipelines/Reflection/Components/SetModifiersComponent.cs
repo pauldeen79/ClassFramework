@@ -26,6 +26,6 @@ public class SetModifiersComponent : IPipelineComponent<ReflectionContext>
             recordContainerBuilder.WithRecord(context.Request.SourceModel.IsRecord());
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }
