@@ -14,7 +14,7 @@ public class AddInterfacesComponent : IPipelineComponent<ReflectionContext>
 
         if (!context.Request.Settings.CopyInterfaces)
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         context.Request.Builder.AddInterfaces(
@@ -25,6 +25,6 @@ public class AddInterfacesComponent : IPipelineComponent<ReflectionContext>
                 .Select(x => context.Request.MapTypeName(x))
         );
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

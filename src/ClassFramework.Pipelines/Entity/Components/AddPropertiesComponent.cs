@@ -42,7 +42,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
             AddBackingFields(context, properties);
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private static void AddBackingFields(PipelineContext<EntityContext> context, Property[] properties)

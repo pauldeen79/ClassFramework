@@ -18,6 +18,6 @@ public class ValidationComponent : IPipelineComponent<EntityContext>
             return Task.FromResult(Result.Invalid("To create an entity class, there must be at least one property"));
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

@@ -15,14 +15,14 @@ public class ObservableComponent : IPipelineComponent<EntityContext>
         if (!context.Request.Settings.CreateAsObservable
             && !context.Request.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         if (context.Request.Settings.EnableInheritance
             && context.Request.Settings.BaseClass is not null)
         {
             // Already present in base class
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         if (!context.Request.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
@@ -33,6 +33,6 @@ public class ObservableComponent : IPipelineComponent<EntityContext>
 
         context.Request.Builder.AddObservableMembers();
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

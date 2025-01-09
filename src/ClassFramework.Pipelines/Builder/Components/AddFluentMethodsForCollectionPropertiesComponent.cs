@@ -18,7 +18,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IFormattableString
 
         if (string.IsNullOrEmpty(context.Request.Settings.AddMethodNameFormatString))
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         foreach (var property in context.Request.GetSourceProperties().Where(x => context.Request.IsValidForFluentMethod(x) && x.TypeName.FixTypeName().IsCollectionTypeName()))
@@ -27,33 +27,33 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IFormattableString
 
             var results = context.Request.GetResultsForBuilderCollectionProperties(property, parentChildContext, _formattableStringParser, GetCodeStatementsForEnumerableOverload(context, property, parentChildContext), GetCodeStatementsForArrayOverload(context, property));
 
-            var error = Array.Find(results, x => !x.Result.IsSuccessful());
+            var error = results.GetError();
             if (error is not null)
             {
                 // Error in formattable string parsing
-                return Task.FromResult<Result>(error.Result);
+                return Task.FromResult<Result>(error);
             }
 
             var returnType = context.Request.IsBuilderForAbstractEntity
                 ? $"TBuilder{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
-                : $"{results.First(x => x.Name == "Namespace").Result.Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
+                : $"{results["Namespace"].Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results["BuilderName"].Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
 
             context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithName(results.First(x => x.Name == "AddMethodName").Result.Value!)
+                .WithName(results["AddMethodName"].Value!)
                 .WithReturnTypeName(returnType)
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!.ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
-                .AddStringCodeStatements(results.Where(x => x.Name == "EnumerableOverload").Select(x => x.Result.Value!.ToString()))
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results["TypeName"].Value!.ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
+                .AddStringCodeStatements(results.Where(x => x.Key.StartsWith("EnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
             );
 
             context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithName(results.First(x => x.Name == "AddMethodName").Result.Value!)
+                .WithName(results["AddMethodName"].Value!)
                 .WithReturnTypeName(returnType)
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!.ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
-                .AddStringCodeStatements(results.Where(x => x.Name == "ArrayOverload").Select(x => x.Result.Value!.ToString()))
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results["TypeName"].Value!.ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
+                .AddStringCodeStatements(results.Where(x => x.Key.StartsWith("ArrayOverload.")).Select(x => x.Value.Value!.ToString()))
             );
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderContext> context, Property property, ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContext)

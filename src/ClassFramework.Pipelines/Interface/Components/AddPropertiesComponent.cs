@@ -28,6 +28,6 @@ public class AddPropertiesComponent : IPipelineComponent<InterfaceContext>
             )
         );
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

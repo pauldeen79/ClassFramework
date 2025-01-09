@@ -18,7 +18,7 @@ public class AddInterfacesComponent(IFormattableStringParser formattableStringPa
 
         if (!context.Request.Settings.CopyInterfaces)
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         var results = context.Request.SourceModel.Interfaces
@@ -54,6 +54,6 @@ public class AddInterfacesComponent(IFormattableStringParser formattableStringPa
 
         context.Request.Builder.AddInterfaces(results.Select(x => x.Value!));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

@@ -33,7 +33,7 @@ public class AddDefaultConstructorComponent(IFormattableStringParser formattable
             context.Request.Builder.AddConstructors(defaultConstructorResult.Value!);
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private Result<ConstructorBuilder> CreateDefaultConstructor(PipelineContext<BuilderContext> context)

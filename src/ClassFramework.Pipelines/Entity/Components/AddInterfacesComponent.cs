@@ -14,7 +14,7 @@ public class AddInterfacesComponent : IPipelineComponent<EntityContext>
 
         if (!context.Request.Settings.CopyInterfaces)
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         var baseClass = context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass);
@@ -25,6 +25,6 @@ public class AddInterfacesComponent : IPipelineComponent<EntityContext>
             .Select(x => context.Request.MapTypeName(x.FixTypeName()))
             .Where(x => !string.IsNullOrEmpty(x)));
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

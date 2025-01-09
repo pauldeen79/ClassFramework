@@ -16,30 +16,30 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
     {
         context = context.IsNotNull(nameof(context));
 
-        var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
-        resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request));
-        resultSetBuilder.Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetFormattableStringParserResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)));
-        resultSetBuilder.Add("ToBuilderMethodName", () => _formattableStringParser.Parse(context.Request.Settings.ToBuilderFormatString, context.Request.FormatProvider, context.Request));
-        resultSetBuilder.Add("ToTypedBuilderMethodName", () => _formattableStringParser.Parse(context.Request.Settings.ToTypedBuilderFormatString, context.Request.FormatProvider, context.Request));
-        var results = resultSetBuilder.Build();
+        var results = new ResultDictionaryBuilder<FormattableStringParserResult>()
+            .Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request))
+            .Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetFormattableStringParserResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)))
+            .Add("ToBuilderMethodName", () => _formattableStringParser.Parse(context.Request.Settings.ToBuilderFormatString, context.Request.FormatProvider, context.Request))
+            .Add("ToTypedBuilderMethodName", () => _formattableStringParser.Parse(context.Request.Settings.ToTypedBuilderFormatString, context.Request.FormatProvider, context.Request))
+            .Build();
 
-        var error = Array.Find(results, x => !x.Result.IsSuccessful());
+        var error = results.GetError();
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Task.FromResult<Result>(error.Result);
+            return Task.FromResult<Result>(error);
         }
 
-        var methodName = results.First(x => x.Name == "ToBuilderMethodName").Result.Value!;
+        var methodName = results["ToBuilderMethodName"].Value!;
         if (string.IsNullOrEmpty(methodName))
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
-        var typedMethodName = results.First(x => x.Name == "ToTypedBuilderMethodName").Result.Value!;
+        var typedMethodName = results["ToTypedBuilderMethodName"].Value!;
 
-        var ns = results.First(x => x.Name == NamedResults.Namespace).Result.Value!.ToString();
-        var name = results.First(x => x.Name == NamedResults.Name).Result.Value!.ToString();
+        var ns = results[NamedResults.Namespace].Value!.ToString();
+        var name = results[NamedResults.Name].Value!.ToString();
 
         var entityFullName = $"{ns.AppendWhenNotNullOrEmpty(".")}{name}";
         if (context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is not null)
@@ -87,7 +87,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
                     .AddStringCodeStatements($"return new {builderConcreteTypeName}(this);"));
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 
     private static string GetBuilderTypeName(PipelineContext<EntityContext> context, Result<string> builderInterfaceNamespaceResult, Result<string> concreteBuilderNamespaceResult, string builderConcreteName, string builderConcreteTypeName)

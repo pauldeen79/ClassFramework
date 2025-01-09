@@ -16,22 +16,15 @@ public class SetNameComponent(IFormattableStringParser formattableStringParser) 
     {
         context = context.IsNotNull(nameof(context));
 
-        var resultSetBuilder = new NamedResultSetBuilder<FormattableStringParserResult>();
-        resultSetBuilder.Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request));
-        resultSetBuilder.Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetFormattableStringParserResult(MetadataNames.CustomBuilderNamespace, () => _formattableStringParser.Parse(context.Request.Settings.BuilderNamespaceFormatString, context.Request.FormatProvider, context.Request)));
-        var results = resultSetBuilder.Build();
-
-        var error = Array.Find(results, x => !x.Result.IsSuccessful());
-        if (error is not null)
-        {
-            // Error in formattable string parsing
-            return Task.FromResult<Result>(error.Result);
-        }
-
-        context.Request.Builder
-            .WithName(results.First(x => x.Name == NamedResults.Name).Result.Value!)
-            .WithNamespace(results.First(x => x.Name == NamedResults.Namespace).Result.Value!);
-
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(new ResultDictionaryBuilder<FormattableStringParserResult>()
+            .Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request))
+            .Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetFormattableStringParserResult(MetadataNames.CustomBuilderNamespace, () => _formattableStringParser.Parse(context.Request.Settings.BuilderNamespaceFormatString, context.Request.FormatProvider, context.Request)))
+            .Build()
+            .OnSuccess(results =>
+            {
+                context.Request.Builder
+                    .WithName(results[NamedResults.Name].Value!)
+                    .WithNamespace(results[NamedResults.Namespace].Value!);
+            }));
     }
 }

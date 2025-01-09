@@ -17,6 +17,6 @@ public class SetBaseClassComponent : IPipelineComponent<ReflectionContext>
             baseClassContainerBuilder.WithBaseClass(context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings));
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

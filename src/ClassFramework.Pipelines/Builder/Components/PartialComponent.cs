@@ -13,6 +13,6 @@ public class PartialComponent : IPipelineComponent<BuilderContext>
 
         context.Request.Builder.WithPartial(context.Request.Settings.CreateAsPartial);
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

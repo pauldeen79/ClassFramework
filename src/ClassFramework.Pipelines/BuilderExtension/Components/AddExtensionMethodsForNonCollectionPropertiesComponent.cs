@@ -18,7 +18,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IFormattable
 
         if (string.IsNullOrEmpty(context.Request.Settings.SetMethodNameFormatString))
         {
-            return Task.FromResult(Result.Continue());
+            return Task.FromResult(Result.Success());
         }
 
         foreach (var property in context.Request.GetSourceProperties().Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
@@ -27,36 +27,36 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IFormattable
 
             var results = context.Request.GetResultsForBuilderNonCollectionProperties(property, parentChildContext, _formattableStringParser);
 
-            var error = Array.Find(results, x => !x.Result.IsSuccessful());
+            var error = results.GetError();
             if (error is not null)
             {
                 // Error in formattable string parsing
-                return Task.FromResult<Result>(error.Result);
+                return Task.FromResult<Result>(error);
             }
 
-            var returnType = $"{results.First(x => x.Name == "Namespace").Result.Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
+            var returnType = $"{results["Namespace"].Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results["BuilderName"].Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
 
             var builder = new MethodBuilder()
-                .WithName(results.First(x => x.Name == "MethodName").Result.Value!)
+                .WithName(results["MethodName"].Value!)
                 .WithReturnTypeName("T")
                 .WithStatic()
                 .WithExtensionMethod()
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results.First(x => x.Name == "TypeName").Result.Value!));
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results["TypeName"].Value!));
 
             context.Request.AddNullChecks(builder, results);
 
             builder.AddStringCodeStatements
             (
-                results.First(x => x.Name == "BuilderWithExpression").Result.Value!,
+                results["BuilderWithExpression"].Value!,
                 "return instance;"
             );
 
             context.Request.Builder.AddMethods(builder);
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }

@@ -36,6 +36,6 @@ public class AbstractBuilderComponent(IFormattableStringParser formattableString
             }
         }
 
-        return Task.FromResult(Result.Continue());
+        return Task.FromResult(Result.Success());
     }
 }
