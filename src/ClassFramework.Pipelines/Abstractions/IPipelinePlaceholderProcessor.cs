@@ -2,5 +2,5 @@
 
 public interface IPipelinePlaceholderProcessor
 {
-    Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser);
+    Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser);
 }

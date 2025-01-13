@@ -1,12 +1,12 @@
 ﻿namespace ClassFramework.Pipelines.Builder.PlaceholderProcessors;
 
-public class BuilderPipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors) : IPlaceholderProcessor
+public class BuilderPipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors) : IPlaceholder
 {
     private readonly IEnumerable<IPipelinePlaceholderProcessor> _pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
 
     public int Order => 20;
 
-    public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
@@ -20,6 +20,11 @@ public class BuilderPipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholde
             return parentChildContext.ParentContext.Request.GetBuilderPlaceholderProcessorResultForParentChildContext(value, formattableStringParser, parentChildContext.ParentContext.Request, parentChildContext.ParentContext.Request.SourceModel, parentChildContext.ChildContext, parentChildContext.ParentContext.Request.SourceModel, _pipelinePlaceholderProcessors);
         }
 
-        return Result.Continue<FormattableStringParserResult>();
+        return Result.Continue<GenericFormattableString>();
+    }
+
+    public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    {
+        return Result.Success();
     }
 }

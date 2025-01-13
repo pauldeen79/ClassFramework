@@ -17,7 +17,7 @@ public abstract class IntegrationTestBase<T> : TestBase
         Scope = Provider.CreateScope();
     }
 
-    private sealed class PropertyNameResultParser : IFunctionResultParser
+    private sealed class PropertyNameResultParser : IFunction
     {
         public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
         {

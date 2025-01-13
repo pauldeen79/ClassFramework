@@ -56,7 +56,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IFormattableString
         return Task.FromResult(Result.Success());
     }
 
-    private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderContext> context, Property property, ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContext)
+    private IEnumerable<Result<GenericFormattableString>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderContext> context, Property property, ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContext)
     {
         if (context.Request.Settings.BuilderNewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
@@ -72,13 +72,13 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IFormattableString
         // (in other words, materialization is always performed)
         if (context.Request.Settings.AddNullChecks)
         {
-            yield return Result.Success<FormattableStringParserResult>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()));
+            yield return Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()));
         }
 
         yield return _formattableStringParser.Parse("return {$addMethodNameFormatString}({CsharpFriendlyName(ToCamelCase($property.Name))}.ToArray());", context.Request.FormatProvider, parentChildContext);
     }
 
-    private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderContext> context, Property property)
+    private IEnumerable<Result<GenericFormattableString>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderContext> context, Property property)
     {
         if (context.Request.Settings.AddNullChecks)
         {
@@ -104,7 +104,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IFormattableString
 
         yield return builderAddExpressionResult;
 
-        yield return Result.Success<FormattableStringParserResult>(context.Request.ReturnValueStatementForFluentMethod);
+        yield return Result.Success<GenericFormattableString>(context.Request.ReturnValueStatementForFluentMethod);
     }
 
     private static ParentChildContext<PipelineContext<BuilderContext>, Property> CreateParentChildContext(PipelineContext<BuilderContext> context, Property property)

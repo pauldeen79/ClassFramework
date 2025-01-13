@@ -46,10 +46,10 @@ public abstract class TestBase : IDisposable
         // One exception: If we supply "{Error}" as placeholder, then simply return an error with the error message "Kaboom".
         parser.Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>())
               .Returns(x => x.ArgAt<string>(0) == "{Error}"
-                ? Result.Error<FormattableStringParserResult>("Kaboom")
+                ? Result.Error<GenericFormattableString>("Kaboom")
                 : FormattableStringParser.Parse(x.ArgAt<string>(0), x.ArgAt<FormattableStringParserSettings>(1), x.ArgAt<object?>(2))
                     .Transform(x => x.ErrorMessage == "Unknown placeholder in value: Error"
-                        ? Result.Error<FormattableStringParserResult>("Kaboom")
+                        ? Result.Error<GenericFormattableString>("Kaboom")
                         : x));
 
         return parser;

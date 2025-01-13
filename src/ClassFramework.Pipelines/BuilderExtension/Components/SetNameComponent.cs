@@ -16,7 +16,7 @@ public class SetNameComponent(IFormattableStringParser formattableStringParser) 
     {
         context = context.IsNotNull(nameof(context));
 
-        var results = new ResultDictionaryBuilder<FormattableStringParserResult>()
+        var results = new ResultDictionaryBuilder<GenericFormattableString>()
             .Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.BuilderExtensionsNameFormatString, context.Request.FormatProvider, context.Request))
             .Add(NamedResults.Namespace, () => _formattableStringParser.Parse(context.Request.Settings.BuilderExtensionsNamespaceFormatString, context.Request.FormatProvider, context.Request))
             .Build();

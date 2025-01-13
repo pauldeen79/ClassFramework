@@ -26,7 +26,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
     public string MapNamespace(string? ns)
         => ns.MapNamespace(Settings);
 
-    public void AddNullChecks(MethodBuilder builder, Dictionary<string, Result<FormattableStringParserResult>> results)
+    public void AddNullChecks(MethodBuilder builder, Dictionary<string, Result<GenericFormattableString>> results)
     {
         builder = builder.IsNotNull(nameof(builder));
         results = results.IsNotNull(nameof(results));
@@ -161,7 +161,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .Build();
     }
 
-    public Result<FormattableStringParserResult> GetBuilderPlaceholderProcessorResultForPipelineContext(string value, IFormattableStringParser formattableStringParser, object context, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
+    public Result<GenericFormattableString> GetBuilderPlaceholderProcessorResultForPipelineContext(string value, IFormattableStringParser formattableStringParser, object context, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
     {
         sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
@@ -169,16 +169,16 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
 
         return value switch
         {
-            "NullCheck.Source" => Result.Success<FormattableStringParserResult>(Settings.AddNullChecks
+            "NullCheck.Source" => Result.Success<GenericFormattableString>(Settings.AddNullChecks
                 ? CreateArgumentNullException("source")
                 : string.Empty),
             "BuildersNamespace" => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, context),
-            _ => pipelinePlaceholderProcessors.Select(x => x.Process(value, FormatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Continue<FormattableStringParserResult>()
+            _ => pipelinePlaceholderProcessors.Select(x => x.Evaluate(value, FormatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result.Continue<GenericFormattableString>()
         };
     }
 
-    public Result<FormattableStringParserResult> GetBuilderPlaceholderProcessorResultForParentChildContext(
+    public Result<GenericFormattableString> GetBuilderPlaceholderProcessorResultForParentChildContext(
         string value,
         IFormattableStringParser formattableStringParser,
         ContextBase context,
@@ -200,22 +200,22 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
 
         return value switch
         {
-            "NullCheck.Source.Argument" => Result.Success<FormattableStringParserResult>(Settings.AddNullChecks && Settings.AddValidationCode() == ArgumentValidationType.None && !childContext.IsNullable && !childContext.IsValueType && !isGenericArgument// only if the source entity does not use validation...
+            "NullCheck.Source.Argument" => Result.Success<GenericFormattableString>(Settings.AddNullChecks && Settings.AddValidationCode() == ArgumentValidationType.None && !childContext.IsNullable && !childContext.IsValueType && !isGenericArgument// only if the source entity does not use validation...
                 ? $"if (source.{childContext.Name} is not null) "
                 : string.Empty),
-            "NullCheck.Argument" => Result.Success<FormattableStringParserResult>(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
+            "NullCheck.Argument" => Result.Success<GenericFormattableString>(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
                 ? CreateArgumentNullException(childContext.Name.ToCamelCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())
                 : string.Empty),
             "BuildersNamespace" => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, context.FormatProvider, context),
             _ => Default(value, formattableStringParser, childContext, sourceModel, pipelinePlaceholderProcessors)
         };
 
-        Result<FormattableStringParserResult> Default(string value, IFormattableStringParser formattableStringParser, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
+        Result<GenericFormattableString> Default(string value, IFormattableStringParser formattableStringParser, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
         {
             var pipelinePlaceholderProcessorsArray = pipelinePlaceholderProcessors.ToArray();
-            return pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, context.FormatProvider, new PropertyContext(childContext, Settings, context.FormatProvider, MapTypeName(childContext.TypeName, string.Empty), Settings.BuilderNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? pipelinePlaceholderProcessorsArray.Select(x => x.Process(value, context.FormatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Continue<FormattableStringParserResult>();
+            return pipelinePlaceholderProcessorsArray.Select(x => x.Evaluate(value, context.FormatProvider, new PropertyContext(childContext, Settings, context.FormatProvider, MapTypeName(childContext.TypeName, string.Empty), Settings.BuilderNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? pipelinePlaceholderProcessorsArray.Select(x => x.Evaluate(value, context.FormatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result.Continue<GenericFormattableString>();
         }
     }
 
@@ -239,12 +239,12 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .WithParentTypeFullName(property.ParentTypeFullName);
     }
 
-    public Dictionary<string, Result<FormattableStringParserResult>> GetResultsForBuilderCollectionProperties(
+    public Dictionary<string, Result<GenericFormattableString>> GetResultsForBuilderCollectionProperties(
         Property property,
         object parentChildContext,
         IFormattableStringParser formattableStringParser,
-        IEnumerable<Result<FormattableStringParserResult>> enumerableOverloadCode,
-        IEnumerable<Result<FormattableStringParserResult>> arrayOverloadCode)
+        IEnumerable<Result<GenericFormattableString>> enumerableOverloadCode,
+        IEnumerable<Result<GenericFormattableString>> arrayOverloadCode)
     {
         property = property.IsNotNull(nameof(property));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
@@ -252,7 +252,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         enumerableOverloadCode = enumerableOverloadCode.IsNotNull(nameof(enumerableOverloadCode));
         arrayOverloadCode = arrayOverloadCode.IsNotNull(nameof(arrayOverloadCode));
 
-        return new ResultDictionaryBuilder<FormattableStringParserResult>()
+        return new ResultDictionaryBuilder<GenericFormattableString>()
             .Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser))
             .Add(NamedResults.Namespace, () => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext))
             .Add(NamedResults.BuilderName, () => formattableStringParser.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext))
@@ -262,7 +262,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .Build();
     }
 
-    public Dictionary<string, Result<FormattableStringParserResult>> GetResultsForBuilderNonCollectionProperties(
+    public Dictionary<string, Result<GenericFormattableString>> GetResultsForBuilderNonCollectionProperties(
         Property property,
         object parentChildContext,
         IFormattableStringParser formattableStringParser)
@@ -271,7 +271,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        return new ResultDictionaryBuilder<FormattableStringParserResult>()
+        return new ResultDictionaryBuilder<GenericFormattableString>()
             .Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser))
             .Add(NamedResults.Namespace, () => formattableStringParser.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext))
             .Add("MethodName", () => formattableStringParser.Parse(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext))

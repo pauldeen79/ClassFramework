@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
-public class InstancePrefixFunction : IFunctionResultParser
+public class InstancePrefixFunction : IFunction
 {
     public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
     {

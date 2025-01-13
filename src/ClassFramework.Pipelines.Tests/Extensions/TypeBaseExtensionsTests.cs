@@ -81,7 +81,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetCustomValueForInheritedClass(false, _ => Result.Success<FormattableStringParserResult>("CustomValue"));
+            var result = sut.GetCustomValueForInheritedClass(false, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
             result.Value.Should().NotBeNull();
@@ -95,7 +95,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = new StructBuilder().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<FormattableStringParserResult>("CustomValue"));
+            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
             result.Value.Should().NotBeNull();
@@ -109,7 +109,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<FormattableStringParserResult>("CustomValue"));
+            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
             result.Value.Should().NotBeNull();
@@ -123,7 +123,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").WithBaseClass("SomeBaseClass").Build();
 
             // Act
-            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<FormattableStringParserResult>("CustomValue"));
+            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
             result.Value!.ToString().Should().Be("CustomValue");

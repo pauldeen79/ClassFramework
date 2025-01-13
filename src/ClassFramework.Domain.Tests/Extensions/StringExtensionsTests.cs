@@ -286,20 +286,6 @@ public class StringExtensionsTests
     }
 
     [Theory]
-    [InlineData("", "A", "B", "")]
-    [InlineData("ASomething", "A", "B", "ASomething")]
-    [InlineData("ASomeAthing", "A", "B", "ASomeAthing")]
-    [InlineData("SomethingA", "A", "B", "SomethingB")]
-    public void ReplaceSuffix_Returns_Correct_Result(string input, string find, string replace, string expectedResult)
-    {
-        // Act
-        var actual = input.ReplaceSuffix(find, replace, StringComparison.InvariantCulture);
-
-        // Assert
-        actual.Should().Be(expectedResult);
-    }
-
-    [Theory]
     [InlineData("SomeUnknownType", "SomeUnknownType")]
     [InlineData("", "")]
     [InlineData(" ", " ")]

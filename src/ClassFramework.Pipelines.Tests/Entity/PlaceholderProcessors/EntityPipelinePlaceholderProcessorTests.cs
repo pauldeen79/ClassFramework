@@ -35,8 +35,8 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
         {
             // Arrange
             var propertyPlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
-            var externalResult = Result.NoContent<FormattableStringParserResult>();
-            propertyPlaceholderProcessor.Process(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(externalResult);
+            var externalResult = Result.NoContent<GenericFormattableString>();
+            propertyPlaceholderProcessor.Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(externalResult);
             var sut = CreateSut();
             var context = new PipelineContext<EntityContext>(new EntityContext(CreateModel().BuildTyped(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
 

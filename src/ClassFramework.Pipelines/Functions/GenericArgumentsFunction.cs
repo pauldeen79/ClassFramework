@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
-public class GenericArgumentsFunction : IFunctionResultParser
+public class GenericArgumentsFunction : IFunction
 {
     public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
         => FunctionBase.ParseFromStringArgument(functionParseResult, context, evaluator, parser, "GenericArguments", s =>

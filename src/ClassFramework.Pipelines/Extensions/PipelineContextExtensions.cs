@@ -2,7 +2,7 @@
 
 public static class PipelineContextExtensions
 {
-    public static Result<FormattableStringParserResult> CreateEntityInstanciation(this PipelineContext<BuilderContext> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix)
+    public static Result<GenericFormattableString> CreateEntityInstanciation(this PipelineContext<BuilderContext> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
@@ -16,12 +16,12 @@ public static class PipelineContextExtensions
 
         if (context.Request.SourceModel is not IConstructorsContainer constructorsContainer)
         {
-            return Result.Invalid<FormattableStringParserResult>("Cannot create an instance of a type that does not have constructors");
+            return Result.Invalid<GenericFormattableString>("Cannot create an instance of a type that does not have constructors");
         }
 
         if (context.Request.SourceModel is Class cls && cls.Abstract)
         {
-            return Result.Invalid<FormattableStringParserResult>("Cannot create an instance of an abstract class");
+            return Result.Invalid<GenericFormattableString>("Cannot create an instance of an abstract class");
         }
 
         var hasPublicParameterlessConstructor = constructorsContainer.HasPublicParameterlessConstructor();
@@ -37,7 +37,7 @@ public static class PipelineContextExtensions
         var entityNamespace = context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.Request.SourceModel.Namespace);
         var ns = context.Request.MapNamespace(entityNamespace).AppendWhenNotNullOrEmpty(".");
 
-        return Result.Success<FormattableStringParserResult>($"new {ns}{context.Request.SourceModel.Name}{classNameSuffix}{context.Request.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
+        return Result.Success<GenericFormattableString>($"new {ns}{context.Request.SourceModel.Name}{classNameSuffix}{context.Request.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
     public static string CreateEntityChainCall(this PipelineContext<EntityContext> context)
@@ -47,13 +47,13 @@ public static class PipelineContextExtensions
         return context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is not null
             ? $"base({GetPropertyNamesConcatenated(context.Request.Settings.BaseClass.Properties, context.Request.FormatProvider.ToCultureInfo())})"
             : context.Request.SourceModel.GetCustomValueForInheritedClass(context.Request.Settings.EnableInheritance,
-            cls => Result.Success<FormattableStringParserResult>($"base({GetPropertyNamesConcatenated(context.Request.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Request.FormatProvider.ToCultureInfo())})")).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
+            cls => Result.Success<GenericFormattableString>($"base({GetPropertyNamesConcatenated(context.Request.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Request.FormatProvider.ToCultureInfo())})")).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
     }
 
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName()));
 
-    private static Result<FormattableStringParserResult> GetConstructionMethodParameters(PipelineContext<BuilderContext> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor)
+    private static Result<GenericFormattableString> GetConstructionMethodParameters(PipelineContext<BuilderContext> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor)
     {
         var properties = context.Request.SourceModel.GetBuilderConstructorProperties(context.Request);
 
@@ -85,7 +85,7 @@ public static class PipelineContextExtensions
             return error.Result;
         }
 
-        return Result.Success<FormattableStringParserResult>(string.Join(", ", results.Select(x => hasPublicParameterlessConstructor
+        return Result.Success<GenericFormattableString>(string.Join(", ", results.Select(x => hasPublicParameterlessConstructor
             ? $"{x.Name} = {GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix)}"
             : GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix))));
     }

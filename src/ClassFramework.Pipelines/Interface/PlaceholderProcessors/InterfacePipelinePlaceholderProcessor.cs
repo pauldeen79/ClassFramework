@@ -1,12 +1,12 @@
 ﻿namespace ClassFramework.Pipelines.Interface.PlaceholderProcessors;
 
-public class InterfacePipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors) : IPlaceholderProcessor
+public class InterfacePipelinePlaceholderProcessor(IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors) : IPlaceholder
 {
     private readonly IEnumerable<IPipelinePlaceholderProcessor> _pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
 
     public int Order => 20;
 
-    public Result<FormattableStringParserResult> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
@@ -15,13 +15,18 @@ public class InterfacePipelinePlaceholderProcessor(IEnumerable<IPipelinePlacehol
             return GetResultForPipelineContext(value, formatProvider, formattableStringParser, pipelineContext);
         }
 
-        return Result.Continue<FormattableStringParserResult>();
+        return Result.Continue<GenericFormattableString>();
     }
 
-    private Result<FormattableStringParserResult> GetResultForPipelineContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, PipelineContext<InterfaceContext> pipelineContext)
+    public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    {
+        return Result.Success();
+    }
+
+    private Result<GenericFormattableString> GetResultForPipelineContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, PipelineContext<InterfaceContext> pipelineContext)
         => value switch
         {
-            _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(pipelineContext.Request.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Continue<FormattableStringParserResult>()
+            _ => _pipelinePlaceholderProcessors.Select(x => x.Evaluate(value, formatProvider, new PipelineContext<IType>(pipelineContext.Request.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result.Continue<GenericFormattableString>()
         };
 }

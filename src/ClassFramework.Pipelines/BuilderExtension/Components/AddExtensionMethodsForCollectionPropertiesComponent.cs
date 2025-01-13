@@ -64,17 +64,17 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IFormattableStr
         return Task.FromResult(Result.Success());
     }
 
-    private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderExtensionContext> context, Property property, ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContext)
+    private IEnumerable<Result<GenericFormattableString>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderExtensionContext> context, Property property, ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContext)
     {
         if (context.Request.Settings.AddNullChecks)
         {
-            yield return Result.Success<FormattableStringParserResult>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()));
+            yield return Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()));
         }
 
         yield return _formattableStringParser.Parse("return instance.{$addMethodNameFormatString}<T>({CsharpFriendlyName(ToCamelCase($property.Name))}.ToArray());", context.Request.FormatProvider, parentChildContext);
     }
 
-    private IEnumerable<Result<FormattableStringParserResult>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderExtensionContext> context, Property property)
+    private IEnumerable<Result<GenericFormattableString>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderExtensionContext> context, Property property)
     {
         if (context.Request.Settings.AddNullChecks)
         {
@@ -98,7 +98,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IFormattableStr
 
         yield return builderAddExpressionResult;
 
-        yield return Result.Success<FormattableStringParserResult>("return instance;");
+        yield return Result.Success<GenericFormattableString>("return instance;");
     }
 
     private static ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> CreateParentChildContext(PipelineContext<BuilderExtensionContext> context, Property property)

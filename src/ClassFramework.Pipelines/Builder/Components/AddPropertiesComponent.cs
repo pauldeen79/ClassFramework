@@ -23,7 +23,7 @@ public class AddPropertiesComponent(IFormattableStringParser formattableStringPa
 
         foreach (var property in context.Request.SourceModel.Properties.Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)))
         {
-            var results = new ResultDictionaryBuilder<FormattableStringParserResult>()
+            var results = new ResultDictionaryBuilder<GenericFormattableString>()
                 .Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser))
                 .Add(NamedResults.ParentTypeName, () => property.GetBuilderParentTypeName(context, _formattableStringParser))
                 .Build();

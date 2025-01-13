@@ -233,19 +233,6 @@ public static class StringExtensions
             ? instance
             : $"{instance}<{string.Join(",", genericTypeParameters)}>";
 
-    public static string ReplaceSuffix(this string instance, string find, string replace, StringComparison stringComparison)
-    {
-        find = find.IsNotNull(nameof(find));
-
-        var index = instance.LastIndexOf(find, stringComparison);
-        if (index == -1 || index < instance.Length - find.Length)
-        {
-            return instance;
-        }
-
-        return instance.Substring(0, instance.Length - find.Length) + replace;
-    }
-
     public static bool IsStringTypeName(this string? instance)
         => instance.FixTypeName() == typeof(string).FullName;
 
