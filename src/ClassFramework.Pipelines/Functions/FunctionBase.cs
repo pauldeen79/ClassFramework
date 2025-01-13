@@ -2,14 +2,9 @@
 
 internal static class FunctionBase
 {
-    internal static Result<object?> ParseFromStringArgument(FunctionCallContext context, string functionName, Func<string, Result<object?>> functionDelegate)
+    internal static Result<object?> ParseFromStringArgument(FunctionCallContext? context, string functionName, Func<string, Result<object?>> functionDelegate)
     {
         context = context.IsNotNull(nameof(context));
-
-        if (context.FunctionCall.Name != functionName)
-        {
-            return Result.Continue<object?>();
-        }
 
         var argument = context.FunctionCall.Arguments.FirstOrDefault();
         if (argument is null)
@@ -36,20 +31,11 @@ internal static class FunctionBase
         return functionDelegate(s);
     }
 
-    internal static Result<object?> ParseFromContext(FunctionCallContext context, string functionName, Func<ContextBase, Result<object?>> functionDelegate)
-    {
-        context = context.IsNotNull(nameof(context));
-        
-        if (context.FunctionCall.Name != functionName)
-        {
-            return Result.Continue<object?>();
-        }
-
-        return context.Context switch
+    internal static Result<object?> ParseFromContext(FunctionCallContext? context, string functionName, Func<ContextBase, Result<object?>> functionDelegate)
+        => context.IsNotNull(nameof(context)).Context switch
         {
             ContextBase contextBase => functionDelegate(contextBase),
             ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity => functionDelegate(parentChildContextEntity.ParentContext.Request),
             _ => Result.Invalid<object?>($"{functionName} function does not support type {context?.GetType().FullName ?? "null"}, only ContextBase is supported")
         };
-    }
 }

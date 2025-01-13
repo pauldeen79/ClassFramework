@@ -58,5 +58,5 @@ public class AddPublicParameterlessConstructorComponent(IFormattableStringParser
                 : "{$property.EntityMemberName} = {$property.DefaultValue};",
             context.Request.FormatProvider,
             new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings)
-        ).TransformValue(x => x.ToString());
+        ).Transform(x => x.ToString());
 }

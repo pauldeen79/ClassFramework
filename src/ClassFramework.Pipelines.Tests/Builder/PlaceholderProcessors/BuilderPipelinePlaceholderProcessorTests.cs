@@ -2,7 +2,7 @@
 
 public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipelinePlaceholderProcessor>
 {
-    public class Process : BuilderPipelinePlaceholderProcessorTests
+    public class Evaluate : BuilderPipelinePlaceholderProcessorTests
     {
         private static Property CreatePropertyModel(bool isNullable = false) => new PropertyBuilder().WithName("Delegate").WithType(typeof(List<string>)).WithIsNullable(isNullable).Build();
         private static ClassBuilder CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
@@ -14,7 +14,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process("Placeholder", CultureInfo.InvariantCulture, null, formattableStringParser: null!))
+            sut.Invoking(x => x.Evaluate("Placeholder", CultureInfo.InvariantCulture, null, formattableStringParser: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
         }
 
@@ -25,7 +25,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var sut = CreateSut();
 
             // Act
-            var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, null, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Placeholder", CultureInfo.InvariantCulture, null, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
@@ -43,7 +43,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
-            var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Should().BeSameAs(externalResult);
@@ -63,7 +63,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
-            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -82,7 +82,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
-            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -102,7 +102,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
-            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -120,7 +120,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), CreateSettingsForBuilder(addNullChecks: true).Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -138,7 +138,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
-            var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -156,7 +156,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
-            var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
@@ -172,7 +172,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), CreateSettingsForBuilder(addNullChecks: true).Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -189,7 +189,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), CreateSettingsForBuilder(addNullChecks: true).Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);

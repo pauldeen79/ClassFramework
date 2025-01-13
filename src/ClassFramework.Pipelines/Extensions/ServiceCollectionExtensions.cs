@@ -19,16 +19,16 @@ public static class ServiceCollectionExtensions
             .AddScoped<IVariable, ClassVariable>()
             .AddScoped<IVariable, CollectionTypeNameVariable>()
             .AddScoped<IVariable, PropertyVariable>()
-            .AddScoped<IFunctionResultParser, ClassNameFunction>()
-            .AddScoped<IFunctionResultParser, CollectionItemTypeFunction>()
-            .AddScoped<IFunctionResultParser, CsharpFriendlyNameFunction>()
-            .AddScoped<IFunctionResultParser, CsharpFriendlyTypeNameFunction>()
-            .AddScoped<IFunctionResultParser, GenericArgumentsFunction>()
-            .AddScoped<IFunctionResultParser, InstancePrefixFunction>()
-            .AddScoped<IFunctionResultParser, NamespaceFunction>()
-            .AddScoped<IFunctionResultParser, NoGenericsFunction>()
-            .AddScoped<IFunctionResultParser, NoInterfacePrefixFunction>()
-            .AddScoped<IFunctionResultParser, NullCheckFunction>()
+            .AddScoped<IFunction, ClassNameFunction>()
+            .AddScoped<IFunction, CollectionItemTypeFunction>()
+            .AddScoped<IFunction, CsharpFriendlyNameFunction>()
+            .AddScoped<IFunction, CsharpFriendlyTypeNameFunction>()
+            .AddScoped<IFunction, GenericArgumentsFunction>()
+            .AddScoped<IFunction, InstancePrefixFunction>()
+            .AddScoped<IFunction, NamespaceFunction>()
+            .AddScoped<IFunction, NoGenericsFunction>()
+            .AddScoped<IFunction, NoInterfacePrefixFunction>()
+            .AddScoped<IFunction, NullCheckFunction>()
             .AddScoped<IObjectResolverProcessor, ClassModelResolver>()
             .AddScoped<IObjectResolverProcessor, CultureInfoResolver>()
             .AddScoped<IObjectResolverProcessor, MappedContextBaseResolver>()
@@ -118,11 +118,11 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddParserComponents(this IServiceCollection services)
         => services
-            .AddScoped<IPlaceholderProcessor, BuilderPipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholderProcessor, BuilderExtensionPipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholderProcessor, InterfacePipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholderProcessor, ReflectionPipelinePlaceholderProcessor>();
+            .AddScoped<IPlaceholder, BuilderPipelinePlaceholderProcessor>()
+            .AddScoped<IPlaceholder, BuilderExtensionPipelinePlaceholderProcessor>()
+            .AddScoped<IPlaceholder, EntityPipelinePlaceholderProcessor>()
+            .AddScoped<IPlaceholder, InterfacePipelinePlaceholderProcessor>()
+            .AddScoped<IPlaceholder, ReflectionPipelinePlaceholderProcessor>();
 
     private static IServiceCollection AddPipelineService(this IServiceCollection services)
         => services

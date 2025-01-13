@@ -2,7 +2,7 @@
 
 public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePlaceholderProcessor>
 {
-    public class Process : EntityPipelinePlaceholderProcessorTests
+    public class Evaluate : EntityPipelinePlaceholderProcessorTests
     {
         private static ClassBuilder CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
 
@@ -13,7 +13,7 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process("Placeholder", CultureInfo.InvariantCulture, null, formattableStringParser: null!))
+            sut.Invoking(x => x.Evaluate("Placeholder", CultureInfo.InvariantCulture, null, formattableStringParser: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
         }
 
@@ -24,7 +24,7 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
             var sut = CreateSut();
 
             // Act
-            var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, null, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Placeholder", CultureInfo.InvariantCulture, null, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
@@ -41,7 +41,7 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
             var context = new PipelineContext<EntityContext>(new EntityContext(CreateModel().BuildTyped(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Should().BeSameAs(externalResult);

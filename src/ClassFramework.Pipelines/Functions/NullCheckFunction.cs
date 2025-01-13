@@ -2,6 +2,9 @@
 
 public class NullCheckFunction : IFunction
 {
-    public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
-        => FunctionBase.ParseFromContext(functionParseResult, context, "NullCheck", c => Result.Success<object?>(c.NullCheck));
+    public Result<object?> Evaluate(FunctionCallContext context)
+        => FunctionBase.ParseFromContext(context, "NullCheck", c => Result.Success<object?>(c.NullCheck));
+
+    public Result Validate(FunctionCallContext context)
+        => Result.Success();
 }

@@ -2,24 +2,24 @@
 
 public class NullCheckFunctionTests : TestBase<NullCheckFunction>
 {
-    public class Parse : NullCheckFunctionTests
+    public class Evaluate : NullCheckFunctionTests
     {
         [Fact]
         public void Returns_Success_On_Context_Of_Type_ContextBase()
         {
             // Arrange
             InitializeParser();
-            var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("NullCheck")
-                .WithFormatProvider(CultureInfo.InvariantCulture)
+            var functionCall = new FunctionCallBuilder()
+                .WithName("NullCheck")
                 .Build();
             var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().WithAddNullChecks().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
-            var evaluator = Fixture.Freeze<IFunctionParseResultEvaluator>();
-            var parser = Fixture.Freeze<IExpressionParser>();
+            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
 
             // Act
-            var result = sut.Parse(functionParseResult, context, evaluator, parser);
+            var result = sut.Evaluate(functionCallContext);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -31,17 +31,17 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         {
             // Arrange
             InitializeParser();
-            var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("NullCheck")
-                .WithFormatProvider(CultureInfo.InvariantCulture)
+            var functionCall = new FunctionCallBuilder()
+                .WithName("NullCheck")
                 .Build();
             var context = this;
-            var evaluator = Fixture.Freeze<IFunctionParseResultEvaluator>();
-            var parser = Fixture.Freeze<IExpressionParser>();
+            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
 
             // Act
-            var result = sut.Parse(functionParseResult, context, evaluator, parser);
+            var result = sut.Evaluate(functionCallContext);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -53,17 +53,17 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         {
             // Arrange
             InitializeParser();
-            var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("NullCheck")
-                .WithFormatProvider(CultureInfo.InvariantCulture)
+            var functionCall = new FunctionCallBuilder()
+                .WithName("NullCheck")
                 .Build();
             object? context = null;
-            var evaluator = Fixture.Freeze<IFunctionParseResultEvaluator>();
-            var parser = Fixture.Freeze<IExpressionParser>();
+            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
 
             // Act
-            var result = sut.Parse(functionParseResult, context, evaluator, parser);
+            var result = sut.Evaluate(functionCallContext);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -75,17 +75,17 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         {
             // Arrange
             InitializeParser();
-            var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("WrongFunctionName")
-                .WithFormatProvider(CultureInfo.InvariantCulture)
+            var functionCall = new FunctionCallBuilder()
+                .WithName("WrongFunctionName")
                 .Build();
             object? context = null;
-            var evaluator = Fixture.Freeze<IFunctionParseResultEvaluator>();
-            var parser = Fixture.Freeze<IExpressionParser>();
+            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
 
             // Act
-            var result = sut.Parse(functionParseResult, context, evaluator, parser);
+            var result = sut.Evaluate(functionCallContext);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);

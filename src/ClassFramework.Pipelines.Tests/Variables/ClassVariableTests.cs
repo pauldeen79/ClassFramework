@@ -12,7 +12,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.Name", context);
+        var result = sut.Evaluate("class.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -29,7 +29,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.Name", context);
+        var result = sut.Evaluate("class.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -46,7 +46,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.Name", context);
+        var result = sut.Evaluate("class.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -63,7 +63,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.Name", context);
+        var result = sut.Evaluate("class.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -80,7 +80,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.Name", context);
+        var result = sut.Evaluate("class.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -98,7 +98,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.Name", context);
+        var result = sut.Evaluate("class.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -116,7 +116,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.Name", context);
+        var result = sut.Evaluate("class.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -133,7 +133,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.FullName", context);
+        var result = sut.Evaluate("class.FullName", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -150,7 +150,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.FullName", context);
+        var result = sut.Evaluate("class.FullName", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -167,7 +167,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.Namespace", context);
+        var result = sut.Evaluate("class.Namespace", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -184,7 +184,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.Name", context);
+        var result = sut.Evaluate("class.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -200,7 +200,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.WrongPropertyName", context);
+        var result = sut.Evaluate("class.WrongPropertyName", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Continue);
@@ -216,7 +216,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.Name", context);
+        var result = sut.Evaluate("class.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -233,7 +233,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.Name", context);
+        var result = sut.Evaluate("class.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -250,7 +250,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("class.FullName", context);
+        var result = sut.Evaluate("class.FullName", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);

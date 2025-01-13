@@ -16,7 +16,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("property.Name", context);
+        var result = sut.Evaluate("property.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -38,7 +38,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("property.Name", context);
+        var result = sut.Evaluate("property.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -60,7 +60,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("property.Name", context);
+        var result = sut.Evaluate("property.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -81,7 +81,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("property.BuilderMemberName", context);
+        var result = sut.Evaluate("property.BuilderMemberName", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -102,7 +102,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("property.EntityMemberName", context);
+        var result = sut.Evaluate("property.EntityMemberName", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -123,7 +123,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("property.NullableRequiredSuffix", context);
+        var result = sut.Evaluate("property.NullableRequiredSuffix", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -144,7 +144,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("property.TypeName", context);
+        var result = sut.Evaluate("property.TypeName", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -165,7 +165,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("property.ParentTypeFullName", context);
+        var result = sut.Evaluate("property.ParentTypeFullName", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
@@ -182,7 +182,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("property.Name", context);
+        var result = sut.Evaluate("property.Name", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -202,7 +202,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var sut = CreateSut();
 
         // Act
-        var result = sut.Process("property.WrongPropertyName", context);
+        var result = sut.Evaluate("property.WrongPropertyName", context);
 
         // Assert
         result.Status.Should().Be(ResultStatus.Continue);

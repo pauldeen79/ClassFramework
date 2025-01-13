@@ -39,7 +39,7 @@ public class AddInterfacesComponent(IFormattableStringParser formattableStringPa
                         newFullName,
                         context.Request.FormatProvider,
                         new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
-                    ).TransformValue(x => x.ToString());
+                    ).Transform(x => x.ToString());
                 }
                 return Result.Success(context.Request.MapTypeName(x.FixTypeName()));
             })

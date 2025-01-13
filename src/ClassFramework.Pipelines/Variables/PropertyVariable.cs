@@ -14,8 +14,8 @@ public class PropertyVariable : IVariable
         _csharpExpressionDumper = csharpExpressionDumper;
     }
 
-    public Result<object?> Process(string variableExpression, object? context)
-        => variableExpression switch
+    public Result<object?> Evaluate(string expression, object? context)
+        => expression switch
         {
             $"property.{nameof(Property.Name)}" => VariableBase.GetValueFromProperty(_objectResolver, context, (_, _, property, _, _) => property.Name),
             $"property.{nameof(Property.TypeName)}" => VariableBase.GetValueFromProperty(_objectResolver, context, (_, _, _, typeName, _) => typeName),
@@ -27,6 +27,9 @@ public class PropertyVariable : IVariable
             "property.DefaultValue" => VariableBase.GetValueFromProperty(_objectResolver, context, (settings, _, property, typeName, mappedContextBase) => property.GetDefaultValue(_csharpExpressionDumper, typeName, mappedContextBase)),
             _ => Result.Continue<object?>()
         };
+
+    public Result Validate(string expression, object? context)
+        => Result.Success();
 
     private static string GetNullableRequiredSuffix(PipelineSettings settings, Property property)
         => !settings.AddNullChecks && !property.IsValueType && !property.IsNullable && settings.EnableNullableReferenceTypes

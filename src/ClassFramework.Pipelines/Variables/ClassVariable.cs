@@ -10,14 +10,18 @@ public class ClassVariable : IVariable
 
         _objectResolver = objectResolver;
     }
-    public Result<object?> Process(string variableExpression, object? context)
-        => variableExpression switch
+
+    public Result<object?> Evaluate(string expression, object? context)
+        => expression switch
         {
             $"class.{nameof(Class.Name)}" => GetValueFromClass(context, x => x.Name.WithoutTypeGenerics()),
             $"class.{nameof(Class.Namespace)}" => GetValueFromClass(context, x => x.Namespace),
             "class.FullName" => GetValueFromClass(context, x => x.FullName.WithoutTypeGenerics()),
             _ => Result.Continue<object?>()
         };
+
+    public Result Validate(string expression, object? context)
+        => Result.Success();
 
     private Result<object?> GetValueFromClass(object? context, Func<ClassModel, object?> valueDelegate)
     {

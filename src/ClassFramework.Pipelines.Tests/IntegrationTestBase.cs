@@ -12,26 +12,24 @@ public abstract class IntegrationTestBase<T> : TestBase
             .AddClassFrameworkPipelines()
             .AddCsharpExpressionDumper()
             .AddExpressionParser()
-            .AddSingleton<IFunctionResultParser, PropertyNameResultParser>()
+            .AddSingleton<IFunction, PropertyNameResultParser>()
             .BuildServiceProvider();
         Scope = Provider.CreateScope();
     }
 
     private sealed class PropertyNameResultParser : IFunction
     {
-        public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+        public Result<object?> Evaluate(FunctionCallContext context)
         {
-            if (functionParseResult.FunctionName != "PropertyName")
-            {
-                return Result.Continue<object?>();
-            }
-
-            if (context is PropertyContext propertyContext)
+            if (context.Context is PropertyContext propertyContext)
             {
                 return Result.Success<object?>(propertyContext.SourceModel.Name);
             }
 
             return Result.Invalid<object?>("Could not get property name from context, because the context is not of type PropertyContext");
         }
+
+        public Result Validate(FunctionCallContext context)
+            => Result.Success();
     }
 }

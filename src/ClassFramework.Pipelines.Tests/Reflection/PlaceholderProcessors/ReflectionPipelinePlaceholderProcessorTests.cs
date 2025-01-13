@@ -2,10 +2,9 @@
 
 public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPipelinePlaceholderProcessor>
 {
-    public class Process : ReflectionPipelinePlaceholderProcessorTests
+    public class Evaluate : ReflectionPipelinePlaceholderProcessorTests
     {
-        private Property CreatePropertyModel(bool isNullable = false) => new PropertyBuilder().WithName("Delegate").WithType(typeof(List<string>)).WithIsNullable(isNullable).Build();
-        private ClassBuilder CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
+        private static Property CreatePropertyModel(bool isNullable = false) => new PropertyBuilder().WithName("Delegate").WithType(typeof(List<string>)).WithIsNullable(isNullable).Build();
 
         [Fact]
         public void Throws_On_Null_FormattableStringParser()
@@ -14,7 +13,7 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Process("Placeholder", CultureInfo.InvariantCulture, null, formattableStringParser: null!))
+            sut.Invoking(x => x.Evaluate("Placeholder", CultureInfo.InvariantCulture, null, formattableStringParser: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
         }
 
@@ -25,7 +24,7 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
             var sut = CreateSut();
 
             // Act
-            var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, null, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Placeholder", CultureInfo.InvariantCulture, null, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
@@ -44,7 +43,7 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
             var context = new ParentChildContext<PipelineContext<ReflectionContext>, Property>(new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
-            var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Should().BeSameAs(externalResult);
@@ -62,7 +61,7 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
             var context = new ParentChildContext<PipelineContext<ReflectionContext>, Property>(new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
-            var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -81,7 +80,7 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
             var context = new ParentChildContext<PipelineContext<ReflectionContext>, Property>(new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
-            var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
@@ -98,7 +97,7 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
             var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, CreateSettingsForReflection().Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -116,7 +115,7 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
             var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, CreateSettingsForReflection().Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Evaluate("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);

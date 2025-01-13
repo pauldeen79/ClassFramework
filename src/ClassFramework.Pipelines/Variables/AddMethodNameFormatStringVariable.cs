@@ -11,10 +11,13 @@ public class AddMethodNameFormatStringVariable : IVariable
         _objectResolver = objectResolver;
     }
 
-    public Result<object?> Process(string variableExpression, object? context)
-        => variableExpression switch
+    public Result<object?> Evaluate(string expression, object? context)
+        => expression switch
         {
             "addMethodNameFormatString" => VariableBase.GetValueFromSettings(_objectResolver, context, settings => settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())),
             _ => Result.Continue<object?>()
         };
+
+    public Result Validate(string expression, object? context)
+        => Result.Success();
 }
