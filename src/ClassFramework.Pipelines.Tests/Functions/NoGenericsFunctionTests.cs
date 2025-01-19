@@ -80,7 +80,7 @@ public class NoGenericsFunctionTests : TestBase<NoGenericsFunction>
             InitializeParser();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NoGenerics")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Integer")))
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
@@ -106,7 +106,7 @@ public class NoGenericsFunctionTests : TestBase<NoGenericsFunction>
             InitializeParser();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NoGenerics")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Null")))
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
@@ -132,7 +132,7 @@ public class NoGenericsFunctionTests : TestBase<NoGenericsFunction>
             InitializeParser();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NoGenerics")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("MyFunction")))
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();

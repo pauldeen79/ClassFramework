@@ -107,7 +107,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             InitializeParser();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Integer")))
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
@@ -133,7 +133,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             InitializeParser();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Null")))
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
@@ -189,7 +189,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             InitializeParser();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("MyFunction")))
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
@@ -215,7 +215,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             InitializeParser();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("MyFunction")))
                 .AddArguments(new ConstantArgumentBuilder().WithValue(false))
                 .Build();
             object? context = default;
@@ -245,7 +245,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             InitializeParser();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("MyFunction")))
                 .AddArguments(new ConstantArgumentBuilder().WithValue(true))
                 .Build();
             object? context = default;

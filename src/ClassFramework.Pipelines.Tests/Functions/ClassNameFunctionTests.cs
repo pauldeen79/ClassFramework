@@ -80,7 +80,7 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
             InitializeParser();
             var functionCall = new FunctionCallBuilder()
                 .WithName("ClassName")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Numeric")))
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
@@ -106,7 +106,7 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
             InitializeParser();
             var functionCall = new FunctionCallBuilder()
                 .WithName("ClassName")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Null")))
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
@@ -132,7 +132,7 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
             InitializeParser();
             var functionCall = new FunctionCallBuilder()
                 .WithName("ClassName")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("MyStringFunction")))
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
