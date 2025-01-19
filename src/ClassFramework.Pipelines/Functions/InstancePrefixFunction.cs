@@ -1,20 +1,18 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
-public class InstancePrefixFunction : IFunctionResultParser
+public class InstancePrefixFunction : IFunction
 {
-    public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
+    public Result<object?> Evaluate(FunctionCallContext context)
     {
-        functionParseResult = functionParseResult.IsNotNull(nameof(functionParseResult));
+        context = context.IsNotNull(nameof(context));
 
-        if (functionParseResult.FunctionName != "InstancePrefix")
-        {
-            return Result.Continue<object?>();
-        }
-
-        var value = context is ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>
+        var value = context.Context is ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>
             ? "instance."
             : string.Empty;
 
         return Result.Success<object?>(value);
     }
+
+    public Result Validate(FunctionCallContext context)
+        => Result.Success();
 }

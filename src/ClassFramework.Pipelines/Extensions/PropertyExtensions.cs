@@ -93,7 +93,7 @@ public static class PropertyExtensions
             || settings.CreateAsObservable;
     }
 
-    public static Result<FormattableStringParserResult> GetBuilderConstructorInitializer<TSourceModel>(
+    public static Result<GenericFormattableString> GetBuilderConstructorInitializer<TSourceModel>(
         this Property property,
         ContextBase<TSourceModel> context,
         object parentChildContext,
@@ -128,13 +128,13 @@ public static class PropertyExtensions
             return result;
         }
 
-        return Result.Success<FormattableStringParserResult>(builderArgumentTypeResult.Value!.ToString()
+        return Result.Success<GenericFormattableString>(builderArgumentTypeResult.Value!.ToString()
             .FixCollectionTypeName(newCollectionTypeName)
             .GetCollectionInitializeStatement(result.Value?.ToString().Replace($"source.{PlaceholderNames.NamePlaceholder}", "x").Replace(PlaceholderNames.NamePlaceholder, property.Name) ?? string.Empty).Replace(PlaceholderNames.NamePlaceholder, property.Name)
             .GetCsharpFriendlyTypeName());
     }
 
-    public static Result<FormattableStringParserResult> GetBuilderArgumentTypeName<TSourceModel>(
+    public static Result<GenericFormattableString> GetBuilderArgumentTypeName<TSourceModel>(
         this Property property,
         ContextBase<TSourceModel> context,
         object parentChildContext,
@@ -185,14 +185,14 @@ public static class PropertyExtensions
         );
     }
 
-    public static Result<FormattableStringParserResult> GetBuilderParentTypeName(this Property property, PipelineContext<BuilderContext> context, IFormattableStringParser formattableStringParser)
+    public static Result<GenericFormattableString> GetBuilderParentTypeName(this Property property, PipelineContext<BuilderContext> context, IFormattableStringParser formattableStringParser)
     {
         context = context.IsNotNull(nameof(context));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
         if (string.IsNullOrEmpty(property.ParentTypeFullName))
         {
-            return Result.Success<FormattableStringParserResult>(property.ParentTypeFullName);
+            return Result.Success<GenericFormattableString>(property.ParentTypeFullName);
         }
 
         var metadata = context.Request.GetMappingMetadata(property.ParentTypeFullName);
@@ -200,7 +200,7 @@ public static class PropertyExtensions
 
         if (string.IsNullOrEmpty(ns))
         {
-            return Result.Success<FormattableStringParserResult>(context.Request.MapTypeName(property.ParentTypeFullName.FixTypeName()));
+            return Result.Success<GenericFormattableString>(context.Request.MapTypeName(property.ParentTypeFullName.FixTypeName()));
         }
 
         var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ClassName($property.ParentTypeFullName)}");

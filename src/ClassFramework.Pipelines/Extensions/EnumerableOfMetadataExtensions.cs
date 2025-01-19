@@ -19,7 +19,7 @@ public static class EnumerableOfMetadataExtensions
             : Result.Success(value);
     }
 
-    public static Result<FormattableStringParserResult> GetFormattableStringParserResult(this IEnumerable<Metadata> metadata, string metadataName, Func<Result<FormattableStringParserResult>> defaultValueDelegate)
+    public static Result<GenericFormattableString> GetGenericFormattableString(this IEnumerable<Metadata> metadata, string metadataName, Func<Result<GenericFormattableString>> defaultValueDelegate)
     {
         defaultValueDelegate = defaultValueDelegate.IsNotNull(nameof(defaultValueDelegate));
 
@@ -27,7 +27,7 @@ public static class EnumerableOfMetadataExtensions
 
         return string.IsNullOrEmpty(value)
             ? defaultValueDelegate()
-            : Result.Success<FormattableStringParserResult>(value);
+            : Result.Success<GenericFormattableString>(value);
     }
 
     public static bool GetBooleanValue(this IEnumerable<Metadata> metadata, string metadataName, bool defaultValue = false)

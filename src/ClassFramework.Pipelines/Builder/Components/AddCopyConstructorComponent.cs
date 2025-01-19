@@ -1,20 +1,11 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddCopyConstructorComponentBuilder(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper) : IBuilderComponentBuilder
-{
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-    private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
-
-    public IPipelineComponent<BuilderContext> Build()
-        => new AddCopyConstructorComponent(_formattableStringParser, _csharpExpressionDumper);
-}
-
 public class AddCopyConstructorComponent(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
-    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -45,10 +36,10 @@ public class AddCopyConstructorComponent(IFormattableStringParser formattableStr
 
     private Result<ConstructorBuilder> CreateCopyConstructor(PipelineContext<BuilderContext> context)
     {
-        var results = new ResultDictionaryBuilder<FormattableStringParserResult>()
+        var results = new ResultDictionaryBuilder<GenericFormattableString>()
             .Add("NullCheck.Source", () => _formattableStringParser.Parse("{NullCheck.Source}", context.Request.FormatProvider, context))
             .Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request))
-            .Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetFormattableStringParserResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)))
+            .Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)))
             .Build();
 
         var error = results.GetError();
@@ -112,10 +103,10 @@ public class AddCopyConstructorComponent(IFormattableStringParser formattableStr
         return name;
     }
 
-    private Tuple<Property, Result<FormattableStringParserResult>>[] GetInitializationCodeResults(PipelineContext<BuilderContext> context)
+    private Tuple<Property, Result<GenericFormattableString>>[] GetInitializationCodeResults(PipelineContext<BuilderContext> context)
         => context.Request.SourceModel.Properties
             .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings) && !(x.TypeName.FixTypeName().IsCollectionTypeName() && context.Request.GetMappingMetadata(x.TypeName).Any(y => y.Name == MetadataNames.CustomBuilderConstructorInitializeExpression)))
-            .Select(x => new Tuple<Property, Result<FormattableStringParserResult>>
+            .Select(x => new Tuple<Property, Result<GenericFormattableString>>
             (
                 x,
                 CreateBuilderInitializationCode(x, context)
@@ -123,10 +114,10 @@ public class AddCopyConstructorComponent(IFormattableStringParser formattableStr
             .TakeWhileWithFirstNonMatching(x => x.Item2.IsSuccessful())
             .ToArray();
 
-    private Tuple<string, Result<FormattableStringParserResult>>[] GetConstructorInitializerResults(PipelineContext<BuilderContext> context)
+    private Tuple<string, Result<GenericFormattableString>>[] GetConstructorInitializerResults(PipelineContext<BuilderContext> context)
         => context.Request.SourceModel.Properties
             .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
-            .Select(x => new Tuple<string, Result<FormattableStringParserResult>>
+            .Select(x => new Tuple<string, Result<GenericFormattableString>>
             (
                 x.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo()),
                 x.GetBuilderConstructorInitializer(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, MetadataNames.CustomBuilderConstructorInitializeExpression, _formattableStringParser)
@@ -134,7 +125,7 @@ public class AddCopyConstructorComponent(IFormattableStringParser formattableStr
             .TakeWhileWithFirstNonMatching(x => x.Item2.IsSuccessful())
             .ToArray();
 
-    private Result<FormattableStringParserResult> CreateBuilderInitializationCode(Property property, PipelineContext<BuilderContext> context)
+    private Result<GenericFormattableString> CreateBuilderInitializationCode(Property property, PipelineContext<BuilderContext> context)
         => _formattableStringParser.Parse
         (
             ProcessCreateBuilderInitializationCode(context.Request.GetMappingMetadata(property.TypeName)
@@ -192,7 +183,7 @@ public class AddCopyConstructorComponent(IFormattableStringParser formattableStr
     }
 
     private static string CreateBuilderClassCopyConstructorChainCall(IType instance, PipelineSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success<FormattableStringParserResult>("base(source)")).Value!; //note that the delegate always returns success, so we can simply use the Value here
+        => instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success<GenericFormattableString>("base(source)")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private static ConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<BuilderContext> context)
     {

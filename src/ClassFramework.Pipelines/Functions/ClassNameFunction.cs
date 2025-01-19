@@ -1,7 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
-public class ClassNameFunction : IFunctionResultParser
+public class ClassNameFunction : IFunction
 {
-    public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
-        => FunctionBase.ParseFromStringArgument(functionParseResult, context, evaluator, parser, "ClassName", s => Result.Success<object?>(s.GetClassName()));
+    public Result<object?> Evaluate(FunctionCallContext context)
+        => FunctionBase.ParseFromStringArgument(context, "ClassName", s => Result.Success<object?>(s.GetClassName()));
+
+    public Result Validate(FunctionCallContext context)
+        => Result.Success();
 }

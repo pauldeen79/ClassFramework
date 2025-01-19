@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Interface;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<InterfaceContext>>
+public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceContext>>
 {
     public class Process : PipelineBuilderTests
     {
@@ -19,11 +19,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         public async Task Sets_Namespace_And_Name_According_To_Settings()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -35,11 +35,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         public async Task Adds_Properties()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -52,11 +52,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         public async Task Adds_Methods_When_CopyMethods_Is_Set_To_True()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -67,11 +67,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         public async Task Adds_FilteredMethods_When_CopyMethods_Is_Set_To_True()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext(copyMethodPredicate: (_, _) => true);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -82,11 +82,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         public async Task Adds_FilteredMethods_When_CopyMethods_Is_Set_To_True_Negative()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext(copyMethodPredicate: (_, _) => false);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -97,11 +97,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         public async Task Does_Not_Add_Methods_When_CopyMethods_Is_Set_To_False()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext(copyMethods: false);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -112,11 +112,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         public async Task Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
             var innerResult = result?.InnerResults.FirstOrDefault();
 
             // Assert
@@ -138,10 +138,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
                 namespaceMappings: namespaceMappings);
             var context = CreateContext(model, settings);
 
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

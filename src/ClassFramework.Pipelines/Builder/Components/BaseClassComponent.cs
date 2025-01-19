@@ -1,18 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class BaseClassComponentBuilder(IFormattableStringParser formattableStringParser) : IBuilderComponentBuilder
-{
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-
-    public IPipelineComponent<BuilderContext> Build()
-        => new BaseClassComponent(_formattableStringParser);
-}
-
 public class BaseClassComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -27,7 +19,7 @@ public class BaseClassComponent(IFormattableStringParser formattableStringParser
         return Task.FromResult(Result.Success());
     }
 
-    private Result<FormattableStringParserResult> GetBuilderBaseClass(IType instance, PipelineContext<BuilderContext> context)
+    private Result<GenericFormattableString> GetBuilderBaseClass(IType instance, PipelineContext<BuilderContext> context)
     {
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
@@ -51,7 +43,7 @@ public class BaseClassComponent(IFormattableStringParser formattableStringParser
 
         if (isNotForAbstractBuilder || isAbstract)
         {
-            return Result.Success<FormattableStringParserResult>($"{nameResult.Value}{genericTypeArgumentsString}");
+            return Result.Success<GenericFormattableString>($"{nameResult.Value}{genericTypeArgumentsString}");
         }
 
         if (context.Request.Settings.EnableInheritance
@@ -70,7 +62,7 @@ public class BaseClassComponent(IFormattableStringParser formattableStringParser
                 return inheritanceNameResult;
             }
 
-            return Result.Success<FormattableStringParserResult>($"{context.Request.Settings.BaseClassBuilderNameSpace.AppendWhenNotNullOrEmpty(".")}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
+            return Result.Success<GenericFormattableString>($"{context.Request.Settings.BaseClassBuilderNameSpace.AppendWhenNotNullOrEmpty(".")}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
         }
 
         return instance.GetCustomValueForInheritedClass
@@ -84,14 +76,14 @@ public class BaseClassComponent(IFormattableStringParser formattableStringParser
                     return baseClassResult;
                 }
 
-                return Result.Success<FormattableStringParserResult>(context.Request.Settings.EnableBuilderInheritance
+                return Result.Success<GenericFormattableString>(context.Request.Settings.EnableBuilderInheritance
                     ? $"{baseClassResult.Value}{genericTypeArgumentsString}"
                     : $"{baseClassResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
             }
         );
     }
 
-    private Result<FormattableStringParserResult> GetBaseClassName(PipelineContext<BuilderContext> context, IBaseClassContainer baseClassContainer)
+    private Result<GenericFormattableString> GetBaseClassName(PipelineContext<BuilderContext> context, IBaseClassContainer baseClassContainer)
         => _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!)), context.Request.Settings, context.Request.FormatProvider));
 
     private static TypeBase CreateTypeBase(string baseClass)

@@ -1,18 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddDefaultConstructorComponentBuilder(IFormattableStringParser formattableStringParser) : IBuilderComponentBuilder
-{
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-
-    public IPipelineComponent<BuilderContext> Build()
-        => new AddDefaultConstructorComponent(_formattableStringParser);
-}
-
 public class AddDefaultConstructorComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -101,9 +93,9 @@ public class AddDefaultConstructorComponent(IFormattableStringParser formattable
     }
 
     private static string CreateBuilderClassConstructorChainCall(IType instance, PipelineSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success<FormattableStringParserResult>("base()")).Value!; //note that the delegate always returns success, so we can simply use the Value here
+        => instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success<GenericFormattableString>("base()")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
-    private Result<FormattableStringParserResult> GenerateDefaultValueStatement(Property property, PipelineContext<BuilderContext> context)
+    private Result<GenericFormattableString> GenerateDefaultValueStatement(Property property, PipelineContext<BuilderContext> context)
         => _formattableStringParser.Parse
         (
             "{$property.BuilderMemberName} = {$property.DefaultValue};",

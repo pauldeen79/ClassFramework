@@ -2,27 +2,27 @@
 
 public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNameFunction>
 {
-    public class Parse : CsharpFriendlyTypeNameFunctionTests
+    public class Evaluate : CsharpFriendlyTypeNameFunctionTests
     {
         [Fact]
-        public void Returns_Continue_When_FunctionName_Is_Invalid()
+        public void Returns_Invalid_When_FunctionName_Is_Invalid()
         {
             // Arrange
             InitializeParser();
-            var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("Invalid")
-                .WithFormatProvider(CultureInfo.InvariantCulture)
+            var functionCall = new FunctionCallBuilder()
+                .WithName("Invalid")
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionParseResultEvaluator>();
-            var parser = Fixture.Freeze<IExpressionParser>();
+            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
 
             // Act
-            var result = sut.Parse(functionParseResult, context, evaluator, parser);
+            var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.Should().Be(ResultStatus.Invalid);
         }
 
         [Fact]
@@ -30,17 +30,17 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
         {
             // Arrange
             InitializeParser();
-            var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("CsharpFriendlyTypeName")
-                .WithFormatProvider(CultureInfo.InvariantCulture)
+            var functionCall = new FunctionCallBuilder()
+                .WithName("CsharpFriendlyTypeName")
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionParseResultEvaluator>();
-            var parser = Fixture.Freeze<IExpressionParser>();
+            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
 
             // Act
-            var result = sut.Parse(functionParseResult, context, evaluator, parser);
+            var result = sut.Evaluate(functionCallContext);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -52,21 +52,21 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
         {
             // Arrange
             InitializeParser();
-            var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("CsharpFriendlyTypeName")
-                .WithFormatProvider(CultureInfo.InvariantCulture)
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionParseResultBuilder().WithFunctionName("Error")))
+            var functionCall = new FunctionCallBuilder()
+                .WithName("CsharpFriendlyTypeName")
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionParseResultEvaluator>();
+            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionParseResult>(), Arg.Any<IExpressionParser>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IExpressionEvaluator>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                 .Returns(Result.Error<object?>("Kaboom"));
-            var parser = Fixture.Freeze<IExpressionParser>();
+            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
 
             // Act
-            var result = sut.Parse(functionParseResult, context, evaluator, parser);
+            var result = sut.Evaluate(functionCallContext);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -78,21 +78,21 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
         {
             // Arrange
             InitializeParser();
-            var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("CsharpFriendlyTypeName")
-                .WithFormatProvider(CultureInfo.InvariantCulture)
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionParseResultBuilder().WithFunctionName("Error")))
+            var functionCall = new FunctionCallBuilder()
+                .WithName("CsharpFriendlyTypeName")
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Integer")))
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionParseResultEvaluator>();
+            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionParseResult>(), Arg.Any<IExpressionParser>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IExpressionEvaluator>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>(12345));
-            var parser = Fixture.Freeze<IExpressionParser>();
+            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
 
             // Act
-            var result = sut.Parse(functionParseResult, context, evaluator, parser);
+            var result = sut.Evaluate(functionCallContext);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -104,21 +104,21 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
         {
             // Arrange
             InitializeParser();
-            var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("CsharpFriendlyTypeName")
-                .WithFormatProvider(CultureInfo.InvariantCulture)
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionParseResultBuilder().WithFunctionName("Error")))
+            var functionCall = new FunctionCallBuilder()
+                .WithName("CsharpFriendlyTypeName")
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Null")))
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionParseResultEvaluator>();
+            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionParseResult>(), Arg.Any<IExpressionParser>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IExpressionEvaluator>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>(null));
-            var parser = Fixture.Freeze<IExpressionParser>();
+            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
 
             // Act
-            var result = sut.Parse(functionParseResult, context, evaluator, parser);
+            var result = sut.Evaluate(functionCallContext);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
@@ -130,21 +130,21 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
         {
             // Arrange
             InitializeParser();
-            var functionParseResult = new FunctionParseResultBuilder()
-                .WithFunctionName("CsharpFriendlyTypeName")
-                .WithFormatProvider(CultureInfo.InvariantCulture)
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionParseResultBuilder().WithFunctionName("Error")))
+            var functionCall = new FunctionCallBuilder()
+                .WithName("CsharpFriendlyTypeName")
+                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("MyFunction")))
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionParseResultEvaluator>();
+            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionParseResult>(), Arg.Any<IExpressionParser>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IExpressionEvaluator>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>(typeof(string).FullName));
-            var parser = Fixture.Freeze<IExpressionParser>();
+            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
 
             // Act
-            var result = sut.Parse(functionParseResult, context, evaluator, parser);
+            var result = sut.Evaluate(functionCallContext);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);

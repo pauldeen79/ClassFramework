@@ -1,14 +1,14 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
-public class GenericArgumentsFunction : IFunctionResultParser
+public class GenericArgumentsFunction : IFunction
 {
-    public Result<object?> Parse(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser)
-        => FunctionBase.ParseFromStringArgument(functionParseResult, context, evaluator, parser, "GenericArguments", s =>
+    public Result<object?> Evaluate(FunctionCallContext context)
+        => FunctionBase.ParseFromStringArgument(context, "GenericArguments", s =>
         {
             var addBrackets = false;
-            if (functionParseResult.Arguments.Count >= 2)
+            if (context.FunctionCall.Arguments.Count >= 2)
             {
-                var result = functionParseResult.Arguments.ElementAt(1).GetValueResult(context, evaluator, parser, functionParseResult.FormatProvider);
+                var result = context.FunctionCall.Arguments.ElementAt(1).GetValueResult(context);
                 if (!result.IsSuccessful())
                 {
                     return result;
@@ -24,4 +24,7 @@ public class GenericArgumentsFunction : IFunctionResultParser
 
             return Result.Success<object?>(s.GetProcessedGenericArguments(addBrackets));
         });
+
+    public Result Validate(FunctionCallContext context)
+        => Result.Success();
 }

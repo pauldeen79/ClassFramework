@@ -1,22 +1,14 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class SetNameComponentBuilder(IFormattableStringParser formattableStringParser) : IBuilderExtensionComponentBuilder
-{
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-
-    public IPipelineComponent<BuilderExtensionContext> Build()
-        => new SetNameComponent(_formattableStringParser);
-}
-
 public class SetNameComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderExtensionContext>
 {
     private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-    public Task<Result> Process(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        var results = new ResultDictionaryBuilder<FormattableStringParserResult>()
+        var results = new ResultDictionaryBuilder<GenericFormattableString>()
             .Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.BuilderExtensionsNameFormatString, context.Request.FormatProvider, context.Request))
             .Add(NamedResults.Namespace, () => _formattableStringParser.Parse(context.Request.Settings.BuilderExtensionsNamespaceFormatString, context.Request.FormatProvider, context.Request))
             .Build();

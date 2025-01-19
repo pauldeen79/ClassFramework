@@ -1,18 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddInterfacesComponentBuilder(IFormattableStringParser formattableStringParser) : IBuilderComponentBuilder
-{
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-
-    public IPipelineComponent<BuilderContext> Build()
-        => new AddInterfacesComponent(_formattableStringParser);
-}
-
 public class AddInterfacesComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -39,7 +31,7 @@ public class AddInterfacesComponent(IFormattableStringParser formattableStringPa
                         newFullName,
                         context.Request.FormatProvider,
                         new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
-                    ).TransformValue(x => x.ToString());
+                    ).Transform(x => x.ToString());
                 }
                 return Result.Success(context.Request.MapTypeName(x.FixTypeName()));
             })

@@ -24,7 +24,7 @@ public class IntegrationTests : IntegrationTestBase<IFormattableStringParser>
     public void Can_Use_FormattableStringParser_With_Functions_To_Get_Formatted_String_And_Apply_Processing_Like_Casing()
     {
         // Arrange
-        var formatString = "foreach (var item in {ToCamelCase(PropertyName())}) {PropertyName()}.Add(item);";
+        var formatString = "foreach (var item in {ToCamelCase($property.Name)}) {$property.Name}.Add(item);";
         var sut = CreateSut();
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
         var pipelineSettings = new PipelineSettingsBuilder().Build();

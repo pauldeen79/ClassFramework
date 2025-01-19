@@ -465,7 +465,7 @@ namespace Test.Domain.Builders
         result.InnerResults.First().Status.Should().Be(ResultStatus.Error);
         result.InnerResults.First().ErrorMessage.Should().Be("An error occured while processing the pipeline. See the inner results for more details.");
         result.InnerResults.First().InnerResults.Should().ContainSingle();
-        result.InnerResults.First().InnerResults.First().Status.Should().Be(ResultStatus.NotSupported);
+        result.InnerResults.First().InnerResults.First().Status.Should().Be(ResultStatus.Invalid);
         result.InnerResults.First().InnerResults.First().ErrorMessage.Should().Be("Unknown variable found: property.Kaboom");
     }
 

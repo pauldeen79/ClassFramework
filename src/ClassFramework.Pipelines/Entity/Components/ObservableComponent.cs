@@ -1,14 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class ObservableComponentBuilder : IEntityComponentBuilder
-{
-    public IPipelineComponent<EntityContext> Build()
-        => new ObservableComponent();
-}
-
 public class ObservableComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

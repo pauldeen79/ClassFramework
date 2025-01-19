@@ -11,7 +11,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.Process(context: null!))
+            sut.Awaiting(x => x.ProcessAsync(context: null!))
                .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
@@ -32,7 +32,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -71,7 +71,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -105,7 +105,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -138,7 +138,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -170,7 +170,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -203,7 +203,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -230,7 +230,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -252,7 +252,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -280,7 +280,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -308,7 +308,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -326,7 +326,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -347,7 +347,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

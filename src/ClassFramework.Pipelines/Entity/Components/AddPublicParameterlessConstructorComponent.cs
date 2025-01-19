@@ -1,18 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddPublicParameterlessConstructorComponentBuilder(IFormattableStringParser formattableStringParser) : IEntityComponentBuilder
-{
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-
-    public IPipelineComponent<EntityContext> Build()
-        => new AddPublicParameterlessConstructorComponent(_formattableStringParser);
-}
-
 public class AddPublicParameterlessConstructorComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<EntityContext>
 {
     private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -58,5 +50,5 @@ public class AddPublicParameterlessConstructorComponent(IFormattableStringParser
                 : "{$property.EntityMemberName} = {$property.DefaultValue};",
             context.Request.FormatProvider,
             new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings)
-        ).TransformValue(x => x.ToString());
+        ).Transform(x => x.ToString());
 }

@@ -2,24 +2,17 @@
 
 internal static class FunctionBase
 {
-    internal static Result<object?> ParseFromStringArgument(FunctionParseResult functionParseResult, object? context, IFunctionParseResultEvaluator evaluator, IExpressionParser parser, string functionName, Func<string, Result<object?>> functionDelegate)
+    internal static Result<object?> ParseFromStringArgument(FunctionCallContext? context, string functionName, Func<string, Result<object?>> functionDelegate)
     {
-        functionParseResult = functionParseResult.IsNotNull(nameof(functionParseResult));
-        evaluator = evaluator.IsNotNull(nameof(evaluator));
-        parser = parser.IsNotNull(nameof(parser));
+        context = context.IsNotNull(nameof(context));
 
-        if (functionParseResult.FunctionName != functionName)
-        {
-            return Result.Continue<object?>();
-        }
-
-        var argument = functionParseResult.Arguments.FirstOrDefault();
+        var argument = context.FunctionCall.Arguments.FirstOrDefault();
         if (argument is null)
         {
             return Result.Invalid<object?>($"{functionName} function requires one argument");
         }
 
-        var result = argument.GetValueResult(context, evaluator, parser, functionParseResult.FormatProvider);
+        var result = argument.GetValueResult(context);
         if (!result.IsSuccessful())
         {
             return result;
@@ -38,20 +31,11 @@ internal static class FunctionBase
         return functionDelegate(s);
     }
 
-    internal static Result<object?> ParseFromContext(FunctionParseResult functionParseResult, object? context, string functionName, Func<ContextBase, Result<object?>> functionDelegate)
-    {
-        functionParseResult = functionParseResult.IsNotNull(nameof(functionParseResult));
-        
-        if (functionParseResult.FunctionName != functionName)
-        {
-            return Result.Continue<object?>();
-        }
-
-        return context switch
+    internal static Result<object?> ParseFromContext(FunctionCallContext? context, string functionName, Func<ContextBase, Result<object?>> functionDelegate)
+        => context.IsNotNull(nameof(context)).Context switch
         {
             ContextBase contextBase => functionDelegate(contextBase),
             ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity => functionDelegate(parentChildContextEntity.ParentContext.Request),
-            _ => Result.Invalid<object?>($"{functionName} function does not support type {context?.GetType().FullName ?? "null"}, only ContextBase is supported")
+            _ => Result.Invalid<object?>($"{functionName} function does not support type {context!.Context?.GetType().FullName ?? "null"}, only ContextBase is supported")
         };
-    }
 }

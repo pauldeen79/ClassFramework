@@ -1,14 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class AddInterfacesComponentBuilder : IInterfaceComponentBuilder
-{
-    public IPipelineComponent<InterfaceContext> Build()
-        => new AddInterfacesComponent();
-}
-
 public class AddInterfacesComponent : IPipelineComponent<InterfaceContext>
 {
-    public Task<Result> Process(PipelineContext<InterfaceContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<InterfaceContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

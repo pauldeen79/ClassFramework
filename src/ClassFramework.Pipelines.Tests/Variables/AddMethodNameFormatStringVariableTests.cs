@@ -12,7 +12,7 @@ public class AddMethodNameFormatStringVariableTests : TestBase<AddMethodNameForm
             var sut = CreateSut();
 
             // Act
-            var result = sut.Process("WrongFunctionName", context);
+            var result = sut.Evaluate("WrongFunctionName", context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
@@ -28,7 +28,7 @@ public class AddMethodNameFormatStringVariableTests : TestBase<AddMethodNameForm
             var sut = CreateSut();
 
             // Act
-            var result = sut.Process("addMethodNameFormatString", context);
+            var result = sut.Evaluate("addMethodNameFormatString", context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -45,7 +45,7 @@ public class AddMethodNameFormatStringVariableTests : TestBase<AddMethodNameForm
             var sut = CreateSut();
 
             // Act
-            var result = sut.Process("addMethodNameFormatString", context);
+            var result = sut.Evaluate("addMethodNameFormatString", context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);

@@ -11,7 +11,7 @@ public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.Ad
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.Process(context: null!))
+            sut.Awaiting(x => x.ProcessAsync(context: null!))
                .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
@@ -25,7 +25,7 @@ public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.Ad
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

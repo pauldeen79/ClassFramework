@@ -1,14 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class ObservableComponentBuilder : IBuilderComponentBuilder
-{
-    public IPipelineComponent<BuilderContext> Build()
-        => new ObservableComponent();
-}
-
 public class ObservableComponent : IPipelineComponent<BuilderContext>
 {
-    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

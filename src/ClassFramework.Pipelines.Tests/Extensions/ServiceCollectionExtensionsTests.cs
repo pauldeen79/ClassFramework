@@ -22,24 +22,6 @@ public class ServiceCollectionExtensionsTests : TestBase
         }
 
         [Fact]
-        public void Can_Resolve_BuilderPipelineBuilder()
-        {
-            // Arrange
-            var serviceCollection = new ServiceCollection()
-                .AddScoped(_ => Fixture.Freeze<IFormattableStringParser>()) // note that normally, you would probably use AddParsers from the CrossCutting.Utilities.Parsers package...
-                .AddScoped(_ => Fixture.Freeze<ICsharpExpressionDumper>())  // note that normally, you would probably use AddCsharpExpressionDumper from the CsharpDumper package...
-                .AddClassFrameworkPipelines();
-            using var provider = serviceCollection.BuildServiceProvider();
-            using var scope = provider.CreateScope();
-
-            // Act
-            var builder = scope.ServiceProvider.GetRequiredService<IPipelineBuilder<BuilderContext>>();
-
-            // Assert
-            builder.Should().BeOfType<Pipelines.Builder.PipelineBuilder>();
-        }
-
-        [Fact]
         public void Can_Resolve_BuilderPipeline()
         {
             // Arrange
@@ -58,23 +40,6 @@ public class ServiceCollectionExtensionsTests : TestBase
         }
 
         [Fact]
-        public void Can_Resolve_EntityPipelineBuilder()
-        {
-            // Arrange
-            var serviceCollection = new ServiceCollection()
-                .AddScoped(_ => Fixture.Freeze<IFormattableStringParser>()) // note that normally, you would probably use AddParsers from the CrossCutting.Utilities.Parsers package...
-                .AddClassFrameworkPipelines();
-            using var provider = serviceCollection.BuildServiceProvider();
-            using var scope = provider.CreateScope();
-
-            // Act
-            var builder = scope.ServiceProvider.GetRequiredService<IPipelineBuilder<EntityContext>>();
-
-            // Assert
-            builder.Should().BeOfType<Pipelines.Entity.PipelineBuilder>();
-        }
-
-        [Fact]
         public void Can_Resolve_EntityPipeline()
         {
             // Arrange
@@ -89,23 +54,6 @@ public class ServiceCollectionExtensionsTests : TestBase
 
             // Assert
             builder.Should().BeOfType<Pipeline<EntityContext>>();
-        }
-
-        [Fact]
-        public void Can_Resolve_ReflectionPipelineBuilder()
-        {
-            // Arrange
-            var serviceCollection = new ServiceCollection()
-                .AddScoped(_ => Fixture.Freeze<IFormattableStringParser>()) // note that normally, you would probably use AddParsers from the CrossCutting.Utilities.Parsers package...
-                .AddClassFrameworkPipelines();
-            using var provider = serviceCollection.BuildServiceProvider();
-            using var scope = provider.CreateScope();
-
-            // Act
-            var builder = scope.ServiceProvider.GetRequiredService<IPipelineBuilder<ReflectionContext>>();
-
-            // Assert
-            builder.Should().BeOfType<Pipelines.Reflection.PipelineBuilder>();
         }
 
         [Fact]
