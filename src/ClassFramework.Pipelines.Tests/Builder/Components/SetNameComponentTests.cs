@@ -11,7 +11,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.Process(context: null!))
+            sut.Awaiting(x => x.ProcessAsync(context: null!))
                .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
         }
 
@@ -26,7 +26,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -44,7 +44,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -62,7 +62,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);
@@ -80,7 +80,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);

@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Reflection;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ReflectionContext>>
+public class PipelineBuilderTests : IntegrationTestBase<IPipeline<ReflectionContext>>
 {
     public class IntegrationTests : PipelineBuilderTests
     {
@@ -13,10 +13,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Reflect
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true, copyInterfaces: true);
             var context = new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture);
 
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -41,10 +41,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Reflect
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true);
             var context = new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture);
 
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -67,10 +67,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Reflect
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true);
             var context = new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture);
 
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -91,10 +91,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Reflect
             var sourceModel = GetType(); // this unit test class does not have properties
             var settings = CreateSettingsForReflection();
             var context = new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture);
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
             var innerResult = result?.InnerResults.FirstOrDefault();
 
             // Assert

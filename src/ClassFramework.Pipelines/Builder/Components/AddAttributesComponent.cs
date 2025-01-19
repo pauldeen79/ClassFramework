@@ -8,7 +8,7 @@ public class AddAttributesComponentBuilder : IBuilderComponentBuilder
 
 public class AddAttributesComponent : IPipelineComponent<BuilderContext>
 {
-    public Task<Result> Process(PipelineContext<BuilderContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityContext>>
+public class PipelineBuilderTests : IntegrationTestBase<IPipeline<EntityContext>>
 {
     public class Process : PipelineBuilderTests
     {
@@ -17,11 +17,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
         public async Task Sets_Partial()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -32,11 +32,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
         public async Task Sets_Namespace_And_Name_According_To_Settings()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -48,11 +48,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
         public async Task Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
             var innerResult = result?.InnerResults.FirstOrDefault();
 
             // Assert
@@ -78,10 +78,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                 collectionTypeName: typeof(ReadOnlyValueCollection<>).WithoutGenerics());
             var context = CreateContext(model, settings);
 
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -168,10 +168,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                 );
             var context = CreateContext(model, settings);
 
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -220,10 +220,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                 collectionTypeName: typeof(ObservableValueCollection<>).WithoutGenerics());
             var context = CreateContext(model, settings);
 
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -373,10 +373,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
                 validateArguments: ArgumentValidationType.CustomValidationCode);
             var context = CreateContext(model, settings);
 
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
@@ -392,10 +392,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<EntityC
             var settings = CreateSettingsForEntity(implementIEquatable: true);
             var context = CreateContext(model, settings);
 
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().Should().BeTrue();

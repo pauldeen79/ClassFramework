@@ -7,7 +7,7 @@ public class ValidationComponentBuilder : IEntityComponentBuilder
 
 public class ValidationComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result> Process(PipelineContext<EntityContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

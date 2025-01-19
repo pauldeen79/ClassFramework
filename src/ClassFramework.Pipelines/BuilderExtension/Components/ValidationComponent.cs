@@ -7,7 +7,7 @@ public class ValidationComponentBuilder : IBuilderExtensionComponentBuilder
 
 public class ValidationComponent : IPipelineComponent<BuilderExtensionContext>
 {
-    public Task<Result> Process(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

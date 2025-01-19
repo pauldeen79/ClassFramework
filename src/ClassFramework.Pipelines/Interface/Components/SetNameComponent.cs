@@ -12,7 +12,7 @@ public class SetNameComponent(IFormattableStringParser formattableStringParser) 
 {
     private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-    public Task<Result> Process(PipelineContext<InterfaceContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<InterfaceContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

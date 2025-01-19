@@ -8,7 +8,7 @@ public class AddPropertiesComponentBuilder : IReflectionComponentBuilder
 
 public class AddPropertiesComponent : IPipelineComponent<ReflectionContext>
 {
-    public Task<Result> Process(PipelineContext<ReflectionContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

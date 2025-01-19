@@ -8,7 +8,7 @@ public class AddPropertiesComponentBuilder : IInterfaceComponentBuilder
 
 public class AddPropertiesComponent : IPipelineComponent<InterfaceContext>
 {
-    public Task<Result> Process(PipelineContext<InterfaceContext> context, CancellationToken token)
+    public Task<Result> ProcessAsync(PipelineContext<InterfaceContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 

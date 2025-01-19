@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.BuilderExtension;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<BuilderExtensionContext>>
+public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderExtensionContext>>
 {
     public class Process : PipelineBuilderTests
     {
@@ -20,11 +20,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         public async Task Sets_Partial()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -35,11 +35,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         public async Task Adds_Fluent_Method_For_NonCollection_Property()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -56,11 +56,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         public async Task Adds_Fluent_Method_For_Collection_Property()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext();
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
@@ -81,11 +81,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Builder
         public async Task Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
         {
             // Arrange
-            var sut = CreateSut().Build();
+            var sut = CreateSut();
             var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.Process(context);
+            var result = await sut.ProcessAsync(context);
             var innerResult = result?.InnerResults.FirstOrDefault();
 
             // Assert
