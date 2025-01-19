@@ -116,10 +116,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddParserComponents(this IServiceCollection services)
         => services
             .AddScoped<IPlaceholder, BuilderPipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholder, BuilderExtensionPipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholder, EntityPipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholder, InterfacePipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholder, ReflectionPipelinePlaceholderProcessor>();
+            .AddScoped<IPlaceholder, BuilderExtensionPipelinePlaceholderProcessor>();
 
     private static IServiceCollection AddPipelineService(this IServiceCollection services)
         => services
