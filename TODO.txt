@@ -13,3 +13,4 @@
 - Add setting for customizing types using a delegate, if you want to. e.g. System.Object => Expression and System.String => ITypedExpression<System.String>
 - Add setting for customizing build statement using a delegate, if you want to. e.g. return new FunctionCallBuilder().WithName(@"ToUpperCase").AddArguments(Expression, CultureInfo).Build();
   --> PipelineContextExtensions.CreateEntityInstanciation
+- Check the scenario used in CrossCutting, where we want to generate abstract entity and builder for a generic type (FunctionCallArgument)
