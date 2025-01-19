@@ -1,13 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class SetNameComponentBuilder(IFormattableStringParser formattableStringParser) : IEntityComponentBuilder
-{
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-
-    public IPipelineComponent<EntityContext> Build()
-        => new SetNameComponent(_formattableStringParser);
-}
-
 public class SetNameComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<EntityContext>
 {
     private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));

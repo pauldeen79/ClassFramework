@@ -1,13 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class SetNameComponentBuilder(IFormattableStringParser formattableStringParser) : IBuilderExtensionComponentBuilder
-{
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-
-    public IPipelineComponent<BuilderExtensionContext> Build()
-        => new SetNameComponent(_formattableStringParser);
-}
-
 public class SetNameComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderExtensionContext>
 {
     private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));

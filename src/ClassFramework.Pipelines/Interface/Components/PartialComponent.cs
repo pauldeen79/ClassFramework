@@ -1,10 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class PartialComponentBuilder : IInterfaceComponentBuilder
-{
-    public IPipelineComponent<InterfaceContext> Build() => new PartialComponent();
-}
-
 public class PartialComponent : IPipelineComponent<InterfaceContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<InterfaceContext> context, CancellationToken token)

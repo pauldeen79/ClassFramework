@@ -1,13 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddPublicParameterlessConstructorComponentBuilder(IFormattableStringParser formattableStringParser) : IEntityComponentBuilder
-{
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-
-    public IPipelineComponent<EntityContext> Build()
-        => new AddPublicParameterlessConstructorComponent(_formattableStringParser);
-}
-
 public class AddPublicParameterlessConstructorComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<EntityContext>
 {
     private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));

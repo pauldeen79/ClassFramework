@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Extensions;
+﻿using CrossCutting.ProcessingPipeline;
+
+namespace ClassFramework.Pipelines.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -39,77 +41,77 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
             .AddScoped<IPipeline<BuilderContext>, Pipeline<BuilderContext>>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.AbstractBuilderComponentBuilder>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.AddAttributesComponentBuilder>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.AddBuildMethodComponentBuilder>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.AddCopyConstructorComponentBuilder>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.AddDefaultConstructorComponentBuilder>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.AddFluentMethodsForCollectionPropertiesComponentBuilder>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.AddFluentMethodsForNonCollectionPropertiesComponentBuilder>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.AddInterfacesComponentBuilder>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.AddPropertiesComponentBuilder>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.BaseClassComponentBuilder>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.GenericsComponentBuilder>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.ObservableComponentBuilder>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.PartialComponentBuilder>()
-            .AddScoped<IBuilderComponentBuilder, Builder.Components.SetNameComponentBuilder>();
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.ValidationComponent>() // important to register this one first, because validation should be performed first
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AbstractBuilderComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddAttributesComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddBuildMethodComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddCopyConstructorComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddDefaultConstructorComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddFluentMethodsForCollectionPropertiesComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddFluentMethodsForNonCollectionPropertiesComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddInterfacesComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddPropertiesComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.BaseClassComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.GenericsComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.ObservableComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.PartialComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.SetNameComponent>();
 
     private static IServiceCollection AddBuilderExtensionPipeline(this IServiceCollection services)
         => services
             .AddScoped<IPipeline<BuilderExtensionContext>, Pipeline<BuilderExtensionContext>>()
-            .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
-            .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.AddExtensionMethodsForCollectionPropertiesComponentBuilder>()
-            .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.AddExtensionMethodsForNonCollectionPropertiesComponentBuilder>()
-            .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.PartialComponentBuilder>()
-            .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.SetNameComponentBuilder>()
-            .AddScoped<IBuilderExtensionComponentBuilder, BuilderExtension.Components.SetStaticComponentBuilder>();
+            .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.ValidationComponent>() // important to register this one first, because validation should be performed first
+            .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.AddExtensionMethodsForCollectionPropertiesComponent>()
+            .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.AddExtensionMethodsForNonCollectionPropertiesComponent>()
+            .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.PartialComponent>()
+            .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.SetNameComponent>()
+            .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.SetStaticComponent>();
 
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services
             .AddScoped<IPipeline<EntityContext>, Pipeline<EntityContext>>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
-            .AddScoped<IEntityComponentBuilder, Entity.Components.AbstractEntityComponentBuilder>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.AddAttributesComponentBuilder>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.AddEquatableMembersComponentBuilder>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.AddFullConstructorComponentBuilder>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.AddGenericsComponentBuilder>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.AddInterfacesComponentBuilder>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.AddPropertiesComponentBuilder>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.AddPublicParameterlessConstructorComponentBuilder>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.AddToBuilderMethodComponentBuilder>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.ObservableComponentBuilder>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.PartialComponentBuilder>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.SetBaseClassComponentBuilder>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.SetNameComponentBuilder>()
-            .AddScoped<IEntityComponentBuilder, Entity.Components.SetRecordComponentBuilder>();
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.ValidationComponent>() // important to register this one first, because validation should be performed first
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AbstractEntityComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddAttributesComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddEquatableMembersComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddFullConstructorComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddGenericsComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddInterfacesComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddPropertiesComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddPublicParameterlessConstructorComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddToBuilderMethodComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.ObservableComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.PartialComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.SetBaseClassComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.SetNameComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.SetRecordComponent>();
 
     private static IServiceCollection AddReflectionPipeline(this IServiceCollection services)
         => services
             .AddScoped<IPipeline<Reflection.ReflectionContext>, Pipeline<Reflection.ReflectionContext>>()
-            .AddScoped<IReflectionComponentBuilder, Reflection.Components.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
-            .AddScoped<IReflectionComponentBuilder, Reflection.Components.AddAttributesComponentBuilder>()
-            .AddScoped<IReflectionComponentBuilder, Reflection.Components.AddConstructorsComponentBuilder>()
-            .AddScoped<IReflectionComponentBuilder, Reflection.Components.AddFieldsComponentBuilder>()
-            .AddScoped<IReflectionComponentBuilder, Reflection.Components.AddGenericTypeArgumentsComponentBuilder>()
-            .AddScoped<IReflectionComponentBuilder, Reflection.Components.AddInterfacesComponentBuilder>()
-            .AddScoped<IReflectionComponentBuilder, Reflection.Components.AddMethodsComponentBuilder>()
-            .AddScoped<IReflectionComponentBuilder, Reflection.Components.AddPropertiesComponentBuilder>()
-            .AddScoped<IReflectionComponentBuilder, Reflection.Components.SetBaseClassComponentBuilder>()
-            .AddScoped<IReflectionComponentBuilder, Reflection.Components.SetModifiersComponentBuilder>()
-            .AddScoped<IReflectionComponentBuilder, Reflection.Components.SetNameComponentBuilder>()
-            .AddScoped<IReflectionComponentBuilder, Reflection.Components.SetVisibilityComponentBuilder>();
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.ValidationComponent>() // important to register this one first, because validation should be performed first
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddAttributesComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddConstructorsComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddFieldsComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddGenericTypeArgumentsComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddInterfacesComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddMethodsComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddPropertiesComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.SetBaseClassComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.SetModifiersComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.SetNameComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.SetVisibilityComponent>();
 
     private static IServiceCollection AddInterfacePipeline(this IServiceCollection services)
         => services
-            .AddScoped<IPipeline<Interface.InterfaceContext>, Pipeline<Interface.InterfaceContext>>()
-            .AddScoped<IInterfaceComponentBuilder, Interface.Components.ValidationComponentBuilder>() // important to register this one first, because validation should be performed first
-            .AddScoped<IInterfaceComponentBuilder, Interface.Components.AddAttributesComponentBuilder>()
-            .AddScoped<IInterfaceComponentBuilder, Interface.Components.AddInterfacesComponentBuilder>()
-            .AddScoped<IInterfaceComponentBuilder, Interface.Components.AddMethodsComponentBuilder>()
-            .AddScoped<IInterfaceComponentBuilder, Interface.Components.AddPropertiesComponentBuilder>()
-            .AddScoped<IInterfaceComponentBuilder, Interface.Components.PartialComponentBuilder>()
-            .AddScoped<IInterfaceComponentBuilder, Interface.Components.SetNameComponentBuilder>();
+            .AddScoped<IPipeline<InterfaceContext>, Pipeline<InterfaceContext>>()
+            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.ValidationComponent>() // important to register this one first, because validation should be performed first
+            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddAttributesComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddInterfacesComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddMethodsComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddPropertiesComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.PartialComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.SetNameComponent>();
 
     private static IServiceCollection AddParserComponents(this IServiceCollection services)
         => services

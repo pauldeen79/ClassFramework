@@ -1,11 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class AddMethodsComponentBuilder : IInterfaceComponentBuilder
-{
-    public IPipelineComponent<InterfaceContext> Build()
-        => new AddMethodsComponent();
-}
-
 public class AddMethodsComponent : IPipelineComponent<InterfaceContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<InterfaceContext> context, CancellationToken token)

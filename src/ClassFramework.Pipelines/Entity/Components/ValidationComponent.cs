@@ -1,10 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class ValidationComponentBuilder : IEntityComponentBuilder
-{
-    public IPipelineComponent<EntityContext> Build() => new ValidationComponent();
-}
-
 public class ValidationComponent : IPipelineComponent<EntityContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)

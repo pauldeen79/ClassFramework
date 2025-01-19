@@ -1,11 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddAttributesComponentBuilder : IEntityComponentBuilder
-{
-    public IPipelineComponent<EntityContext> Build()
-        => new AddAttributesComponent();
-}
-
 public class AddAttributesComponent : IPipelineComponent<EntityContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)

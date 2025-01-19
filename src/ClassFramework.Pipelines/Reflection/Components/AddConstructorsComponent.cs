@@ -1,11 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class AddConstructorsComponentBuilder : IReflectionComponentBuilder
-{
-    public IPipelineComponent<ReflectionContext> Build()
-        => new AddConstructorsComponent();
-}
-
 public class AddConstructorsComponent : IPipelineComponent<ReflectionContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)

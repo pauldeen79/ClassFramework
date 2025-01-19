@@ -36,6 +36,6 @@ internal static class FunctionBase
         {
             ContextBase contextBase => functionDelegate(contextBase),
             ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity => functionDelegate(parentChildContextEntity.ParentContext.Request),
-            _ => Result.Invalid<object?>($"{functionName} function does not support type {context?.GetType().FullName ?? "null"}, only ContextBase is supported")
+            _ => Result.Invalid<object?>($"{functionName} function does not support type {context!.Context?.GetType().FullName ?? "null"}, only ContextBase is supported")
         };
 }

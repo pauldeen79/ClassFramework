@@ -1,13 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddFluentMethodsForNonCollectionPropertiesComponentBuilder(IFormattableStringParser formattableStringParser) : IBuilderComponentBuilder
-{
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-
-    public IPipelineComponent<BuilderContext> Build()
-        => new AddFluentMethodsForNonCollectionPropertiesComponent(_formattableStringParser);
-}
-
 public class AddFluentMethodsForNonCollectionPropertiesComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));

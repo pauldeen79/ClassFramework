@@ -1,11 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddAttributesComponentBuilder : IBuilderComponentBuilder
-{
-    public IPipelineComponent<BuilderContext> Build()
-        => new AddAttributesComponent();
-}
-
 public class AddAttributesComponent : IPipelineComponent<BuilderContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)

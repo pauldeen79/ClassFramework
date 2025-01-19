@@ -45,7 +45,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("NullCheck function does not support type ClassFramework.Pipelines.Tests.Functions.NullCheckFunctionTests+Parse, only ContextBase is supported");
+            result.ErrorMessage.Should().Be("NullCheck function does not support type ClassFramework.Pipelines.Tests.Functions.NullCheckFunctionTests+Evaluate, only ContextBase is supported");
         }
 
         [Fact]
@@ -71,7 +71,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         }
 
         [Fact]
-        public void Returns_Continue_On_Wrong_FunctionName()
+        public void Returns_Invalid_On_Wrong_FunctionName()
         {
             // Arrange
             InitializeParser();
@@ -88,7 +88,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.Should().Be(ResultStatus.Invalid);
         }
     }
 }

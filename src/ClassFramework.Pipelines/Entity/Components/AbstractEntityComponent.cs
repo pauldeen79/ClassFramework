@@ -1,11 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AbstractEntityComponentBuilder : IEntityComponentBuilder
-{
-    public IPipelineComponent<EntityContext> Build()
-        => new AbstractEntityComponent();
-}
-
 public class AbstractEntityComponent : IPipelineComponent<EntityContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)

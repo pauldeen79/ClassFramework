@@ -1,10 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class PartialComponentBuilder : IBuilderExtensionComponentBuilder
-{
-    public IPipelineComponent<BuilderExtensionContext> Build() => new PartialComponent();
-}
-
 public class PartialComponent : IPipelineComponent<BuilderExtensionContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)

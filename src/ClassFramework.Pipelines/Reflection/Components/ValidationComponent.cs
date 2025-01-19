@@ -1,10 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class ValidationComponentBuilder : IReflectionComponentBuilder
-{
-    public IPipelineComponent<ReflectionContext> Build() => new ValidationComponent();
-}
-
 public class ValidationComponent : IPipelineComponent<ReflectionContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)

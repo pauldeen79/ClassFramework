@@ -1,10 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class PartialComponentBuilder : IEntityComponentBuilder
-{
-    public IPipelineComponent<EntityContext> Build() => new PartialComponent();
-}
-
 public class PartialComponent : IPipelineComponent<EntityContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)

@@ -1,10 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class ValidationComponentBuilder : IInterfaceComponentBuilder
-{
-    public IPipelineComponent<InterfaceContext> Build() => new ValidationComponent();
-}
-
 public class ValidationComponent : IPipelineComponent<InterfaceContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<InterfaceContext> context, CancellationToken token)

@@ -5,7 +5,7 @@ public class CsharpFriendlyNameFunctionTests : TestBase<CsharpFriendlyNameFuncti
     public class Evaluate : CsharpFriendlyNameFunctionTests
     {
         [Fact]
-        public void Returns_Continue_When_FunctionName_Is_Invalid()
+        public void Returns_Invalid_When_FunctionName_Is_Invalid()
         {
             // Arrange
             InitializeParser();
@@ -22,7 +22,7 @@ public class CsharpFriendlyNameFunctionTests : TestBase<CsharpFriendlyNameFuncti
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.Should().Be(ResultStatus.Invalid);
         }
 
         [Fact]

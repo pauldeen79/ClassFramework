@@ -5,7 +5,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
     public class Evaluate : GenericArgumentsFunctionTests
     {
         [Fact]
-        public void Returns_Continue_When_FunctionName_Is_Invalid()
+        public void Returns_Invalid_When_FunctionName_Is_Invalid()
         {
             // Arrange
             InitializeParser();
@@ -22,7 +22,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.Should().Be(ResultStatus.Invalid);
         }
 
         [Fact]
@@ -216,7 +216,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
-                .AddArguments(new ConstantArgumentBuilder().WithValue("false"))
+                .AddArguments(new ConstantArgumentBuilder().WithValue(false))
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
@@ -246,7 +246,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
-                .AddArguments(new ConstantArgumentBuilder().WithValue("true"))
+                .AddArguments(new ConstantArgumentBuilder().WithValue(true))
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();

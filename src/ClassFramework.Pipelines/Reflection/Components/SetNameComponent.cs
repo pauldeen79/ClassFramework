@@ -1,13 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class SetNameComponentBuilder(IFormattableStringParser formattableStringParser) : IReflectionComponentBuilder
-{
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-
-    public IPipelineComponent<ReflectionContext> Build()
-        => new SetNameComponent(_formattableStringParser);
-}
-
 public class SetNameComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<ReflectionContext>
 {
     private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));

@@ -1,11 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class SetStaticComponentBuilder : IBuilderExtensionComponentBuilder
-{
-    public IPipelineComponent<BuilderExtensionContext> Build()
-        => new SetStaticComponent();
-}
-
 public class SetStaticComponent : IPipelineComponent<BuilderExtensionContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)

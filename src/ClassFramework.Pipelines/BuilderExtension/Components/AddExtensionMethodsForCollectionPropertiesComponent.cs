@@ -1,13 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class AddExtensionMethodsForCollectionPropertiesComponentBuilder(IFormattableStringParser formattableStringParser) : IBuilderExtensionComponentBuilder
-{
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-
-    public IPipelineComponent<BuilderExtensionContext> Build()
-        => new AddExtensionMethodsForCollectionPropertiesComponent(_formattableStringParser);
-}
-
 public class AddExtensionMethodsForCollectionPropertiesComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderExtensionContext>
 {
     private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));

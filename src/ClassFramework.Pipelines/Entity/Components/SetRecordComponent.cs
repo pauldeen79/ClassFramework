@@ -1,11 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class SetRecordComponentBuilder : IEntityComponentBuilder
-{
-    public IPipelineComponent<EntityContext> Build()
-        => new SetRecordComponent();
-}
-
 public class SetRecordComponent : IPipelineComponent<EntityContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)

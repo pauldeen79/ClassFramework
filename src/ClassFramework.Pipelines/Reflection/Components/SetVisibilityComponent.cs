@@ -1,11 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class SetVisibilityComponentBuilder : IReflectionComponentBuilder
-{
-    public IPipelineComponent<ReflectionContext> Build()
-        => new SetVisibilityComponent();
-}
-
 public class SetVisibilityComponent : IPipelineComponent<ReflectionContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
