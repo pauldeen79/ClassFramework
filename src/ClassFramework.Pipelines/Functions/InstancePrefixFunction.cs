@@ -12,7 +12,4 @@ public class InstancePrefixFunction : IFunction
 
         return Result.Success<object?>(value);
     }
-
-    public Result Validate(FunctionCallContext context)
-        => Result.Success();
 }

@@ -4,7 +4,4 @@ public class ClassNameFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)
         => FunctionBase.ParseFromStringArgument(context, "ClassName", s => Result.Success<object?>(s.GetClassName()));
-
-    public Result Validate(FunctionCallContext context)
-        => Result.Success();
 }
