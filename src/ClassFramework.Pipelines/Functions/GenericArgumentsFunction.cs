@@ -3,7 +3,7 @@
 public class GenericArgumentsFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)
-        => FunctionBase.ParseFromStringArgument(context, "GenericArguments", s =>
+        => FunctionHelpers.ParseFromStringArgument(context, "GenericArguments", s =>
         {
             var addBrackets = false;
             if (context.FunctionCall.Arguments.Count >= 2)

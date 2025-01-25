@@ -3,5 +3,5 @@
 public class CollectionItemTypeFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)
-        => FunctionBase.ParseFromStringArgument(context, "CollectionItemType", s => Result.Success<object?>(s.GetCollectionItemType()));
+        => FunctionHelpers.ParseFromStringArgument(context, "CollectionItemType", s => Result.Success<object?>(s.GetCollectionItemType()));
 }

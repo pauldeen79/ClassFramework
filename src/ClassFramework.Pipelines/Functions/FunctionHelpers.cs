@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
-internal static class FunctionBase
+internal static class FunctionHelpers
 {
     internal static Result<object?> ParseFromStringArgument(FunctionCallContext? context, string functionName, Func<string, Result<object?>> functionDelegate)
     {

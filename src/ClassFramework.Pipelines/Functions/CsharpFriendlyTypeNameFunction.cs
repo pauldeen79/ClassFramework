@@ -3,5 +3,5 @@
 public class CsharpFriendlyTypeNameFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)
-        => FunctionBase.ParseFromStringArgument(context, "CsharpFriendlyTypeName", s => Result.Success<object?>(s.GetCsharpFriendlyTypeName()));
+        => FunctionHelpers.ParseFromStringArgument(context, "CsharpFriendlyTypeName", s => Result.Success<object?>(s.GetCsharpFriendlyTypeName()));
 }
