@@ -1,6 +1,4 @@
-﻿using CrossCutting.ProcessingPipeline;
-
-namespace ClassFramework.Pipelines.Extensions;
+﻿namespace ClassFramework.Pipelines.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -31,6 +29,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<IFunction, NoGenericsFunction>()
             .AddScoped<IFunction, NoInterfacePrefixFunction>()
             .AddScoped<IFunction, NullCheckFunction>()
+            .AddScoped<IFunction, ToCamelCaseFunction>()
+            .AddScoped<IFunction, ToPascalCaseFunction>()
             .AddScoped<IObjectResolverProcessor, ClassModelResolver>()
             .AddScoped<IObjectResolverProcessor, CultureInfoResolver>()
             .AddScoped<IObjectResolverProcessor, MappedContextBaseResolver>()

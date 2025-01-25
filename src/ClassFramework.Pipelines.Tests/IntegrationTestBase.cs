@@ -11,7 +11,6 @@ public abstract class IntegrationTestBase<T> : TestBase
             .AddParsers()
             .AddClassFrameworkPipelines()
             .AddCsharpExpressionDumper()
-            .AddExpressionParser()
             .AddSingleton<IFunction, PropertyNameResultParser>()
             .BuildServiceProvider();
         Scope = Provider.CreateScope();
