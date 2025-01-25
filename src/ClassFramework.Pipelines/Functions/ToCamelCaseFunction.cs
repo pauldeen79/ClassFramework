@@ -3,12 +3,5 @@
 public class ToCamelCaseFunction : IFunction
 {
     public Result<object?> Evaluate(FunctionCallContext context)
-    {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
-
-        return new ResultDictionaryBuilder()
-            .Add("Expression", () => context.GetArgumentStringValueResult(0, "Expression"))
-            .Build()
-            .OnSuccess(results => Result.Success<object?>(results.GetValue<string>("Expression").ToCamelCase(context.FormatProvider.ToCultureInfo())));
-    }
+        => FunctionHelpers.ParseFromStringArgument(context, "GenericArguments", s => Result.Success<object?>(s.ToCamelCase(context.FormatProvider.ToCultureInfo())));
 }

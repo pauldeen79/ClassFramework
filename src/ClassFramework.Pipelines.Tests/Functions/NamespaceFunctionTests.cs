@@ -44,7 +44,7 @@ public class NamespaceFunctionTests : TestBase<NamespaceFunction>
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Namespace function requires one argument");
+            result.ErrorMessage.Should().Be("Missing argument: Expression");
         }
 
         [Fact]
@@ -96,7 +96,7 @@ public class NamespaceFunctionTests : TestBase<NamespaceFunction>
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Namespace function does not support type System.Int32, only string is supported");
+            result.ErrorMessage.Should().Be("Expression is not of type string");
         }
 
         [Fact]
@@ -122,7 +122,7 @@ public class NamespaceFunctionTests : TestBase<NamespaceFunction>
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Namespace function requires argument of type string, but the value was null");
+            result.ErrorMessage.Should().Be("Expression is not of type string");
         }
 
         [Fact]
