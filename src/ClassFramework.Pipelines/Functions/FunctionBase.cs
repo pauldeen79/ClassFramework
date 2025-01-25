@@ -12,7 +12,7 @@ internal static class FunctionBase
             return Result.Invalid<object?>($"{functionName} function requires one argument");
         }
 
-        var result = argument.GetValueResult(context);
+        var result = argument.Evaluate(context);
         if (!result.IsSuccessful())
         {
             return result;

@@ -8,7 +8,7 @@ public class GenericArgumentsFunction : IFunction
             var addBrackets = false;
             if (context.FunctionCall.Arguments.Count >= 2)
             {
-                var result = context.FunctionCall.Arguments.ElementAt(1).GetValueResult(context);
+                var result = context.FunctionCall.Arguments.ElementAt(1).Evaluate(context);
                 if (!result.IsSuccessful())
                 {
                     return result;
@@ -24,7 +24,4 @@ public class GenericArgumentsFunction : IFunction
 
             return Result.Success<object?>(s.GetProcessedGenericArguments(addBrackets));
         });
-
-    public Result Validate(FunctionCallContext context)
-        => Result.Success();
 }

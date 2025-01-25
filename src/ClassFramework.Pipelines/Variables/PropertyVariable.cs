@@ -28,8 +28,8 @@ public class PropertyVariable : IVariable
             _ => Result.Continue<object?>()
         };
 
-    public Result Validate(string expression, object? context)
-        => Result.Success();
+    public Result<Type> Validate(string expression, object? context)
+        => Result.Success(typeof(object));
 
     private static string GetNullableRequiredSuffix(PipelineSettings settings, Property property)
         => !settings.AddNullChecks && !property.IsValueType && !property.IsNullable && settings.EnableNullableReferenceTypes

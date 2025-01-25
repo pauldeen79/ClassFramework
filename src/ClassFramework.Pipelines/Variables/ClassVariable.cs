@@ -20,8 +20,8 @@ public class ClassVariable : IVariable
             _ => Result.Continue<object?>()
         };
 
-    public Result Validate(string expression, object? context)
-        => Result.Success();
+    public Result<Type> Validate(string expression, object? context)
+        => Result.Success(typeof(object));
 
     private Result<object?> GetValueFromClass(object? context, Func<ClassModel, object?> valueDelegate)
     {
