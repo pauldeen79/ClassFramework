@@ -8,15 +8,10 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 #nullable enable
-namespace CrossCutting.Utilities.Parsers
+namespace CrossCutting.Utilities.Parsers.Builders.Abstractions
 {
-    public abstract partial record FunctionCallArgument
+    public partial interface ITypedFunctionCallArgumentBuilder
     {
-        protected FunctionCallArgument()
-        {
-        }
-
-        public abstract CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder();
     }
 }
 #nullable disable

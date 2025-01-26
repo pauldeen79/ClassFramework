@@ -29,24 +29,5 @@ namespace CrossCutting.Utilities.Parsers.Builders
 
         public abstract TEntity BuildTyped();
     }
-    public abstract partial class FunctionCallArgumentBuilder<TBuilder, TEntity, T> : FunctionCallArgumentBuilder<T>
-        where TEntity : CrossCutting.Utilities.Parsers.FunctionCallArgument
-        where TBuilder : FunctionCallArgumentBuilder<TBuilder, TEntity>
-    {
-        protected FunctionCallArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArgument<T> source) : base(source)
-        {
-        }
-
-        protected FunctionCallArgumentBuilder() : base()
-        {
-        }
-
-        public override CrossCutting.Utilities.Parsers.FunctionCallArgument Build()
-        {
-            return BuildTyped();
-        }
-
-        public abstract TEntity BuildTyped();
-    }
 }
 #nullable disable

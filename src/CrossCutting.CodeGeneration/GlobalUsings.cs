@@ -12,6 +12,7 @@ global using ClassFramework.TemplateFramework.CodeGenerationProviders;
 global using ClassFramework.TemplateFramework.Extensions;
 global using CrossCutting.CodeGeneration.CodeGenerationProviders;
 global using CrossCutting.CodeGeneration.Models;
+global using CrossCutting.CodeGeneration.Models.Abstractions;
 global using CrossCutting.Common;
 global using CrossCutting.Common.DataAnnotations;
 global using CrossCutting.Common.Extensions;
