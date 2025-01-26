@@ -32,5 +32,27 @@ namespace CrossCutting.Utilities.Parsers.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
+    public abstract partial class FunctionCallArgumentBuilder<T> : System.ComponentModel.INotifyPropertyChanged
+    {
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        protected FunctionCallArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArgument<T> source)
+        {
+        }
+
+        protected FunctionCallArgumentBuilder()
+        {
+            SetDefaultValues();
+        }
+
+        public abstract CrossCutting.Utilities.Parsers.FunctionCallArgument Build();
+
+        partial void SetDefaultValues();
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
 }
 #nullable disable
