@@ -4,4 +4,14 @@
     {
     }
 - Add setting: InheritIBuilderInterfaceOnBuilders. If set to true, add the following interface: IBuilder<{{EntityType}}>
+- Add setting for customizing types using an optional delegate, if you want to. e.g. System.Object => Expression and System.String => ITypedExpression<System.String>
+  When it returns null, or the setting is null, then use the built-in method
+- Add setting for customizing build statement using a delegate, if you want to. e.g. return new FunctionCallBuilder().WithName(@"ToUpperCase").AddArguments(Expression, CultureInfo).Build();
+  Use an optional delegate named EntityInstanciation. When it returns null, or the settings is null, then use the built-in method
+- Add setting: AddImplicitOperatorOnBuilders. If set to true, add an implicit operator, so you can pass builders where you need entities.
+
 - Check the scenario used in CrossCutting, where we want to generate abstract entity and builder for a generic type (FunctionCallArgument)
+- Check the scenario used in CrossCutting, where we want to generate methods on abstract classes as well, like Evaluate and Parse
+
+To check the scenarios, add a POC project for code generation, and copy some types from CrossCutting in it.
+This way, we can test code generation and check that the generated code builds
