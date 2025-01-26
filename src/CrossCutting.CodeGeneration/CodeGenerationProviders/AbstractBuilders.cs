@@ -5,6 +5,7 @@ public class AbstractBuilders(IPipelineService pipelineService) : CrossCuttingCS
 {
     public override string Path => $"{Constants.Namespaces.UtilitiesParsers}/Builders";
 
+    protected override bool EnableBuilderInhericance => true;
     protected override bool EnableEntityInheritance => true;
     protected override bool IsAbstract => true;
 

@@ -10,28 +10,24 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders
 {
-    public abstract partial class FunctionCallArgumentBuilder<TBuilder, TEntity>
+    public abstract partial class FunctionCallArgumentBuilder<TBuilder, TEntity> : FunctionCallArgumentBuilder
         where TEntity : CrossCutting.Utilities.Parsers.FunctionCallArgument
         where TBuilder : FunctionCallArgumentBuilder<TBuilder, TEntity>
     {
-        protected FunctionCallArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArgument source)
+        protected FunctionCallArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArgument source) : base(source)
         {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
         }
 
-        protected FunctionCallArgumentBuilder()
+        protected FunctionCallArgumentBuilder() : base()
         {
-            SetDefaultValues();
         }
-
-        public abstract TEntity BuildTyped();
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArgument Build()
         {
             return BuildTyped();
         }
 
-        partial void SetDefaultValues();
+        public abstract TEntity BuildTyped();
     }
 }
 #nullable disable

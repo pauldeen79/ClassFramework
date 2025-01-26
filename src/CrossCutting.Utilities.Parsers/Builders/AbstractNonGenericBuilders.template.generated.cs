@@ -23,12 +23,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
             SetDefaultValues();
         }
 
-        public abstract TEntity BuildTyped();
-
-        public override CrossCutting.Utilities.Parsers.FunctionCallArgument Build()
-        {
-            return BuildTyped();
-        }
+        public abstract CrossCutting.Utilities.Parsers.FunctionCallArgument Build();
 
         partial void SetDefaultValues();
 
