@@ -10,7 +10,7 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders.Abstractions
 {
-    public partial interface ITypedFunctionCallArgumentBuilder
+    public partial interface ITypedFunctionCallArgumentBuilder<T>
     {
     }
 }

@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractionsBuildersInterfaces(IPipelineService pipelineService) : CrossCuttingCSharpClassBase(pipelineService)
 {
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => GetBuilderInterfaces(GetAbstractionsInterfaces(), "CrossCutting.Utilities.Parsers.Builders.Abstractions", "CrossCutting.Domain.Abstractions", "CrossCutting.Utilities.Parsers.Builders.Abstractions");
+    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => GetBuilderInterfaces(GetAbstractionsInterfaces(), "CrossCutting.Utilities.Parsers.Builders.Abstractions", "CrossCutting.Utilities.Parsers.Abstractions", "CrossCutting.Utilities.Parsers.Builders.Abstractions");
 
     public override string Path => "CrossCutting.Utilities.Parsers/Builders/Abstractions";
 

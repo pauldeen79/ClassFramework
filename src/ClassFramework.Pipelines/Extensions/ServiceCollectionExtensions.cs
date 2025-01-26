@@ -110,6 +110,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddInterfacesComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddMethodsComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddPropertiesComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.GenericsComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.PartialComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.SetNameComponent>();
 

@@ -1,4 +1,5 @@
-﻿namespace ClassFramework.Pipelines.Builder.Components;
+﻿
+namespace ClassFramework.Pipelines.Builder.Components;
 
 public class AddInterfacesComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
 {
@@ -22,7 +23,11 @@ public class AddInterfacesComponent(IFormattableStringParser formattableStringPa
 
                 if (!string.IsNullOrEmpty(ns))
                 {
-                    var property = new PropertyBuilder().WithName("Dummy").WithTypeName(x).Build();
+                    var property = new PropertyBuilder()
+                        .WithName("Dummy")
+                        .WithTypeName(x.WithoutGenerics())
+                        .AddGenericTypeArguments(x.GetGenericArguments().Split(',').Select(y => new TypeContainer(y)))
+                        .Build();
                     var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
                     var newFullName = $"{ns}.{newTypeName}";
 
@@ -47,5 +52,21 @@ public class AddInterfacesComponent(IFormattableStringParser formattableStringPa
         context.Request.Builder.AddInterfaces(results.Select(x => x.Value!));
 
         return Task.FromResult(Result.Success());
+    }
+
+    private sealed class TypeContainer : ITypeContainer
+    {
+        public string TypeName { get; }
+
+        public bool IsNullable => false;
+
+        public bool IsValueType => false;
+
+        public IReadOnlyCollection<ITypeContainer> GenericTypeArguments => new List<ITypeContainer>();
+
+        public TypeContainer(string typeName)
+        {
+            TypeName = typeName;
+        }
     }
 }
