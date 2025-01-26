@@ -25,8 +25,7 @@ public class AddInterfacesComponent(IFormattableStringParser formattableStringPa
                 {
                     var property = new PropertyBuilder()
                         .WithName("Dummy")
-                        .WithTypeName(x.WithoutGenerics())
-                        .AddGenericTypeArguments(x.GetGenericArguments().Split(',').Select(y => new TypeContainer(y)))
+                        .WithTypeName(x)
                         .Build();
                     var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
                     var newFullName = $"{ns}.{newTypeName}";
