@@ -1,5 +1,5 @@
 - Use deferred interpolation instead of [ ]
-- For entities of type records, also include a copy constructor with this signature: (visibility same as default constructor visibility)
+- Add setting: AddCopyConstructorsOnRecords. When set to trye, for entities of type records, also include a copy constructor with this signature: (visibility same as default constructor visibility)
     public ToUpperCaseFunctionCall(FunctionCall original) : base(original)
     {
     }
