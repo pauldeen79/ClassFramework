@@ -173,7 +173,7 @@ public abstract class TestBase : IDisposable
         string setMethodNameFormatString = "With{$property.Name}",
         string addMethodNameFormatString = "Add{$property.Name}",
         string builderNamespaceFormatString = "{$class.Namespace}.Builders",
-        string builderNameFormatString = "{$class.Name}Builder",
+        string builderNameFormatString = "{$class.Name}Builder", // {$class.GenericTypeArguments}
         string buildMethodName = "Build",
         string buildTypedMethodName = "BuildTyped",
         string setDefaultValuesMethodName = "SetDefaultValues",

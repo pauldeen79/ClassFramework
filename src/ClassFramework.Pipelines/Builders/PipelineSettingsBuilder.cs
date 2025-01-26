@@ -9,7 +9,7 @@ public partial class PipelineSettingsBuilder
         SetMethodNameFormatString = "With{$property.Name}";
         AddMethodNameFormatString = "Add{$property.Name}";
         BuilderNamespaceFormatString = "{$class.Namespace}.Builders";
-        BuilderNameFormatString = "{$class.Name}Builder";
+        BuilderNameFormatString = "{$class.Name}Builder"; // {$class.GenericTypeArguments}
         BuildMethodName = "Build";
         BuildTypedMethodName = "BuildTyped";
         SetDefaultValuesMethodName = "SetDefaultValues";

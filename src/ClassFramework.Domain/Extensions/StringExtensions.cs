@@ -100,7 +100,7 @@ public static class StringExtensions
                 .ReplaceGenericArgument("System.UInt64", WellKnownTypes.UnsignedLong)
         };
 
-    public static string GetGenericArguments(this string value, bool addBrackets = false)
+    public static string GetTypeGenericArguments(this string value, bool addBrackets = false)
     {
         if (string.IsNullOrEmpty(value))
         {
@@ -132,7 +132,7 @@ public static class StringExtensions
             : generics;
     }
 
-    public static string GetProcessedGenericArguments(this string? value, bool addBrackets = false)
+    public static string GetGenericArguments(this string? value, bool addBrackets = false)
     {
         if (string.IsNullOrEmpty(value))
         {
@@ -246,7 +246,7 @@ public static class StringExtensions
         => instance.FixTypeName() == typeof(object).FullName;
 
     public static string ConvertTypeNameToArray(this string typeName)
-        => $"{typeName.GetGenericArguments()}[]";
+        => $"{typeName.GetTypeGenericArguments()}[]";
 
     public static string FixCollectionTypeName(this string typeName, string newCollectionTypeName)
     {
@@ -281,7 +281,7 @@ public static class StringExtensions
             return instance.Substring(0, instance.Length - 2);
         }
 
-        return instance.GetGenericArguments();
+        return instance.GetTypeGenericArguments();
     }
 
     public static string RemoveInterfacePrefix(this string name)
@@ -339,7 +339,7 @@ public static class StringExtensions
 
         if (typeName.WithoutGenerics() == typeof(IEnumerable<>).WithoutGenerics() && !isNullable)
         {
-            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{typeName.GetProcessedGenericArguments(addBrackets: true)}()";
+            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{typeName.GetGenericArguments(addBrackets: true)}()";
         }
 
         var preNullableSuffix = isNullable && (enableNullableReferenceTypes || isValueType) && !typeName.EndsWith("?") && !typeName.StartsWith(typeof(Nullable<>).WithoutGenerics())
@@ -397,7 +397,7 @@ public static class StringExtensions
     {
         if (instance.StartsWith(typeof(IEnumerable<>).WithoutGenerics()))
         {
-            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{instance.GetProcessedGenericArguments(addBrackets: true)}()";
+            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{instance.GetGenericArguments(addBrackets: true)}()";
         }
 
         if (!string.IsNullOrEmpty(customBuilderConstructorInitializeExpression))

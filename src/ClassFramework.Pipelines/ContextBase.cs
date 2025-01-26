@@ -46,7 +46,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         var typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName).ToArray();
         if (typeNameMappings.Length == 0 && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
         {
-            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
+            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetTypeGenericArguments()))
             {
                 typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutGenerics()).ToArray();
             }
@@ -56,7 +56,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
             }
         }
 
-        if (typeNameMappings.Length == 0 && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetProcessedGenericArguments()))
+        if (typeNameMappings.Length == 0 && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetGenericArguments()))
         {
             typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.WithoutGenerics()).ToArray();
         }
@@ -68,7 +68,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
     {
         if (typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
         {
-            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetGenericArguments()))
+            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetTypeGenericArguments()))
             {
                 return typeName.GetCollectionItemType().WithoutGenerics().GetNamespaceWithDefault();
             }

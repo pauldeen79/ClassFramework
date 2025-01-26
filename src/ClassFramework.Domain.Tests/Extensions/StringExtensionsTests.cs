@@ -327,10 +327,10 @@ public class StringExtensionsTests
     [InlineData("System.Object", "")]
     [InlineData("ExpressionFramework.Domain.Contracts.ITypedExpression<System.Object>", "System.Object")]
     [InlineData("ExpressionFramework.Domain.Contracts.ITypedExpression<System.Collections.Generic.IEnumerable<System.Object>>", "System.Collections.Generic.IEnumerable<System.Object>")]
-    public void GetGenericArguments_Returns_Correct_Result(string input, string expected)
+    public void GetTypeGenericArguments_Returns_Correct_Result(string input, string expected)
     {
         // Act
-        var result = input.GetGenericArguments();
+        var result = input.GetTypeGenericArguments();
 
         // Assert
         result.Should().Be(expected);
@@ -594,10 +594,10 @@ public class StringExtensionsTests
     [InlineData("Func<blablabla>", false, "blablabla")]
     [InlineData("Func<blablabla>", true, "<blablabla>")]
     [InlineData("ITypedExpression<IEnumerable<object?>>", false, "IEnumerable<object?>")]
-    public void GetProcessedGenericArguments_Returns_Correct_Result(string? typeName, bool addBrackets, string expectedResult)
+    public void GetGenericArguments_Returns_Correct_Result(string? typeName, bool addBrackets, string expectedResult)
     {
         // Act
-        var result = typeName.GetProcessedGenericArguments(addBrackets);
+        var result = typeName.GetGenericArguments(addBrackets);
 
         // Assert
         result.Should().Be(expectedResult);
