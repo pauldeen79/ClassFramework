@@ -10,6 +10,18 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers
 {
+    public partial record CoreGenericType<T>
+    {
+        public CoreGenericType()
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public CrossCutting.Utilities.Parsers.Builders.CoreGenericTypeBuilder<T> ToBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.Builders.CoreGenericTypeBuilder<T>(this);
+        }
+    }
     public partial record FormattableStringParserSettings
     {
         public System.IFormatProvider FormatProvider

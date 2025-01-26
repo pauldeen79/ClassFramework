@@ -10,6 +10,32 @@
 #nullable enable
 namespace CrossCutting.Utilities.Parsers.Builders
 {
+    public partial class CoreGenericTypeBuilder<T> : System.ComponentModel.INotifyPropertyChanged
+    {
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public CoreGenericTypeBuilder(CrossCutting.Utilities.Parsers.CoreGenericType<T> source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+        }
+
+        public CoreGenericTypeBuilder()
+        {
+            SetDefaultValues();
+        }
+
+        public CrossCutting.Utilities.Parsers.CoreGenericType<T> Build()
+        {
+            return new CrossCutting.Utilities.Parsers.CoreGenericType<T>();
+        }
+
+        partial void SetDefaultValues();
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
     public partial class FormattableStringParserSettingsBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         private System.IFormatProvider _formatProvider;
