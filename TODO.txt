@@ -1,16 +1,7 @@
 - Use deferred interpolation instead of [ ]
-- For entities of type records, also include a copy constructor with this signature:
-    protected ToUpperCaseFunctionCall(FunctionCall original) : base(original)
+- For entities of type records, also include a copy constructor with this signature: (visibility same as default constructor visibility)
+    public ToUpperCaseFunctionCall(FunctionCall original) : base(original)
     {
     }
-- Add setting: ExpressionBodyForMethods. If set to true, and there is one code statement that starts with "return ", then apply this
-    public void MyMethod()
-    {
-        return something;
-    }
-    public void MyMethod() => something;
 - Add setting: InheritIBuilderInterfaceOnBuilders. If set to true, add the following interface: IBuilder<{{EntityType}}>
-- Add setting for customizing types using a delegate, if you want to. e.g. System.Object => Expression and System.String => ITypedExpression<System.String>
-- Add setting for customizing build statement using a delegate, if you want to. e.g. return new FunctionCallBuilder().WithName(@"ToUpperCase").AddArguments(Expression, CultureInfo).Build();
-  --> PipelineContextExtensions.CreateEntityInstanciation
 - Check the scenario used in CrossCutting, where we want to generate abstract entity and builder for a generic type (FunctionCallArgument)
