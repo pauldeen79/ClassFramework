@@ -89,7 +89,7 @@ public static class TypeExtensions
         return builder.ToString();
     }
 
-    public static string GetFullName(this IType type) => $"{type.Namespace.GetNamespacePrefix()}{type.Name}";
+    public static string GetFullName(this IType type) => $"{type.Namespace.GetNamespacePrefix()}{type.Name}"; //{type.GetGenericTypeArgumentsString()}
 
     public static IEnumerable<string> GetGenericTypeArgumentTypeNames(this Type instance)
         => ((TypeInfo)instance).GenericTypeParameters.Select(x => x.Name);

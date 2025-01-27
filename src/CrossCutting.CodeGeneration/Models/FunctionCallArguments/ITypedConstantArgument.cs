@@ -1,6 +1,6 @@
 ﻿namespace CrossCutting.CodeGeneration.Models.FunctionCallArguments;
 
-internal interface ITypedConstantArgument<T> : IFunctionCallArgument, ITypedFunctionCallArgument<T>
+internal interface ITypedConstantArgument<T> : ITypedFunctionCallArgument<T>
 {
     T Value { get; }
 }

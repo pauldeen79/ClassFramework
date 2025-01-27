@@ -183,28 +183,5 @@ namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
             return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.FunctionArgumentBuilder(this);
         }
     }
-    public partial record TypedConstantArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.ITypedFunctionCallArgument<T>
-    {
-        public T Value
-        {
-            get;
-        }
-
-        public TypedConstantArgument(T value) : base()
-        {
-            this.Value = value;
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public override CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBuilder ToBuilder()
-        {
-            return ToTypedBuilder();
-        }
-
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.TypedConstantArgumentBuilder<T> ToTypedBuilder()
-        {
-            return new CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.TypedConstantArgumentBuilder<T>(this);
-        }
-    }
 }
 #nullable disable

@@ -343,48 +343,5 @@ namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
             return this;
         }
     }
-    public partial class TypedConstantArgumentBuilder<T> : FunctionCallArgumentBuilder<TypedConstantArgumentBuilder<T>, CrossCutting.Utilities.Parsers.FunctionCallArguments.TypedConstantArgument<T>>, CrossCutting.Utilities.Parsers.Builders.Abstractions.ITypedFunctionCallArgumentBuilder<T>
-    {
-        private T _value;
-
-        public T Value
-        {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<T>.Default.Equals(_value!, value!);
-                _value = value;
-                if (hasChanged) HandlePropertyChanged(nameof(Value));
-            }
-        }
-
-        public TypedConstantArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.TypedConstantArgument<T> source) : base(source)
-        {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _value = source.Value;
-        }
-
-        public TypedConstantArgumentBuilder() : base()
-        {
-            _value = default(T)!;
-            SetDefaultValues();
-        }
-
-        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.TypedConstantArgument<T> BuildTyped()
-        {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.TypedConstantArgument<T>(Value);
-        }
-
-        partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.TypedConstantArgumentBuilder<T> WithValue(T value)
-        {
-            Value = value;
-            return this;
-        }
-    }
 }
 #nullable disable
