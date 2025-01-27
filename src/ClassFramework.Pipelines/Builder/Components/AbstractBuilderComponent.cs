@@ -20,10 +20,15 @@ public class AbstractBuilderComponent(IFormattableStringParser formattableString
 
             if (!context.Request.Settings.IsForAbstractBuilder)
             {
+                var generics = context.Request.SourceModel.GetGenericTypeArgumentsString();
+                var genericsSuffix = string.IsNullOrEmpty(generics)
+                    ? string.Empty
+                    : $", {context.Request.SourceModel.GetGenericTypeArgumentsString(false)}";
+
                 context.Request.Builder
                     .AddGenericTypeArguments("TBuilder", "TEntity")
-                    .AddGenericTypeArgumentConstraints($"where TEntity : {context.Request.SourceModel.GetFullName()}")
-                    .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity>")
+                    .AddGenericTypeArgumentConstraints($"where TEntity : {context.Request.SourceModel.GetFullName()}{generics}")
+                    .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity{genericsSuffix}>")
                     .WithAbstract();
             }
         }

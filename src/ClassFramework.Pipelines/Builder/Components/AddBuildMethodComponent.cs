@@ -10,8 +10,8 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
         context = context.IsNotNull(nameof(context));
 
         var returnType = context.Request.Settings.InheritFromInterfaces
-            ? context.Request.SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{context.Request.SourceModel.Name}") ?? context.Request.SourceModel.GetFullName()
-            : context.Request.SourceModel.GetFullName();
+            ? context.Request.SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{context.Request.SourceModel.Name}") ?? $"{context.Request.SourceModel.GetFullName()}{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
+            : $"{context.Request.SourceModel.GetFullName()}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
 
         if (context.Request.Settings.EnableBuilderInheritance && context.Request.Settings.IsAbstract)
         {
@@ -49,7 +49,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
             .WithName(GetName(context))
             .WithAbstract(context.Request.IsBuilderForAbstractEntity)
             .WithOverride(context.Request.IsBuilderForOverrideEntity)
-            .WithReturnTypeName($"{GetBuilderBuildMethodReturnType(context.Request, context.Request.IsBuilderForAbstractEntity || context.Request.IsBuilderForOverrideEntity ? context.Request.SourceModel.GetFullName() : returnType)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+            .WithReturnTypeName($"{GetBuilderBuildMethodReturnType(context.Request, context.Request.IsBuilderForAbstractEntity || context.Request.IsBuilderForOverrideEntity ? $"{context.Request.SourceModel.GetFullName()}{context.Request.SourceModel.GetGenericTypeArgumentsString()}" : returnType)}")
             .AddStringCodeStatements(context.Request.CreatePragmaWarningDisableStatementsForBuildMethod())
             .AddStringCodeStatements
             (

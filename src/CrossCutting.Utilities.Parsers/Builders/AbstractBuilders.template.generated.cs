@@ -31,7 +31,7 @@ namespace CrossCutting.Utilities.Parsers.Builders
     }
     public abstract partial class TypedFunctionCallArgumentBuilder<TBuilder, TEntity, T> : TypedFunctionCallArgumentBuilder<T>
         where TEntity : CrossCutting.Utilities.Parsers.TypedFunctionCallArgument<T>
-        where TBuilder : TypedFunctionCallArgumentBuilder<T>
+        where TBuilder : TypedFunctionCallArgumentBuilder<TBuilder, TEntity, T>
     {
         protected TypedFunctionCallArgumentBuilder(CrossCutting.Utilities.Parsers.TypedFunctionCallArgument<T> source) : base(source)
         {
