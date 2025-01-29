@@ -3,7 +3,6 @@
     public ToUpperCaseFunctionCall(FunctionCall original) : base(original)
     {
     }
-- Add setting: InheritIBuilderInterfaceOnBuilders. If set to true, add the following interface: IBuilder<{{EntityType}}>
 - Add setting for customizing types using an optional delegate, if you want to. e.g. System.Object => Expression and System.String => ITypedExpression<System.String>
   When it returns null, or the setting is null, then use the built-in method
 - Add setting for customizing build statement using a delegate, if you want to. e.g. return new FunctionCallBuilder().WithName(@"ToUpperCase").AddArguments(Expression, CultureInfo).Build();
