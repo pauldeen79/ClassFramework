@@ -158,7 +158,7 @@ namespace MyNamespace
     }
 
     [Fact]
-    public async Task Can_Generate_Code_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -200,7 +200,7 @@ namespace MyNamespace
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Abstractions_BuilderInterfaces_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Abstractions_BuilderInterfaces()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -236,7 +236,7 @@ namespace Test.Domain.Builders.Abstractions
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Abstractions_BuilderExtensions_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Abstractions_BuilderExtensions()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -274,7 +274,7 @@ namespace Test.Domain.Builders.Extensions
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Abstractions_Interfaces_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Abstractions_Interfaces()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -309,7 +309,7 @@ namespace Test.Domain.Abstractions
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Entity_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Entity()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -362,7 +362,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Builder_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Builder()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -446,7 +446,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Get_Useful_ErrorMessage_When_Generating_Code_For_Builder_With_PipelineCodeGenerationProviderBase_Goes_Wrong()
+    public async Task Can_Get_Useful_ErrorMessage_When_Generating_Code_For_Builder_Goes_Wrong()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -469,7 +469,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Get_Useful_ErrorMessage_When_Creating_Model_For_Builder_With_PipelineCodeGenerationProviderBase_Goes_Wrong()
+    public async Task Can_Get_Useful_ErrorMessage_When_Creating_Model_For_Builder_Goes_Wrong()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -486,7 +486,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Get_Useful_ErrorMessage_When_Creating_BaseClass_For_Builder_With_PipelineCodeGenerationProviderBase_Goes_Wrong()
+    public async Task Can_Get_Useful_ErrorMessage_When_Creating_BaseClass_For_Builder_Goes_Wrong()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -509,7 +509,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Builder_Extensions_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Builder_Extensions()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -554,7 +554,7 @@ namespace Test.Domain.Extensions
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Entity_PrivateSetters_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Entity_PrivateSetters()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -609,7 +609,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Builder_PrivateSetters_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Builder_PrivateSetters()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -693,7 +693,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Entity_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Entity_InheritFromInterfaces()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -746,7 +746,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Builder_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Builder_InheritFromInterfaces()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -830,7 +830,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Entity_Interface_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Entity_Interface_InheritFromInterfaces()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -873,7 +873,7 @@ namespace Test.Abstractions
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_BuilderInterface_InheritFromInterfaces_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_BuilderInterface_InheritFromInterfaces()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -918,7 +918,7 @@ namespace Test.Abstractions
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Entity_NoToBuilderMethod_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Entity_NoToBuilderMethod()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -966,7 +966,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Observable_Entity_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Observable_Entity()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1047,7 +1047,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Observable_Builder_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Observable_Builder()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1150,7 +1150,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Non_Core_Entity_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Non_Core_Entity()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1268,7 +1268,7 @@ namespace ClassFramework.TemplateFramework
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Abstract_Builder_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Abstract_Builder()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1315,7 +1315,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Abstract_Entity_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Abstract_Entity()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1357,7 +1357,7 @@ namespace Test.Domain
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Abstract_Non_Generic_Builder_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Abstract_Non_Generic_Builder()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1425,7 +1425,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Override_Builder_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Override_Builder()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1551,7 +1551,7 @@ namespace Test.Domain.Builders.Types
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Override_Entity_With_PipelineCodeGenerationProviderBase()
+    public async Task Can_Generate_Code_For_Override_Entity()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
