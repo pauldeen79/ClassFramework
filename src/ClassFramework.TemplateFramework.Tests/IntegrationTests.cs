@@ -322,8 +322,37 @@ namespace Test.Domain.Abstractions
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public partial class Generic<T>
+    {
+        public T MyProperty
+        {
+            get;
+        }
+
+        public Generic(T myProperty)
+        {
+            this.MyProperty = myProperty;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public Test.Domain.Builders.GenericBuilder<T> ToBuilder()
+        {
+            return new Test.Domain.Builders.GenericBuilder<T>(this);
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -375,8 +404,60 @@ namespace Test.Domain
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class GenericBuilder<T>
+    {
+        private T _myProperty;
+
+        public T MyProperty
+        {
+            get
+            {
+                return _myProperty;
+            }
+            set
+            {
+                _myProperty = value;
+            }
+        }
+
+        public GenericBuilder(Test.Domain.Generic<T> source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _myProperty = source.MyProperty;
+        }
+
+        public GenericBuilder()
+        {
+            _myProperty = default(T)!;
+            SetDefaultValues();
+        }
+
+        public Test.Domain.Generic<T> Build()
+        {
+            return new Test.Domain.Generic<T>(MyProperty);
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.GenericBuilder<T> WithMyProperty(T myProperty)
+        {
+            MyProperty = myProperty;
+            return this;
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -460,7 +541,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
         result.ErrorMessage.Should().Be("Could not create builders. See the inner results for more details.");
-        result.InnerResults.Should().ContainSingle();
+        result.InnerResults.Should().HaveCount(2);
         result.InnerResults.First().Status.Should().Be(ResultStatus.Error);
         result.InnerResults.First().ErrorMessage.Should().Be("An error occured while processing the pipeline. See the inner results for more details.");
         result.InnerResults.First().InnerResults.Should().ContainSingle();
@@ -500,7 +581,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.Should().Be(ResultStatus.Error);
         result.ErrorMessage.Should().Be("Could not create builders. See the inner results for more details.");
-        result.InnerResults.Should().ContainSingle();
+        result.InnerResults.Should().HaveCount(2);
         result.InnerResults.First().ErrorMessage.Should().Be("Could not create settings, see inner results for details");
         result.InnerResults.First().InnerResults.Should().ContainSingle();
         result.InnerResults.First().InnerResults.First().ErrorMessage.Should().Be("Could not get base class, see inner results for details");
@@ -522,8 +603,28 @@ namespace Test.Domain.Builders
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Extensions
+{
+#nullable enable
+    public static partial class GenericBuilderExtensions
+    {
+        public static T WithMyProperty<T>(this T instance, T myProperty)
+            where T : Test.Domain.Builders.IGenericBuilder<T>
+        {
+            instance.MyProperty = myProperty;
+            return instance;
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -567,8 +668,38 @@ namespace Test.Domain.Extensions
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public partial class Generic<T>
+    {
+        public T MyProperty
+        {
+            get;
+            private set;
+        }
+
+        public Generic(T myProperty)
+        {
+            this.MyProperty = myProperty;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public Test.Domain.Builders.GenericBuilder<T> ToBuilder()
+        {
+            return new Test.Domain.Builders.GenericBuilder<T>(this);
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -622,8 +753,60 @@ namespace Test.Domain
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class GenericBuilder<T>
+    {
+        private T _myProperty;
+
+        public T MyProperty
+        {
+            get
+            {
+                return _myProperty;
+            }
+            set
+            {
+                _myProperty = value;
+            }
+        }
+
+        public GenericBuilder(Test.Domain.Generic<T> source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _myProperty = source.MyProperty;
+        }
+
+        public GenericBuilder()
+        {
+            _myProperty = default(T)!;
+            SetDefaultValues();
+        }
+
+        public Test.Domain.Generic<T> Build()
+        {
+            return new Test.Domain.Generic<T>(MyProperty);
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.GenericBuilder<T> WithMyProperty(T myProperty)
+        {
+            MyProperty = myProperty;
+            return this;
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -706,8 +889,37 @@ namespace Test.Domain.Builders
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public partial class Generic<T> : Test.Domain.Abstractions.IGeneric
+    {
+        public T MyProperty
+        {
+            get;
+        }
+
+        public Generic(T myProperty)
+        {
+            this.MyProperty = myProperty;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public Test.Abstractions.Builders.IGenericBuilder ToBuilder()
+        {
+            return new Test.Domain.Builders.GenericBuilder<T>(this);
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -759,8 +971,60 @@ namespace Test.Domain
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class GenericBuilder<T> : Test.Abstractions.Builders.IGenericBuilder
+    {
+        private T _myProperty;
+
+        public T MyProperty
+        {
+            get
+            {
+                return _myProperty;
+            }
+            set
+            {
+                _myProperty = value;
+            }
+        }
+
+        public GenericBuilder(Test.Abstractions.IGeneric<T> source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _myProperty = source.MyProperty;
+        }
+
+        public GenericBuilder()
+        {
+            _myProperty = default(T)!;
+            SetDefaultValues();
+        }
+
+        public Test.Domain.Abstractions.IGeneric Build()
+        {
+            return new Test.Domain.Generic<T>(MyProperty);
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.GenericBuilder<T> WithMyProperty(T myProperty)
+        {
+            MyProperty = myProperty;
+            return this;
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -843,8 +1107,28 @@ namespace Test.Domain.Builders
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Abstractions
+{
+#nullable enable
+    public partial interface IGeneric<T>
+    {
+        T MyProperty
+        {
+            get;
+        }
+
+        Test.Abstractions.Builders.IGenericBuilder ToBuilder();
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -886,8 +1170,29 @@ namespace Test.Abstractions
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Abstractions
+{
+#nullable enable
+    public partial interface IGenericBuilder<T>
+    {
+        T MyProperty
+        {
+            get;
+            set;
+        }
+
+        Test.Domain.Generic<T> Build();
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -931,8 +1236,32 @@ namespace Test.Abstractions
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public partial class Generic<T>
+    {
+        public T MyProperty
+        {
+            get;
+        }
+
+        public Generic(T myProperty)
+        {
+            this.MyProperty = myProperty;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -979,8 +1308,54 @@ namespace Test.Domain
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public partial class Generic<T> : System.ComponentModel.INotifyPropertyChanged
+    {
+        private T _myProperty;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public T MyProperty
+        {
+            get
+            {
+                return _myProperty;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<T>.Default.Equals(_myProperty!, value!);
+                _myProperty = value;
+                if (hasChanged) HandlePropertyChanged(nameof(MyProperty));
+            }
+        }
+
+        public Generic()
+        {
+            _myProperty = default(T)!;
+        }
+
+        public Test.Domain.Builders.GenericBuilder<T> ToBuilder()
+        {
+            return new Test.Domain.Builders.GenericBuilder<T>(this);
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1060,8 +1435,69 @@ namespace Test.Domain
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class GenericBuilder<T> : System.ComponentModel.INotifyPropertyChanged
+    {
+        private T _myProperty;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public T MyProperty
+        {
+            get
+            {
+                return _myProperty;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<T>.Default.Equals(_myProperty!, value!);
+                _myProperty = value;
+                if (hasChanged) HandlePropertyChanged(nameof(MyProperty));
+            }
+        }
+
+        public GenericBuilder(Test.Domain.Generic<T> source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _myProperty = source.MyProperty;
+        }
+
+        public GenericBuilder()
+        {
+            _myProperty = default(T)!;
+            SetDefaultValues();
+        }
+
+        public Test.Domain.Generic<T> Build()
+        {
+            return new Test.Domain.Generic<T> { MyProperty = MyProperty };
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.GenericBuilder<T> WithMyProperty(T myProperty)
+        {
+            MyProperty = myProperty;
+            return this;
+        }
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
