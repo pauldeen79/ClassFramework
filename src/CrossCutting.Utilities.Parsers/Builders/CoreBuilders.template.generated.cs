@@ -12,24 +12,48 @@ namespace CrossCutting.Utilities.Parsers.Builders
 {
     public partial class CoreGenericTypeBuilder<T> : System.ComponentModel.INotifyPropertyChanged
     {
+        private T _myProperty;
+
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public T MyProperty
+        {
+            get
+            {
+                return _myProperty;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<T>.Default.Equals(_myProperty!, value!);
+                _myProperty = value;
+                if (hasChanged) HandlePropertyChanged(nameof(MyProperty));
+            }
+        }
 
         public CoreGenericTypeBuilder(CrossCutting.Utilities.Parsers.CoreGenericType<T> source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _myProperty = source.MyProperty;
         }
 
         public CoreGenericTypeBuilder()
         {
+            _myProperty = default(T)!;
             SetDefaultValues();
         }
 
         public CrossCutting.Utilities.Parsers.CoreGenericType<T> Build()
         {
-            return new CrossCutting.Utilities.Parsers.CoreGenericType<T>();
+            return new CrossCutting.Utilities.Parsers.CoreGenericType<T>(MyProperty);
         }
 
         partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.Parsers.Builders.CoreGenericTypeBuilder<T> WithMyProperty(T myProperty)
+        {
+            MyProperty = myProperty;
+            return this;
+        }
 
         protected void HandlePropertyChanged(string propertyName)
         {

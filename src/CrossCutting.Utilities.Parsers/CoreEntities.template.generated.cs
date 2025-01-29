@@ -12,8 +12,14 @@ namespace CrossCutting.Utilities.Parsers
 {
     public partial record CoreGenericType<T>
     {
-        public CoreGenericType()
+        public T MyProperty
         {
+            get;
+        }
+
+        public CoreGenericType(T myProperty)
+        {
+            this.MyProperty = myProperty;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
