@@ -177,11 +177,6 @@ namespace ClassFramework.Domain.Builders.Types
             return new ClassFramework.Domain.Types.Class(Namespace, Partial, Interfaces, Fields.Select(x => x.Build()!).ToList().AsReadOnly(), Properties.Select(x => x.Build()!).ToList().AsReadOnly(), Methods.Select(x => x.Build()!).ToList().AsReadOnly(), Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes, Static, Sealed, Abstract, Constructors.Select(x => x.Build()!).ToList().AsReadOnly(), Record, BaseClass, Enums.Select(x => x.Build()!).ToList().AsReadOnly(), SubClasses.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
-        public static implicit operator ClassFramework.Domain.Types.Class(ClassBuilder entity)
-        {
-            return entity.BuildTyped();
-        }
-
         partial void SetDefaultValues();
 
         public ClassFramework.Domain.Builders.Types.ClassBuilder AddConstructors(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.ConstructorBuilder> constructors)
@@ -271,11 +266,6 @@ namespace ClassFramework.Domain.Builders.Types
             return new ClassFramework.Domain.Types.Interface(Namespace, Partial, Interfaces, Fields.Select(x => x.Build()!).ToList().AsReadOnly(), Properties.Select(x => x.Build()!).ToList().AsReadOnly(), Methods.Select(x => x.Build()!).ToList().AsReadOnly(), Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes);
         }
 
-        public static implicit operator ClassFramework.Domain.Types.Interface(InterfaceBuilder entity)
-        {
-            return entity.BuildTyped();
-        }
-
         partial void SetDefaultValues();
     }
     public partial class StructBuilder : TypeBaseBuilder<StructBuilder, ClassFramework.Domain.Types.Struct>, ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IValueTypeBuilder, ClassFramework.Domain.Builders.Abstractions.IConcreteTypeBuilder, ClassFramework.Domain.Builders.Abstractions.IConstructorsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IRecordContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IBaseClassContainerBuilder
@@ -350,11 +340,6 @@ namespace ClassFramework.Domain.Builders.Types
         public override ClassFramework.Domain.Types.Struct BuildTyped()
         {
             return new ClassFramework.Domain.Types.Struct(Namespace, Partial, Interfaces, Fields.Select(x => x.Build()!).ToList().AsReadOnly(), Properties.Select(x => x.Build()!).ToList().AsReadOnly(), Methods.Select(x => x.Build()!).ToList().AsReadOnly(), Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes, Constructors.Select(x => x.Build()!).ToList().AsReadOnly(), Record, BaseClass);
-        }
-
-        public static implicit operator ClassFramework.Domain.Types.Struct(StructBuilder entity)
-        {
-            return entity.BuildTyped();
         }
 
         partial void SetDefaultValues();
