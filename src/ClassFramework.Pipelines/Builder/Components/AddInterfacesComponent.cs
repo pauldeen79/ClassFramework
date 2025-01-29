@@ -52,20 +52,4 @@ public class AddInterfacesComponent(IFormattableStringParser formattableStringPa
 
         return Task.FromResult(Result.Success());
     }
-
-    private sealed class TypeContainer : ITypeContainer
-    {
-        public string TypeName { get; }
-
-        public bool IsNullable => false;
-
-        public bool IsValueType => false;
-
-        public IReadOnlyCollection<ITypeContainer> GenericTypeArguments => new List<ITypeContainer>();
-
-        public TypeContainer(string typeName)
-        {
-            TypeName = typeName;
-        }
-    }
 }
