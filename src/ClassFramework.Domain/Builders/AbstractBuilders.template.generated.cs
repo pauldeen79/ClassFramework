@@ -28,6 +28,11 @@ namespace ClassFramework.Domain.Builders
         }
 
         public abstract TEntity BuildTyped();
+
+        public static implicit operator ClassFramework.Domain.CodeStatementBase(CodeStatementBaseBuilder<TBuilder, TEntity> entity)
+        {
+            return entity.BuildTyped();
+        }
     }
     public abstract partial class TypeBaseBuilder<TBuilder, TEntity> : TypeBaseBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder
         where TEntity : ClassFramework.Domain.TypeBase
@@ -47,6 +52,11 @@ namespace ClassFramework.Domain.Builders
         }
 
         public abstract TEntity BuildTyped();
+
+        public static implicit operator ClassFramework.Domain.TypeBase(TypeBaseBuilder<TBuilder, TEntity> entity)
+        {
+            return entity.BuildTyped();
+        }
     }
 }
 #nullable disable

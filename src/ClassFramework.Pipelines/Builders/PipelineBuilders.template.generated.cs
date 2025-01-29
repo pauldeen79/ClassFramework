@@ -80,6 +80,11 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
+        public static implicit operator ClassFramework.Pipelines.Metadata(MetadataBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -190,6 +195,11 @@ namespace ClassFramework.Pipelines.Builders
             if (targetNamespace is null) throw new System.ArgumentNullException(nameof(targetNamespace));
             TargetNamespace = targetNamespace;
             return this;
+        }
+
+        public static implicit operator ClassFramework.Pipelines.NamespaceMapping(NamespaceMappingBuilder entity)
+        {
+            return entity.Build();
         }
 
         protected void HandlePropertyChanged(string propertyName)
@@ -1746,6 +1756,11 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
+        public static implicit operator ClassFramework.Pipelines.PipelineSettings(PipelineSettingsBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -1856,6 +1871,11 @@ namespace ClassFramework.Pipelines.Builders
             if (targetTypeName is null) throw new System.ArgumentNullException(nameof(targetTypeName));
             TargetTypeName = targetTypeName;
             return this;
+        }
+
+        public static implicit operator ClassFramework.Pipelines.TypenameMapping(TypenameMappingBuilder entity)
+        {
+            return entity.Build();
         }
 
         protected void HandlePropertyChanged(string propertyName)

@@ -54,6 +54,11 @@ namespace ClassFramework.Domain.Builders.CodeStatements
             Statement = statement;
             return this;
         }
+
+        public static implicit operator ClassFramework.Domain.CodeStatements.StringCodeStatement(StringCodeStatementBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
     }
 }
 #nullable disable

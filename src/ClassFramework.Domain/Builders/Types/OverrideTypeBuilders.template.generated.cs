@@ -248,6 +248,11 @@ namespace ClassFramework.Domain.Builders.Types
             BaseClass = baseClass;
             return this;
         }
+
+        public static implicit operator ClassFramework.Domain.Types.Class(ClassBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
     }
     public partial class InterfaceBuilder : TypeBaseBuilder<InterfaceBuilder, ClassFramework.Domain.Types.Interface>, ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder
     {
@@ -267,6 +272,11 @@ namespace ClassFramework.Domain.Builders.Types
         }
 
         partial void SetDefaultValues();
+
+        public static implicit operator ClassFramework.Domain.Types.Interface(InterfaceBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
     }
     public partial class StructBuilder : TypeBaseBuilder<StructBuilder, ClassFramework.Domain.Types.Struct>, ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IValueTypeBuilder, ClassFramework.Domain.Builders.Abstractions.IConcreteTypeBuilder, ClassFramework.Domain.Builders.Abstractions.IConstructorsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IRecordContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IBaseClassContainerBuilder
     {
@@ -368,6 +378,11 @@ namespace ClassFramework.Domain.Builders.Types
             if (baseClass is null) throw new System.ArgumentNullException(nameof(baseClass));
             BaseClass = baseClass;
             return this;
+        }
+
+        public static implicit operator ClassFramework.Domain.Types.Struct(StructBuilder entity)
+        {
+            return entity.BuildTyped();
         }
     }
 }

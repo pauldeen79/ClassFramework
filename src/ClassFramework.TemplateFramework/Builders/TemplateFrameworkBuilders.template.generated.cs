@@ -416,6 +416,11 @@ namespace ClassFramework.TemplateFramework.Builders
             return this;
         }
 
+        public static implicit operator ClassFramework.TemplateFramework.CsharpClassGeneratorSettings(CsharpClassGeneratorSettingsBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));

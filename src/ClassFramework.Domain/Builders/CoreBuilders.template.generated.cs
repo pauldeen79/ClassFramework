@@ -91,6 +91,11 @@ namespace ClassFramework.Domain.Builders
             return this;
         }
 
+        public static implicit operator ClassFramework.Domain.Attribute(AttributeBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -164,6 +169,11 @@ namespace ClassFramework.Domain.Builders
         {
             Value = value;
             return this;
+        }
+
+        public static implicit operator ClassFramework.Domain.AttributeParameter(AttributeParameterBuilder entity)
+        {
+            return entity.Build();
         }
 
         protected void HandlePropertyChanged(string propertyName)
@@ -514,6 +524,11 @@ namespace ClassFramework.Domain.Builders
             return this;
         }
 
+        public static implicit operator ClassFramework.Domain.Constructor(ConstructorBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -657,6 +672,11 @@ namespace ClassFramework.Domain.Builders
             return this;
         }
 
+        public static implicit operator ClassFramework.Domain.Enumeration(EnumerationBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -764,6 +784,11 @@ namespace ClassFramework.Domain.Builders
             if (name is null) throw new System.ArgumentNullException(nameof(name));
             Name = name;
             return this;
+        }
+
+        public static implicit operator ClassFramework.Domain.EnumerationMember(EnumerationMemberBuilder entity)
+        {
+            return entity.Build();
         }
 
         protected void HandlePropertyChanged(string propertyName)
@@ -1237,6 +1262,11 @@ namespace ClassFramework.Domain.Builders
             return this;
         }
 
+        public static implicit operator ClassFramework.Domain.Field(FieldBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -1310,6 +1340,11 @@ namespace ClassFramework.Domain.Builders
         {
             OriginalValue = originalValue;
             return this;
+        }
+
+        public static implicit operator ClassFramework.Domain.Literal(LiteralBuilder entity)
+        {
+            return entity.Build();
         }
 
         protected void HandlePropertyChanged(string propertyName)
@@ -1978,6 +2013,11 @@ namespace ClassFramework.Domain.Builders
             return this;
         }
 
+        public static implicit operator ClassFramework.Domain.Method(MethodBuilder entity)
+        {
+            return entity.Build();
+        }
+
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -2260,6 +2300,11 @@ namespace ClassFramework.Domain.Builders
         {
             DefaultValue = defaultValue;
             return this;
+        }
+
+        public static implicit operator ClassFramework.Domain.Parameter(ParameterBuilder entity)
+        {
+            return entity.Build();
         }
 
         protected void HandlePropertyChanged(string propertyName)
@@ -2932,6 +2977,11 @@ namespace ClassFramework.Domain.Builders
             if (parentTypeFullName is null) throw new System.ArgumentNullException(nameof(parentTypeFullName));
             ParentTypeFullName = parentTypeFullName;
             return this;
+        }
+
+        public static implicit operator ClassFramework.Domain.Property(PropertyBuilder entity)
+        {
+            return entity.Build();
         }
 
         protected void HandlePropertyChanged(string propertyName)
