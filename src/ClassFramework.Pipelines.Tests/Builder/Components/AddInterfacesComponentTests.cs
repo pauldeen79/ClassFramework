@@ -2,7 +2,7 @@
 
 public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components.AddInterfacesComponent>
 {
-    public class Process : AddInterfacesComponentTests
+    public class ProcessAsync : AddInterfacesComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

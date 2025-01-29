@@ -2,7 +2,7 @@
 
 public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components.AbstractEntityComponent>
 {
-    public class Process : AbstractEntityComponentTests
+    public class ProcessAsync : AbstractEntityComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

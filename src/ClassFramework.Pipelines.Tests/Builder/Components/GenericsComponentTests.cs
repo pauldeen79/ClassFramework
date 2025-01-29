@@ -2,7 +2,7 @@
 
 public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.GenericsComponent>
 {
-    public class Process : GenericsComponentTests
+    public class ProcessAsync : GenericsComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

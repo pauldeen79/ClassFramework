@@ -2,7 +2,7 @@
 
 public class ValidationComponentTests : TestBase<Pipelines.Entity.Components.ValidationComponent>
 {
-    public class Process : ValidationComponentTests
+    public class ProcessAsync : ValidationComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

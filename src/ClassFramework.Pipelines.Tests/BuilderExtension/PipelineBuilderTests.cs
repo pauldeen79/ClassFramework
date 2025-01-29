@@ -2,7 +2,7 @@
 
 public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderExtensionContext>>
 {
-    public class Process : PipelineBuilderTests
+    public class ProcessAsync : PipelineBuilderTests
     {
         private static BuilderExtensionContext CreateContext(bool addProperties = true)
             => new(

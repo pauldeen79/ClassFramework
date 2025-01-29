@@ -2,7 +2,7 @@
 
 public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNameComponent>
 {
-    public class Process : SetNameComponentTests
+    public class ProcessAsync : SetNameComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

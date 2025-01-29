@@ -2,7 +2,7 @@
 
 public class ObservableComponentTests : TestBase<Pipelines.Entity.Components.ObservableComponent>
 {
-    public class Process : ObservableComponentTests
+    public class ProcessAsync : ObservableComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

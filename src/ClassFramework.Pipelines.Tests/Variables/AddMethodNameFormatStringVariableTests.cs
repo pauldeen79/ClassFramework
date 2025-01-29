@@ -2,7 +2,7 @@
 
 public class AddMethodNameFormatStringVariableTests : TestBase<AddMethodNameFormatStringVariable>
 {
-    public class Process : AddMethodNameFormatStringVariableTests
+    public class ProcessAsync : AddMethodNameFormatStringVariableTests
     {
         [Fact]
         public void Returns_Continue_On_Wrong_Name()

@@ -2,7 +2,7 @@
 
 public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pipelines.Builder.Components.AddFluentMethodsForCollectionPropertiesComponent>
 {
-    public class Process : AddFluentMethodsForCollectionPropertiesComponentTests
+    public class ProcessAsync : AddFluentMethodsForCollectionPropertiesComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

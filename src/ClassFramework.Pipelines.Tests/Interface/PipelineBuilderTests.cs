@@ -2,7 +2,7 @@
 
 public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceContext>>
 {
-    public class Process : PipelineBuilderTests
+    public class ProcessAsync : PipelineBuilderTests
     {
         private InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, CopyMethodPredicate? copyMethodPredicate = null) => new(
             CreateInterface(addProperties),

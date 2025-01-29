@@ -2,7 +2,7 @@
 
 public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Components.AddFullConstructorComponent>
 {
-    public class Process : AddFullConstructorComponentTests
+    public class ProcessAsync : AddFullConstructorComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

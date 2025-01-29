@@ -2,7 +2,7 @@
 
 public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.BaseClassComponent>
 {
-    public class Process : BaseClassComponentTests
+    public class ProcessAsync : BaseClassComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

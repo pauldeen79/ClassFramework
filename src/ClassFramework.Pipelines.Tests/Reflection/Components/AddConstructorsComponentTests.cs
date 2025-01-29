@@ -2,7 +2,7 @@
 
 public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Components.AddConstructorsComponent>
 {
-    public class Process : AddConstructorsComponentTests
+    public class ProcessAsync : AddConstructorsComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

@@ -2,7 +2,7 @@
 
 public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Components.AddDefaultConstructorComponent>
 {
-    public class Process : AddDefaultConstructorComponentTests
+    public class ProcessAsync : AddDefaultConstructorComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

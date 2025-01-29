@@ -2,7 +2,7 @@
 
 public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Components.AddEquatableMembersComponent>
 {
-    public class Process : AddEquatableMembersComponentTests
+    public class ProcessAsync : AddEquatableMembersComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

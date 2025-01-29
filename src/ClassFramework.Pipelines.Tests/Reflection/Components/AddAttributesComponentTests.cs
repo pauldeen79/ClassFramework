@@ -3,7 +3,7 @@
 public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Components.AddAttributesComponent>
 {
     [ExcludeFromCodeCoverage] // just adding an attribute here, so we can use this class as source model in our tests
-    public class Process : AddAttributesComponentTests
+    public class ProcessAsync : AddAttributesComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

@@ -2,7 +2,7 @@
 
 public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetRecordComponent>
 {
-    public class Process : SetRecordComponentTests
+    public class ProcessAsync : SetRecordComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

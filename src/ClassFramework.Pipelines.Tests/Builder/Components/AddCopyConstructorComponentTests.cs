@@ -2,7 +2,7 @@
 
 public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Components.AddCopyConstructorComponent>
 {
-    public class Process : AddCopyConstructorComponentTests
+    public class ProcessAsync : AddCopyConstructorComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()

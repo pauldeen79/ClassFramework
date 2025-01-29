@@ -35,7 +35,7 @@ public abstract class TestBase : IDisposable
         }
     }
 
-    protected IFormattableStringParser InitializeParser()
+    protected IFormattableStringParser InitializeParser(bool forceError = false)
     {
         var parser = Fixture.Freeze<IFormattableStringParser>();
         var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
@@ -44,7 +44,7 @@ public abstract class TestBase : IDisposable
         // Pass through real IFormattableStringParser implementation, with all placeholder processors and stuff in our ClassFramework.Pipelines project.
         // One exception: If we supply "{Error}" as placeholder, then simply return an error with the error message "Kaboom".
         parser.Parse(Arg.Any<string>(), Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>())
-              .Returns(x => x.ArgAt<string>(0) == "{Error}"
+              .Returns(x => forceError || x.ArgAt<string>(0) == "{Error}"
                 ? Result.Error<GenericFormattableString>("Kaboom")
                 : FormattableStringParser.Parse(x.ArgAt<string>(0), x.ArgAt<FormattableStringParserSettings>(1), x.ArgAt<object?>(2))
                     .Transform(x => x.ErrorMessage == "Unknown placeholder in value: Error"
