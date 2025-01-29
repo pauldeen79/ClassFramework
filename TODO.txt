@@ -7,4 +7,3 @@
   When it returns null, or the setting is null, then use the built-in method
 - Add setting for customizing build statement using a delegate, if you want to. e.g. return new FunctionCallBuilder().WithName(@"ToUpperCase").AddArguments(Expression, CultureInfo).Build();
   Use an optional delegate named EntityInstanciation. When it returns null, or the settings is null, then use the built-in method
-- Add setting: AddImplicitOperatorOnBuilders. If set to true, add an implicit operator, so you can pass builders where you need entities.
