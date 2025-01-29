@@ -60,6 +60,21 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
 
     public string ReturnValueStatementForFluentMethod => $"return {ReturnValue};";
 
+    public string ReturnType
+    {
+        get
+        {
+            if (IsBuilderForAbstractEntity || IsBuilderForOverrideEntity)
+            {
+                return $"{SourceModel.GetFullName()}{SourceModel.GetGenericTypeArgumentsString()}";
+            }
+
+            return Settings.InheritFromInterfaces
+                ? SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{SourceModel.Name}") ?? $"{SourceModel.GetFullName()}{SourceModel.GetGenericTypeArgumentsString()}"
+                : $"{SourceModel.GetFullName()}{SourceModel.GetGenericTypeArgumentsString()}";
+        }
+    }
+
     private string ReturnValue
     {
         get
