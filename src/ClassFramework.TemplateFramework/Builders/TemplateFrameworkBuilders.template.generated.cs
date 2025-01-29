@@ -304,6 +304,11 @@ namespace ClassFramework.TemplateFramework.Builders
             return new ClassFramework.TemplateFramework.CsharpClassGeneratorSettings(RecurseOnDeleteGeneratedFiles, LastGeneratedFilesFilename, Encoding, Path, CultureInfo, GenerateMultipleFiles, SkipWhenFileExists, CreateCodeGenerationHeader, EnvironmentVersion, FilenameSuffix, EnableNullableContext, EnableNullablePragmas, EnableGlobalUsings, CustomUsings, NamespacesToAbbreviate);
         }
 
+        public static implicit operator ClassFramework.TemplateFramework.CsharpClassGeneratorSettings(CsharpClassGeneratorSettingsBuilder entity)
+        {
+            return entity.Build();
+        }
+
         partial void SetDefaultValues();
 
         public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder AddCustomUsings(System.Collections.Generic.IEnumerable<string> customUsings)

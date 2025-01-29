@@ -46,6 +46,11 @@ namespace ClassFramework.Domain.Builders.CodeStatements
             return new ClassFramework.Domain.CodeStatements.StringCodeStatement(Statement);
         }
 
+        public static implicit operator ClassFramework.Domain.CodeStatements.StringCodeStatement(StringCodeStatementBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+
         partial void SetDefaultValues();
 
         public ClassFramework.Domain.Builders.CodeStatements.StringCodeStatementBuilder WithStatement(string statement)

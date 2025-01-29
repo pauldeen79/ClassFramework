@@ -69,6 +69,11 @@ namespace ClassFramework.Domain.Builders
             return new ClassFramework.Domain.Attribute(Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), Name);
         }
 
+        public static implicit operator ClassFramework.Domain.Attribute(AttributeBuilder entity)
+        {
+            return entity.Build();
+        }
+
         partial void SetDefaultValues();
 
         public ClassFramework.Domain.Builders.AttributeBuilder AddParameters(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.AttributeParameterBuilder> parameters)
@@ -149,6 +154,11 @@ namespace ClassFramework.Domain.Builders
         public ClassFramework.Domain.AttributeParameter Build()
         {
             return new ClassFramework.Domain.AttributeParameter(Name, Value);
+        }
+
+        public static implicit operator ClassFramework.Domain.AttributeParameter(AttributeParameterBuilder entity)
+        {
+            return entity.Build();
         }
 
         partial void SetDefaultValues();
@@ -411,6 +421,11 @@ namespace ClassFramework.Domain.Builders
             return new ClassFramework.Domain.Constructor(ChainCall, Static, Virtual, Abstract, Protected, Override, New, Visibility, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), CodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), SuppressWarningCodes);
         }
 
+        public static implicit operator ClassFramework.Domain.Constructor(ConstructorBuilder entity)
+        {
+            return entity.Build();
+        }
+
         partial void SetDefaultValues();
 
         public ClassFramework.Domain.Builders.ConstructorBuilder AddAttributes(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.AttributeBuilder> attributes)
@@ -616,6 +631,11 @@ namespace ClassFramework.Domain.Builders
             return new ClassFramework.Domain.Enumeration(Members.Select(x => x.Build()!).ToList().AsReadOnly(), Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), Name, Visibility);
         }
 
+        public static implicit operator ClassFramework.Domain.Enumeration(EnumerationBuilder entity)
+        {
+            return entity.Build();
+        }
+
         partial void SetDefaultValues();
 
         public ClassFramework.Domain.Builders.EnumerationBuilder AddMembers(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.EnumerationMemberBuilder> members)
@@ -736,6 +756,11 @@ namespace ClassFramework.Domain.Builders
         public ClassFramework.Domain.EnumerationMember Build()
         {
             return new ClassFramework.Domain.EnumerationMember(Value, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), Name);
+        }
+
+        public static implicit operator ClassFramework.Domain.EnumerationMember(EnumerationMemberBuilder entity)
+        {
+            return entity.Build();
         }
 
         partial void SetDefaultValues();
@@ -1110,6 +1135,11 @@ namespace ClassFramework.Domain.Builders
             return new ClassFramework.Domain.Field(ReadOnly, Constant, Event, Static, Virtual, Abstract, Protected, Override, New, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), TypeName, IsNullable, IsValueType, GenericTypeArguments, DefaultValue, ParentTypeFullName);
         }
 
+        public static implicit operator ClassFramework.Domain.Field(FieldBuilder entity)
+        {
+            return entity.Build();
+        }
+
         partial void SetDefaultValues();
 
         public ClassFramework.Domain.Builders.FieldBuilder AddAttributes(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.AttributeBuilder> attributes)
@@ -1295,6 +1325,11 @@ namespace ClassFramework.Domain.Builders
         public ClassFramework.Domain.Literal Build()
         {
             return new ClassFramework.Domain.Literal(Value, OriginalValue);
+        }
+
+        public static implicit operator ClassFramework.Domain.Literal(LiteralBuilder entity)
+        {
+            return entity.Build();
         }
 
         partial void SetDefaultValues();
@@ -1779,6 +1814,11 @@ namespace ClassFramework.Domain.Builders
             return new ClassFramework.Domain.Method(ReturnTypeName, ReturnTypeIsNullable, ReturnTypeIsValueType, ReturnTypeGenericTypeArguments, Partial, ExtensionMethod, Operator, Async, Static, Virtual, Abstract, Protected, Override, New, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), CodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Parameters.Select(x => x.Build()!).ToList().AsReadOnly(), ExplicitInterfaceName, ParentTypeFullName, GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes);
         }
 
+        public static implicit operator ClassFramework.Domain.Method(MethodBuilder entity)
+        {
+            return entity.Build();
+        }
+
         partial void SetDefaultValues();
 
         public ClassFramework.Domain.Builders.MethodBuilder AddReturnTypeGenericTypeArguments(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Abstractions.ITypeContainer> returnTypeGenericTypeArguments)
@@ -2182,6 +2222,11 @@ namespace ClassFramework.Domain.Builders
         public ClassFramework.Domain.Parameter Build()
         {
             return new ClassFramework.Domain.Parameter(IsParamArray, IsOut, IsRef, TypeName, IsNullable, IsValueType, GenericTypeArguments, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), Name, DefaultValue);
+        }
+
+        public static implicit operator ClassFramework.Domain.Parameter(ParameterBuilder entity)
+        {
+            return entity.Build();
         }
 
         partial void SetDefaultValues();
@@ -2741,6 +2786,11 @@ namespace ClassFramework.Domain.Builders
         public ClassFramework.Domain.Property Build()
         {
             return new ClassFramework.Domain.Property(HasGetter, HasSetter, HasInitializer, GetterVisibility, SetterVisibility, InitializerVisibility, GetterCodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), SetterCodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), InitializerCodeStatements.Select(x => x.Build()!).ToList().AsReadOnly(), Static, Virtual, Abstract, Protected, Override, New, Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), TypeName, IsNullable, IsValueType, GenericTypeArguments, DefaultValue, ExplicitInterfaceName, ParentTypeFullName);
+        }
+
+        public static implicit operator ClassFramework.Domain.Property(PropertyBuilder entity)
+        {
+            return entity.Build();
         }
 
         partial void SetDefaultValues();

@@ -25,6 +25,11 @@ namespace ClassFramework.Domain.Builders
 
         public abstract ClassFramework.Domain.CodeStatementBase Build();
 
+        public static implicit operator ClassFramework.Domain.CodeStatementBase(CodeStatementBaseBuilder entity)
+        {
+            return entity.Build();
+        }
+
         partial void SetDefaultValues();
 
         protected void HandlePropertyChanged(string propertyName)
@@ -285,6 +290,11 @@ namespace ClassFramework.Domain.Builders
         }
 
         public abstract ClassFramework.Domain.TypeBase Build();
+
+        public static implicit operator ClassFramework.Domain.TypeBase(TypeBaseBuilder entity)
+        {
+            return entity.Build();
+        }
 
         partial void SetDefaultValues();
 

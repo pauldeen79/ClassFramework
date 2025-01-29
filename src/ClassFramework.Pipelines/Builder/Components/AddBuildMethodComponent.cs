@@ -9,6 +9,12 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
     {
         context = context.IsNotNull(nameof(context));
 
+        var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
+        if (!nameResult.IsSuccessful())
+        {
+            return Task.FromResult((Result)nameResult);
+        }
+
         if (context.Request.Settings.EnableBuilderInheritance && context.Request.Settings.IsAbstract)
         {
             if (context.Request.Settings.IsForAbstractBuilder)
@@ -31,6 +37,18 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                     .WithAbstract()
                     .WithReturnTypeName("TEntity"));
             }
+
+            var genericArguments = GetGenericArgumentsForInheritance(context);
+
+            context.Request.Builder.AddMethods(new MethodBuilder()
+                .WithOperator()
+                .WithStatic()
+                .WithName(context.Request.ReturnType)
+                .WithReturnTypeName("implicit")
+                .AddParameter("entity", $"{nameResult.Value}{genericArguments}")
+                .AddStringCodeStatements(!context.Request.Settings.IsForAbstractBuilder
+                    ? "return entity.BuildTyped();"
+                    : "return entity.Build();"));
 
             return Task.FromResult(Result.Success());
         }
@@ -65,7 +83,33 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                 .AddStringCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
         }
 
+        var genericArgumentsFlat = context.Request.SourceModel.GenericTypeArguments.Count > 0
+            ? "<" + string.Join(", ", context.Request.SourceModel.GenericTypeArguments) + ">"
+            : string.Empty;
+
+        context.Request.Builder.AddMethods(new MethodBuilder()
+            .WithOperator()
+            .WithStatic()
+            .WithName(context.Request.ReturnType)
+            .WithReturnTypeName("implicit")
+            .AddParameter("entity", $"{nameResult.Value}{genericArgumentsFlat}")
+            .AddStringCodeStatements($"return entity.{GetName(context)}();"));
+
         return Task.FromResult(Result.Success());
+    }
+
+    private static string GetGenericArgumentsForInheritance(PipelineContext<BuilderContext> context)
+    {
+        if (context.Request.Settings.IsForAbstractBuilder)
+        {
+            // This is the non-generic abstract builder
+            return string.Empty;
+        }
+
+        // This is the generic abstract builder
+        return context.Request.SourceModel.GenericTypeArguments.Count > 0
+            ? "<TBuilder, TEntity, " + string.Join(", ", context.Request.SourceModel.GenericTypeArguments) + ">"
+            : "<TBuilder, TEntity>";
     }
 
     private static string GetName(PipelineContext<BuilderContext> context)
