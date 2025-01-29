@@ -109,6 +109,22 @@ public class PipelineSettingsBuilderTests
             result.Parameters.Select(x => x.Value).Should().BeEquivalentTo([1, 10]);
         }
 
+        [Fact]
+        public void Can_Use_Builder_As_Entity_Using_Implicit_Operator()
+        {
+            // Arrange
+            var settings = new PipelineSettingsBuilder().WithNameFormatString("test");
+
+            // Act
+            var result = MyMethod(settings); // method expects an entity, but we're giving a builder!
+
+            // Assert
+            result.Should().Be("test");
+        }
+
+        private static string MyMethod(PipelineSettings settings)
+            => settings.NameFormatString;
+
         private sealed class StringLengthClass
         {
             [StringLength(10, MinimumLength = 10)]
