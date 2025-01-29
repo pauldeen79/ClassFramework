@@ -49,6 +49,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddDefaultConstructorComponent>()
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddFluentMethodsForCollectionPropertiesComponent>()
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddFluentMethodsForNonCollectionPropertiesComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddImplicitOperatorComponent>()
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddInterfacesComponent>()
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddPropertiesComponent>()
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.BaseClassComponent>()

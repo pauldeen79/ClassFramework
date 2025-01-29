@@ -67,6 +67,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool AddFullConstructor => true;
     protected virtual bool AddPublicParameterlessConstructor => false;
     protected virtual bool AddCopyConstructor => true;
+    protected virtual bool AddImplicitOperatorOnBuilder => false;
     protected virtual bool SetDefaultValues => true;
     protected virtual string FilenameSuffix => ".template.generated";
     protected virtual bool CreateCodeGenerationHeader => true;
@@ -488,6 +489,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithEnableBuilderInheritance(EnableBuilderInhericance)
                 .WithBaseClassBuilderNameSpace(BaseClassBuilderNamespace)
                 .WithAddCopyConstructor(AddCopyConstructor)
+                .WithAddImplicitOperatorOnBuilder(AddImplicitOperatorOnBuilder)
                 .WithSetDefaultValuesInEntityConstructor(SetDefaultValues)
                 .Build())
             ));

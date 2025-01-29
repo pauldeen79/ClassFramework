@@ -1,5 +1,4 @@
-﻿
-namespace ClassFramework.Pipelines.Builder.Components;
+﻿namespace ClassFramework.Pipelines.Builder.Components;
 
 public class AddInterfacesComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
 {

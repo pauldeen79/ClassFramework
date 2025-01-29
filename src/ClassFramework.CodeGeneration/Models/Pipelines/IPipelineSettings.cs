@@ -5,6 +5,7 @@ internal interface IPipelineSettings
     bool AddBackingFields { get; }
     bool AddCopyConstructor { get; }
     bool AddFullConstructor { get; }
+    bool AddImplicitOperatorOnBuilder { get; }
     [Required(AllowEmptyStrings = true)] string AddMethodNameFormatString { get; }
     bool AddNullChecks { get; }
     bool AddPublicParameterlessConstructor { get; }

@@ -8,6 +8,11 @@ public class AddImplicitOperatorComponent(IFormattableStringParser formattableSt
     {
         context = context.IsNotNull(nameof(context));
 
+        if (!context.Request.Settings.AddImplicitOperatorOnBuilder)
+        {
+            return Task.FromResult(Result.Success());
+        }
+
         var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
         if (!nameResult.IsSuccessful())
         {
