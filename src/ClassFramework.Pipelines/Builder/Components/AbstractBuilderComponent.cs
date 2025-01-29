@@ -8,7 +8,7 @@ public class AbstractBuilderComponent(IFormattableStringParser formattableString
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Request.IsBuilderForAbstractEntity /*&& context.Request.IsAbstractBuilder*/)
+        if (context.Request.IsBuilderForAbstractEntity)
         {
             var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
             if (!nameResult.IsSuccessful())

@@ -17,7 +17,6 @@ public class ClassVariable : IVariable
             $"class.{nameof(Class.Name)}" => GetValueFromClass(context, x => x.Name.WithoutTypeGenerics()),
             $"class.{nameof(Class.Namespace)}" => GetValueFromClass(context, x => x.Namespace),
             "class.FullName" => GetValueFromClass(context, x => x.FullName.WithoutTypeGenerics()),
-            "class.GenericTypeArguments" => GetValueFromClass(context, x => x.GenericArguments),
             _ => Result.Continue<object?>()
         };
 
