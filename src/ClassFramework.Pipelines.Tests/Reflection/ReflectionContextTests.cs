@@ -8,7 +8,7 @@ public class ReflectionContextTests : TestBase
         public void Throws_On_Null_SourceModel()
         {
             // Act & Assert
-            this.Invoking(_ => new ReflectionContext(sourceModel: null!, new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture))
+            this.Invoking(_ => new ReflectionContext(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture))
                 .Should().Throw<ArgumentNullException>().WithParameterName("sourceModel");
         }
 
@@ -24,7 +24,7 @@ public class ReflectionContextTests : TestBase
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            this.Invoking(_ => new ReflectionContext(sourceModel: GetType(), new PipelineSettingsBuilder().Build(), formatProvider: null!))
+            this.Invoking(_ => new ReflectionContext(sourceModel: GetType(), new PipelineSettingsBuilder(), formatProvider: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
         }
     }
@@ -36,7 +36,7 @@ public class ReflectionContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false);
-            var sut = new BuilderContext(CreateClass(), settings.Build(), CultureInfo.InvariantCulture);
+            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
             sut.Invoking(x => x.MapTypeName(typeName: null!))
@@ -52,7 +52,7 @@ public class ReflectionContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForReflection();
-            var sut = new ReflectionContext(GetType(), settings.Build(), CultureInfo.InvariantCulture);
+            var sut = new ReflectionContext(GetType(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
             sut.Invoking(x => x.MapAttribute(attribute: null!))

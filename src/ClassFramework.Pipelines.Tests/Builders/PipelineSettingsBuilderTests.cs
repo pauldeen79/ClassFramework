@@ -8,7 +8,7 @@ public class PipelineSettingsBuilderTests
         public void Supports_StringLengthAttribute()
         {
             // Arrange
-            var sut = new PipelineSettingsBuilder().Build();
+            var sut = new PipelineSettingsBuilder();
 
             // Act
             var result = new TestContext(sut).InitializeDelegate(typeof(StringLengthClass).GetProperty(nameof(StringLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
@@ -23,7 +23,7 @@ public class PipelineSettingsBuilderTests
         public void Supports_RangeAttribute()
         {
             // Arrange
-            var sut = new PipelineSettingsBuilder().Build();
+            var sut = new PipelineSettingsBuilder();
 
             // Act
             var result = new TestContext(sut).InitializeDelegate(typeof(RangeClass).GetProperty(nameof(RangeClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
@@ -38,7 +38,7 @@ public class PipelineSettingsBuilderTests
         public void Supports_MinLengthAttribute()
         {
             // Arrange
-            var sut = new PipelineSettingsBuilder().Build();
+            var sut = new PipelineSettingsBuilder();
 
             // Act
             var result = new TestContext(sut).InitializeDelegate(typeof(MinLengthClass).GetProperty(nameof(MinLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
@@ -53,7 +53,7 @@ public class PipelineSettingsBuilderTests
         public void Supports_MaxLengthAttribute()
         {
             // Arrange
-            var sut = new PipelineSettingsBuilder().Build();
+            var sut = new PipelineSettingsBuilder();
 
             // Act
             var result = new TestContext(sut).InitializeDelegate(typeof(MaxLengthClass).GetProperty(nameof(MaxLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
@@ -68,7 +68,7 @@ public class PipelineSettingsBuilderTests
         public void Supports_MinCountAttribute()
         {
             // Arrange
-            var sut = new PipelineSettingsBuilder().Build();
+            var sut = new PipelineSettingsBuilder();
 
             // Act
             var result = new TestContext(sut).InitializeDelegate(typeof(MinCountClass).GetProperty(nameof(MinCountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
@@ -83,7 +83,7 @@ public class PipelineSettingsBuilderTests
         public void Supports_MaxCountAttribute()
         {
             // Arrange
-            var sut = new PipelineSettingsBuilder().Build();
+            var sut = new PipelineSettingsBuilder();
 
             // Act
             var result = new TestContext(sut).InitializeDelegate(typeof(MaxCountClass).GetProperty(nameof(MaxCountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
@@ -98,7 +98,7 @@ public class PipelineSettingsBuilderTests
         public void Supports_CountAttribute()
         {
             // Arrange
-            var sut = new PipelineSettingsBuilder().Build();
+            var sut = new PipelineSettingsBuilder();
 
             // Act
             var result = new TestContext(sut).InitializeDelegate(typeof(CountClass).GetProperty(nameof(CountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());

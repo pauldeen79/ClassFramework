@@ -19,7 +19,11 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
         public async Task Adds_GenericTypeArguments()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddGenericTypeArguments("T").Build();
+            var sourceModel = new ClassBuilder()
+                .WithName("SomeClass")
+                .WithNamespace("SomeNamespace")
+                .AddGenericTypeArguments("T")
+                .Build();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, settings);
@@ -36,7 +40,12 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
         public async Task Adds_GenericTypeArgumentConstraints()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddGenericTypeArguments("T").AddGenericTypeArgumentConstraints("where T : class").Build();
+            var sourceModel = new ClassBuilder()
+                .WithName("SomeClass")
+                .WithNamespace("SomeNamespace")
+                .AddGenericTypeArguments("T")
+                .AddGenericTypeArgumentConstraints("where T : class")
+                .Build();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, settings);
@@ -50,6 +59,6 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

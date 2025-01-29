@@ -319,7 +319,10 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         public async Task Processes_TypeMapping_Correctly_SingleProperty()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("Filter").WithTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable")).BuildTyped();
+            var sourceModel = new ClassBuilder()
+                .WithName("MyClass")
+                .AddProperties(new PropertyBuilder().WithName("Filter").WithTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable"))
+                .BuildTyped();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder().AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
@@ -340,7 +343,10 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         public async Task Processes_TypeMapping_Correctly_CollectionProperty()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("MyClass").AddProperties(new PropertyBuilder().WithName("GroupByFields").WithTypeName(typeof(IReadOnlyCollection<string>).ReplaceGenericTypeName("ExpressionFramework.Domain.Expression"))).BuildTyped();
+            var sourceModel = new ClassBuilder()
+                .WithName("MyClass")
+                .AddProperties(new PropertyBuilder().WithName("GroupByFields").WithTypeName(typeof(IReadOnlyCollection<string>).ReplaceGenericTypeName("ExpressionFramework.Domain.Expression")))
+                .BuildTyped();
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder().AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
@@ -358,6 +364,6 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

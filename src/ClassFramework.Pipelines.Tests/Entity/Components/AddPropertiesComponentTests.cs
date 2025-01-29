@@ -22,7 +22,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -39,7 +39,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClassWithCustomTypeProperties();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(namespaceMappings: [new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyMappedNamespace")]);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -68,7 +68,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addSetters: addSetters);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -89,7 +89,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addSetters: true, setterVisibility: setterVisibility);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -117,7 +117,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
                 ).BuildTyped();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyAttributes: true, copyAttributePredicate: a => a.Name.EndsWith('2'));
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -134,7 +134,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -151,7 +151,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -168,7 +168,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -185,7 +185,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -202,7 +202,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -230,7 +230,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true, createAsObservable: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -264,7 +264,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -286,7 +286,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true, addNullChecks: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);

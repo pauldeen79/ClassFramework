@@ -23,7 +23,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -41,7 +41,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "CustomClassName");
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -59,7 +59,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -77,7 +77,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "CustomNamespace");
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -95,7 +95,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "{Error}");
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -113,7 +113,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "{Error}");
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);

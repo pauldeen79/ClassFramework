@@ -14,7 +14,7 @@ public class PipelineServiceTests : TestBase<PipelineService>
             pipeline.ProcessAsync(Arg.Any<BuilderContext>(), Arg.Any<CancellationToken>()).Returns(x => Result.Success());
             var sut = CreateSut();
             var sourceModel = CreateClass();
-            var settings = CreateSettingsForBuilder().Build();
+            var settings = CreateSettingsForBuilder();
             var context = new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture);
 
             // Act
@@ -32,7 +32,7 @@ public class PipelineServiceTests : TestBase<PipelineService>
             pipeline.ProcessAsync(Arg.Any<BuilderContext>(), Arg.Any<CancellationToken>()).Returns(x => Result.Error("Kaboom!"));
             var sut = CreateSut();
             var sourceModel = CreateClass();
-            var settings = CreateSettingsForBuilder().Build();
+            var settings = CreateSettingsForBuilder();
             var context = new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture);
 
             // Act
@@ -56,7 +56,7 @@ public class PipelineServiceTests : TestBase<PipelineService>
             });
             var sut = CreateSut();
             var sourceModel = CreateClass();
-            var settings = CreateSettingsForBuilder().Build();
+            var settings = CreateSettingsForBuilder();
             var context = new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture);
 
             // Act

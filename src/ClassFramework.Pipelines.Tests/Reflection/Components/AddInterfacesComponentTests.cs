@@ -22,7 +22,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection(copyInterfaces: false);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -39,7 +39,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection(copyInterfaces: true);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -56,7 +56,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection(copyInterfaces: false, copyInterfacePredicate: _ => false);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);

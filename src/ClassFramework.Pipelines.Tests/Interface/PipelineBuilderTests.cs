@@ -195,6 +195,6 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
         }
 
         private static InterfaceContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
-            => new(model, settings.Build(), CultureInfo.InvariantCulture);
+            => new(model, settings, CultureInfo.InvariantCulture);
     }
 }

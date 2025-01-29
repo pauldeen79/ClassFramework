@@ -25,8 +25,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithEnableGlobalUsings(EnableGlobalUsings)
             .WithFilenameSuffix(FilenameSuffix)
             .WithEnvironmentVersion(EnvironmentVersion)
-            .WithSkipWhenFileExists(SkipWhenFileExists)
-            .Build();
+            .WithSkipWhenFileExists(SkipWhenFileExists);
 
     protected abstract string ProjectName { get; }
     protected abstract Type EntityCollectionType { get; }
@@ -272,8 +271,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                .AddNamespaceMappings(CreateNamespaceMappings())
                .WithValidateArguments(ValidateArgumentsInConstructor)
                .WithAddNullChecks(AddNullChecks)
-               .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
-               .Build();
+               .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull);
 
             return await PipelineService.ProcessAsync(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo)).ConfigureAwait(false);
         }).ConfigureAwait(false);
@@ -293,8 +291,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .AddTypenameMappings(CreateTypenameMappings())
             .AddAttributeInitializers(x => x is CsharpTypeNameAttribute csharpTypeNameAttribute
                 ? new AttributeBuilder().WithName(csharpTypeNameAttribute.GetType()).AddParameters(new AttributeParameterBuilder().WithValue(csharpTypeNameAttribute.TypeName)).Build()
-                : null)
-            .Build();
+                : null);
 
     protected IEnumerable<NamespaceMappingBuilder> CreateNamespaceMappings()
     {

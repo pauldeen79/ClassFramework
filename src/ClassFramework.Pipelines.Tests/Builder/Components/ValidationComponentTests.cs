@@ -66,6 +66,6 @@ public class ValidationComponentTests : TestBase<Pipelines.Builder.Components.Va
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

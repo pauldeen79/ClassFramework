@@ -19,7 +19,11 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
         public async Task Adds_Interfaces_When_CopyInterfaces_Setting_Is_True()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").Build();
+            var sourceModel = new ClassBuilder()
+                .WithName("SomeClass")
+                .WithNamespace("SomeNamespace")
+                .AddInterfaces("IMyInterface")
+                .Build();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyInterfaces: true);
             var context = CreateContext(sourceModel, settings);
@@ -59,7 +63,11 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
         public async Task Does_Not_Add_Interfaces_When_CopyInterfaces_Setting_Is_False()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").Build();
+            var sourceModel = new ClassBuilder()
+                .WithName("SomeClass")
+                .WithNamespace("SomeNamespace")
+                .AddInterfaces("IMyInterface")
+                .Build();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyInterfaces: false);
             var context = CreateContext(sourceModel, settings);
@@ -73,6 +81,6 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

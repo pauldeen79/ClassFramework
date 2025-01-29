@@ -10,7 +10,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
-            var context = new PropertyContext(sut, new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
+            var context = new PropertyContext(sut, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
 
             // Act
             var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
@@ -69,7 +69,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
                 .Build();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
             csharpExpressionDumper.Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder();
             var context = new PropertyContext(sut, settings, CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
 
             // Act
@@ -90,7 +90,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
                 .Build();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
             csharpExpressionDumper.Dump(Arg.Any<IStringLiteral>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<IStringLiteral>(0).Value); // note that we mock the behavior of the real csharp expression dumper here :)
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder();
             var context = new PropertyContext(sut, settings, CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
 
             // Act
@@ -178,7 +178,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder();
 
             // Act & Assert
             sut.Invoking(x => x.GetBuilderMemberName(settings, cultureInfo: null!))
@@ -205,7 +205,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var context = new TestContext(settings, formatProvider);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
@@ -220,7 +220,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var context = new TestContext(settings, formatProvider);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
@@ -235,7 +235,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var context = new TestContext(settings, formatProvider);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
@@ -250,7 +250,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var context = new TestContext(settings, formatProvider);
 
@@ -264,7 +264,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var context = new TestContext(settings, formatProvider);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();

@@ -166,6 +166,6 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }
