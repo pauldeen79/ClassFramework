@@ -22,8 +22,11 @@ public class AddInterfacesComponent(IFormattableStringParser formattableStringPa
 
                 if (!string.IsNullOrEmpty(ns))
                 {
-                    var property = new PropertyBuilder().WithName("Dummy").WithTypeName(x).Build();
-                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "{NoGenerics(ClassName($property.TypeName))}Builder");
+                    var property = new PropertyBuilder()
+                        .WithName("Dummy")
+                        .WithTypeName(x)
+                        .Build();
+                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
                     var newFullName = $"{ns}.{newTypeName}";
 
                     return _formattableStringParser.Parse

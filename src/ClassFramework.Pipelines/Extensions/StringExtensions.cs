@@ -30,7 +30,7 @@ public static class StringExtensions
             return $"{MapTypeUsingAlternateTypeMetadata(typeName, settings, newCollectionTypeName, alternateTypeMetadataName)}{suffix}";
         }
 
-        var genericArguments = typeName.FixTypeName().GetProcessedGenericArguments();
+        var genericArguments = typeName.FixTypeName().GetGenericArguments();
         if (!string.IsNullOrEmpty(genericArguments))
         {
             return $"{MapTypeUsingGenerics(typeName, settings, newCollectionTypeName, alternateTypeMetadataName, genericArguments)}{suffix}";
@@ -122,7 +122,7 @@ public static class StringExtensions
     private static string MapTypeUsingAlternateTypeMetadata(string typeName, PipelineSettings settings, string newCollectionTypeName, string alternateTypeMetadataName)
     {
         var typenameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName()
-            ? typeName.GetProcessedGenericArguments()
+            ? typeName.GetGenericArguments()
             : typeName));
         if (typenameMapping is not null)
         {

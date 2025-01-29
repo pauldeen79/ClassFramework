@@ -11,7 +11,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
-            sut.Invoking(x => x.IsMemberValidForBuilderClass(parentTypeContainer: null!, CreateSettingsForBuilder().Build()))
+            sut.Invoking(x => x.IsMemberValidForBuilderClass(parentTypeContainer: null!, CreateSettingsForBuilder()))
                .Should().Throw<ArgumentNullException>().WithParameterName("parentTypeContainer");
         }
 
@@ -149,7 +149,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             // Arrange
             var sut = new InterfaceBuilder().WithName("MyClass").Build();
             var settings = CreateSettingsForBuilder();
-            var context = new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture);
+            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
             sut.Invoking(x => x.GetBuilderConstructorProperties(context))
@@ -171,7 +171,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 )
                 .Build();
             var settings = CreateSettingsForBuilder();
-            var context = new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture);
+            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(context);
@@ -194,7 +194,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 .AddConstructors(new ConstructorBuilder().WithVisibility(Visibility.Private)) // only private constructor present :)
                 .Build();
             var settings = CreateSettingsForBuilder();
-            var context = new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture);
+            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(context);
@@ -218,7 +218,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(int))).BuildTyped(),
                 enableEntityInheritance: true
             );
-            var context = new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture);
+            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(context);
@@ -245,7 +245,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: null,
                 enableEntityInheritance: true
             );
-            var context = new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture);
+            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(context);
@@ -272,7 +272,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: null,
                 enableEntityInheritance: true
             );
-            var context = new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture);
+            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(context);
@@ -302,7 +302,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
             var settings = CreateSettingsForBuilder();
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
 
             // Act & Assert
             sut.Invoking(x => x.GetBuilderClassFields(context, formattableStringParser: null!).ToArray())
@@ -327,7 +327,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: null,
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act
@@ -355,7 +355,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act
@@ -384,7 +384,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act
@@ -423,7 +423,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                         .AddMetadata(MetadataNames.CustomBuilderArgumentType, "MyCustomType")
                 ]
             );
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act

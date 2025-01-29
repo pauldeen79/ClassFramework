@@ -2,7 +2,7 @@
 
 public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pipelines.Builder.Components.AddFluentMethodsForCollectionPropertiesComponent>
 {
-    public class Process : AddFluentMethodsForCollectionPropertiesComponentTests
+    public class ProcessAsync : AddFluentMethodsForCollectionPropertiesComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()
@@ -309,6 +309,6 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

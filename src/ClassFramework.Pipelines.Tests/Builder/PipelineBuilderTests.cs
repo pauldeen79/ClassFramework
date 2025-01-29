@@ -2,7 +2,7 @@
 
 public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderContext>>
 {
-    public class Process : PipelineBuilderTests
+    public class ProcessAsync : PipelineBuilderTests
     {
         private static BuilderContext CreateContext(bool addProperties = true, bool createAsObservable = false)
             => new(
@@ -13,7 +13,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderContext
                     allowGenerationWithoutProperties: false,
                     copyAttributes: true,
                     createAsObservable: createAsObservable
-                ).Build(),
+                ),
                 CultureInfo.InvariantCulture
             );
 
@@ -323,6 +323,6 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderContext
         }
 
         private static BuilderContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
-            => new(model, settings.Build(), CultureInfo.InvariantCulture);
+            => new(model, settings, CultureInfo.InvariantCulture);
     }
 }

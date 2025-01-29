@@ -2,7 +2,7 @@
 
 public class PipelineBuilderTests : IntegrationTestBase<IPipeline<EntityContext>>
 {
-    public class Process : PipelineBuilderTests
+    public class ProcessAsync : PipelineBuilderTests
     {
         private static EntityContext CreateContext(bool addProperties = true) => new(
             CreateGenericClass(addProperties),
@@ -410,6 +410,6 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<EntityContext>
         }
 
         private static EntityContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
-            => new(model, settings.Build(), CultureInfo.InvariantCulture);
+            => new(model, settings, CultureInfo.InvariantCulture);
     }
 }

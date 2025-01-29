@@ -51,7 +51,7 @@ public static class TypeExtensions
         if (typeName.IsCollectionTypeName())
         {
             // for now, we will ignore nullability of the generic argument on generic lists
-            return typeName.ReplaceGenericTypeName(typeName.GetProcessedGenericArguments());
+            return typeName.ReplaceGenericTypeName(typeName.GetGenericArguments());
         }
 
         var builder = new StringBuilder();
@@ -89,7 +89,7 @@ public static class TypeExtensions
         return builder.ToString();
     }
 
-    public static string GetFullName(this IType type) => $"{type.Namespace.GetNamespacePrefix()}{type.Name}";
+    public static string GetFullName(this IType type) => $"{type.Namespace.GetNamespacePrefix()}{type.Name}"; //{type.GetGenericTypeArgumentsString()}
 
     public static IEnumerable<string> GetGenericTypeArgumentTypeNames(this Type instance)
         => ((TypeInfo)instance).GenericTypeParameters.Select(x => x.Name);

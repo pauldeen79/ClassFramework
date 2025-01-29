@@ -6,7 +6,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     public void Can_Get_PropertyName_From_PropertyContext()
     {
         // Arrange
-        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
         var resolver = Fixture.Freeze<IObjectResolver>();
         resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
         resolver.Resolve<PipelineSettings>(Arg.Any<object?>()).Returns(Result.Success(context.Settings));
@@ -27,7 +27,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     public void Can_Get_PropertyName_From_ParentChildContext_Of_BuilderContext()
     {
         // Arrange
-        var settings = new PipelineSettingsBuilder().Build();
+        var settings = new PipelineSettingsBuilder();
         var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(new ClassBuilder().WithName("MyClass").Build(), settings, CultureInfo.InvariantCulture)), CreateProperty(), settings);
         var resolver = Fixture.Freeze<IObjectResolver>();
         resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.ChildContext));
@@ -49,7 +49,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     public void Can_Get_PropertyName_From_ParentChildContext_Of_BuilderExtensionContext()
     {
         // Arrange
-        var settings = new PipelineSettingsBuilder().Build();
+        var settings = new PipelineSettingsBuilder();
         var context = new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(new PipelineContext<BuilderExtensionContext>(new BuilderExtensionContext(new ClassBuilder().WithName("MyClass").Build(), settings, CultureInfo.InvariantCulture)), CreateProperty(), settings);
         var resolver = Fixture.Freeze<IObjectResolver>();
         resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.ChildContext));
@@ -71,7 +71,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     public void Can_Get_BuilderMemberName_From_PropertyContext()
     {
         // Arrange
-        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
         var resolver = Fixture.Freeze<IObjectResolver>();
         resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
         resolver.Resolve<PipelineSettings>(Arg.Any<object?>()).Returns(Result.Success(context.Settings));
@@ -92,7 +92,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     public void Can_Get_EntityMemberName_From_PropertyContext()
     {
         // Arrange
-        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
         var resolver = Fixture.Freeze<IObjectResolver>();
         resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
         resolver.Resolve<PipelineSettings>(Arg.Any<object?>()).Returns(Result.Success(context.Settings));
@@ -113,7 +113,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     public void Can_Get_NullableRequiredSuffix_From_PropertyContext()
     {
         // Arrange
-        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
         var resolver = Fixture.Freeze<IObjectResolver>();
         resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
         resolver.Resolve<PipelineSettings>(Arg.Any<object?>()).Returns(Result.Success(context.Settings));
@@ -134,7 +134,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     public void Can_Get_PropertyTypeName_From_PropertyContext()
     {
         // Arrange
-        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
         var resolver = Fixture.Freeze<IObjectResolver>();
         resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
         resolver.Resolve<PipelineSettings>(Arg.Any<object?>()).Returns(Result.Success(context.Settings));
@@ -155,7 +155,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     public void Can_Get_ParentTypeFullName_From_PropertyContext()
     {
         // Arrange
-        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
         var resolver = Fixture.Freeze<IObjectResolver>();
         resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
         resolver.Resolve<PipelineSettings>(Arg.Any<object?>()).Returns(Result.Success(context.Settings));
@@ -192,7 +192,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
     public void Supplying_Unknown_Property_Name_Gives_Continue_Result()
     {
         // Arrange
-        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+        var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
         var resolver = Fixture.Freeze<IObjectResolver>();
         resolver.Resolve<Property>(Arg.Any<object?>()).Returns(Result.Success(context.SourceModel));
         resolver.Resolve<PipelineSettings>(Arg.Any<object?>()).Returns(Result.Success(context.Settings));

@@ -2,7 +2,7 @@
 
 public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.AddGenericsComponent>
 {
-    public class Process : AddGenericsComponentTests
+    public class ProcessAsync : AddGenericsComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()
@@ -22,7 +22,7 @@ public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.Ad
             var sourceModel = CreateGenericClass(addProperties: false);
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);

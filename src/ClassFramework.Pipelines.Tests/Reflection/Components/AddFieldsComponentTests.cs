@@ -2,7 +2,7 @@
 
 public class AddFieldsComponentTests : TestBase<Pipelines.Reflection.Components.AddFieldsComponent>
 {
-    public class Process : AddFieldsComponentTests
+    public class ProcessAsync : AddFieldsComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()
@@ -22,7 +22,7 @@ public class AddFieldsComponentTests : TestBase<Pipelines.Reflection.Components.
             var sut = CreateSut();
             var sourceModel = typeof(MyFieldTestClass);
             var settings = CreateSettingsForReflection(copyAttributes: true);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);

@@ -2,7 +2,7 @@
 
 public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetRecordComponent>
 {
-    public class Process : SetRecordComponentTests
+    public class ProcessAsync : SetRecordComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()
@@ -25,7 +25,7 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetR
             InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(createRecord: createRecordSettingValue);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);

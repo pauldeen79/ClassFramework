@@ -9,7 +9,7 @@ public class IntegrationTests : IntegrationTestBase<IFormattableStringParser>
         var formatString = "foreach (var item in {CsharpFriendlyName(ToCamelCase($property.Name))}) {$property.Name}.Add(item);";
         var sut = CreateSut();
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
-        var pipelineSettings = new PipelineSettingsBuilder().Build();
+        var pipelineSettings = new PipelineSettingsBuilder();
         var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutGenerics());
 
         // Act
@@ -27,7 +27,7 @@ public class IntegrationTests : IntegrationTestBase<IFormattableStringParser>
         var formatString = "foreach (var item in {ToCamelCase($property.Name)}) {$property.Name}.Add(item);";
         var sut = CreateSut();
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
-        var pipelineSettings = new PipelineSettingsBuilder().Build();
+        var pipelineSettings = new PipelineSettingsBuilder();
         var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutGenerics());
 
         // Act

@@ -2,7 +2,7 @@
 
 public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.BaseClassComponent>
 {
-    public class Process : BaseClassComponentTests
+    public class ProcessAsync : BaseClassComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()
@@ -166,6 +166,6 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

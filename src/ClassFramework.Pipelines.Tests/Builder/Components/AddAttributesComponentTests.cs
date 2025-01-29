@@ -2,7 +2,7 @@
 
 public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components.AddAttributesComponent>
 {
-    public class Process : AddAttributesComponentTests
+    public class ProcessAsync : AddAttributesComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()
@@ -59,7 +59,11 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
         public async Task Does_Not_Add_Attributes_When_CopyAttributes_Setting_Is_False()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build();
+            var sourceModel = new ClassBuilder()
+                .WithName("SomeClass")
+                .WithNamespace("SomeNamespace")
+                .AddAttributes(new AttributeBuilder().WithName("MyAttribute"))
+                .Build();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyAttributes: false);
             var context = CreateContext(sourceModel, settings);
@@ -73,6 +77,6 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

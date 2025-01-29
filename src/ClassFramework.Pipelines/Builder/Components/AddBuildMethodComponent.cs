@@ -9,10 +9,6 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
     {
         context = context.IsNotNull(nameof(context));
 
-        var returnType = context.Request.Settings.InheritFromInterfaces
-            ? context.Request.SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{context.Request.SourceModel.Name}") ?? context.Request.SourceModel.GetFullName()
-            : context.Request.SourceModel.GetFullName();
-
         if (context.Request.Settings.EnableBuilderInheritance && context.Request.Settings.IsAbstract)
         {
             if (context.Request.Settings.IsForAbstractBuilder)
@@ -20,14 +16,14 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                 context.Request.Builder.AddMethods(new MethodBuilder()
                     .WithName("Build")
                     .WithAbstract()
-                    .WithReturnTypeName(returnType));
+                    .WithReturnTypeName(context.Request.ReturnType));
             }
             else
             {
                 context.Request.Builder.AddMethods(new MethodBuilder()
                     .WithName("Build")
                     .WithOverride()
-                    .WithReturnTypeName(returnType)
+                    .WithReturnTypeName(context.Request.ReturnType)
                     .AddStringCodeStatements("return BuildTyped();"));
 
                 context.Request.Builder.AddMethods(new MethodBuilder()
@@ -49,7 +45,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
             .WithName(GetName(context))
             .WithAbstract(context.Request.IsBuilderForAbstractEntity)
             .WithOverride(context.Request.IsBuilderForOverrideEntity)
-            .WithReturnTypeName($"{GetBuilderBuildMethodReturnType(context.Request, context.Request.IsBuilderForAbstractEntity || context.Request.IsBuilderForOverrideEntity ? context.Request.SourceModel.GetFullName() : returnType)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+            .WithReturnTypeName($"{GetBuilderBuildMethodReturnType(context.Request, context.Request.ReturnType)}")
             .AddStringCodeStatements(context.Request.CreatePragmaWarningDisableStatementsForBuildMethod())
             .AddStringCodeStatements
             (

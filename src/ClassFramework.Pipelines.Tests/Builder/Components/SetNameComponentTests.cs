@@ -2,7 +2,7 @@
 
 public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNameComponent>
 {
-    public class Process : SetNameComponentTests
+    public class ProcessAsync : SetNameComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()
@@ -88,6 +88,6 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

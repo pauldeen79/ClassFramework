@@ -38,7 +38,7 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
         public void Returns_Success_On_PropertyContext()
         {
             // Arrange
-            var sourceObject = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
+            var sourceObject = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
             var sut = CreateSut();
 
             // Act
@@ -53,7 +53,7 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
         public void Can_Map_TypeName_On_PropertyContext()
         {
             // Arrange
-            var sourceObject = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
+            var sourceObject = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty);
             var sut = CreateSut();
             var result = sut.Resolve<ITypeNameMapper>(sourceObject);
 
@@ -68,7 +68,7 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
         public void Returns_Success_On_ParentChildContext_Of_BuilderContext()
         {
             // Arrange
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder();
             var sourceObject = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(new ClassBuilder().WithName("MyClass").Build(), settings, CultureInfo.InvariantCulture)), CreateProperty(), settings);
             var sut = CreateSut();
 
@@ -84,7 +84,7 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
         public void Can_Map_TypeName_On_ParentChildContext_Of_BuilderContext()
         {
             // Arrange
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder();
             var sourceObject = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(new ClassBuilder().WithName("MyClass").Build(), settings, CultureInfo.InvariantCulture)), CreateProperty(), settings);
             var sut = CreateSut();
             var result = sut.Resolve<ITypeNameMapper>(sourceObject);
@@ -100,7 +100,7 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
         public void Returns_Success_On_ParentChildContext_Of_BuilderExtensionContext()
         {
             // Arrange
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder();
             var sourceObject = new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(new PipelineContext<BuilderExtensionContext>(new BuilderExtensionContext(new ClassBuilder().WithName("MyClass").Build(), settings, CultureInfo.InvariantCulture)), CreateProperty(), settings);
             var sut = CreateSut();
 
@@ -116,7 +116,7 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
         public void Can_Map_TypeName_On_ParentChildContext_Of_BuilderExtensionContext()
         {
             // Arrange
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder();
             var sourceObject = new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(new PipelineContext<BuilderExtensionContext>(new BuilderExtensionContext(new ClassBuilder().WithName("MyClass").Build(), settings, CultureInfo.InvariantCulture)), CreateProperty(), settings);
             var sut = CreateSut();
             var result = sut.Resolve<ITypeNameMapper>(sourceObject);

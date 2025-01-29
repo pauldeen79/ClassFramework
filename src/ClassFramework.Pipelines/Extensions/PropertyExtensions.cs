@@ -158,7 +158,7 @@ public static class PropertyExtensions
                 var idx = property.TypeName.IndexOf('<');
                 if (idx > -1)
                 {
-                    if (!string.IsNullOrEmpty(property.TypeName.FixTypeName().GetCollectionItemType().GetProcessedGenericArguments()))
+                    if (!string.IsNullOrEmpty(property.TypeName.FixTypeName().GetCollectionItemType().GetGenericArguments()))
                     {
                         newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}").Replace("{NoGenerics(ClassName($property.TypeName))}", "{NoGenerics(ClassName(GenericArguments($property.TypeName)))}").Replace("{GenericArguments($property.TypeName, true)}", "{GenericArguments(CollectionItemType($property.TypeName), true)}")}>";
                     }

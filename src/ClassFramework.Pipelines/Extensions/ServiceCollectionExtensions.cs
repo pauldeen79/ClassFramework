@@ -49,6 +49,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddDefaultConstructorComponent>()
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddFluentMethodsForCollectionPropertiesComponent>()
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddFluentMethodsForNonCollectionPropertiesComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddImplicitOperatorComponent>()
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddInterfacesComponent>()
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddPropertiesComponent>()
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.BaseClassComponent>()
@@ -110,6 +111,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddInterfacesComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddMethodsComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddPropertiesComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.GenericsComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.PartialComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.SetNameComponent>();
 

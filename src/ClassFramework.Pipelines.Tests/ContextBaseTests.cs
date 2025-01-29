@@ -10,7 +10,7 @@ public class ContextBaseTests : TestBase
         public void Throws_On_Null_TypeName()
         {
             // Act & Assert
-            CreateSut(new PipelineSettingsBuilder().Build())
+            CreateSut(new PipelineSettingsBuilder())
                 .Invoking(x => x.GetMappingMetadata(typeName: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("typeName");
         }
@@ -22,7 +22,7 @@ public class ContextBaseTests : TestBase
             var typeName = "MyNamespace.MyClass";
 
             // Act
-            var result = CreateSut(new PipelineSettingsBuilder().Build()).GetMappingMetadata(typeName);
+            var result = CreateSut(new PipelineSettingsBuilder()).GetMappingMetadata(typeName);
 
             // Assert
             result.Should().BeEmpty();

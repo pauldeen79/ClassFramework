@@ -2,9 +2,9 @@
 
 public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderExtensionContext>>
 {
-    public class Process : PipelineBuilderTests
+    public class ProcessAsync : PipelineBuilderTests
     {
-        private BuilderExtensionContext CreateContext(bool addProperties = true)
+        private static BuilderExtensionContext CreateContext(bool addProperties = true)
             => new(
                 CreateGenericClass(addProperties),
                 CreateSettingsForBuilder
@@ -12,7 +12,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderExtensi
                     builderNamespaceFormatString: "{$class.Namespace}.Builders",
                     allowGenerationWithoutProperties: false,
                     copyAttributes: true
-                ).Build(),
+                ),
                 CultureInfo.InvariantCulture
             );
 

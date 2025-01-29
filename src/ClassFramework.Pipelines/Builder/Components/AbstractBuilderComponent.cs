@@ -8,7 +8,7 @@ public class AbstractBuilderComponent(IFormattableStringParser formattableString
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Request.IsBuilderForAbstractEntity /*&& context.Request.IsAbstractBuilder*/)
+        if (context.Request.IsBuilderForAbstractEntity)
         {
             var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
             if (!nameResult.IsSuccessful())
@@ -20,10 +20,15 @@ public class AbstractBuilderComponent(IFormattableStringParser formattableString
 
             if (!context.Request.Settings.IsForAbstractBuilder)
             {
+                var generics = context.Request.SourceModel.GetGenericTypeArgumentsString();
+                var genericsSuffix = string.IsNullOrEmpty(generics)
+                    ? string.Empty
+                    : $", {context.Request.SourceModel.GetGenericTypeArgumentsString(false)}";
+
                 context.Request.Builder
                     .AddGenericTypeArguments("TBuilder", "TEntity")
-                    .AddGenericTypeArgumentConstraints($"where TEntity : {context.Request.SourceModel.GetFullName()}")
-                    .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity>")
+                    .AddGenericTypeArgumentConstraints($"where TEntity : {context.Request.SourceModel.GetFullName()}{generics}")
+                    .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity{genericsSuffix}>")
                     .WithAbstract();
             }
         }

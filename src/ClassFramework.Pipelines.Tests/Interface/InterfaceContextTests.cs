@@ -8,7 +8,7 @@ public class InterfaceContextTests : TestBase
         public void Throws_On_Null_SourceModel()
         {
             // Act & Assert
-            this.Invoking(_ => new InterfaceContext(sourceModel: null!, new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture))
+            this.Invoking(_ => new InterfaceContext(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture))
                 .Should().Throw<ArgumentNullException>().WithParameterName("sourceModel");
         }
 
@@ -24,7 +24,7 @@ public class InterfaceContextTests : TestBase
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            this.Invoking(_ => new InterfaceContext(sourceModel: CreateClass(), new PipelineSettingsBuilder().Build(), formatProvider: null!))
+            this.Invoking(_ => new InterfaceContext(sourceModel: CreateClass(), new PipelineSettingsBuilder(), formatProvider: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
         }
     }

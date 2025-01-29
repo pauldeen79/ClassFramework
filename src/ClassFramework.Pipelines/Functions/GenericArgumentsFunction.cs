@@ -22,6 +22,6 @@ public class GenericArgumentsFunction : IFunction
                 addBrackets = addBracketsValue;
             }
 
-            return Result.Success<object?>(s.GetProcessedGenericArguments(addBrackets));
+            return Result.Success<object?>(s.GetGenericArguments(addBrackets));
         });
 }

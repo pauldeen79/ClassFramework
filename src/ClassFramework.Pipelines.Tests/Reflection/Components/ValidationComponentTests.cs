@@ -2,7 +2,7 @@
 
 public class ValidationComponentTests : TestBase<Pipelines.Reflection.Components.ValidationComponent>
 {
-    public class Process : ValidationComponentTests
+    public class ProcessAsync : ValidationComponentTests
     {
         [Fact]
         public void Throws_On_Null_Context()
@@ -22,7 +22,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Reflection.Components
             var sourceModel = typeof(MyClass);
             var sut = CreateSut();
             var settings = CreateSettingsForReflection();
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -38,7 +38,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Reflection.Components
             var sourceModel = typeof(MyClass);
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(allowGenerationWithoutProperties: true);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = await sut.ProcessAsync(context);
