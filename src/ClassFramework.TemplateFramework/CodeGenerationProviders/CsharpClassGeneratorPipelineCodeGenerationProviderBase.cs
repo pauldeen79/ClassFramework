@@ -223,8 +223,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(abstractType);
 
         var modelsResult = await GetType().Assembly.GetTypes()
-            //.Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y.WithoutGenerics() == abstractType.WithoutGenerics()))
-            .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y == abstractType))
+            .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y.WithoutGenerics() == abstractType.WithoutGenerics()))
             .SelectAsync(GetModel)
             .ConfigureAwait(false);
 
@@ -378,7 +377,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     {
         Guard.IsNotNull(type);
 
-        return type.IsInterface && type.Namespace == $"{CodeGenerationRootNamespace}.Models" && type.Name.EndsWith("Base");
+        return type.IsInterface
+            && type.Namespace == $"{CodeGenerationRootNamespace}.Models"
+            && type.Name.WithoutTypeGenerics().EndsWith("Base");
     }
 
     protected virtual bool SkipNamespaceOnTypenameMappings(string @namespace) => false;

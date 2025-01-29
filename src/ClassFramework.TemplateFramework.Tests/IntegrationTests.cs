@@ -1717,7 +1717,7 @@ namespace ClassFramework.TemplateFramework
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1748,6 +1748,36 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public abstract partial class AbstractBaseBuilder<TBuilder, TEntity, T> : AbstractBaseBuilder<T>
+        where TEntity : Test.Domain.AbstractBase<T>
+        where TBuilder : AbstractBaseBuilder<TBuilder, TEntity, T>
+    {
+        protected AbstractBaseBuilder(Test.Domain.AbstractBase<T> source) : base(source)
+        {
+        }
+
+        protected AbstractBaseBuilder() : base()
+        {
+        }
+
+        public override Test.Domain.AbstractBase<T> Build()
+        {
+            return BuildTyped();
+        }
+
+        public abstract TEntity BuildTyped();
+    }
+#nullable restore
+}
+");
     }
 
     [Fact]
@@ -1764,7 +1794,7 @@ namespace Test.Domain.Builders
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1790,6 +1820,25 @@ namespace Test.Domain
 #nullable restore
 }
 ");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public abstract partial class AbstractBase<T>
+    {
+        protected AbstractBase()
+        {
+        }
+
+        public abstract Test.Domain.Builders.AbstractBaseBuilder<T> ToBuilder();
+    }
+#nullable restore
+}
+");
     }
 
     [Fact]
@@ -1806,7 +1855,7 @@ namespace Test.Domain
 
         // Assert
         result.Status.Should().Be(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1847,6 +1896,39 @@ namespace Test.Domain.Builders
         }
 
         public abstract Test.Domain.AbstractBase Build();
+
+        partial void SetDefaultValues();
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public abstract partial class AbstractBaseBuilder<T> : System.ComponentModel.INotifyPropertyChanged
+    {
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        protected AbstractBaseBuilder(Test.Domain.AbstractBase<T> source)
+        {
+        }
+
+        protected AbstractBaseBuilder()
+        {
+            SetDefaultValues();
+        }
+
+        public abstract Test.Domain.AbstractBase<T> Build();
 
         partial void SetDefaultValues();
 
@@ -1938,7 +2020,7 @@ using System.Text;
 namespace Test.Domain.Builders.Types
 {
 #nullable enable
-    public partial class MyGenericOverrideBuilder<T> : AbstractBaseBuilder<MyGenericOverrideBuilder<T>, Test.Domain.Types.MyGenericOverride<T>>
+    public partial class MyGenericOverrideBuilder<T> : AbstractBaseBuilder<MyGenericOverrideBuilder<T>, Test.Domain.Types.MyGenericOverride<T>>, Test.Abstractions.Builders.IAbstractBase<T>Builder
     {
         private T _myOverrideProperty;
 
@@ -1970,7 +2052,7 @@ namespace Test.Domain.Builders.Types
 
         public override Test.Domain.Types.MyGenericOverride<T> BuildTyped()
         {
-            return new Test.Domain.Types.MyGenericOverride<T>(MyOverrideProperty, MyBaseProperty);
+            return new Test.Domain.Types.MyGenericOverride<T>(MyOverrideProperty);
         }
 
         partial void SetDefaultValues();
@@ -2043,14 +2125,14 @@ using System.Text;
 namespace Test.Domain.Types
 {
 #nullable enable
-    public partial class MyGenericOverride<T> : Test.Domain.AbstractBase
+    public partial class MyGenericOverride<T> : Test.Domain.AbstractBase, Test.Domain.AbstractBase<T>
     {
         public T MyOverrideProperty
         {
             get;
         }
 
-        public MyGenericOverride(T myOverrideProperty, string myBaseProperty) : base(myBaseProperty)
+        public MyGenericOverride(T myOverrideProperty) : base(myBaseProperty)
         {
             this.MyOverrideProperty = myOverrideProperty;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);

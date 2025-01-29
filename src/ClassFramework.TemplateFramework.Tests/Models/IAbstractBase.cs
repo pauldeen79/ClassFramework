@@ -4,3 +4,7 @@ internal interface IAbstractBase
 {
     string MyBaseProperty { get; }
 }
+
+internal interface IAbstractBase<T>
+{
+}
