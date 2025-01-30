@@ -16,7 +16,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
@@ -37,7 +37,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
@@ -59,11 +59,11 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.Error<object?>("Kaboom"));
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
@@ -86,11 +86,11 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(x => x.ArgAt<FunctionCall>(0).Name == "Success" ? Result.Success<object?>("Success") : Result.Error<object?>("Kaboom"));
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
@@ -112,11 +112,11 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>(12345));
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
@@ -138,11 +138,11 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>(null));
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
@@ -165,14 +165,14 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>("Kaboom"));
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             parser
                 .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>("string"));
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
@@ -194,11 +194,11 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>("MyGenericType<System.String>"));
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
@@ -221,14 +221,14 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>("MyGenericType<System.String>"));
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             parser
                 .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>(false));
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
@@ -251,14 +251,14 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             object? context = default;
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>("MyGenericType<System.String>"));
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             parser
                 .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>(true));
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
