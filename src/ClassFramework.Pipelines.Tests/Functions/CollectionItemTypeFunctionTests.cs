@@ -15,11 +15,11 @@ public class CollectionItemTypeFunctionTests : TestBase<CollectionItemTypeFuncti
         object? context = default;
         var evaluator = Fixture.Freeze<IFunctionEvaluator>();
         evaluator
-            .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+            .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
             .Returns(Result.Success<object?>("System.Collections.Generic.IEnumerable<MyClass>"));
         var parser = Fixture.Freeze<IExpressionEvaluator>();
         var sut = CreateSut();
-        var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+        var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
         // Act
         var result = sut.Evaluate(functionCallContext);

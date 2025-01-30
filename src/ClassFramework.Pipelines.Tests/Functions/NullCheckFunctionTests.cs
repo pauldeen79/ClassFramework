@@ -16,7 +16,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
@@ -38,7 +38,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
@@ -60,7 +60,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
@@ -82,7 +82,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             var evaluator = Fixture.Freeze<IFunctionEvaluator>();
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, CultureInfo.InvariantCulture, context);
+            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
 
             // Act
             var result = sut.Evaluate(functionCallContext);
