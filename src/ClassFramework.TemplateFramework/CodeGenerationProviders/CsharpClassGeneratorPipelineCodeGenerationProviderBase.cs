@@ -375,19 +375,20 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 new[]
                 {
                     new TypenameMappingBuilder()
-                    .WithSourceType(x)
-                    .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
-                    .AddMetadata
-                    (
-                        new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderNamespace),
-                        new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder").WithName(MetadataNames.CustomBuilderName),
-                        new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderInterfaceNamespace),
-                        new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder").WithName(MetadataNames.CustomBuilderInterfaceName),
-                        new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
-                        new MetadataBuilder().WithValue(new Literal($"default({CoreNamespace}.Builders.Abstractions.{{NoGenerics(ClassName($property.TypeName))}}Builder{{GenericArguments(ClassName($property.TypeName), true)}})", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
-                        new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression),
-                        new MetadataBuilder().WithName(MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
-                    ),
+                        .WithSourceType(x)
+                        //.WithSourceTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
+                        .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
+                        .AddMetadata
+                        (
+                            new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderNamespace),
+                            new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder").WithName(MetadataNames.CustomBuilderName),
+                            new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderInterfaceNamespace),
+                            new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder").WithName(MetadataNames.CustomBuilderInterfaceName),
+                            new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
+                            new MetadataBuilder().WithValue(new Literal($"default({CoreNamespace}.Builders.Abstractions.{{NoGenerics(ClassName($property.TypeName))}}Builder{{GenericArguments(ClassName($property.TypeName), true)}})", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
+                            new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression),
+                            new MetadataBuilder().WithName(MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
+                        ),
                     //Temporary fix for flaw in abstractions typename mapping
                     new TypenameMappingBuilder()
                         .WithSourceTypeName($"{CoreNamespace}.Abstractions.{x.GetEntityClassName()}")
