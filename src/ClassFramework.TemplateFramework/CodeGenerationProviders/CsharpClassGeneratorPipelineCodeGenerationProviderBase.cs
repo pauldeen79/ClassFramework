@@ -373,8 +373,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 && !SkipNamespaceOnTypenameMappings(x.Namespace)
                 && x.FullName is not null).Select(x =>
                     new TypenameMappingBuilder()
-                        .WithSourceType(x)
-                        //.WithSourceTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
+                        //.WithSourceType(x)
+                        .WithSourceTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
                         .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
                         .AddMetadata
                         (
