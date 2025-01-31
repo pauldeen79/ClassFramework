@@ -229,8 +229,6 @@ namespace Test.Domain.Builders.Abstractions
             get;
             set;
         }
-
-        Test.Domain.Abstractions.IMyAbstraction Build();
     }
 #nullable restore
 }

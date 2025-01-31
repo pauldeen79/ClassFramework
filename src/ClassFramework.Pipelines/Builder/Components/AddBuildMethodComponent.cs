@@ -35,12 +35,6 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
             return Task.FromResult(Result.Success());
         }
 
-        if (string.IsNullOrEmpty(GetName(context)))
-        {
-            // When using overlapping abstractions, you need to set the BuildMethodName to string.Empty to skip creation of the Build method on builder interfaces.
-            return Task.FromResult(Result.Success());
-        }
-
         var instanciationResult = context.CreateEntityInstanciation(_formattableStringParser, _csharpExpressionDumper, string.Empty);
         if (!instanciationResult.IsSuccessful())
         {

@@ -8,6 +8,4 @@ public class AbstractionsBuildersInterfaces(IPipelineService pipelineService) : 
     public override string Path => "ClassFramework.Domain/Builders/Abstractions";
     
     protected override bool EnableEntityInheritance => true;
-    //protected override string BuildMethodName => string.Empty; // can't create Build method because interfaces are used on multiple builders (multiple inheritance)
-    protected override string BuildTypedMethodName => string.Empty; // can't create Build method because interfaces are used on multiple builders (multiple inheritance)
 }
