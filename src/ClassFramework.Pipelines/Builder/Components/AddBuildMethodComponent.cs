@@ -45,7 +45,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
             .WithName(GetName(context))
             .WithAbstract(context.Request.IsBuilderForAbstractEntity)
             .WithOverride(context.Request.IsBuilderForOverrideEntity)
-            .WithReturnTypeName($"{GetBuilderBuildMethodReturnType(context.Request, context.Request.ReturnType)}")
+            .WithReturnTypeName($"{GetBuilderBuildMethodReturnType(context.Request, context.Request.MapTypeName(context.Request.ReturnType))}") // temporary fix for return type problem in generation of builder abstraction interfaces
             .AddStringCodeStatements(context.Request.CreatePragmaWarningDisableStatementsForBuildMethod())
             .AddStringCodeStatements
             (
