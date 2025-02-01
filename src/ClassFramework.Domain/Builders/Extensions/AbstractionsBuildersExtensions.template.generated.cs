@@ -257,14 +257,14 @@ namespace ClassFramework.Domain.Builders.Extensions
     }
     public static partial class SubClassesContainerBuilderExtensions
     {
-        public static T AddSubClasses<T>(this T instance, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.ITypeBuilder> subClasses)
+        public static T AddSubClasses<T>(this T instance, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.TypeBaseBuilder> subClasses)
             where T : ClassFramework.Domain.Builders.Abstractions.ISubClassesContainerBuilder
         {
             if (subClasses is null) throw new System.ArgumentNullException(nameof(subClasses));
             return instance.AddSubClasses<T>(subClasses.ToArray());
         }
 
-        public static T AddSubClasses<T>(this T instance, params ClassFramework.Domain.Builders.ITypeBuilder[] subClasses)
+        public static T AddSubClasses<T>(this T instance, params ClassFramework.Domain.Builders.TypeBaseBuilder[] subClasses)
             where T : ClassFramework.Domain.Builders.Abstractions.ISubClassesContainerBuilder
         {
             if (subClasses is null) throw new System.ArgumentNullException(nameof(subClasses));
@@ -368,14 +368,14 @@ namespace ClassFramework.Domain.Builders.Extensions
     }
     public static partial class TypeContainerBuilderExtensions
     {
-        public static T AddGenericTypeArguments<T>(this T instance, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder> genericTypeArguments)
+        public static T AddGenericTypeArguments<T>(this T instance, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Abstractions.ITypeContainer> genericTypeArguments)
             where T : ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder
         {
             if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
             return instance.AddGenericTypeArguments<T>(genericTypeArguments.ToArray());
         }
 
-        public static T AddGenericTypeArguments<T>(this T instance, params ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder[] genericTypeArguments)
+        public static T AddGenericTypeArguments<T>(this T instance, params ClassFramework.Domain.Abstractions.ITypeContainer[] genericTypeArguments)
             where T : ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder
         {
             if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
