@@ -66,12 +66,12 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
         {
             if (IsBuilderForAbstractEntity || IsBuilderForOverrideEntity)
             {
-                return $"{SourceModel.GetFullName()}{SourceModel.GetGenericTypeArgumentsString()}";
+                return MapTypeName($"{SourceModel.GetFullName()}{SourceModel.GetGenericTypeArgumentsString()}", string.Empty);
             }
 
             return Settings.InheritFromInterfaces
-                ? SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{SourceModel.Name}") ?? $"{SourceModel.GetFullName()}{SourceModel.GetGenericTypeArgumentsString()}"
-                : $"{SourceModel.GetFullName()}{SourceModel.GetGenericTypeArgumentsString()}";
+                ? MapTypeName(SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{SourceModel.Name}") ?? $"{SourceModel.GetFullName()}{SourceModel.GetGenericTypeArgumentsString()}", string.Empty)
+                : MapTypeName($"{SourceModel.GetFullName()}{SourceModel.GetGenericTypeArgumentsString()}", string.Empty);
         }
     }
 

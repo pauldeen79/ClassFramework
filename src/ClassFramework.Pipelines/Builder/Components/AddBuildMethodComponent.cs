@@ -16,14 +16,14 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                 context.Request.Builder.AddMethods(new MethodBuilder()
                     .WithName("Build")
                     .WithAbstract()
-                    .WithReturnTypeName(context.Request.MapTypeName(context.Request.ReturnType))); // temporary fix for return type problem in generation of builder abstraction interfaces
+                    .WithReturnTypeName(context.Request.ReturnType));
             }
             else
             {
                 context.Request.Builder.AddMethods(new MethodBuilder()
                     .WithName("Build")
                     .WithOverride()
-                    .WithReturnTypeName(context.Request.MapTypeName(context.Request.ReturnType)) // temporary fix for return type problem in generation of builder abstraction interfaces
+                    .WithReturnTypeName(context.Request.ReturnType)
                     .AddStringCodeStatements("return BuildTyped();"));
 
                 context.Request.Builder.AddMethods(new MethodBuilder()
@@ -45,7 +45,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
             .WithName(GetName(context))
             .WithAbstract(context.Request.IsBuilderForAbstractEntity)
             .WithOverride(context.Request.IsBuilderForOverrideEntity)
-            .WithReturnTypeName($"{GetBuilderBuildMethodReturnType(context.Request, context.Request.MapTypeName(context.Request.ReturnType))}") // temporary fix for return type problem in generation of builder abstraction interfaces
+            .WithReturnTypeName($"{GetBuilderBuildMethodReturnType(context.Request, context.Request.ReturnType)}")
             .AddStringCodeStatements(context.Request.CreatePragmaWarningDisableStatementsForBuildMethod())
             .AddStringCodeStatements
             (
