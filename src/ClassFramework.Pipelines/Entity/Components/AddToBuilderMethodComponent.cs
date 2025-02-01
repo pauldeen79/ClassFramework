@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Results;
-
-namespace ClassFramework.Pipelines.Entity.Components;
+﻿namespace ClassFramework.Pipelines.Entity.Components;
 
 public class AddToBuilderMethodComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<EntityContext>
 {
@@ -151,6 +149,8 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
             .WithReturnTypeName(x.Value!.BuilderName)
             .WithExplicitInterfaceName(x.Value!.EntityName)
             .AddStringCodeStatements($"return {methodName}();")));
+
+        //context.Request.Builder.AddInterfaces(results.Select(x => typeof(IBuildableEntity<object>).ReplaceGenericTypeName(x.Value!.EntityName)));
 
         return Result.Success();
     }
