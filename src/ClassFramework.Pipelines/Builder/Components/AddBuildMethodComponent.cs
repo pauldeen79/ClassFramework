@@ -88,7 +88,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                 /// Like: IVisibilityContainer IVisibilityContainerBuilder.Build() => Build();
                 context.Request.Builder.AddMethods(new MethodBuilder()
                     .WithName(context.Request.Settings.BuildMethodName)
-                    .WithReturnTypeName(typeName.Replace(".Builders", string.Empty).Replace("Builder", string.Empty)) //kinda fishy... we assume builders are in a Builders namespace, and the builder class name ends with Builder
+                    .WithReturnTypeName(context.Request.MapTypeName(typeName, MetadataNames.CustomEntityInterfaceTypeName))
                     .WithExplicitInterfaceName(typeName)
                     .AddStringCodeStatements($"return {context.Request.Settings.BuildMethodName}();"));
             }
