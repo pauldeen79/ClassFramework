@@ -113,6 +113,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
 
         var results = context.Request.SourceModel.Interfaces
             .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+            .Where(x => x.GetNamespaceWithDefault().EndsWith(".Abstractions"))
             .Select(x =>
             {
                 var metadata = context.Request.GetMappingMetadata(x);

@@ -81,7 +81,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
 
         var results = context.Request.SourceModel.Interfaces
             .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-            .Where(x => x.GetNamespaceWithDefault().EndsWith(".Builders.Abstractions"))
+            .Where(x => x.GetNamespaceWithDefault().EndsWith(".Abstractions"))
             .Select(x =>
             {
                 var metadata = context.Request.GetMappingMetadata(x);
@@ -101,9 +101,9 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                         newFullName,
                         context.Request.FormatProvider,
                         new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
-                    ).Transform(y => new { BuilderName = x, EntityName = y.ToString() });
+                    ).Transform(y => new { EntityName = x, BuilderName = y.ToString() });
                 }
-                return Result.Success(new { BuilderName = x, EntityName = context.Request.MapTypeName(x.FixTypeName()) });
+                return Result.Success(new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) });
             })
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
