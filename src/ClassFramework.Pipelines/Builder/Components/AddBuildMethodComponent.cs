@@ -16,14 +16,14 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                 context.Request.Builder.AddMethods(new MethodBuilder()
                     .WithName("Build")
                     .WithAbstract()
-                    .WithReturnTypeName(context.Request.ReturnType));
+                    .WithReturnTypeName(context.Request.MapTypeName(context.Request.ReturnType))); // temporary fix for return type problem in generation of builder abstraction interfaces
             }
             else
             {
                 context.Request.Builder.AddMethods(new MethodBuilder()
                     .WithName("Build")
                     .WithOverride()
-                    .WithReturnTypeName(context.Request.ReturnType)
+                    .WithReturnTypeName(context.Request.MapTypeName(context.Request.ReturnType)) // temporary fix for return type problem in generation of builder abstraction interfaces
                     .AddStringCodeStatements("return BuildTyped();"));
 
                 context.Request.Builder.AddMethods(new MethodBuilder()

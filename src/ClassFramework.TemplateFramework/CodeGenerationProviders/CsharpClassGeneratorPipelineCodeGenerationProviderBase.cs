@@ -116,7 +116,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return await ProcessModelsResult(modelsResultTask, async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
+        return await ProcessModelsResult(modelsResultTask, async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => (InheritFromInterfaces || t.Namespace == $"{CoreNamespace}.Abstractions") && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetBuilders(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
@@ -172,7 +172,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return await ProcessModelsResult
         (
             GetBuilders(modelsResultTask, buildersNamespace, entitiesNamespace),
-            async x => await CreateInterface(Result.Success(x.ToBuilder().Chain(y => { var itemsToDelete = y.GenericTypeArguments.Where(z => z == "TEntity" || z == "TBuilder").ToList(); itemsToDelete.ForEach(z => y.GenericTypeArguments.Remove(z)); y.GenericTypeArgumentConstraints.Clear(); }).Build()), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false),
+            async x => await CreateInterface(Result.Success(x.ToBuilder().Chain(y => { var itemsToDelete = y.GenericTypeArguments.Where(z => z == "TEntity" || z == "TBuilder").ToList(); itemsToDelete.ForEach(z => y.GenericTypeArguments.Remove(z)); y.GenericTypeArgumentConstraints.Clear(); }).Build()), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => (InheritFromInterfaces || t.Namespace == $"{CoreNamespace}.Builders.Abstractions") && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false),
             "builder interfaces"
         ).ConfigureAwait(false);
     }
@@ -371,7 +371,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 && x.IsInterface
                 && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions"
                 && !SkipNamespaceOnTypenameMappings(x.Namespace)
-                && x.FullName is not null).Select(x =>
+                && x.FullName is not null).SelectMany(x =>
+                new[]
+                {
                     new TypenameMappingBuilder()
                         //.WithSourceType(x)
                         .WithSourceTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
@@ -386,8 +388,16 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                             new MetadataBuilder().WithValue(new Literal($"default({CoreNamespace}.Builders.Abstractions.{{NoGenerics(ClassName($property.TypeName))}}Builder{{GenericArguments(ClassName($property.TypeName), true)}})", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
                             new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression),
                             new MetadataBuilder().WithName(MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
-                        )
-                ))
+                        ),
+                    //Temporary fix for flaw in abstractions typename mapping
+                    new TypenameMappingBuilder()
+                        .WithSourceTypeName($"{CoreNamespace}.Abstractions.{x.GetEntityClassName()}")
+                        .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}"),
+                    new TypenameMappingBuilder()
+                        .WithSourceTypeName($"{CoreNamespace}.{x.GetEntityClassName()}Base")
+                        .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
+
+                }))
             .Concat(CreateAdditionalTypenameMappings());
 
     protected virtual IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()

@@ -36,7 +36,7 @@ public static class StringExtensions
             return $"{MapTypeUsingGenerics(typeName, settings, newCollectionTypeName, alternateTypeMetadataName, genericArguments)}{suffix}";
         }
 
-        var typeNameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
+        var typeNameMapping = settings.TypenameMappings.LastOrDefault(x => x.SourceTypeName == typeName);
         if (typeNameMapping is not null)
         {
             // i.e. TSource => TTarget

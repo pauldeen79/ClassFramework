@@ -26,7 +26,7 @@ public class AddImplicitOperatorComponent(IFormattableStringParser formattableSt
             context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithOperator()
                 .WithStatic()
-                .WithName(context.Request.ReturnType)
+                .WithName(context.Request.MapTypeName(context.Request.ReturnType)) // temporary fix for return type problem in generation of builder abstraction interfaces
                 .WithReturnTypeName("implicit")
                 .AddParameter("entity", $"{nameResult.Value}{genericArguments}")
                 .AddStringCodeStatements(!context.Request.Settings.IsForAbstractBuilder
@@ -43,7 +43,7 @@ public class AddImplicitOperatorComponent(IFormattableStringParser formattableSt
         context.Request.Builder.AddMethods(new MethodBuilder()
             .WithOperator()
             .WithStatic()
-            .WithName(context.Request.ReturnType)
+            .WithName(context.Request.MapTypeName(context.Request.ReturnType)) // temporary fix for return type problem in generation of builder abstraction interfaces
             .WithReturnTypeName("implicit")
             .AddParameter("entity", $"{nameResult.Value}{genericArgumentsFlat}")
             .AddStringCodeStatements($"return entity.{GetName(context)}();"));
