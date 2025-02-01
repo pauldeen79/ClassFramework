@@ -393,9 +393,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                     new TypenameMappingBuilder()
                         .WithSourceTypeName($"{CoreNamespace}.Abstractions.{x.GetEntityClassName()}")
                         .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}"),
-                    new TypenameMappingBuilder()
-                        .WithSourceTypeName($"{CoreNamespace}.{x.GetEntityClassName()}Base")
-                        .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
+                    //new TypenameMappingBuilder()
+                    //    .WithSourceTypeName($"{CoreNamespace}.{x.GetEntityClassName()}Base")
+                    //    .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
 
                 }))
             .Concat(CreateAdditionalTypenameMappings());
