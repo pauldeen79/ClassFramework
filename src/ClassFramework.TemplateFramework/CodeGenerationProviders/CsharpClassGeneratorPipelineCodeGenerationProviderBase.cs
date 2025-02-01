@@ -376,7 +376,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 new[]
                 {
                     new TypenameMappingBuilder()
-                        //.WithSourceType(x)
                         .WithSourceTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
                         .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
                         .AddMetadata
@@ -399,9 +398,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                         .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}"),
                     new TypenameMappingBuilder()
                         .WithSourceTypeName($"{CoreNamespace}.Builders.{x.GetEntityClassName()}Builder")
-                        .WithTargetTypeName($"{CoreNamespace}.Builders.{x.GetEntityClassName()}BaseBuilder")
-                        //.WithTargetTypeName($"{CoreNamespace}.Builders.Abstractions.I{x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}Builder")
-
+                        .WithTargetTypeName(IsAbstractType(x)
+                            ? $"{CoreNamespace}.Builders.{x.GetEntityClassName()}BaseBuilder"
+                            : $"{CoreNamespace}.Builders.Abstractions.I{x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}Builder")
                 }))
             .Concat(CreateAdditionalTypenameMappings());
 
