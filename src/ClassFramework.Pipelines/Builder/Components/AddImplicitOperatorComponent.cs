@@ -13,6 +13,12 @@ public class AddImplicitOperatorComponent(IFormattableStringParser formattableSt
             return Task.FromResult(Result.Success());
         }
 
+        if (context.Request.ReturnType.GetNamespaceWithDefault().EndsWithAny(".Contracts", ".Abstractions"))
+        {
+            // Implicit operators are not supported on interfaces (until maybe some future version of C#)
+            return Task.FromResult(Result.Success());
+        }
+
         var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
         if (!nameResult.IsSuccessful())
         {
