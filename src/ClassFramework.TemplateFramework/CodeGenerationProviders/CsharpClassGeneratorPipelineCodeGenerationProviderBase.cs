@@ -381,7 +381,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                             new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderNamespace),
                             new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder").WithName(MetadataNames.CustomBuilderName),
                             new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderInterfaceNamespace),
-                            new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder").WithName(MetadataNames.CustomBuilderInterfaceName),
+                            new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments(ClassName($property.TypeName), true)}").WithName(MetadataNames.CustomBuilderInterfaceName),
                             new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
                             new MetadataBuilder().WithValue(new Literal($"default({CoreNamespace}.Builders.Abstractions.{{NoGenerics(ClassName($property.TypeName))}}Builder{{GenericArguments(ClassName($property.TypeName), true)}})", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
                             new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression),
