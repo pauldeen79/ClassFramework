@@ -42,6 +42,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableInheritFromInterfacesCoreEntities>()
             .AddScoped<ImmutableInheritFromInterfacesAbstractionsInterfaces>()
             .AddScoped<ImmutableInheritFromInterfacesAbstractionsBuilderInterfaces>()
+            .AddScoped<ImmutableUseBuilderAbstractionsTypeConversionAbstractionsInterfaces>()
+            .AddScoped<ImmutableUseBuilderAbstractionsTypeConversionAbstractionsBuilderInterfaces>()
             .AddScoped<ImmutableNoToBuilderMethodCoreEntities>()
             .AddScoped<MappedTypeBuilders>()
             .AddScoped<MappedTypeEntities>()
@@ -1157,7 +1159,7 @@ namespace Test.Abstractions
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_BuilderInterface_InheritFromInterfaces()
+    public async Task Can_Generate_Code_For_Builder_Interface_InheritFromInterfaces()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -1216,6 +1218,131 @@ namespace Test.Abstractions
         }
 
         Test.Abstractions.ILiteral Build();
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_Entity_Interface_UseBuilderAbstractionsTypeConversion()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableUseBuilderAbstractionsTypeConversionAbstractionsInterfaces>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Abstractions
+{
+#nullable enable
+    public partial interface IGeneric<T>
+    {
+        T MyProperty
+        {
+            get;
+        }
+
+        Test.Domain.Builders.GenericBuilder<T> ToBuilder();
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Abstractions
+{
+#nullable enable
+    public partial interface ILiteral
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        string Value
+        {
+            get;
+        }
+
+        object? OriginalValue
+        {
+            get;
+        }
+
+        Test.Domain.Builders.LiteralBuilder ToBuilder();
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_Builder_Interface_UseBuilderAbstractionsTypeConversion()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableUseBuilderAbstractionsTypeConversionAbstractionsBuilderInterfaces>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Abstractions
+{
+#nullable enable
+    public partial interface IGenericBuilder<T>
+    {
+        T MyProperty
+        {
+            get;
+            set;
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Abstractions
+{
+#nullable enable
+    public partial interface ILiteralBuilder
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        string Value
+        {
+            get;
+            set;
+        }
+
+        object? OriginalValue
+        {
+            get;
+            set;
+        }
     }
 #nullable restore
 }
