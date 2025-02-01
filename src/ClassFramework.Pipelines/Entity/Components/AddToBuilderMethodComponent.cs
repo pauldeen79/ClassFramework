@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Entity.Components;
+﻿using CrossCutting.Common.Results;
+
+namespace ClassFramework.Pipelines.Entity.Components;
 
 public class AddToBuilderMethodComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<EntityContext>
 {
@@ -106,10 +108,10 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
     {
         if (!context.Request.Settings.UseBuilderAbstractionsTypeConversion)
         {
-            return Result.Success();
+            return Result.Continue();
         }
 
-        var interfaces = context.Request.SourceModel.Interfaces
+        var results = context.Request.SourceModel.Interfaces
             .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Select(x =>
             {
@@ -137,13 +139,13 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 
-        var error = interfaces.FirstOrDefault(x => !x.IsSuccessful());
+        var error = Array.Find(results, x => !x.IsSuccessful());
         if (error is not null)
         {
             return error;
         }
 
-        context.Request.Builder.AddMethods(interfaces.Select(x => new MethodBuilder()
+        context.Request.Builder.AddMethods(results.Select(x => new MethodBuilder()
             .WithName(methodName)
             .WithReturnTypeName(x.Value!.BuilderName)
             .WithExplicitInterfaceName(x.Value!.EntityName)

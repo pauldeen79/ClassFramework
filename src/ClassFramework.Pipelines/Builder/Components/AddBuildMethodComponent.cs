@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Builder.Components;
+﻿using ClassFramework.Domain;
+
+namespace ClassFramework.Pipelines.Builder.Components;
 
 public class AddBuildMethodComponent(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
 {
@@ -18,7 +20,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                     .WithAbstract()
                     .WithReturnTypeName(context.Request.ReturnType));
 
-                AddExplicitInterfaceImplementations(context);
+                return Task.FromResult(AddExplicitInterfaceImplementations(context));
             }
             else
             {
@@ -67,32 +69,58 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                 .AddStringCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
         }
 
-        AddExplicitInterfaceImplementations(context);
-
-        return Task.FromResult(Result.Success());
+        return Task.FromResult(AddExplicitInterfaceImplementations(context));
     }
 
-    private static void AddExplicitInterfaceImplementations(PipelineContext<BuilderContext> context)
+    private Result AddExplicitInterfaceImplementations(PipelineContext<BuilderContext> context)
     {
         if (!context.Request.Settings.UseBuilderAbstractionsTypeConversion)
         {
-            return;
+            return Result.Continue();
         }
 
-        foreach (var @interface in context.Request.SourceModel.Interfaces)
-        {
-            var typeName = context.Request.MapTypeName(@interface);
-            if (typeName.GetNamespaceWithDefault().EndsWith(".Builders.Abstractions"))
+        var results = context.Request.SourceModel.Interfaces
+            .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+            .Where(x => x.GetNamespaceWithDefault().EndsWith(".Builders.Abstractions"))
+            .Select(x =>
             {
-                // We need to add explicit implementation of the Build method of this interface
-                /// Like: IVisibilityContainer IVisibilityContainerBuilder.Build() => Build();
-                context.Request.Builder.AddMethods(new MethodBuilder()
-                    .WithName(context.Request.Settings.BuildMethodName)
-                    .WithReturnTypeName(context.Request.MapTypeName(typeName, MetadataNames.CustomEntityInterfaceTypeName))
-                    .WithExplicitInterfaceName(typeName)
-                    .AddStringCodeStatements($"return {context.Request.Settings.BuildMethodName}();"));
-            }
+                var metadata = context.Request.GetMappingMetadata(x);
+                var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
+
+                if (!string.IsNullOrEmpty(ns))
+                {
+                    var property = new PropertyBuilder()
+                        .WithName("Dummy")
+                        .WithTypeName(x)
+                        .Build();
+                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
+                    var newFullName = $"{ns}.{newTypeName}";
+
+                    return _formattableStringParser.Parse
+                    (
+                        newFullName,
+                        context.Request.FormatProvider,
+                        new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
+                    ).Transform(y => new { BuilderName = x, EntityName = y.ToString() });
+                }
+                return Result.Success(new { BuilderName = x, EntityName = context.Request.MapTypeName(x.FixTypeName()) });
+            })
+            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
+            .ToArray();
+
+        var error = Array.Find(results, x => !x.IsSuccessful());
+        if (error is not null)
+        {
+            return error;
         }
+
+        context.Request.Builder.AddMethods(results.Select(x => new MethodBuilder()
+            .WithName(context.Request.Settings.BuildMethodName)
+            .WithReturnTypeName(x.Value!.EntityName)
+            .WithExplicitInterfaceName(x.Value!.BuilderName)
+            .AddStringCodeStatements($"return {context.Request.Settings.BuildMethodName}();")));
+
+        return Result.Success();
     }
 
     private static string GetName(PipelineContext<BuilderContext> context)
