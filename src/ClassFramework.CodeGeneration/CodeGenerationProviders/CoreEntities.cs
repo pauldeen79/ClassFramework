@@ -6,4 +6,6 @@ public class CoreEntities(IPipelineService pipelineService) : ClassFrameworkCSha
     public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => GetEntities(GetCoreModels(), "ClassFramework.Domain");
 
     public override string Path => "ClassFramework.Domain";
+
+    protected override bool UseBuilderAbstractionsTypeConversion => false; //quirk
 }

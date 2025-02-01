@@ -6,6 +6,7 @@ public class OverrideCodeStatementEntities(IPipelineService pipelineService) : C
     public override string Path => "ClassFramework.Domain/CodeStatements";
 
     protected override bool EnableEntityInheritance => true;
+    protected override bool UseBuilderAbstractionsTypeConversion => false; //quirk
     protected override Task<Result<TypeBase>> GetBaseClass() => CreateBaseClass(typeof(ICodeStatementBase), "ClassFramework.Domain");
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)

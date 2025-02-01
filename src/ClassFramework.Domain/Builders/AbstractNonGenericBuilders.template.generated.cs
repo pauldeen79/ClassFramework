@@ -27,11 +27,6 @@ namespace ClassFramework.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public static implicit operator ClassFramework.Domain.CodeStatementBase(CodeStatementBaseBuilder entity)
-        {
-            return entity.Build();
-        }
-
         protected void HandlePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -289,14 +284,9 @@ namespace ClassFramework.Domain.Builders
             SetDefaultValues();
         }
 
-        public abstract ClassFramework.Domain.TypeBase Build();
+        public abstract ClassFramework.Domain.Abstractions.IType Build();
 
         partial void SetDefaultValues();
-
-        public static implicit operator ClassFramework.Domain.TypeBase(TypeBaseBuilder entity)
-        {
-            return entity.Build();
-        }
 
         protected void HandlePropertyChanged(string propertyName)
         {

@@ -17,4 +17,5 @@ public class AbstractBuilders(IPipelineService pipelineService) : ClassFramework
     // Do not generate 'With' methods. Do this on the interfaces instead.
     protected override string SetMethodNameFormatString => string.Empty;
     protected override string AddMethodNameFormatString => string.Empty;
+    protected override bool AddImplicitOperatorOnBuilder => false; // does not work when using builder abstraction interfaces
 }

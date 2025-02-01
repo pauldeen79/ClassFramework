@@ -231,7 +231,7 @@ namespace ClassFramework.Pipelines.Builders
 
         private System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.AttributeInitializerDelegate> _attributeInitializers;
 
-        private ClassFramework.Domain.Builders.TypeBaseBuilder? _baseClass;
+        private ClassFramework.Domain.Builders.ITypeBuilder? _baseClass;
 
         private string _baseClassBuilderNameSpace;
 
@@ -492,7 +492,7 @@ namespace ClassFramework.Pipelines.Builders
         }
 
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        public ClassFramework.Domain.Builders.TypeBaseBuilder? BaseClass
+        public ClassFramework.Domain.Builders.ITypeBuilder? BaseClass
         {
             get
             {
@@ -500,7 +500,7 @@ namespace ClassFramework.Pipelines.Builders
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Domain.Builders.TypeBaseBuilder>.Default.Equals(_baseClass!, value!);
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Domain.Builders.ITypeBuilder>.Default.Equals(_baseClass!, value!);
                 _baseClass = value;
                 if (hasChanged) HandlePropertyChanged(nameof(BaseClass));
             }
@@ -1440,7 +1440,7 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithBaseClass(ClassFramework.Domain.Builders.TypeBaseBuilder? baseClass)
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithBaseClass(ClassFramework.Domain.Builders.ITypeBuilder? baseClass)
         {
             BaseClass = baseClass;
             return this;
