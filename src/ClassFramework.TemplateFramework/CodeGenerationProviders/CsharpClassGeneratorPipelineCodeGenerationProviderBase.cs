@@ -117,7 +117,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return await ProcessModelsResult(modelsResultTask, async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => (InheritFromInterfaces || (t.Namespace == $"{CoreNamespace}.Abstractions" && UseBuilderAbstractions)) && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
+        return await ProcessModelsResult(modelsResultTask, async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => (InheritFromInterfaces || (t.Namespace == CoreNamespace && UseBuilderAbstractions)) && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetBuilders(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
@@ -396,7 +396,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                         .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}"),
                     new TypenameMappingBuilder()
                         .WithSourceTypeName($"{CoreNamespace}.{x.GetEntityClassName()}Base")
-                        .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
+                        .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}"),
+                    new TypenameMappingBuilder()
+                        .WithSourceTypeName($"{CoreNamespace}.Builders.{x.GetEntityClassName()}Builder")
+                        .WithTargetTypeName($"{CoreNamespace}.Builders.{x.GetEntityClassName()}BaseBuilder")
+                        //.WithTargetTypeName($"{CoreNamespace}.Builders.Abstractions.I{x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}Builder")
 
                 }))
             .Concat(CreateAdditionalTypenameMappings());
