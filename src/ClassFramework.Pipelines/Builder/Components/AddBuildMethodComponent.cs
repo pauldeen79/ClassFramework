@@ -14,20 +14,20 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
             if (context.Request.Settings.IsForAbstractBuilder)
             {
                 context.Request.Builder.AddMethods(new MethodBuilder()
-                    .WithName("Build")
+                    .WithName(context.Request.Settings.BuildMethodName)
                     .WithAbstract()
                     .WithReturnTypeName(context.Request.ReturnType));
             }
             else
             {
                 context.Request.Builder.AddMethods(new MethodBuilder()
-                    .WithName("Build")
+                    .WithName(context.Request.Settings.BuildMethodName)
                     .WithOverride()
                     .WithReturnTypeName(context.Request.ReturnType)
-                    .AddStringCodeStatements("return BuildTyped();"));
+                    .AddStringCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
 
                 context.Request.Builder.AddMethods(new MethodBuilder()
-                    .WithName("BuildTyped")
+                    .WithName(context.Request.Settings.BuildTypedMethodName)
                     .WithAbstract()
                     .WithReturnTypeName("TEntity"));
             }
