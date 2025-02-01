@@ -79,6 +79,8 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
                     .AddStringCodeStatements($"return new {builderConcreteTypeName}(this);"));
         }
 
+        AddExplicitInterfaceImplementations(context, methodName);
+
         return Task.FromResult(Result.Success());
     }
 
@@ -99,6 +101,31 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
         else
         {
             return builderConcreteTypeName;
+        }
+    }
+
+    private void AddExplicitInterfaceImplementations(PipelineContext<EntityContext> context, string methodName)
+    {
+        if (!context.Request.Settings.UseBuilderAbstractionsTypeConversion)
+        {
+            return;
+        }
+
+        foreach (var @interface in context.Request.SourceModel.Interfaces)
+        {
+            var typeName = context.Request.MapTypeName(@interface);
+            if (typeName.GetNamespaceWithDefault().EndsWith(".Abstractions"))
+            {
+                var property = new PropertyBuilder().WithName("Dummy").WithTypeName(typeName).Build();
+                // We need to add explicit implementation of the Build method of this interface
+                /// Like: IVisibilityContainerBuilder IVisibilityContainer.ToBuilder() => ToBuilder();
+                context.Request.Builder.AddMethods(new MethodBuilder()
+                    .WithName(methodName)
+                    //.WithReturnTypeName(context.Request.MapTypeName(typeName, MetadataNames.CustomBuilderName))
+                    .WithReturnTypeName(property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<EntityContext, Property>(context.Request, property, context.Request.Settings), typeName, _formattableStringParser).GetValueOrThrow())
+                    .WithExplicitInterfaceName(typeName)
+                    .AddStringCodeStatements($"return {methodName}();"));
+            }
         }
     }
 }
