@@ -42,7 +42,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool CopyInterfaces => false;
     protected virtual bool CopyMethods => false;
     protected virtual bool InheritFromInterfaces => false;
-    protected virtual bool UseBuilderAbstractions => false;
+    protected virtual bool UseBuilderAbstractionsTypeConversion => false;
     protected virtual bool AddNullChecks => true;
     protected virtual bool UseExceptionThrowIfNull => false;
     protected virtual bool CreateRecord => false;
@@ -117,7 +117,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return await ProcessModelsResult(modelsResultTask, async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => (InheritFromInterfaces || (t.Namespace == CoreNamespace && UseBuilderAbstractions)) && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
+        return await ProcessModelsResult(modelsResultTask, async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => (InheritFromInterfaces || (t.Namespace == CoreNamespace && UseBuilderAbstractionsTypeConversion)) && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetBuilders(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
@@ -173,7 +173,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return await ProcessModelsResult
         (
             GetBuilders(modelsResultTask, buildersNamespace, entitiesNamespace),
-            async x => await CreateInterface(Result.Success(x.ToBuilder().Chain(y => { var itemsToDelete = y.GenericTypeArguments.Where(z => z == "TEntity" || z == "TBuilder").ToList(); itemsToDelete.ForEach(z => y.GenericTypeArguments.Remove(z)); y.GenericTypeArgumentConstraints.Clear(); }).Build()), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => (InheritFromInterfaces || (UseBuilderAbstractions && t.Namespace == $"{CoreNamespace}.Builders.Abstractions")) && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false),
+            async x => await CreateInterface(Result.Success(x.ToBuilder().Chain(y => { var itemsToDelete = y.GenericTypeArguments.Where(z => z == "TEntity" || z == "TBuilder").ToList(); itemsToDelete.ForEach(z => y.GenericTypeArguments.Remove(z)); y.GenericTypeArgumentConstraints.Clear(); }).Build()), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => (InheritFromInterfaces || (UseBuilderAbstractionsTypeConversion && t.Namespace == $"{CoreNamespace}.Builders.Abstractions")) && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false),
             "builder interfaces"
         ).ConfigureAwait(false);
     }
@@ -368,7 +368,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 new TypenameMappingBuilder().WithSourceTypeName(typeof(ICollection<>).WithoutGenerics()).WithTargetTypeName(typeof(ICollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(MetadataNames.CustomCollectionInitialization)),
             ])
             .Concat(GetType().Assembly.GetTypes()
-            .Where(x => !InheritFromInterfaces && UseBuilderAbstractions
+            .Where(x => !InheritFromInterfaces && UseBuilderAbstractionsTypeConversion
                 && x.IsInterface
                 && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions"
                 && !SkipNamespaceOnTypenameMappings(x.Namespace)
