@@ -230,7 +230,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
                 .FixNullableTypeName(property), string.Empty))
             .WithIsNullable(property.IsNullable)
             .WithIsValueType(property.IsValueType)
-            .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder()))
+            .AddGenericTypeArguments(property.GenericTypeArguments)
             .AddAttributes(property.Attributes
                 .Where(x => Settings.CopyAttributes && (Settings.CopyAttributePredicate?.Invoke(x) ?? true))
                 .Select(x => MapAttribute(x).ToBuilder()))

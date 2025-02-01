@@ -104,7 +104,7 @@ public static class TypeExtensions
             .WithTypeName(mapDelegate(instance, declaringType))
             .WithIsValueType(instance.IsValueType)
             .WithIsNullable(instance.IsNullable(declaringType, declaringType.CustomAttributes, index))
-            .AddGenericTypeArguments(instance.GenericTypeArguments.Select((x, index2) => x.ToTypeContainer(instance, index2 + 1, mapDelegate).ToBuilder()))
+            .AddGenericTypeArguments(instance.GenericTypeArguments.Select((x, index2) => x.ToTypeContainer(instance, index2 + 1, mapDelegate)))
             .Build();
     }
 

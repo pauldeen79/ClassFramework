@@ -34,7 +34,7 @@ public class AddPropertiesComponent(IFormattableStringParser formattableStringPa
                     .FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
-                .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder()))
+                .AddGenericTypeArguments(property.GenericTypeArguments)
                 .WithParentTypeFullName(results[NamedResults.ParentTypeName].Value!)
                 .AddAttributes(property.Attributes
                     .Where(_ => context.Request.Settings.CopyAttributes)

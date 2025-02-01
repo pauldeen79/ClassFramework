@@ -368,14 +368,14 @@ namespace ClassFramework.Domain.Builders.Extensions
     }
     public static partial class TypeContainerBuilderExtensions
     {
-        public static T AddGenericTypeArguments<T>(this T instance, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder> genericTypeArguments)
+        public static T AddGenericTypeArguments<T>(this T instance, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Abstractions.ITypeContainer> genericTypeArguments)
             where T : ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder
         {
             if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
             return instance.AddGenericTypeArguments<T>(genericTypeArguments.ToArray());
         }
 
-        public static T AddGenericTypeArguments<T>(this T instance, params ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder[] genericTypeArguments)
+        public static T AddGenericTypeArguments<T>(this T instance, params ClassFramework.Domain.Abstractions.ITypeContainer[] genericTypeArguments)
             where T : ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder
         {
             if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
@@ -403,19 +403,6 @@ namespace ClassFramework.Domain.Builders.Extensions
         {
             instance.IsValueType = isValueType;
             return instance;
-        }
-
-        // maually added as test
-        public static ITypeContainer Build<T>(this T instance)
-            where T : ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder
-        {
-            return instance switch
-            {
-                FieldBuilder f => f.Build(),
-                ParameterBuilder p => p.Build(),
-                PropertyBuilder b => b.Build(),
-                _ => throw new ArgumentOutOfRangeException("instance", "Type is not a known derived ITypeContainerBuilder class")
-            };
         }
     }
     public static partial class ValueTypeBuilderExtensions

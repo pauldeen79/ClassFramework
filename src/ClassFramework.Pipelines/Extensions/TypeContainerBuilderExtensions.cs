@@ -10,7 +10,7 @@ public static class TypeContainerBuilderExtensions
         return instance
             .WithIsNullable(member.IsNullable)
             .WithIsValueType(member.IsValueType)
-            .AddGenericTypeArguments(member.GenericTypeArguments.Select(x => x.ToBuilder()));
+            .AddGenericTypeArguments(member.GenericTypeArguments);
     }
 
     public static T SetTypeContainerPropertiesFrom<T>(this T instance, bool isNullable, Type memberType, Func<Type, MemberInfo, string> mapDelegate)
@@ -22,6 +22,6 @@ public static class TypeContainerBuilderExtensions
         return instance
             .WithIsNullable(isNullable)
             .WithIsValueType(memberType.IsValueType())
-            .AddGenericTypeArguments(memberType.GenericTypeArguments.Select((x, index) => x.ToTypeContainer(memberType, index + 1, mapDelegate).ToBuilder()));
+            .AddGenericTypeArguments(memberType.GenericTypeArguments.Select((x, index) => x.ToTypeContainer(memberType, index + 1, mapDelegate)));
     }
 }

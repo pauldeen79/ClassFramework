@@ -54,7 +54,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
                         .FixNullableTypeName(property))
                         .WithIsNullable(property.IsNullable)
                         .WithIsValueType(property.IsValueType)
-                        .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder()))
+                        .AddGenericTypeArguments(property.GenericTypeArguments)
                 )
         );
 

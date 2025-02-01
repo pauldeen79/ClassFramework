@@ -280,7 +280,7 @@ namespace ClassFramework.Domain.Builders.Abstractions
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
-        System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder> GenericTypeArguments
+        System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Abstractions.ITypeContainer> GenericTypeArguments
         {
             get;
             set;

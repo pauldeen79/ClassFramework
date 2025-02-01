@@ -252,20 +252,6 @@ namespace ClassFramework.Domain.Abstractions
             get;
         }
     }
-    // maually added as test
-    public static class ITypeContainerExtensions
-    {
-        public static ITypeContainerBuilder ToBuilder(this ITypeContainer instance)
-        {
-            return instance switch
-            {
-                Field f => f.ToBuilder(),
-                Parameter p => p.ToBuilder(),
-                Property b => b.ToBuilder(),
-                _ => throw new ArgumentOutOfRangeException("instance", "Type is not a known derived ITypeContainer class")
-            };
-        }
-    }
     public partial interface IValueType : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
     {
     }
