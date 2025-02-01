@@ -17,6 +17,8 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                     .WithName(context.Request.Settings.BuildMethodName)
                     .WithAbstract()
                     .WithReturnTypeName(context.Request.ReturnType));
+
+                AddExplicitInterfaceImplementations(context);
             }
             else
             {
@@ -65,7 +67,32 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                 .AddStringCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
         }
 
+        AddExplicitInterfaceImplementations(context);
+
         return Task.FromResult(Result.Success());
+    }
+
+    private static void AddExplicitInterfaceImplementations(PipelineContext<BuilderContext> context)
+    {
+        if (!context.Request.Settings.UseBuilderAbstractionsTypeConversion)
+        {
+            return;
+        }
+
+        foreach (var @interface in context.Request.SourceModel.Interfaces)
+        {
+            var typeName = context.Request.MapTypeName(@interface);
+            if (typeName.GetNamespaceWithDefault().EndsWith(".Builders.Abstractions"))
+            {
+                // We need to add explicit implementation of the Build method of this interface
+                /// Like: IVisibilityContainer IVisibilityContainerBuilder.Build() => Build();
+                context.Request.Builder.AddMethods(new MethodBuilder()
+                    .WithName(context.Request.Settings.BuildMethodName)
+                    .WithReturnTypeName(typeName.Replace(".Builders", string.Empty).Replace("Builder", string.Empty)) //kinda fishy... we assume builders are in a Builders namespace, and the builder class name ends with Builder
+                    .WithExplicitInterfaceName(typeName)
+                    .AddStringCodeStatements($"return {context.Request.Settings.BuildMethodName}();"));
+            }
+        }
     }
 
     private static string GetName(PipelineContext<BuilderContext> context)

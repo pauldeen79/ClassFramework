@@ -482,6 +482,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithAddPublicParameterlessConstructor(AddPublicParameterlessConstructor)
             .WithAddNullChecks(overrideAddNullChecks ?? false)
             .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
+            .WithUseBuilderAbstractionsTypeConversion(UseBuilderAbstractionsTypeConversion)
             .Build())));
 
     private Task<Result<PipelineSettings>> CreateInterfacePipelineSettings(
