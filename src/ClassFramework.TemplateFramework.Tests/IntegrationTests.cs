@@ -1253,6 +1253,8 @@ namespace Test.Abstractions
         {
             get;
         }
+
+        Test.Abstractions.IGenericBuilder<T> ToBuilder();
     }
 #nullable restore
 }
@@ -1277,6 +1279,8 @@ namespace Test.Abstractions
         {
             get;
         }
+
+        Test.Domain.Abstractions.ILiteralBuilder ToBuilder();
     }
 #nullable restore
 }
@@ -1313,6 +1317,8 @@ namespace Test.Abstractions
             get;
             set;
         }
+
+        Test.Abstractions.IGeneric<T> Build();
     }
 #nullable restore
 }
@@ -1339,6 +1345,8 @@ namespace Test.Abstractions
             get;
             set;
         }
+
+        Test.Abstractions.ILiteral Build();
     }
 #nullable restore
 }
@@ -1346,7 +1354,7 @@ namespace Test.Abstractions
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_Entity_NoToBuilderMethod()
+    public async Task Can_Generate_Code_For_Entity_No_ToBuilderMethod()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
