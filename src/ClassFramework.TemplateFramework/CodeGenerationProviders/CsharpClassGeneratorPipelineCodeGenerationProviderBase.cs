@@ -117,7 +117,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return await ProcessModelsResult(modelsResultTask, async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => (InheritFromInterfaces || (t.Namespace == CoreNamespace && UseBuilderAbstractionsTypeConversion)) && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
+        return await ProcessModelsResult(modelsResultTask, async x => await CreateInterface(await CreateEntity(x, entitiesNamespace).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == ToBuilderFormatString && t.Interfaces.Count == 0).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetBuilders(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
@@ -173,7 +173,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return await ProcessModelsResult
         (
             GetBuilders(modelsResultTask, buildersNamespace, entitiesNamespace),
-            async x => await CreateInterface(Result.Success(x.ToBuilder().Chain(y => { var itemsToDelete = y.GenericTypeArguments.Where(z => z == "TEntity" || z == "TBuilder").ToList(); itemsToDelete.ForEach(z => y.GenericTypeArguments.Remove(z)); y.GenericTypeArgumentConstraints.Clear(); }).Build()), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => (InheritFromInterfaces || (UseBuilderAbstractionsTypeConversion && t.Namespace == $"{CoreNamespace}.Builders.Abstractions")) && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false),
+            async x => await CreateInterface(Result.Success(x.ToBuilder().Chain(y => { var itemsToDelete = y.GenericTypeArguments.Where(z => z == "TEntity" || z == "TBuilder").ToList(); itemsToDelete.ForEach(z => y.GenericTypeArguments.Remove(z)); y.GenericTypeArgumentConstraints.Clear(); }).Build()), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{$class.Name}", (t, m) => InheritFromInterfaces && m.Name == BuildMethodName && t.Interfaces.Count == 0).ConfigureAwait(false),
             "builder interfaces"
         ).ConfigureAwait(false);
     }
@@ -393,14 +393,14 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                     new TypenameMappingBuilder()
                         .WithSourceTypeName($"{CoreNamespace}.Abstractions.{x.GetEntityClassName()}")
                         .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}"),
-                    new TypenameMappingBuilder()
+                    /*new TypenameMappingBuilder()
                         .WithSourceTypeName($"{CoreNamespace}.{x.GetEntityClassName()}Base")
                         .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}"),
                     new TypenameMappingBuilder()
                         .WithSourceTypeName($"{CoreNamespace}.Builders.{x.GetEntityClassName()}Builder")
                         .WithTargetTypeName(IsAbstractType(x)
                             ? $"{CoreNamespace}.Builders.{x.GetEntityClassName()}BaseBuilder"
-                            : $"{CoreNamespace}.Builders.Abstractions.I{x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}Builder")
+                            : $"{CoreNamespace}.Builders.Abstractions.I{x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}Builder")*/
                 }))
             .Concat(CreateAdditionalTypenameMappings());
 
