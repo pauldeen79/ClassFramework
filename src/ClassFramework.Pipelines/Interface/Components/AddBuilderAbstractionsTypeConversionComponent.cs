@@ -26,7 +26,7 @@ public class AddBuilderAbstractionsTypeConversionComponent(IFormattableStringPar
         }
 
         // TODO: Make a check that's more safe. Or we have to inject something into the settings...
-        if (context.Request.SourceModel.Namespace.EndsWith(".Builders", StringComparison.Ordinal))
+        if (context.Request.SourceModel.Namespace.EndsWith(".Builders.Abstractions", StringComparison.Ordinal))
         {
             // Builder
             if (context.Request.Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(results[NamedResults.Namespace].Value!.ToString()))
