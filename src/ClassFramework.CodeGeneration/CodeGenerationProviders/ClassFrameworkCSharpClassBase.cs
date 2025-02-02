@@ -20,6 +20,7 @@ public abstract class ClassFrameworkCSharpClassBase(IPipelineService pipelineSer
     protected override bool GenerateMultipleFiles => false;
     protected override bool EnableGlobalUsings => true;
     protected override bool AddImplicitOperatorOnBuilder => true;
+    //protected override bool UseBuilderAbstractionsTypeConversion => true;
     //protected override string ToBuilderFormatString => string.Empty;
     //protected override string ToTypedBuilderFormatString => string.Empty;
     //protected override bool AddCopyConstructor => false;

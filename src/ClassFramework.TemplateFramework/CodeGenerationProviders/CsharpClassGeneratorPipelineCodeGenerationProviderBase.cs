@@ -100,6 +100,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Concat(GetExternalCustomBuilderTypes())
             .ToArray();
 
+    protected virtual string[] GetBuilderAbstractionsTypeConversionNamespaces() => [];
+
     protected virtual IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetTypes().Where(IsAbstractType);
 
@@ -483,6 +485,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithAddNullChecks(overrideAddNullChecks ?? false)
             .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
             .WithUseBuilderAbstractionsTypeConversion(UseBuilderAbstractionsTypeConversion)
+            .AddBuilderAbstractionsTypeConversionNamespaces(GetBuilderAbstractionsTypeConversionNamespaces())
             .Build())));
 
     private Task<Result<PipelineSettings>> CreateInterfacePipelineSettings(

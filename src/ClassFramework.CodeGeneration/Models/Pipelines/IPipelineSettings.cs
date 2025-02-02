@@ -65,4 +65,5 @@ internal interface IPipelineSettings
     ArgumentValidationType ValidateArguments { get; }
     bool UseDefaultValueAttributeValuesForBuilderInitialization { get; }
     IEquatableItemType IEquatableItemType { get; }
+    [Required] IReadOnlyCollection<string> BuilderAbstractionsTypeConversionNamespaces { get; }
 }

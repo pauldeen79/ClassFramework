@@ -108,6 +108,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipeline<InterfaceContext>, Pipeline<InterfaceContext>>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.ValidationComponent>() // important to register this one first, because validation should be performed first
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddAttributesComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddBuilderAbstractionsTypeConversionComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddInterfacesComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddMethodsComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddPropertiesComponent>()
