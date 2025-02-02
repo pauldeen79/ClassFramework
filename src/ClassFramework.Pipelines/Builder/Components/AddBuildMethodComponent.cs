@@ -1,6 +1,4 @@
-﻿using ClassFramework.Domain;
-
-namespace ClassFramework.Pipelines.Builder.Components;
+﻿namespace ClassFramework.Pipelines.Builder.Components;
 
 public class AddBuildMethodComponent(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
 {
