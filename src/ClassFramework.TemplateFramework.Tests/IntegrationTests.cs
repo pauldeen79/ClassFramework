@@ -1253,8 +1253,6 @@ namespace Test.Abstractions
         {
             get;
         }
-
-        Test.Domain.Builders.GenericBuilder<T> ToBuilder();
     }
 #nullable restore
 }
@@ -1279,8 +1277,6 @@ namespace Test.Abstractions
         {
             get;
         }
-
-        Test.Domain.Builders.LiteralBuilder ToBuilder();
     }
 #nullable restore
 }
@@ -1317,8 +1313,6 @@ namespace Test.Abstractions
             get;
             set;
         }
-
-        Test.Abstractions.IGeneric<T> Build();
     }
 #nullable restore
 }
