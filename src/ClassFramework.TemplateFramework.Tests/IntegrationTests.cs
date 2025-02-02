@@ -1317,6 +1317,8 @@ namespace Test.Abstractions
             get;
             set;
         }
+
+        Test.Abstractions.IGeneric<T> Build();
     }
 #nullable restore
 }

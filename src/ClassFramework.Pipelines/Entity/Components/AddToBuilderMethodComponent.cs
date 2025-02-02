@@ -109,7 +109,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
             return Result.Continue();
         }
 
-        var results = context.Request.SourceModel.Interfaces
+        var interfaces = context.Request.SourceModel.Interfaces
             .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Where(x => context.Request.Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(x.GetNamespaceWithDefault()))
             .Select(x =>
@@ -138,13 +138,13 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 
-        var error = Array.Find(results, x => !x.IsSuccessful());
+        var error = Array.Find(interfaces, x => !x.IsSuccessful());
         if (error is not null)
         {
             return error;
         }
 
-        context.Request.Builder.AddMethods(results.Select(x => new MethodBuilder()
+        context.Request.Builder.AddMethods(interfaces.Select(x => new MethodBuilder()
             .WithName(methodName)
             .WithReturnTypeName(x.Value!.BuilderName)
             .WithExplicitInterfaceName(x.Value!.EntityName)

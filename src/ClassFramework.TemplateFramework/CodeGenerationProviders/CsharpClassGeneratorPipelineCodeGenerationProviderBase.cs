@@ -514,6 +514,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyMethodPredicate(copyMethodPredicate ?? CopyMethodPredicate)
             .WithAddSetters(addSetters)
             .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+            .WithUseBuilderAbstractionsTypeConversion(UseBuilderAbstractionsTypeConversion)
+            .AddBuilderAbstractionsTypeConversionNamespaces(GetBuilderAbstractionsTypeConversionNamespaces())
             .Build())));
 
     private Task<Result<PipelineSettings>> CreateBuilderPipelineSettings(string buildersNamespace, string entitiesNamespace)
