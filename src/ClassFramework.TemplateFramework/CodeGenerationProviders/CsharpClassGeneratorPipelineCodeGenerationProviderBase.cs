@@ -392,10 +392,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                             new MetadataBuilder().WithValue($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}").WithName(MetadataNames.CustomEntityInterfaceTypeName)
                         ),
                     //Temporary fix for flaw in abstractions typename mapping
-                    /*new TypenameMappingBuilder()
-                        .WithSourceTypeName($"{CoreNamespace}.Abstractions.{x.GetEntityClassName()}")
-                        .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}"),
                     new TypenameMappingBuilder()
+                        .WithSourceTypeName($"{CoreNamespace}.Builders.I{x.GetEntityClassName()}Builder")
+                        .WithTargetTypeName($"{CoreNamespace}.Builders.Abstractions.I{x.GetEntityClassName()}Builder"),
+                    new TypenameMappingBuilder()
+                        .WithSourceTypeName($"{CoreNamespace}.Abstractions.{x.GetEntityClassName()}")
+                        .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
+                    /*new TypenameMappingBuilder()
                         .WithSourceTypeName($"{CoreNamespace}.{x.GetEntityClassName()}Base")
                         .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}"),
                     new TypenameMappingBuilder()
