@@ -17,7 +17,7 @@ public class AddInterfacesComponent(IFormattableStringParser formattableStringPa
             .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Select(x =>
             {
-                var metadata = context.Request.GetMappingMetadata(x);
+                var metadata = context.Request.GetMappingMetadata(x).ToArray();
                 var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
 
                 if (!string.IsNullOrEmpty(ns))

@@ -146,7 +146,7 @@ public static class PropertyExtensions
         mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        var metadata = context.GetMappingMetadata(property.TypeName);
+        var metadata = context.GetMappingMetadata(property.TypeName).ToArray();
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderNamespace);
 
         if (!string.IsNullOrEmpty(ns))
@@ -195,7 +195,7 @@ public static class PropertyExtensions
             return Result.Success<GenericFormattableString>(property.ParentTypeFullName);
         }
 
-        var metadata = context.Request.GetMappingMetadata(property.ParentTypeFullName);
+        var metadata = context.Request.GetMappingMetadata(property.ParentTypeFullName).ToArray();
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeNamespace);
 
         if (string.IsNullOrEmpty(ns))

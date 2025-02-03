@@ -130,7 +130,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
             .Where(x => context.Request.Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(x.GetNamespaceWithDefault()))
             .Select(x =>
             {
-                var metadata = context.Request.GetMappingMetadata(x);
+                var metadata = context.Request.GetMappingMetadata(x).ToArray();
                 var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
 
                 if (!string.IsNullOrEmpty(ns))
