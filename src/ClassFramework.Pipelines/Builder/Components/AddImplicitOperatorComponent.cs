@@ -43,7 +43,7 @@ public class AddImplicitOperatorComponent(IFormattableStringParser formattableSt
         }
 
         var genericArgumentsFlat = context.Request.SourceModel.GenericTypeArguments.Count > 0
-            ? "<" + string.Join(", ", context.Request.SourceModel.GenericTypeArguments) + ">"
+            ? context.Request.SourceModel.GetGenericTypeArgumentsString()
             : string.Empty;
 
         context.Request.Builder.AddMethods(new MethodBuilder()
