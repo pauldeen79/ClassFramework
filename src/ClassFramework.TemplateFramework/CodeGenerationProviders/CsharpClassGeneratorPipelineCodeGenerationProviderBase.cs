@@ -132,7 +132,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         {
             var context = new EntityContext(x, settings, Settings.CultureInfo);
             var entityResult = await PipelineService.ProcessAsync(context).ConfigureAwait(false);
-            return await CreateBuilderClass(entityResult, buildersNamespace, entitiesNamespace).ConfigureAwait(false);
+            return await CreateBuilderClass(entityResult, buildersNamespace, entitiesNamespace, useBuilderAbstractionsTypeConversion).ConfigureAwait(false);
         }, "builders").ConfigureAwait(false);
     }
 
@@ -519,8 +519,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .AddBuilderAbstractionsTypeConversionNamespaces(GetBuilderAbstractionsTypeConversionNamespaces())
             .Build())));
 
-    private Task<Result<PipelineSettings>> CreateBuilderPipelineSettings(string buildersNamespace, string entitiesNamespace)
-        => ProcessSettingsResult(CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()),
+    private Task<Result<PipelineSettings>> CreateBuilderPipelineSettings(string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion = null)
+        => ProcessSettingsResult(CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks(), useBuilderAbstractionsTypeConversion: useBuilderAbstractionsTypeConversion),
             settings => Task.FromResult(Result.Success(new PipelineSettingsBuilder(settings)
                 .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
                 .WithBuilderNamespaceFormatString(buildersNamespace)
@@ -551,10 +551,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{NoInterfacePrefix($class.Name)}", useBuilderAbstractionsTypeConversion: useBuilderAbstractionsTypeConversion),
             settings => PipelineService.ProcessAsync(new EntityContext(typeBase, settings, Settings.CultureInfo)));
 
-    private Task<Result<TypeBase>> CreateBuilderClass(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace)
+    private Task<Result<TypeBase>> CreateBuilderClass(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion = null)
         => typeBaseResult.OnSuccess(
             () => ProcessSettingsResult(
-                CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace),
+                CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace, useBuilderAbstractionsTypeConversion),
                 settings => PipelineService.ProcessAsync(new BuilderContext(typeBaseResult.Value!, settings, Settings.CultureInfo)))
             );
 
