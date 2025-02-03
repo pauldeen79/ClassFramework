@@ -43,7 +43,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
             ? context.Request.Settings.BaseClass.GetFullName()
             : entityFullName;
 
-        var metadata = context.Request.GetMappingMetadata(entityFullName);
+        var metadata = context.Request.GetMappingMetadata(entityFullName).ToArray();
         var customNamespaceResults = new ResultDictionaryBuilder<string>()
             .Add("CustomBuilderNamespace", () => metadata.GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders")))
             .Add("CustomBuilderInterfaceNamespace", () => metadata.GetStringResult(MetadataNames.CustomBuilderInterfaceNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders")))
