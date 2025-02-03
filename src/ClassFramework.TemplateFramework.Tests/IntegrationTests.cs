@@ -1010,7 +1010,7 @@ namespace Test.Domain.Builders
             SetDefaultValues();
         }
 
-        public Test.Domain.Abstractions.IGeneric Build()
+        public Test.Domain.Abstractions.IGeneric<T> Build()
         {
             return new Test.Domain.Generic<T>(MyProperty);
         }
@@ -1189,7 +1189,7 @@ namespace Test.Abstractions
             set;
         }
 
-        Test.Domain.Generic<T> Build();
+        Test.Abstractions.IGeneric<T> Build();
     }
 #nullable restore
 }

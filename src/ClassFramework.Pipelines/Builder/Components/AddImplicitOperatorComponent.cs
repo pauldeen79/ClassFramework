@@ -32,7 +32,7 @@ public class AddImplicitOperatorComponent(IFormattableStringParser formattableSt
             context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithOperator()
                 .WithStatic()
-                .WithName(context.Request.ReturnType)
+                .WithName($"{context.Request.ReturnType}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
                 .WithReturnTypeName("implicit")
                 .AddParameter("entity", $"{nameResult.Value}{genericArguments}")
                 .AddStringCodeStatements(!context.Request.Settings.IsForAbstractBuilder
@@ -49,7 +49,7 @@ public class AddImplicitOperatorComponent(IFormattableStringParser formattableSt
         context.Request.Builder.AddMethods(new MethodBuilder()
             .WithOperator()
             .WithStatic()
-            .WithName(context.Request.ReturnType)
+            .WithName($"{context.Request.ReturnType}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
             .WithReturnTypeName("implicit")
             .AddParameter("entity", $"{nameResult.Value}{genericArgumentsFlat}")
             .AddStringCodeStatements($"return entity.{GetName(context)}();"));

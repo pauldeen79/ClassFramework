@@ -16,7 +16,8 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                 context.Request.Builder.AddMethods(new MethodBuilder()
                     .WithName(context.Request.Settings.BuildMethodName)
                     .WithAbstract()
-                    .WithReturnTypeName(context.Request.ReturnType));
+                    .WithReturnTypeName(context.Request.ReturnType)
+                    .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x).Build())));
 
                 return Task.FromResult(AddExplicitInterfaceImplementations(context));
             }
@@ -26,6 +27,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                     .WithName(context.Request.Settings.BuildMethodName)
                     .WithOverride()
                     .WithReturnTypeName(context.Request.ReturnType)
+                    .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x).Build()))
                     .AddStringCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
 
                 context.Request.Builder.AddMethods(new MethodBuilder()
@@ -47,7 +49,8 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
             .WithName(GetName(context))
             .WithAbstract(context.Request.IsBuilderForAbstractEntity)
             .WithOverride(context.Request.IsBuilderForOverrideEntity)
-            .WithReturnTypeName($"{GetBuilderBuildMethodReturnType(context.Request, context.Request.ReturnType)}")
+            .WithReturnTypeName(GetBuilderBuildMethodReturnType(context.Request, context.Request.ReturnType))
+            .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x).Build()))
             .AddStringCodeStatements(context.Request.CreatePragmaWarningDisableStatementsForBuildMethod())
             .AddStringCodeStatements
             (
