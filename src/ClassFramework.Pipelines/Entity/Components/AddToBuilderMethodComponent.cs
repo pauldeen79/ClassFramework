@@ -13,6 +13,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
             .Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)))
             .Add("ToBuilderMethodName", () => _formattableStringParser.Parse(context.Request.Settings.ToBuilderFormatString, context.Request.FormatProvider, context.Request))
             .Add("ToTypedBuilderMethodName", () => _formattableStringParser.Parse(context.Request.Settings.ToTypedBuilderFormatString, context.Request.FormatProvider, context.Request))
+            .Add("BuilderName", () => _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request))
             .Build();
 
         var error = results.GetError();
@@ -61,8 +62,9 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
             : name.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
 
         var generics = context.Request.SourceModel.GetGenericTypeArgumentsString();
-        var builderConcreteTypeName = $"{customNamespaceResults["CustomBuilderNamespace"].Value}.{builderConcreteName}Builder{generics}";
-        var builderTypeName = GetBuilderTypeName(context, customNamespaceResults["CustomBuilderInterfaceNamespace"], customNamespaceResults["CustomConcreteBuilderNamespace"], builderConcreteName, builderConcreteTypeName, generics);
+        var builderName = results["BuilderName"].Value!.ToString().Replace(context.Request.SourceModel.Name, builderConcreteName);
+        var builderConcreteTypeName = $"{customNamespaceResults["CustomBuilderNamespace"].Value}.{builderName}{generics}";
+        var builderTypeName = GetBuilderTypeName(context, customNamespaceResults["CustomBuilderInterfaceNamespace"], customNamespaceResults["CustomConcreteBuilderNamespace"], builderConcreteName, builderConcreteTypeName, generics, results["BuilderName"]);
 
         var returnStatement = context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is not null && !string.IsNullOrEmpty(typedMethodName)
             ? $"return {typedMethodName}();"
@@ -90,19 +92,21 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
         return Task.FromResult(AddExplicitInterfaceImplementations(context, methodName));
     }
 
-    private static string GetBuilderTypeName(PipelineContext<EntityContext> context, Result<string> builderInterfaceNamespaceResult, Result<string> concreteBuilderNamespaceResult, string builderConcreteName, string builderConcreteTypeName, string generics)
+    private static string GetBuilderTypeName(PipelineContext<EntityContext> context, Result<string> builderInterfaceNamespaceResult, Result<string> concreteBuilderNamespaceResult, string builderConcreteName, string builderConcreteTypeName, string generics, Result<GenericFormattableString> builderNameResult)
     {
         if (context.Request.Settings.InheritFromInterfaces)
         {
             if (context.Request.SourceModel.Interfaces.Count >= 2)
             {
-                return $"{builderInterfaceNamespaceResult.Value}.{context.Request.SourceModel.Interfaces.ElementAt(1).GetClassName()}Builder";
+                var builderName = builderNameResult.Value!.ToString().Replace(context.Request.SourceModel.Name, context.Request.SourceModel.Interfaces.ElementAt(1).GetClassName());
+                return $"{builderInterfaceNamespaceResult.Value}.{builderName}";
             }
             return $"{builderInterfaceNamespaceResult.Value}.I{builderConcreteName}Builder{generics}";
         }
         else if (context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is not null)
         {
-            return $"{concreteBuilderNamespaceResult.Value}.{context.Request.Settings.BaseClass.Name}Builder{generics}";
+            var builderName = builderNameResult.Value!.ToString().Replace(context.Request.SourceModel.Name, context.Request.Settings.BaseClass.Name);
+            return $"{concreteBuilderNamespaceResult.Value}.{builderName}{generics}";
         }
         else
         {
