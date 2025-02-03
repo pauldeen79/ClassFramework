@@ -100,7 +100,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Concat(GetExternalCustomBuilderTypes())
             .ToArray();
 
-    protected virtual string[] GetBuilderAbstractionsTypeConversionNamespaces() => [];
+    protected virtual string[] GetBuilderAbstractionsTypeConversionNamespaces() => [$"{CoreNamespace}.Abstractions"];
 
     protected virtual IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetTypes().Where(IsAbstractType);
