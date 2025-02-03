@@ -2269,7 +2269,7 @@ namespace Test.Domain.Types
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public override Test.Domain.Builders.AbstractBaseBuilder<T> ToBuilder()
+        public override Test.Domain.Builders.AbstractBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
         }

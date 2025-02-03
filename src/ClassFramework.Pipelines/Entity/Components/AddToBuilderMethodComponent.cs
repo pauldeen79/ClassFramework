@@ -76,7 +76,9 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
                 .WithAbstract(context.Request.IsAbstract)
                 .WithOverride(context.Request.Settings.BaseClass is not null)
                 .WithReturnTypeName(builderTypeName)
-                .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x).Build()))
+                .AddReturnTypeGenericTypeArguments(context.Request.Settings.BaseClass is not null
+                    ? Enumerable.Empty<ITypeContainer>()
+                    : context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x).Build()))
                 .AddStringCodeStatements(returnStatement));
 
         if (context.Request.Settings.EnableInheritance
