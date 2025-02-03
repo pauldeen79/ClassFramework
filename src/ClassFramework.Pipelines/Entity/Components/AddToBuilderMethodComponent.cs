@@ -49,11 +49,11 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
             .Add("CustomBuilderInterfaceNamespace", () => metadata.GetStringResult(MetadataNames.CustomBuilderInterfaceNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders")))
             .Add("CustomConcreteBuilderNamespace", () => context.Request.GetMappingMetadata(entityConcreteFullName).GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders")))
             .Build();
-        var custyomNamespaceError = customNamespaceResults.GetError();
-        if (custyomNamespaceError is not null)
+        var customNamespaceError = customNamespaceResults.GetError();
+        if (customNamespaceError is not null)
         {
             // Error in formattable string parsing
-            return Task.FromResult<Result>(custyomNamespaceError);
+            return Task.FromResult<Result>(customNamespaceError);
         }
 
         var builderConcreteName = context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is null
