@@ -913,7 +913,7 @@ namespace Test.Domain
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public Test.Abstractions.Builders.IGenericBuilder ToBuilder()
+        public Test.Abstractions.Builders.IGenericBuilder<T> ToBuilder()
         {
             return new Test.Domain.Builders.GenericBuilder<T>(this);
         }
@@ -1125,7 +1125,7 @@ namespace Test.Abstractions
             get;
         }
 
-        Test.Abstractions.Builders.IGenericBuilder ToBuilder();
+        Test.Abstractions.Builders.IGenericBuilder<T> ToBuilder();
     }
 #nullable restore
 }
@@ -2269,7 +2269,7 @@ namespace Test.Domain.Types
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public override Test.Domain.Builders.AbstractBaseBuilder ToBuilder()
+        public override Test.Domain.Builders.AbstractBaseBuilder<T> ToBuilder()
         {
             return ToTypedBuilder();
         }

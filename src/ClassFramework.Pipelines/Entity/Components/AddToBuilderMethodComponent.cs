@@ -62,7 +62,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
 
         var generics = context.Request.SourceModel.GetGenericTypeArgumentsString();
         var builderConcreteTypeName = $"{customNamespaceResults["CustomBuilderNamespace"].Value}.{builderConcreteName}Builder{generics}";
-        var builderTypeName = GetBuilderTypeName(context, customNamespaceResults["CustomBuilderInterfaceNamespace"], customNamespaceResults["CustomConcreteBuilderNamespace"], builderConcreteName, builderConcreteTypeName);
+        var builderTypeName = GetBuilderTypeName(context, customNamespaceResults["CustomBuilderInterfaceNamespace"], customNamespaceResults["CustomConcreteBuilderNamespace"], builderConcreteName, builderConcreteTypeName, generics);
 
         var returnStatement = context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is not null && !string.IsNullOrEmpty(typedMethodName)
             ? $"return {typedMethodName}();"
@@ -90,7 +90,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
         return Task.FromResult(AddExplicitInterfaceImplementations(context, methodName));
     }
 
-    private static string GetBuilderTypeName(PipelineContext<EntityContext> context, Result<string> builderInterfaceNamespaceResult, Result<string> concreteBuilderNamespaceResult, string builderConcreteName, string builderConcreteTypeName)
+    private static string GetBuilderTypeName(PipelineContext<EntityContext> context, Result<string> builderInterfaceNamespaceResult, Result<string> concreteBuilderNamespaceResult, string builderConcreteName, string builderConcreteTypeName, string generics)
     {
         if (context.Request.Settings.InheritFromInterfaces)
         {
@@ -98,11 +98,11 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
             {
                 return $"{builderInterfaceNamespaceResult.Value}.{context.Request.SourceModel.Interfaces.ElementAt(1).GetClassName()}Builder";
             }
-            return $"{builderInterfaceNamespaceResult.Value}.I{builderConcreteName}Builder";
+            return $"{builderInterfaceNamespaceResult.Value}.I{builderConcreteName}Builder{generics}";
         }
         else if (context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is not null)
         {
-            return $"{concreteBuilderNamespaceResult.Value}.{context.Request.Settings.BaseClass.Name}Builder";
+            return $"{concreteBuilderNamespaceResult.Value}.{context.Request.Settings.BaseClass.Name}Builder{generics}";
         }
         else
         {
