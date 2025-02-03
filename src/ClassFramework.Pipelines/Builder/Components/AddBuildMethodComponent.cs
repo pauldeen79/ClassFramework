@@ -18,8 +18,6 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                     .WithAbstract()
                     .WithReturnTypeName(context.Request.ReturnType)
                     .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x).Build())));
-
-                return Task.FromResult(AddExplicitInterfaceImplementations(context));
             }
             else
             {
@@ -36,7 +34,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                     .WithReturnTypeName("TEntity"));
             }
 
-            return Task.FromResult(Result.Success());
+            return Task.FromResult(AddExplicitInterfaceImplementations(context));
         }
 
         var instanciationResult = context.CreateEntityInstanciation(_formattableStringParser, _csharpExpressionDumper, string.Empty);
@@ -115,11 +113,15 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
             return error;
         }
 
+        var methodName = context.Request.Settings.EnableBuilderInheritance && context.Request.Settings.IsAbstract && context.Request.Settings.IsForAbstractBuilder
+            ? context.Request.Settings.BuildMethodName
+            : GetName(context);
+
         context.Request.Builder.AddMethods(results.Select(x => new MethodBuilder()
             .WithName(context.Request.Settings.BuildMethodName)
             .WithReturnTypeName(x.Value!.EntityName)
             .WithExplicitInterfaceName(x.Value!.BuilderName)
-            .AddStringCodeStatements($"return {context.Request.Settings.BuildMethodName}();")));
+            .AddStringCodeStatements($"return {methodName}();")));
 
         return Result.Success();
     }

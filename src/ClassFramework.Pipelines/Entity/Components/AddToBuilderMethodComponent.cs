@@ -93,7 +93,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
                     .AddStringCodeStatements($"return new {builderConcreteTypeName}{generics}(this);"));
         }
 
-        return Task.FromResult(AddExplicitInterfaceImplementations(context, methodName));
+        return Task.FromResult(AddExplicitInterfaceImplementations(context, methodName, typedMethodName));
     }
 
     private static string GetBuilderTypeName(PipelineContext<EntityContext> context, Result<string> builderInterfaceNamespaceResult, Result<string> concreteBuilderNamespaceResult, string builderConcreteName, string builderConcreteTypeName, Result<GenericFormattableString> builderNameResult)
@@ -118,7 +118,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
         }
     }
 
-    private Result AddExplicitInterfaceImplementations(PipelineContext<EntityContext> context, string methodName)
+    private Result AddExplicitInterfaceImplementations(PipelineContext<EntityContext> context, string methodName, string typedMethodName)
     {
         if (!context.Request.Settings.UseBuilderAbstractionsTypeConversion)
         {
@@ -160,13 +160,15 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
             return error;
         }
 
+        var methodCallName = context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is not null && !string.IsNullOrEmpty(typedMethodName)
+            ? typedMethodName
+            : methodName;
+
         context.Request.Builder.AddMethods(interfaces.Select(x => new MethodBuilder()
             .WithName(methodName)
             .WithReturnTypeName(x.Value!.BuilderName)
             .WithExplicitInterfaceName(x.Value!.EntityName)
-            .AddStringCodeStatements($"return {methodName}();")));
-
-        //context.Request.Builder.AddInterfaces(results.Select(x => typeof(IBuildableEntity<object>).ReplaceGenericTypeName(x.Value!.EntityName)));
+            .AddStringCodeStatements($"return {methodCallName}();")));
 
         return Result.Success();
     }
