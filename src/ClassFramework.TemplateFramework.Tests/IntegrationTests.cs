@@ -1254,7 +1254,7 @@ namespace Test.Abstractions
             get;
         }
 
-        Test.Abstractions.IGenericBuilder<T> ToBuilder();
+        Test.Abstractions.Builders.IGenericBuilder<T> ToBuilder();
     }
 #nullable restore
 }
@@ -1280,7 +1280,7 @@ namespace Test.Abstractions
             get;
         }
 
-        Test.Domain.Abstractions.ILiteralBuilder ToBuilder();
+        Test.Abstractions.Builders.ILiteralBuilder ToBuilder();
     }
 #nullable restore
 }
