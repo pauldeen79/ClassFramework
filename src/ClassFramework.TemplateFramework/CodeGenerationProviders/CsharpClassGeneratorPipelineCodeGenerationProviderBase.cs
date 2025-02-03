@@ -509,7 +509,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyAttributes(CopyAttributes)
             .WithCopyInterfaces(CopyInterfaces)
             .WithCopyMethods(CopyMethods || copyMethodPredicate != null)
-            .WithInheritFromInterfaces(InheritFromInterfaces)
+            .WithInheritFromInterfaces()
             .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
             .WithCopyMethodPredicate(copyMethodPredicate ?? CopyMethodPredicate)
