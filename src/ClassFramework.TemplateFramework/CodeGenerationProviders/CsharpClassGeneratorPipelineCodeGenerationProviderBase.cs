@@ -389,7 +389,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                             new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
                             new MetadataBuilder().WithValue(new Literal($"default({CoreNamespace}.Builders.Abstractions.{{NoGenerics(ClassName($property.TypeName))}}Builder{{GenericArguments(ClassName($property.TypeName), true)}})", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
                             new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression),
-                            new MetadataBuilder().WithName(MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
+                            new MetadataBuilder().WithValue($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}").WithName(MetadataNames.CustomEntityInterfaceTypeName)
                         ),
                     //Temporary fix for flaw in abstractions typename mapping
                     /*new TypenameMappingBuilder()
