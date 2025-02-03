@@ -12,6 +12,9 @@ public class MethodViewModel : MethodViewModelBase<Method>
             .AbbreviateNamespaces(GetContext().GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate)
             .WhenNullOrEmpty("void");
 
+    public string ReturnTypeGenericTypeArguments
+        => GetModel().ReturnTypeGenericTypeArguments.Select(x => x.TypeName).GetGenericTypeArgumentsString();
+
     public string ExplicitInterfaceName
         => !string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface
             ? $"{Model!.ExplicitInterfaceName}."

@@ -3,12 +3,16 @@
 public static class GenericTypeArgumentsContainerExtensions
 {
     public static string GetGenericTypeArgumentsString(this IGenericTypeArgumentsContainer instance, bool addBrackets = true)
+        => instance.GenericTypeArguments.GetGenericTypeArgumentsString(addBrackets);
+
+    public static string GetGenericTypeArgumentsString(this IEnumerable<string> instance, bool addBrackets = true)
     {
         var prefix = addBrackets ? "<" : string.Empty;
         var suffix = addBrackets ? ">" : string.Empty;
 
-        return instance.GenericTypeArguments.Count > 0
-            ? $"{prefix}{string.Join(", ", instance.GenericTypeArguments)}{suffix}"
+        var items = instance.ToArray();
+        return items.Length > 0
+            ? $"{prefix}{string.Join(", ", items)}{suffix}"
             : string.Empty;
     }
 
