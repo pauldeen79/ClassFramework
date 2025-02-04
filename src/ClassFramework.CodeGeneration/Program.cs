@@ -1,5 +1,4 @@
-﻿
-namespace ClassFramework.CodeGeneration;
+﻿namespace ClassFramework.CodeGeneration;
 
 [ExcludeFromCodeCoverage]
 internal static class Program
