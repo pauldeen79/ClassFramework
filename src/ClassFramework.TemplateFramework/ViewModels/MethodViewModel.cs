@@ -3,10 +3,8 @@
 public class MethodViewModel : MethodViewModelBase<Method>
 {
     public bool ShouldRenderModifiers
-        => string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface;
-
-    public bool ShouldRenderNewModifier
-        => GetParentModel() is Interface && GetModel().New;
+        => (string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface)
+        || (GetParentModel() is Interface && GetModel().New);
 
     public string ReturnTypeName
         => GetModel().ReturnTypeName

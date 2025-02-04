@@ -4,7 +4,17 @@ public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T
     where T : IAttributesContainer, IParametersContainer, ICodeStatementsContainer, IVisibilityContainer, ISuppressWarningCodesContainer
 {
     public string Modifiers
-        => GetModel().GetModifiers(Settings.CultureInfo);
+    {
+        get
+        {
+            if (GetParentModel() is Interface && GetModel() is IModifiersContainer modifiersContainer && modifiersContainer.New)
+            {
+                return "new ";
+            }
+
+            return GetModel().GetModifiers(Settings.CultureInfo);
+        }
+    }
 
     public IReadOnlyCollection<string> SuppressWarningCodes
         => GetModel().SuppressWarningCodes;

@@ -24,10 +24,6 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IBuilde
         {
             builder.Append(Model.Modifiers);
         }
-        else if (Model.ShouldRenderNewModifier)
-        {
-            builder.Append("new ");
-        }
 
         builder.Append(Model.ReturnTypeName);
         builder.Append(Model.ReturnTypeGenericTypeArguments);
