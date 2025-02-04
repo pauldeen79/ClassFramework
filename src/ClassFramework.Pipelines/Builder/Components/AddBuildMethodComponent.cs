@@ -78,36 +78,13 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
             return Result.Continue();
         }
 
-        var results = context.Request.SourceModel.Interfaces
-            .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-            .Where(x => context.Request.Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(x.GetNamespaceWithDefault()))
-            .Select(x =>
-            {
-                var metadata = context.Request.GetMappingMetadata(x).ToArray();
-                var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
+        var interfaces = context.Request.GetInterfaceResults(
+            (x, y) => new { EntityName = x, BuilderName = y.ToString() },
+            x => new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) },
+            _formattableStringParser,
+            false);
 
-                if (!string.IsNullOrEmpty(ns))
-                {
-                    var property = new PropertyBuilder()
-                        .WithName("Dummy")
-                        .WithTypeName(x)
-                        .Build();
-                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
-                    var newFullName = $"{ns}.{newTypeName}";
-
-                    return _formattableStringParser.Parse
-                    (
-                        newFullName,
-                        context.Request.FormatProvider,
-                        new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
-                    ).Transform(y => new { EntityName = x, BuilderName = y.ToString() });
-                }
-                return Result.Success(new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) });
-            })
-            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
-            .ToArray();
-
-        var error = Array.Find(results, x => !x.IsSuccessful());
+        var error = Array.Find(interfaces, x => !x.IsSuccessful());
         if (error is not null)
         {
             return error;
@@ -117,7 +94,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
             ? context.Request.Settings.BuildMethodName
             : GetName(context);
 
-        context.Request.Builder.AddMethods(results.Select(x => new MethodBuilder()
+        context.Request.Builder.AddMethods(interfaces.Select(x => new MethodBuilder()
             .WithName(context.Request.Settings.BuildMethodName)
             .WithReturnTypeName(x.Value!.EntityName)
             .WithExplicitInterfaceName(x.Value!.BuilderName)

@@ -13,41 +13,19 @@ public class AddInterfacesComponent(IFormattableStringParser formattableStringPa
             return Task.FromResult(Result.Success());
         }
 
-        var results = context.Request.SourceModel.Interfaces
-            .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-            .Select(x =>
-            {
-                var metadata = context.Request.GetMappingMetadata(x).ToArray();
-                var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
+        var interfaces = context.Request.GetInterfaceResults(
+            (_, x) => x.ToString(),
+            x => context.Request.MapTypeName(x.FixTypeName()),
+            _formattableStringParser,
+            true);
 
-                if (!string.IsNullOrEmpty(ns))
-                {
-                    var property = new PropertyBuilder()
-                        .WithName("Dummy")
-                        .WithTypeName(x)
-                        .Build();
-                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
-                    var newFullName = $"{ns}.{newTypeName}";
-
-                    return _formattableStringParser.Parse
-                    (
-                        newFullName,
-                        context.Request.FormatProvider,
-                        new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
-                    ).Transform(x => x.ToString());
-                }
-                return Result.Success(context.Request.MapTypeName(x.FixTypeName()));
-            })
-            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
-            .ToArray();
-
-        var error = Array.Find(results, x => !x.IsSuccessful());
+        var error = Array.Find(interfaces, x => !x.IsSuccessful());
         if (error is not null)
         {
             return Task.FromResult<Result>(error);
         }
 
-        context.Request.Builder.AddInterfaces(results.Select(x => x.Value!));
+        context.Request.Builder.AddInterfaces(interfaces.Select(x => x.Value!));
 
         return Task.FromResult(Result.Success());
     }

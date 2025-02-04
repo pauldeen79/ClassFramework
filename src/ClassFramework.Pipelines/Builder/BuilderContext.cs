@@ -75,6 +75,40 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
         }
     }
 
+    public Result<T>[] GetInterfaceResults<T>(
+        Func<string, GenericFormattableString, T> namespaceTransformation,
+        Func<string, T> noNamespaceTransformation,
+        IFormattableStringParser formattableStringParser,
+        bool includeNonAbstractionNamespaces)
+        => SourceModel.Interfaces
+            .Where(x => (Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+                        && (includeNonAbstractionNamespaces || Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(x.GetNamespaceWithDefault())))
+            .Select(x =>
+            {
+                var metadata = GetMappingMetadata(x).ToArray();
+                var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
+
+                if (!string.IsNullOrEmpty(ns))
+                {
+                    var property = new PropertyBuilder()
+                        .WithName("Dummy")
+                        .WithTypeName(x)
+                        .Build();
+                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
+                    var newFullName = $"{ns}.{newTypeName}";
+
+                    return formattableStringParser.Parse
+                    (
+                        newFullName,
+                        FormatProvider,
+                        new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(this), property, Settings)
+                    ).Transform(y => namespaceTransformation(x, y));
+                }
+                return Result.Success(noNamespaceTransformation(x));
+            })
+            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
+            .ToArray();
+
     private string ReturnValue
     {
         get
