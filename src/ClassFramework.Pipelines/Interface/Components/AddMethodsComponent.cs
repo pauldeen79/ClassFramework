@@ -16,6 +16,10 @@ public class AddMethodsComponent : IPipelineComponent<InterfaceContext>
             .Select(x => x.ToBuilder()
                 .WithReturnTypeName(context.Request.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(context.Request.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))
                 .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = context.Request.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
+                .With(y =>
+                {
+                    y.WithNew(context.Request.Settings.UseBuilderAbstractionsTypeConversion && context.Request.Builder.Interfaces.Any() && !context.Request.Builder.Interfaces.Contains(y.ReturnTypeName));
+                })
             ));
 
         return Task.FromResult(Result.Success());
