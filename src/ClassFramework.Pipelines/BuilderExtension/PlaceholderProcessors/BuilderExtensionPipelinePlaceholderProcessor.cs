@@ -4,7 +4,7 @@ public class BuilderExtensionPipelinePlaceholderProcessor(IEnumerable<IPipelineP
 {
     private readonly IEnumerable<IPipelinePlaceholderProcessor> _pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
 
-    public Result<GenericFormattableString> Evaluate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result<GenericFormattableString> Evaluate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
@@ -21,7 +21,7 @@ public class BuilderExtensionPipelinePlaceholderProcessor(IEnumerable<IPipelineP
         return Result.Continue<GenericFormattableString>();
     }
 
-    public Result Validate(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
+    public Result Validate(string value, PlaceholderSettings settings, object? context, IFormattableStringParser formattableStringParser)
     {
         return Result.Success();
     }
