@@ -33,6 +33,13 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
         return Task.FromResult(Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract models. See the inner results for more details.")));
     }
 
+    protected Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingAbstractionsInterfaces()
+    {
+        var modelsResult = GetCrossCuttingModels().Where(x => x.Namespace == $"{CoreNamespace}.Abstractions").Select(x => Result.Success(x.Build())).ToArray();
+
+        return Task.FromResult(Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract interfaces. See the inner results for more details.")));
+    }
+
     protected IEnumerable<TypeBaseBuilder> GetCrossCuttingModels()
     {
         return new List<TypeBaseBuilder>(new[]

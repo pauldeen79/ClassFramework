@@ -54,7 +54,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<TemplateFrameworkEntities>()
             .AddScoped<CrossCuttingAbstractBuilders>()
             .AddScoped<CrossCuttingAbstractEntities>()
-            //.AddScoped<CrossCuttingAbstractionsBuildersInterfaces>()
+            .AddScoped<CrossCuttingAbstractionsBuildersInterfaces>()
             //.AddScoped<CrossCuttingAbstractionsInterfaces>()
             //.AddScoped<CrossCuttingAbstractNonGenericBuilders>()
             //.AddScoped<CrossCuttingOverrideBuilders>()
@@ -2484,6 +2484,43 @@ namespace Test.Domain.Builders
         {
             return ToBuilder();
         }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_CrossCutting_AbstractionsBuildersInterfaces()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<CrossCuttingAbstractionsBuildersInterfaces>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.Builders.Abstractions
+{
+#nullable enable
+    public partial interface IFunctionCallArgumentBuilder
+    {
+        CrossCutting.Utilities.Parsers.Abstractions.FunctionCallArgument Build();
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.Builders.Abstractions
+{
+#nullable enable
+    public partial interface IFunctionCallArgumentBuilder<T> : CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
+    {
+        new CrossCutting.Utilities.Parsers.Abstractions.FunctionCallArgument<T> Build();
     }
 #nullable restore
 }
