@@ -42,6 +42,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
 
     protected IEnumerable<TypeBaseBuilder> GetCrossCuttingModels()
     {
+#pragma warning disable CA1861 // Avoid constant arrays as arguments
         return new List<TypeBaseBuilder>(new[]
         {
             new InterfaceBuilder
@@ -1166,5 +1167,6 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                 }),
             },
         } );
+#pragma warning restore CA1861 // Avoid constant arrays as arguments
     }
 }
