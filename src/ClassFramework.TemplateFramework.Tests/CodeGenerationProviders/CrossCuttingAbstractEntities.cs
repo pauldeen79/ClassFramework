@@ -1,0 +1,13 @@
+﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
+
+public class CrossCuttingAbstractEntities(IPipelineService pipelineService) : CrossCuttingClassBase(pipelineService)
+{
+    public override string Path => "CrossCutting.Utilities.Parsers";
+
+    protected override bool EnableEntityInheritance => true;
+    protected override bool IsAbstract => true;
+    protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.None; // not needed for abstract entities, because each derived class will do its own validation
+
+    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
+        => GetEntities(GetCrossCuttingAbstractModels(), CurrentNamespace);
+}

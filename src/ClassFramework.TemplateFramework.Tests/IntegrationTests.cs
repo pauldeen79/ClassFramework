@@ -52,6 +52,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<OverrideTypeBuilders>()
             .AddScoped<OverrideTypeEntities>()
             .AddScoped<TemplateFrameworkEntities>()
+            .AddScoped<CrossCuttingAbstractBuilders>()
+            .AddScoped<CrossCuttingAbstractEntities>()
+            //.AddScoped<CrossCuttingAbstractionsBuildersInterfaces>()
+            //.AddScoped<CrossCuttingAbstractionsInterfaces>()
+            //.AddScoped<CrossCuttingAbstractNonGenericBuilders>()
+            //.AddScoped<CrossCuttingOverrideBuilders>()
+            //.AddScoped<CrossCuttingOverrideEntities>()
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
         _scope = _serviceProvider.CreateScope();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
@@ -2393,6 +2400,89 @@ namespace Test.Domain.Builders
             if (myProperty is null) throw new System.ArgumentNullException(nameof(myProperty));
             MyProperty = myProperty;
             return this;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_CrossCutting_AbstractBuilders()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<CrossCuttingAbstractBuilders>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.Builders
+{
+#nullable enable
+    public abstract partial class FunctionCallArgumentBaseBuilder<TBuilder, TEntity> : FunctionCallArgumentBaseBuilder, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
+        where TEntity : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase
+        where TBuilder : FunctionCallArgumentBaseBuilder<TBuilder, TEntity>
+    {
+        protected FunctionCallArgumentBaseBuilder(CrossCutting.Utilities.Parsers.FunctionCallArgumentBase source) : base(source)
+        {
+        }
+
+        protected FunctionCallArgumentBaseBuilder() : base()
+        {
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArgumentBase Build()
+        {
+            return BuildTyped();
+        }
+
+        public abstract TEntity BuildTyped();
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_CrossCutting_AbstractEntities()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<CrossCuttingAbstractEntities>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers
+{
+#nullable enable
+    public abstract partial record FunctionCallArgumentBase : CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
+    {
+        protected FunctionCallArgumentBase()
+        {
+        }
+
+        public abstract CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBaseBuilder ToBuilder();
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToBuilder();
         }
     }
 #nullable restore
