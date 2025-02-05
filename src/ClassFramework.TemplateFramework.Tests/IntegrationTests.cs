@@ -58,7 +58,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<CrossCuttingAbstractionsInterfaces>()
             .AddScoped<CrossCuttingAbstractNonGenericBuilders>()
             .AddScoped<CrossCuttingOverrideBuilders>()
-            //.AddScoped<CrossCuttingOverrideEntities>()
+            .AddScoped<CrossCuttingOverrideEntities>()
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
         _scope = _serviceProvider.CreateScope();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
@@ -2408,7 +2408,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_CrossCutting_AbstractBuilders()
+    public async Task Can_Generate_Code_For_CrossCutting_Abstract_Builders()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -2455,7 +2455,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_CrossCutting_AbstractEntities()
+    public async Task Can_Generate_Code_For_CrossCutting_Abstract_Entities()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -2491,7 +2491,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_CrossCutting_AbstractionsBuildersInterfaces()
+    public async Task Can_Generate_Code_For_CrossCutting_Abstractions_Builders_Interfaces()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -2528,7 +2528,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_CrossCutting_AbstractionsInterfaces()
+    public async Task Can_Generate_Code_For_CrossCutting_Abstractions_Interfaces()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -2565,7 +2565,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_CrossCutting_AbstractNonGenericBuilders()
+    public async Task Can_Generate_Code_For_CrossCutting_Abstract_Non_Generic_Builders()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -2656,7 +2656,7 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
-    public async Task Can_Generate_Code_For_CrossCutting_OverrideBuilders()
+    public async Task Can_Generate_Code_For_CrossCutting_Override_Builders()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -3389,6 +3389,468 @@ namespace Test.Domain.Builders
             if (value is null) throw new System.ArgumentNullException(nameof(value));
             Value = value;
             return this;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_CrossCutting_Override_Entities()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<CrossCuttingOverrideEntities>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Should().HaveCount(12);
+        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
+{
+#nullable enable
+    public partial record ConstantArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
+    {
+        public object? Value
+        {
+            get;
+        }
+
+        public ConstantArgument(object? value) : base()
+        {
+            this.Value = value;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ConstantArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ConstantArgumentBuilder(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
+{
+#nullable enable
+    public partial record ConstantArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
+    {
+        public T Value
+        {
+            get;
+        }
+
+        public ConstantArgument(T value) : base()
+        {
+            this.Value = value;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ConstantArgumentBuilder<T> ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ConstantArgumentBuilder<T>(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T> CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(2).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
+{
+#nullable enable
+    public partial record ConstantResultArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
+    {
+        public CrossCutting.Common.Results.Result<object?> Result
+        {
+            get;
+        }
+
+        public ConstantResultArgument(CrossCutting.Common.Results.Result<object?> result) : base()
+        {
+            this.Result = result;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ConstantResultArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ConstantResultArgumentBuilder(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(3).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
+{
+#nullable enable
+    public partial record ConstantResultArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
+    {
+        public CrossCutting.Common.Results.Result<T> Result
+        {
+            get;
+        }
+
+        public ConstantResultArgument(CrossCutting.Common.Results.Result<T> result) : base()
+        {
+            this.Result = result;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ConstantResultArgumentBuilder<T> ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ConstantResultArgumentBuilder<T>(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T> CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(4).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
+{
+#nullable enable
+    public partial record DelegateArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
+    {
+        public System.Func<object?> Delegate
+        {
+            get;
+        }
+
+        public System.Func<System.Type>? ValidationDelegate
+        {
+            get;
+        }
+
+        public DelegateArgument(System.Func<object?> @delegate, System.Func<System.Type>? validationDelegate) : base()
+        {
+            this.Delegate = @delegate;
+            this.ValidationDelegate = validationDelegate;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.DelegateArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.DelegateArgumentBuilder(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(5).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
+{
+#nullable enable
+    public partial record DelegateArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
+    {
+        public System.Func<T> Delegate
+        {
+            get;
+        }
+
+        public System.Func<System.Type>? ValidationDelegate
+        {
+            get;
+        }
+
+        public DelegateArgument(System.Func<T> @delegate, System.Func<System.Type>? validationDelegate) : base()
+        {
+            this.Delegate = @delegate;
+            this.ValidationDelegate = validationDelegate;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.DelegateArgumentBuilder<T> ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.DelegateArgumentBuilder<T>(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T> CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(6).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
+{
+#nullable enable
+    public partial record DelegateResultArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
+    {
+        public System.Func<CrossCutting.Common.Results.Result<object?>> Delegate
+        {
+            get;
+        }
+
+        public System.Func<CrossCutting.Common.Results.Result<System.Type>>? ValidationDelegate
+        {
+            get;
+        }
+
+        public DelegateResultArgument(System.Func<CrossCutting.Common.Results.Result<object?>> @delegate, System.Func<CrossCutting.Common.Results.Result<System.Type>>? validationDelegate) : base()
+        {
+            this.Delegate = @delegate;
+            this.ValidationDelegate = validationDelegate;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.DelegateResultArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.DelegateResultArgumentBuilder(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(7).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
+{
+#nullable enable
+    public partial record DelegateResultArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
+    {
+        public System.Func<CrossCutting.Common.Results.Result<T>> Delegate
+        {
+            get;
+        }
+
+        public System.Func<CrossCutting.Common.Results.Result<System.Type>>? ValidationDelegate
+        {
+            get;
+        }
+
+        public DelegateResultArgument(System.Func<CrossCutting.Common.Results.Result<T>> @delegate, System.Func<CrossCutting.Common.Results.Result<System.Type>>? validationDelegate) : base()
+        {
+            this.Delegate = @delegate;
+            this.ValidationDelegate = validationDelegate;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.DelegateResultArgumentBuilder<T> ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.DelegateResultArgumentBuilder<T>(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T> CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(8).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
+{
+#nullable enable
+    public partial record EmptyArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
+    {
+        public EmptyArgument() : base()
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.EmptyArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.EmptyArgumentBuilder(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(9).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
+{
+#nullable enable
+    public partial record EmptyArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
+    {
+        public EmptyArgument() : base()
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.EmptyArgumentBuilder<T> ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.EmptyArgumentBuilder<T>(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T> CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(10).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
+{
+#nullable enable
+    public partial record ExpressionArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
+    {
+        public string Value
+        {
+            get;
+        }
+
+        public ExpressionArgument(string value) : base()
+        {
+            this.Value = value;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ExpressionArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ExpressionArgumentBuilder(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(10).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
+{
+#nullable enable
+    public partial record ExpressionArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
+    {
+        public string Value
+        {
+            get;
+        }
+
+        public ExpressionArgument(string value) : base()
+        {
+            this.Value = value;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ExpressionArgumentBuilder ToTypedBuilder()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ExpressionArgumentBuilder(this);
+        }
+
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
+        {
+            return ToTypedBuilder();
         }
     }
 #nullable restore
