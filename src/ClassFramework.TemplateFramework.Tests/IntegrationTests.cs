@@ -56,7 +56,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<CrossCuttingAbstractEntities>()
             .AddScoped<CrossCuttingAbstractionsBuildersInterfaces>()
             .AddScoped<CrossCuttingAbstractionsInterfaces>()
-            //.AddScoped<CrossCuttingAbstractNonGenericBuilders>()
+            .AddScoped<CrossCuttingAbstractNonGenericBuilders>()
             //.AddScoped<CrossCuttingOverrideBuilders>()
             //.AddScoped<CrossCuttingOverrideEntities>()
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
@@ -2558,6 +2558,97 @@ namespace Test.Domain.Builders
     public partial interface IFunctionCallArgument<T> : CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
     {
         new CrossCutting.Utilities.Parsers.Builders.IFunctionCallArgumentBuilder<T> ToBuilder();
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_CrossCutting_AbstractNonGenericBuilders()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<CrossCuttingAbstractNonGenericBuilders>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Should().HaveCount(2);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.Builders
+{
+#nullable enable
+    public abstract partial class AbstractBaseBuilder : System.ComponentModel.INotifyPropertyChanged
+    {
+        private string _myBaseProperty;
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public string MyBaseProperty
+        {
+            get
+            {
+                return _myBaseProperty;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_myBaseProperty!, value!);
+                _myBaseProperty = value;
+                if (hasChanged) HandlePropertyChanged(nameof(MyBaseProperty));
+            }
+        }
+
+        protected AbstractBaseBuilder(CrossCutting.Utilities.Parsers.AbstractBase source)
+        {
+            _myBaseProperty = source.MyBaseProperty;
+        }
+
+        protected AbstractBaseBuilder()
+        {
+            _myBaseProperty = string.Empty;
+            SetDefaultValues();
+        }
+
+        public abstract CrossCutting.Utilities.Parsers.AbstractBase Build();
+
+        partial void SetDefaultValues();
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.Builders
+{
+#nullable enable
+    public abstract partial class AbstractBaseBuilder<T> : System.ComponentModel.INotifyPropertyChanged
+    {
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        protected AbstractBaseBuilder(CrossCutting.Utilities.Parsers.AbstractBase<T> source)
+        {
+        }
+
+        protected AbstractBaseBuilder()
+        {
+            SetDefaultValues();
+        }
+
+        public abstract CrossCutting.Utilities.Parsers.AbstractBase<T> Build();
+
+        partial void SetDefaultValues();
+
+        protected void HandlePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
     }
 #nullable restore
 }
