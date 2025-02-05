@@ -40,6 +40,66 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
         return Task.FromResult(Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract interfaces. See the inner results for more details.")));
     }
 
+    protected Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingOverrideModels(string abstractTypeName)
+    {
+        Guard.IsNotNull(abstractTypeName);
+
+        //var modelsResult = await GetType().Assembly.GetTypes()
+        //    .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y.WithoutGenerics() == abstractType.WithoutGenerics()))
+        //    .SelectAsync(GetModel)
+        //    .ConfigureAwait(false);
+        var modelsResult = GetCrossCuttingModels().Where(x => x.Interfaces.Any(y => y.WithoutGenerics() == abstractTypeName.WithoutGenerics())).Select(x => Result.Success(x.Build())).ToArray();
+
+        return Task.FromResult(Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create override models. See the inner results for more details.")));
+    }
+
+    protected async Task<Result<TypeBase>> CreateCrossCuttingBaseClass(string typeName, string @namespace)
+    {
+        Guard.IsNotNull(typeName);
+        Guard.IsNotNull(@namespace);
+
+        return await ProcessCrossCuttingBaseClassResult(Task.FromResult(Result.Success(GetCrossCuttingModels().Single(x => x.GetFullName() == typeName).Build())), async typeBaseResult =>
+        {
+            var entitySettings = new PipelineSettingsBuilder()
+               .WithAddSetters(AddSetters)
+               .WithAddBackingFields(AddBackingFields)
+               .WithSetterVisibility(SetterVisibility)
+               .WithCreateAsObservable(CreateAsObservable)
+               .WithCreateRecord(CreateRecord)
+               .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+               .WithCopyAttributes(CopyAttributes)
+               .WithCopyInterfaces(CopyInterfaces)
+               .WithCopyMethods(CopyMethods)
+               .WithInheritFromInterfaces(InheritFromInterfaces)
+               .WithCopyAttributePredicate(CopyAttributePredicate)
+               .WithCopyInterfacePredicate(CopyInterfacePredicate)
+               .WithCopyMethodPredicate(CopyMethodPredicate)
+               .WithEntityNameFormatString("{NoInterfacePrefix($class.Name)}")
+               .WithEntityNamespaceFormatString(@namespace)
+               .WithEnableInheritance()
+               .WithIsAbstract()
+               .WithBaseClass(null)
+               .WithInheritanceComparisonDelegate(
+                   (parentNameContainer, typeBase)
+                       => parentNameContainer is not null
+                       && typeBase is not null
+                       && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
+                           || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
+                           || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
+                           || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
+                       ))
+               .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
+               .WithEnableNullableReferenceTypes()
+               .AddTypenameMappings(CreateTypenameMappings())
+               .AddNamespaceMappings(CreateNamespaceMappings())
+               .WithValidateArguments(ValidateArgumentsInConstructor)
+               .WithAddNullChecks(AddNullChecks)
+               .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull);
+
+            return await PipelineService.ProcessAsync(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo)).ConfigureAwait(false);
+        }).ConfigureAwait(false);
+    }
+
     protected IEnumerable<TypeBaseBuilder> GetCrossCuttingModels()
     {
 #pragma warning disable CA1861 // Avoid constant arrays as arguments
@@ -1168,5 +1228,19 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
             },
         } );
 #pragma warning restore CA1861 // Avoid constant arrays as arguments
+    }
+
+    private static async Task<Result<T>> ProcessCrossCuttingBaseClassResult<T>(Task<Result<TypeBase>> baseClassResultTask, Func<TypeBase?, Task<Result<T>>> successTask)
+    {
+        Guard.IsNotNull(baseClassResultTask);
+        Guard.IsNotNull(successTask);
+
+        var baseClassResult = await baseClassResultTask.ConfigureAwait(false);
+        if (!baseClassResult.IsSuccessful() && baseClassResult.Status != ResultStatus.NotFound)
+        {
+            return Result.Error<T>([baseClassResult], "Could not get base class, see inner results for details");
+        }
+
+        return await successTask(baseClassResult.Value).ConfigureAwait(false);
     }
 }
