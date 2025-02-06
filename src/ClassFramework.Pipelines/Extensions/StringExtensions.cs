@@ -47,7 +47,7 @@ public static class StringExtensions
         if (!string.IsNullOrEmpty(ns))
         {
             // i.e. SourceNamespace.T => TargetNamespace.T
-            var namespaceMapping = settings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
+            var namespaceMapping = settings.NamespaceMappings.LastOrDefault(x => x.SourceNamespace == ns);
             if (namespaceMapping is not null)
             {
                 return $"{namespaceMapping.TargetNamespace}.{typeName.GetClassName()}{suffix}";
@@ -64,7 +64,7 @@ public static class StringExtensions
         if (!string.IsNullOrEmpty(ns))
         {
             // i.e. SourceNamespace.T => TargetNamespace.T
-            var namespaceMapping = settings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
+            var namespaceMapping = settings.NamespaceMappings.LastOrDefault(x => x.SourceNamespace == ns);
             if (namespaceMapping is not null)
             {
                 return namespaceMapping.TargetNamespace;
@@ -121,7 +121,7 @@ public static class StringExtensions
 
     private static string MapTypeUsingAlternateTypeMetadata(string typeName, PipelineSettings settings, string newCollectionTypeName, string alternateTypeMetadataName)
     {
-        var typenameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName()
+        var typenameMapping = settings.TypenameMappings.LastOrDefault(x => x.SourceTypeName == (typeName.IsCollectionTypeName()
             ? typeName.GetGenericArguments()
             : typeName));
         if (typenameMapping is not null)

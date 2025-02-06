@@ -101,6 +101,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .ToArray();
 
     protected virtual string[] GetBuilderAbstractionsTypeConversionNamespaces() => [$"{CoreNamespace}.Abstractions"];
+    protected virtual string[] GetCodeGenerationBuilderAbstractionsTypeConversionNamespaces() => [$"{CodeGenerationRootNamespace}.Models.Abstractions"];
 
     protected virtual IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetTypes().Where(IsAbstractType);
@@ -376,32 +377,33 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         => GetType().Assembly.GetTypes()
             .Where(x => !InheritFromInterfaces && (useBuilderAbstractionsTypeConversion ?? UseBuilderAbstractionsTypeConversion)
                 && x.IsInterface
-                && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions"
+                && !string.IsNullOrEmpty(x.Namespace)
+                && GetCodeGenerationBuilderAbstractionsTypeConversionNamespaces().Contains(x.Namespace)
                 && !SkipNamespaceOnTypenameMappings(x.Namespace)
                 && x.FullName is not null).SelectMany(x =>
                 new[]
                 {
-            new TypenameMappingBuilder()
-                .WithSourceTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
-                .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
-                .AddMetadata
-                (
-                    new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderNamespace),
-                    new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder").WithName(MetadataNames.CustomBuilderName),
-                    new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderInterfaceNamespace),
-                    new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments(ClassName($property.TypeName), true)}").WithName(MetadataNames.CustomBuilderInterfaceName),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
-                    new MetadataBuilder().WithValue(new Literal($"default({CoreNamespace}.Builders.Abstractions.{{NoGenerics(ClassName($property.TypeName))}}Builder{{GenericArguments(ClassName($property.TypeName), true)}})", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression),
-                    new MetadataBuilder().WithValue($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}").WithName(MetadataNames.CustomEntityInterfaceTypeName)
-                ),
-            //Temporary fix for flaw in abstractions typename mapping
-            new TypenameMappingBuilder()
-                .WithSourceTypeName($"{CoreNamespace}.Builders.I{x.GetEntityClassName()}Builder")
-                .WithTargetTypeName($"{CoreNamespace}.Builders.Abstractions.I{x.GetEntityClassName()}Builder"),
-            new TypenameMappingBuilder()
-                .WithSourceTypeName($"{CoreNamespace}.Abstractions.{x.GetEntityClassName()}")
-                .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
+                    new TypenameMappingBuilder()
+                        .WithSourceTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
+                        .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
+                        .AddMetadata
+                        (
+                            new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderNamespace),
+                            new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder").WithName(MetadataNames.CustomBuilderName),
+                            new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderInterfaceNamespace),
+                            new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments(ClassName($property.TypeName), true)}").WithName(MetadataNames.CustomBuilderInterfaceName),
+                            new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
+                            new MetadataBuilder().WithValue(new Literal($"default({CoreNamespace}.Builders.Abstractions.{{NoGenerics(ClassName($property.TypeName))}}Builder{{GenericArguments(ClassName($property.TypeName), true)}})", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
+                            new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression),
+                            new MetadataBuilder().WithValue($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}").WithName(MetadataNames.CustomEntityInterfaceTypeName)
+                        ),
+                    //Temporary fix for flaw in abstractions typename mapping
+                    new TypenameMappingBuilder()
+                        .WithSourceTypeName($"{CoreNamespace}.Builders.I{x.GetEntityClassName()}Builder")
+                        .WithTargetTypeName($"{CoreNamespace}.Builders.Abstractions.I{x.GetEntityClassName()}Builder"),
+                    new TypenameMappingBuilder()
+                        .WithSourceTypeName($"{CoreNamespace}.Abstractions.{x.GetEntityClassName()}")
+                        .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
                 });
 
     protected virtual IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
