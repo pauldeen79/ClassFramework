@@ -59,6 +59,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<CrossCuttingAbstractNonGenericBuilders>()
             .AddScoped<CrossCuttingOverrideBuilders>()
             .AddScoped<CrossCuttingOverrideEntities>()
+            .AddScoped<MultipleInterfacesAbstractEntities>()
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
         _scope = _serviceProvider.CreateScope();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
@@ -3851,6 +3852,42 @@ namespace Test.Domain.Builders
         CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
         {
             return ToTypedBuilder();
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_ClassFramework_Abstract_Entities()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<MultipleInterfacesAbstractEntities>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"namespace ClassFramework.Domain
+{
+#nullable enable
+    public abstract partial class TypeBase : ClassFramework.Domain.Abstractions.IType
+    {
+        protected TypeBase()
+        {
+        }
+
+        public abstract ClassFramework.Domain.Builders.TypeBaseBuilder ToBuilder();
+
+        ClassFramework.Domain.Builders.Abstractions.ITypeBuilder ClassFramework.Domain.Abstractions.IType.ToBuilder()
+        {
+            return ToBuilder();
         }
     }
 #nullable restore
