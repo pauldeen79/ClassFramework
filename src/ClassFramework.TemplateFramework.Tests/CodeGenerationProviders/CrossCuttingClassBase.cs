@@ -44,10 +44,6 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
     {
         Guard.IsNotNull(abstractTypeName);
 
-        //var modelsResult = await GetType().Assembly.GetTypes()
-        //    .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y.WithoutGenerics() == abstractType.WithoutGenerics()))
-        //    .SelectAsync(GetModel)
-        //    .ConfigureAwait(false);
         var modelsResult = GetCrossCuttingModels().Where(x => x.Interfaces.Any(y => y.WithoutGenerics() == abstractTypeName.WithoutGenerics())).Select(x => Result.Success(x.Build())).ToArray();
 
         return Task.FromResult(Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create override models. See the inner results for more details.")));
