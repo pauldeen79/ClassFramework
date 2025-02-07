@@ -100,7 +100,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
     {
         if (context.Request.Settings.InheritFromInterfaces)
         {
-            if (context.Request.SourceModel.Interfaces.Count >= 2)
+            if (context.Request.SourceModel.Interfaces.Count >= 2 && !context.Request.Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(context.Request.SourceModel.Namespace))
             {
                 var builderName = builderNameResult.Value!.ToString().Replace(context.Request.SourceModel.Name, context.Request.SourceModel.Interfaces.ElementAt(1).GetClassName());
                 return $"{builderInterfaceNamespaceResult.Value}.{builderName}";
