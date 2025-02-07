@@ -14,7 +14,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
         context.Request.Builder.AddProperties(
             properties.Select
             (
-                property => context.Request.CreatePropertyForEntity(property/*, context.Request.Settings.UseBuilderAbstractionsTypeConversion ? MetadataNames.CustomEntityInterfaceTypeName : string.Empty*/)
+                property => context.Request.CreatePropertyForEntity(property)
                     .WithVirtual(property.Virtual)
                     .WithAbstract(property.Abstract)
                     .WithProtected(property.Protected)

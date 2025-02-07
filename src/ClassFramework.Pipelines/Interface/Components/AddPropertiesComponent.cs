@@ -17,7 +17,7 @@ public class AddPropertiesComponent : IPipelineComponent<InterfaceContext>
             // TODO: Maybe add a setting so we can safely determine whether we are creating a Builder or an Entity interface...
             metadataName = context.Request.SourceModel.Namespace.Contains("Builders") || context.Request.SourceModel.Name.Contains("Builder")
                 ? MetadataNames.CustomBuilderInterfaceTypeName
-                : string.Empty /*MetadataNames.CustomEntityInterfaceTypeName*/;
+                : string.Empty;
         }
 
         context.Request.Builder.AddProperties
