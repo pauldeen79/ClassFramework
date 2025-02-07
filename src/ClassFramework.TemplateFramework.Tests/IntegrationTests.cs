@@ -59,6 +59,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<CrossCuttingAbstractNonGenericBuilders>()
             .AddScoped<CrossCuttingOverrideBuilders>()
             .AddScoped<CrossCuttingOverrideEntities>()
+            .AddScoped<MultipleInterfacesAbstractBuilders>()
             .AddScoped<MultipleInterfacesAbstractEntities>()
             .AddScoped<MultipleInterfacesAbstractionsInterfaces>()
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
@@ -3853,6 +3854,68 @@ namespace Test.Domain.Builders
         CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
         {
             return ToTypedBuilder();
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_ClassFramework_Abstract_Builders()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<MultipleInterfacesAbstractBuilders>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"namespace ClassFramework.Domain.Builders
+{
+#nullable enable
+    public abstract partial class TypeBaseBuilder<TBuilder, TEntity> : TypeBaseBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder
+        where TEntity : ClassFramework.Domain.TypeBase
+        where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
+    {
+        protected TypeBaseBuilder(ClassFramework.Domain.TypeBase source) : base(source)
+        {
+        }
+
+        protected TypeBaseBuilder() : base()
+        {
+        }
+
+        public override ClassFramework.Domain.TypeBase Build()
+        {
+            return BuildTyped();
+        }
+
+        public abstract TEntity BuildTyped();
+
+        ClassFramework.Domain.Abstractions.IType ClassFramework.Domain.Builders.Abstractions.ITypeBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.INameContainer ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IDefaultValueContainer ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        public static implicit operator ClassFramework.Domain.TypeBase(TypeBaseBuilder<TBuilder, TEntity> entity)
+        {
+            return entity.BuildTyped();
         }
     }
 #nullable restore
