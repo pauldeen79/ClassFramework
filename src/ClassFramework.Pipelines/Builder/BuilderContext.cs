@@ -94,7 +94,7 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
                         .WithName("Dummy")
                         .WithTypeName(x)
                         .Build();
-                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
+                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
                     var newFullName = $"{ns}.{newTypeName}";
 
                     return formattableStringParser.Parse

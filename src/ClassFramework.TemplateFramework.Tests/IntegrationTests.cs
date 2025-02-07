@@ -1263,7 +1263,7 @@ namespace Test.Abstractions
             get;
         }
 
-        Test.Abstractions.Builders.IGenericBuilder<T> ToBuilder();
+        Test.Domain.Abstractions.Builders.IGenericBuilder<T> ToBuilder();
     }
 #nullable restore
 }
@@ -1289,7 +1289,7 @@ namespace Test.Abstractions
             get;
         }
 
-        Test.Abstractions.Builders.ILiteralBuilder ToBuilder();
+        Test.Domain.Abstractions.Builders.ILiteralBuilder ToBuilder();
     }
 #nullable restore
 }
@@ -1327,7 +1327,7 @@ namespace Test.Abstractions
             set;
         }
 
-        Test.Abstractions.IGeneric<T> Build();
+        Test.Domain.Abstractions.IGeneric<T> Build();
     }
 #nullable restore
 }
@@ -1355,7 +1355,7 @@ namespace Test.Abstractions
             set;
         }
 
-        Test.Abstractions.ILiteral Build();
+        Test.Domain.Abstractions.ILiteral Build();
     }
 #nullable restore
 }
@@ -2160,7 +2160,7 @@ using System.Text;
 namespace Test.Domain.Builders.Types
 {
 #nullable enable
-    public partial class MyGenericOverrideBuilder<T> : AbstractBaseBuilder<MyGenericOverrideBuilder<T>, Test.Domain.Types.MyGenericOverride<T>>, Test.Abstractions.Builders.IAbstractBase<T>Builder
+    public partial class MyGenericOverrideBuilder<T> : AbstractBaseBuilder<MyGenericOverrideBuilder<T>, Test.Domain.Types.MyGenericOverride<T>>, Test.Domain.Abstractions.Builders.IAbstractBaseBuilder
     {
         private T _myOverrideProperty;
 

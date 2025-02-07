@@ -139,7 +139,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
                         .WithName("Dummy")
                         .WithTypeName(x)
                         .Build();
-                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
+                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
                     var newFullName = $"{ns}.{newTypeName}";
 
                     return _formattableStringParser.Parse

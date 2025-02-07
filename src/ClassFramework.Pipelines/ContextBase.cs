@@ -219,7 +219,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         }
     }
 
-    public PropertyBuilder CreatePropertyForEntity(Property property)
+    public PropertyBuilder CreatePropertyForEntity(Property property, string alternateTypeMetadataName = "")
     {
         property = property.IsNotNull(nameof(property));
 
@@ -227,10 +227,10 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .WithName(property.Name)
             .WithTypeName(MapTypeName(property.TypeName
                 .FixCollectionTypeName(Settings.EntityNewCollectionTypeName)
-                .FixNullableTypeName(property), string.Empty))
+                .FixNullableTypeName(property), alternateTypeMetadataName))
             .WithIsNullable(property.IsNullable)
             .WithIsValueType(property.IsValueType)
-            .AddGenericTypeArguments(property.GenericTypeArguments)
+            .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(MapTypeName(x.TypeName, alternateTypeMetadataName)).Build()))
             .AddAttributes(property.Attributes
                 .Where(x => Settings.CopyAttributes && (Settings.CopyAttributePredicate?.Invoke(x) ?? true))
                 .Select(x => MapAttribute(x).ToBuilder()))
