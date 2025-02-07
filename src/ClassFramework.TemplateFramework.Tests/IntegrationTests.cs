@@ -61,6 +61,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<CrossCuttingOverrideEntities>()
             .AddScoped<MultipleInterfacesAbstractBuilders>()
             .AddScoped<MultipleInterfacesAbstractEntities>()
+            .AddScoped<MultipleInterfacesAbstractionsBuildersExtensions>()
+            .AddScoped<MultipleInterfacesAbstractionsBuildersInterfaces>()
             .AddScoped<MultipleInterfacesAbstractionsInterfaces>()
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
         _scope = _serviceProvider.CreateScope();
@@ -3963,6 +3965,135 @@ namespace Test.Domain.Builders
         {
             return ToBuilder();
         }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_ClassFramework_Abstractions_Builders_Extensions()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<MultipleInterfacesAbstractionsBuildersExtensions>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Should().HaveCount(3);
+        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().Should().Be(@"namespace ClassFramework.Domain.Builders.Extensions
+{
+#nullable enable
+    public static partial class DefaultValueContainerBuilderExtensions
+    {
+        public static T WithDefaultValue<T>(this T instance, object? defaultValue)
+            where T : ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder
+        {
+            instance.DefaultValue = defaultValue;
+            return instance;
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().Should().Be(@"namespace ClassFramework.Domain.Builders.Extensions
+{
+#nullable enable
+    public static partial class NameContainerBuilderExtensions
+    {
+        public static T WithName<T>(this T instance, string name)
+            where T : ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder
+        {
+            if (name is null) throw new System.ArgumentNullException(nameof(name));
+            instance.Name = name;
+            return instance;
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(2).Builder.ToString().Should().Be(@"namespace ClassFramework.Domain.Builders.Extensions
+{
+#nullable enable
+    public static partial class TypeBuilderExtensions
+    {
+        public static T WithNamespace<T>(this T instance, string @namespace)
+            where T : ClassFramework.Domain.Builders.Abstractions.ITypeBuilder
+        {
+            if (@namespace is null) throw new System.ArgumentNullException(nameof(@namespace));
+            instance.Namespace = @namespace;
+            return instance;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_ClassFramework_Abstractions_Builders_Interfaces()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<MultipleInterfacesAbstractionsBuildersInterfaces>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Should().HaveCount(3);
+        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().Should().Be(@"namespace ClassFramework.Domain.Builders.Abstractions
+{
+#nullable enable
+    public partial interface IDefaultValueContainerBuilder
+    {
+        object? DefaultValue
+        {
+            get;
+            set;
+        }
+
+        ClassFramework.Domain.Abstractions.IDefaultValueContainer Build();
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().Should().Be(@"namespace ClassFramework.Domain.Builders.Abstractions
+{
+#nullable enable
+    public partial interface INameContainerBuilder
+    {
+        string Name
+        {
+            get;
+            set;
+        }
+
+        ClassFramework.Domain.Abstractions.INameContainer Build();
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(2).Builder.ToString().Should().Be(@"namespace ClassFramework.Domain.Builders.Abstractions
+{
+#nullable enable
+    public partial interface ITypeBuilder : ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder
+    {
+        string Namespace
+        {
+            get;
+            set;
+        }
+
+        new ClassFramework.Domain.Abstractions.IType Build();
     }
 #nullable restore
 }
