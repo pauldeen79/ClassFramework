@@ -291,6 +291,36 @@ namespace ClassFramework.Domain.Builders
 
         public abstract ClassFramework.Domain.TypeBase Build();
 
+        ClassFramework.Domain.Abstractions.IType ClassFramework.Domain.Builders.Abstractions.ITypeBuilder.Build()
+        {
+            return Build();
+        }
+
+        ClassFramework.Domain.Abstractions.IVisibilityContainer ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder.Build()
+        {
+            return Build();
+        }
+
+        ClassFramework.Domain.Abstractions.INameContainer ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder.Build()
+        {
+            return Build();
+        }
+
+        ClassFramework.Domain.Abstractions.IAttributesContainer ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder.Build()
+        {
+            return Build();
+        }
+
+        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder.Build()
+        {
+            return Build();
+        }
+
+        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder.Build()
+        {
+            return Build();
+        }
+
         partial void SetDefaultValues();
 
         public static implicit operator ClassFramework.Domain.TypeBase(TypeBaseBuilder entity)

@@ -18,6 +18,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ToBuilder();
     }
     public partial interface IBaseClassContainer
     {
@@ -26,6 +28,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IBaseClassContainerBuilder ToBuilder();
     }
     public partial interface ICodeStatementsContainer
     {
@@ -35,9 +39,12 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.ICodeStatementsContainerBuilder ToBuilder();
     }
     public partial interface IConcreteType : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer, ClassFramework.Domain.Abstractions.IConstructorsContainer, ClassFramework.Domain.Abstractions.IRecordContainer, ClassFramework.Domain.Abstractions.IBaseClassContainer
     {
+        new ClassFramework.Domain.Builders.Abstractions.IConcreteTypeBuilder ToBuilder();
     }
     public partial interface IConstructorsContainer
     {
@@ -47,6 +54,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IConstructorsContainerBuilder ToBuilder();
     }
     public partial interface IDefaultValueContainer
     {
@@ -54,6 +63,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder ToBuilder();
     }
     public partial interface IEnumsContainer
     {
@@ -63,6 +74,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IEnumsContainerBuilder ToBuilder();
     }
     public partial interface IExplicitInterfaceNameContainer
     {
@@ -71,6 +84,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder ToBuilder();
     }
     public partial interface IGenericTypeArgumentsContainer
     {
@@ -87,6 +102,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder ToBuilder();
     }
     public partial interface IModifiersContainer : ClassFramework.Domain.Abstractions.IVisibilityContainer
     {
@@ -119,6 +136,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        new ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder ToBuilder();
     }
     public partial interface INameContainer
     {
@@ -127,6 +146,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ToBuilder();
     }
     public partial interface IParametersContainer
     {
@@ -136,6 +157,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IParametersContainerBuilder ToBuilder();
     }
     public partial interface IParentTypeContainer
     {
@@ -144,6 +167,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder ToBuilder();
     }
     public partial interface IRecordContainer
     {
@@ -151,6 +176,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IRecordContainerBuilder ToBuilder();
     }
     public partial interface IReferenceType : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
     {
@@ -168,6 +195,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        new ClassFramework.Domain.Builders.Abstractions.IReferenceTypeBuilder ToBuilder();
     }
     public partial interface ISubClassesContainer
     {
@@ -177,6 +206,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.ISubClassesContainerBuilder ToBuilder();
     }
     public partial interface ISuppressWarningCodesContainer
     {
@@ -185,6 +216,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder ToBuilder();
     }
     public partial interface IType : ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
     {
@@ -226,6 +259,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        new ClassFramework.Domain.Builders.Abstractions.ITypeBuilder ToBuilder();
     }
     public partial interface ITypeContainer
     {
@@ -251,9 +286,12 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder ToBuilder();
     }
     public partial interface IValueType : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
     {
+        new ClassFramework.Domain.Builders.Abstractions.IValueTypeBuilder ToBuilder();
     }
     public partial interface IVisibilityContainer
     {
@@ -261,6 +299,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder ToBuilder();
     }
 }
 #nullable disable

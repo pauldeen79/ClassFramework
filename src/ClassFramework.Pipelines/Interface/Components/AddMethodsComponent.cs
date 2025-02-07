@@ -43,4 +43,32 @@ internal sealed class TypeContainerWrapper : ITypeContainer
     public bool IsValueType { get; }
 
     public IReadOnlyCollection<ITypeContainer> GenericTypeArguments { get; }
+
+    public ITypeContainerBuilder ToBuilder() => new TypeContainerWrapperBuilder(this);
+}
+
+[ExcludeFromCodeCoverage]
+internal sealed class TypeContainerWrapperBuilder : ITypeContainerBuilder
+{
+    public TypeContainerWrapperBuilder(TypeContainerWrapper typeContainerWrapper)
+    {
+        TypeName = typeContainerWrapper.TypeName;
+        IsNullable = typeContainerWrapper.IsNullable;
+        IsValueType = typeContainerWrapper.IsValueType;
+        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(typeContainerWrapper.GenericTypeArguments.Select(x => x.ToBuilder()).ToList());
+    }
+
+    public TypeContainerWrapperBuilder()
+    {
+        TypeName = string.Empty;
+        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>();
+    }
+
+    public string TypeName { get; set; }
+    public bool IsNullable { get; set; }
+    public bool IsValueType { get; set; }
+    public ObservableCollection<ITypeContainerBuilder> GenericTypeArguments { get; set; }
+
+    public ITypeContainer Build()
+        => new TypeContainerWrapper(new MethodBuilder().WithName("Dummy").WithReturnTypeName(TypeName).WithReturnTypeIsNullable(IsNullable).WithReturnTypeIsValueType(IsValueType));
 }

@@ -114,6 +114,36 @@ namespace ClassFramework.Domain
         }
 
         public abstract ClassFramework.Domain.Builders.TypeBaseBuilder ToBuilder();
+
+        ClassFramework.Domain.Builders.Abstractions.ITypeBuilder ClassFramework.Domain.Abstractions.IType.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder ClassFramework.Domain.Abstractions.IVisibilityContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ClassFramework.Domain.Abstractions.IAttributesContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
     }
 }
 #nullable disable

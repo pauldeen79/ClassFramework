@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
+﻿using ClassFramework.Domain.Builders.Abstractions;
+
+namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
 public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(pipelineService)
 {
@@ -196,7 +198,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                         HasGetter = true,
                         Name = @"Arguments",
                         TypeName = @"System.Collections.Generic.IReadOnlyCollection<CrossCutting.CodeGeneration.Models.Abstractions.IFunctionCallArgument>",
-                        GenericTypeArguments = new ObservableCollection<ITypeContainer>(new[]
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
                             new Property
                             (
@@ -225,7 +227,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                 defaultValue: null,
                                 explicitInterfaceName: @"",
                                 parentTypeFullName: @""
-                            ),
+                            ).ToBuilder(),
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionCall",
                     },
@@ -282,7 +284,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                         HasGetter = true,
                         Name = @"Arguments",
                         TypeName = @"System.Collections.Generic.IReadOnlyCollection<CrossCutting.CodeGeneration.Models.IFunctionDescriptorArgument>",
-                        GenericTypeArguments = new ObservableCollection<ITypeContainer>(new[]
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
                             new Property
                             (
@@ -311,7 +313,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                 defaultValue: null,
                                 explicitInterfaceName: @"",
                                 parentTypeFullName: @""
-                            ),
+                            ).ToBuilder(),
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptor",
                     },
@@ -320,7 +322,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                         HasGetter = true,
                         Name = @"Results",
                         TypeName = @"System.Collections.Generic.IReadOnlyCollection<CrossCutting.CodeGeneration.Models.IFunctionDescriptorResult>",
-                        GenericTypeArguments = new ObservableCollection<ITypeContainer>(new[]
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
                             new Property
                             (
@@ -349,7 +351,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                 defaultValue: null,
                                 explicitInterfaceName: @"",
                                 parentTypeFullName: @""
-                            ),
+                            ).ToBuilder(),
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptor",
                     },
@@ -545,7 +547,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                         HasGetter = true,
                         Name = @"Result",
                         TypeName = @"CrossCutting.Common.Results.Result<System.Object?>",
-                        GenericTypeArguments = new ObservableCollection<ITypeContainer>(new[]
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
                             new Property
                             (
@@ -574,7 +576,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                 defaultValue: null,
                                 explicitInterfaceName: @"",
                                 parentTypeFullName: @""
-                            ),
+                            ).ToBuilder(),
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IConstantResultArgument",
                     },
@@ -598,7 +600,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                         HasGetter = true,
                         Name = @"Result",
                         TypeName = @"CrossCutting.Common.Results.Result<T>",
-                        GenericTypeArguments = new ObservableCollection<ITypeContainer>(new[]
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
                             new Property
                             (
@@ -627,7 +629,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                 defaultValue: null,
                                 explicitInterfaceName: @"",
                                 parentTypeFullName: @""
-                            ),
+                            ).ToBuilder(),
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IConstantResultArgument`1",
                     },
@@ -654,7 +656,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                         HasGetter = true,
                         Name = @"Delegate",
                         TypeName = @"System.Func<System.Object?>",
-                        GenericTypeArguments = new ObservableCollection<ITypeContainer>(new[]
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
                             new Property
                             (
@@ -683,7 +685,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                 defaultValue: null,
                                 explicitInterfaceName: @"",
                                 parentTypeFullName: @""
-                            ),
+                            ).ToBuilder(),
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateArgument",
                     },
@@ -693,7 +695,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                         Name = @"ValidationDelegate",
                         TypeName = @"System.Func<System.Type>?",
                         IsNullable = true,
-                        GenericTypeArguments = new ObservableCollection<ITypeContainer>(new[]
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
                             new Property
                             (
@@ -722,7 +724,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                 defaultValue: null,
                                 explicitInterfaceName: @"",
                                 parentTypeFullName: @""
-                            ),
+                            ).ToBuilder(),
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateArgument",
                     },
@@ -746,7 +748,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                         HasGetter = true,
                         Name = @"Delegate",
                         TypeName = @"System.Func<T>",
-                        GenericTypeArguments = new ObservableCollection<ITypeContainer>(new[]
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
                             new Property
                             (
@@ -775,7 +777,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                 defaultValue: null,
                                 explicitInterfaceName: @"",
                                 parentTypeFullName: @""
-                            ),
+                            ).ToBuilder(),
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateArgument`1",
                     },
@@ -785,7 +787,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                         Name = @"ValidationDelegate",
                         TypeName = @"System.Func<System.Type>?",
                         IsNullable = true,
-                        GenericTypeArguments = new ObservableCollection<ITypeContainer>(new[]
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
                             new Property
                             (
@@ -814,7 +816,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                 defaultValue: null,
                                 explicitInterfaceName: @"",
                                 parentTypeFullName: @""
-                            ),
+                            ).ToBuilder(),
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateArgument`1",
                     },
@@ -841,7 +843,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                         HasGetter = true,
                         Name = @"Delegate",
                         TypeName = @"System.Func<CrossCutting.Common.Results.Result<System.Object?>>",
-                        GenericTypeArguments = new ObservableCollection<ITypeContainer>(new[]
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
                             new Property
                             (
@@ -876,9 +878,9 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                         getterVisibility: SubVisibility.InheritFromParent,
                                         setterVisibility: SubVisibility.InheritFromParent,
                                         initializerVisibility: SubVisibility.InheritFromParent,
-                                        getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(                                ),
-                                        setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(                                ),
-                                        initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(                                ),
+                                        getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
+                                        setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
+                                        initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
                                         @static: false,
                                         @virtual: false,
                                         @abstract: false,
@@ -900,7 +902,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                 defaultValue: null,
                                 explicitInterfaceName: @"",
                                 parentTypeFullName: @""
-                            ),
+                            ).ToBuilder(),
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateResultArgument",
                     },
@@ -910,7 +912,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                         Name = @"ValidationDelegate",
                         TypeName = @"System.Func<CrossCutting.Common.Results.Result<System.Type>>?",
                         IsNullable = true,
-                        GenericTypeArguments = new ObservableCollection<ITypeContainer>(new[]
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
                             new Property
                             (
@@ -945,9 +947,9 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                         getterVisibility: SubVisibility.InheritFromParent,
                                         setterVisibility: SubVisibility.InheritFromParent,
                                         initializerVisibility: SubVisibility.InheritFromParent,
-                                        getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(                                ),
-                                        setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(                                ),
-                                        initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(                                ),
+                                        getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
+                                        setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
+                                        initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
                                         @static: false,
                                         @virtual: false,
                                         @abstract: false,
@@ -969,7 +971,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                 defaultValue: null,
                                 explicitInterfaceName: @"",
                                 parentTypeFullName: @""
-                            ),
+                            ).ToBuilder(),
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateResultArgument",
                     },
@@ -993,7 +995,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                         HasGetter = true,
                         Name = @"Delegate",
                         TypeName = @"System.Func<CrossCutting.Common.Results.Result<T>>",
-                        GenericTypeArguments = new ObservableCollection<ITypeContainer>(new[]
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
                             new Property
                             (
@@ -1028,9 +1030,9 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                         getterVisibility: SubVisibility.InheritFromParent,
                                         setterVisibility: SubVisibility.InheritFromParent,
                                         initializerVisibility: SubVisibility.InheritFromParent,
-                                        getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(                                ),
-                                        setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(                                ),
-                                        initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(                                ),
+                                        getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
+                                        setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
+                                        initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
                                         @static: false,
                                         @virtual: false,
                                         @abstract: false,
@@ -1052,7 +1054,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                 defaultValue: null,
                                 explicitInterfaceName: @"",
                                 parentTypeFullName: @""
-                            ),
+                            ).ToBuilder(),
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateResultArgument`1",
                     },
@@ -1062,7 +1064,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                         Name = @"ValidationDelegate",
                         TypeName = @"System.Func<CrossCutting.Common.Results.Result<System.Type>>?",
                         IsNullable = true,
-                        GenericTypeArguments = new ObservableCollection<ITypeContainer>(new[]
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
                             new Property
                             (
@@ -1097,9 +1099,9 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                         getterVisibility: SubVisibility.InheritFromParent,
                                         setterVisibility: SubVisibility.InheritFromParent,
                                         initializerVisibility: SubVisibility.InheritFromParent,
-                                        getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(                                ),
-                                        setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(                                ),
-                                        initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(                                ),
+                                        getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
+                                        setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
+                                        initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
                                         @static: false,
                                         @virtual: false,
                                         @abstract: false,
@@ -1121,7 +1123,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                                 defaultValue: null,
                                 explicitInterfaceName: @"",
                                 parentTypeFullName: @""
-                            ),
+                            ).ToBuilder(),
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateResultArgument`1",
                     },

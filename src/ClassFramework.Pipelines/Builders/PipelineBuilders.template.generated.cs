@@ -65,6 +65,11 @@ namespace ClassFramework.Pipelines.Builders
             return new ClassFramework.Pipelines.Metadata(Value, Name);
         }
 
+        ClassFramework.Domain.Abstractions.INameContainer ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder.Build()
+        {
+            return Build();
+        }
+
         partial void SetDefaultValues();
 
         public ClassFramework.Pipelines.Builders.MetadataBuilder WithValue(object? value)

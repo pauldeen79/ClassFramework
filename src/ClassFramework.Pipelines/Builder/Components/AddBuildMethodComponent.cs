@@ -17,7 +17,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                     .WithName(context.Request.Settings.BuildMethodName)
                     .WithAbstract()
                     .WithReturnTypeName(context.Request.ReturnType)
-                    .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x).Build())));
+                    .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x))));
             }
             else
             {
@@ -25,7 +25,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                     .WithName(context.Request.Settings.BuildMethodName)
                     .WithOverride()
                     .WithReturnTypeName(context.Request.ReturnType)
-                    .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x).Build()))
+                    .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
                     .AddStringCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
 
                 context.Request.Builder.AddMethods(new MethodBuilder()
@@ -48,7 +48,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
             .WithAbstract(context.Request.IsBuilderForAbstractEntity)
             .WithOverride(context.Request.IsBuilderForOverrideEntity)
             .WithReturnTypeName(GetBuilderBuildMethodReturnType(context.Request, context.Request.ReturnType))
-            .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x).Build()))
+            .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
             .AddStringCodeStatements(context.Request.CreatePragmaWarningDisableStatementsForBuildMethod())
             .AddStringCodeStatements
             (

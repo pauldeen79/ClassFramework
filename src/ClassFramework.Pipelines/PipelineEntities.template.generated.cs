@@ -34,6 +34,11 @@ namespace ClassFramework.Pipelines
         {
             return new ClassFramework.Pipelines.Builders.MetadataBuilder(this);
         }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
     }
     public partial record NamespaceMapping
     {
