@@ -66,4 +66,5 @@ internal interface IPipelineSettings
     bool UseDefaultValueAttributeValuesForBuilderInitialization { get; }
     IEquatableItemType IEquatableItemType { get; }
     [Required] IReadOnlyCollection<string> BuilderAbstractionsTypeConversionNamespaces { get; }
+    [Required(AllowEmptyStrings = true)] string BuilderAbstractionsTypeConversionMetadataName{ get; }
 }
