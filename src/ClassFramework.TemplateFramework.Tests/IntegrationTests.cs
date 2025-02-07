@@ -3877,7 +3877,7 @@ namespace Test.Domain.Builders
         generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"namespace ClassFramework.Domain
 {
 #nullable enable
-    public abstract partial class TypeBase : ClassFramework.Domain.Abstractions.IType
+    public abstract partial class TypeBase : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IDefaultValueContainer
     {
         protected TypeBase()
         {
@@ -3886,6 +3886,16 @@ namespace Test.Domain.Builders
         public abstract ClassFramework.Domain.Builders.TypeBaseBuilder ToBuilder();
 
         ClassFramework.Domain.Builders.Abstractions.ITypeBuilder ClassFramework.Domain.Abstractions.IType.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder ClassFramework.Domain.Abstractions.IDefaultValueContainer.ToBuilder()
         {
             return ToBuilder();
         }

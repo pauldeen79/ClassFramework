@@ -30,6 +30,6 @@ public abstract class MultipleInterfacesBase(IPipelineService pipelineService) :
     protected static Task<Result<IEnumerable<TypeBase>>> GetAbstractTypes()
         => Task.FromResult(Result.Success<IEnumerable<TypeBase>>(
             [
-                new InterfaceBuilder().WithName("ITypeBase").WithNamespace("ClassFramework.Domain").AddInterfaces("ClassFramework.Domain.Abstractions.IType").Build(),
+                new InterfaceBuilder().WithName("ITypeBase").WithNamespace("ClassFramework.Domain").AddInterfaces("ClassFramework.Domain.Abstractions.IType", "ClassFramework.Domain.Abstractions.INameContainer", "ClassFramework.Domain.Abstractions.IDefaultValueContainer").Build(),
             ]));
 }
