@@ -388,12 +388,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 && x.IsInterface
                 && !string.IsNullOrEmpty(x.Namespace)
                 && GetCodeGenerationBuilderAbstractionsTypeConversionNamespaces().Contains(x.Namespace)
-                && !SkipNamespaceOnTypenameMappings(x.Namespace)
                 && x.FullName is not null).SelectMany(x =>
                 new[]
                 {
                     new TypenameMappingBuilder()
-                        .WithSourceTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
+                        .WithSourceTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}{x.GetGenericTypeArgumentsString()}")
                         .WithTargetTypeName($"{CoreNamespace}.Abstractions.I{x.GetEntityClassName()}")
                         .AddMetadata
                         (
