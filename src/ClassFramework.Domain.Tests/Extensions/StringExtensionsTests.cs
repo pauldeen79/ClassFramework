@@ -618,6 +618,20 @@ public class StringExtensionsTests
         result.Should().Be(expectedResult);
     }
 
+    [Theory]
+    [InlineData(null, "")]
+    [InlineData("", "")]
+    [InlineData("NoDots", "")]
+    [InlineData("A.B", "A")]
+    [InlineData("A.B.C", "A.B")]
+    public void GetParentNamespace_Returns_Correct_Result(string? input, string expectedResult)
+    {
+        // Act
+        var result = input.GetParentNamespace();
+
+        // Assert
+        result.Should().Be(expectedResult);
+    }
     public class ReplaceGenericTypeName
     {
         [Fact]

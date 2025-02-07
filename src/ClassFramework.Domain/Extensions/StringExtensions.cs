@@ -223,10 +223,10 @@ public static class StringExtensions
             : fullyQualifiedClassName.Substring(0, idx);
     }
 
-    public static string GetParentNamespace(this string @namespace)
+    public static string GetParentNamespace(this string? @namespace)
         => string.IsNullOrEmpty(@namespace) || !@namespace.Contains('.')
             ? string.Empty
-            : @namespace.Substring(0, @namespace.LastIndexOf('.'));
+            : @namespace!.Substring(0, @namespace.LastIndexOf('.'));
 
     public static string MakeGenericTypeName(this string instance, string genericTypeParameter)
         => string.IsNullOrEmpty(genericTypeParameter)
