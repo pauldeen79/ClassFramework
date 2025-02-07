@@ -32,4 +32,23 @@ public abstract class MultipleInterfacesBase(IPipelineService pipelineService) :
             [
                 new InterfaceBuilder().WithName("ITypeBase").WithNamespace("ClassFramework.Domain").AddInterfaces("ClassFramework.Domain.Abstractions.IType", "ClassFramework.Domain.Abstractions.INameContainer", "ClassFramework.Domain.Abstractions.IDefaultValueContainer").Build(),
             ]));
+
+    // this quirk is only needed because I build types using TypeBase derived entities instead of reflection
+    protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
+    {
+        foreach (var item in CreateBuilderAbstractionTypeConversionTypenameMapping("DefaultValueContainer", string.Empty))
+        {
+            yield return item;
+        }
+
+        foreach (var item in CreateBuilderAbstractionTypeConversionTypenameMapping("NameContainer", string.Empty))
+        {
+            yield return item;
+        }
+
+        foreach (var item in CreateBuilderAbstractionTypeConversionTypenameMapping("Type", string.Empty))
+        {
+            yield return item;
+        }
+    }
 }

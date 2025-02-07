@@ -4125,7 +4125,7 @@ namespace Test.Domain.Builders
             get;
         }
 
-        ClassFramework.Domain.Builders.IDefaultValueContainerBuilder ToBuilder();
+        ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder ToBuilder();
     }
 #nullable restore
 }
@@ -4140,7 +4140,7 @@ namespace Test.Domain.Builders
             get;
         }
 
-        ClassFramework.Domain.Builders.INameContainerBuilder ToBuilder();
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ToBuilder();
     }
 #nullable restore
 }
@@ -4155,7 +4155,7 @@ namespace Test.Domain.Builders
             get;
         }
 
-        new ClassFramework.Domain.Builders.ITypeBuilder ToBuilder();
+        new ClassFramework.Domain.Builders.Abstractions.ITypeBuilder ToBuilder();
     }
 #nullable restore
 }
