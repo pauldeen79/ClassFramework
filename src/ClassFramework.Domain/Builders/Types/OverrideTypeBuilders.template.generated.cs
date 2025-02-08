@@ -244,76 +244,6 @@ namespace ClassFramework.Domain.Builders.Types
 
         partial void SetDefaultValues();
 
-        public ClassFramework.Domain.Builders.Types.ClassBuilder AddConstructors(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.ConstructorBuilder> constructors)
-        {
-            if (constructors is null) throw new System.ArgumentNullException(nameof(constructors));
-            return AddConstructors(constructors.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder AddConstructors(params ClassFramework.Domain.Builders.ConstructorBuilder[] constructors)
-        {
-            if (constructors is null) throw new System.ArgumentNullException(nameof(constructors));
-            foreach (var item in constructors) Constructors.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder AddEnums(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.EnumerationBuilder> enums)
-        {
-            if (enums is null) throw new System.ArgumentNullException(nameof(enums));
-            return AddEnums(enums.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder AddEnums(params ClassFramework.Domain.Builders.EnumerationBuilder[] enums)
-        {
-            if (enums is null) throw new System.ArgumentNullException(nameof(enums));
-            foreach (var item in enums) Enums.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder AddSubClasses(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.TypeBaseBuilder> subClasses)
-        {
-            if (subClasses is null) throw new System.ArgumentNullException(nameof(subClasses));
-            return AddSubClasses(subClasses.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder AddSubClasses(params ClassFramework.Domain.Builders.TypeBaseBuilder[] subClasses)
-        {
-            if (subClasses is null) throw new System.ArgumentNullException(nameof(subClasses));
-            foreach (var item in subClasses) SubClasses.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder WithStatic(bool @static = true)
-        {
-            Static = @static;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder WithSealed(bool @sealed = true)
-        {
-            Sealed = @sealed;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder WithAbstract(bool @abstract = true)
-        {
-            Abstract = @abstract;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder WithRecord(bool record = true)
-        {
-            Record = record;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder WithBaseClass(string baseClass)
-        {
-            if (baseClass is null) throw new System.ArgumentNullException(nameof(baseClass));
-            BaseClass = baseClass;
-            return this;
-        }
-
         public static implicit operator ClassFramework.Domain.Types.Class(ClassBuilder entity)
         {
             return entity.BuildTyped();
@@ -503,32 +433,6 @@ namespace ClassFramework.Domain.Builders.Types
         }
 
         partial void SetDefaultValues();
-
-        public ClassFramework.Domain.Builders.Types.StructBuilder AddConstructors(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.ConstructorBuilder> constructors)
-        {
-            if (constructors is null) throw new System.ArgumentNullException(nameof(constructors));
-            return AddConstructors(constructors.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.Types.StructBuilder AddConstructors(params ClassFramework.Domain.Builders.ConstructorBuilder[] constructors)
-        {
-            if (constructors is null) throw new System.ArgumentNullException(nameof(constructors));
-            foreach (var item in constructors) Constructors.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.StructBuilder WithRecord(bool record = true)
-        {
-            Record = record;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.StructBuilder WithBaseClass(string baseClass)
-        {
-            if (baseClass is null) throw new System.ArgumentNullException(nameof(baseClass));
-            BaseClass = baseClass;
-            return this;
-        }
 
         public static implicit operator ClassFramework.Domain.Types.Struct(StructBuilder entity)
         {

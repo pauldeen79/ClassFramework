@@ -89,13 +89,6 @@ namespace ClassFramework.Domain.Builders
             return this;
         }
 
-        public ClassFramework.Domain.Builders.AttributeBuilder WithName(string name)
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            Name = name;
-            return this;
-        }
-
         public static implicit operator ClassFramework.Domain.Attribute(AttributeBuilder entity)
         {
             return entity.Build();
@@ -458,104 +451,10 @@ namespace ClassFramework.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public ClassFramework.Domain.Builders.ConstructorBuilder AddAttributes(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.AttributeBuilder> attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder AddAttributes(params ClassFramework.Domain.Builders.AttributeBuilder[] attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            foreach (var item in attributes) Attributes.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder AddCodeStatements(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.CodeStatementBaseBuilder> codeStatements)
-        {
-            if (codeStatements is null) throw new System.ArgumentNullException(nameof(codeStatements));
-            return AddCodeStatements(codeStatements.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder AddCodeStatements(params ClassFramework.Domain.Builders.CodeStatementBaseBuilder[] codeStatements)
-        {
-            if (codeStatements is null) throw new System.ArgumentNullException(nameof(codeStatements));
-            foreach (var item in codeStatements) CodeStatements.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder AddParameters(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.ParameterBuilder> parameters)
-        {
-            if (parameters is null) throw new System.ArgumentNullException(nameof(parameters));
-            return AddParameters(parameters.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder AddParameters(params ClassFramework.Domain.Builders.ParameterBuilder[] parameters)
-        {
-            if (parameters is null) throw new System.ArgumentNullException(nameof(parameters));
-            foreach (var item in parameters) Parameters.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder AddSuppressWarningCodes(System.Collections.Generic.IEnumerable<string> suppressWarningCodes)
-        {
-            if (suppressWarningCodes is null) throw new System.ArgumentNullException(nameof(suppressWarningCodes));
-            return AddSuppressWarningCodes(suppressWarningCodes.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder AddSuppressWarningCodes(params string[] suppressWarningCodes)
-        {
-            if (suppressWarningCodes is null) throw new System.ArgumentNullException(nameof(suppressWarningCodes));
-            foreach (var item in suppressWarningCodes) SuppressWarningCodes.Add(item);
-            return this;
-        }
-
         public ClassFramework.Domain.Builders.ConstructorBuilder WithChainCall(string chainCall)
         {
             if (chainCall is null) throw new System.ArgumentNullException(nameof(chainCall));
             ChainCall = chainCall;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder WithStatic(bool @static = true)
-        {
-            Static = @static;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder WithVirtual(bool @virtual = true)
-        {
-            Virtual = @virtual;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder WithAbstract(bool @abstract = true)
-        {
-            Abstract = @abstract;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder WithProtected(bool @protected = true)
-        {
-            Protected = @protected;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder WithOverride(bool @override = true)
-        {
-            Override = @override;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder WithNew(bool @new = true)
-        {
-            New = @new;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ConstructorBuilder WithVisibility(ClassFramework.Domain.Domains.Visibility visibility)
-        {
-            Visibility = visibility;
             return this;
         }
 
@@ -696,32 +595,6 @@ namespace ClassFramework.Domain.Builders
             return this;
         }
 
-        public ClassFramework.Domain.Builders.EnumerationBuilder AddAttributes(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.AttributeBuilder> attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.EnumerationBuilder AddAttributes(params ClassFramework.Domain.Builders.AttributeBuilder[] attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            foreach (var item in attributes) Attributes.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.EnumerationBuilder WithName(string name)
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            Name = name;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.EnumerationBuilder WithVisibility(ClassFramework.Domain.Domains.Visibility visibility)
-        {
-            Visibility = visibility;
-            return this;
-        }
-
         public static implicit operator ClassFramework.Domain.Enumeration(EnumerationBuilder entity)
         {
             return entity.Build();
@@ -820,29 +693,9 @@ namespace ClassFramework.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public ClassFramework.Domain.Builders.EnumerationMemberBuilder AddAttributes(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.AttributeBuilder> attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.EnumerationMemberBuilder AddAttributes(params ClassFramework.Domain.Builders.AttributeBuilder[] attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            foreach (var item in attributes) Attributes.Add(item);
-            return this;
-        }
-
         public ClassFramework.Domain.Builders.EnumerationMemberBuilder WithValue(object? value)
         {
             Value = value;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.EnumerationMemberBuilder WithName(string name)
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            Name = name;
             return this;
         }
 
@@ -1232,32 +1085,6 @@ namespace ClassFramework.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public ClassFramework.Domain.Builders.FieldBuilder AddAttributes(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.AttributeBuilder> attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder AddAttributes(params ClassFramework.Domain.Builders.AttributeBuilder[] attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            foreach (var item in attributes) Attributes.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder> genericTypeArguments)
-        {
-            if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
-            return AddGenericTypeArguments(genericTypeArguments.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder AddGenericTypeArguments(params ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder[] genericTypeArguments)
-        {
-            if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
-            foreach (var item in genericTypeArguments) GenericTypeArguments.Add(item);
-            return this;
-        }
-
         public ClassFramework.Domain.Builders.FieldBuilder WithReadOnly(bool readOnly = true)
         {
             ReadOnly = readOnly;
@@ -1273,87 +1100,6 @@ namespace ClassFramework.Domain.Builders
         public ClassFramework.Domain.Builders.FieldBuilder WithEvent(bool @event = true)
         {
             Event = @event;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder WithStatic(bool @static = true)
-        {
-            Static = @static;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder WithVirtual(bool @virtual = true)
-        {
-            Virtual = @virtual;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder WithAbstract(bool @abstract = true)
-        {
-            Abstract = @abstract;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder WithProtected(bool @protected = true)
-        {
-            Protected = @protected;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder WithOverride(bool @override = true)
-        {
-            Override = @override;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder WithNew(bool @new = true)
-        {
-            New = @new;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder WithVisibility(ClassFramework.Domain.Domains.Visibility visibility)
-        {
-            Visibility = visibility;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder WithName(string name)
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            Name = name;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder WithTypeName(string typeName)
-        {
-            if (typeName is null) throw new System.ArgumentNullException(nameof(typeName));
-            TypeName = typeName;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder WithIsNullable(bool isNullable = true)
-        {
-            IsNullable = isNullable;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder WithIsValueType(bool isValueType = true)
-        {
-            IsValueType = isValueType;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder WithDefaultValue(object? defaultValue)
-        {
-            DefaultValue = defaultValue;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.FieldBuilder WithParentTypeFullName(string parentTypeFullName)
-        {
-            if (parentTypeFullName is null) throw new System.ArgumentNullException(nameof(parentTypeFullName));
-            ParentTypeFullName = parentTypeFullName;
             return this;
         }
 
@@ -1974,84 +1720,6 @@ namespace ClassFramework.Domain.Builders
             return this;
         }
 
-        public ClassFramework.Domain.Builders.MethodBuilder AddAttributes(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.AttributeBuilder> attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder AddAttributes(params ClassFramework.Domain.Builders.AttributeBuilder[] attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            foreach (var item in attributes) Attributes.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder AddCodeStatements(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.CodeStatementBaseBuilder> codeStatements)
-        {
-            if (codeStatements is null) throw new System.ArgumentNullException(nameof(codeStatements));
-            return AddCodeStatements(codeStatements.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder AddCodeStatements(params ClassFramework.Domain.Builders.CodeStatementBaseBuilder[] codeStatements)
-        {
-            if (codeStatements is null) throw new System.ArgumentNullException(nameof(codeStatements));
-            foreach (var item in codeStatements) CodeStatements.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder AddParameters(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.ParameterBuilder> parameters)
-        {
-            if (parameters is null) throw new System.ArgumentNullException(nameof(parameters));
-            return AddParameters(parameters.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder AddParameters(params ClassFramework.Domain.Builders.ParameterBuilder[] parameters)
-        {
-            if (parameters is null) throw new System.ArgumentNullException(nameof(parameters));
-            foreach (var item in parameters) Parameters.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
-        {
-            if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
-            return AddGenericTypeArguments(genericTypeArguments.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
-        {
-            if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
-            foreach (var item in genericTypeArguments) GenericTypeArguments.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
-        {
-            if (genericTypeArgumentConstraints is null) throw new System.ArgumentNullException(nameof(genericTypeArgumentConstraints));
-            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
-        {
-            if (genericTypeArgumentConstraints is null) throw new System.ArgumentNullException(nameof(genericTypeArgumentConstraints));
-            foreach (var item in genericTypeArgumentConstraints) GenericTypeArgumentConstraints.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder AddSuppressWarningCodes(System.Collections.Generic.IEnumerable<string> suppressWarningCodes)
-        {
-            if (suppressWarningCodes is null) throw new System.ArgumentNullException(nameof(suppressWarningCodes));
-            return AddSuppressWarningCodes(suppressWarningCodes.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder AddSuppressWarningCodes(params string[] suppressWarningCodes)
-        {
-            if (suppressWarningCodes is null) throw new System.ArgumentNullException(nameof(suppressWarningCodes));
-            foreach (var item in suppressWarningCodes) SuppressWarningCodes.Add(item);
-            return this;
-        }
-
         public ClassFramework.Domain.Builders.MethodBuilder WithReturnTypeName(string returnTypeName)
         {
             if (returnTypeName is null) throw new System.ArgumentNullException(nameof(returnTypeName));
@@ -2092,69 +1760,6 @@ namespace ClassFramework.Domain.Builders
         public ClassFramework.Domain.Builders.MethodBuilder WithAsync(bool async = true)
         {
             Async = async;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder WithStatic(bool @static = true)
-        {
-            Static = @static;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder WithVirtual(bool @virtual = true)
-        {
-            Virtual = @virtual;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder WithAbstract(bool @abstract = true)
-        {
-            Abstract = @abstract;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder WithProtected(bool @protected = true)
-        {
-            Protected = @protected;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder WithOverride(bool @override = true)
-        {
-            Override = @override;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder WithNew(bool @new = true)
-        {
-            New = @new;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder WithVisibility(ClassFramework.Domain.Domains.Visibility visibility)
-        {
-            Visibility = visibility;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder WithName(string name)
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            Name = name;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder WithExplicitInterfaceName(string explicitInterfaceName)
-        {
-            if (explicitInterfaceName is null) throw new System.ArgumentNullException(nameof(explicitInterfaceName));
-            ExplicitInterfaceName = explicitInterfaceName;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.MethodBuilder WithParentTypeFullName(string parentTypeFullName)
-        {
-            if (parentTypeFullName is null) throw new System.ArgumentNullException(nameof(parentTypeFullName));
-            ParentTypeFullName = parentTypeFullName;
             return this;
         }
 
@@ -2391,32 +1996,6 @@ namespace ClassFramework.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public ClassFramework.Domain.Builders.ParameterBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder> genericTypeArguments)
-        {
-            if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
-            return AddGenericTypeArguments(genericTypeArguments.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.ParameterBuilder AddGenericTypeArguments(params ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder[] genericTypeArguments)
-        {
-            if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
-            foreach (var item in genericTypeArguments) GenericTypeArguments.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ParameterBuilder AddAttributes(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.AttributeBuilder> attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.ParameterBuilder AddAttributes(params ClassFramework.Domain.Builders.AttributeBuilder[] attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            foreach (var item in attributes) Attributes.Add(item);
-            return this;
-        }
-
         public ClassFramework.Domain.Builders.ParameterBuilder WithIsParamArray(bool isParamArray = true)
         {
             IsParamArray = isParamArray;
@@ -2432,38 +2011,6 @@ namespace ClassFramework.Domain.Builders
         public ClassFramework.Domain.Builders.ParameterBuilder WithIsRef(bool isRef = true)
         {
             IsRef = isRef;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ParameterBuilder WithTypeName(string typeName)
-        {
-            if (typeName is null) throw new System.ArgumentNullException(nameof(typeName));
-            TypeName = typeName;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ParameterBuilder WithIsNullable(bool isNullable = true)
-        {
-            IsNullable = isNullable;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ParameterBuilder WithIsValueType(bool isValueType = true)
-        {
-            IsValueType = isValueType;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ParameterBuilder WithName(string name)
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            Name = name;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.ParameterBuilder WithDefaultValue(object? defaultValue)
-        {
-            DefaultValue = defaultValue;
             return this;
         }
 
@@ -3034,32 +2581,6 @@ namespace ClassFramework.Domain.Builders
             return this;
         }
 
-        public ClassFramework.Domain.Builders.PropertyBuilder AddAttributes(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.AttributeBuilder> attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder AddAttributes(params ClassFramework.Domain.Builders.AttributeBuilder[] attributes)
-        {
-            if (attributes is null) throw new System.ArgumentNullException(nameof(attributes));
-            foreach (var item in attributes) Attributes.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder> genericTypeArguments)
-        {
-            if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
-            return AddGenericTypeArguments(genericTypeArguments.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder AddGenericTypeArguments(params ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder[] genericTypeArguments)
-        {
-            if (genericTypeArguments is null) throw new System.ArgumentNullException(nameof(genericTypeArguments));
-            foreach (var item in genericTypeArguments) GenericTypeArguments.Add(item);
-            return this;
-        }
-
         public ClassFramework.Domain.Builders.PropertyBuilder WithHasGetter(bool hasGetter = true)
         {
             HasGetter = hasGetter;
@@ -3093,94 +2614,6 @@ namespace ClassFramework.Domain.Builders
         public ClassFramework.Domain.Builders.PropertyBuilder WithInitializerVisibility(ClassFramework.Domain.Domains.SubVisibility initializerVisibility)
         {
             InitializerVisibility = initializerVisibility;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithStatic(bool @static = true)
-        {
-            Static = @static;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithVirtual(bool @virtual = true)
-        {
-            Virtual = @virtual;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithAbstract(bool @abstract = true)
-        {
-            Abstract = @abstract;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithProtected(bool @protected = true)
-        {
-            Protected = @protected;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithOverride(bool @override = true)
-        {
-            Override = @override;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithNew(bool @new = true)
-        {
-            New = @new;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithVisibility(ClassFramework.Domain.Domains.Visibility visibility)
-        {
-            Visibility = visibility;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithName(string name)
-        {
-            if (name is null) throw new System.ArgumentNullException(nameof(name));
-            Name = name;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithTypeName(string typeName)
-        {
-            if (typeName is null) throw new System.ArgumentNullException(nameof(typeName));
-            TypeName = typeName;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithIsNullable(bool isNullable = true)
-        {
-            IsNullable = isNullable;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithIsValueType(bool isValueType = true)
-        {
-            IsValueType = isValueType;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithDefaultValue(object? defaultValue)
-        {
-            DefaultValue = defaultValue;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithExplicitInterfaceName(string explicitInterfaceName)
-        {
-            if (explicitInterfaceName is null) throw new System.ArgumentNullException(nameof(explicitInterfaceName));
-            ExplicitInterfaceName = explicitInterfaceName;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.PropertyBuilder WithParentTypeFullName(string parentTypeFullName)
-        {
-            if (parentTypeFullName is null) throw new System.ArgumentNullException(nameof(parentTypeFullName));
-            ParentTypeFullName = parentTypeFullName;
             return this;
         }
 

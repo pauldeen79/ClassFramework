@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.Pipelines
 {
-    public partial record Metadata : ClassFramework.Domain.Abstractions.INameContainer
+    public partial record Metadata
     {
         public object? Value
         {
@@ -33,11 +33,6 @@ namespace ClassFramework.Pipelines
         public ClassFramework.Pipelines.Builders.MetadataBuilder ToBuilder()
         {
             return new ClassFramework.Pipelines.Builders.MetadataBuilder(this);
-        }
-
-        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
-        {
-            return ToBuilder();
         }
     }
     public partial record NamespaceMapping

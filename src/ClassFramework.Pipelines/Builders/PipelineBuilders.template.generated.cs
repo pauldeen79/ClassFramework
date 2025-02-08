@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.Pipelines.Builders
 {
-    public partial class MetadataBuilder : ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class MetadataBuilder : System.ComponentModel.INotifyPropertyChanged
     {
         private object? _value;
 
@@ -63,11 +63,6 @@ namespace ClassFramework.Pipelines.Builders
         public ClassFramework.Pipelines.Metadata Build()
         {
             return new ClassFramework.Pipelines.Metadata(Value, Name);
-        }
-
-        ClassFramework.Domain.Abstractions.INameContainer ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder.Build()
-        {
-            return Build();
         }
 
         partial void SetDefaultValues();

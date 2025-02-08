@@ -3,10 +3,10 @@
 public partial class AttributeBuilder
 {
     public AttributeBuilder AddNameAndParameter(string name, object value)
-        => WithName(name).AddParameters(new AttributeParameterBuilder().WithValue(value));
+        => this.WithName(name).AddParameters(new AttributeParameterBuilder().WithValue(value));
 
     public AttributeBuilder ForCodeGenerator(string generatorName, string generatorVersion)
-        => WithName(typeof(GeneratedCodeAttribute).FullName)
+        => this.WithName(typeof(GeneratedCodeAttribute).FullName)
             .AddParameters
             (
                 new AttributeParameterBuilder().WithValue(generatorName),
@@ -14,5 +14,5 @@ public partial class AttributeBuilder
             );
 
     public AttributeBuilder WithName(Type sourceType)
-        => WithName(sourceType.IsNotNull(nameof(sourceType)).FullName.FixTypeName());
+        => this.WithName(sourceType.IsNotNull(nameof(sourceType)).FullName.FixTypeName());
 }

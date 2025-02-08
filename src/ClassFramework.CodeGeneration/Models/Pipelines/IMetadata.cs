@@ -1,6 +1,8 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Pipelines;
 
-internal interface IMetadata : Abstractions.INameContainer
+//TODO: Restore inheritance after making abstractions namespace configurable
+internal interface IMetadata //: Abstractions.INameContainer
 {
     object? Value { get; }
+    [Required] string Name { get; }
 }
