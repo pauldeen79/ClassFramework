@@ -388,6 +388,7 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
         public bool AddImplicitOperatorOnBuilder
         {
             get
@@ -487,6 +488,7 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
         public bool UseBuilderAbstractionsTypeConversion
         {
             get
@@ -1366,7 +1368,9 @@ namespace ClassFramework.Pipelines.Builders
             _namespaceMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.NamespaceMappingBuilder>();
             _typenameMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.TypenameMappingBuilder>();
             _builderAbstractionsTypeConversionNamespaces = new System.Collections.ObjectModel.ObservableCollection<string>();
+            _addImplicitOperatorOnBuilder = true;
             _addMethodNameFormatString = string.Empty;
+            _useBuilderAbstractionsTypeConversion = true;
             _baseClassBuilderNameSpace = string.Empty;
             _builderExtensionsCollectionCopyStatementFormatString = string.Empty;
             _builderExtensionsNameFormatString = string.Empty;

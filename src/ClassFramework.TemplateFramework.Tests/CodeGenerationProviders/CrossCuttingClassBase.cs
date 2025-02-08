@@ -19,7 +19,6 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
     protected override bool CreateRecord => true;
     protected override bool EnableGlobalUsings => true;
     protected override bool CreateCodeGenerationHeader => false;
-    protected override bool UseBuilderAbstractionsTypeConversion => true;
 
     protected override bool IsAbstractType(Type type)
     {

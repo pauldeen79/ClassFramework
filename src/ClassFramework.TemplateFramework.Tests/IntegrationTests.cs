@@ -2726,6 +2726,11 @@ namespace Test.Domain.Builders
             Value = value;
             return this;
         }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument(ConstantArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
     }
 #nullable restore
 }
@@ -2785,6 +2790,11 @@ namespace Test.Domain.Builders
             Value = value;
             return this;
         }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument<T>(ConstantArgumentBuilder<T> entity)
+        {
+            return entity.BuildTyped();
+        }
     }
 #nullable restore
 }
@@ -2839,6 +2849,11 @@ namespace Test.Domain.Builders
             if (result is null) throw new System.ArgumentNullException(nameof(result));
             Result = result;
             return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument(ConstantResultArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
         }
     }
 #nullable restore
@@ -2899,6 +2914,11 @@ namespace Test.Domain.Builders
             if (result is null) throw new System.ArgumentNullException(nameof(result));
             Result = result;
             return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument<T>(ConstantResultArgumentBuilder<T> entity)
+        {
+            return entity.BuildTyped();
         }
     }
 #nullable restore
@@ -2977,6 +2997,11 @@ namespace Test.Domain.Builders
         {
             ValidationDelegate = validationDelegate;
             return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument(DelegateArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
         }
     }
 #nullable restore
@@ -3061,6 +3086,11 @@ namespace Test.Domain.Builders
             ValidationDelegate = validationDelegate;
             return this;
         }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument<T>(DelegateArgumentBuilder<T> entity)
+        {
+            return entity.BuildTyped();
+        }
     }
 #nullable restore
 }
@@ -3138,6 +3168,11 @@ namespace Test.Domain.Builders
         {
             ValidationDelegate = validationDelegate;
             return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument(DelegateResultArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
         }
     }
 #nullable restore
@@ -3222,6 +3257,11 @@ namespace Test.Domain.Builders
             ValidationDelegate = validationDelegate;
             return this;
         }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument<T>(DelegateResultArgumentBuilder<T> entity)
+        {
+            return entity.BuildTyped();
+        }
     }
 #nullable restore
 }
@@ -3252,6 +3292,11 @@ namespace Test.Domain.Builders
         }
 
         partial void SetDefaultValues();
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument(EmptyArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
     }
 #nullable restore
 }
@@ -3287,60 +3332,10 @@ namespace Test.Domain.Builders
         }
 
         partial void SetDefaultValues();
-    }
-#nullable restore
-}
-");
-        generationEnvironment.Builder.Contents.ElementAt(10).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
-{
-#nullable enable
-    public partial class ExpressionArgumentBuilder : FunctionCallArgumentBaseBuilder<ExpressionArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
-    {
-        private string _value;
 
-        public string Value
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument<T>(EmptyArgumentBuilder<T> entity)
         {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_value!, value!);
-                _value = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Value));
-            }
-        }
-
-        public ExpressionArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument source) : base(source)
-        {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _value = source.Value;
-        }
-
-        public ExpressionArgumentBuilder() : base()
-        {
-            _value = string.Empty;
-            SetDefaultValues();
-        }
-
-        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument BuildTyped()
-        {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(Value);
-        }
-
-        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
-        {
-            return BuildTyped();
-        }
-
-        partial void SetDefaultValues();
-
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ExpressionArgumentBuilder WithValue(string value)
-        {
-            if (value is null) throw new System.ArgumentNullException(nameof(value));
-            Value = value;
-            return this;
+            return entity.BuildTyped();
         }
     }
 #nullable restore
@@ -3396,6 +3391,71 @@ namespace Test.Domain.Builders
             if (value is null) throw new System.ArgumentNullException(nameof(value));
             Value = value;
             return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(ExpressionArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(11).Builder.ToString().Should().Be(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
+{
+#nullable enable
+    public partial class FunctionArgumentBuilder : FunctionCallArgumentBaseBuilder<FunctionArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
+    {
+        private CrossCutting.Utilities.Parsers.IFunctionCall _function;
+
+        public CrossCutting.Utilities.Parsers.IFunctionCall Function
+        {
+            get
+            {
+                return _function;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.Parsers.IFunctionCall>.Default.Equals(_function!, value!);
+                _function = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(Function));
+            }
+        }
+
+        public FunctionArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _function = source.Function;
+        }
+
+        public FunctionArgumentBuilder() : base()
+        {
+            _function = default(CrossCutting.Utilities.Parsers.IFunctionCall)!;
+            SetDefaultValues();
+        }
+
+        public override CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument BuildTyped()
+        {
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument(Function);
+        }
+
+        CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        partial void SetDefaultValues();
+
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.FunctionArgumentBuilder WithFunction(CrossCutting.Utilities.Parsers.IFunctionCall function)
+        {
+            if (function is null) throw new System.ArgumentNullException(nameof(function));
+            Function = function;
+            return this;
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument(FunctionArgumentBuilder entity)
+        {
+            return entity.BuildTyped();
         }
     }
 #nullable restore

@@ -5,14 +5,14 @@ internal interface IPipelineSettings
     bool AddBackingFields { get; }
     bool AddCopyConstructor { get; }
     bool AddFullConstructor { get; }
-    bool AddImplicitOperatorOnBuilder { get; }
+    [DefaultValue(true)] bool AddImplicitOperatorOnBuilder { get; }
     [Required(AllowEmptyStrings = true)] string AddMethodNameFormatString { get; }
     bool AddNullChecks { get; }
     bool AddPublicParameterlessConstructor { get; }
     bool AddSetters { get; }
     bool ImplementIEquatable { get; }
     bool AllowGenerationWithoutProperties { get; }
-    bool UseBuilderAbstractionsTypeConversion { get; }
+    [DefaultValue(true)] bool UseBuilderAbstractionsTypeConversion { get; }
     [Required] IReadOnlyCollection<AttributeInitializerDelegate> AttributeInitializers { get; }
     [ValidateObject] ITypeBase? BaseClass { get; }
     [Required(AllowEmptyStrings = true)] string BaseClassBuilderNameSpace { get; }

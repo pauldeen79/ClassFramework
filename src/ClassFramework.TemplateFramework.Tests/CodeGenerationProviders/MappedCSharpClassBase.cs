@@ -16,6 +16,8 @@ public abstract class MappedCSharpClassBase(IPipelineService pipelineService) : 
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;
     protected override bool CreateCodeGenerationHeader => false;
+    protected override bool AddImplicitOperatorOnBuilder => false;
+    protected override bool UseBuilderAbstractionsTypeConversion => false;
 
     protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
     {

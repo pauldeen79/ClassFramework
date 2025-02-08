@@ -42,7 +42,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool CopyInterfaces => false;
     protected virtual bool CopyMethods => false;
     protected virtual bool InheritFromInterfaces => false;
-    protected virtual bool UseBuilderAbstractionsTypeConversion => false;
+    protected virtual bool UseBuilderAbstractionsTypeConversion => true;
     protected virtual bool AddNullChecks => true;
     protected virtual bool UseExceptionThrowIfNull => false;
     protected virtual bool CreateRecord => false;
@@ -67,7 +67,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool AddFullConstructor => true;
     protected virtual bool AddPublicParameterlessConstructor => false;
     protected virtual bool AddCopyConstructor => true;
-    protected virtual bool AddImplicitOperatorOnBuilder => false;
+    protected virtual bool AddImplicitOperatorOnBuilder => true;
     protected virtual bool SetDefaultValues => true;
     protected virtual string FilenameSuffix => ".template.generated";
     protected virtual bool CreateCodeGenerationHeader => true;

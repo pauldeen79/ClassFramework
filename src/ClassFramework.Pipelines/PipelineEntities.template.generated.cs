@@ -91,6 +91,7 @@ namespace ClassFramework.Pipelines
             get;
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
         public bool AddImplicitOperatorOnBuilder
         {
             get;
@@ -127,6 +128,7 @@ namespace ClassFramework.Pipelines
             get;
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
         public bool UseBuilderAbstractionsTypeConversion
         {
             get;
