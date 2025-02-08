@@ -1,5 +1,4 @@
-﻿
-namespace ClassFramework.CodeGeneration;
+﻿namespace ClassFramework.CodeGeneration;
 
 [ExcludeFromCodeCoverage]
 internal static class Program
@@ -36,20 +35,17 @@ internal static class Program
         var engine = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
 
         // Generate code
-        var results = await Task.WhenAll(generators
-            .Select(x => (CsharpClassGeneratorCodeGenerationProviderBase)scope.ServiceProvider.GetRequiredService(x))
-            .Select(x => engine.Generate(x, new MultipleStringContentBuilderEnvironment(), new CodeGenerationSettings(basePath, Path.Combine(x.Path, $"{x.GetType().Name}.template.generated.cs")))))
-            .ConfigureAwait(false);
-
-        var errors = results.Where(x => !x.IsSuccessful()).ToArray();
-        if (errors.Length > 0)
+        foreach (var generatorType in generators)
         {
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
-            Console.WriteLine("Errors:");
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
-            foreach (var error in errors)
+            var generator = (CsharpClassGeneratorCodeGenerationProviderBase)scope.ServiceProvider.GetRequiredService(generatorType);
+            var result = await engine.Generate(generator, new MultipleStringContentBuilderEnvironment(), new CodeGenerationSettings(basePath, Path.Combine(generator.Path, $"{generatorType.Name}.template.generated.cs"))).ConfigureAwait(false);
+            if (!result.IsSuccessful())
             {
-                WriteError(error);
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
+                Console.WriteLine("Errors:");
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
+                WriteError(result);
+                break;
             }
         }
 
@@ -63,6 +59,11 @@ internal static class Program
     private static void WriteError(Result error)
     {
         Console.WriteLine($"{error.Status} {error.ErrorMessage}");
+        foreach (var validationError in error.ValidationErrors)
+        {
+            Console.WriteLine($"{string.Join(",",  validationError.MemberNames)}: {validationError.ErrorMessage}");
+        }
+
         foreach (var innerResult in error.InnerResults)
         {
             WriteError(innerResult);

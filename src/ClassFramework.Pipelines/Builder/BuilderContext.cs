@@ -38,14 +38,15 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
     {
         property = property.IsNotNull(nameof(property));
 
-        if (!Settings.CopyInterfaces || !Settings.InheritFromInterfaces)
+        if (string.IsNullOrEmpty(property.ParentTypeFullName))
         {
             return true;
         }
 
-        if (string.IsNullOrEmpty(property.ParentTypeFullName))
+        if (!Settings.CopyInterfaces || !Settings.InheritFromInterfaces)
         {
-            return true;
+            return Settings.SkipNamespacesOnFluentBuilderMethods.Count == 0
+                || !Settings.SkipNamespacesOnFluentBuilderMethods.Contains(property.ParentTypeFullName.GetNamespaceWithDefault());
         }
 
         if (property.ParentTypeFullName == SourceModel.GetFullName())
@@ -66,14 +67,48 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
         {
             if (IsBuilderForAbstractEntity || IsBuilderForOverrideEntity)
             {
-                return $"{SourceModel.GetFullName()}{SourceModel.GetGenericTypeArgumentsString()}";
+                return MapTypeName(SourceModel.GetFullName(), string.Empty);
             }
 
             return Settings.InheritFromInterfaces
-                ? SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{SourceModel.Name}") ?? $"{SourceModel.GetFullName()}{SourceModel.GetGenericTypeArgumentsString()}"
-                : $"{SourceModel.GetFullName()}{SourceModel.GetGenericTypeArgumentsString()}";
+                ? MapTypeName(SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{SourceModel.Name}") ?? SourceModel.GetFullName(), string.Empty)
+                : MapTypeName(SourceModel.GetFullName(), string.Empty);
         }
     }
+
+    public Result<T>[] GetInterfaceResults<T>(
+        Func<string, GenericFormattableString, T> namespaceTransformation,
+        Func<string, T> noNamespaceTransformation,
+        IFormattableStringParser formattableStringParser,
+        bool includeNonAbstractionNamespaces)
+        => SourceModel.Interfaces
+            .Where(x => (Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+                        && (includeNonAbstractionNamespaces || Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(x.GetNamespaceWithDefault())))
+            .Select(x =>
+            {
+                var metadata = GetMappingMetadata(x).ToArray();
+                var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
+
+                if (!string.IsNullOrEmpty(ns))
+                {
+                    var property = new PropertyBuilder()
+                        .WithName("Dummy")
+                        .WithTypeName(x)
+                        .Build();
+                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
+                    var newFullName = $"{ns}.{newTypeName}";
+
+                    return formattableStringParser.Parse
+                    (
+                        newFullName,
+                        FormatProvider,
+                        new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(this), property, Settings)
+                    ).Transform(y => namespaceTransformation(x, y));
+                }
+                return Result.Success(noNamespaceTransformation(x));
+            })
+            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
+            .ToArray();
 
     private string ReturnValue
     {

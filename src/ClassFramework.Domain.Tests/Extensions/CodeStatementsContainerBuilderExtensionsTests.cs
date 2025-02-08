@@ -1,4 +1,5 @@
-﻿namespace ClassFramework.Domain.Tests.Extensions;
+﻿
+namespace ClassFramework.Domain.Tests.Extensions;
 
 public class CodeStatementsContainerBuilderExtensionsTests : TestBase<TestCodeStatementsContainerBuilder>
 {
@@ -38,4 +39,9 @@ public class CodeStatementsContainerBuilderExtensionsTests : TestBase<TestCodeSt
 public sealed class TestCodeStatementsContainerBuilder : ICodeStatementsContainerBuilder
 {
     public ObservableCollection<CodeStatementBaseBuilder> CodeStatements { get; set; } = new();
+
+    public ICodeStatementsContainer Build()
+    {
+        throw new NotImplementedException();
+    }
 }

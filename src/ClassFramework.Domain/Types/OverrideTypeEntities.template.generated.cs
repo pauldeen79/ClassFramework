@@ -81,6 +81,71 @@ namespace ClassFramework.Domain.Types
         {
             return new ClassFramework.Domain.Builders.Types.ClassBuilder(this);
         }
+
+        ClassFramework.Domain.Builders.Abstractions.ITypeBuilder ClassFramework.Domain.Abstractions.IType.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder ClassFramework.Domain.Abstractions.IVisibilityContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ClassFramework.Domain.Abstractions.IAttributesContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IReferenceTypeBuilder ClassFramework.Domain.Abstractions.IReferenceType.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IConcreteTypeBuilder ClassFramework.Domain.Abstractions.IConcreteType.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IConstructorsContainerBuilder ClassFramework.Domain.Abstractions.IConstructorsContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IRecordContainerBuilder ClassFramework.Domain.Abstractions.IRecordContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IBaseClassContainerBuilder ClassFramework.Domain.Abstractions.IBaseClassContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IEnumsContainerBuilder ClassFramework.Domain.Abstractions.IEnumsContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ISubClassesContainerBuilder ClassFramework.Domain.Abstractions.ISubClassesContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
     }
     public partial record Interface : ClassFramework.Domain.TypeBase, ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
     {
@@ -97,6 +162,36 @@ namespace ClassFramework.Domain.Types
         public ClassFramework.Domain.Builders.Types.InterfaceBuilder ToTypedBuilder()
         {
             return new ClassFramework.Domain.Builders.Types.InterfaceBuilder(this);
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ITypeBuilder ClassFramework.Domain.Abstractions.IType.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder ClassFramework.Domain.Abstractions.IVisibilityContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ClassFramework.Domain.Abstractions.IAttributesContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
         }
     }
     public partial record Struct : ClassFramework.Domain.TypeBase, ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer, ClassFramework.Domain.Abstractions.IValueType, ClassFramework.Domain.Abstractions.IConcreteType, ClassFramework.Domain.Abstractions.IConstructorsContainer, ClassFramework.Domain.Abstractions.IRecordContainer, ClassFramework.Domain.Abstractions.IBaseClassContainer
@@ -135,6 +230,61 @@ namespace ClassFramework.Domain.Types
         public ClassFramework.Domain.Builders.Types.StructBuilder ToTypedBuilder()
         {
             return new ClassFramework.Domain.Builders.Types.StructBuilder(this);
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ITypeBuilder ClassFramework.Domain.Abstractions.IType.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder ClassFramework.Domain.Abstractions.IVisibilityContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ClassFramework.Domain.Abstractions.IAttributesContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IValueTypeBuilder ClassFramework.Domain.Abstractions.IValueType.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IConcreteTypeBuilder ClassFramework.Domain.Abstractions.IConcreteType.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IConstructorsContainerBuilder ClassFramework.Domain.Abstractions.IConstructorsContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IRecordContainerBuilder ClassFramework.Domain.Abstractions.IRecordContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IBaseClassContainerBuilder ClassFramework.Domain.Abstractions.IBaseClassContainer.ToBuilder()
+        {
+            return ToTypedBuilder();
         }
     }
 }

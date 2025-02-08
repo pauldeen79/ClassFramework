@@ -26,6 +26,7 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IBuilde
         }
 
         builder.Append(Model.ReturnTypeName);
+        builder.Append(Model.ReturnTypeGenericTypeArguments);
         builder.Append(" ");
         builder.Append(Model.ExplicitInterfaceName);
         builder.Append(Model.Name);

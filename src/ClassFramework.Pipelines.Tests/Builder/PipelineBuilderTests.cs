@@ -139,7 +139,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderContext
             result.Status.Should().Be(ResultStatus.Ok);
             context.Builder.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
             var method = context.Builder.Methods.Single(x => x.Name == "Build");
-            method.ReturnTypeName.Should().Be("MyNamespace.MyClass<T>");
+            method.ReturnTypeName.Should().Be("MyNamespace.MyClass");
+            method.ReturnTypeGenericTypeArguments.Select(x => x.TypeName).Should().BeEquivalentTo("T");
             method.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return new MyNamespace.MyClass<T> { Property2 = Property2 };");
         }

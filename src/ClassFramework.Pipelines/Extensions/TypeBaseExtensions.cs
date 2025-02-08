@@ -117,7 +117,7 @@ public static class TypeBaseExtensions
                 .WithTypeName(builderArgumentTypeResult.Value!.ToString().FixCollectionTypeName(context.Request.Settings.BuilderNewCollectionTypeName).FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
-                .AddGenericTypeArguments(property.GenericTypeArguments));
+                .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder())));
         }
     }
 

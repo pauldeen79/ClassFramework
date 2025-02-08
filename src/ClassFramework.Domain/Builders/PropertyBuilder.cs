@@ -3,9 +3,9 @@
 [CustomValidation(typeof(PropertyValidator), nameof(PropertyValidator.Validate))]
 public partial class PropertyBuilder
 {
-    public PropertyBuilder WithParentType(Type parentType) => WithParentTypeFullName(parentType.IsNotNull(nameof(parentType)).FullName.FixTypeName());
-    public PropertyBuilder WithParentType(IType parentType) => WithParentTypeFullName(parentType.IsNotNull(nameof(parentType)).GetFullName());
-    public PropertyBuilder WithParentType(ITypeBuilder parentType) => WithParentTypeFullName(parentType.IsNotNull(nameof(parentType)).GetFullName());
+    public PropertyBuilder WithParentType(Type parentType) => this.WithParentTypeFullName(parentType.IsNotNull(nameof(parentType)).FullName.FixTypeName());
+    public PropertyBuilder WithParentType(IType parentType) => this.WithParentTypeFullName(parentType.IsNotNull(nameof(parentType)).GetFullName());
+    public PropertyBuilder WithParentType(ITypeBuilder parentType) => this.WithParentTypeFullName(parentType.IsNotNull(nameof(parentType)).GetFullName());
 
     public PropertyBuilder AddGetterStringCodeStatements(params string[] statements) => AddGetterCodeStatements(statements.IsNotNull(nameof(statements)).Select(x => new StringCodeStatementBuilder().WithStatement(x)));
     public PropertyBuilder AddGetterStringCodeStatements(IEnumerable<string> statements) => AddGetterStringCodeStatements(statements.IsNotNull(nameof(statements)).ToArray());

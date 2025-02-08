@@ -53,6 +53,36 @@ namespace ClassFramework.Domain.Builders
 
         public abstract TEntity BuildTyped();
 
+        ClassFramework.Domain.Abstractions.IType ClassFramework.Domain.Builders.Abstractions.ITypeBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IVisibilityContainer ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.INameContainer ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IAttributesContainer ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
         public static implicit operator ClassFramework.Domain.TypeBase(TypeBaseBuilder<TBuilder, TEntity> entity)
         {
             return entity.BuildTyped();

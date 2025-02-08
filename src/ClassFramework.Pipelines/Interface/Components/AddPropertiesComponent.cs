@@ -15,7 +15,7 @@ public class AddPropertiesComponent : IPipelineComponent<InterfaceContext>
         (
             properties.Select
             (
-                property => context.Request.CreatePropertyForEntity(property)
+                property => context.Request.CreatePropertyForEntity(property, context.Request.Settings.BuilderAbstractionsTypeConversionMetadataName)
                     .WithHasGetter(property.HasGetter)
                     .WithHasInitializer(false)
                     .WithHasSetter(property.HasSetter && context.Request.Settings.AddSetters)

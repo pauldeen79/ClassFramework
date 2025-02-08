@@ -6,6 +6,7 @@ public static class VisibilityContainerExtensions
         where T : IVisibilityContainer
     {
         var builder = new StringBuilder();
+
         if (instance is IModifiersContainer modifiersContainer)
         {
             var classMethod = instance as Method;

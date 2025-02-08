@@ -177,77 +177,72 @@ namespace ClassFramework.Domain.Builders.Types
             return new ClassFramework.Domain.Types.Class(Namespace, Partial, Interfaces, Fields.Select(x => x.Build()!).ToList().AsReadOnly(), Properties.Select(x => x.Build()!).ToList().AsReadOnly(), Methods.Select(x => x.Build()!).ToList().AsReadOnly(), Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes, Static, Sealed, Abstract, Constructors.Select(x => x.Build()!).ToList().AsReadOnly(), Record, BaseClass, Enums.Select(x => x.Build()!).ToList().AsReadOnly(), SubClasses.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
+        ClassFramework.Domain.Abstractions.IType ClassFramework.Domain.Builders.Abstractions.ITypeBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IVisibilityContainer ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.INameContainer ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IAttributesContainer ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IReferenceType ClassFramework.Domain.Builders.Abstractions.IReferenceTypeBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IConcreteType ClassFramework.Domain.Builders.Abstractions.IConcreteTypeBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IConstructorsContainer ClassFramework.Domain.Builders.Abstractions.IConstructorsContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IRecordContainer ClassFramework.Domain.Builders.Abstractions.IRecordContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IBaseClassContainer ClassFramework.Domain.Builders.Abstractions.IBaseClassContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IEnumsContainer ClassFramework.Domain.Builders.Abstractions.IEnumsContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.ISubClassesContainer ClassFramework.Domain.Builders.Abstractions.ISubClassesContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
         partial void SetDefaultValues();
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder AddConstructors(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.ConstructorBuilder> constructors)
-        {
-            if (constructors is null) throw new System.ArgumentNullException(nameof(constructors));
-            return AddConstructors(constructors.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder AddConstructors(params ClassFramework.Domain.Builders.ConstructorBuilder[] constructors)
-        {
-            if (constructors is null) throw new System.ArgumentNullException(nameof(constructors));
-            foreach (var item in constructors) Constructors.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder AddEnums(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.EnumerationBuilder> enums)
-        {
-            if (enums is null) throw new System.ArgumentNullException(nameof(enums));
-            return AddEnums(enums.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder AddEnums(params ClassFramework.Domain.Builders.EnumerationBuilder[] enums)
-        {
-            if (enums is null) throw new System.ArgumentNullException(nameof(enums));
-            foreach (var item in enums) Enums.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder AddSubClasses(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.TypeBaseBuilder> subClasses)
-        {
-            if (subClasses is null) throw new System.ArgumentNullException(nameof(subClasses));
-            return AddSubClasses(subClasses.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder AddSubClasses(params ClassFramework.Domain.Builders.TypeBaseBuilder[] subClasses)
-        {
-            if (subClasses is null) throw new System.ArgumentNullException(nameof(subClasses));
-            foreach (var item in subClasses) SubClasses.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder WithStatic(bool @static = true)
-        {
-            Static = @static;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder WithSealed(bool @sealed = true)
-        {
-            Sealed = @sealed;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder WithAbstract(bool @abstract = true)
-        {
-            Abstract = @abstract;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder WithRecord(bool record = true)
-        {
-            Record = record;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.ClassBuilder WithBaseClass(string baseClass)
-        {
-            if (baseClass is null) throw new System.ArgumentNullException(nameof(baseClass));
-            BaseClass = baseClass;
-            return this;
-        }
 
         public static implicit operator ClassFramework.Domain.Types.Class(ClassBuilder entity)
         {
@@ -269,6 +264,36 @@ namespace ClassFramework.Domain.Builders.Types
         public override ClassFramework.Domain.Types.Interface BuildTyped()
         {
             return new ClassFramework.Domain.Types.Interface(Namespace, Partial, Interfaces, Fields.Select(x => x.Build()!).ToList().AsReadOnly(), Properties.Select(x => x.Build()!).ToList().AsReadOnly(), Methods.Select(x => x.Build()!).ToList().AsReadOnly(), Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes);
+        }
+
+        ClassFramework.Domain.Abstractions.IType ClassFramework.Domain.Builders.Abstractions.ITypeBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IVisibilityContainer ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.INameContainer ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IAttributesContainer ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder.Build()
+        {
+            return BuildTyped();
         }
 
         partial void SetDefaultValues();
@@ -352,33 +377,62 @@ namespace ClassFramework.Domain.Builders.Types
             return new ClassFramework.Domain.Types.Struct(Namespace, Partial, Interfaces, Fields.Select(x => x.Build()!).ToList().AsReadOnly(), Properties.Select(x => x.Build()!).ToList().AsReadOnly(), Methods.Select(x => x.Build()!).ToList().AsReadOnly(), Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes, Constructors.Select(x => x.Build()!).ToList().AsReadOnly(), Record, BaseClass);
         }
 
+        ClassFramework.Domain.Abstractions.IType ClassFramework.Domain.Builders.Abstractions.ITypeBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IVisibilityContainer ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.INameContainer ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IAttributesContainer ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IValueType ClassFramework.Domain.Builders.Abstractions.IValueTypeBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IConcreteType ClassFramework.Domain.Builders.Abstractions.IConcreteTypeBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IConstructorsContainer ClassFramework.Domain.Builders.Abstractions.IConstructorsContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IRecordContainer ClassFramework.Domain.Builders.Abstractions.IRecordContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
+        ClassFramework.Domain.Abstractions.IBaseClassContainer ClassFramework.Domain.Builders.Abstractions.IBaseClassContainerBuilder.Build()
+        {
+            return BuildTyped();
+        }
+
         partial void SetDefaultValues();
-
-        public ClassFramework.Domain.Builders.Types.StructBuilder AddConstructors(System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.ConstructorBuilder> constructors)
-        {
-            if (constructors is null) throw new System.ArgumentNullException(nameof(constructors));
-            return AddConstructors(constructors.ToArray());
-        }
-
-        public ClassFramework.Domain.Builders.Types.StructBuilder AddConstructors(params ClassFramework.Domain.Builders.ConstructorBuilder[] constructors)
-        {
-            if (constructors is null) throw new System.ArgumentNullException(nameof(constructors));
-            foreach (var item in constructors) Constructors.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.StructBuilder WithRecord(bool record = true)
-        {
-            Record = record;
-            return this;
-        }
-
-        public ClassFramework.Domain.Builders.Types.StructBuilder WithBaseClass(string baseClass)
-        {
-            if (baseClass is null) throw new System.ArgumentNullException(nameof(baseClass));
-            BaseClass = baseClass;
-            return this;
-        }
 
         public static implicit operator ClassFramework.Domain.Types.Struct(StructBuilder entity)
         {

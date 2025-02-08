@@ -89,7 +89,7 @@ public static class TypeExtensions
         return builder.ToString();
     }
 
-    public static string GetFullName(this IType type) => $"{type.Namespace.GetNamespacePrefix()}{type.Name}"; //{type.GetGenericTypeArgumentsString()}
+    public static string GetFullName(this IType type) => $"{type.Namespace.GetNamespacePrefix()}{type.Name}";
 
     public static IEnumerable<string> GetGenericTypeArgumentTypeNames(this Type instance)
         => ((TypeInfo)instance).GenericTypeParameters.Select(x => x.Name);
@@ -104,7 +104,7 @@ public static class TypeExtensions
             .WithTypeName(mapDelegate(instance, declaringType))
             .WithIsValueType(instance.IsValueType)
             .WithIsNullable(instance.IsNullable(declaringType, declaringType.CustomAttributes, index))
-            .AddGenericTypeArguments(instance.GenericTypeArguments.Select((x, index2) => x.ToTypeContainer(instance, index2 + 1, mapDelegate)))
+            .AddGenericTypeArguments(instance.GenericTypeArguments.Select((x, genericTypeIndex) => x.ToTypeContainer(instance, genericTypeIndex + 1, mapDelegate).ToBuilder()))
             .Build();
     }
 

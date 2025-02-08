@@ -36,6 +36,11 @@ namespace ClassFramework.Domain
         {
             return new ClassFramework.Domain.Builders.AttributeBuilder(this);
         }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
     }
     public partial record AttributeParameter
     {
@@ -153,6 +158,36 @@ namespace ClassFramework.Domain
         {
             return new ClassFramework.Domain.Builders.ConstructorBuilder(this);
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder ClassFramework.Domain.Abstractions.IModifiersContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder ClassFramework.Domain.Abstractions.IVisibilityContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ClassFramework.Domain.Abstractions.IAttributesContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ICodeStatementsContainerBuilder ClassFramework.Domain.Abstractions.ICodeStatementsContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IParametersContainerBuilder ClassFramework.Domain.Abstractions.IParametersContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
     }
     public partial record Enumeration : ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IVisibilityContainer
     {
@@ -194,6 +229,21 @@ namespace ClassFramework.Domain
         {
             return new ClassFramework.Domain.Builders.EnumerationBuilder(this);
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ClassFramework.Domain.Abstractions.IAttributesContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder ClassFramework.Domain.Abstractions.IVisibilityContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
     }
     public partial record EnumerationMember : ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.INameContainer
     {
@@ -226,6 +276,16 @@ namespace ClassFramework.Domain
         public ClassFramework.Domain.Builders.EnumerationMemberBuilder ToBuilder()
         {
             return new ClassFramework.Domain.Builders.EnumerationMemberBuilder(this);
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ClassFramework.Domain.Abstractions.IAttributesContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        {
+            return ToBuilder();
         }
     }
     public partial record Field : ClassFramework.Domain.Abstractions.IModifiersContainer, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.ITypeContainer, ClassFramework.Domain.Abstractions.IDefaultValueContainer, ClassFramework.Domain.Abstractions.IParentTypeContainer
@@ -353,6 +413,41 @@ namespace ClassFramework.Domain
         public ClassFramework.Domain.Builders.FieldBuilder ToBuilder()
         {
             return new ClassFramework.Domain.Builders.FieldBuilder(this);
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder ClassFramework.Domain.Abstractions.IModifiersContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder ClassFramework.Domain.Abstractions.IVisibilityContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ClassFramework.Domain.Abstractions.IAttributesContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder ClassFramework.Domain.Abstractions.ITypeContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder ClassFramework.Domain.Abstractions.IDefaultValueContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder ClassFramework.Domain.Abstractions.IParentTypeContainer.ToBuilder()
+        {
+            return ToBuilder();
         }
     }
     public partial record Literal
@@ -552,6 +647,56 @@ namespace ClassFramework.Domain
         {
             return new ClassFramework.Domain.Builders.MethodBuilder(this);
         }
+
+        ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder ClassFramework.Domain.Abstractions.IModifiersContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder ClassFramework.Domain.Abstractions.IVisibilityContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ClassFramework.Domain.Abstractions.IAttributesContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ICodeStatementsContainerBuilder ClassFramework.Domain.Abstractions.ICodeStatementsContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IParametersContainerBuilder ClassFramework.Domain.Abstractions.IParametersContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder ClassFramework.Domain.Abstractions.IExplicitInterfaceNameContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder ClassFramework.Domain.Abstractions.IParentTypeContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
     }
     public partial record Parameter : ClassFramework.Domain.Abstractions.ITypeContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IDefaultValueContainer
     {
@@ -629,6 +774,26 @@ namespace ClassFramework.Domain
         public ClassFramework.Domain.Builders.ParameterBuilder ToBuilder()
         {
             return new ClassFramework.Domain.Builders.ParameterBuilder(this);
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder ClassFramework.Domain.Abstractions.ITypeContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ClassFramework.Domain.Abstractions.IAttributesContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder ClassFramework.Domain.Abstractions.IDefaultValueContainer.ToBuilder()
+        {
+            return ToBuilder();
         }
     }
     public partial record Property : ClassFramework.Domain.Abstractions.IModifiersContainer, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.ITypeContainer, ClassFramework.Domain.Abstractions.IDefaultValueContainer, ClassFramework.Domain.Abstractions.IExplicitInterfaceNameContainer, ClassFramework.Domain.Abstractions.IParentTypeContainer
@@ -807,6 +972,46 @@ namespace ClassFramework.Domain
         public ClassFramework.Domain.Builders.PropertyBuilder ToBuilder()
         {
             return new ClassFramework.Domain.Builders.PropertyBuilder(this);
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder ClassFramework.Domain.Abstractions.IModifiersContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder ClassFramework.Domain.Abstractions.IVisibilityContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ClassFramework.Domain.Abstractions.IAttributesContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder ClassFramework.Domain.Abstractions.ITypeContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder ClassFramework.Domain.Abstractions.IDefaultValueContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder ClassFramework.Domain.Abstractions.IExplicitInterfaceNameContainer.ToBuilder()
+        {
+            return ToBuilder();
+        }
+
+        ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder ClassFramework.Domain.Abstractions.IParentTypeContainer.ToBuilder()
+        {
+            return ToBuilder();
         }
     }
 }

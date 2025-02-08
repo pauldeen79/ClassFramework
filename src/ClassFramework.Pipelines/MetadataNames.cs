@@ -108,6 +108,11 @@ public static class MetadataNames
     public const string CustomEntityInterfaceTypeName = "ClassFramework.Entity.Interface.TypeName";
 
     /// <summary>
+    /// Metadata name for defining custom builder typename on entities
+    /// </summary>
+    public const string CustomBuilderInterfaceTypeName = "ClassFramework.Builder.Interface.TypeName";
+
+    /// <summary>
     /// Metadata name for fixing typename when code generation fails.
     /// </summary>
     public const string CustomTypeName = "ClassFramework.CodeGeneration.Quirk.TypeName.Custom";

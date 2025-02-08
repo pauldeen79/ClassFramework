@@ -3,7 +3,8 @@
 public class MethodViewModel : MethodViewModelBase<Method>
 {
     public bool ShouldRenderModifiers
-        => string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface;
+        => (string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface)
+        || (GetParentModel() is Interface && GetModel().New);
 
     public string ReturnTypeName
         => GetModel().ReturnTypeName
@@ -11,6 +12,9 @@ public class MethodViewModel : MethodViewModelBase<Method>
             .AppendNullableAnnotation(Model!.ReturnTypeIsNullable, Settings.EnableNullableContext, Model.ReturnTypeIsValueType)
             .AbbreviateNamespaces(GetContext().GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate)
             .WhenNullOrEmpty("void");
+
+    public string ReturnTypeGenericTypeArguments
+        => GetModel().ReturnTypeGenericTypeArguments.Select(x => x.TypeName).GetGenericTypeArgumentsString();
 
     public string ExplicitInterfaceName
         => !string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface
