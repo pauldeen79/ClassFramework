@@ -339,6 +339,8 @@ namespace ClassFramework.Pipelines.Builders
 
         private string _builderAbstractionsTypeConversionMetadataName;
 
+        private System.Collections.ObjectModel.ObservableCollection<string> _skipNamespacesOnFluentBuilderMethods;
+
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
         public bool AddBackingFields
@@ -1283,6 +1285,21 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Collections.ObjectModel.ObservableCollection<string> SkipNamespacesOnFluentBuilderMethods
+        {
+            get
+            {
+                return _skipNamespacesOnFluentBuilderMethods;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.ObjectModel.ObservableCollection<System.String>>.Default.Equals(_skipNamespacesOnFluentBuilderMethods!, value!);
+                _skipNamespacesOnFluentBuilderMethods = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SkipNamespacesOnFluentBuilderMethods));
+            }
+        }
+
         public PipelineSettingsBuilder(ClassFramework.Pipelines.PipelineSettings source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
@@ -1290,6 +1307,7 @@ namespace ClassFramework.Pipelines.Builders
             _namespaceMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.NamespaceMappingBuilder>();
             _typenameMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.TypenameMappingBuilder>();
             _builderAbstractionsTypeConversionNamespaces = new System.Collections.ObjectModel.ObservableCollection<string>();
+            _skipNamespacesOnFluentBuilderMethods = new System.Collections.ObjectModel.ObservableCollection<string>();
             _addBackingFields = source.AddBackingFields;
             _addCopyConstructor = source.AddCopyConstructor;
             _addFullConstructor = source.AddFullConstructor;
@@ -1355,6 +1373,7 @@ namespace ClassFramework.Pipelines.Builders
             _iEquatableItemType = source.IEquatableItemType;
             if (source.BuilderAbstractionsTypeConversionNamespaces is not null) foreach (var item in source.BuilderAbstractionsTypeConversionNamespaces) _builderAbstractionsTypeConversionNamespaces.Add(item);
             _builderAbstractionsTypeConversionMetadataName = source.BuilderAbstractionsTypeConversionMetadataName;
+            if (source.SkipNamespacesOnFluentBuilderMethods is not null) foreach (var item in source.SkipNamespacesOnFluentBuilderMethods) _skipNamespacesOnFluentBuilderMethods.Add(item);
         }
 
         public PipelineSettingsBuilder()
@@ -1363,6 +1382,7 @@ namespace ClassFramework.Pipelines.Builders
             _namespaceMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.NamespaceMappingBuilder>();
             _typenameMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.TypenameMappingBuilder>();
             _builderAbstractionsTypeConversionNamespaces = new System.Collections.ObjectModel.ObservableCollection<string>();
+            _skipNamespacesOnFluentBuilderMethods = new System.Collections.ObjectModel.ObservableCollection<string>();
             _addImplicitOperatorOnBuilder = true;
             _addMethodNameFormatString = string.Empty;
             _useBuilderAbstractionsTypeConversion = true;
@@ -1395,7 +1415,7 @@ namespace ClassFramework.Pipelines.Builders
 
         public ClassFramework.Pipelines.PipelineSettings Build()
         {
-            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddImplicitOperatorOnBuilder, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, ImplementIEquatable, AllowGenerationWithoutProperties, UseBuilderAbstractionsTypeConversion, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, InheritFromInterfaces, CreateAsObservable, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), BuilderNewCollectionTypeName, EntityNewCollectionTypeName, NonCollectionInitializationStatementFormatString, CreateAsPartial, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseExceptionThrowIfNull, UsePatternMatchingForNullChecks, ValidateArguments, UseDefaultValueAttributeValuesForBuilderInitialization, IEquatableItemType, BuilderAbstractionsTypeConversionNamespaces, BuilderAbstractionsTypeConversionMetadataName);
+            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddImplicitOperatorOnBuilder, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, ImplementIEquatable, AllowGenerationWithoutProperties, UseBuilderAbstractionsTypeConversion, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, InheritFromInterfaces, CreateAsObservable, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), BuilderNewCollectionTypeName, EntityNewCollectionTypeName, NonCollectionInitializationStatementFormatString, CreateAsPartial, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseExceptionThrowIfNull, UsePatternMatchingForNullChecks, ValidateArguments, UseDefaultValueAttributeValuesForBuilderInitialization, IEquatableItemType, BuilderAbstractionsTypeConversionNamespaces, BuilderAbstractionsTypeConversionMetadataName, SkipNamespacesOnFluentBuilderMethods);
         }
 
         partial void SetDefaultValues();
@@ -1449,6 +1469,19 @@ namespace ClassFramework.Pipelines.Builders
         {
             if (builderAbstractionsTypeConversionNamespaces is null) throw new System.ArgumentNullException(nameof(builderAbstractionsTypeConversionNamespaces));
             foreach (var item in builderAbstractionsTypeConversionNamespaces) BuilderAbstractionsTypeConversionNamespaces.Add(item);
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder AddSkipNamespacesOnFluentBuilderMethods(System.Collections.Generic.IEnumerable<string> skipNamespacesOnFluentBuilderMethods)
+        {
+            if (skipNamespacesOnFluentBuilderMethods is null) throw new System.ArgumentNullException(nameof(skipNamespacesOnFluentBuilderMethods));
+            return AddSkipNamespacesOnFluentBuilderMethods(skipNamespacesOnFluentBuilderMethods.ToArray());
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder AddSkipNamespacesOnFluentBuilderMethods(params string[] skipNamespacesOnFluentBuilderMethods)
+        {
+            if (skipNamespacesOnFluentBuilderMethods is null) throw new System.ArgumentNullException(nameof(skipNamespacesOnFluentBuilderMethods));
+            foreach (var item in skipNamespacesOnFluentBuilderMethods) SkipNamespacesOnFluentBuilderMethods.Add(item);
             return this;
         }
 

@@ -67,4 +67,5 @@ internal interface IPipelineSettings
     IEquatableItemType IEquatableItemType { get; }
     [Required] IReadOnlyCollection<string> BuilderAbstractionsTypeConversionNamespaces { get; }
     [Required(AllowEmptyStrings = true)] string BuilderAbstractionsTypeConversionMetadataName{ get; }
+    [Required] IReadOnlyCollection<string> SkipNamespacesOnFluentBuilderMethods { get; }
 }

@@ -45,7 +45,8 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
 
         if (!Settings.CopyInterfaces || !Settings.InheritFromInterfaces)
         {
-            return !property.ParentTypeFullName.GetNamespaceWithDefault().EndsWith(".Abstractions");
+            return Settings.SkipNamespacesOnFluentBuilderMethods.Count == 0
+                || !Settings.SkipNamespacesOnFluentBuilderMethods.Contains(property.ParentTypeFullName.GetNamespaceWithDefault());
         }
 
         if (property.ParentTypeFullName == SourceModel.GetFullName())

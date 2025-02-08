@@ -102,6 +102,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     protected virtual string[] GetBuilderAbstractionsTypeConversionNamespaces() => [$"{CoreNamespace}.Abstractions"];
     protected virtual string[] GetCodeGenerationBuilderAbstractionsTypeConversionNamespaces() => [$"{CodeGenerationRootNamespace}.Models.Abstractions"];
+    protected virtual string[] GetSkipNamespacesOnFluentBuilderMethods() => [$"{CoreNamespace}.Abstractions"];
 
     protected virtual IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetTypes().Where(IsAbstractType);
@@ -547,6 +548,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithAddCopyConstructor(AddCopyConstructor)
                 .WithAddImplicitOperatorOnBuilder(AddImplicitOperatorOnBuilder)
                 .WithSetDefaultValuesInEntityConstructor(SetDefaultValues)
+                .AddSkipNamespacesOnFluentBuilderMethods(GetSkipNamespacesOnFluentBuilderMethods())
                 .Build())
             ));
 
