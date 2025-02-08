@@ -64,6 +64,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<MultipleInterfacesAbstractionsBuildersExtensions>()
             .AddScoped<MultipleInterfacesAbstractionsBuildersInterfaces>()
             .AddScoped<MultipleInterfacesAbstractionsInterfaces>()
+            .AddScoped<MultipleInterfacesOverrideBuilders>()
+            .AddScoped<MultipleInterfacesOverrideEntities>()
             .BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
         _scope = _serviceProvider.CreateScope();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
@@ -4156,6 +4158,93 @@ namespace Test.Domain.Builders
         }
 
         new ClassFramework.Domain.Builders.Abstractions.ITypeBuilder ToBuilder();
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_ClassFramework_Override_Builders()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<MultipleInterfacesOverrideBuilders>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"namespace ClassFramework.Domain.Builders.Types
+{
+#nullable enable
+    public partial class ClassBuilder : TypeBaseBuilder<ClassBuilder, ClassFramework.Domain.Types.Class>, ClassFramework.Domain.ITypeBase
+    {
+        public ClassBuilder(ClassFramework.Domain.Types.Class source) : base(source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+        }
+
+        public ClassBuilder() : base()
+        {
+            SetDefaultValues();
+        }
+
+        public override ClassFramework.Domain.Types.Class BuildTyped()
+        {
+            return new ClassFramework.Domain.Types.Class();
+        }
+
+        partial void SetDefaultValues();
+
+        public static implicit operator ClassFramework.Domain.Types.Class(ClassBuilder entity)
+        {
+            return entity.BuildTyped();
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_ClassFramework_Override_Entities()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<MultipleInterfacesOverrideEntities>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.Should().Be(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Should().ContainSingle();
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"namespace ClassFramework.Domain.Types
+{
+#nullable enable
+    public partial class Class : ClassFramework.Domain.TypeBase, ClassFramework.Domain.ITypeBase
+    {
+        public Class() : base()
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public override ClassFramework.Domain.Types.Builders.TypeBaseBuilder ToBuilder()
+        {
+            return ToTypedBuilder();
+        }
+
+        public ClassFramework.Domain.Types.Builders.ClassBuilder ToTypedBuilder()
+        {
+            return new ClassFramework.Domain.Types.Builders.ClassBuilder(this);
+        }
     }
 #nullable restore
 }

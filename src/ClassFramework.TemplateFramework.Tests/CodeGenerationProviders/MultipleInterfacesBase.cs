@@ -22,15 +22,36 @@ public abstract class MultipleInterfacesBase(IPipelineService pipelineService) :
     protected static Task<Result<IEnumerable<TypeBase>>> GetAbstractionsTypes()
         => Task.FromResult(Result.Success<IEnumerable<TypeBase>>(
             [
-                new InterfaceBuilder().WithName("IDefaultValueContainer").WithNamespace("ClassFramework.Domain.Abstractions").AddProperties(new PropertyBuilder().WithName("DefaultValue").WithType(typeof(object)).WithIsNullable().WithHasSetter(false)).Build(),
-                new InterfaceBuilder().WithName("INameContainer").WithNamespace("ClassFramework.Domain.Abstractions").AddProperties(new PropertyBuilder().WithName("Name").WithType(typeof(string)).WithHasSetter(false)).Build(),
-                new InterfaceBuilder().WithName("IType").WithNamespace("ClassFramework.Domain.Abstractions").AddProperties(new PropertyBuilder().WithName("Namespace").WithType(typeof(string)).WithHasSetter(false)).AddInterfaces("ClassFramework.Domain.Abstractions.INameContainer", "ClassFramework.Domain.Abstractions.IDefaultValueContainer").Build()
+                new InterfaceBuilder().WithName("IDefaultValueContainer").WithNamespace("ClassFramework.Domain.Abstractions").AddProperties(new PropertyBuilder().WithName("DefaultValue").WithType(typeof(object)).WithIsNullable().WithHasSetter(false).WithParentTypeFullName("ClassFramework.Domain.Abstractions.IDefaultValueContainer")).Build(),
+                new InterfaceBuilder().WithName("INameContainer").WithNamespace("ClassFramework.Domain.Abstractions").AddProperties(new PropertyBuilder().WithName("Name").WithType(typeof(string)).WithHasSetter(false).WithParentTypeFullName("ClassFramework.Domain.Abstractions.INameContainer")).Build(),
+                new InterfaceBuilder().WithName("IType").WithNamespace("ClassFramework.Domain.Abstractions").AddProperties(new PropertyBuilder().WithName("Namespace").WithType(typeof(string)).WithHasSetter(false).WithParentTypeFullName("ClassFramework.Domain.Abstractions.IType")).AddInterfaces("ClassFramework.Domain.Abstractions.INameContainer", "ClassFramework.Domain.Abstractions.IDefaultValueContainer").Build()
             ]));
 
     protected static Task<Result<IEnumerable<TypeBase>>> GetAbstractTypes()
+        => Task.FromResult(Result.Success<IEnumerable<TypeBase>>([ GetAbstractTypeBase() ]));
+
+    protected static Task<Result<TypeBase>> GetAbstractType()
+        => Task.FromResult(Result.Success(GetAbstractTypeBase()));
+
+    private static TypeBase GetAbstractTypeBase()
+        => new InterfaceBuilder()
+            .WithName("ITypeBase")
+            .WithNamespace("ClassFramework.Domain")
+            .AddInterfaces("ClassFramework.Domain.Abstractions.IType", "ClassFramework.Domain.Abstractions.INameContainer", "ClassFramework.Domain.Abstractions.IDefaultValueContainer")
+            .Build();
+
+    protected async Task<Result<TypeBase>> CreateBaseClass(Task<Result<TypeBase>> baseClassTypeResult, string @namespace)
+    {
+        Guard.IsNotNull(baseClassTypeResult);
+        Guard.IsNotNull(@namespace);
+
+        return await ProcessBaseClassResult(baseClassTypeResult, GenerateBaseClass(@namespace)).ConfigureAwait(false);
+    }
+
+    protected static Task<Result<IEnumerable<TypeBase>>> GetOverrideTypes()
         => Task.FromResult(Result.Success<IEnumerable<TypeBase>>(
             [
-                new InterfaceBuilder().WithName("ITypeBase").WithNamespace("ClassFramework.Domain").AddInterfaces("ClassFramework.Domain.Abstractions.IType", "ClassFramework.Domain.Abstractions.INameContainer", "ClassFramework.Domain.Abstractions.IDefaultValueContainer").Build(),
+                new ClassBuilder().WithNamespace("ClassFramework.Domain.Types").WithName("Class").AddInterfaces("ClassFramework.Domain.ITypeBase").Build()
             ]));
 
     // this quirk is only needed because I build types using TypeBase derived entities instead of reflection

@@ -242,47 +242,50 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(type);
         Guard.IsNotNull(@namespace);
 
-        return await ProcessBaseClassResult(PipelineService.ProcessAsync(new ReflectionContext(type, CreateReflectionPipelineSettings(), Settings.CultureInfo)), async typeBaseResult =>
+        return await ProcessBaseClassResult(PipelineService.ProcessAsync(new ReflectionContext(type, CreateReflectionPipelineSettings(), Settings.CultureInfo)), GenerateBaseClass(@namespace)).ConfigureAwait(false);
+    }
+
+    protected Func<TypeBase?, Task<Result<TypeBase>>> GenerateBaseClass(string @namespace)
+        => async typeBaseResult =>
         {
             var entitySettings = new PipelineSettingsBuilder()
-               .WithAddSetters(AddSetters)
-               .WithAddBackingFields(AddBackingFields)
-               .WithSetterVisibility(SetterVisibility)
-               .WithCreateAsObservable(CreateAsObservable)
-               .WithCreateRecord(CreateRecord)
-               .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
-               .WithCopyAttributes(CopyAttributes)
-               .WithCopyInterfaces(CopyInterfaces)
-               .WithCopyMethods(CopyMethods)
-               .WithInheritFromInterfaces(InheritFromInterfaces)
-               .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
-               .WithCopyInterfacePredicate(CopyInterfacePredicate)
-               .WithCopyMethodPredicate(CopyMethodPredicate)
-               .WithEntityNameFormatString("{NoInterfacePrefix($class.Name)}")
-               .WithEntityNamespaceFormatString(@namespace)
-               .WithEnableInheritance()
-               .WithIsAbstract()
-               .WithBaseClass(null)
-               .WithInheritanceComparisonDelegate(
-                   (parentNameContainer, typeBase)
-                       => parentNameContainer is not null
-                       && typeBase is not null
-                       && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
-                           || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
-                           || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
-                           || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
-                       ))
-               .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
-               .WithEnableNullableReferenceTypes()
-               .AddTypenameMappings(CreateTypenameMappings())
-               .AddNamespaceMappings(CreateNamespaceMappings())
-               .WithValidateArguments(ValidateArgumentsInConstructor)
-               .WithAddNullChecks(AddNullChecks)
-               .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull);
+            .WithAddSetters(AddSetters)
+            .WithAddBackingFields(AddBackingFields)
+            .WithSetterVisibility(SetterVisibility)
+            .WithCreateAsObservable(CreateAsObservable)
+            .WithCreateRecord(CreateRecord)
+            .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+            .WithCopyAttributes(CopyAttributes)
+            .WithCopyInterfaces(CopyInterfaces)
+            .WithCopyMethods(CopyMethods)
+            .WithInheritFromInterfaces(InheritFromInterfaces)
+            .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
+            .WithCopyInterfacePredicate(CopyInterfacePredicate)
+            .WithCopyMethodPredicate(CopyMethodPredicate)
+            .WithEntityNameFormatString("{NoInterfacePrefix($class.Name)}")
+            .WithEntityNamespaceFormatString(@namespace)
+            .WithEnableInheritance()
+            .WithIsAbstract()
+            .WithBaseClass(null)
+            .WithInheritanceComparisonDelegate(
+                (parentNameContainer, typeBase)
+                    => parentNameContainer is not null
+                    && typeBase is not null
+                    && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
+                        || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
+                        || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
+                        || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
+                    ))
+            .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
+            .WithEnableNullableReferenceTypes()
+            .AddTypenameMappings(CreateTypenameMappings())
+            .AddNamespaceMappings(CreateNamespaceMappings())
+            .WithValidateArguments(ValidateArgumentsInConstructor)
+            .WithAddNullChecks(AddNullChecks)
+            .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull);
 
             return await PipelineService.ProcessAsync(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo)).ConfigureAwait(false);
-        }).ConfigureAwait(false);
-    }
+        };
 
     protected virtual PipelineSettings CreateReflectionPipelineSettings()
         => new PipelineSettingsBuilder()
@@ -617,7 +620,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private Task<Result<T>> ProcessBaseClassResult<T>(Func<TypeBase?, Task<Result<T>>> successTask)
         => ProcessBaseClassResult(GetBaseClass(), successTask);
 
-    private static async Task<Result<T>> ProcessBaseClassResult<T>(Task<Result<TypeBase>> baseClassResultTask, Func<TypeBase?, Task<Result<T>>> successTask)
+    protected static async Task<Result<T>> ProcessBaseClassResult<T>(Task<Result<TypeBase>> baseClassResultTask, Func<TypeBase?, Task<Result<T>>> successTask)
     {
         Guard.IsNotNull(baseClassResultTask);
         Guard.IsNotNull(successTask);
