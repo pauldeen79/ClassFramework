@@ -38,14 +38,14 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
     {
         property = property.IsNotNull(nameof(property));
 
-        if (!Settings.CopyInterfaces || !Settings.InheritFromInterfaces)
+        if (string.IsNullOrEmpty(property.ParentTypeFullName))
         {
             return true;
         }
 
-        if (string.IsNullOrEmpty(property.ParentTypeFullName))
+        if (!Settings.CopyInterfaces || !Settings.InheritFromInterfaces)
         {
-            return true;
+            return !property.ParentTypeFullName.GetNamespaceWithDefault().EndsWith(".Abstractions");
         }
 
         if (property.ParentTypeFullName == SourceModel.GetFullName())

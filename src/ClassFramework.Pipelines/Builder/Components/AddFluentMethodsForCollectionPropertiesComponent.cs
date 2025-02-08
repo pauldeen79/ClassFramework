@@ -13,7 +13,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IFormattableString
             return Task.FromResult(Result.Success());
         }
 
-        foreach (var property in context.Request.GetSourceProperties().Where(x => context.Request.IsValidForFluentMethod(x) && x.TypeName.FixTypeName().IsCollectionTypeName() && (!x.ParentTypeFullName.GetNamespaceWithDefault().EndsWith(".Abstractions") || context.Request.SourceModel.Namespace.EndsWith(".Abstractions"))))
+        foreach (var property in context.Request.GetSourceProperties().Where(x => context.Request.IsValidForFluentMethod(x) && x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var parentChildContext = CreateParentChildContext(context, property);
 
