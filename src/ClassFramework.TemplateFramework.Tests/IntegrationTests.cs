@@ -2554,7 +2554,7 @@ namespace Test.Domain.Builders
 #nullable enable
     public partial interface IFunctionCallArgument
     {
-        CrossCutting.Utilities.Parsers.Builders.IFunctionCallArgumentBuilder ToBuilder();
+        CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder ToBuilder();
     }
 #nullable restore
 }
@@ -2564,7 +2564,7 @@ namespace Test.Domain.Builders
 #nullable enable
     public partial interface IFunctionCallArgument<T> : CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
     {
-        new CrossCutting.Utilities.Parsers.Builders.IFunctionCallArgumentBuilder<T> ToBuilder();
+        new CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T> ToBuilder();
     }
 #nullable restore
 }
