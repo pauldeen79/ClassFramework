@@ -1,6 +1,4 @@
-﻿using ClassFramework.Domain.Builders.Abstractions;
-
-namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
+﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
 public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(pipelineService)
 {
