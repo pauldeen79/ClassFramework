@@ -25,7 +25,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
         return type.IsInterface && type.Name.WithoutTypeGenerics().EndsWith("Base");
     }
 
-    protected Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingAbstractModels()
+    protected static Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingAbstractModels()
     {
         var modelsResult = GetCrossCuttingModels().Where(x => x.Name.EndsWith("Base")).Select(x => Result.Success(x.Build())).ToArray();
 
@@ -39,7 +39,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
         return Task.FromResult(Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract interfaces. See the inner results for more details.")));
     }
 
-    protected Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingOverrideModels(string abstractTypeName)
+    protected static Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingOverrideModels(string abstractTypeName)
     {
         Guard.IsNotNull(abstractTypeName);
 
@@ -95,1133 +95,1170 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
         }).ConfigureAwait(false);
     }
 
-    protected IEnumerable<TypeBaseBuilder> GetCrossCuttingModels()
+    protected static IEnumerable<TypeBaseBuilder> GetCrossCuttingModels()
     {
 #pragma warning disable CA1861 // Avoid constant arrays as arguments
-        return new List<TypeBaseBuilder>(new[]
+        return new[]
         {
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers",
+                Interfaces = new ObservableCollection<System.String>(),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"FormatProvider",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.IFormatProvider",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IExpressionStringEvaluatorSettings",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"ValidateArgumentTypes",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Boolean",
                         IsValueType = true,
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IExpressionStringEvaluatorSettings",
                     },
                 } ),
-                Visibility = Visibility.Internal,
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IExpressionStringEvaluatorSettings",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers",
+                Interfaces = new ObservableCollection<System.String>(),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"FormatProvider",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.IFormatProvider",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFormattableStringParserSettings",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"ValidateArgumentTypes",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Boolean",
                         IsValueType = true,
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFormattableStringParserSettings",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"PlaceholderStart",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.String",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFormattableStringParserSettings",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"PlaceholderEnd",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.String",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFormattableStringParserSettings",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"EscapeBraces",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Boolean",
                         IsValueType = true,
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFormattableStringParserSettings",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"MaximumRecursion",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Int32",
                         IsValueType = true,
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFormattableStringParserSettings",
                     },
                 } ),
-                Visibility = Visibility.Internal,
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IFormattableStringParserSettings",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers",
+                Interfaces = new ObservableCollection<System.String>(),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Name",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.String",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionCall",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Arguments",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Collections.Generic.IReadOnlyCollection<CrossCutting.CodeGeneration.Models.Abstractions.IFunctionCallArgument>",
                         GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
-                            new Property
-                            (
-                                hasGetter: true,
-                                hasSetter: true,
-                                hasInitializer: false,
-                                getterVisibility: SubVisibility.InheritFromParent,
-                                setterVisibility: SubVisibility.InheritFromParent,
-                                initializerVisibility: SubVisibility.InheritFromParent,
-                                getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                @static: false,
-                                @virtual: false,
-                                @abstract: false,
-                                @protected: false,
-                                @override: false,
-                                @new: false,
-                                visibility: Visibility.Public,
-                                name: @"Dummy",
-                                attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                typeName: @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
-                                isNullable: false,
-                                isValueType: false,
-                                genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(),
-                                defaultValue: null,
-                                explicitInterfaceName: @"",
-                                parentTypeFullName: @""
-                            ).ToBuilder(),
+                            new PropertyBuilder
+                            {
+                                GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                Name = @"Dummy",
+                                Attributes = new ObservableCollection<AttributeBuilder>(),
+                                TypeName = @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
+                                GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
+                            },
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionCall",
                     },
                 } ),
-                Visibility = Visibility.Internal,
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IFunctionCall",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
-                }),
-                Visibility = Visibility.Internal,
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
+                Properties = new ObservableCollection<PropertyBuilder>(),
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IFunctionCallArgumentBase",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers",
+                Interfaces = new ObservableCollection<System.String>(),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Name",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.String",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptor",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"FunctionType",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Type",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptor",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"ReturnValueType",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Type",
                         IsNullable = true,
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptor",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Description",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.String",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptor",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Arguments",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Collections.Generic.IReadOnlyCollection<CrossCutting.CodeGeneration.Models.IFunctionDescriptorArgument>",
                         GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
-                            new Property
-                            (
-                                hasGetter: true,
-                                hasSetter: true,
-                                hasInitializer: false,
-                                getterVisibility: SubVisibility.InheritFromParent,
-                                setterVisibility: SubVisibility.InheritFromParent,
-                                initializerVisibility: SubVisibility.InheritFromParent,
-                                getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                @static: false,
-                                @virtual: false,
-                                @abstract: false,
-                                @protected: false,
-                                @override: false,
-                                @new: false,
-                                visibility: Visibility.Public,
-                                name: @"Dummy",
-                                attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                typeName: @"CrossCutting.Utilities.Parsers.IFunctionDescriptorArgument",
-                                isNullable: false,
-                                isValueType: false,
-                                genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(),
-                                defaultValue: null,
-                                explicitInterfaceName: @"",
-                                parentTypeFullName: @""
-                            ).ToBuilder(),
+                            new PropertyBuilder
+                            {
+                                GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                Name = @"Dummy",
+                                Attributes = new ObservableCollection<AttributeBuilder>(),
+                                TypeName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptorArgument",
+                                GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
+                            },
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptor",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Results",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Collections.Generic.IReadOnlyCollection<CrossCutting.CodeGeneration.Models.IFunctionDescriptorResult>",
                         GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
-                            new Property
-                            (
-                                hasGetter: true,
-                                hasSetter: true,
-                                hasInitializer: false,
-                                getterVisibility: SubVisibility.InheritFromParent,
-                                setterVisibility: SubVisibility.InheritFromParent,
-                                initializerVisibility: SubVisibility.InheritFromParent,
-                                getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                @static: false,
-                                @virtual: false,
-                                @abstract: false,
-                                @protected: false,
-                                @override: false,
-                                @new: false,
-                                visibility: Visibility.Public,
-                                name: @"Dummy",
-                                attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                typeName: @"CrossCutting.Utilities.Parsers.IFunctionDescriptorResult",
-                                isNullable: false,
-                                isValueType: false,
-                                genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(),
-                                defaultValue: null,
-                                explicitInterfaceName: @"",
-                                parentTypeFullName: @""
-                            ).ToBuilder(),
+                            new PropertyBuilder
+                            {
+                                GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                Name = @"Dummy",
+                                Attributes = new ObservableCollection<AttributeBuilder>(),
+                                TypeName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptorResult",
+                                GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
+                            },
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptor",
                     },
                 } ),
-                Visibility = Visibility.Internal,
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IFunctionDescriptor",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers",
+                Interfaces = new ObservableCollection<System.String>(),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Name",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.String",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptorArgument",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Type",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Type",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptorArgument",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Description",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.String",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptorArgument",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"IsRequired",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Boolean",
                         IsValueType = true,
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptorArgument",
                     },
-                }),
-                Visibility = Visibility.Internal,
+                } ),
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IFunctionDescriptorArgument",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers",
+                Interfaces = new ObservableCollection<System.String>(),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Status",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"CrossCutting.Common.Results.ResultStatus",
                         IsValueType = true,
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptorResult",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Value",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.String",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptorResult",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"ValueType",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Type",
                         IsNullable = true,
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptorResult",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Description",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.String",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionDescriptorResult",
                     },
-                }),
-                Visibility = Visibility.Internal,
+                } ),
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IFunctionDescriptorResult",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers",
+                Interfaces = new ObservableCollection<System.String>(),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"FormatProvider",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.IFormatProvider",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionEvaluatorSettings",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"ValidateArgumentTypes",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Boolean",
                         IsValueType = true,
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IFunctionEvaluatorSettings",
                     },
-                }),
-                Visibility = Visibility.Internal,
+                } ),
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IFunctionEvaluatorSettings",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers",
+                Interfaces = new ObservableCollection<System.String>(),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"FormatProvider",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.IFormatProvider",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IPlaceholderSettings",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"ValidateArgumentTypes",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Boolean",
                         IsValueType = true,
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.IPlaceholderSettings",
                     },
-                }),
-                Visibility = Visibility.Internal,
+                } ),
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IPlaceholderSettings",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.FunctionCallArguments",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
-                }),
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Value",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Object",
                         IsNullable = true,
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IConstantArgument",
                     },
-                }),
-                Visibility = Visibility.Internal,
+                } ),
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IConstantArgument",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.FunctionCallArguments",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>",
-                }),
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Value",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"T",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IConstantArgument`1",
                     },
-                }),
-                Visibility = Visibility.Internal,
+                } ),
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IConstantArgument",
-                GenericTypeArguments = new ObservableCollection<string>(new[]
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(new[]
                 {
                     @"T",
-                }),
+                } ),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.FunctionCallArguments",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
-                }),
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Result",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"CrossCutting.Common.Results.Result<System.Object?>",
                         GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
-                            new Property
-                            (
-                                hasGetter: true,
-                                hasSetter: true,
-                                hasInitializer: false,
-                                getterVisibility: SubVisibility.InheritFromParent,
-                                setterVisibility: SubVisibility.InheritFromParent,
-                                initializerVisibility: SubVisibility.InheritFromParent,
-                                getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                @static: false,
-                                @virtual: false,
-                                @abstract: false,
-                                @protected: false,
-                                @override: false,
-                                @new: false,
-                                visibility: Visibility.Public,
-                                name: @"Dummy",
-                                attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                typeName: @"System.Object",
-                                isNullable: false,
-                                isValueType: false,
-                                genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(),
-                                defaultValue: null,
-                                explicitInterfaceName: @"",
-                                parentTypeFullName: @""
-                            ).ToBuilder(),
+                            new PropertyBuilder
+                            {
+                                GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                Name = @"Dummy",
+                                Attributes = new ObservableCollection<AttributeBuilder>(),
+                                TypeName = @"System.Object",
+                                GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
+                            },
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IConstantResultArgument",
                     },
                 } ),
-                Visibility = Visibility.Internal,
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IConstantResultArgument",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.FunctionCallArguments",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>",
-                }),
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Result",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"CrossCutting.Common.Results.Result<T>",
                         GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
-                            new Property
-                            (
-                                hasGetter: true,
-                                hasSetter: true,
-                                hasInitializer: false,
-                                getterVisibility: SubVisibility.InheritFromParent,
-                                setterVisibility: SubVisibility.InheritFromParent,
-                                initializerVisibility: SubVisibility.InheritFromParent,
-                                getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                @static: false,
-                                @virtual: false,
-                                @abstract: false,
-                                @protected: false,
-                                @override: false,
-                                @new: false,
-                                visibility: Visibility.Public,
-                                name: @"Dummy",
-                                attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                typeName: @"T",
-                                isNullable: false,
-                                isValueType: false,
-                                genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(),
-                                defaultValue: null,
-                                explicitInterfaceName: @"",
-                                parentTypeFullName: @""
-                            ).ToBuilder(),
+                            new PropertyBuilder
+                            {
+                                GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                Name = @"Dummy",
+                                Attributes = new ObservableCollection<AttributeBuilder>(),
+                                TypeName = @"T",
+                                GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
+                            },
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IConstantResultArgument`1",
                     },
                 } ),
-                Visibility = Visibility.Internal,
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IConstantResultArgument",
-                GenericTypeArguments = new ObservableCollection<string>(new[]
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(new[]
                 {
                     @"T",
-                }),
+                } ),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.FunctionCallArguments",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
-                }),
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Delegate",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Func<System.Object?>",
                         GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
-                            new Property
-                            (
-                                hasGetter: true,
-                                hasSetter: true,
-                                hasInitializer: false,
-                                getterVisibility: SubVisibility.InheritFromParent,
-                                setterVisibility: SubVisibility.InheritFromParent,
-                                initializerVisibility: SubVisibility.InheritFromParent,
-                                getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                @static: false,
-                                @virtual: false,
-                                @abstract: false,
-                                @protected: false,
-                                @override: false,
-                                @new: false,
-                                visibility: Visibility.Public,
-                                name: @"Dummy",
-                                attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                typeName: @"System.Object",
-                                isNullable: false,
-                                isValueType: false,
-                                genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(),
-                                defaultValue: null,
-                                explicitInterfaceName: @"",
-                                parentTypeFullName: @""
-                            ).ToBuilder(),
+                            new PropertyBuilder
+                            {
+                                GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                Name = @"Dummy",
+                                Attributes = new ObservableCollection<AttributeBuilder>(),
+                                TypeName = @"System.Object",
+                                GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
+                            },
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateArgument",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"ValidationDelegate",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Func<System.Type>?",
                         IsNullable = true,
                         GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
-                            new Property
-                            (
-                                hasGetter: true,
-                                hasSetter: true,
-                                hasInitializer: false,
-                                getterVisibility: SubVisibility.InheritFromParent,
-                                setterVisibility: SubVisibility.InheritFromParent,
-                                initializerVisibility: SubVisibility.InheritFromParent,
-                                getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                @static: false,
-                                @virtual: false,
-                                @abstract: false,
-                                @protected: false,
-                                @override: false,
-                                @new: false,
-                                visibility: Visibility.Public,
-                                name: @"Dummy",
-                                attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                typeName: @"System.Type",
-                                isNullable: false,
-                                isValueType: false,
-                                genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(),
-                                defaultValue: null,
-                                explicitInterfaceName: @"",
-                                parentTypeFullName: @""
-                            ).ToBuilder(),
+                            new PropertyBuilder
+                            {
+                                GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                Name = @"Dummy",
+                                Attributes = new ObservableCollection<AttributeBuilder>(),
+                                TypeName = @"System.Type",
+                                GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
+                            },
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateArgument",
                     },
                 } ),
-                Visibility = Visibility.Internal,
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IDelegateArgument",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.FunctionCallArguments",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>",
-                }),
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Delegate",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Func<T>",
                         GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
-                            new Property
-                            (
-                                hasGetter: true,
-                                hasSetter: true,
-                                hasInitializer: false,
-                                getterVisibility: SubVisibility.InheritFromParent,
-                                setterVisibility: SubVisibility.InheritFromParent,
-                                initializerVisibility: SubVisibility.InheritFromParent,
-                                getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                @static: false,
-                                @virtual: false,
-                                @abstract: false,
-                                @protected: false,
-                                @override: false,
-                                @new: false,
-                                visibility: Visibility.Public,
-                                name: @"Dummy",
-                                attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                typeName: @"T",
-                                isNullable: false,
-                                isValueType: false,
-                                genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(),
-                                defaultValue: null,
-                                explicitInterfaceName: @"",
-                                parentTypeFullName: @""
-                            ).ToBuilder(),
+                            new PropertyBuilder
+                            {
+                                GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                Name = @"Dummy",
+                                Attributes = new ObservableCollection<AttributeBuilder>(),
+                                TypeName = @"T",
+                                GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
+                            },
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateArgument`1",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"ValidationDelegate",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Func<System.Type>?",
                         IsNullable = true,
                         GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
-                            new Property
-                            (
-                                hasGetter: true,
-                                hasSetter: true,
-                                hasInitializer: false,
-                                getterVisibility: SubVisibility.InheritFromParent,
-                                setterVisibility: SubVisibility.InheritFromParent,
-                                initializerVisibility: SubVisibility.InheritFromParent,
-                                getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                @static: false,
-                                @virtual: false,
-                                @abstract: false,
-                                @protected: false,
-                                @override: false,
-                                @new: false,
-                                visibility: Visibility.Public,
-                                name: @"Dummy",
-                                attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                typeName: @"System.Type",
-                                isNullable: false,
-                                isValueType: false,
-                                genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(),
-                                defaultValue: null,
-                                explicitInterfaceName: @"",
-                                parentTypeFullName: @""
-                            ).ToBuilder(),
+                            new PropertyBuilder
+                            {
+                                GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                Name = @"Dummy",
+                                Attributes = new ObservableCollection<AttributeBuilder>(),
+                                TypeName = @"System.Type",
+                                GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
+                            },
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateArgument`1",
                     },
                 } ),
-                Visibility = Visibility.Internal,
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IDelegateArgument",
-                GenericTypeArguments = new ObservableCollection<string>(new[]
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(new[]
                 {
                     @"T",
-                }),
+                } ),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.FunctionCallArguments",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
-                }),
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Delegate",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Func<CrossCutting.Common.Results.Result<System.Object?>>",
                         GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
-                            new Property
-                            (
-                                hasGetter: true,
-                                hasSetter: true,
-                                hasInitializer: false,
-                                getterVisibility: SubVisibility.InheritFromParent,
-                                setterVisibility: SubVisibility.InheritFromParent,
-                                initializerVisibility: SubVisibility.InheritFromParent,
-                                getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                @static: false,
-                                @virtual: false,
-                                @abstract: false,
-                                @protected: false,
-                                @override: false,
-                                @new: false,
-                                visibility: Visibility.Public,
-                                name: @"Dummy",
-                                attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                typeName: @"CrossCutting.Common.Results.Result<System.Object?>",
-                                isNullable: false,
-                                isValueType: false,
-                                genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(new[]
+                            new PropertyBuilder
+                            {
+                                GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                Name = @"Dummy",
+                                Attributes = new ObservableCollection<AttributeBuilder>(),
+                                TypeName = @"CrossCutting.Common.Results.Result<System.Object?>",
+                                GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                                 {
-                                    new Property
-                                    (
-                                        hasGetter: true,
-                                        hasSetter: true,
-                                        hasInitializer: false,
-                                        getterVisibility: SubVisibility.InheritFromParent,
-                                        setterVisibility: SubVisibility.InheritFromParent,
-                                        initializerVisibility: SubVisibility.InheritFromParent,
-                                        getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                        setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                        initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                        @static: false,
-                                        @virtual: false,
-                                        @abstract: false,
-                                        @protected: false,
-                                        @override: false,
-                                        @new: false,
-                                        visibility: Visibility.Public,
-                                        name: @"Dummy",
-                                        attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                        typeName: @"System.Object",
-                                        isNullable: false,
-                                        isValueType: false,
-                                        genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(),
-                                        defaultValue: null,
-                                        explicitInterfaceName: @"",
-                                        parentTypeFullName: @""
-                                    ),
+                                    new PropertyBuilder
+                                    {
+                                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                        Name = @"Dummy",
+                                        Attributes = new ObservableCollection<AttributeBuilder>(),
+                                        TypeName = @"System.Object",
+                                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
+                                    },
                                 } ),
-                                defaultValue: null,
-                                explicitInterfaceName: @"",
-                                parentTypeFullName: @""
-                            ).ToBuilder(),
+                            },
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateResultArgument",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"ValidationDelegate",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Func<CrossCutting.Common.Results.Result<System.Type>>?",
                         IsNullable = true,
                         GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
-                            new Property
-                            (
-                                hasGetter: true,
-                                hasSetter: true,
-                                hasInitializer: false,
-                                getterVisibility: SubVisibility.InheritFromParent,
-                                setterVisibility: SubVisibility.InheritFromParent,
-                                initializerVisibility: SubVisibility.InheritFromParent,
-                                getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                @static: false,
-                                @virtual: false,
-                                @abstract: false,
-                                @protected: false,
-                                @override: false,
-                                @new: false,
-                                visibility: Visibility.Public,
-                                name: @"Dummy",
-                                attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                typeName: @"CrossCutting.Common.Results.Result<System.Type>",
-                                isNullable: false,
-                                isValueType: false,
-                                genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(new[]
+                            new PropertyBuilder
+                            {
+                                GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                Name = @"Dummy",
+                                Attributes = new ObservableCollection<AttributeBuilder>(),
+                                TypeName = @"CrossCutting.Common.Results.Result<System.Type>",
+                                GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                                 {
-                                    new Property
-                                    (
-                                        hasGetter: true,
-                                        hasSetter: true,
-                                        hasInitializer: false,
-                                        getterVisibility: SubVisibility.InheritFromParent,
-                                        setterVisibility: SubVisibility.InheritFromParent,
-                                        initializerVisibility: SubVisibility.InheritFromParent,
-                                        getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                        setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                        initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                        @static: false,
-                                        @virtual: false,
-                                        @abstract: false,
-                                        @protected: false,
-                                        @override: false,
-                                        @new: false,
-                                        visibility: Visibility.Public,
-                                        name: @"Dummy",
-                                        attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                        typeName: @"System.Type",
-                                        isNullable: false,
-                                        isValueType: false,
-                                        genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(),
-                                        defaultValue: null,
-                                        explicitInterfaceName: @"",
-                                        parentTypeFullName: @""
-                                    ),
+                                    new PropertyBuilder
+                                    {
+                                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                        Name = @"Dummy",
+                                        Attributes = new ObservableCollection<AttributeBuilder>(),
+                                        TypeName = @"System.Type",
+                                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
+                                    },
                                 } ),
-                                defaultValue: null,
-                                explicitInterfaceName: @"",
-                                parentTypeFullName: @""
-                            ).ToBuilder(),
+                            },
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateResultArgument",
                     },
                 } ),
-                Visibility = Visibility.Internal,
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IDelegateResultArgument",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.FunctionCallArguments",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>",
-                }),
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Delegate",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Func<CrossCutting.Common.Results.Result<T>>",
                         GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
-                            new Property
-                            (
-                                hasGetter: true,
-                                hasSetter: true,
-                                hasInitializer: false,
-                                getterVisibility: SubVisibility.InheritFromParent,
-                                setterVisibility: SubVisibility.InheritFromParent,
-                                initializerVisibility: SubVisibility.InheritFromParent,
-                                getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                @static: false,
-                                @virtual: false,
-                                @abstract: false,
-                                @protected: false,
-                                @override: false,
-                                @new: false,
-                                visibility: Visibility.Public,
-                                name: @"Dummy",
-                                attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                typeName: @"CrossCutting.Common.Results.Result<T>",
-                                isNullable: false,
-                                isValueType: false,
-                                genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(new[]
+                            new PropertyBuilder
+                            {
+                                GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                Name = @"Dummy",
+                                Attributes = new ObservableCollection<AttributeBuilder>(),
+                                TypeName = @"CrossCutting.Common.Results.Result<T>",
+                                GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                                 {
-                                    new Property
-                                    (
-                                        hasGetter: true,
-                                        hasSetter: true,
-                                        hasInitializer: false,
-                                        getterVisibility: SubVisibility.InheritFromParent,
-                                        setterVisibility: SubVisibility.InheritFromParent,
-                                        initializerVisibility: SubVisibility.InheritFromParent,
-                                        getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                        setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                        initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                        @static: false,
-                                        @virtual: false,
-                                        @abstract: false,
-                                        @protected: false,
-                                        @override: false,
-                                        @new: false,
-                                        visibility: Visibility.Public,
-                                        name: @"Dummy",
-                                        attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                        typeName: @"T",
-                                        isNullable: false,
-                                        isValueType: false,
-                                        genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(),
-                                        defaultValue: null,
-                                        explicitInterfaceName: @"",
-                                        parentTypeFullName: @""
-                                    ),
+                                    new PropertyBuilder
+                                    {
+                                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                        Name = @"Dummy",
+                                        Attributes = new ObservableCollection<AttributeBuilder>(),
+                                        TypeName = @"T",
+                                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
+                                    },
                                 } ),
-                                defaultValue: null,
-                                explicitInterfaceName: @"",
-                                parentTypeFullName: @""
-                            ).ToBuilder(),
+                            },
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateResultArgument`1",
                     },
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"ValidationDelegate",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.Func<CrossCutting.Common.Results.Result<System.Type>>?",
                         IsNullable = true,
                         GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                         {
-                            new Property
-                            (
-                                hasGetter: true,
-                                hasSetter: true,
-                                hasInitializer: false,
-                                getterVisibility: SubVisibility.InheritFromParent,
-                                setterVisibility: SubVisibility.InheritFromParent,
-                                initializerVisibility: SubVisibility.InheritFromParent,
-                                getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                @static: false,
-                                @virtual: false,
-                                @abstract: false,
-                                @protected: false,
-                                @override: false,
-                                @new: false,
-                                visibility: Visibility.Public,
-                                name: @"Dummy",
-                                attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                typeName: @"CrossCutting.Common.Results.Result<System.Type>",
-                                isNullable: false,
-                                isValueType: false,
-                                genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(new[]
+                            new PropertyBuilder
+                            {
+                                GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                Name = @"Dummy",
+                                Attributes = new ObservableCollection<AttributeBuilder>(),
+                                TypeName = @"CrossCutting.Common.Results.Result<System.Type>",
+                                GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(new[]
                                 {
-                                    new Property
-                                    (
-                                        hasGetter: true,
-                                        hasSetter: true,
-                                        hasInitializer: false,
-                                        getterVisibility: SubVisibility.InheritFromParent,
-                                        setterVisibility: SubVisibility.InheritFromParent,
-                                        initializerVisibility: SubVisibility.InheritFromParent,
-                                        getterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                        setterCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                        initializerCodeStatements: new CrossCutting.Common.ReadOnlyValueCollection<CodeStatementBase>(),
-                                        @static: false,
-                                        @virtual: false,
-                                        @abstract: false,
-                                        @protected: false,
-                                        @override: false,
-                                        @new: false,
-                                        visibility: Visibility.Public,
-                                        name: @"Dummy",
-                                        attributes: new CrossCutting.Common.ReadOnlyValueCollection<Domain.Attribute>(),
-                                        typeName: @"System.Type",
-                                        isNullable: false,
-                                        isValueType: false,
-                                        genericTypeArguments: new CrossCutting.Common.ReadOnlyValueCollection<ITypeContainer>(),
-                                        defaultValue: null,
-                                        explicitInterfaceName: @"",
-                                        parentTypeFullName: @""
-                                    ),
+                                    new PropertyBuilder
+                                    {
+                                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                                        Name = @"Dummy",
+                                        Attributes = new ObservableCollection<AttributeBuilder>(),
+                                        TypeName = @"System.Type",
+                                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
+                                    },
                                 } ),
-                                defaultValue: null,
-                                explicitInterfaceName: @"",
-                                parentTypeFullName: @""
-                            ).ToBuilder(),
+                            },
                         } ),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IDelegateResultArgument`1",
                     },
                 } ),
-                Visibility = Visibility.Internal,
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IDelegateResultArgument",
-                GenericTypeArguments = new ObservableCollection<string>(new[]
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(new[]
                 {
                     @"T",
-                }),
+                } ),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.FunctionCallArguments",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
-                }),
-                Visibility = Visibility.Internal,
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
+                Properties = new ObservableCollection<PropertyBuilder>(),
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IEmptyArgument",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.FunctionCallArguments",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>",
-                }),
-                Visibility = Visibility.Internal,
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
+                Properties = new ObservableCollection<PropertyBuilder>(),
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IEmptyArgument",
-                GenericTypeArguments = new ObservableCollection<string>(new[]
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(new[]
                 {
                     @"T",
-                }),
+                } ),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.FunctionCallArguments",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
-                }),
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Value",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"System.String",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IExpressionArgument",
                     },
-                }),
-                Visibility = Visibility.Internal,
+                } ),
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IExpressionArgument",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.FunctionCallArguments",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase",
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
-                }),
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
                 Properties = new ObservableCollection<PropertyBuilder>(new[]
                 {
                     new PropertyBuilder
                     {
-                        HasGetter = true,
+                        HasSetter = false,
+                        GetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        SetterCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
+                        InitializerCodeStatements = new ObservableCollection<CodeStatementBaseBuilder>(),
                         Name = @"Function",
+                        Attributes = new ObservableCollection<AttributeBuilder>(),
                         TypeName = @"CrossCutting.Utilities.Parsers.IFunctionCall",
+                        GenericTypeArguments = new ObservableCollection<ITypeContainerBuilder>(),
                         ParentTypeFullName = @"CrossCutting.Utilities.Parsers.FunctionCallArguments.IFunctionArgument",
                     },
-                }),
-                Visibility = Visibility.Internal,
+                } ),
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IFunctionArgument",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.Abstractions",
-                Visibility = Visibility.Internal,
+                Interfaces = new ObservableCollection<System.String>(),
+                Fields = new ObservableCollection<FieldBuilder>(),
+                Properties = new ObservableCollection<PropertyBuilder>(),
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IFunctionCallArgument",
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
             new InterfaceBuilder
             {
                 Namespace = @"CrossCutting.Utilities.Parsers.Abstractions",
-                Interfaces = new ObservableCollection<string>(new[]
+                Interfaces = new ObservableCollection<System.String>(new[]
                 {
                     @"CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument",
-                }),
-                Visibility = Visibility.Internal,
+                } ),
+                Fields = new ObservableCollection<FieldBuilder>(),
+                Properties = new ObservableCollection<PropertyBuilder>(),
+                Methods = new ObservableCollection<MethodBuilder>(),
+                Visibility = ClassFramework.Domain.Domains.Visibility.Internal,
                 Name = @"IFunctionCallArgument",
-                GenericTypeArguments = new ObservableCollection<string>(new[]
+                Attributes = new ObservableCollection<AttributeBuilder>(),
+                GenericTypeArguments = new ObservableCollection<System.String>(new[]
                 {
                     @"T",
-                }),
+                } ),
+                GenericTypeArgumentConstraints = new ObservableCollection<System.String>(),
+                SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
-        } );
+        };
 #pragma warning restore CA1861 // Avoid constant arrays as arguments
     }
 
