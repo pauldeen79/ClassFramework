@@ -5,15 +5,15 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
     public class ProcessAsync : AbstractBuilderComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public void Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.ProcessAsync(context: null!);
-            (await t.ShouldThrowAsync<ArgumentNullException>())
-                .ParamName.ShouldBe("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -31,8 +31,8 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.GenericTypeArguments.ShouldBeEquivalentTo("TBuilder", "TEntity");
-            context.Request.Builder.GenericTypeArgumentConstraints.ShouldBeEquivalentTo("where TEntity : SomeNamespace.SomeClass", "where TBuilder : SomeClassBuilder<TBuilder, TEntity>");
+            context.Request.Builder.GenericTypeArguments.ToArray().ShouldBeEquivalentTo(new[] { "TBuilder", "TEntity" });
+            context.Request.Builder.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where TEntity : SomeNamespace.SomeClass", "where TBuilder : SomeClassBuilder<TBuilder, TEntity>" });
             context.Request.Builder.Abstract.ShouldBeTrue();
         }
 

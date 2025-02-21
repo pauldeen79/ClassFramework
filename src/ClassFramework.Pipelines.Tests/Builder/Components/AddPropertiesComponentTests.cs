@@ -5,14 +5,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
     public class ProcessAsync : AddPropertiesComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public void Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.ProcessAsync(context: null!);
-            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -50,10 +51,10 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Properties.Select(x => x.Name).ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.Name));
-            context.Request.Builder.Properties.Select(x => x.TypeName).ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.TypeName.FixTypeName()));
-            context.Request.Builder.Properties.Select(x => x.IsNullable).ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.IsNullable));
-            context.Request.Builder.Properties.Select(x => x.IsValueType).ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.IsValueType));
+            context.Request.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.Name).ToArray());
+            context.Request.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.TypeName.FixTypeName()).ToArray());
+            context.Request.Builder.Properties.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.IsNullable).ToArray());
+            context.Request.Builder.Properties.Select(x => x.IsValueType).ToArray().ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.IsValueType).ToArray());
         }
 
         [Fact]
@@ -252,7 +253,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Fields.Select(x => x.Name).ShouldBeEquivalentTo("_myProperty");
+            context.Request.Builder.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "_myProperty" });
         }
 
         [Fact]

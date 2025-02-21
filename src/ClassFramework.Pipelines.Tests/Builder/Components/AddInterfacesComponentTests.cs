@@ -5,14 +5,15 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
     public class ProcessAsync : AddInterfacesComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public void Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.ProcessAsync(context: null!);
-            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -33,7 +34,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Interfaces.ShouldBeEquivalentTo("IMyInterface");
+            context.Request.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface" });
         }
 
         [Fact]
@@ -56,7 +57,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Interfaces.ShouldBeEquivalentTo("IMyInterface2");
+            context.Request.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface2" });
         }
 
         [Fact]

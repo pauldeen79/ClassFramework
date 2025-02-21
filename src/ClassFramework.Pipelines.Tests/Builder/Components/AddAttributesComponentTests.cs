@@ -5,14 +5,15 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
     public class ProcessAsync : AddAttributesComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public void Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.ProcessAsync(context: null!);
-            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
+            Action a= () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]

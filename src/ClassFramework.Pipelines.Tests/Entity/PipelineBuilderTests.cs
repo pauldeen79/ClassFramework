@@ -243,7 +243,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<EntityContext>
 
             context.Builder.Name.ShouldBe("MyClass");
             context.Builder.Namespace.ShouldBe("MyNamespace");
-            context.Builder.Interfaces.ShouldBeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
+            context.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "System.ComponentModel.INotifyPropertyChanged" });
 
             context.Builder.Constructors.Count.ShouldBe(1);
             var publicParameterlessConstructor = context.Builder.Constructors.Single();
@@ -286,7 +286,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<EntityContext>
                 {
                     "System.Int32",
                     "System.Nullable<System.Int32>",
-                    "System.String", "System.String",
+                    "System.String",
+                    "System.String",
                     "MyNamespace.MyClass",
                     "MyNamespace.MyClass",
                     "CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>",
@@ -304,8 +305,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<EntityContext>
                     true,
                     false,
                     true,
-                    true,
                     false,
+                    true,
                     true
                 }
             );
@@ -436,7 +437,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<EntityContext>
             // Assert
             result.IsSuccessful().ShouldBeTrue();
 
-            context.Builder.Methods.Select(x => x.Name).ShouldBeEquivalentTo(
+            context.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(
                 new[]
                 {
                     "Equals",

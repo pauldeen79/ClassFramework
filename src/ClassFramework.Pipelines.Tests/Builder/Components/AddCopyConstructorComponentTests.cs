@@ -5,14 +5,15 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
     public class ProcessAsync : AddCopyConstructorComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public void Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Task t = sut.ProcessAsync(context: null!);
-            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("context");
         }
 
         [Theory]
@@ -268,7 +269,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
             ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo("if (source is null) throw new System.ArgumentNullException(nameof(source));", "_filter = new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.Filter);");
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "if (source is null) throw new System.ArgumentNullException(nameof(source));", "_filter = new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.Filter);" });
         }
 
         [Fact]
