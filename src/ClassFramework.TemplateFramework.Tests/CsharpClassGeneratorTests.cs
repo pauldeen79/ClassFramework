@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.TemplateFramework.Tests;
+namespace ClassFramework.TemplateFramework.Tests;
 
 public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
 {
@@ -19,8 +19,8 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Can't generate multiple files, because the generation environment has a single StringBuilder instance");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Can't generate multiple files, because the generation environment has a single StringBuilder instance");
         }
 
         [Fact]
@@ -42,8 +42,8 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Fact]
@@ -65,8 +65,8 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Fact]
@@ -88,7 +88,7 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -110,7 +110,7 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
     }
 
@@ -135,8 +135,8 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
     }
 }

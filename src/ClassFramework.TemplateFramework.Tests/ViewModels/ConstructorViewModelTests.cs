@@ -13,8 +13,8 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.Name)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Context");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Context");
         }
 
         [Fact]
@@ -29,7 +29,7 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
 
             // Act
             sut.Invoking(x => _ = x.Name)
-               .Should().Throw<NotSupportedException>();
+               .ShouldThrow<NotSupportedException>();
         }
 
         [Fact]
@@ -44,7 +44,7 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.Name)
-               .Should().Throw<NotSupportedException>();
+               .ShouldThrow<NotSupportedException>();
         }
 
         [Fact]
@@ -61,7 +61,7 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
             var result = sut.Name;
 
             // Assert
-            result.Should().Be("MyClass");
+            result.ShouldBe("MyClass");
         }
     }
 
@@ -76,8 +76,8 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.ChainCall)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -91,7 +91,7 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
             var result = sut.ChainCall;
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -105,7 +105,7 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
             var result = sut.ChainCall;
 
             // Assert
-            result.Should().Be(" : base()");
+            result.ShouldBe(" : base()");
         }
     }
 
@@ -120,8 +120,8 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.OmitCode)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Context");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Context");
         }
 
         [Fact]
@@ -138,7 +138,7 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
             var result = sut.OmitCode;
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -155,7 +155,7 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
             var result = sut.OmitCode;
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -172,7 +172,7 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
             var result = sut.OmitCode;
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
     }
 }

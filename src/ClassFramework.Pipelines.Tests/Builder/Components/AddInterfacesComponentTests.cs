@@ -5,14 +5,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
     public class ProcessAsync : AddInterfacesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Task t = sut.ProcessAsync(context: null!);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -32,8 +32,8 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Interfaces.Should().BeEquivalentTo("IMyInterface");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Interfaces.ShouldBeEquivalentTo("IMyInterface");
         }
 
         [Fact]
@@ -55,8 +55,8 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Interfaces.Should().BeEquivalentTo("IMyInterface2");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Interfaces.ShouldBeEquivalentTo("IMyInterface2");
         }
 
         [Fact]
@@ -76,8 +76,8 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Interfaces.Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Interfaces.ShouldBeEmpty();
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)

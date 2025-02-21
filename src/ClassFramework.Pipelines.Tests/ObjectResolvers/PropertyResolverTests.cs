@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.ObjectResolvers;
+namespace ClassFramework.Pipelines.Tests.ObjectResolvers;
 
 public class PropertyResolverTests : TestBase<PropertyResolver>
 {
@@ -15,8 +15,8 @@ public class PropertyResolverTests : TestBase<PropertyResolver>
             var result = sut.Resolve<Property>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Could not get property from context, because the context type System.Object is not supported");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Could not get property from context, because the context type System.Object is not supported");
         }
 
         [Fact]
@@ -30,8 +30,8 @@ public class PropertyResolverTests : TestBase<PropertyResolver>
             var result = sut.Resolve<Property>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Could not get property from context, because the context type null is not supported");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Could not get property from context, because the context type null is not supported");
         }
 
         [Fact]
@@ -45,8 +45,8 @@ public class PropertyResolverTests : TestBase<PropertyResolver>
             var result = sut.Resolve<Property>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -61,8 +61,8 @@ public class PropertyResolverTests : TestBase<PropertyResolver>
             var result = sut.Resolve<Property>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -77,8 +77,8 @@ public class PropertyResolverTests : TestBase<PropertyResolver>
             var result = sut.Resolve<Property>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -93,8 +93,8 @@ public class PropertyResolverTests : TestBase<PropertyResolver>
             var result = sut.Resolve<Property>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -108,7 +108,7 @@ public class PropertyResolverTests : TestBase<PropertyResolver>
             var result = sut.Resolve<PropertyResolverTests>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
     }
 }

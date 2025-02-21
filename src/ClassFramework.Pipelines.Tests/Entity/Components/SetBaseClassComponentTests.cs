@@ -5,14 +5,14 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
     public class ProcessAsync : SetBaseClassComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Task t = sut.ProcessAsync(context: null!);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -31,8 +31,8 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.BaseClass.Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.BaseClass.ShouldBeEmpty();
         }
 
         [Theory]
@@ -53,8 +53,8 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.BaseClass.Should().Be("MyBaseNamespace.MyBaseClass");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.BaseClass.ShouldBe("MyBaseNamespace.MyBaseClass");
         }
 
         [Fact]
@@ -73,8 +73,8 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.BaseClass.Should().Be("MyBaseNamespace.MyBaseClass");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.BaseClass.ShouldBe("MyBaseNamespace.MyBaseClass");
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.TemplateFramework.Tests.Templates;
+namespace ClassFramework.TemplateFramework.Tests.Templates;
 
 public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
 {
@@ -23,8 +23,8 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Fact]
@@ -46,8 +46,8 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Fact]
@@ -76,8 +76,8 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            builder.ToString().Should().Be(@"        public abstract int MyMethod();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            builder.ToString().ShouldBe(@"        public abstract int MyMethod();
 ");
         }
 
@@ -113,8 +113,8 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            builder.ToString().Should().Be(@"        public int MyMethod()
+            result.Status.ShouldBe(ResultStatus.Ok);
+            builder.ToString().ShouldBe(@"        public int MyMethod();
         {
             //code goes here
         }
@@ -155,8 +155,8 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
     }
 }

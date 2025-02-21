@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Domain.Tests.Validation;
+namespace ClassFramework.Domain.Tests.Validation;
 
 public class PropertyValidatorTests
 {
@@ -15,7 +15,7 @@ public class PropertyValidatorTests
             var result = PropertyValidator.Validate(instance);
 
             // Assert
-            result.Should().BeEquivalentTo(ValidationResult.Success);
+            result.ShouldBeEquivalentTo(ValidationResult.Success);
         }
 
         [Fact]
@@ -28,7 +28,7 @@ public class PropertyValidatorTests
             var result = PropertyValidator.Validate(instance);
 
             // Assert
-            result.ErrorMessage.Should().Be("The PropertyValidator attribute can only be applied to Property and PropertyBuilder types");
+            result.ErrorMessage.ShouldBe("The PropertyValidator attribute can only be applied to Property and PropertyBuilder types");
         }
 
         [Fact]
@@ -41,7 +41,7 @@ public class PropertyValidatorTests
             var result = PropertyValidator.Validate(instance);
 
             // Assert
-            result.ErrorMessage.Should().Be("HasSetter and HasInitializer cannot both be true");
+            result.ErrorMessage.ShouldBe("HasSetter and HasInitializer cannot both be true");
         }
 
 
@@ -55,7 +55,7 @@ public class PropertyValidatorTests
             var result = PropertyValidator.Validate(instance);
 
             // Assert
-            result.Should().BeEquivalentTo(ValidationResult.Success);
+            result.ShouldBeEquivalentTo(ValidationResult.Success);
         }
 
         [Fact]
@@ -68,7 +68,7 @@ public class PropertyValidatorTests
             var result = PropertyValidator.Validate(instance);
 
             // Assert
-            result.Should().BeEquivalentTo(ValidationResult.Success);
+            result.ShouldBeEquivalentTo(ValidationResult.Success);
         }
     }
 }

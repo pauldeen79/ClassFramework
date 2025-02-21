@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.Functions;
+namespace ClassFramework.Pipelines.Tests.Functions;
 
 public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
 {
@@ -22,7 +22,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
+            result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
         [Fact]
@@ -43,8 +43,8 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Missing argument: Expression");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Missing argument: Expression");
         }
 
         [Fact]
@@ -69,8 +69,8 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -96,8 +96,8 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -122,8 +122,8 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Expression is not of type string");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Expression is not of type string");
         }
 
         [Fact]
@@ -148,8 +148,8 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Expression is not of type string");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Expression is not of type string");
         }
 
         [Fact]
@@ -178,8 +178,8 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("GenericArguments function second argument (add brackets) should be boolean");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("GenericArguments function second argument (add brackets) should be boolean");
         }
 
         [Fact]
@@ -204,8 +204,8 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(typeof(string).FullName);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(string).FullName);
         }
 
         [Fact]
@@ -234,8 +234,8 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(typeof(string).FullName);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(typeof(string).FullName);
         }
 
         [Fact]
@@ -264,8 +264,8 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be($"<{typeof(string).FullName}>");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe($"<{typeof(string).FullName}>");
         }
     }
 }

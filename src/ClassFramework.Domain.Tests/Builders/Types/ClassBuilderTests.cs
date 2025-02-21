@@ -13,7 +13,7 @@ public class ClassBuilderTests : TestBase<ClassBuilder>
         var success = sut.TryValidate(validationResults);
 
         // Assert
-        success.Should().BeFalse();
-        validationResults.Should().HaveCount(2); //both the validation errors in Class and Field
+        success.ShouldBeFalse();
+        validationResults.Count.ShouldBe(2); //both the validation errors in Class and Field;
     }
 }

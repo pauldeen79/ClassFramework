@@ -5,14 +5,14 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components
     public class ProcessAsync : AbstractEntityComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Task t = sut.ProcessAsync(context: null!);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -31,8 +31,8 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Abstract.Should().BeTrue();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Abstract.ShouldBeTrue();
         }
 
         [Fact]
@@ -51,8 +51,8 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Abstract.Should().BeFalse();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Abstract.ShouldBeFalse();
         }
     }
 }

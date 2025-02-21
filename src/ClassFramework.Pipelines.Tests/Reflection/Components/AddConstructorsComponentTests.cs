@@ -5,14 +5,14 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
     public class ProcessAsync : AddConstructorsComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Task t = sut.ProcessAsync(context: null!);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -28,8 +28,8 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.GetConstructors().Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.GetConstructors().ShouldBeEmpty();
         }
 
         [Fact]
@@ -45,7 +45,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
+            result.IsSuccessful().ShouldBeTrue();
             // can't even check constructors on model, because an interface does not have constructors
         }
 
@@ -62,11 +62,11 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.GetConstructors().Should().HaveCount(2);
-            context.Request.Builder.GetConstructors().First().Parameters.Should().BeEmpty();
-            context.Request.Builder.GetConstructors().Last().Parameters.Select(x => x.Name).Should().BeEquivalentTo("value");
-            context.Request.Builder.GetConstructors().Last().Parameters.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.GetConstructors().Count.ShouldBe(2);
+            context.Request.Builder.GetConstructors().First().Parameters.ShouldBeEmpty();
+            context.Request.Builder.GetConstructors().Last().Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "value" });
+            context.Request.Builder.GetConstructors().Last().Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32" });
         }
     }
 }

@@ -12,8 +12,8 @@ public class StringBuilderExtensionsTests
 
             // Act & Assert
             sut.Invoking(x => x.RenderSuppressions(suppressWarningCodes: null!, "disable", "    "))
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("suppressWarningCodes");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("suppressWarningCodes");
         }
 
         [Fact]
@@ -27,7 +27,7 @@ public class StringBuilderExtensionsTests
             sut.RenderSuppressions(suppressWarningCodes, "disable", "    ");
 
             // Assert
-            sut.ToString().Should().BeEmpty();
+            sut.ToString().ShouldBeEmpty();
         }
 
         [Fact]
@@ -41,7 +41,7 @@ public class StringBuilderExtensionsTests
             sut.RenderSuppressions(suppressWarningCodes, "disable", "    ");
 
             // Assert
-            sut.ToString().Should().Be(@"    #pragma warning disable S123
+            sut.ToString().ShouldBe(@"    #pragma warning disable S123;
     #pragma warning disable S124
 ");
         }

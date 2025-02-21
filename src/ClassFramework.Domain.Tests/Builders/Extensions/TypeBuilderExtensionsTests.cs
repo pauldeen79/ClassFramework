@@ -14,7 +14,7 @@ public class TypeBuilderExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetFullName();
 
             // Assert
-            result.Should().Be("MyNamespace.MyClass");
+            result.ShouldBe("MyNamespace.MyClass");
         }
 
         [Fact]
@@ -27,7 +27,7 @@ public class TypeBuilderExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetFullName();
 
             // Assert
-            result.Should().Be("MyClass");
+            result.ShouldBe("MyClass");
         }
     }
 
@@ -40,9 +40,9 @@ public class TypeBuilderExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.WithFullName(fullName: null!))
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("fullName");
+            Action a = () => sut.WithFullName(fullName: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("fullName");
         }
 
         [Fact]
@@ -55,8 +55,8 @@ public class TypeBuilderExtensionsTests : TestBase<ClassBuilder>
             var result = sut.WithFullName("MyNamespace.MyType");
 
             // Assert
-            result.Namespace.Should().Be("MyNamespace");
-            result.Name.Should().Be("MyType");
+            result.Namespace.ShouldBe("MyNamespace");
+            result.Name.ShouldBe("MyType");
         }
 
         [Fact]
@@ -69,8 +69,8 @@ public class TypeBuilderExtensionsTests : TestBase<ClassBuilder>
             var result = sut.WithFullName("MyType");
 
             // Assert
-            result.Namespace.Should().BeEmpty();
-            result.Name.Should().Be("MyType");
+            result.Namespace.ShouldBeEmpty();
+            result.Name.ShouldBe("MyType");
         }
     }
 
@@ -86,7 +86,7 @@ public class TypeBuilderExtensionsTests : TestBase<ClassBuilder>
             var result = sut.AddInterfaces(typeof(INotifyPropertyChanged));
 
             // Assert
-            result.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
+            result.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "System.ComponentModel.INotifyPropertyChanged" });
         }
 
         [Fact]
@@ -99,7 +99,7 @@ public class TypeBuilderExtensionsTests : TestBase<ClassBuilder>
             var result = sut.AddInterfaces(new[] { typeof(INotifyPropertyChanged) }.AsEnumerable());
 
             // Assert
-            result.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
+            result.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "System.ComponentModel.INotifyPropertyChanged" });
         }
 
         [Fact]
@@ -109,8 +109,9 @@ public class TypeBuilderExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.AddInterfaces(interfaces: (Type[])null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("interfaces");
+            Action a = () => sut.AddInterfaces(interfaces: (Type[])null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("interfaces");
         }
 
         [Fact]
@@ -120,8 +121,9 @@ public class TypeBuilderExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.AddInterfaces(interfaces: (IEnumerable<Type>)null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("interfaces");
+            Action a = () => sut.AddInterfaces(interfaces: (IEnumerable<Type>)null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("interfaces");
         }
     }
 }

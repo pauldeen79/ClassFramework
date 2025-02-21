@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Domain.Tests.Extensions;
+namespace ClassFramework.Domain.Tests.Extensions;
 
 public class StringExtensionsTests
 {
@@ -14,7 +14,7 @@ public class StringExtensionsTests
         var actual = input.SqlEncode();
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     public class FixTypeName
@@ -32,7 +32,7 @@ public class StringExtensionsTests
             var actual = input.FixTypeName();
 
             // Assert
-            actual.Should().Be(expectedResult);
+            actual.ShouldBe(expectedResult);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ public class StringExtensionsTests
             var actual = typeName.FixTypeName();
 
             // Assert
-            actual.Should().Be("AnonymousType");
+            actual.ShouldBe("AnonymousType");
         }
 
         [Fact]
@@ -58,7 +58,7 @@ public class StringExtensionsTests
             var actual = typeName.FixTypeName();
 
             // Assert
-            actual.Should().Be("AnonymousType[]");
+            actual.ShouldBe("AnonymousType[]");
         }
 
         [Fact]
@@ -71,7 +71,7 @@ public class StringExtensionsTests
             var actual = input.FixTypeName();
 
             // Assert
-            actual.Should().Be("System.Int32");
+            actual.ShouldBe("System.Int32");
         }
 
         [Fact]
@@ -84,7 +84,7 @@ public class StringExtensionsTests
             var actual = input.FixTypeName();
 
             // Assert
-            actual.Should().Be("System.Nullable<System.Int32>");
+            actual.ShouldBe("System.Nullable<System.Int32>");
         }
 
         [Fact]
@@ -97,7 +97,7 @@ public class StringExtensionsTests
             var actual = input.FixTypeName();
 
             // Assert
-            actual.Should().Be("System.Func<System.Int32>");
+            actual.ShouldBe("System.Func<System.Int32>");
         }
 
         [Fact]
@@ -110,7 +110,7 @@ public class StringExtensionsTests
             var actual = input.FixTypeName();
 
             // Assert
-            actual.Should().Be("System.Func<System.Nullable<System.Int32>>");
+            actual.ShouldBe("System.Func<System.Nullable<System.Int32>>");
         }
 
         [Fact]
@@ -123,7 +123,7 @@ public class StringExtensionsTests
             var actual = input.FixTypeName();
 
             // Assert
-            actual.Should().Be("System.Collections.Generic.IEnumerable<System.Int32>");
+            actual.ShouldBe("System.Collections.Generic.IEnumerable<System.Int32>");
         }
 
         [Fact]
@@ -136,7 +136,7 @@ public class StringExtensionsTests
             var actual = input.FixTypeName();
 
             // Assert
-            actual.Should().Be("System.Collections.Generic.IEnumerable<System.Nullable<System.Int32>>");
+            actual.ShouldBe("System.Collections.Generic.IEnumerable<System.Nullable<System.Int32>>");
         }
 
         [Fact]
@@ -150,7 +150,7 @@ public class StringExtensionsTests
 
             // Assert
             //Note that nullable generic argument types are not recognized. I'm not sure how to fix this...
-            actual.Should().Be("System.Func<System.Object,System.IAsyncDisposable,System.Object>");
+            actual.ShouldBe("System.Func<System.Object,System.IAsyncDisposable,System.Object>");
         }
     }
 
@@ -167,7 +167,7 @@ public class StringExtensionsTests
         var actual = input.IsRequiredEnum();
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -183,7 +183,7 @@ public class StringExtensionsTests
         var actual = input.IsOptionalEnum();
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -198,7 +198,7 @@ public class StringExtensionsTests
         var actual = input.GetClassName();
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -214,7 +214,7 @@ public class StringExtensionsTests
         var actual = input.GetNamespaceWithDefault();
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     public class MakeGenericTypeName
@@ -229,7 +229,7 @@ public class StringExtensionsTests
             var actual = "MyClass".MakeGenericTypeName(input);
 
             // Assert
-            actual.Should().Be(expectedResult);
+            actual.ShouldBe(expectedResult);
         }
 
         [Fact]
@@ -242,7 +242,7 @@ public class StringExtensionsTests
             var actual = "MyClass".MakeGenericTypeName(input);
 
             // Assert
-            actual.Should().Be("MyClass");
+            actual.ShouldBe("MyClass");
         }
 
         [Fact]
@@ -255,7 +255,7 @@ public class StringExtensionsTests
             var actual = "MyClass".MakeGenericTypeName(input);
 
             // Assert
-            actual.Should().Be("MyClass");
+            actual.ShouldBe("MyClass");
         }
 
         [Fact]
@@ -268,7 +268,7 @@ public class StringExtensionsTests
             var actual = "MyClass".MakeGenericTypeName(input);
 
             // Assert
-            actual.Should().Be("MyClass<Generic>");
+            actual.ShouldBe("MyClass<Generic>");
         }
 
         [Fact]
@@ -281,7 +281,7 @@ public class StringExtensionsTests
             var actual = "MyClass".MakeGenericTypeName(input);
 
             // Assert
-            actual.Should().Be("MyClass<Generic1,Generic2>");
+            actual.ShouldBe("MyClass<Generic1,Generic2>");
         }
     }
 
@@ -319,7 +319,7 @@ public class StringExtensionsTests
         var actual = input.GetCsharpFriendlyTypeName();
 
         // Assert
-        actual.Should().Be(expectedResult);
+        actual.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -333,7 +333,7 @@ public class StringExtensionsTests
         var result = input.GetTypeGenericArguments();
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     [Theory]
@@ -347,7 +347,7 @@ public class StringExtensionsTests
         var result = input!.GetCsharpFriendlyName();
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     [Theory]
@@ -360,7 +360,7 @@ public class StringExtensionsTests
         var result = input.Sanitize();
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     [Theory]
@@ -376,7 +376,7 @@ public class StringExtensionsTests
         var result = input.IsStringTypeName();
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     [Theory]
@@ -392,7 +392,7 @@ public class StringExtensionsTests
         var result = input.IsBooleanTypeName();
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     [Theory]
@@ -407,7 +407,7 @@ public class StringExtensionsTests
         var result = input.IsNullableBooleanTypeName();
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     [Theory]
@@ -423,7 +423,7 @@ public class StringExtensionsTests
         var result = input.IsObjectTypeName();
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     [Fact]
@@ -436,7 +436,7 @@ public class StringExtensionsTests
         var result = input.ConvertTypeNameToArray();
 
         // Assert
-        result.Should().Be("System.String[]");
+        result.ShouldBe("System.String[]");
     }
 
     [Theory]
@@ -453,7 +453,7 @@ public class StringExtensionsTests
         var result = typeName.FixCollectionTypeName(newCollectionTypeName);
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -466,7 +466,7 @@ public class StringExtensionsTests
         var result = input.RemoveInterfacePrefix();
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -480,7 +480,7 @@ public class StringExtensionsTests
         var result = typeName.WithoutTypeGenerics();
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 
     public class AbbreviateNamespaces
@@ -496,7 +496,7 @@ public class StringExtensionsTests
             var actual = sut.AbbreviateNamespaces(namespacesToAbbreviate);
 
             // Assert
-            actual.Should().Be(sut);
+            actual.ShouldBe(sut);
         }
 
         [Fact]
@@ -510,7 +510,7 @@ public class StringExtensionsTests
             var actual = sut.AbbreviateNamespaces(namespacesToAbbreviate);
 
             // Assert
-            actual.Should().Be("MyClass");
+            actual.ShouldBe("MyClass");
         }
     }
 
@@ -539,7 +539,7 @@ public class StringExtensionsTests
         var actual = input.GetDefaultValue(isNullable, isValueType, enableNullableReferenceTypes);
 
         // Assert
-        actual.Should().Be(expected);
+        actual.ShouldBe(expected);
     }
 
     [Theory]
@@ -555,7 +555,7 @@ public class StringExtensionsTests
         var result = typeName.AppendNullableAnnotation(isNullable, enableNullableReferenceTypes, isValueType);
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -567,7 +567,7 @@ public class StringExtensionsTests
         var result = typeName.GetCollectionInitializeStatement(string.Empty);
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -583,7 +583,7 @@ public class StringExtensionsTests
         var result = typeName.GetCollectionItemType();
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -600,7 +600,7 @@ public class StringExtensionsTests
         var result = typeName.GetGenericArguments(addBrackets);
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -615,7 +615,7 @@ public class StringExtensionsTests
         var result = typeName.IsCollectionTypeName();
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -630,7 +630,7 @@ public class StringExtensionsTests
         var result = input.GetParentNamespace();
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
     public class ReplaceGenericTypeName
     {
@@ -644,7 +644,7 @@ public class StringExtensionsTests
             var result = input.ReplaceGenericTypeName("MyGenericArgument");
 
             // Assert
-            result.Should().Be("MyTypeName<MyGenericArgument>");
+            result.ShouldBe("MyTypeName<MyGenericArgument>");
         }
 
         [Fact]
@@ -657,7 +657,7 @@ public class StringExtensionsTests
             var result = input.ReplaceGenericTypeName("MyGenericArgument1", "MyGenericArgument2");
 
             // Assert
-            result.Should().Be("MyTypeName<MyGenericArgument1,MyGenericArgument2>");
+            result.ShouldBe("MyTypeName<MyGenericArgument1,MyGenericArgument2>");
         }
     }
 }

@@ -15,10 +15,11 @@ public class ServiceCollectionExtensionsTests : TestBase
                 .AddClassFrameworkPipelines();
 
             // Act & Assert
-            serviceCollection.Invoking(x =>
+            Action a = () =>
             {
-                using var provder = x.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
-            }).Should().NotThrow();
+                using var provder = serviceCollection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+            };
+            a.ShouldNotThrow();
         }
 
         [Fact]
@@ -36,7 +37,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             var builder = scope.ServiceProvider.GetRequiredService<IPipeline<BuilderContext>>();
 
             // Assert
-            builder.Should().BeOfType<Pipeline<BuilderContext>>();
+            builder.ShouldBeOfType<Pipeline<BuilderContext>>();
         }
 
         [Fact]
@@ -53,7 +54,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             var builder = scope.ServiceProvider.GetRequiredService<IPipeline<EntityContext>>();
 
             // Assert
-            builder.Should().BeOfType<Pipeline<EntityContext>>();
+            builder.ShouldBeOfType<Pipeline<EntityContext>>();
         }
 
         [Fact]
@@ -70,7 +71,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             var builder = scope.ServiceProvider.GetRequiredService<IPipeline<ReflectionContext>>();
 
             // Assert
-            builder.Should().BeOfType<Pipeline<ReflectionContext>>();
+            builder.ShouldBeOfType<Pipeline<ReflectionContext>>();
         }
     }
 }

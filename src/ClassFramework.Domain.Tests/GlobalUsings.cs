@@ -16,6 +16,6 @@ global using ClassFramework.Domain.Extensions;
 global using ClassFramework.Domain.Types;
 global using ClassFramework.Domain.Validation;
 global using CrossCutting.Common.Extensions;
-global using FluentAssertions;
 global using NSubstitute;
+global using Shouldly;
 global using Xunit;

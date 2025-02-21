@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.TemplateFramework.Tests.Extensions;
+namespace ClassFramework.TemplateFramework.Tests.Extensions;
 
 public class ServiceCollectionExtensionsTests
 {
@@ -18,7 +18,8 @@ public class ServiceCollectionExtensionsTests
             serviceCollection.Invoking(x =>
             {
                 using var provder = x.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
-            }).Should().NotThrow();
+using Shouldly;
+            }).ShouldNotThrow();
         }
     }
 }

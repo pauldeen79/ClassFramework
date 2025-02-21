@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests;
+namespace ClassFramework.Pipelines.Tests;
 
 public class IntegrationTests : IntegrationTestBase<IFormattableStringParser>
 {
@@ -16,8 +16,8 @@ public class IntegrationTests : IntegrationTestBase<IFormattableStringParser>
         var result = sut.Parse(formatString, CultureInfo.InvariantCulture, propertyContext);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValueOrThrow().ToString().Should().Be("foreach (var item in myProperty) MyProperty.Add(item);");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.GetValueOrThrow().ToString().ShouldBe("foreach (var item in myProperty) MyProperty.Add(item);");
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class IntegrationTests : IntegrationTestBase<IFormattableStringParser>
         var result = sut.Parse(formatString, CultureInfo.InvariantCulture, propertyContext);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.GetValueOrThrow().ToString().Should().Be("foreach (var item in myProperty) MyProperty.Add(item);");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.GetValueOrThrow().ToString().ShouldBe("foreach (var item in myProperty) MyProperty.Add(item);");
     }
 }

@@ -13,8 +13,8 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
 
             // Act
             sut.Invoking(x => _ = x.Parameters)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -32,7 +32,7 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
             var result = sut.Parameters;
 
             // Assert
-            result.Should().Be("(AllowEmptyStrings = true)");
+            result.ShouldBe("(AllowEmptyStrings = true)");
         }
 
         [Fact]
@@ -50,7 +50,7 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
             var result = sut.Parameters;
 
             // Assert
-            result.Should().Be("(true)");
+            result.ShouldBe("(true)");
         }
 
         [Fact]
@@ -71,7 +71,7 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
             var result = sut.Parameters;
 
             // Assert
-            result.Should().Be("(AllowEmptyStrings = true, false)");
+            result.ShouldBe("(AllowEmptyStrings = true, false)");
         }
     }
 
@@ -86,8 +86,8 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
 
             // Act
             sut.Invoking(x => _ = x.AdditionalIndents)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Context");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Context");
         }
 
         [Fact]
@@ -104,7 +104,7 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
             var result = sut.AdditionalIndents;
 
             // Assert
-            result.Should().Be(0);
+            result.ShouldBe(0);
         }
 
         [Fact]
@@ -121,7 +121,7 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
             var result = sut.AdditionalIndents;
 
             // Assert
-            result.Should().Be(0);
+            result.ShouldBe(0);
         }
 
         [Fact]
@@ -138,7 +138,7 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
             var result = sut.AdditionalIndents;
 
             // Assert
-            result.Should().Be(1);
+            result.ShouldBe(1);
         }
     }
 }

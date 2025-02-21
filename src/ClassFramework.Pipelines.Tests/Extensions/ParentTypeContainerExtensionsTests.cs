@@ -11,8 +11,8 @@ public class ParentTypeContainerExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(int)).Build();
 
             // Act & Assert
-            sut.Invoking(x => x.IsDefinedOn(typeBase: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("typeBase");
+            Action a = () => sut.IsDefinedOn(typeBase: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("typeBase");
         }
 
         [Theory]
@@ -28,7 +28,7 @@ public class ParentTypeContainerExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.IsDefinedOn(typeBase, comparisonDelegate: (_, _) => comparisonFunctionResult);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Fact]
@@ -42,7 +42,7 @@ public class ParentTypeContainerExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.IsDefinedOn(typeBase);
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -56,7 +56,7 @@ public class ParentTypeContainerExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.IsDefinedOn(typeBase);
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -70,7 +70,7 @@ public class ParentTypeContainerExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.IsDefinedOn(typeBase.Build());
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -84,7 +84,7 @@ public class ParentTypeContainerExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.IsDefinedOn(typeBase);
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 }

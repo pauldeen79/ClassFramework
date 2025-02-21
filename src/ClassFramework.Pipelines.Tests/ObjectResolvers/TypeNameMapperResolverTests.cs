@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.ObjectResolvers;
+namespace ClassFramework.Pipelines.Tests.ObjectResolvers;
 
 public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
 {
@@ -15,8 +15,8 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
             var result = sut.Resolve<ITypeNameMapper>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Could not get typename mapper from context, because the context type System.Object is not supported");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Could not get typename mapper from context, because the context type System.Object is not supported");
         }
 
         [Fact]
@@ -30,8 +30,8 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
             var result = sut.Resolve<ITypeNameMapper>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Could not get typename mapper from context, because the context type null is not supported");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Could not get typename mapper from context, because the context type null is not supported");
         }
 
         [Fact]
@@ -45,8 +45,8 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
             var result = sut.Resolve<ITypeNameMapper>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -61,7 +61,7 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
             var typeName = result.GetValueOrThrow().MapTypeName(sourceObject.TypeName);
 
             // Assert
-            typeName.Should().Be(sourceObject.TypeName);
+            typeName.ShouldBe(sourceObject.TypeName);
         }
 
         [Fact]
@@ -76,8 +76,8 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
             var result = sut.Resolve<ITypeNameMapper>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -93,7 +93,7 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
             var typeName = result.GetValueOrThrow().MapTypeName(sourceObject.ChildContext.TypeName);
 
             // Assert
-            typeName.Should().Be(sourceObject.ChildContext.TypeName);
+            typeName.ShouldBe(sourceObject.ChildContext.TypeName);
         }
 
         [Fact]
@@ -108,8 +108,8 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
             var result = sut.Resolve<ITypeNameMapper>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -125,7 +125,7 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
             var typeName = result.GetValueOrThrow().MapTypeName(sourceObject.ChildContext.TypeName);
 
             // Assert
-            typeName.Should().Be(sourceObject.ChildContext.TypeName);
+            typeName.ShouldBe(sourceObject.ChildContext.TypeName);
         }
 
         [Fact]
@@ -139,7 +139,7 @@ public class TypeNameMapperResolverTests : TestBase<TypeNameMapperResolver>
             var result = sut.Resolve<PropertyResolverTests>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
     }
 }

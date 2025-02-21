@@ -22,7 +22,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
             // Act & Assert
             sut.Invoking(x => x.ShouldRenderNullablePragmas)
-               .Should().Throw<ArgumentNullException>().WithParameterName("Settings");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Settings");
         }
 
         [Fact]
@@ -35,7 +35,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
             // Act & Assert
             sut.Invoking(x => x.ShouldRenderNullablePragmas)
-               .Should().Throw<ArgumentNullException>().WithParameterName("Context");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Context");
         }
 
         [Fact]
@@ -51,7 +51,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.ShouldRenderNullablePragmas;
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -73,7 +73,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.ShouldRenderNullablePragmas;
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -92,7 +92,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.ShouldRenderNullablePragmas;
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -111,7 +111,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.ShouldRenderNullablePragmas;
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 
@@ -127,7 +127,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
             // Act & Assert
             sut.Invoking(x => x.ShouldRenderNamespaceScope)
-               .Should().Throw<ArgumentNullException>().WithParameterName("Settings");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Settings");
         }
 
         [Fact]
@@ -140,7 +140,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
             // Act & Assert
             sut.Invoking(x => x.ShouldRenderNamespaceScope)
-               .Should().Throw<ArgumentNullException>().WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -155,7 +155,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.ShouldRenderNamespaceScope;
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -170,7 +170,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.ShouldRenderNamespaceScope;
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -185,7 +185,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.ShouldRenderNamespaceScope;
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
     }
 
@@ -200,8 +200,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.Name)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -215,7 +215,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.Name;
 
             // Assert
-            result.Should().Be("@delegate");
+            result.ShouldBe("@delegate");
         }
 
         [Fact]
@@ -229,7 +229,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.Name;
 
             // Assert
-            result.Should().Be("MyName");
+            result.ShouldBe("MyName");
         }
     }
 
@@ -244,8 +244,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.Members)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -348,7 +348,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.Members.ToArray();
 
             // Assert
-            result.Select(x => x.GetType()).Should().BeEquivalentTo([typeof(Method), typeof(NewLineModel), typeof(Enumeration)]);
+            result.Select(x => x.GetType()).ShouldBeEquivalentTo([typeof(Method), typeof(NewLineModel), typeof(Enumeration)]);
         }
     }
 
@@ -363,8 +363,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.SubClasses.ToArray())
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -378,7 +378,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.SubClasses.ToArray();
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -392,7 +392,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.SubClasses.ToArray();
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -406,7 +406,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.SubClasses.ToArray();
 
             // Assert
-            result.Select(x => x.GetType()).Should().BeEquivalentTo([typeof(NewLineModel), typeof(Class)]);
+            result.Select(x => x.GetType()).ShouldBeEquivalentTo([typeof(NewLineModel), typeof(Class)]);
         }
     }
 
@@ -421,8 +421,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.ContainerType)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Model");
         }
 
         [Theory]
@@ -448,7 +448,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.ContainerType;
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Fact]
@@ -460,7 +460,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.ContainerType)
-               .Should().Throw<NotSupportedException>();
+               .ShouldThrow<NotSupportedException>();
         }
     }
 
@@ -475,8 +475,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.InheritedClasses)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -490,7 +490,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.InheritedClasses;
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -504,7 +504,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.InheritedClasses;
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -518,7 +518,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.InheritedClasses;
 
             // Assert
-            result.Should().Be(" : IBase1, IBase2");
+            result.ShouldBe(" : IBase1, IBase2");
         }
 
         [Fact]
@@ -532,7 +532,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.InheritedClasses;
 
             // Assert
-            result.Should().Be(" : MyBase, IBase1, IBase2");
+            result.ShouldBe(" : MyBase, IBase1, IBase2");
         }
 
         [Fact]
@@ -546,7 +546,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.InheritedClasses;
 
             // Assert
-            result.Should().Be(" : IBase1, IBase2");
+            result.ShouldBe(" : IBase1, IBase2");
         }
     }
 
@@ -562,7 +562,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
             // Act & Assert
             sut.Invoking(x => x.FilenamePrefix)
-               .Should().Throw<ArgumentNullException>().WithParameterName("Settings");
+               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Settings");
         }
 
         [Fact]
@@ -577,7 +577,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.FilenamePrefix;
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -592,7 +592,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.FilenamePrefix;
 
             // Assert
-            result.Should().Be($"SubDir{Path.DirectorySeparatorChar}");
+            result.ShouldBe($"SubDir{Path.DirectorySeparatorChar}");
         }
     }
 }

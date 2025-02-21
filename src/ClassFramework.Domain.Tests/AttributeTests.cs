@@ -8,24 +8,24 @@ public class AttributeTests
         public void Throws_On_Null_Parameters()
         {
             // Act & Assert
-            this.Invoking(_ => new Attribute(parameters: null!, "Name"))
-                .Should().Throw<ValidationException>();
+            Action a = () => _ = new Attribute(parameters: null!, "Name");
+            a.ShouldThrow<ValidationException>();
         }
 
         [Fact]
         public void Throws_On_Null_Name()
         {
             // Act & Assert
-            this.Invoking(_ => new Attribute([], name: null!))
-                .Should().Throw<ValidationException>();
+            Action a = () => _ = new Attribute([], name: null!);
+            a.ShouldThrow<ValidationException>();
         }
 
         [Fact]
         public void Throws_On_Emtpty_Name()
         {
             // Act & Assert
-            this.Invoking(_ => new Attribute([], name: string.Empty))
-                .Should().Throw<ValidationException>();
+            Action a = () => _ = new Attribute([], name: string.Empty);
+            a.ShouldThrow<ValidationException>();
         }
 
         [Fact]
@@ -38,7 +38,7 @@ public class AttributeTests
             var builder = entity.ToBuilder();
 
             // Assert
-            builder.Should().BeOfType<AttributeBuilder>();
+            builder.ShouldBeOfType<AttributeBuilder>();
         }
 
         [Fact]
@@ -51,7 +51,7 @@ public class AttributeTests
             var entity = builder.Build();
 
             // Assert
-            entity.Should().BeOfType<Attribute>();
+            entity.ShouldBeOfType<Attribute>();
         }
     }
 }

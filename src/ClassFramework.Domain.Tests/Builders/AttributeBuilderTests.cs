@@ -14,9 +14,9 @@ public class AttributeBuilderTests : TestBase<AttributeBuilder>
             var actual = sut.AddNameAndParameter("System.ComponentModel.ReadOnly", true);
 
             // Assert
-            actual.Name.Should().Be("System.ComponentModel.ReadOnly");
-            actual.Parameters.Should().ContainSingle();
-            actual.Parameters[0].Value.Should().Be(true);
+            actual.Name.ShouldBe("System.ComponentModel.ReadOnly");
+            actual.Parameters.Count.ShouldBe(1);
+            actual.Parameters[0].Value.ShouldBe(true);
         }
     }
 
@@ -32,12 +32,11 @@ public class AttributeBuilderTests : TestBase<AttributeBuilder>
             var actual = sut.ForCodeGenerator("MyGenerator", "1.0.0.0");
 
             // Assert
-            actual.Name.Should().Be(typeof(GeneratedCodeAttribute).FullName);
-            actual.Parameters.Should().BeEquivalentTo(
-            [
+            actual.Name.ShouldBe(typeof(GeneratedCodeAttribute).FullName);
+            actual.Parameters.ToArray().ShouldBeEquivalentTo(new AttributeParameterBuilder[] {
                 new AttributeParameterBuilder().WithValue("MyGenerator"),
                 new AttributeParameterBuilder().WithValue("1.0.0.0")
-            ]);
+            });
         }
     }
 
@@ -52,8 +51,9 @@ public class AttributeBuilderTests : TestBase<AttributeBuilder>
             AttributeParameterBuilder[] parameters = default!;
 
             // Act & Assert
-            sut.Invoking(x => x.AddParameters(parameters: parameters))
-               .Should().Throw<ArgumentNullException>().WithParameterName("parameters");
+            Action a = () => sut.AddParameters(parameters: parameters);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("parameters");
         }
 
         [Fact]
@@ -64,8 +64,9 @@ public class AttributeBuilderTests : TestBase<AttributeBuilder>
             IEnumerable<AttributeParameterBuilder> parameters = default!;
 
             // Act & Assert
-            sut.Invoking(x => x.AddParameters(parameters: parameters))
-               .Should().Throw<ArgumentNullException>().WithParameterName("parameters");
+            Action a = () => sut.AddParameters(parameters: parameters);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("parameters");
         }
     }
 
@@ -78,8 +79,9 @@ public class AttributeBuilderTests : TestBase<AttributeBuilder>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => _ = x.WithName(sourceType: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("sourceType");
+            Action a = () => _ = sut.WithName(sourceType: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("sourceType");
         }
 
         [Fact]
@@ -92,7 +94,7 @@ public class AttributeBuilderTests : TestBase<AttributeBuilder>
             var result = sut.WithName(typeof(AttributeBuilderTests));
 
             // Assert
-            result.Name.Should().Be("ClassFramework.Domain.Tests.Builders.AttributeBuilderTests");
+            result.Name.ShouldBe("ClassFramework.Domain.Tests.Builders.AttributeBuilderTests");
         }
     }
 }

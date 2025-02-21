@@ -19,17 +19,17 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<ReflectionCont
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
+            result.IsSuccessful().ShouldBeTrue();
 
-            context.Builder.Attributes.Should().ContainSingle();
-            context.Builder.Attributes.Single().Name.Should().Be("System.ComponentModel.DisplayNameAttribute");
+            context.Builder.Attributes.Count.ShouldBe(1);
+            context.Builder.Attributes.Single().Name.ShouldBe("System.ComponentModel.DisplayNameAttribute");
 
-            context.Builder.Interfaces.Should().BeEquivalentTo("MyNamespace.IMyInterface");
+            context.Builder.Interfaces.ShouldBeEquivalentTo("MyNamespace.IMyInterface");
 
-            context.Builder.Name.Should().Be(nameof(MyClass));
-            context.Builder.Namespace.Should().Be("MyNamespace");
+            context.Builder.Name.ShouldBe(nameof(MyClass));
+            context.Builder.Namespace.ShouldBe("MyNamespace");
 
-            context.Builder.Visibility.Should().Be(Visibility.Public);
+            context.Builder.Visibility.ShouldBe(Visibility.Public);
         }
 
         [Fact]
@@ -47,15 +47,15 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<ReflectionCont
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
+            result.IsSuccessful().ShouldBeTrue();
 
-            context.Builder.Attributes.Should().BeEmpty();
-            context.Builder.Interfaces.Should().BeEmpty();
+            context.Builder.Attributes.ShouldBeEmpty();
+            context.Builder.Interfaces.ShouldBeEmpty();
 
-            context.Builder.Name.Should().Be(nameof(IMyInterface));
-            context.Builder.Namespace.Should().Be("MyNamespace");
+            context.Builder.Name.ShouldBe(nameof(IMyInterface));
+            context.Builder.Namespace.ShouldBe("MyNamespace");
 
-            context.Builder.Visibility.Should().Be(Visibility.Public);
+            context.Builder.Visibility.ShouldBe(Visibility.Public);
         }
 
         [Fact]
@@ -73,15 +73,15 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<ReflectionCont
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
+            result.IsSuccessful().ShouldBeTrue();
 
-            context.Builder.Attributes.Should().BeEmpty();
-            context.Builder.Interfaces.Should().BeEmpty();
+            context.Builder.Attributes.ShouldBeEmpty();
+            context.Builder.Interfaces.ShouldBeEmpty();
 
-            context.Builder.Name.Should().Be(nameof(IMyInternalInterface));
-            context.Builder.Namespace.Should().Be("MyNamespace");
+            context.Builder.Name.ShouldBe(nameof(IMyInternalInterface));
+            context.Builder.Namespace.ShouldBe("MyNamespace");
 
-            context.Builder.Visibility.Should().Be(Visibility.Internal);
+            context.Builder.Visibility.ShouldBe(Visibility.Internal);
         }
 
         [Fact]
@@ -98,9 +98,9 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<ReflectionCont
             var innerResult = result?.InnerResults.FirstOrDefault();
 
             // Assert
-            innerResult.Should().NotBeNull();
-            innerResult!.Status.Should().Be(ResultStatus.Invalid);
-            innerResult.ErrorMessage.Should().Be("To create a class, there must be at least one property");
+            innerResult.ShouldNotBeNull();
+            innerResult!.Status.ShouldBe(ResultStatus.Invalid);
+            innerResult.ErrorMessage.ShouldBe("To create a class, there must be at least one property");
         }
     }
 }

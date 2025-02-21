@@ -5,14 +5,14 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
     public class ProcessAsync : AddImplicitOperatorComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Task t = sut.ProcessAsync(context: null!);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -27,8 +27,8 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Request.Builder.Methods.Should().BeEmpty();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Request.Builder.Methods.ShouldBeEmpty();
         }
 
         [Fact]
@@ -44,8 +44,8 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -61,14 +61,14 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Request.Builder.Methods.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Name.Should().Be("SomeNamespace.SomeClass");
-            context.Request.Builder.Methods.Single().Operator.Should().BeTrue();
-            context.Request.Builder.Methods.Single().Parameters.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.Should().Be("entity");
-            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.Should().Be("SomeClassBuilder");
-            context.Request.Builder.Methods.Single().ReturnTypeName.Should().Be("implicit");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Request.Builder.Methods.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
+            context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
+            context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder");
+            context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -84,14 +84,14 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Request.Builder.Methods.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Name.Should().Be("MyNamespace.MyClass<T>");
-            context.Request.Builder.Methods.Single().Operator.Should().BeTrue();
-            context.Request.Builder.Methods.Single().Parameters.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.Should().Be("entity");
-            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.Should().Be("MyClassBuilder<T>");
-            context.Request.Builder.Methods.Single().ReturnTypeName.Should().Be("implicit");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Request.Builder.Methods.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
+            context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
+            context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder<T>");
+            context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -110,14 +110,14 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Request.Builder.Methods.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Name.Should().Be("SomeNamespace.SomeClass");
-            context.Request.Builder.Methods.Single().Operator.Should().BeTrue();
-            context.Request.Builder.Methods.Single().Parameters.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.Should().Be("entity");
-            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.Should().Be("SomeClassBuilder<TBuilder, TEntity>");
-            context.Request.Builder.Methods.Single().ReturnTypeName.Should().Be("implicit");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Request.Builder.Methods.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
+            context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
+            context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder<TBuilder, TEntity>");
+            context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -136,14 +136,14 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Request.Builder.Methods.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Name.Should().Be("MyNamespace.MyClass<T>");
-            context.Request.Builder.Methods.Single().Operator.Should().BeTrue();
-            context.Request.Builder.Methods.Single().Parameters.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.Should().Be("entity");
-            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.Should().Be("MyClassBuilder<TBuilder, TEntity, T>");
-            context.Request.Builder.Methods.Single().ReturnTypeName.Should().Be("implicit");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Request.Builder.Methods.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
+            context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
+            context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder<TBuilder, TEntity, T>");
+            context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -163,14 +163,14 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Request.Builder.Methods.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Name.Should().Be("SomeNamespace.SomeClass");
-            context.Request.Builder.Methods.Single().Operator.Should().BeTrue();
-            context.Request.Builder.Methods.Single().Parameters.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.Should().Be("entity");
-            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.Should().Be("SomeClassBuilder");
-            context.Request.Builder.Methods.Single().ReturnTypeName.Should().Be("implicit");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Request.Builder.Methods.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
+            context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
+            context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder");
+            context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -190,14 +190,14 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Request.Builder.Methods.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Name.Should().Be("MyNamespace.MyClass<T>");
-            context.Request.Builder.Methods.Single().Operator.Should().BeTrue();
-            context.Request.Builder.Methods.Single().Parameters.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.Should().Be("entity");
-            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.Should().Be("MyClassBuilder");
-            context.Request.Builder.Methods.Single().ReturnTypeName.Should().Be("implicit");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Request.Builder.Methods.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
+            context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
+            context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder");
+            context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -216,14 +216,14 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Request.Builder.Methods.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Name.Should().Be("SomeNamespace.SomeClass");
-            context.Request.Builder.Methods.Single().Operator.Should().BeTrue();
-            context.Request.Builder.Methods.Single().Parameters.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.Should().Be("entity");
-            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.Should().Be("SomeClassBuilder");
-            context.Request.Builder.Methods.Single().ReturnTypeName.Should().Be("implicit");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Request.Builder.Methods.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
+            context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
+            context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder");
+            context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -242,14 +242,14 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Request.Builder.Methods.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Name.Should().Be("MyNamespace.MyClass<T>");
-            context.Request.Builder.Methods.Single().Operator.Should().BeTrue();
-            context.Request.Builder.Methods.Single().Parameters.Should().ContainSingle();
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.Should().Be("entity");
-            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.Should().Be("MyClassBuilder<T>");
-            context.Request.Builder.Methods.Single().ReturnTypeName.Should().Be("implicit");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Request.Builder.Methods.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
+            context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
+            context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder<T>");
+            context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
     }
 }

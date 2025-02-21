@@ -9,7 +9,7 @@ public class PropertyCodeBodyModelTests : TestBase
         {
             // Act & Assert
             this.Invoking(_ => new PropertyCodeBodyModel(verb: null!, default, default, default, Array.Empty<CodeStatementBase>(), CultureInfo.InvariantCulture))
-                .Should().Throw<ArgumentNullException>().WithParameterName("verb");
+                .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("verb");
         }
 
         [Fact]
@@ -17,7 +17,7 @@ public class PropertyCodeBodyModelTests : TestBase
         {
             // Act & Assert
             this.Invoking(_ => new PropertyCodeBodyModel("get", default, default, default, codeStatementModels: null!, CultureInfo.InvariantCulture))
-                .Should().Throw<ArgumentNullException>().WithParameterName("codeStatementModels");
+                .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("codeStatementModels");
         }
 
         [Fact]
@@ -25,7 +25,7 @@ public class PropertyCodeBodyModelTests : TestBase
         {
             // Act & Assert
             this.Invoking(_ => new PropertyCodeBodyModel("get", default, default, default, Array.Empty<CodeStatementBase>(), cultureInfo: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("cultureInfo");
+                .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("cultureInfo");
         }
 
         [Theory]
@@ -41,7 +41,7 @@ public class PropertyCodeBodyModelTests : TestBase
             var result = sut.Modifiers;
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -72,7 +72,7 @@ public class PropertyCodeBodyModelTests : TestBase
             var result = sut.OmitCode;
 
             // Assert
-            result.Should().Be(exptectedResult);
+            result.ShouldBe(exptectedResult);
         }
     }
 }

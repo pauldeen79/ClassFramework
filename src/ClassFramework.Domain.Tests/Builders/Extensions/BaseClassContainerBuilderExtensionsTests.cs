@@ -11,8 +11,9 @@ public class BaseClassContainerBuilderExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => _ = sut.WithBaseClass(baseClassType: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("baseClassType");
+            Action a = () => _ = sut.WithBaseClass(baseClassType: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("baseClassType");
         }
 
         [Fact]
@@ -25,7 +26,7 @@ public class BaseClassContainerBuilderExtensionsTests : TestBase<ClassBuilder>
             var result = sut.WithBaseClass(typeof(string));
 
             // Assert
-            result.BaseClass.Should().Be(typeof(string).FullName);
+            result.BaseClass.ShouldBe(typeof(string).FullName);
         }
 
         [Fact]
@@ -38,7 +39,7 @@ public class BaseClassContainerBuilderExtensionsTests : TestBase<ClassBuilder>
             var builder = entity.ToBuilder();
 
             // Assert
-            builder.Should().BeOfType<ClassBuilder>();
+            builder.ShouldBeOfType<ClassBuilder>();
         }
 
         [Fact]
@@ -51,7 +52,7 @@ public class BaseClassContainerBuilderExtensionsTests : TestBase<ClassBuilder>
             var entity = builder.Build();
 
             // Assert
-            entity.Should().BeOfType<Class>();
+            entity.ShouldBeOfType<Class>();
         }
     }
 }

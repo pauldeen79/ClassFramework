@@ -13,8 +13,8 @@ public class EnumerationMemberViewModelTests : TestBase<EnumerationMemberViewMod
 
             // Act & Assert
             sut.Invoking(x => _ = x.ValueExpression)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -28,7 +28,7 @@ public class EnumerationMemberViewModelTests : TestBase<EnumerationMemberViewMod
             var result = sut.ValueExpression;
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
     }
 }

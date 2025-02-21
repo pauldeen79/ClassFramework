@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.Variables;
+namespace ClassFramework.Pipelines.Tests.Variables;
 
 public class ClassVariableTests : TestBase<ClassVariable>
 {
@@ -15,8 +15,8 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.Request.SourceModel.Name);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.Request.SourceModel.Name);
     }
 
     [Fact]
@@ -32,8 +32,8 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.Request.SourceModel.Name);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.Request.SourceModel.Name);
     }
 
     [Fact]
@@ -49,8 +49,8 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.Request.SourceModel.Name);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.Request.SourceModel.Name);
     }
 
     [Fact]
@@ -66,8 +66,8 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.Request.SourceModel.Name);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.Request.SourceModel.Name);
     }
 
     [Fact]
@@ -83,8 +83,8 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(GetType().Name);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(GetType().Name);
     }
 
     [Fact]
@@ -101,8 +101,8 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.ParentContext.Request.SourceModel.Name);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.ParentContext.Request.SourceModel.Name);
     }
 
     [Fact]
@@ -119,8 +119,8 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.ParentContext.Request.SourceModel.Name);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.ParentContext.Request.SourceModel.Name);
     }
 
     [Fact]
@@ -136,8 +136,8 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.FullName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.Request.SourceModel.GetFullName());
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.Request.SourceModel.GetFullName());
     }
 
     [Fact]
@@ -153,8 +153,8 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.FullName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(GetType().FullName);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(GetType().FullName);
     }
 
     [Fact]
@@ -170,8 +170,8 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.Namespace", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.Request.SourceModel.Namespace);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.Request.SourceModel.Namespace);
     }
 
     [Fact]
@@ -187,7 +187,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
+        result.Status.ShouldBe(ResultStatus.NotFound);
     }
 
     [Fact]
@@ -203,7 +203,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.WrongPropertyName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
+        result.Status.ShouldBe(ResultStatus.Continue);
     }
 
     [Fact]
@@ -219,8 +219,8 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.Request.SourceModel.Name.WithoutTypeGenerics());
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.Request.SourceModel.Name.WithoutTypeGenerics());
     }
 
     [Fact]
@@ -236,8 +236,8 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.Request.SourceModel.Name.WithoutTypeGenerics());
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.Request.SourceModel.Name.WithoutTypeGenerics());
     }
 
     [Fact]
@@ -253,7 +253,7 @@ public class ClassVariableTests : TestBase<ClassVariable>
         var result = sut.Evaluate("class.FullName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.Request.SourceModel.FullName!.WithoutTypeGenerics());
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.Request.SourceModel.FullName!.WithoutTypeGenerics());
     }
 }

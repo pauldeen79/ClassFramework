@@ -5,14 +5,14 @@ public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.Ad
     public class ProcessAsync : AddGenericsComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Task t = sut.ProcessAsync(context: null!);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -28,9 +28,9 @@ public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.Ad
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.GenericTypeArguments.Should().BeEquivalentTo("T");
-            context.Request.Builder.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where T : class");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.GenericTypeArguments.ToArray().ShouldBeEquivalentTo(new[] { "T" });
+            context.Request.Builder.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where T : class" });
         }
     }
 }

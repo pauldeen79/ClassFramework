@@ -5,14 +5,14 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
     public class ProcessAsync : AddFluentMethodsForNonCollectionPropertiesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Task t = sut.ProcessAsync(context: null!);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -29,8 +29,8 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Methods.Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Methods.ShouldBeEmpty();
         }
 
         [Fact]
@@ -47,20 +47,23 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Methods.Should().HaveCount(2);
-            context.Request.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Methods.Count.ShouldBe(2);
+            context.Request.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "WithProperty1", "WithProperty2" });
+            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "SomeNamespace.Builders.SomeClassBuilder");
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "System.String" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).ShouldAllBe(x => x == default(object));
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "Property1 = property1;",
-                "return this;",
-                "Property2 = property2;",
-                "return this;"
+                new[]
+                {
+                    "Property1 = property1;",
+                    "return this;",
+                    "Property2 = property2;",
+                    "return this;"
+                }
             );
         }
 
@@ -78,15 +81,15 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Methods.Should().ContainSingle();
-            context.Request.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithDelegate");
-            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("delegate");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Methods.Count.ShouldBe(1);
+            context.Request.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "WithDelegate" });
+            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "SomeNamespace.Builders.SomeClassBuilder");
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).ShouldBeEquivalentTo("delegate");
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).ShouldBeEquivalentTo("System.Int32");
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).ShouldAllBe(x => x == default(object));
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
                 "Delegate = @delegate;",
                 "return this;"
@@ -109,21 +112,24 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Methods.Should().HaveCount(2);
-            context.Request.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Methods.Count.ShouldBe(2);
+            context.Request.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo("WithProperty1", "WithProperty2");
+            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "SomeNamespace.Builders.SomeClassBuilder");
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "System.String" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).ShouldAllBe(x => x == default(object));
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "Property1 = property1;",
-                "return this;",
-                "if (property2 is null) throw new System.ArgumentNullException(nameof(property2));",
-                "Property2 = property2;",
-                "return this;"
+                new[]
+                {
+                    "Property1 = property1;",
+                    "return this;",
+                    "if (property2 is null) throw new System.ArgumentNullException(nameof(property2));",
+                    "Property2 = property2;",
+                    "return this;"
+                }
             );
         }
 
@@ -147,20 +153,23 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Methods.Should().HaveCount(2);
-            context.Request.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder<T>");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "T");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Methods.Count.ShouldBe(2);
+            context.Request.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo("WithProperty1", "WithProperty2");
+            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "SomeNamespace.Builders.SomeClassBuilder<T>");
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "T" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).ShouldAllBe(x => x == default(object));
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "Property1 = property1;",
-                "return this;",
-                "Property2 = property2;",
-                "return this;"
+                new[]
+                {
+                    "Property1 = property1;",
+                    "return this;",
+                    "Property2 = property2;",
+                    "return this;"
+                }
             );
         }
 
@@ -184,21 +193,24 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Methods.Should().HaveCount(2);
-            context.Request.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder<T>");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.Func<T>");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Methods.Count.ShouldBe(2);
+            context.Request.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "WithProperty1", "WithProperty2" });
+            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "SomeNamespace.Builders.SomeClassBuilder<T>");
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "System.Func<T>" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).ShouldAllBe(x => x == default(object));
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "Property1 = property1;",
-                "return this;",
-                "if (property2 is null) throw new System.ArgumentNullException(nameof(property2));",
-                "Property2 = property2;",
-                "return this;"
+                new[]
+                {
+                    "Property1 = property1;",
+                    "return this;",
+                    "if (property2 is null) throw new System.ArgumentNullException(nameof(property2));",
+                    "Property2 = property2;",
+                    "return this;"
+                }
             );
         }
 
@@ -229,22 +241,25 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Methods.Should().HaveCount(2);
-            context.Request.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Methods.Count.ShouldBe(2);
+            context.Request.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "WithProperty1", "WithProperty2" });
+            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "SomeNamespace.Builders.SomeClassBuilder");
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "System.String" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).ShouldAllBe(x => x == default(object));
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "/* custom argument null check goes here */",
-                "Property1 = property1;",
-                "return this;",
-                "/* custom argument null check goes here */",
-                "Property2 = property2;",
-                "return this;"
+                new[]
+                {
+                    "/* custom argument null check goes here */",
+                    "Property1 = property1;",
+                    "return this;",
+                    "/* custom argument null check goes here */",
+                    "Property2 = property2;",
+                    "return this;"
+                }
             );
         }
 
@@ -264,20 +279,23 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Methods.Should().HaveCount(2);
-            context.Request.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).Should().AllBe("TBuilder");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Methods.Count.ShouldBe(2);
+            context.Request.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo("WithProperty1", "WithProperty2");
+            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "TBuilder");
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "System.String" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).ShouldAllBe(x => x == default(object));
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "Property1 = property1;",
-                "return (TBuilder)this;",
-                "Property2 = property2;",
-                "return (TBuilder)this;"
+                new[]
+                {
+                    "Property1 = property1;",
+                    "return (TBuilder)this;",
+                    "Property2 = property2;",
+                    "return (TBuilder)this;"
+                }
             );
         }
 
@@ -305,20 +323,23 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Methods.Should().HaveCount(2);
-            context.Request.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("CustomProperty1", "CustomProperty2");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Methods.Count.ShouldBe(2);
+            context.Request.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "WithProperty1", "WithProperty2" });
+            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "SomeNamespace.Builders.SomeClassBuilder");
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "CustomProperty1", "CustomProperty2" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).ShouldAllBe(x => x == default(object));
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "Property1 = property1;",
-                "return this;",
-                "Property2 = property2;",
-                "return this;"
+                new[]
+                {
+                    "Property1 = property1;",
+                    "return this;",
+                    "Property2 = property2;",
+                    "return this;"
+                }
             );
         }
 
@@ -350,13 +371,13 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Methods.Should().HaveCount(2);
-            context.Request.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeOfType<Literal>();
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).OfType<Literal>().Select(x => x.Value).Should().AllBeEquivalentTo("customDefaultValue");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Methods.Count.ShouldBe(2);
+            context.Request.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "WithProperty1", "WithProperty2" });
+            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "SomeNamespace.Builders.SomeClassBuilder");
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2" });
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).ShouldAllBe(x => x is Literal);
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).OfType<Literal>().Select(x => x.Value).ShouldAllBe(x => x == "customDefaultValue");
         }
 
         [Fact]
@@ -383,16 +404,19 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Methods.Should().HaveCount(2);
-            context.Request.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Methods.Count.ShouldBe(2);
+            context.Request.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "WithProperty1", "WithProperty2" });
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "Property1 = property1; // custom",
-                "return this;",
-                "Property2 = property2; // custom",
-                "return this;"
+                new[]
+                {
+                    "Property1 = property1; // custom",
+                    "return this;",
+                    "Property2 = property2; // custom",
+                    "return this;"
+                }
             );
         }
 
@@ -410,9 +434,9 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Methods.Should().HaveCount(2);
-            context.Request.Builder.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Methods.Count.ShouldBe(2);
+            context.Request.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "WithProperty1", "WithProperty2" });
         }
 
         [Fact]
@@ -435,8 +459,8 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)

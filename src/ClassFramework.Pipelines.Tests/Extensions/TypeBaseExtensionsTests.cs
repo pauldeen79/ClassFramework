@@ -11,8 +11,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
-            sut.Invoking(x => x.IsMemberValidForBuilderClass(parentTypeContainer: null!, CreateSettingsForBuilder()))
-               .Should().Throw<ArgumentNullException>().WithParameterName("parentTypeContainer");
+            Action a = () => sut.IsMemberValidForBuilderClass(parentTypeContainer: null!, CreateSettingsForBuilder());
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("parentTypeContainer");
         }
 
         [Fact]
@@ -23,8 +23,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var parentTypeContainer = Fixture.Freeze<IParentTypeContainer>();
 
             // Act & Assert
-            sut.Invoking(x => x.IsMemberValidForBuilderClass(parentTypeContainer, settings: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+            Action a = () => sut.IsMemberValidForBuilderClass(parentTypeContainer, settings: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("settings");
         }
 
         [Fact]
@@ -39,7 +39,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.IsMemberValidForBuilderClass(parentTypeContainer, settings);
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -57,7 +57,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.IsMemberValidForBuilderClass(parentTypeContainer, settings);
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 
@@ -70,8 +70,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
-            sut.Invoking(x => x.GetCustomValueForInheritedClass(true, customValue: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("customValue");
+            Action a = () => sut.GetCustomValueForInheritedClass(true, customValue: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("customValue");
         }
 
         [Fact]
@@ -84,8 +84,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetCustomValueForInheritedClass(false, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
-            result.Value.Should().NotBeNull();
-            result.Value!.ToString().Should().BeEmpty();
+            result.Value.ShouldNotBeNull();
+            result.Value!.ToString().ShouldBeEmpty();
         }
 
         [Fact]
@@ -98,8 +98,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
-            result.Value.Should().NotBeNull();
-            result.Value!.ToString().Should().BeEmpty();
+            result.Value.ShouldNotBeNull();
+            result.Value!.ToString().ShouldBeEmpty();
         }
 
         [Fact]
@@ -112,8 +112,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
-            result.Value.Should().NotBeNull();
-            result.Value!.ToString().Should().BeEmpty();
+            result.Value.ShouldNotBeNull();
+            result.Value!.ToString().ShouldBeEmpty();
         }
 
         [Fact]
@@ -126,7 +126,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
-            result.Value!.ToString().Should().Be("CustomValue");
+            result.Value!.ToString().ShouldBe("CustomValue");
         }
     }
 
@@ -139,8 +139,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorProperties(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.GetBuilderConstructorProperties(context: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -152,10 +152,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorProperties(context))
-               .Should().Throw<ArgumentException>()
-               .WithParameterName("context")
-               .WithMessage("Cannot get immutable builder constructor properties for type that does not have constructors (Parameter 'context')");
+            Action a = () => sut.GetBuilderConstructorProperties(context);
+            var x = a.ShouldThrow<ArgumentException>();
+            x.ParamName.ShouldBe("context");
+            x.Message.ShouldBe("Cannot get immutable builder constructor properties for type that does not have constructors (Parameter 'context')");
         }
 
         [Fact]
@@ -177,7 +177,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderConstructorProperties(context);
 
             // Assert
-            result.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
+            result.Select(x => x.Name).ShouldBeEquivalentTo("Property1", "Property2");
         }
 
         [Fact]
@@ -200,7 +200,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderConstructorProperties(context);
 
             // Assert
-            result.Select(x => x.Name).Should().BeEmpty();
+            result.Select(x => x.Name).ShouldBeEmpty();
         }
 
         [Fact]
@@ -224,7 +224,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderConstructorProperties(context);
 
             // Assert
-            result.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
+            result.Select(x => x.Name).ShouldBeEquivalentTo("Property1", "Property2");
         }
 
         [Fact]
@@ -251,7 +251,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderConstructorProperties(context);
 
             // Assert
-            result.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
+            result.Select(x => x.Name).ShouldBeEquivalentTo("Property1", "Property2");
         }
 
         [Fact]
@@ -278,7 +278,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderConstructorProperties(context);
 
             // Assert
-            result.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
+            result.Select(x => x.Name).ShouldBeEquivalentTo("Property1", "Property2");
         }
     }
 
@@ -292,8 +292,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderClassFields(context: null!, formattableStringParser).ToArray())
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            Action a = () => _ = sut.GetBuilderClassFields(context: null!, formattableStringParser).ToArray();
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -305,8 +305,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderClassFields(context, formattableStringParser: null!).ToArray())
-               .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
+            Action a = () => _ = sut.GetBuilderClassFields(context, formattableStringParser: null!).ToArray();
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("formattableStringParser");
         }
 
         [Fact]
@@ -334,7 +334,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderClassFields(context, formattableStringParser);
 
             // Assert
-            result.Select(x => x.Value!.Name).Should().BeEmpty();
+            result.Select(x => x.Value!.Name).ShouldBeEmpty();
         }
 
         [Fact]
@@ -362,7 +362,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderClassFields(context, formattableStringParser);
 
             // Assert
-            result.Select(x => x.Value!.Name).Should().BeEmpty();
+            result.Select(x => x.Value!.Name).ShouldBeEmpty();
         }
 
         [Fact]
@@ -391,9 +391,9 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderClassFields(context, formattableStringParser);
 
             // Assert
-            result.Select(x => x.Value!.Name).Should().BeEquivalentTo("_property1");
-            result.Select(x => x.Value!.TypeName).Should().AllBe(typeof(string).FullName);
-            result.Select(x => x.Value!.IsValueType).Should().AllBeEquivalentTo(false);
+            result.Select(x => x.Value!.Name).ShouldBeEquivalentTo("_property1");
+            result.Select(x => x.Value!.TypeName).ShouldAllBe(x => x == typeof(string).FullName);
+            result.Select(x => x.Value!.IsValueType).ShouldAllBe(x => x == false);
         }
 
         [Fact]
@@ -430,9 +430,9 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderClassFields(context, formattableStringParser);
 
             // Assert
-            result.Select(x => x.Value!.Name).Should().BeEquivalentTo("_property1", "_property2");
-            result.Select(x => x.Value!.TypeName).Should().BeEquivalentTo("MyCustomType", "MyCustomType");
-            result.Select(x => x.Value!.IsValueType).Should().AllBeEquivalentTo(false);
+            result.Select(x => x.Value!.Name).ShouldBeEquivalentTo("_property1", "_property2");
+            result.Select(x => x.Value!.TypeName).ShouldBeEquivalentTo("MyCustomType", "MyCustomType");
+            result.Select(x => x.Value!.IsValueType).ShouldAllBe(x => x == false);
         }
     }
 }

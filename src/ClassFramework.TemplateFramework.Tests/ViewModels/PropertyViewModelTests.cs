@@ -13,8 +13,8 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.TypeName)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -36,7 +36,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             var result = sut.TypeName;
 
             // Assert
-            result.Should().Be("int");
+            result.ShouldBe("int");
         }
 
         [Fact]
@@ -59,7 +59,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             var result = sut.TypeName;
 
             // Assert
-            result.Should().Be("MyType?");
+            result.ShouldBe("MyType?");
         }
 
         [Fact]
@@ -81,7 +81,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             var result = sut.TypeName;
 
             // Assert
-            result.Should().Be("MyType");
+            result.ShouldBe("MyType");
         }
     }
 
@@ -96,8 +96,8 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.ExplicitInterfaceName)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -110,8 +110,8 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.ExplicitInterfaceName)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Context");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Context");
         }
 
         [Fact]
@@ -129,7 +129,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             var result = sut.ExplicitInterfaceName;
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -147,7 +147,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             var result = sut.ExplicitInterfaceName;
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -165,7 +165,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             var result = sut.ExplicitInterfaceName;
 
             // Assert
-            result.Should().Be("ISomething.");
+            result.ShouldBe("ISomething.");
         }
     }
 
@@ -180,8 +180,8 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.ShouldRenderDefaultValue)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -199,7 +199,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             var result = sut.ShouldRenderDefaultValue;
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -217,7 +217,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             var result = sut.ShouldRenderDefaultValue;
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 
@@ -232,8 +232,8 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.DefaultValueExpression)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -252,7 +252,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             var result = sut.DefaultValueExpression;
 
             // Assert
-            result.Should().Be("formatted value");
+            result.ShouldBe("formatted value");
         }
     }
 
@@ -270,8 +270,8 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.CodeBodyItems.ToArray())
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -284,8 +284,8 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
 
             // Act & Assert
             sut.Invoking(x => _ = x.CodeBodyItems.ToArray())
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Context");
+               .ShouldThrow<ArgumentNullException>();
+               .ParamName.ShouldBe("Context");
         }
 
         [Fact]
@@ -303,7 +303,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             var result = sut.CodeBodyItems.ToArray();
 
             // Assert
-            result.Select(x => x.Verb).Should().BeEquivalentTo("get");
+            result.Select(x => x.Verb).ShouldBeEquivalentTo("get");
         }
 
         [Fact]
@@ -321,7 +321,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             var result = sut.CodeBodyItems.ToArray();
 
             // Assert
-            result.Select(x => x.Verb).Should().BeEquivalentTo("set");
+            result.Select(x => x.Verb).ShouldBeEquivalentTo("set");
         }
 
         [Fact]
@@ -339,7 +339,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             var result = sut.CodeBodyItems.ToArray();
 
             // Assert
-            result.Select(x => x.Verb).Should().BeEquivalentTo("init");
+            result.Select(x => x.Verb).ShouldBeEquivalentTo("init");
         }
 
         [Fact]
@@ -357,7 +357,7 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             var result = sut.CodeBodyItems.ToArray();
 
             // Assert
-            result.Select(x => x.Verb).Should().BeEquivalentTo("get", "set");
+            result.Select(x => x.Verb).ShouldBeEquivalentTo("get", "set");
         }
     }
 }

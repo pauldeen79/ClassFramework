@@ -5,14 +5,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
     public class ProcessAsync : SetNameComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Task t = sut.ProcessAsync(context: null!);
+            (await t.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -29,8 +29,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Name.Should().Be("SomeClassBuilder");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Name.ShouldBe("SomeClassBuilder");
         }
 
         [Fact]
@@ -47,8 +47,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Namespace.Should().Be("SomeNamespace.Builders");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Namespace.ShouldBe("SomeNamespace.Builders");
         }
 
         [Fact]
@@ -65,8 +65,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -83,8 +83,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
