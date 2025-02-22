@@ -388,7 +388,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act
-            var result = sut.GetBuilderClassFields(context, formattableStringParser);
+            var result = sut.GetBuilderClassFields(context, formattableStringParser).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1" });
@@ -427,7 +427,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act
-            var result = sut.GetBuilderClassFields(context, formattableStringParser);
+            var result = sut.GetBuilderClassFields(context, formattableStringParser).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1", "_property2" });
