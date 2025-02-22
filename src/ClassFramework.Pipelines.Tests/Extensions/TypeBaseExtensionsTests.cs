@@ -177,7 +177,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderConstructorProperties(context);
 
             // Assert
-            result.Select(x => x.Name).ShouldBeEquivalentTo("Property1", "Property2");
+            result.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
         }
 
         [Fact]
@@ -224,7 +224,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderConstructorProperties(context);
 
             // Assert
-            result.Select(x => x.Name).ShouldBeEquivalentTo("Property1", "Property2");
+            result.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
         }
 
         [Fact]
@@ -251,7 +251,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderConstructorProperties(context);
 
             // Assert
-            result.Select(x => x.Name).ShouldBeEquivalentTo("Property1", "Property2");
+            result.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
         }
 
         [Fact]
@@ -278,7 +278,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderConstructorProperties(context);
 
             // Assert
-            result.Select(x => x.Name).ShouldBeEquivalentTo("Property1", "Property2");
+            result.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
         }
     }
 
@@ -391,7 +391,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderClassFields(context, formattableStringParser);
 
             // Assert
-            result.Select(x => x.Value!.Name).ShouldBeEquivalentTo("_property1");
+            result.Select(x => x.Value!.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1" });
             result.Select(x => x.Value!.TypeName).ShouldAllBe(x => x == typeof(string).FullName);
             result.Select(x => x.Value!.IsValueType).ShouldAllBe(x => x == false);
         }
@@ -430,8 +430,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var result = sut.GetBuilderClassFields(context, formattableStringParser);
 
             // Assert
-            result.Select(x => x.Value!.Name).ShouldBeEquivalentTo("_property1", "_property2");
-            result.Select(x => x.Value!.TypeName).ShouldBeEquivalentTo("MyCustomType", "MyCustomType");
+            result.Select(x => x.Value!.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1", "_property2" });
+            result.Select(x => x.Value!.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "MyCustomType", "MyCustomType" });
             result.Select(x => x.Value!.IsValueType).ShouldAllBe(x => x == false);
         }
     }

@@ -24,7 +24,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<ReflectionCont
             context.Builder.Attributes.Count.ShouldBe(1);
             context.Builder.Attributes.Single().Name.ShouldBe("System.ComponentModel.DisplayNameAttribute");
 
-            context.Builder.Interfaces.ShouldBeEquivalentTo("MyNamespace.IMyInterface");
+            context.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "MyNamespace.IMyInterface" });
 
             context.Builder.Name.ShouldBe(nameof(MyClass));
             context.Builder.Namespace.ShouldBe("MyNamespace");

@@ -1,4 +1,4 @@
-namespace ClassFramework.Pipelines.Tests.Extensions;
+﻿namespace ClassFramework.Pipelines.Tests.Extensions;
 
 public class EnumerableOfMetadataExtensionsTests
 {
@@ -51,7 +51,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = lst.GetStringValues("name");
 
         // Assert
-        actual.ShouldBeEquivalentTo("value", "second value");
+        actual.ToArray().ShouldBeEquivalentTo(new[] { "value", "second value" });
     }
 
     [Fact]
