@@ -16,7 +16,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
 
             // Assert
-            result.Should().Be("default(System.String)");
+            result.ShouldBe("default(System.String)");
         }
 
         [Fact]
@@ -33,7 +33,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
 
             // Assert
-            result.Should().Be("custom value");
+            result.ShouldBe("custom value");
         }
 
         [Fact]
@@ -55,7 +55,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
 
             // Assert
-            result.Should().Be("custom value");
+            result.ShouldBe("custom value");
         }
 
         [Fact]
@@ -76,7 +76,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
 
             // Assert
-            result.Should().Be("custom value");
+            result.ShouldBe("custom value");
         }
 
         [Fact]
@@ -97,7 +97,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
 
             // Assert
-            result.Should().Be("custom value");
+            result.ShouldBe("custom value");
         }
     }
 
@@ -114,7 +114,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.GetNullCheckSuffix("myProperty", false, sourceModel);
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -128,7 +128,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.GetNullCheckSuffix("myProperty", true, sourceModel);
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -142,7 +142,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.GetNullCheckSuffix("myProperty", true, sourceModel);
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -156,7 +156,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.GetNullCheckSuffix("myProperty", true, sourceModel);
 
             // Assert
-            result.Should().Be(" ?? throw new System.ArgumentNullException(nameof(myProperty))");
+            result.ShouldBe(" ?? throw new System.ArgumentNullException(nameof(myProperty))");
         }
     }
 
@@ -169,8 +169,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderMemberName(settings: null!, CultureInfo.InvariantCulture))
-               .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+            Action a = () => sut.GetBuilderMemberName(settings: null!, CultureInfo.InvariantCulture);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("settings");
         }
 
         [Fact]
@@ -181,8 +181,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var settings = new PipelineSettingsBuilder();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderMemberName(settings, cultureInfo: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("cultureInfo");
+            Action a = () => sut.GetBuilderMemberName(settings, cultureInfo: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("cultureInfo");
         }
     }
 
@@ -196,8 +196,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer<string>(context: default!, new object(), string.Empty, string.Empty, string.Empty, formattableStringParser))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.GetBuilderConstructorInitializer<string>(context: default!, new object(), string.Empty, string.Empty, string.Empty, formattableStringParser);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -211,8 +211,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(context, parentChildContext: default!, string.Empty, string.Empty, string.Empty, formattableStringParser))
-               .Should().Throw<ArgumentNullException>().WithParameterName("parentChildContext");
+            Action a = () => sut.GetBuilderConstructorInitializer(context, parentChildContext: default!, string.Empty, string.Empty, string.Empty, formattableStringParser);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("parentChildContext");
         }
 
         [Fact]
@@ -226,8 +226,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(context, new object(), mappedTypeName: default!, string.Empty, string.Empty, formattableStringParser))
-               .Should().Throw<ArgumentNullException>().WithParameterName("mappedTypeName");
+            Action a = () => sut.GetBuilderConstructorInitializer(context, new object(), mappedTypeName: default!, string.Empty, string.Empty, formattableStringParser);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("mappedTypeName");
         }
 
         [Fact]
@@ -241,8 +241,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(context, new object(), string.Empty, newCollectionTypeName: default!, string.Empty, formattableStringParser))
-               .Should().Throw<ArgumentNullException>().WithParameterName("newCollectionTypeName");
+            Action a = () => sut.GetBuilderConstructorInitializer(context, new object(), string.Empty, newCollectionTypeName: default!, string.Empty, formattableStringParser);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("newCollectionTypeName");
         }
 
         [Fact]
@@ -255,8 +255,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var context = new TestContext(settings, formatProvider);
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(context, new object(), string.Empty, string.Empty, string.Empty, formattableStringParser: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
+            Action a = () => sut.GetBuilderConstructorInitializer(context, new object(), string.Empty, string.Empty, string.Empty, formattableStringParser: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("formattableStringParser");
         }
 
         [Fact]
@@ -270,8 +270,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(context, new object(), string.Empty, string.Empty, metadataName: null!, formattableStringParser))
-               .Should().Throw<ArgumentNullException>().WithParameterName("metadataName");
+            Action a = () => sut.GetBuilderConstructorInitializer(context, new object(), string.Empty, string.Empty, metadataName: null!, formattableStringParser);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("metadataName");
         }
 
         private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider)
@@ -306,8 +306,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.GetBuilderArgumentTypeName(context, parentChildContext, sut.TypeName, formattableStringParser);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            result.Value!.ToString().Should().Be("IReadOnlyCollection<Builders.{NoGenerics(ClassName(GenericArguments($property.TypeName)))}Builder{GenericArguments(CollectionItemType($property.TypeName), true)}>");
+            result.IsSuccessful().ShouldBeTrue();
+            result.Value!.ToString().ShouldBe("IReadOnlyCollection<Builders.{NoGenerics(ClassName(GenericArguments($property.TypeName)))}Builder{GenericArguments(CollectionItemType($property.TypeName), true)}>");
         }
 
         private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider)

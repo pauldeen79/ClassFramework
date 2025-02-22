@@ -11,8 +11,8 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetR
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Theory]
@@ -31,8 +31,8 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetR
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Record.Should().Be(expectedRecordValue);
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Record.ShouldBe(expectedRecordValue);
         }
     }
 }

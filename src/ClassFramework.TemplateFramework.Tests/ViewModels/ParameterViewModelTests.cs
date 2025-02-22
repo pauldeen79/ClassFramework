@@ -12,9 +12,9 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.TypeName)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+            Action a = () => _ = sut.TypeName;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -36,7 +36,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             var result = sut.TypeName;
 
             // Assert
-            result.Should().Be("int");
+            result.ShouldBe("int");
         }
 
         [Fact]
@@ -59,7 +59,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             var result = sut.TypeName;
 
             // Assert
-            result.Should().Be("MyType?");
+            result.ShouldBe("MyType?");
         }
 
         [Fact]
@@ -81,7 +81,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             var result = sut.TypeName;
 
             // Assert
-            result.Should().Be("MyType");
+            result.ShouldBe("MyType");
         }
     }
 
@@ -95,9 +95,9 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ShouldRenderDefaultValue)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+            Action a = () => _ = sut.ShouldRenderDefaultValue;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -115,7 +115,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             var result = sut.ShouldRenderDefaultValue;
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -133,7 +133,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             var result = sut.ShouldRenderDefaultValue;
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 
@@ -147,9 +147,9 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.DefaultValueExpression)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+            Action a = () => _ = sut.DefaultValueExpression;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -168,7 +168,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             var result = sut.DefaultValueExpression;
 
             // Assert
-            result.Should().Be("formatted value");
+            result.ShouldBe("formatted value");
         }
     }
 
@@ -182,9 +182,9 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.Prefix)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+            Action a = () => _ = sut.Prefix;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -203,7 +203,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             var result = sut.Prefix;
 
             // Assert
-            result.Should().Be("params ");
+            result.ShouldBe("params ");
         }
 
         [Fact]
@@ -222,7 +222,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             var result = sut.Prefix;
 
             // Assert
-            result.Should().Be("ref ");
+            result.ShouldBe("ref ");
         }
 
         [Fact]
@@ -241,7 +241,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             var result = sut.Prefix;
 
             // Assert
-            result.Should().Be("out ");
+            result.ShouldBe("out ");
         }
 
         [Fact]
@@ -259,7 +259,7 @@ public class ParameterViewModelTests : TestBase<ParameterViewModel>
             var result = sut.Prefix;
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
     }
 }

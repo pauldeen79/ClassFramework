@@ -23,8 +23,8 @@ public class ConstructorTemplateTests : TemplateTestBase<ConstructorTemplate>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Fact]
@@ -46,8 +46,8 @@ public class ConstructorTemplateTests : TemplateTestBase<ConstructorTemplate>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Fact]
@@ -74,8 +74,8 @@ public class ConstructorTemplateTests : TemplateTestBase<ConstructorTemplate>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            builder.ToString().Should().Be(@"        public abstract MyClass();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            builder.ToString().ShouldBe(@"        public abstract MyClass();
 ");
         }
 
@@ -111,8 +111,8 @@ public class ConstructorTemplateTests : TemplateTestBase<ConstructorTemplate>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            builder.ToString().Should().Be(@"        public MyClass()
+            result.Status.ShouldBe(ResultStatus.Ok);
+            builder.ToString().ShouldBe(@"        public MyClass()
         {
             //code goes here
         }
@@ -153,8 +153,8 @@ public class ConstructorTemplateTests : TemplateTestBase<ConstructorTemplate>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
     }
 }

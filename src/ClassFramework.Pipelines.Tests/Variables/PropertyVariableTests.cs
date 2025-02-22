@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.Variables;
+namespace ClassFramework.Pipelines.Tests.Variables;
 
 public class PropertyVariableTests : TestBase<PropertyVariable>
 {
@@ -19,8 +19,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var result = sut.Evaluate("property.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.SourceModel.Name);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.SourceModel.Name);
     }
 
     [Fact]
@@ -41,8 +41,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var result = sut.Evaluate("property.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.ChildContext.Name);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.ChildContext.Name);
     }
 
     [Fact]
@@ -63,8 +63,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var result = sut.Evaluate("property.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.ChildContext.Name);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.ChildContext.Name);
     }
 
     [Fact]
@@ -84,8 +84,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var result = sut.Evaluate("property.BuilderMemberName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.SourceModel.Name);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.SourceModel.Name);
     }
 
     [Fact]
@@ -105,8 +105,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var result = sut.Evaluate("property.EntityMemberName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.SourceModel.Name);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.SourceModel.Name);
     }
 
     [Fact]
@@ -126,8 +126,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var result = sut.Evaluate("property.NullableRequiredSuffix", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(string.Empty);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(string.Empty);
     }
 
     [Fact]
@@ -147,8 +147,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var result = sut.Evaluate("property.TypeName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.SourceModel.TypeName);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.SourceModel.TypeName);
     }
 
     [Fact]
@@ -168,8 +168,8 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var result = sut.Evaluate("property.ParentTypeFullName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be(context.SourceModel.ParentTypeFullName);
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe(context.SourceModel.ParentTypeFullName);
     }
 
     [Fact]
@@ -185,7 +185,7 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var result = sut.Evaluate("property.Name", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.NotFound);
+        result.Status.ShouldBe(ResultStatus.NotFound);
     }
 
     [Fact]
@@ -205,6 +205,6 @@ public class PropertyVariableTests : TestBase<PropertyVariable>
         var result = sut.Evaluate("property.WrongPropertyName", context);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Continue);
+        result.Status.ShouldBe(ResultStatus.Continue);
     }
 }

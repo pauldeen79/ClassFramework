@@ -15,10 +15,11 @@ public class ServiceCollectionExtensionsTests
                 .AddClassFrameworkTemplates();
 
             // Act & Assert
-            serviceCollection.Invoking(x =>
+            Action a = () =>
             {
-                using var provder = x.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
-            }).Should().NotThrow();
+                using var provider = serviceCollection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+            };
+            a.ShouldNotThrow();
         }
     }
 }

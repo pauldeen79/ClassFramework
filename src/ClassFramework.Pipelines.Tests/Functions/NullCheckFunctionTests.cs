@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.Functions;
+namespace ClassFramework.Pipelines.Tests.Functions;
 
 public class NullCheckFunctionTests : TestBase<NullCheckFunction>
 {
@@ -22,8 +22,8 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("is null");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("is null");
         }
 
         [Fact]
@@ -44,8 +44,8 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("NullCheck function does not support type ClassFramework.Pipelines.Tests.Functions.NullCheckFunctionTests+Evaluate, only ContextBase is supported");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("NullCheck function does not support type ClassFramework.Pipelines.Tests.Functions.NullCheckFunctionTests+Evaluate, only ContextBase is supported");
         }
 
         [Fact]
@@ -66,8 +66,8 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("NullCheck function does not support type null, only ContextBase is supported");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("NullCheck function does not support type null, only ContextBase is supported");
         }
 
         [Fact]
@@ -88,7 +88,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
+            result.Status.ShouldBe(ResultStatus.Invalid);
         }
     }
 }

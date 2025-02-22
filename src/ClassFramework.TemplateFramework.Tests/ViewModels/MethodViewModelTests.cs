@@ -15,9 +15,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Context = context;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ShouldRenderModifiers)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+            Action a = () => _ = sut.ShouldRenderModifiers;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -29,9 +29,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Context = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ShouldRenderModifiers)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Context");
+            Action a = () => _ = sut.ShouldRenderModifiers;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Context");
         }
 
         [Theory]
@@ -59,7 +59,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.ShouldRenderModifiers;
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -73,9 +73,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ReturnTypeName)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+            Action a = () => _ = sut.ReturnTypeName;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -97,7 +97,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.ReturnTypeName;
 
             // Assert
-            result.Should().Be("int");
+            result.ShouldBe("int");
         }
 
         [Fact]
@@ -120,7 +120,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.ReturnTypeName;
 
             // Assert
-            result.Should().Be("MyType?");
+            result.ShouldBe("MyType?");
         }
 
         [Fact]
@@ -142,7 +142,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.ReturnTypeName;
 
             // Assert
-            result.Should().Be("MyType");
+            result.ShouldBe("MyType");
         }
 
         [Fact]
@@ -164,7 +164,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.ReturnTypeName;
 
             // Assert
-            result.Should().Be("void");
+            result.ShouldBe("void");
         }
     }
 
@@ -181,9 +181,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Context = context;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ExplicitInterfaceName)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+            Action a = () => _ = sut.ExplicitInterfaceName;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -195,9 +195,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Context = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ExplicitInterfaceName)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Context");
+            Action a = () => _ = sut.ExplicitInterfaceName;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Context");
         }
 
         [Theory]
@@ -225,7 +225,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.ExplicitInterfaceName;
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -239,9 +239,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.Name)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+            Action a = () => _ = sut.Name;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -255,7 +255,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.Name;
 
             // Assert
-            result.Should().Be("operator ==");
+            result.ShouldBe("operator ==");
         }
 
         [Fact]
@@ -269,7 +269,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.Name;
 
             // Assert
-            result.Should().Be("MyMethod");
+            result.ShouldBe("MyMethod");
         }
 
         [Fact]
@@ -283,7 +283,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.Name;
 
             // Assert
-            result.Should().Be("MyMethod");
+            result.ShouldBe("MyMethod");
         }
     }
 
@@ -300,9 +300,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Context = context;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.OmitCode)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+            Action a = () => _ = sut.OmitCode;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -314,9 +314,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Context = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.OmitCode)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Context");
+            Action a = () => _ = sut.OmitCode;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Context");
         }
 
         [Fact]
@@ -335,7 +335,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.OmitCode;
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -354,7 +354,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.OmitCode;
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -373,7 +373,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.OmitCode;
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -392,7 +392,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.OmitCode;
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -411,7 +411,7 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             var result = sut.OmitCode;
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 }

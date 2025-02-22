@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Domain.Tests.Extensions;
+namespace ClassFramework.Domain.Tests.Extensions;
 
 public class TypeExtensionsTests
 {
@@ -14,7 +14,7 @@ public class TypeExtensionsTests
             var actual = sut.WithoutGenerics();
 
             // Assert
-            actual.Should().Be("T");
+            actual.ShouldBe("T");
         }
 
         [Fact]
@@ -27,7 +27,7 @@ public class TypeExtensionsTests
             var actual = sut.WithoutGenerics();
 
             // Assert
-            actual.Should().Be(typeof(string).FullName);
+            actual.ShouldBe(typeof(string).FullName);
         }
 
         [Fact]
@@ -40,7 +40,7 @@ public class TypeExtensionsTests
             var actual = sut.WithoutGenerics();
 
             // Assert
-            actual.Should().Be("System.Nullable");
+            actual.ShouldBe("System.Nullable");
         }
     }
 
@@ -57,7 +57,7 @@ public class TypeExtensionsTests
             var result = type.GetTypeName(prop);
 
             // Assert
-            result.Should().Be("System.Collections.Generic.IReadOnlyCollection<System.String>");
+            result.ShouldBe("System.Collections.Generic.IReadOnlyCollection<System.String>");
         }
 
         [Fact]
@@ -71,7 +71,7 @@ public class TypeExtensionsTests
             var result = type.GetTypeName(prop);
 
             // Assert
-            result.Should().Be("System.Collections.Generic.IReadOnlyCollection<System.Object?>");
+            result.ShouldBe("System.Collections.Generic.IReadOnlyCollection<System.Object?>");
         }
 
         [Fact]
@@ -85,7 +85,7 @@ public class TypeExtensionsTests
             var result = type.GetTypeName(prop);
 
             // Assert
-            result.Should().Be("System.Collections.Generic.IReadOnlyCollection<System.Object>?");
+            result.ShouldBe("System.Collections.Generic.IReadOnlyCollection<System.Object>?");
         }
 
         [Fact]
@@ -99,7 +99,7 @@ public class TypeExtensionsTests
             var result = type.GetTypeName(prop);
 
             // Assert
-            result.Should().Be("System.Collections.Generic.IReadOnlyCollection<System.Func<System.Object?>>");
+            result.ShouldBe("System.Collections.Generic.IReadOnlyCollection<System.Func<System.Object?>>");
         }
 
         [Fact]
@@ -113,7 +113,7 @@ public class TypeExtensionsTests
             var result = type.GetTypeName(prop);
 
             // Assert
-            result.Should().Be("System.Func<System.Collections.Generic.IEnumerable<System.Object?>>");
+            result.ShouldBe("System.Func<System.Collections.Generic.IEnumerable<System.Object?>>");
         }
 
         [Fact]
@@ -127,7 +127,7 @@ public class TypeExtensionsTests
             var result = type.GetTypeName(prop);
 
             // Assert
-            result.Should().Be("System.Collections.Generic.IEnumerable<System.String>");
+            result.ShouldBe("System.Collections.Generic.IEnumerable<System.String>");
         }
 
         [Fact]
@@ -141,7 +141,7 @@ public class TypeExtensionsTests
             var result = type.GetTypeName(prop);
 
             // Assert
-            result.Should().Be("System.Nullable<System.Int32>");
+            result.ShouldBe("System.Nullable<System.Int32>");
         }
 
         [Fact]
@@ -155,7 +155,7 @@ public class TypeExtensionsTests
             var result = type.GetTypeName(prop);
 
             // Assert
-            result.Should().Be("System.Tuple<ClassFramework.Domain.Tests.Extensions.TypeExtensionsTests,System.Lazy<ClassFramework.Domain.Tests.Extensions.TypeExtensionsTests>>");
+            result.ShouldBe("System.Tuple<ClassFramework.Domain.Tests.Extensions.TypeExtensionsTests,System.Lazy<ClassFramework.Domain.Tests.Extensions.TypeExtensionsTests>>");
         }
 
         [Fact]
@@ -169,7 +169,7 @@ public class TypeExtensionsTests
             var result = type.GetTypeName(prop);
 
             // Assert
-            result.Should().Be("System.Collections.Generic.IReadOnlyCollection<ClassFramework.Domain.Tests.Extensions.TypeExtensionsTests.IMyObject>");
+            result.ShouldBe("System.Collections.Generic.IReadOnlyCollection<ClassFramework.Domain.Tests.Extensions.TypeExtensionsTests.IMyObject>");
         }
 
         [Fact]
@@ -183,7 +183,7 @@ public class TypeExtensionsTests
             var result = type.GetTypeName(prop);
 
             // Assert
-            result.Should().Be("System.Func<System.Object?,System.String?>");
+            result.ShouldBe("System.Func<System.Object?,System.String?>");
         }
 
         [Fact]
@@ -197,7 +197,7 @@ public class TypeExtensionsTests
             var result = type.GetTypeName(prop);
 
             // Assert
-            result.Should().Be("System.Func<System.Object?,System.Func<System.String?>>");
+            result.ShouldBe("System.Func<System.Object?,System.Func<System.String?>>");
         }
 
         public IReadOnlyCollection<string> MyProperty { get; } = new ReadOnlyCollection<string>(Array.Empty<string>());
@@ -230,7 +230,7 @@ public class TypeExtensionsTests
             var result = type.GetGenericTypeArgumentsString();
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -243,7 +243,7 @@ public class TypeExtensionsTests
             var result = type.GetGenericTypeArgumentsString(addBrackets: false);
 
             // Assert
-            result.Should().Be("T1,T2");
+            result.ShouldBe("T1,T2");
         }
 
         [Fact]
@@ -256,7 +256,7 @@ public class TypeExtensionsTests
             var result = type.GetGenericTypeArgumentsString(addBrackets: true);
 
             // Assert
-            result.Should().Be("<T1,T2>");
+            result.ShouldBe("<T1,T2>");
         }
     }
 
@@ -274,7 +274,7 @@ public class TypeExtensionsTests
             var result = sut.IsRecord();
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -287,7 +287,7 @@ public class TypeExtensionsTests
             var result = sut.IsRecord();
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -300,7 +300,7 @@ public class TypeExtensionsTests
             var result = sut.IsRecord();
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -313,7 +313,7 @@ public class TypeExtensionsTests
             var result = sut.IsRecord();
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
 #pragma warning disable S1144 // Unused private types or members should be removed
@@ -362,7 +362,7 @@ public class TypeExtensionsTests
             var result = sut.GetFullName();
 
             // Assert
-            result.Should().Be("MyNamespace.MyClass");
+            result.ShouldBe("MyNamespace.MyClass");
         }
 
         [Fact]
@@ -397,7 +397,7 @@ public class TypeExtensionsTests
             var result = sut.GetFullName();
 
             // Assert
-            result.Should().Be("MyClass");
+            result.ShouldBe("MyClass");
         }
     }
 
@@ -413,7 +413,7 @@ public class TypeExtensionsTests
             var result = input.ReplaceGenericTypeName(typeof(string));
 
             // Assert
-            result.Should().Be("System.Collections.Generic.List<System.String>");
+            result.ShouldBe("System.Collections.Generic.List<System.String>");
         }
 
         [Fact]
@@ -426,7 +426,7 @@ public class TypeExtensionsTests
             var result = input.ReplaceGenericTypeName(typeof(string), typeof(object));
 
             // Assert
-            result.Should().Be("System.Collections.Generic.Dictionary<System.String,System.Object>");
+            result.ShouldBe("System.Collections.Generic.Dictionary<System.String,System.Object>");
         }
 
         [Fact]
@@ -439,7 +439,7 @@ public class TypeExtensionsTests
             var result = input.ReplaceGenericTypeName(typeof(string).FullName!);
 
             // Assert
-            result.Should().Be("System.Collections.Generic.List<System.String>");
+            result.ShouldBe("System.Collections.Generic.List<System.String>");
         }
 
         [Fact]
@@ -452,7 +452,7 @@ public class TypeExtensionsTests
             var result = input.ReplaceGenericTypeName(typeof(string).FullName!, typeof(object).FullName!);
 
             // Assert
-            result.Should().Be("System.Collections.Generic.Dictionary<System.String,System.Object>");
+            result.ShouldBe("System.Collections.Generic.Dictionary<System.String,System.Object>");
         }
     }
 }

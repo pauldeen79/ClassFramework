@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.TemplateFramework.Tests.Templates;
+namespace ClassFramework.TemplateFramework.Tests.Templates;
 
 public class TypeTemplateTests : TemplateTestBase<TypeTemplate>
 {
@@ -23,8 +23,8 @@ public class TypeTemplateTests : TemplateTestBase<TypeTemplate>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Fact]
@@ -46,8 +46,8 @@ public class TypeTemplateTests : TemplateTestBase<TypeTemplate>
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
     }
 }

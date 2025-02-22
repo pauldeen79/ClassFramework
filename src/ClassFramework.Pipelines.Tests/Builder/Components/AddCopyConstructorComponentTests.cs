@@ -11,8 +11,9 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("context");
         }
 
         [Theory]
@@ -36,16 +37,16 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.Protected.Should().BeTrue();
-            ctor.ChainCall.Should().Be("base(source)");
-            ctor.Parameters.Should().ContainSingle();
+            ctor.Protected.ShouldBeTrue();
+            ctor.ChainCall.ShouldBe("base(source)");
+            ctor.Parameters.Count.ShouldBe(1);
             var parameter = ctor.Parameters.Single();
-            parameter.Name.Should().Be("source");
-            parameter.TypeName.Should().Be("SomeNamespace.SomeClass");
-            ctor.CodeStatements.Should().BeEmpty();
+            parameter.Name.ShouldBe("source");
+            parameter.TypeName.ShouldBe("SomeNamespace.SomeClass");
+            ctor.CodeStatements.ShouldBeEmpty();
         }
 
         [Fact]
@@ -65,22 +66,25 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.Protected.Should().BeFalse();
-            ctor.ChainCall.Should().BeEmpty();
-            ctor.Parameters.Should().ContainSingle();
+            ctor.Protected.ShouldBeFalse();
+            ctor.ChainCall.ShouldBeEmpty();
+            ctor.Parameters.Count.ShouldBe(1);
             var parameter = ctor.Parameters.Single();
-            parameter.Name.Should().Be("source");
-            parameter.TypeName.Should().Be("SomeNamespace.SomeClass");
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            parameter.Name.ShouldBe("source");
+            parameter.TypeName.ShouldBe("SomeNamespace.SomeClass");
+            ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "Property3 = new System.Collections.Generic.List<int>();",
-                "Property1 = source.Property1;",
-                "Property2 = source.Property2;",
-                "foreach (var item in source.Property3) Property3.Add(item);"
+                new[]
+                {
+                    "Property3 = new System.Collections.Generic.List<int>();",
+                    "Property1 = source.Property1;",
+                    "Property2 = source.Property2;",
+                    "foreach (var item in source.Property3) Property3.Add(item);"
+                }
             );
         }
 
@@ -101,22 +105,25 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.Protected.Should().BeTrue();
-            ctor.ChainCall.Should().Be("base(source)");
-            ctor.Parameters.Should().ContainSingle();
+            ctor.Protected.ShouldBeTrue();
+            ctor.ChainCall.ShouldBe("base(source)");
+            ctor.Parameters.Count.ShouldBe(1);
             var parameter = ctor.Parameters.Single();
-            parameter.Name.Should().Be("source");
-            parameter.TypeName.Should().Be("SomeNamespace.SomeClass");
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            parameter.Name.ShouldBe("source");
+            parameter.TypeName.ShouldBe("SomeNamespace.SomeClass");
+            ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "Property3 = new System.Collections.Generic.List<int>();",
-                "Property1 = source.Property1;",
-                "Property2 = source.Property2;",
-                "foreach (var item in source.Property3) Property3.Add(item);"
+                new[]
+                {
+                    "Property3 = new System.Collections.Generic.List<int>();",
+                    "Property1 = source.Property1;",
+                    "Property2 = source.Property2;",
+                    "foreach (var item in source.Property3) Property3.Add(item);"
+                }
             );
         }
 
@@ -138,23 +145,26 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.Protected.Should().BeFalse();
-            ctor.ChainCall.Should().BeEmpty();
-            ctor.Parameters.Should().ContainSingle();
+            ctor.Protected.ShouldBeFalse();
+            ctor.ChainCall.ShouldBeEmpty();
+            ctor.Parameters.Count.ShouldBe(1);
             var parameter = ctor.Parameters.Single();
-            parameter.Name.Should().Be("source");
-            parameter.TypeName.Should().Be("SomeNamespace.SomeClass");
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            parameter.Name.ShouldBe("source");
+            parameter.TypeName.ShouldBe("SomeNamespace.SomeClass");
+            ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "if (source is null) throw new System.ArgumentNullException(nameof(source));",
-                "_property3 = new System.Collections.Generic.List<int>();",
-                "Property1 = source.Property1;",
-                "_property2 = source.Property2;",
-                "if (source.Property3 is not null) foreach (var item in source.Property3) _property3.Add(item);"
+                new[]
+                {
+                    "if (source is null) throw new System.ArgumentNullException(nameof(source));",
+                    "_property3 = new System.Collections.Generic.List<int>();",
+                    "Property1 = source.Property1;",
+                    "_property2 = source.Property2;",
+                    "if (source.Property3 is not null) foreach (var item in source.Property3) _property3.Add(item);"
+                }
             );
         }
 
@@ -182,8 +192,8 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -210,8 +220,8 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -231,11 +241,11 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("Filter = new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.Filter);");
+            ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "Filter = new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.Filter);" });
         }
 
         [Fact]
@@ -255,11 +265,11 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("if (source is null) throw new System.ArgumentNullException(nameof(source));", "_filter = new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.Filter);");
+            ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "if (source is null) throw new System.ArgumentNullException(nameof(source));", "_filter = new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.Filter);" });
         }
 
         [Fact]
@@ -279,11 +289,11 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("GroupByFields = new System.Collections.Generic.List<ExpressionFramework.Domain.Builders.ExpressionBuilder>(source.GroupByFields.Select(x => ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(x)));");
+            ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "GroupByFields = new System.Collections.Generic.List<ExpressionFramework.Domain.Builders.ExpressionBuilder>(source.GroupByFields.Select(x => ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(x)));" });
         }
 
         [Fact]
@@ -303,11 +313,11 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("if (source is null) throw new System.ArgumentNullException(nameof(source));", "_groupByFields = new System.Collections.Generic.List<ExpressionFramework.Domain.Builders.ExpressionBuilder>(source.GroupByFields.Select(x => ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(x)));");
+            ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "if (source is null) throw new System.ArgumentNullException(nameof(source));", "_groupByFields = new System.Collections.Generic.List<ExpressionFramework.Domain.Builders.ExpressionBuilder>(source.GroupByFields.Select(x => ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(x)));" });
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)

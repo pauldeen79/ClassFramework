@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.Functions;
+namespace ClassFramework.Pipelines.Tests.Functions;
 
 public class ClassNameFunctionTests : TestBase<ClassNameFunction>
 {
@@ -22,7 +22,7 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
+            result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
         [Fact]
@@ -43,8 +43,8 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Missing argument: Expression");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Missing argument: Expression");
         }
 
         [Fact]
@@ -69,8 +69,8 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -95,8 +95,8 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Expression is not of type string");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Expression is not of type string");
         }
 
         [Fact]
@@ -121,8 +121,8 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Expression is not of type string");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Expression is not of type string");
         }
 
         [Fact]
@@ -147,8 +147,8 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
             var result = sut.Evaluate(functionCallContext);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be("MyClass");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("MyClass");
         }
     }
 }

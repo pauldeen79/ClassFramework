@@ -11,8 +11,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -28,8 +28,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2", "Property3");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2", "Property3" });
         }
 
         [Fact]
@@ -45,17 +45,20 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
             (
-                "System.Int32",
-                "System.Nullable<System.Int32>",
-                "System.String",
-                "System.String",
-                "MyMappedNamespace.MyClass",
-                "MyMappedNamespace.MyClass",
-                "System.Collections.Generic.IReadOnlyCollection<MyMappedNamespace.MyClass>",
-                "System.Collections.Generic.IReadOnlyCollection<MyMappedNamespace.MyClass>"
+                new[]
+                {
+                    "System.Int32",
+                    "System.Nullable<System.Int32>",
+                    "System.String",
+                    "System.String",
+                    "MyMappedNamespace.MyClass",
+                    "MyMappedNamespace.MyClass",
+                    "System.Collections.Generic.IReadOnlyCollection<MyMappedNamespace.MyClass>",
+                    "System.Collections.Generic.IReadOnlyCollection<MyMappedNamespace.MyClass>"
+                }
             );
         }
 
@@ -74,8 +77,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.Select(x => x.HasSetter).Should().BeEquivalentTo([addSetters, addSetters, false]); // not on the collection property!
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.Select(x => x.HasSetter).ToArray().ShouldBeEquivalentTo(new[] { addSetters, addSetters, false }); // not on the collection property!
         }
 
         [Theory]
@@ -95,8 +98,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.Select(x => x.SetterVisibility).Should().AllBeEquivalentTo(setterVisibility);
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.Select(x => x.SetterVisibility).ShouldAllBe(x => x == setterVisibility);
         }
 
         [Fact]
@@ -123,8 +126,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).Should().BeEquivalentTo("MyAttribute2");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "MyAttribute2" });
         }
 
         [Fact]
@@ -140,8 +143,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Fields.Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Fields.ShouldBeEmpty();
         }
 
         [Fact]
@@ -157,8 +160,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).ShouldBeEmpty();
         }
 
         [Fact]
@@ -174,8 +177,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).ShouldBeEmpty();
         }
 
         [Fact]
@@ -191,8 +194,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Fields.Select(x => x.Name).Should().BeEquivalentTo("_property1", "_property2", "_property3");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1", "_property2", "_property3" });
         }
 
         [Fact]
@@ -208,18 +211,24 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "return _property1;",
-                "return _property2;",
-                "return _property3;"
+                new[]
+                {
+                    "return _property1;",
+                    "return _property2;",
+                    "return _property3;"
+                }
             );
-            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "_property1 = value;",
-                "_property2 = value;",
-                "_property3 = value;"
+                new[]
+                {
+                    "_property1 = value;",
+                    "_property2 = value;",
+                    "_property3 = value;"
+                }
             );
         }
 
@@ -236,24 +245,30 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "return _property1;",
-                "return _property2;",
-                "return _property3;"
+                new[]
+                {
+                    "return _property1;",
+                    "return _property2;",
+                    "return _property3;"
+                }
             );
-            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Int32>.Default.Equals(_property1, value);",
-                "_property1 = value;",
-                "if (hasChanged) HandlePropertyChanged(nameof(Property1));",
-                "bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_property2, value);",
-                "_property2 = value;",
-                "if (hasChanged) HandlePropertyChanged(nameof(Property2));",
-                "bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<System.Int32>>.Default.Equals(_property3, value);",
-                "_property3 = value;",
-                "if (hasChanged) HandlePropertyChanged(nameof(Property3));"
+                new[]
+                {
+                    "bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Int32>.Default.Equals(_property1, value);",
+                    "_property1 = value;",
+                    "if (hasChanged) HandlePropertyChanged(nameof(Property1));",
+                    "bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_property2, value);",
+                    "_property2 = value;",
+                    "if (hasChanged) HandlePropertyChanged(nameof(Property2));",
+                    "bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.Generic.IReadOnlyCollection<System.Int32>>.Default.Equals(_property3, value);",
+                    "_property3 = value;",
+                    "if (hasChanged) HandlePropertyChanged(nameof(Property3));"
+                }
             );
         }
 
@@ -270,12 +285,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "_property1 = value;",
-                "_property2 = value;",
-                "_property3 = value;"
+                new[]
+                {
+                    "_property1 = value;",
+                    "_property2 = value;",
+                    "_property3 = value;"
+                }
             );
         }
 
@@ -292,12 +310,15 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "_property1 = value;",
-                "_property2 = value ?? throw new System.ArgumentNullException(nameof(value));",
-                "_property3 = value ?? throw new System.ArgumentNullException(nameof(value));"
+                new[]
+                {
+                    "_property1 = value;",
+                    "_property2 = value ?? throw new System.ArgumentNullException(nameof(value));",
+                    "_property3 = value ?? throw new System.ArgumentNullException(nameof(value));"
+                }
             );
         }
     }

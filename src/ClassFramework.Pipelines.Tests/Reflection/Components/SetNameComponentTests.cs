@@ -11,8 +11,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -29,8 +29,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Name.Should().Be("MyClass");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Name.ShouldBe("MyClass");
         }
 
         [Fact]
@@ -47,8 +47,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Namespace.Should().Be("ClassFramework.Pipelines.Tests.Reflection");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Namespace.ShouldBe("ClassFramework.Pipelines.Tests.Reflection");
         }
 
         [Fact]
@@ -65,8 +65,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -83,8 +83,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         private static PipelineContext<ReflectionContext> CreateContext(Type sourceModel, PipelineSettingsBuilder settings)

@@ -10,7 +10,7 @@ public class ClassTests
         public void Should_Throw_On_Null_Name()
         {
             // Act & Assert
-            this.Invoking(_ => new Class
+            Action a = () => _ = new Class
             (
                 string.Empty,
                 default,
@@ -32,8 +32,8 @@ public class ClassTests
                 string.Empty,
                 [],
                 []
-            ))
-            .Should().Throw<ValidationException>();
+            );
+            a.ShouldThrow<ValidationException>();
         }
     }
 }

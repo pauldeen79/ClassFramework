@@ -14,8 +14,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.Evaluate("Placeholder", new PlaceholderSettingsBuilder(), null, formattableStringParser: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
+            Action a = () => sut.Evaluate("Placeholder", new PlaceholderSettingsBuilder(), null, formattableStringParser: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("formattableStringParser");
         }
 
         [Fact]
@@ -28,7 +28,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var result = sut.Evaluate("Placeholder", new PlaceholderSettingsBuilder(), null, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var result = sut.Evaluate("Placeholder", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.Should().BeSameAs(externalResult);
+            result.ShouldBeSameAs(externalResult);
         }
 
         [Theory]
@@ -66,8 +66,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var result = sut.Evaluate(value, new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value!.ToString().Should().Be(expectedValue);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value!.ToString().ShouldBe(expectedValue);
         }
 
         [Theory]
@@ -85,8 +85,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var result = sut.Evaluate(value, new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value!.ToString().Should().Be(expectedValue);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value!.ToString().ShouldBe(expectedValue);
         }
 
         [Theory]
@@ -105,8 +105,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var result = sut.Evaluate(value, new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value!.ToString().Should().Be(expectedValue);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value!.ToString().ShouldBe(expectedValue);
         }
 
         [Theory]
@@ -123,8 +123,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var result = sut.Evaluate(value, new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value!.ToString().Should().Be(expectedValue);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value!.ToString().ShouldBe(expectedValue);
         }
 
         [Fact]
@@ -141,8 +141,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var result = sut.Evaluate("Value", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value!.ToString().Should().Be("MyResult");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value!.ToString().ShouldBe("MyResult");
         }
 
         [Fact]
@@ -159,7 +159,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var result = sut.Evaluate("Value", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
@@ -175,8 +175,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var result = sut.Evaluate("Value", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value!.ToString().Should().Be("MyResult");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value!.ToString().ShouldBe("MyResult");
         }
 
         [Fact]
@@ -192,7 +192,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var result = sut.Evaluate("Value", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
     }
 }

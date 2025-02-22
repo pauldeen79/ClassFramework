@@ -11,8 +11,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -28,8 +28,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Compone
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -45,20 +45,20 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Compone
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.Count.ShouldBe(1);
             //public Func<object, IEnumerable<object?>> MyDelegateProperty { get; set; } = default!;
-            //model.Properties.Single().TypeName.Should().Be("System.Func<System.Object,System.Collections.Generic.IEnumerable<System.Object?>>");
-            context.Request.Builder.Properties.Single().IsNullable.Should().BeFalse();
-            context.Request.Builder.Properties.Single().GenericTypeArguments.Should().HaveCount(2);
-            context.Request.Builder.Properties.Single().GenericTypeArguments[0].TypeName.Should().Be("System.Object");
-            context.Request.Builder.Properties.Single().GenericTypeArguments[0].IsNullable.Should().BeFalse();
-            context.Request.Builder.Properties.Single().GenericTypeArguments[0].GenericTypeArguments.Should().BeEmpty();
-            //model.Properties.Single().GenericTypeArguments[1].TypeName.Should().Be("System.Collections.Generic.IEnumerable<System.Object?>");
-            context.Request.Builder.Properties.Single().GenericTypeArguments[1].IsNullable.Should().BeFalse();
-            context.Request.Builder.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Should().ContainSingle();
-            context.Request.Builder.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Single().TypeName.Should().Be("System.Object");
-            //model.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Single().IsNullable.Should().BeTrue();
+            //model.Properties.Single().TypeName.ShouldBe("System.Func<System.Object,System.Collections.Generic.IEnumerable<System.Object?>>");
+            context.Request.Builder.Properties.Single().IsNullable.ShouldBeFalse();
+            context.Request.Builder.Properties.Single().GenericTypeArguments.Count.ShouldBe(2);
+            context.Request.Builder.Properties.Single().GenericTypeArguments[0].TypeName.ShouldBe("System.Object");
+            context.Request.Builder.Properties.Single().GenericTypeArguments[0].IsNullable.ShouldBeFalse();
+            context.Request.Builder.Properties.Single().GenericTypeArguments[0].GenericTypeArguments.ShouldBeEmpty();
+            //model.Properties.Single().GenericTypeArguments[1].TypeName.ShouldBe("System.Collections.Generic.IEnumerable<System.Object?>");
+            context.Request.Builder.Properties.Single().GenericTypeArguments[1].IsNullable.ShouldBeFalse();
+            context.Request.Builder.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Count.ShouldBe(1);
+            context.Request.Builder.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Single().TypeName.ShouldBe("System.Object");
+            //model.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Single().IsNullable.ShouldBeTrue();
         }
     }
 }

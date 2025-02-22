@@ -14,8 +14,8 @@ public class CodeStatementsContainerBuilderExtensionsTests : TestBase<Constructo
             var result = sut.AddStringCodeStatements("StatementOne();", "StatementTwo();");
 
             // Assert
-            result.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            result.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("StatementOne();", "StatementTwo();");
+            result.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            result.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "StatementOne();", "StatementTwo();" });
         }
 
         [Fact]
@@ -28,8 +28,8 @@ public class CodeStatementsContainerBuilderExtensionsTests : TestBase<Constructo
             var result = sut.AddStringCodeStatements(new[] { "StatementOne();", "StatementTwo();" }.AsEnumerable());
 
             // Assert
-            result.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            result.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("StatementOne();", "StatementTwo();");
+            result.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            result.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "StatementOne();", "StatementTwo();" });
         }
 
         [Fact]
@@ -39,8 +39,9 @@ public class CodeStatementsContainerBuilderExtensionsTests : TestBase<Constructo
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.AddStringCodeStatements(statements: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("statements");
+            Action a = () => sut.AddStringCodeStatements(statements: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("statements");
         }
 
         [Fact]
@@ -50,8 +51,9 @@ public class CodeStatementsContainerBuilderExtensionsTests : TestBase<Constructo
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.AddStringCodeStatements(statements: (IEnumerable<string>)null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("statements");
+            Action a = () => sut.AddStringCodeStatements(statements: (IEnumerable<string>)null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("statements");
         }
     }
 }

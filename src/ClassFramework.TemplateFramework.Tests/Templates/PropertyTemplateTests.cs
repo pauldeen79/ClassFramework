@@ -21,8 +21,8 @@ public class PropertyTemplateTests : TemplateTestBase<PropertyTemplate>
         var result = await sut.Render(builder, CancellationToken.None);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Kaboom!");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom!");
     }
 
     [Fact]
@@ -44,8 +44,8 @@ public class PropertyTemplateTests : TemplateTestBase<PropertyTemplate>
         var result = await sut.Render(builder, CancellationToken.None);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Error);
-        result.ErrorMessage.Should().Be("Kaboom!");
+        result.Status.ShouldBe(ResultStatus.Error);
+        result.ErrorMessage.ShouldBe("Kaboom!");
     }
 
     [Fact]
@@ -78,8 +78,8 @@ public class PropertyTemplateTests : TemplateTestBase<PropertyTemplate>
         var result = await sut.Render(builder, CancellationToken.None);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        builder.ToString().Should().Be(@"        public int MyProperty
+        result.Status.ShouldBe(ResultStatus.Ok);
+        builder.ToString().ShouldBe(@"        public int MyProperty
         {
             get;
             set;
@@ -117,8 +117,8 @@ public class PropertyTemplateTests : TemplateTestBase<PropertyTemplate>
         var result = await sut.Render(builder, CancellationToken.None);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        builder.ToString().Should().Be(@"        public int MyProperty
+        result.Status.ShouldBe(ResultStatus.Ok);
+        builder.ToString().ShouldBe(@"        public int MyProperty
         {
             get;
             set;

@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.TemplateFramework.Tests.Templates;
+namespace ClassFramework.TemplateFramework.Tests.Templates;
 
 public class CodeGenerationHeaderTemplateTests : TemplateTestBase<CodeGenerationHeaderTemplate>
 {
@@ -16,8 +16,8 @@ public class CodeGenerationHeaderTemplateTests : TemplateTestBase<CodeGeneration
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            builder.ToString().Should().NotBeEmpty();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            builder.ToString().ShouldNotBeEmpty();
         }
 
         [Fact]
@@ -32,8 +32,8 @@ public class CodeGenerationHeaderTemplateTests : TemplateTestBase<CodeGeneration
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            builder.ToString().Should().BeEmpty();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            builder.ToString().ShouldBeEmpty();
         }
     }
 }

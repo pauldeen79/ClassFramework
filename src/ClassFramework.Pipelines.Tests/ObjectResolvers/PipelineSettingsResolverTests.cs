@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.ObjectResolvers;
+namespace ClassFramework.Pipelines.Tests.ObjectResolvers;
 
 public class PipelineSettingsResolverTests : TestBase<PipelineSettingsResolver>
 {
@@ -15,8 +15,8 @@ public class PipelineSettingsResolverTests : TestBase<PipelineSettingsResolver>
             var result = sut.Resolve<PipelineSettings>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Could not get pipeline settings from context, because the context type System.Object is not supported");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Could not get pipeline settings from context, because the context type System.Object is not supported");
         }
 
         [Fact]
@@ -30,8 +30,8 @@ public class PipelineSettingsResolverTests : TestBase<PipelineSettingsResolver>
             var result = sut.Resolve<PipelineSettings>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Could not get pipeline settings from context, because the context type null is not supported");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Could not get pipeline settings from context, because the context type null is not supported");
         }
 
         [Fact]
@@ -45,7 +45,7 @@ public class PipelineSettingsResolverTests : TestBase<PipelineSettingsResolver>
             var result = sut.Resolve<ClassModelResolverTests>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
     }
 }

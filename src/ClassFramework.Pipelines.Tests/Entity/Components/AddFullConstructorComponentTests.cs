@@ -11,8 +11,8 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -29,19 +29,22 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.Protected.Should().BeFalse();
-            ctor.ChainCall.Should().BeEmpty();
-            ctor.Parameters.Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
-            ctor.Parameters.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.Generic.IEnumerable<System.Int32>");
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            ctor.Protected.ShouldBeFalse();
+            ctor.ChainCall.ShouldBeEmpty();
+            ctor.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2", "property3" });
+            ctor.Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "System.String", "System.Collections.Generic.IEnumerable<System.Int32>" });
+            ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "this.Property1 = property1;",
-                "this.Property2 = property2;",
-                "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);"
+                new[]
+                {
+                    "this.Property1 = property1;",
+                    "this.Property2 = property2;",
+                    "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);"
+                }
             );
         }
 
@@ -59,21 +62,24 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.Protected.Should().BeFalse();
-            ctor.ChainCall.Should().BeEmpty();
-            ctor.Parameters.Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
-            ctor.Parameters.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.Generic.IEnumerable<System.Int32>");
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            ctor.Protected.ShouldBeFalse();
+            ctor.ChainCall.ShouldBeEmpty();
+            ctor.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2", "property3" });
+            ctor.Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "System.String", "System.Collections.Generic.IEnumerable<System.Int32>" });
+            ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "if (property2 is null) throw new System.ArgumentNullException(nameof(property2));",
-                "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
-                "this.Property1 = property1;",
-                "this.Property2 = property2;",
-                "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);"
+                new[]
+                {
+                    "if (property2 is null) throw new System.ArgumentNullException(nameof(property2));",
+                    "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
+                    "this.Property1 = property1;",
+                    "this.Property2 = property2;",
+                    "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);"
+                }
             );
         }
 
@@ -91,21 +97,24 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.Protected.Should().BeFalse();
-            ctor.ChainCall.Should().BeEmpty();
-            ctor.Parameters.Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
-            ctor.Parameters.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.Generic.IEnumerable<System.Int32>");
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            ctor.Protected.ShouldBeFalse();
+            ctor.ChainCall.ShouldBeEmpty();
+            ctor.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2", "property3" });
+            ctor.Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "System.String", "System.Collections.Generic.IEnumerable<System.Int32>" });
+            ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "System.ArgumentNullException.ThrowIfNull(property2);",
-                "System.ArgumentNullException.ThrowIfNull(property3);",
-                "this.Property1 = property1;",
-                "this.Property2 = property2;",
-                "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);"
+                new[]
+                {
+                    "System.ArgumentNullException.ThrowIfNull(property2);",
+                    "System.ArgumentNullException.ThrowIfNull(property3);",
+                    "this.Property1 = property1;",
+                    "this.Property2 = property2;",
+                    "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);"
+                }
             );
         }
 
@@ -123,21 +132,24 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.Protected.Should().BeFalse();
-            ctor.ChainCall.Should().BeEmpty();
-            ctor.Parameters.Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
-            ctor.Parameters.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.Generic.IEnumerable<System.Int32>");
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            ctor.Protected.ShouldBeFalse();
+            ctor.ChainCall.ShouldBeEmpty();
+            ctor.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2", "property3" });
+            ctor.Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "System.String", "System.Collections.Generic.IEnumerable<System.Int32>" });
+            ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "if (property2 is null) throw new System.ArgumentNullException(nameof(property2));",
-                "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
-                "this._property1 = property1;",
-                "this._property2 = property2;",
-                "this._property3 = new System.Collections.Generic.List<System.Int32>(property3);"
+                new[]
+                {
+                    "if (property2 is null) throw new System.ArgumentNullException(nameof(property2));",
+                    "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
+                    "this._property1 = property1;",
+                    "this._property2 = property2;",
+                    "this._property3 = new System.Collections.Generic.List<System.Int32>(property3);"
+                }
             );
         }
 
@@ -155,20 +167,23 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.Protected.Should().BeFalse();
-            ctor.ChainCall.Should().BeEmpty();
-            ctor.Parameters.Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
-            ctor.Parameters.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.Generic.IEnumerable<System.Int32>");
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            ctor.Protected.ShouldBeFalse();
+            ctor.ChainCall.ShouldBeEmpty();
+            ctor.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2", "property3" });
+            ctor.Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "System.String", "System.Collections.Generic.IEnumerable<System.Int32>" });
+            ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "this.Property1 = property1;",
-                "this.Property2 = property2;",
-                "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);",
-                "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"
+                new[]
+                {
+                    "this.Property1 = property1;",
+                    "this.Property2 = property2;",
+                    "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);",
+                    "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"
+                }
             );
         }
 
@@ -186,44 +201,53 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Constructors.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
-            ctor.Protected.Should().BeFalse();
-            ctor.ChainCall.Should().BeEmpty();
-            ctor.Parameters.Select(x => x.Name).Should().BeEquivalentTo
+            ctor.Protected.ShouldBeFalse();
+            ctor.ChainCall.ShouldBeEmpty();
+            ctor.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo
             (
-                "property1",
-                "property2",
-                "property3",
-                "property4",
-                "property5",
-                "property6",
-                "property7",
-                "property8"
+                new[]
+                {
+                    "property1",
+                    "property2",
+                    "property3",
+                    "property4",
+                    "property5",
+                    "property6",
+                    "property7",
+                    "property8"
+                }
             );
-            ctor.Parameters.Select(x => x.TypeName).Should().BeEquivalentTo
+            ctor.Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
             (
-                "System.Int32",
-                "System.Int32",
-                "System.String",
-                "System.String",
-                "MyNamespace.MyClass",
-                "MyNamespace.MyClass",
-                "System.Collections.Generic.IEnumerable<MyNamespace.MyClass>",
-                "System.Collections.Generic.IEnumerable<MyNamespace.MyClass>"
+                new[]
+                {
+                    "System.Int32",
+                    "System.Int32",
+                    "System.String",
+                    "System.String",
+                    "MyNamespace.MyClass",
+                    "MyNamespace.MyClass",
+                    "System.Collections.Generic.IEnumerable<MyNamespace.MyClass>",
+                    "System.Collections.Generic.IEnumerable<MyNamespace.MyClass>"
+                }
             );
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
-                "this.Property1 = property1;",
-                "this.Property2 = property2;",
-                "this.Property3 = property3;",
-                "this.Property4 = property4;",
-                "this.Property5 = property5;",
-                "this.Property6 = property6;",
-                "this.Property7 = new System.Collections.Generic.List<MyNamespace.MyClass>(property7);",
-                "this.Property8 = property8 is null ? null : new System.Collections.Generic.List<MyNamespace.MyClass>(property8);"
+                new[]
+                {
+                    "this.Property1 = property1;",
+                    "this.Property2 = property2;",
+                    "this.Property3 = property3;",
+                    "this.Property4 = property4;",
+                    "this.Property5 = property5;",
+                    "this.Property6 = property6;",
+                    "this.Property7 = new System.Collections.Generic.List<MyNamespace.MyClass>(property7);",
+                    "this.Property8 = property8 is null ? null : new System.Collections.Generic.List<MyNamespace.MyClass>(property8);"
+                }
             );
         }
     }

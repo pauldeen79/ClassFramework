@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.Variables;
+namespace ClassFramework.Pipelines.Tests.Variables;
 
 public class AddMethodNameFormatStringVariableTests : TestBase<AddMethodNameFormatStringVariable>
 {
@@ -15,7 +15,7 @@ public class AddMethodNameFormatStringVariableTests : TestBase<AddMethodNameForm
             var result = sut.Evaluate("WrongFunctionName", context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
 
         [Fact]
@@ -31,8 +31,8 @@ public class AddMethodNameFormatStringVariableTests : TestBase<AddMethodNameForm
             var result = sut.Evaluate("addMethodNameFormatString", context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(context.AddMethodNameFormatString);
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe(context.AddMethodNameFormatString);
         }
 
         [Fact]
@@ -48,8 +48,8 @@ public class AddMethodNameFormatStringVariableTests : TestBase<AddMethodNameForm
             var result = sut.Evaluate("addMethodNameFormatString", context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
     }
 }

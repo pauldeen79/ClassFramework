@@ -11,8 +11,8 @@ public class TypeContainerBuilderExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.WithType(type: default!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("type");
+            Action a = () => sut.WithType(type: default!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("type");
         }
 
         [Fact]
@@ -25,7 +25,7 @@ public class TypeContainerBuilderExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.WithType(typeof(int));
 
             // Assert
-            result.TypeName.Should().Be("System.Int32");
+            result.TypeName.ShouldBe("System.Int32");
         }
     }
 
@@ -38,8 +38,8 @@ public class TypeContainerBuilderExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.WithType(typeBuilder: default!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("typeBuilder");
+            Action a = () => sut.WithType(typeBuilder: default!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("typeBuilder");
         }
 
         [Fact]
@@ -53,8 +53,8 @@ public class TypeContainerBuilderExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.WithType(typeBuilder);
 
             // Assert
-            result.TypeName.Should().Be("MyNamespace.MyClass");
-            result.IsValueType.Should().BeFalse();
+            result.TypeName.ShouldBe("MyNamespace.MyClass");
+            result.IsValueType.ShouldBeFalse();
         }
 
         [Fact]
@@ -68,8 +68,8 @@ public class TypeContainerBuilderExtensionsTests : TestBase<PropertyBuilder>
             var result = sut.WithType(typeBuilder);
 
             // Assert
-            result.TypeName.Should().Be("MyNamespace.MyStruct");
-            result.IsValueType.Should().BeTrue();
+            result.TypeName.ShouldBe("MyNamespace.MyStruct");
+            result.IsValueType.ShouldBeTrue();
         }
     }
 }

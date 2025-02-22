@@ -4,7 +4,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
 {
     public class ProcessAsync : PipelineBuilderTests
     {
-        private InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, CopyMethodPredicate? copyMethodPredicate = null) => new(
+        private static InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, CopyMethodPredicate? copyMethodPredicate = null) => new(
             CreateInterface(addProperties),
             CreateSettingsForInterface
             (
@@ -26,9 +26,9 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Builder.Name.Should().Be("IMyClass");
-            context.Builder.Namespace.Should().Be("MyNamespace");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Builder.Name.ShouldBe("IMyClass");
+            context.Builder.Namespace.ShouldBe("MyNamespace");
         }
 
         [Fact]
@@ -42,10 +42,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
-            context.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
-            context.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.Collections.Generic.IReadOnlyCollection<System.String>");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Builder.Properties.Select(x => x.HasSetter).ShouldAllBe(x => x == false);
+            context.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
+            context.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.String", "System.Collections.Generic.IReadOnlyCollection<System.String>" });
         }
 
         [Fact]
@@ -59,8 +59,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Builder.Methods.Should().ContainSingle();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Builder.Methods.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -74,8 +74,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Builder.Methods.Should().ContainSingle();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Builder.Methods.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -89,8 +89,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Builder.Methods.Should().BeEmpty();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Builder.Methods.ShouldBeEmpty();
         }
 
         [Fact]
@@ -104,8 +104,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            context.Builder.Methods.Should().BeEmpty();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Builder.Methods.ShouldBeEmpty();
         }
 
         [Fact]
@@ -120,9 +120,9 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
             var innerResult = result?.InnerResults.FirstOrDefault();
 
             // Assert
-            innerResult.Should().NotBeNull();
-            innerResult!.Status.Should().Be(ResultStatus.Invalid);
-            innerResult.ErrorMessage.Should().Be("To create an interface, there must be at least one property");
+            innerResult.ShouldNotBeNull();
+            innerResult!.Status.ShouldBe(ResultStatus.Invalid);
+            innerResult.ErrorMessage.ShouldBe("To create an interface, there must be at least one property");
         }
     }
 
@@ -144,39 +144,46 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
+            result.IsSuccessful().ShouldBeTrue();
 
-            context.Builder.Name.Should().Be("IMyClass");
-            context.Builder.Namespace.Should().Be("MyNamespace");
-            context.Builder.Interfaces.Should().BeEmpty();
+            context.Builder.Name.ShouldBe("IMyClass");
+            context.Builder.Namespace.ShouldBe("MyNamespace");
+            context.Builder.Interfaces.ShouldBeEmpty();
 
-            context.Builder.Fields.Should().BeEmpty();
+            context.Builder.Fields.ShouldBeEmpty();
 
-            context.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo
             (
-                "Property1",
-                "Property2",
-                "Property3",
-                "Property4",
-                "Property5",
-                "Property6",
-                "Property7",
-                "Property8"
+                new[]
+                {
+                    "Property1",
+                    "Property2",
+                    "Property3",
+                    "Property4",
+                    "Property5",
+                    "Property6",
+                    "Property7",
+                    "Property8"
+                }
             );
-            context.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
             (
-                "System.Int32",
-                "System.Nullable<System.Int32>",
-                "System.String",
-                "System.String",
-                "MyNamespace.IMyClass",
-                "MyNamespace.IMyClass",
-                "System.Collections.Generic.IReadOnlyCollection<MyNamespace.IMyClass>",
-                "System.Collections.Generic.IReadOnlyCollection<MyNamespace.IMyClass>"
+                new[]
+                {
+                    "System.Int32",
+                    "System.Nullable<System.Int32>",
+                    "System.String",
+                    "System.String",
+                    "MyNamespace.IMyClass",
+                    "MyNamespace.IMyClass",
+                    "System.Collections.Generic.IReadOnlyCollection<MyNamespace.IMyClass>",
+                    "System.Collections.Generic.IReadOnlyCollection<MyNamespace.IMyClass>"
+                }
             );
-            context.Builder.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
+            context.Builder.Properties.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo
             (
-                [
+                new[]
+                {
                     false,
                     true,
                     false,
@@ -185,13 +192,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
                     true,
                     false,
                     true
-                ]
+                }
             );
-            context.Builder.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
-            context.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
-            context.Builder.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
-            context.Builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
-            context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
+            context.Builder.Properties.Select(x => x.HasGetter).ShouldAllBe(x => x == true);
+            context.Builder.Properties.SelectMany(x => x.GetterCodeStatements).ShouldBeEmpty();
+            context.Builder.Properties.Select(x => x.HasInitializer).ShouldAllBe(x => x == false);
+            context.Builder.Properties.Select(x => x.HasSetter).ShouldAllBe(x => x == false);
+            context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).ShouldBeEmpty();
         }
 
         private static InterfaceContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)

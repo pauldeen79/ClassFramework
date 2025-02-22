@@ -12,9 +12,9 @@ public class CodeGenerationHeaderViewModelTests : TestBase<CodeGenerationHeaderV
             sut.Model = null;
 
             // Act
-            sut.Invoking(x => _ = x.Version)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Model");
+            Action a = () => _ = sut.Version;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -28,7 +28,7 @@ public class CodeGenerationHeaderViewModelTests : TestBase<CodeGenerationHeaderV
             var result = sut.Version;
 
             // Assert
-            result.Should().Be("1.2.3.4");
+            result.ShouldBe("1.2.3.4");
         }
 
         [Fact]
@@ -42,7 +42,7 @@ public class CodeGenerationHeaderViewModelTests : TestBase<CodeGenerationHeaderV
             var result = sut.Version;
 
             // Assert
-            result.Should().Be(Environment.Version.ToString());
+            result.ShouldBe(Environment.Version.ToString());
         }
     }
 }

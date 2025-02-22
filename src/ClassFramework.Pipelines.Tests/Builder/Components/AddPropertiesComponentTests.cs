@@ -11,8 +11,9 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -28,8 +29,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.ShouldBeEmpty();
         }
 
         [Fact]
@@ -49,11 +50,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.Name));
-            context.Request.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.TypeName.FixTypeName()));
-            context.Request.Builder.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.IsNullable));
-            context.Request.Builder.Properties.Select(x => x.IsValueType).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.IsValueType));
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.Name).ToArray());
+            context.Request.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.TypeName.FixTypeName()).ToArray());
+            context.Request.Builder.Properties.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.IsNullable).ToArray());
+            context.Request.Builder.Properties.Select(x => x.IsValueType).ToArray().ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.IsValueType).ToArray());
         }
 
         [Fact]
@@ -79,9 +80,9 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.Name));
-            context.Request.Builder.Properties.Select(x => x.TypeName).Should().AllBe("MyCustomType");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.Name).ToArray());
+            context.Request.Builder.Properties.Select(x => x.TypeName).ShouldAllBe(x => x == "MyCustomType");
         }
 
         [Fact]
@@ -102,9 +103,9 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.Select(x => x.Name).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.Name));
-            context.Request.Builder.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.ObjectModel.ReadOnlyCollection<System.Int32>");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(sourceModel.Properties.Select(x => x.Name).ToArray());
+            context.Request.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "System.String", "System.Collections.ObjectModel.ReadOnlyCollection<System.Int32>" });
         }
 
         [Fact]
@@ -121,9 +122,9 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).Should().NotBeEmpty();
-            context.Request.Builder.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).Should().AllBeEquivalentTo("MyAttribute");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).ShouldNotBeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).ShouldAllBe(x => x == "MyAttribute");
         }
 
         [Fact]
@@ -140,8 +141,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.SelectMany(x => x.Attributes).Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.SelectMany(x => x.Attributes).ShouldBeEmpty();
         }
 
         [Fact]
@@ -158,9 +159,9 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
-            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).ShouldBeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).ShouldBeEmpty();
         }
 
         [Theory]
@@ -187,13 +188,13 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().NotBeEmpty();
-            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return _myRequiredProperty;");
-            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().NotBeEmpty();
-            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("_myRequiredProperty = value ?? throw new System.ArgumentNullException(nameof(value));");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).ShouldNotBeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "return _myRequiredProperty;" });
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).ShouldNotBeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "_myRequiredProperty = value ?? throw new System.ArgumentNullException(nameof(value));" });
         }
 
         [Theory]
@@ -219,13 +220,13 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().NotBeEmpty();
-            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return _delegate;");
-            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().NotBeEmpty();
-            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("_delegate = value ?? throw new System.ArgumentNullException(nameof(value));");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).ShouldNotBeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            context.Request.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "return _delegate;" });
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).ShouldNotBeEmpty();
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            context.Request.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "_delegate = value ?? throw new System.ArgumentNullException(nameof(value));" });
         }
 
         [Theory]
@@ -251,8 +252,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Fields.Select(x => x.Name).Should().BeEquivalentTo("_myProperty");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "_myProperty" });
         }
 
         [Fact]
@@ -276,8 +277,8 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)

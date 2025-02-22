@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.ObjectResolvers;
+namespace ClassFramework.Pipelines.Tests.ObjectResolvers;
 
 public class MappedContextBaseResolverTests : TestBase<MappedContextBaseResolver>
 {
@@ -15,8 +15,8 @@ public class MappedContextBaseResolverTests : TestBase<MappedContextBaseResolver
             var result = sut.Resolve<MappedContextBase>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Could not get MappedContextBase from context, because the context type System.Object is not supported");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Could not get MappedContextBase from context, because the context type System.Object is not supported");
         }
 
         [Fact]
@@ -30,8 +30,8 @@ public class MappedContextBaseResolverTests : TestBase<MappedContextBaseResolver
             var result = sut.Resolve<MappedContextBase>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.NotSupported);
-            result.ErrorMessage.Should().Be("Could not get MappedContextBase from context, because the context type null is not supported");
+            result.Status.ShouldBe(ResultStatus.NotSupported);
+            result.ErrorMessage.ShouldBe("Could not get MappedContextBase from context, because the context type null is not supported");
         }
 
         [Fact]
@@ -45,8 +45,8 @@ public class MappedContextBaseResolverTests : TestBase<MappedContextBaseResolver
             var result = sut.Resolve<MappedContextBase>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -60,8 +60,8 @@ public class MappedContextBaseResolverTests : TestBase<MappedContextBaseResolver
             var result = sut.Resolve<MappedContextBase>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -75,8 +75,8 @@ public class MappedContextBaseResolverTests : TestBase<MappedContextBaseResolver
             var result = sut.Resolve<MappedContextBase>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -90,8 +90,8 @@ public class MappedContextBaseResolverTests : TestBase<MappedContextBaseResolver
             var result = sut.Resolve<MappedContextBase>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -105,8 +105,8 @@ public class MappedContextBaseResolverTests : TestBase<MappedContextBaseResolver
             var result = sut.Resolve<MappedContextBase>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -121,8 +121,8 @@ public class MappedContextBaseResolverTests : TestBase<MappedContextBaseResolver
             var result = sut.Resolve<MappedContextBase>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -137,8 +137,8 @@ public class MappedContextBaseResolverTests : TestBase<MappedContextBaseResolver
             var result = sut.Resolve<MappedContextBase>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -153,8 +153,8 @@ public class MappedContextBaseResolverTests : TestBase<MappedContextBaseResolver
             var result = sut.Resolve<MappedContextBase>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().NotBeNull();
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldNotBeNull();
         }
 
         [Fact]
@@ -168,7 +168,7 @@ public class MappedContextBaseResolverTests : TestBase<MappedContextBaseResolver
             var result = sut.Resolve<MappedContextBaseResolverTests>(sourceObject);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.Status.ShouldBe(ResultStatus.Continue);
         }
     }
 }

@@ -12,9 +12,9 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
             sut.Context = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.AdditionalIndents)
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("Context");
+            Action a = () => _ = sut.AdditionalIndents;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Context");
         }
 
         [Fact]
@@ -31,7 +31,7 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
             var result = sut.AdditionalIndents;
 
             // Assert
-            result.Should().Be(3);
+            result.ShouldBe(3);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
             var result = sut.AdditionalIndents;
 
             // Assert
-            result.Should().Be(2);
+            result.ShouldBe(2);
         }
 
         [Fact]
@@ -65,7 +65,7 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
             var result = sut.AdditionalIndents;
 
             // Assert
-            result.Should().Be(2);
+            result.ShouldBe(2);
         }
 
         [Fact]
@@ -79,8 +79,8 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
             sut.Context = context;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.AdditionalIndents)
-               .Should().Throw<NotSupportedException>();
+            Action a = () => _ = sut.AdditionalIndents;
+            a.ShouldThrow<NotSupportedException>();
         }
 
         [Fact]
@@ -94,8 +94,8 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
             sut.Context = context;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.AdditionalIndents)
-               .Should().Throw<NotSupportedException>();
+            Action a = () => _ = sut.AdditionalIndents;
+            a.ShouldThrow<NotSupportedException>();
         }
     }
 }

@@ -11,8 +11,9 @@ public class ValidationComponentTests : TestBase<Pipelines.Builder.Components.Va
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -28,7 +29,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Builder.Components.Va
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -44,7 +45,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Builder.Components.Va
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         [Fact]
@@ -62,7 +63,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Builder.Components.Va
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Ok);
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)

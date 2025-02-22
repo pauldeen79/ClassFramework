@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.Functions;
+namespace ClassFramework.Pipelines.Tests.Functions;
 
 public class CollectionItemTypeFunctionTests : TestBase<CollectionItemTypeFunction>
 {
@@ -25,7 +25,7 @@ public class CollectionItemTypeFunctionTests : TestBase<CollectionItemTypeFuncti
         var result = sut.Evaluate(functionCallContext);
 
         // Assert
-        result.Status.Should().Be(ResultStatus.Ok);
-        result.Value.Should().Be("MyClass");
+        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Value.ShouldBe("MyClass");
     }
 }

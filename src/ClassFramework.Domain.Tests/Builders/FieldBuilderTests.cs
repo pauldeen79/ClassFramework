@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Domain.Tests.Builders;
+namespace ClassFramework.Domain.Tests.Builders;
 
 public class FieldBuilderTests : TestBase<FieldBuilder>
 {
@@ -13,7 +13,7 @@ public class FieldBuilderTests : TestBase<FieldBuilder>
             var sut = CreateSut();
 
             // Assert
-            sut.Visibility.Should().Be(Domains.Visibility.Private);
+            sut.Visibility.ShouldBe(Domains.Visibility.Private);
         }
     }
 }

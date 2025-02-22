@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Domain.Tests.Builders;
+namespace ClassFramework.Domain.Tests.Builders;
 
 public class ConstructorBuilderTests : TestBase<ConstructorBuilder>
 {
@@ -17,7 +17,7 @@ public class ConstructorBuilderTests : TestBase<ConstructorBuilder>
             var actual = sut.ChainCallToBaseUsingParameters();
 
             // Assert
-            actual.ChainCall.Should().Be("base(param1, param2, param3)");
+            actual.ChainCall.ShouldBe("base(param1, param2, param3)");
         }
     }
 }

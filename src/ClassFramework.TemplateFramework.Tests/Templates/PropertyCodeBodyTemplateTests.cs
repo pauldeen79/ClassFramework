@@ -24,8 +24,8 @@ public class PropertyCodeBodyTemplateTests : TemplateTestBase<PropertyCodeBodyTe
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom!");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom!");
         }
 
         [Fact]
@@ -48,8 +48,8 @@ public class PropertyCodeBodyTemplateTests : TemplateTestBase<PropertyCodeBodyTe
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            builder.ToString().Should().Be(@"            get;
+            result.Status.ShouldBe(ResultStatus.Ok);
+            builder.ToString().ShouldBe(@"            get;
 ");
         }
 
@@ -83,8 +83,8 @@ public class PropertyCodeBodyTemplateTests : TemplateTestBase<PropertyCodeBodyTe
             var result = await sut.Render(builder, CancellationToken.None);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            builder.ToString().Should().Be(@"            get
+            result.Status.ShouldBe(ResultStatus.Ok);
+            builder.ToString().ShouldBe(@"            get
             {
                 //code goes here
             }

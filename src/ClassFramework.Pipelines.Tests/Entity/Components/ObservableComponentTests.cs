@@ -11,8 +11,8 @@ public class ObservableComponentTests : TestBase<Pipelines.Entity.Components.Obs
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -29,9 +29,9 @@ public class ObservableComponentTests : TestBase<Pipelines.Entity.Components.Obs
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Interfaces.Should().BeEmpty();
-            context.Request.Builder.Fields.Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Interfaces.ShouldBeEmpty();
+            context.Request.Builder.Fields.ShouldBeEmpty();
         }
 
         [Fact]
@@ -48,13 +48,13 @@ public class ObservableComponentTests : TestBase<Pipelines.Entity.Components.Obs
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
-            context.Request.Builder.Fields.Select(x => x.Name).Should().BeEquivalentTo("PropertyChanged");
-            context.Request.Builder.Fields.Select(x => x.TypeName).Should().BeEquivalentTo("System.ComponentModel.PropertyChangedEventHandler");
-            context.Request.Builder.Fields.Select(x => x.Event).Should().BeEquivalentTo([true]);
-            context.Request.Builder.Fields.Select(x => x.Visibility).Should().BeEquivalentTo([Visibility.Public]);
-            context.Request.Builder.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo([true]);
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "System.ComponentModel.INotifyPropertyChanged" });
+            context.Request.Builder.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "PropertyChanged" });
+            context.Request.Builder.Fields.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.ComponentModel.PropertyChangedEventHandler" });
+            context.Request.Builder.Fields.Select(x => x.Event).ToArray().ShouldBeEquivalentTo(new[] { true });
+            context.Request.Builder.Fields.Select(x => x.Visibility).ToArray().ShouldBeEquivalentTo(new[] { Visibility.Public });
+            context.Request.Builder.Fields.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo(new[] { true });
         }
     }
 }

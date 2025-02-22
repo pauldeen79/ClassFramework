@@ -11,8 +11,8 @@ public class AddMethodsComponentTests : TestBase<Pipelines.Reflection.Components
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -28,8 +28,8 @@ public class AddMethodsComponentTests : TestBase<Pipelines.Reflection.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Methods.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Methods.Count.ShouldBe(1);
         }
     }
 }

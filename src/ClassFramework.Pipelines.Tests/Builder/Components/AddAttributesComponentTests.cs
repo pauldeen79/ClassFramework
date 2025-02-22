@@ -11,8 +11,9 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a= () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -28,8 +29,8 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Attributes.Should().BeEquivalentTo([new AttributeBuilder().WithName("MyAttribute")]);
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute") });
         }
 
         [Fact]
@@ -51,8 +52,8 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Attributes.Should().BeEquivalentTo([new AttributeBuilder().WithName("MyAttribute2")]);
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute2") });
         }
 
         [Fact]
@@ -72,8 +73,8 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Attributes.Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Attributes.ShouldBeEmpty();
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)

@@ -12,7 +12,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = lst.GetStringValue("name", "default");
 
         // Assert
-        actual.Should().Be("value");
+        actual.ShouldBe("value");
     }
 
     [Fact]
@@ -25,7 +25,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = lst.GetStringValue("name", "default");
 
         // Assert
-        actual.Should().Be("default");
+        actual.ShouldBe("default");
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = lst.GetStringValue("name", "default");
 
         // Assert
-        actual.Should().Be("second value");
+        actual.ShouldBe("second value");
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = lst.GetStringValues("name");
 
         // Assert
-        actual.Should().BeEquivalentTo("value", "second value");
+        actual.ToArray().ShouldBeEquivalentTo(new[] { "value", "second value" });
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = lst.GetBooleanValue("name");
 
         // Assert
-        actual.Should().BeFalse();
+        actual.ShouldBeFalse();
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = lst.GetBooleanValue("wrongname", true);
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = lst.GetBooleanValue("wrong name", () => true);
 
         // Assert
-        actual.Should().BeTrue();
+        actual.ShouldBeTrue();
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = sut.GetValue("Test", () => MyEnumThing.B);
 
         // Assert
-        actual.Should().Be(MyEnumThing.A);
+        actual.ShouldBe(MyEnumThing.A);
     }
 
     [Fact]
@@ -116,7 +116,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = sut.GetValue("WrongName", () => MyEnumThing.B);
 
         // Assert
-        actual.Should().Be(MyEnumThing.B);
+        actual.ShouldBe(MyEnumThing.B);
     }
 
     [Fact]
@@ -129,7 +129,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = sut.GetValue<MyEnumThing?>("Test", () => MyEnumThing.B);
 
         // Assert
-        actual.Should().Be(MyEnumThing.A);
+        actual.ShouldBe(MyEnumThing.A);
     }
 
     [Fact]
@@ -142,7 +142,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = sut.GetValue<MyEnumThing?>("WrongName", () => MyEnumThing.B);
 
         // Assert
-        actual.Should().Be(MyEnumThing.B);
+        actual.ShouldBe(MyEnumThing.B);
     }
 
     [Fact]
@@ -155,6 +155,6 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = sut.GetValue("Test", () => 0);
 
         // Assert
-        actual.Should().Be(1);
+        actual.ShouldBe(1);
     }
 }

@@ -14,9 +14,9 @@ public class PipelineSettingsBuilderTests
             var result = new TestContext(sut).InitializeDelegate(typeof(StringLengthClass).GetProperty(nameof(StringLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
-            result.Name.Should().Be(typeof(StringLengthAttribute).FullName);
-            result.Parameters.Select(x => x.Name).Should().BeEquivalentTo(string.Empty, "MinimumLength");
-            result.Parameters.Select(x => x.Value).Should().BeEquivalentTo([10, 10]);
+            result.Name.ShouldBe(typeof(StringLengthAttribute).FullName);
+            result.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { string.Empty, "MinimumLength" });
+            result.Parameters.Select(x => x.Value).ToArray().ShouldBeEquivalentTo(new object[] { 10, 10 });
         }
 
         [Fact]
@@ -29,9 +29,9 @@ public class PipelineSettingsBuilderTests
             var result = new TestContext(sut).InitializeDelegate(typeof(RangeClass).GetProperty(nameof(RangeClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
-            result.Name.Should().Be(typeof(RangeAttribute).FullName);
-            result.Parameters.Select(x => x.Name).Should().BeEquivalentTo(string.Empty, string.Empty);
-            result.Parameters.Select(x => x.Value).Should().BeEquivalentTo([1, 10]);
+            result.Name.ShouldBe(typeof(RangeAttribute).FullName);
+            result.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { string.Empty, string.Empty });
+            result.Parameters.Select(x => x.Value).ToArray().ShouldBeEquivalentTo(new object[] { 1, 10 });
         }
 
         [Fact]
@@ -44,9 +44,9 @@ public class PipelineSettingsBuilderTests
             var result = new TestContext(sut).InitializeDelegate(typeof(MinLengthClass).GetProperty(nameof(MinLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
-            result.Name.Should().Be(typeof(MinLengthAttribute).FullName);
-            result.Parameters.Select(x => x.Name).Should().BeEquivalentTo(string.Empty);
-            result.Parameters.Select(x => x.Value).Should().BeEquivalentTo([5]);
+            result.Name.ShouldBe(typeof(MinLengthAttribute).FullName);
+            result.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { string.Empty });
+            result.Parameters.Select(x => x.Value).ToArray().ShouldBeEquivalentTo(new object[] { 5 });
         }
 
         [Fact]
@@ -59,9 +59,9 @@ public class PipelineSettingsBuilderTests
             var result = new TestContext(sut).InitializeDelegate(typeof(MaxLengthClass).GetProperty(nameof(MaxLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
-            result.Name.Should().Be(typeof(MaxLengthAttribute).FullName);
-            result.Parameters.Select(x => x.Name).Should().BeEquivalentTo(string.Empty);
-            result.Parameters.Select(x => x.Value).Should().BeEquivalentTo([5]);
+            result.Name.ShouldBe(typeof(MaxLengthAttribute).FullName);
+            result.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { string.Empty });
+            result.Parameters.Select(x => x.Value).ToArray().ShouldBeEquivalentTo(new object[] { 5 });
         }
 
         [Fact]
@@ -74,9 +74,9 @@ public class PipelineSettingsBuilderTests
             var result = new TestContext(sut).InitializeDelegate(typeof(MinCountClass).GetProperty(nameof(MinCountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
-            result.Name.Should().Be(typeof(MinCountAttribute).FullName);
-            result.Parameters.Select(x => x.Name).Should().BeEquivalentTo(string.Empty);
-            result.Parameters.Select(x => x.Value).Should().BeEquivalentTo([5]);
+            result.Name.ShouldBe(typeof(MinCountAttribute).FullName);
+            result.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { string.Empty });
+            result.Parameters.Select(x => x.Value).ToArray().ShouldBeEquivalentTo(new object[] { 5 });
         }
 
         [Fact]
@@ -89,9 +89,9 @@ public class PipelineSettingsBuilderTests
             var result = new TestContext(sut).InitializeDelegate(typeof(MaxCountClass).GetProperty(nameof(MaxCountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
-            result.Name.Should().Be(typeof(MaxCountAttribute).FullName);
-            result.Parameters.Select(x => x.Name).Should().BeEquivalentTo(string.Empty);
-            result.Parameters.Select(x => x.Value).Should().BeEquivalentTo([5]);
+            result.Name.ShouldBe(typeof(MaxCountAttribute).FullName);
+            result.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { string.Empty });
+            result.Parameters.Select(x => x.Value).ToArray().ShouldBeEquivalentTo(new object[] { 5 });
         }
 
         [Fact]
@@ -104,9 +104,9 @@ public class PipelineSettingsBuilderTests
             var result = new TestContext(sut).InitializeDelegate(typeof(CountClass).GetProperty(nameof(CountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
-            result.Name.Should().Be(typeof(CountAttribute).FullName);
-            result.Parameters.Select(x => x.Name).Should().BeEquivalentTo(string.Empty, string.Empty);
-            result.Parameters.Select(x => x.Value).Should().BeEquivalentTo([1, 10]);
+            result.Name.ShouldBe(typeof(CountAttribute).FullName);
+            result.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { string.Empty, string.Empty });
+            result.Parameters.Select(x => x.Value).ToArray().ShouldBeEquivalentTo(new object[] { 1, 10 });
         }
 
         [Fact]
@@ -119,7 +119,7 @@ public class PipelineSettingsBuilderTests
             var result = MyMethod(settings); // method expects an entity, but we're giving a builder!
 
             // Assert
-            result.Should().Be("test");
+            result.ShouldBe("test");
         }
 
         private static string MyMethod(PipelineSettings settings)

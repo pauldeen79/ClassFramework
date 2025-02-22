@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Domain.Tests;
+namespace ClassFramework.Domain.Tests;
 
 // note that this class is now actually generated code.
 // but let's keep these tests, as a kind of integration test of the code generation process
@@ -11,8 +11,8 @@ public class LiteralTests
         var sut = new Literal("value", "original value");
 
         // Assert
-        sut.Value.Should().Be("value");
-        sut.OriginalValue.Should().Be("original value");
+        sut.Value.ShouldBe("value");
+        sut.OriginalValue.ShouldBe("original value");
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class LiteralTests
         var sut = new Literal("value", null);
 
         // Assert
-        sut.Value.Should().Be("value");
-        sut.OriginalValue.Should().BeNull();
+        sut.Value.ShouldBe("value");
+        sut.OriginalValue.ShouldBeNull();
     }
 }

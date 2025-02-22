@@ -11,8 +11,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -29,8 +29,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Name.Should().Be("SomeClass");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Name.ShouldBe("SomeClass");
         }
 
         [Fact]
@@ -47,8 +47,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Name.Should().Be("CustomClassName");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Name.ShouldBe("CustomClassName");
         }
 
         [Fact]
@@ -65,8 +65,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Namespace.Should().Be("SomeNamespace");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Namespace.ShouldBe("SomeNamespace");
         }
 
         [Fact]
@@ -83,8 +83,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Namespace.Should().Be("CustomNamespace");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Namespace.ShouldBe("CustomNamespace");
         }
 
         [Fact]
@@ -101,8 +101,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -119,8 +119,8 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
     }
 }

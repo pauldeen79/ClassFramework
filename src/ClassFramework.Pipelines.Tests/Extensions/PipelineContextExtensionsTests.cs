@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.Extensions;
+namespace ClassFramework.Pipelines.Tests.Extensions;
 
 public class PipelineContextExtensionsTests : TestBase
 {
@@ -19,8 +19,8 @@ public class PipelineContextExtensionsTests : TestBase
             var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Cannot create an instance of an abstract class");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Cannot create an instance of an abstract class");
         }
 
         [Fact]
@@ -38,8 +38,8 @@ public class PipelineContextExtensionsTests : TestBase
             var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("Cannot create an instance of a type that does not have constructors");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("Cannot create an instance of a type that does not have constructors");
         }
 
         [Fact]
@@ -57,8 +57,8 @@ public class PipelineContextExtensionsTests : TestBase
             var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            result.Value!.ToString().Should().Be("new MyNamespace.MyClass { MyProperty = MyProperty }");
+            result.IsSuccessful().ShouldBeTrue();
+            result.Value!.ToString().ShouldBe("new MyNamespace.MyClass { MyProperty = MyProperty }");
         }
 
         [Fact]
@@ -76,8 +76,8 @@ public class PipelineContextExtensionsTests : TestBase
             var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            result.Value!.ToString().Should().Be("new MyNamespace.MyClass(MyProperty)");
+            result.IsSuccessful().ShouldBeTrue();
+            result.Value!.ToString().ShouldBe("new MyNamespace.MyClass(MyProperty)");
         }
 
         [Fact]
@@ -95,8 +95,8 @@ public class PipelineContextExtensionsTests : TestBase
             var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            result.Value!.ToString().Should().Be("new MyNamespace.MyClass { MyProperty = MyProperty }");
+            result.IsSuccessful().ShouldBeTrue();
+            result.Value!.ToString().ShouldBe("new MyNamespace.MyClass { MyProperty = MyProperty }");
         }
 
         [Fact]
@@ -123,8 +123,8 @@ public class PipelineContextExtensionsTests : TestBase
             var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            result.Value!.ToString().Should().Be("Factory.DoSomething(this)");
+            result.IsSuccessful().ShouldBeTrue();
+            result.Value!.ToString().ShouldBe("Factory.DoSomething(this)");
         }
     }
 }

@@ -11,8 +11,8 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -28,8 +28,8 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            ((ClassBuilder)context.Request.Builder).BaseClass.Should().Be("ClassFramework.Pipelines.Tests.Reflection.Components.MyBaseClassTestClassBase");
+            result.IsSuccessful().ShouldBeTrue();
+            ((ClassBuilder)context.Request.Builder).BaseClass.ShouldBe("ClassFramework.Pipelines.Tests.Reflection.Components.MyBaseClassTestClassBase");
         }
 
         [Fact]
@@ -46,8 +46,8 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            ((ClassBuilder)context.Request.Builder).BaseClass.Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            ((ClassBuilder)context.Request.Builder).BaseClass.ShouldBeEmpty();
         }
 
         [Fact]
@@ -66,8 +66,8 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            ((ClassBuilder)context.Request.Builder).BaseClass.Should().Be("MyBaseClass");
+            result.IsSuccessful().ShouldBeTrue();
+            ((ClassBuilder)context.Request.Builder).BaseClass.ShouldBe("MyBaseClass");
         }
 
         [Fact]
@@ -86,8 +86,8 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            ((ClassBuilder)context.Request.Builder).BaseClass.Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            ((ClassBuilder)context.Request.Builder).BaseClass.ShouldBeEmpty();
         }
 
         [Fact]
@@ -104,8 +104,8 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            ((ClassBuilder)context.Request.Builder).BaseClass.Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            ((ClassBuilder)context.Request.Builder).BaseClass.ShouldBeEmpty();
         }
     }
 }

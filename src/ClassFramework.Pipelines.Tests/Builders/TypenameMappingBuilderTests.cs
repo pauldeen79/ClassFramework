@@ -11,8 +11,8 @@ public class TypenameMappingBuilderTests : TestBase<TypenameMappingBuilder>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.AddMetadata(name: null!, value: null))
-               .Should().Throw<ArgumentNullException>().WithParameterName("name");
+            Action a = () => sut.AddMetadata(name: null!, value: null);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("name");
         }
 
         [Fact]
@@ -25,7 +25,7 @@ public class TypenameMappingBuilderTests : TestBase<TypenameMappingBuilder>
             var result = sut.AddMetadata(name: "Name", value: "Value");
 
             // Assert
-            result.Metadata.Should().BeEquivalentTo([new Metadata(name: "Name", value: "Value")]);
+            result.Metadata.ToArray().ShouldBeEquivalentTo(new[] { new MetadataBuilder().WithName("Name").WithValue("Value") });
         }
     }
 }

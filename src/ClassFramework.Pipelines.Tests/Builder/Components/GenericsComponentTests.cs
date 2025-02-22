@@ -11,8 +11,9 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -32,8 +33,8 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.GenericTypeArguments.Should().BeEquivalentTo("T");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.GenericTypeArguments.ToArray().ShouldBeEquivalentTo(new[] { "T" });
         }
 
         [Fact]
@@ -54,8 +55,8 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where T : class");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where T : class" });
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)

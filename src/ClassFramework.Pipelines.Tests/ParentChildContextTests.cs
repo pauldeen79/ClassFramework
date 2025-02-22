@@ -13,8 +13,8 @@ public class ParentChildContextTests : TestBase
             var settings = new PipelineSettingsBuilder();
 
             // Act & Assert
-            this.Invoking(_ => new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, Property>(parentContext!, childContext, settings))
-                .Should().Throw<ArgumentNullException>().WithParameterName("parentContext");
+            Action a = () => _ = new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, Property>(parentContext!, childContext, settings);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("parentContext");
         }
 
         [Fact]
@@ -26,8 +26,8 @@ public class ParentChildContextTests : TestBase
             var settings = new PipelineSettingsBuilder();
 
             // Act & Assert
-            this.Invoking(_ => new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, Property>(parentContext, childContext!, settings))
-                .Should().Throw<ArgumentNullException>().WithParameterName("childContext");
+            Action a = () => _ = new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, Property>(parentContext, childContext!, settings);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("childContext");
         }
 
         [Fact]
@@ -39,8 +39,8 @@ public class ParentChildContextTests : TestBase
             var settings = default(PipelineSettings);
 
             // Act & Assert
-            this.Invoking(_ => new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, Property>(parentContext, childContext, settings!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+            Action a = () => _ = new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, Property>(parentContext, childContext, settings!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("settings");
         }
     }
 }

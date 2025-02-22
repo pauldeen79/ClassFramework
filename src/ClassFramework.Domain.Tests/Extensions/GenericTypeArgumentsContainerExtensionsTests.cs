@@ -15,7 +15,7 @@ public class GenericTypeArgumentsContainerExtensionsTests : TestBase
             var result = sut.GetGenericTypeArgumentsString();
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -30,7 +30,7 @@ public class GenericTypeArgumentsContainerExtensionsTests : TestBase
             var result = sut.GetGenericTypeArgumentsString();
 
             // Assert
-            result.Should().Be("<T>");
+            result.ShouldBe("<T>");
         }
     }
 
@@ -47,7 +47,7 @@ public class GenericTypeArgumentsContainerExtensionsTests : TestBase
             var result = sut.GetGenericTypeArgumentConstraintsString(8);
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -61,7 +61,7 @@ public class GenericTypeArgumentsContainerExtensionsTests : TestBase
             var result = sut.GetGenericTypeArgumentConstraintsString(8);
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -76,7 +76,7 @@ public class GenericTypeArgumentsContainerExtensionsTests : TestBase
             var result = sut.GetGenericTypeArgumentConstraintsString(8);
 
             // Assert
-            result.Should().Be(@"
+            result.ShouldBe(@"
         where T : class");
         }
     }

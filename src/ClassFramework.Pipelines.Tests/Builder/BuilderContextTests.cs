@@ -8,24 +8,24 @@ public class BuilderContextTests : TestBase
         public void Throws_On_Null_SourceModel()
         {
             // Act & Assert
-            this.Invoking(_ => new BuilderContext(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture))
-                .Should().Throw<ArgumentNullException>().WithParameterName("sourceModel");
+            Action a = () => _ = new BuilderContext(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("sourceModel");
         }
 
         [Fact]
         public void Throws_On_Null_Settings()
         {
             // Act & Assert
-            this.Invoking(_ => new BuilderContext(sourceModel: CreateClass(), settings: null!, CultureInfo.InvariantCulture))
-                .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+            Action a = () => _ = new BuilderContext(sourceModel: CreateClass(), settings: null!, CultureInfo.InvariantCulture);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("settings");
         }
 
         [Fact]
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            this.Invoking(_ => new BuilderContext(sourceModel: CreateClass(), new PipelineSettingsBuilder(), formatProvider: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
+            Action a = () => _ = new BuilderContext(sourceModel: CreateClass(), new PipelineSettingsBuilder(), formatProvider: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("formatProvider");
         }
     }
 
@@ -42,7 +42,7 @@ public class BuilderContextTests : TestBase
             var result = sut.CreatePragmaWarningDisableStatementsForBuildMethod();
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -56,10 +56,13 @@ public class BuilderContextTests : TestBase
             var result = sut.CreatePragmaWarningDisableStatementsForBuildMethod();
 
             // Assert
-            result.Should().BeEquivalentTo
+            result.ShouldBeEquivalentTo
             (
-                "#pragma warning disable CS8604 // Possible null reference argument.",
-                "#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type."
+                new[]
+                {
+                    "#pragma warning disable CS8604 // Possible null reference argument.",
+                    "#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type."
+                }
             );
         }
     }
@@ -77,7 +80,7 @@ public class BuilderContextTests : TestBase
             var result = sut.CreatePragmaWarningRestoreStatementsForBuildMethod();
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -91,10 +94,13 @@ public class BuilderContextTests : TestBase
             var result = sut.CreatePragmaWarningRestoreStatementsForBuildMethod();
 
             // Assert
-            result.Should().BeEquivalentTo
+            result.ShouldBeEquivalentTo
             (
-                "#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.",
-                "#pragma warning restore CS8604 // Possible null reference argument."
+                new[]
+                {
+                    "#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.",
+                    "#pragma warning restore CS8604 // Possible null reference argument."
+                }
             );
         }
     }
@@ -109,9 +115,9 @@ public class BuilderContextTests : TestBase
             var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
-            sut.Invoking(x => x.MapTypeName(typeName: null!))
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("typeName");
+            Action a = () => sut.MapTypeName(typeName: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("typeName");
         }
     }
 
@@ -125,9 +131,9 @@ public class BuilderContextTests : TestBase
             var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
-            sut.Invoking(x => x.MapAttribute(attribute: null!))
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("attribute");
+            Action a = () => sut.MapAttribute(attribute: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("attribute");
         }
     }
 }

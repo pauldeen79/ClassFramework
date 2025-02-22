@@ -11,8 +11,8 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -28,8 +28,8 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Compone
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Interfaces.Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Interfaces.ShouldBeEmpty();
         }
 
         [Fact]
@@ -45,8 +45,8 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Compone
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Interfaces.Should().ContainSingle();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Interfaces.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -62,8 +62,8 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Compone
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.Interfaces.Should().BeEmpty();
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.Interfaces.ShouldBeEmpty();
         }
     }
 }

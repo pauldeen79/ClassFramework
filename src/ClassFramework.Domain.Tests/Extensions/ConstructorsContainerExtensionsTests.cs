@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Domain.Tests.Extensions;
+namespace ClassFramework.Domain.Tests.Extensions;
 
 public class ConstructorsContainerExtensionsTests : TestBase
 {
@@ -15,7 +15,7 @@ public class ConstructorsContainerExtensionsTests : TestBase
             var result = sut.HasPublicParameterlessConstructor();
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -29,7 +29,7 @@ public class ConstructorsContainerExtensionsTests : TestBase
             var result = sut.HasPublicParameterlessConstructor();
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -43,7 +43,7 @@ public class ConstructorsContainerExtensionsTests : TestBase
             var result = sut.HasPublicParameterlessConstructor();
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -57,7 +57,7 @@ public class ConstructorsContainerExtensionsTests : TestBase
             var result = sut.HasPublicParameterlessConstructor();
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 }

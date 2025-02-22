@@ -2,17 +2,18 @@
 
 public class ContextBaseTests : TestBase
 {
-    protected ContextBase<string> CreateSut(PipelineSettings settings) => new TestContext(settings);
+    protected static ContextBase<string> CreateSut(PipelineSettings settings) => new TestContext(settings);
 
     public class GetMappingMetadata : ContextBaseTests
     {
         [Fact]
         public void Throws_On_Null_TypeName()
         {
+            // Arrange
+            Action a = () => CreateSut(new PipelineSettingsBuilder()).GetMappingMetadata(typeName: null!);
+
             // Act & Assert
-            CreateSut(new PipelineSettingsBuilder())
-                .Invoking(x => x.GetMappingMetadata(typeName: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("typeName");
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("typeName");
         }
 
         [Fact]
@@ -25,7 +26,7 @@ public class ContextBaseTests : TestBase
             var result = CreateSut(new PipelineSettingsBuilder()).GetMappingMetadata(typeName);
 
             // Assert
-            result.Should().BeEmpty();
+            result.ShouldBeEmpty();
         }
 
         [Fact]
@@ -42,7 +43,7 @@ public class ContextBaseTests : TestBase
             var result = CreateSut(settings.Build()).GetMappingMetadata(typeName);
 
             // Assert
-            result.Should().BeEquivalentTo(additionalMetadata.Select(x => x.Build()));
+            result.ToArray().ShouldBeEquivalentTo(additionalMetadata.Select(x => x.Build()).ToArray());
         }
 
         [Fact]
@@ -58,7 +59,7 @@ public class ContextBaseTests : TestBase
             var result = CreateSut(settings.Build()).GetMappingMetadata(typeName);
 
             // Assert
-            result.Should().BeEquivalentTo(additionalMetadata.Select(x => x.Build()));
+            result.ToArray().ShouldBeEquivalentTo(additionalMetadata.Select(x => x.Build()).ToArray());
         }
     }
 
@@ -76,7 +77,7 @@ public class ContextBaseTests : TestBase
             var result = sut.NullCheck;
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -94,7 +95,7 @@ public class ContextBaseTests : TestBase
             var result = sut.NotNullCheck;
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 

@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.Extensions;
+namespace ClassFramework.Pipelines.Tests.Extensions;
 
 public class PipelineSettingsExtensionsTests : TestBase<PipelineSettingsBuilder>
 {
@@ -14,7 +14,7 @@ public class PipelineSettingsExtensionsTests : TestBase<PipelineSettingsBuilder>
             var result = sut.AddValidationCode();
 
             // Assert
-            result.Should().Be(ArgumentValidationType.None);
+            result.ShouldBe(ArgumentValidationType.None);
         }
 
         [Theory]
@@ -29,7 +29,7 @@ public class PipelineSettingsExtensionsTests : TestBase<PipelineSettingsBuilder>
             var result = sut.AddValidationCode();
 
             // Assert
-            result.Should().Be(input);
+            result.ShouldBe(input);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ public class PipelineSettingsExtensionsTests : TestBase<PipelineSettingsBuilder>
             var result = sut.AddValidationCode();
 
             // Assert
-            result.Should().Be(ArgumentValidationType.None);
+            result.ShouldBe(ArgumentValidationType.None);
         }
 
         [Fact]
@@ -64,7 +64,7 @@ public class PipelineSettingsExtensionsTests : TestBase<PipelineSettingsBuilder>
             var result = sut.AddValidationCode();
 
             // Assert
-            result.Should().Be(ArgumentValidationType.None);
+            result.ShouldBe(ArgumentValidationType.None);
         }
 
         [Theory]
@@ -84,7 +84,7 @@ public class PipelineSettingsExtensionsTests : TestBase<PipelineSettingsBuilder>
             var result = sut.AddValidationCode();
 
             // Assert
-            result.Should().Be(input);
+            result.ShouldBe(input);
         }
     }
 }

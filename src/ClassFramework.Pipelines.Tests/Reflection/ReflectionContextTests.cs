@@ -8,24 +8,24 @@ public class ReflectionContextTests : TestBase
         public void Throws_On_Null_SourceModel()
         {
             // Act & Assert
-            this.Invoking(_ => new ReflectionContext(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture))
-                .Should().Throw<ArgumentNullException>().WithParameterName("sourceModel");
+            Action a = () => _ = new ReflectionContext(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("sourceModel");
         }
 
         [Fact]
         public void Throws_On_Null_Settings()
         {
             // Act & Assert
-            this.Invoking(_ => new ReflectionContext(sourceModel: GetType(), settings: null!, CultureInfo.InvariantCulture))
-                .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+            Action a = () => _ = new ReflectionContext(sourceModel: GetType(), settings: null!, CultureInfo.InvariantCulture);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("settings");
         }
 
         [Fact]
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            this.Invoking(_ => new ReflectionContext(sourceModel: GetType(), new PipelineSettingsBuilder(), formatProvider: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
+            Action a = () => _ = new ReflectionContext(sourceModel: GetType(), new PipelineSettingsBuilder(), formatProvider: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("formatProvider");
         }
     }
 
@@ -39,9 +39,9 @@ public class ReflectionContextTests : TestBase
             var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
-            sut.Invoking(x => x.MapTypeName(typeName: null!))
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("typeName");
+            Action a = () => sut.MapTypeName(typeName: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("typeName");
         }
     }
 
@@ -55,9 +55,9 @@ public class ReflectionContextTests : TestBase
             var sut = new ReflectionContext(GetType(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
-            sut.Invoking(x => x.MapAttribute(attribute: null!))
-               .Should().Throw<ArgumentNullException>()
-               .WithParameterName("attribute");
+            Action a = () => sut.MapAttribute(attribute: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("attribute");
         }
     }
 }

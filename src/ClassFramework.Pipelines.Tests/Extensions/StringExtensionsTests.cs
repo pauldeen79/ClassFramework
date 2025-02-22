@@ -10,8 +10,8 @@ public class StringExtensionsTests
         public void Throws_On_Null_Settings()
         {
             // Act & Assert
-            TypeName.Invoking(x => x.MapTypeName(settings: null!))
-                    .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+            Action a = () => TypeName.MapTypeName(settings: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("settings");
         }
 
         [Fact]
@@ -22,10 +22,9 @@ public class StringExtensionsTests
                 .AddNamespaceMappings(new NamespaceMappingBuilder().WithSourceNamespace("MyNamespace").WithTargetNamespace("MappedNamespace"))
                 .Build();
 
-
             // Act & Assert
-            TypeName.Invoking(x => x.MapTypeName(settings, newCollectionTypeName: null!))
-                    .Should().Throw<ArgumentNullException>().WithParameterName("newCollectionTypeName");
+            Action a = () => TypeName.MapTypeName(settings, newCollectionTypeName: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("newCollectionTypeName");
         }
 
         [Fact]
@@ -36,10 +35,9 @@ public class StringExtensionsTests
                 .AddNamespaceMappings(new NamespaceMappingBuilder().WithSourceNamespace("MyNamespace").WithTargetNamespace("MappedNamespace"))
                 .Build();
 
-
             // Act & Assert
-            TypeName.Invoking(x => x.MapTypeName(settings, alternateTypeMetadataName: null!))
-                    .Should().Throw<ArgumentNullException>().WithParameterName("alternateTypeMetadataName");
+            Action a = () => TypeName.MapTypeName(settings, alternateTypeMetadataName: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("alternateTypeMetadataName");
         }
 
         [Fact]
@@ -55,7 +53,7 @@ public class StringExtensionsTests
             var result = collectionTypeName.MapTypeName(settings);
 
             // Assert
-            result.Should().Be("System.Collections.Generic.IEnumerable<MappedNamespace.MyClass>");
+            result.ShouldBe("System.Collections.Generic.IEnumerable<MappedNamespace.MyClass>");
         }
 
         [Fact]
@@ -71,7 +69,7 @@ public class StringExtensionsTests
             var result = collectionTypeName.MapTypeName(settings, typeof(List<>).WithoutGenerics());
 
             // Assert
-            result.Should().Be("System.Collections.Generic.List<MappedNamespace.MyClass>");
+            result.ShouldBe("System.Collections.Generic.List<MappedNamespace.MyClass>");
         }
 
         [Fact]
@@ -87,7 +85,7 @@ public class StringExtensionsTests
             var result = collectionTypeName.MapTypeName(settings, typeof(List<>).WithoutGenerics());
 
             // Assert
-            result.Should().Be("System.Func<System.Collections.Generic.IEnumerable<MappedNamespace.MyClass>>");
+            result.ShouldBe("System.Func<System.Collections.Generic.IEnumerable<MappedNamespace.MyClass>>");
         }
 
         [Fact]
@@ -103,7 +101,7 @@ public class StringExtensionsTests
             var result = nestedTypeName.MapTypeName(settings, typeof(List<>).WithoutGenerics());
 
             // Assert
-            result.Should().Be("MappedNamespace.ITypedExpression<char[]>");
+            result.ShouldBe("MappedNamespace.ITypedExpression<char[]>");
         }
 
         [Fact]
@@ -119,7 +117,7 @@ public class StringExtensionsTests
             var result = nestedTypeName.MapTypeName(settings, typeof(List<>).WithoutGenerics());
 
             // Assert
-            result.Should().Be("MappedNamespace.Builders.ITypedExpressionBuilder<char[]>");
+            result.ShouldBe("MappedNamespace.Builders.ITypedExpressionBuilder<char[]>");
         }
 
         [Fact]
@@ -135,7 +133,7 @@ public class StringExtensionsTests
             var result = collectionTypeName.MapTypeName(settings, typeof(List<>).WithoutGenerics());
 
             // Assert
-            result.Should().Be("System.Collections.Generic.List<MappedNamespace.Builders.ITypedExpressionBuilder<char[]>>");
+            result.ShouldBe("System.Collections.Generic.List<MappedNamespace.Builders.ITypedExpressionBuilder<char[]>>");
         }
 
         [Fact]
@@ -151,7 +149,7 @@ public class StringExtensionsTests
             var result = collectionTypeName.MapTypeName(settings, typeof(List<>).WithoutGenerics());
 
             // Assert
-            result.Should().Be("System.Collections.Generic.List<MappedNamespace.Builders.ITypedExpressionBuilder<System.Object>>");
+            result.ShouldBe("System.Collections.Generic.List<MappedNamespace.Builders.ITypedExpressionBuilder<System.Object>>");
         }
 
         [Fact]
@@ -166,7 +164,7 @@ public class StringExtensionsTests
             var result = TypeName.MapTypeName(settings);
 
             // Assert
-            result.Should().Be("MappedNamespace.MyClass");
+            result.ShouldBe("MappedNamespace.MyClass");
         }
 
         [Fact]
@@ -181,7 +179,7 @@ public class StringExtensionsTests
             var result = TypeName.MapTypeName(settings);
 
             // Assert
-            result.Should().Be("MappedNamespace.MappedClass");
+            result.ShouldBe("MappedNamespace.MappedClass");
         }
 
         [Fact]
@@ -197,7 +195,7 @@ public class StringExtensionsTests
             var result = TypeName.MapTypeName(settings, alternateTypeMetadataName: "NonExistingName");
 
             // Assert
-            result.Should().Be("MappedNamespace.MappedClass");
+            result.ShouldBe("MappedNamespace.MappedClass");
         }
 
         [Fact]
@@ -213,7 +211,7 @@ public class StringExtensionsTests
             var result = TypeName.MapTypeName(settings, alternateTypeMetadataName: "MyName");
 
             // Assert
-            result.Should().Be("MappedNamespace.MappedClass");
+            result.ShouldBe("MappedNamespace.MappedClass");
         }
 
 
@@ -230,7 +228,7 @@ public class StringExtensionsTests
             var result = TypeName.MapTypeName(settings, alternateTypeMetadataName: "MyName");
 
             // Assert
-            result.Should().Be("MappedNamespace.CustomMappedClass");
+            result.ShouldBe("MappedNamespace.CustomMappedClass");
         }
 
         [Fact]
@@ -245,7 +243,7 @@ public class StringExtensionsTests
             var result = $"System.Func<{TypeName}>".MapTypeName(settings);
 
             // Assert
-            result.Should().Be("System.Func<MappedNamespace.MyClass>");
+            result.ShouldBe("System.Func<MappedNamespace.MyClass>");
         }
 
         [Fact]
@@ -260,7 +258,7 @@ public class StringExtensionsTests
             var result = $"System.Func<{TypeName}>".MapTypeName(settings);
 
             // Assert
-            result.Should().Be("System.Func<MappedNamespace.MappedClass>");
+            result.ShouldBe("System.Func<MappedNamespace.MappedClass>");
         }
 
         [Fact]
@@ -277,7 +275,7 @@ public class StringExtensionsTests
             var result = $"System.Func<{TypeName},MyNamespace.MySecondClass>".MapTypeName(settings);
 
             // Assert
-            result.Should().Be("System.Func<MappedNamespace.MappedClass,MappedNamespace.MappedSecondClass>");
+            result.ShouldBe("System.Func<MappedNamespace.MappedClass,MappedNamespace.MappedSecondClass>");
         }
 
         [Fact]
@@ -293,7 +291,7 @@ public class StringExtensionsTests
             var result = TypeName.MapTypeName(settings);
 
             // Assert
-            result.Should().Be(TypeName);
+            result.ShouldBe(TypeName);
         }
 
         [Fact]
@@ -310,7 +308,7 @@ public class StringExtensionsTests
             var result = collectionTypeName.MapTypeName(settings, typeof(List<>).WithoutGenerics());
 
             // Assert
-            result.Should().Be(typeof(List<>).ReplaceGenericTypeName(TypeName));
+            result.ShouldBe(typeof(List<>).ReplaceGenericTypeName(TypeName));
         }
     }
 }

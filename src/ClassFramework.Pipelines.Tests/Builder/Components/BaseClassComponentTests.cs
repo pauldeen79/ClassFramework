@@ -11,8 +11,9 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Awaiting(x => x.ProcessAsync(context: null!))
-               .Should().ThrowAsync<ArgumentNullException>().WithParameterName("context");
+            Action a = () => sut.ProcessAsync(context: null!);
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -32,8 +33,8 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.BaseClass.Should().Be("SomeClassBuilder");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.BaseClass.ShouldBe("SomeClassBuilder");
         }
 
         [Fact]
@@ -54,8 +55,8 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.BaseClass.Should().Be("SomeClassBuilder");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.BaseClass.ShouldBe("SomeClassBuilder");
         }
 
         [Fact]
@@ -76,8 +77,8 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.BaseClass.Should().Be("BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.BaseClass.ShouldBe("BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -99,8 +100,8 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.BaseClass.Should().Be("BaseBuilders.BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.BaseClass.ShouldBe("BaseBuilders.BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -119,8 +120,8 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.BaseClass.Should().Be("MyBaseClassBuilder");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.BaseClass.ShouldBe("MyBaseClassBuilder");
         }
 
         [Fact]
@@ -139,8 +140,8 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
-            context.Request.Builder.BaseClass.Should().Be("MyBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.BaseClass.ShouldBe("MyBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -161,8 +162,8 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Error);
-            result.ErrorMessage.Should().Be("Kaboom");
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
