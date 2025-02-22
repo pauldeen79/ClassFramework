@@ -85,7 +85,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
         generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -187,7 +187,7 @@ namespace MyNamespace
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
         generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -229,7 +229,7 @@ namespace MyNamespace
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
         generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -265,7 +265,7 @@ namespace Test.Domain.Builders.Abstractions
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
         generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -303,7 +303,7 @@ namespace Test.Domain.Builders.Extensions
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
         generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -557,7 +557,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.ShouldBe(ResultStatus.Error);
         result.ErrorMessage.ShouldBe("Could not create builders. See the inner results for more details.");
-        result.InnerResults.Count().ShouldBe(2);
+        result.InnerResults.Count.ShouldBe(2);
         result.InnerResults.First().Status.ShouldBe(ResultStatus.Error);
         result.InnerResults.First().ErrorMessage.ShouldBe("An error occured while processing the pipeline. See the inner results for more details.");
         result.InnerResults.First().InnerResults.Count.ShouldBe(1);
@@ -597,7 +597,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.ShouldBe(ResultStatus.Error);
         result.ErrorMessage.ShouldBe("Could not create builders. See the inner results for more details.");
-        result.InnerResults.Count().ShouldBe(2);
+        result.InnerResults.Count.ShouldBe(2);
         result.InnerResults.First().ErrorMessage.ShouldBe("Could not create settings, see inner results for details");
         result.InnerResults.First().InnerResults.Count.ShouldBe(1);
         result.InnerResults.First().InnerResults.First().ErrorMessage.ShouldBe("Could not get base class, see inner results for details");
@@ -1744,7 +1744,7 @@ namespace Test.Domain.Builders
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
         generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -2312,7 +2312,7 @@ namespace Test.Domain.Types
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
         generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -2358,12 +2358,11 @@ namespace Test.Domain
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
         generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Shouldly;
 
 namespace Test.Domain.Builders
 {
@@ -2429,8 +2428,8 @@ namespace Test.Domain.Builders
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
-        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders;
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders
 {
 #nullable enable
     public abstract partial class FunctionCallArgumentBaseBuilder<TBuilder, TEntity> : FunctionCallArgumentBaseBuilder, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
@@ -2476,8 +2475,8 @@ namespace Test.Domain.Builders
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
-        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers;
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers
 {
 #nullable enable
     public abstract partial record FunctionCallArgumentBase : CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
@@ -2513,7 +2512,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Count().ShouldBe(2);
-        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.Abstractions;
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.Abstractions
 {
 #nullable enable
     public partial interface IFunctionCallArgumentBuilder
@@ -2523,7 +2522,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.Abstractions;
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.Abstractions
 {
 #nullable enable
     public partial interface IFunctionCallArgumentBuilder<T> : CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
@@ -2550,7 +2549,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Count().ShouldBe(2);
-        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Abstractions;
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Abstractions
 {
 #nullable enable
     public partial interface IFunctionCallArgument
@@ -2560,7 +2559,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Abstractions;
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Abstractions
 {
 #nullable enable
     public partial interface IFunctionCallArgument<T> : CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
@@ -2587,7 +2586,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Count().ShouldBe(2);
-        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders;
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders
 {
 #nullable enable
     public abstract partial class AbstractBaseBuilder : System.ComponentModel.INotifyPropertyChanged
@@ -2633,7 +2632,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders;
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders
 {
 #nullable enable
     public abstract partial class AbstractBaseBuilder<T> : System.ComponentModel.INotifyPropertyChanged
@@ -2678,7 +2677,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Count().ShouldBe(12);
-        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
 #nullable enable
     public partial class ConstantArgumentBuilder : FunctionCallArgumentBaseBuilder<ConstantArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
@@ -2736,7 +2735,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
 #nullable enable
     public partial class ConstantArgumentBuilder<T> : FunctionCallArgumentBaseBuilder<ConstantArgumentBuilder<T>, CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument<T>>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T>
@@ -2800,7 +2799,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(2).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(2).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
 #nullable enable
     public partial class ConstantResultArgumentBuilder : FunctionCallArgumentBaseBuilder<ConstantResultArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
@@ -2860,7 +2859,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(3).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(3).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
 #nullable enable
     public partial class ConstantResultArgumentBuilder<T> : FunctionCallArgumentBaseBuilder<ConstantResultArgumentBuilder<T>, CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument<T>>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T>
@@ -2925,7 +2924,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(4).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(4).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
 #nullable enable
     public partial class DelegateArgumentBuilder : FunctionCallArgumentBaseBuilder<DelegateArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
@@ -3008,7 +3007,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(5).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(5).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
 #nullable enable
     public partial class DelegateArgumentBuilder<T> : FunctionCallArgumentBaseBuilder<DelegateArgumentBuilder<T>, CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument<T>>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T>
@@ -3096,7 +3095,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(6).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(6).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
 #nullable enable
     public partial class DelegateResultArgumentBuilder : FunctionCallArgumentBaseBuilder<DelegateResultArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
@@ -3179,7 +3178,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(7).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(7).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
 #nullable enable
     public partial class DelegateResultArgumentBuilder<T> : FunctionCallArgumentBaseBuilder<DelegateResultArgumentBuilder<T>, CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument<T>>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T>
@@ -3267,7 +3266,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(8).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(8).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
 #nullable enable
     public partial class EmptyArgumentBuilder : FunctionCallArgumentBaseBuilder<EmptyArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
@@ -3302,7 +3301,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(9).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(9).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
 #nullable enable
     public partial class EmptyArgumentBuilder<T> : FunctionCallArgumentBaseBuilder<EmptyArgumentBuilder<T>, CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument<T>>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder<T>
@@ -3342,7 +3341,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(10).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(10).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
 #nullable enable
     public partial class ExpressionArgumentBuilder : FunctionCallArgumentBaseBuilder<ExpressionArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
@@ -3402,7 +3401,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(11).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(11).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments
 {
 #nullable enable
     public partial class FunctionArgumentBuilder : FunctionCallArgumentBaseBuilder<FunctionArgumentBuilder, CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument>, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder
@@ -3479,7 +3478,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Count().ShouldBe(12);
-        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
 #nullable enable
     public partial record ConstantArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
@@ -3513,7 +3512,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
 #nullable enable
     public partial record ConstantArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
@@ -3552,7 +3551,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(2).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(2).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
 #nullable enable
     public partial record ConstantResultArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
@@ -3586,7 +3585,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(3).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(3).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
 #nullable enable
     public partial record ConstantResultArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
@@ -3625,7 +3624,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(4).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(4).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
 #nullable enable
     public partial record DelegateArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
@@ -3665,7 +3664,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(5).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(5).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
 #nullable enable
     public partial record DelegateArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
@@ -3710,7 +3709,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(6).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(6).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
 #nullable enable
     public partial record DelegateResultArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
@@ -3750,7 +3749,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(7).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(7).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
 #nullable enable
     public partial record DelegateResultArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
@@ -3795,7 +3794,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(8).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(8).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
 #nullable enable
     public partial record EmptyArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
@@ -3823,7 +3822,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(9).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(9).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
 #nullable enable
     public partial record EmptyArgument<T> : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument<T>
@@ -3856,7 +3855,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(10).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(10).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
 #nullable enable
     public partial record ExpressionArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
@@ -3890,19 +3889,19 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(10).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments;
+        generationEnvironment.Builder.Contents.ElementAt(11).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.FunctionCallArguments
 {
 #nullable enable
-    public partial record ExpressionArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
+    public partial record FunctionArgument : CrossCutting.Utilities.Parsers.FunctionCallArgumentBase, CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase, CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument
     {
-        public string Value
+        public CrossCutting.Utilities.Parsers.IFunctionCall Function
         {
             get;
         }
 
-        public ExpressionArgument(string value) : base()
+        public FunctionArgument(CrossCutting.Utilities.Parsers.IFunctionCall function) : base()
         {
-            this.Value = value;
+            this.Function = function;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
@@ -3911,9 +3910,9 @@ namespace Test.Domain.Builders
             return ToTypedBuilder();
         }
 
-        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ExpressionArgumentBuilder ToTypedBuilder()
+        public CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionArgumentBuilder ToTypedBuilder()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ExpressionArgumentBuilder(this);
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionArgumentBuilder(this);
         }
 
         CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument.ToBuilder()
@@ -3940,8 +3939,8 @@ namespace Test.Domain.Builders
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
-        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders;
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders
 {
 #nullable enable
     public abstract partial class TypeBaseBuilder<TBuilder, TEntity> : TypeBaseBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder
@@ -4002,8 +4001,8 @@ namespace Test.Domain.Builders
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
-        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain;
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain
 {
 #nullable enable
     public abstract partial class TypeBase : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IDefaultValueContainer
@@ -4049,7 +4048,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Count().ShouldBe(3);
-        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Extensions;
+        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Extensions
 {
 #nullable enable
     public static partial class DefaultValueContainerBuilderExtensions
@@ -4064,7 +4063,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Extensions;
+        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Extensions
 {
 #nullable enable
     public static partial class NameContainerBuilderExtensions
@@ -4080,7 +4079,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(2).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Extensions;
+        generationEnvironment.Builder.Contents.ElementAt(2).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Extensions
 {
 #nullable enable
     public static partial class TypeBuilderExtensions
@@ -4113,7 +4112,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Count().ShouldBe(3);
-        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Abstractions;
+        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Abstractions
 {
 #nullable enable
     public partial interface IDefaultValueContainerBuilder
@@ -4129,7 +4128,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Abstractions;
+        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Abstractions
 {
 #nullable enable
     public partial interface INameContainerBuilder
@@ -4145,7 +4144,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(2).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Abstractions;
+        generationEnvironment.Builder.Contents.ElementAt(2).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Abstractions
 {
 #nullable enable
     public partial interface ITypeBuilder : ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder
@@ -4178,7 +4177,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         generationEnvironment.Builder.Contents.Count().ShouldBe(3);
-        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Abstractions;
+        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Abstractions
 {
 #nullable enable
     public partial interface IDefaultValueContainer
@@ -4193,7 +4192,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Abstractions;
+        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Abstractions
 {
 #nullable enable
     public partial interface INameContainer
@@ -4208,7 +4207,7 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
-        generationEnvironment.Builder.Contents.ElementAt(2).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Abstractions;
+        generationEnvironment.Builder.Contents.ElementAt(2).Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Abstractions
 {
 #nullable enable
     public partial interface IType : ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IDefaultValueContainer
@@ -4239,8 +4238,8 @@ namespace Test.Domain.Builders
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
-        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Types;
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Builders.Types
 {
 #nullable enable
     public partial class ClassBuilder : TypeBaseBuilder<ClassBuilder, ClassFramework.Domain.Types.Class>, ClassFramework.Domain.ITypeBase
@@ -4286,8 +4285,8 @@ namespace Test.Domain.Builders
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count.ShouldBe(1);
-        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Types;
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"namespace ClassFramework.Domain.Types
 {
 #nullable enable
     public partial class Class : ClassFramework.Domain.TypeBase, ClassFramework.Domain.ITypeBase

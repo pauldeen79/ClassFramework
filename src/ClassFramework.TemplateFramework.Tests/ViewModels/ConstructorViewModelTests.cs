@@ -12,9 +12,9 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
             sut.Context = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.Name)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Context");
+            Action a = () => _ = sut.Name;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Context");
         }
 
         [Fact]
@@ -28,8 +28,8 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
             sut.Context = context;
 
             // Act
-            sut.Invoking(x => _ = x.Name)
-               .ShouldThrow<NotSupportedException>();
+            Action a = () => _ = sut.Name;
+            a.ShouldThrow<NotSupportedException>();
         }
 
         [Fact]
@@ -43,8 +43,8 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
             sut.Context = context;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.Name)
-               .ShouldThrow<NotSupportedException>();
+            Action a = () => _ = sut.Name;
+            a.ShouldThrow<NotSupportedException>();
         }
 
         [Fact]
@@ -75,9 +75,9 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ChainCall)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.ChainCall;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -119,9 +119,9 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
             sut.Context = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.OmitCode)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Context");
+            Action a = () => _ = sut.OmitCode;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Context");
         }
 
         [Fact]

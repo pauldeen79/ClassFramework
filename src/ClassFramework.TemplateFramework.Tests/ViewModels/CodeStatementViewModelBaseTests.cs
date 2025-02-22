@@ -12,9 +12,9 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
             sut.Context = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.AdditionalIndents)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Context");
+            Action a = () => _ = sut.AdditionalIndents;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Context");
         }
 
         [Fact]
@@ -79,8 +79,8 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
             sut.Context = context;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.AdditionalIndents)
-               .ShouldThrow<NotSupportedException>();
+            Action a = () => _ = sut.AdditionalIndents;
+            a.ShouldThrow<NotSupportedException>();
         }
 
         [Fact]
@@ -94,8 +94,8 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
             sut.Context = context;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.AdditionalIndents)
-               .ShouldThrow<NotSupportedException>();
+            Action a = () => _ = sut.AdditionalIndents;
+            a.ShouldThrow<NotSupportedException>();
         }
     }
 }

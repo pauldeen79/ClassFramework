@@ -1,4 +1,4 @@
-namespace ClassFramework.TemplateFramework.Tests.Templates;
+﻿namespace ClassFramework.TemplateFramework.Tests.Templates;
 
 public class PropertyCodeBodyTemplateTests : TemplateTestBase<PropertyCodeBodyTemplate>
 {
@@ -84,7 +84,7 @@ public class PropertyCodeBodyTemplateTests : TemplateTestBase<PropertyCodeBodyTe
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            builder.ToString().ShouldBe(@"            get;
+            builder.ToString().ShouldBe(@"            get
             {
                 //code goes here
             }

@@ -12,9 +12,9 @@ public class EnumerationMemberViewModelTests : TestBase<EnumerationMemberViewMod
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ValueExpression)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.ValueExpression;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]

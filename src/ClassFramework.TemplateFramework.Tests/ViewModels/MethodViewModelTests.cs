@@ -15,9 +15,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Context = context;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ShouldRenderModifiers)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.ShouldRenderModifiers;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -29,9 +29,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Context = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ShouldRenderModifiers)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Context");
+            Action a = () => _ = sut.ShouldRenderModifiers;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Context");
         }
 
         [Theory]
@@ -73,9 +73,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ReturnTypeName)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.ReturnTypeName;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -181,9 +181,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Context = context;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ExplicitInterfaceName)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.ExplicitInterfaceName;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -195,9 +195,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Context = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ExplicitInterfaceName)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Context");
+            Action a = () => _ = sut.ExplicitInterfaceName;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Context");
         }
 
         [Theory]
@@ -239,9 +239,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.Name)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.Name;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -300,9 +300,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Context = context;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.OmitCode)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.OmitCode;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -314,9 +314,9 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
             sut.Context = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.OmitCode)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Context");
+            Action a = () => _ = sut.OmitCode;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Context");
         }
 
         [Fact]

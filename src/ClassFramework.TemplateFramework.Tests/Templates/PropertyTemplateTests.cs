@@ -1,4 +1,4 @@
-namespace ClassFramework.TemplateFramework.Tests.Templates;
+﻿namespace ClassFramework.TemplateFramework.Tests.Templates;
 
 public class PropertyTemplateTests : TemplateTestBase<PropertyTemplate>
 {
@@ -79,7 +79,7 @@ public class PropertyTemplateTests : TemplateTestBase<PropertyTemplate>
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        builder.ToString().ShouldBe(@"        public int MyProperty;
+        builder.ToString().ShouldBe(@"        public int MyProperty
         {
             get;
             set;
@@ -118,7 +118,7 @@ public class PropertyTemplateTests : TemplateTestBase<PropertyTemplate>
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        builder.ToString().ShouldBe(@"        public int MyProperty;
+        builder.ToString().ShouldBe(@"        public int MyProperty
         {
             get;
             set;

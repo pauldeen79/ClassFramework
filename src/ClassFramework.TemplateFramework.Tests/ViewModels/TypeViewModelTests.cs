@@ -21,8 +21,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Context = CreateTemplateContext();
 
             // Act & Assert
-            sut.Invoking(x => x.ShouldRenderNullablePragmas)
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Settings");
+            Action a = () => _ = sut.ShouldRenderNullablePragmas;
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Settings");
         }
 
         [Fact]
@@ -34,8 +34,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Context = null!;
 
             // Act & Assert
-            sut.Invoking(x => x.ShouldRenderNullablePragmas)
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Context");
+            Action a = () => _ = sut.ShouldRenderNullablePragmas;
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Context");
         }
 
         [Fact]
@@ -126,8 +126,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = new ClassBuilder().WithName("MyClass").Build();
 
             // Act & Assert
-            sut.Invoking(x => x.ShouldRenderNamespaceScope)
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Settings");
+            Action a = () => _ = sut.ShouldRenderNamespaceScope;
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Settings");
         }
 
         [Fact]
@@ -139,8 +139,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => x.ShouldRenderNamespaceScope)
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.ShouldRenderNamespaceScope;
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -199,9 +199,9 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.Name)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.Name;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -243,9 +243,9 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.Members)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.Members;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -262,7 +262,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.Members.ToArray();
 
             // Assert
-            result.Should().AllBeOfType<Field>().And.ContainSingle();
+            result.ShouldAllBe(x => x is Field);
+            result.Length.ShouldBe(1);
         }
 
         [Fact]
@@ -279,7 +280,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.Members.ToArray();
 
             // Assert
-            result.Should().AllBeOfType<Property>().And.ContainSingle();
+            result.ShouldAllBe(x => x is Property);
+            result.Length.ShouldBe(1);
         }
 
         [Fact]
@@ -296,7 +298,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.Members.ToArray();
 
             // Assert
-            result.Should().AllBeOfType<Constructor>().And.ContainSingle();
+            result.ShouldAllBe(x => x is Constructor);
+            result.Length.ShouldBe(1);
         }
 
         [Fact]
@@ -313,7 +316,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.Members.ToArray();
 
             // Assert
-            result.Should().AllBeOfType<Method>().And.ContainSingle();
+            result.ShouldAllBe(x => x is Method);
+            result.Length.ShouldBe(1);
         }
 
         [Fact]
@@ -330,7 +334,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.Members.ToArray();
 
             // Assert
-            result.Should().AllBeOfType<Enumeration>().And.ContainSingle();
+            result.ShouldAllBe(x => x is Enumeration);
+            result.Length.ShouldBe(1);
         }
 
         [Fact]
@@ -348,7 +353,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.Members.ToArray();
 
             // Assert
-            result.Select(x => x.GetType()).ShouldBeEquivalentTo([typeof(Method), typeof(NewLineModel), typeof(Enumeration)]);
+            result.Select(x => x.GetType()).ToArray().ShouldBeEquivalentTo(new[] { typeof(Method), typeof(NewLineModel), typeof(Enumeration) });
         }
     }
 
@@ -362,9 +367,9 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.SubClasses.ToArray())
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.SubClasses.ToArray();
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -406,7 +411,7 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             var result = sut.SubClasses.ToArray();
 
             // Assert
-            result.Select(x => x.GetType()).ShouldBeEquivalentTo([typeof(NewLineModel), typeof(Class)]);
+            result.Select(x => x.GetType()).ToArray().ShouldBeEquivalentTo(new[] { typeof(NewLineModel), typeof(Class) });
         }
     }
 
@@ -420,9 +425,9 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ContainerType)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.ContainerType;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Theory]
@@ -459,8 +464,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = Fixture.Create<IType>();
 
             // Act & Assert
-            sut.Invoking(x => _ = x.ContainerType)
-               .ShouldThrow<NotSupportedException>();
+            Action a = () => _ = sut.ContainerType;
+            a.ShouldThrow<NotSupportedException>();
         }
     }
 
@@ -474,9 +479,9 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = null!;
 
             // Act & Assert
-            sut.Invoking(x => _ = x.InheritedClasses)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.InheritedClasses;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -561,8 +566,8 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
             sut.Model = new ClassBuilder().WithName("MyClass").Build();
 
             // Act & Assert
-            sut.Invoking(x => x.FilenamePrefix)
-               .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Settings");
+            Action a = () => _ = sut.FilenamePrefix;
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Settings");
         }
 
         [Fact]

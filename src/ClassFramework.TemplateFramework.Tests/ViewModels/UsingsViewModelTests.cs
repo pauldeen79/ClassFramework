@@ -1,4 +1,4 @@
-namespace ClassFramework.TemplateFramework.Tests.ViewModels;
+﻿namespace ClassFramework.TemplateFramework.Tests.ViewModels;
 
 public class UsingsViewModelTests : TestBase<UsingsViewModel>
 {
@@ -24,7 +24,7 @@ public class UsingsViewModelTests : TestBase<UsingsViewModel>
             var result = sut.Usings.ToArray();
 
             // Assert
-            result.ShouldBeEquivalentTo("System", "System.Collections.Generic", "System.Linq", "System.Text");
+            result.ShouldBeEquivalentTo(new[] { "System", "System.Collections.Generic", "System.Linq", "System.Text" });
         }
 
         [Fact]
@@ -46,7 +46,7 @@ public class UsingsViewModelTests : TestBase<UsingsViewModel>
             var result = sut.Usings.ToArray();
 
             // Assert
-            result.ShouldBeEquivalentTo(["A", "System", "System.Collections.Generic", "System.Linq", "System.Text", "Z"], cfg => cfg.WithStrictOrdering());
+            result.ShouldBeEquivalentTo(new[] { "A", "System", "System.Collections.Generic", "System.Linq", "System.Text", "Z" });
         }
     }
 }

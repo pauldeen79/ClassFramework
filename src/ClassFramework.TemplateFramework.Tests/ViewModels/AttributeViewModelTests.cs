@@ -12,9 +12,9 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
             sut.Model = null;
 
             // Act
-            sut.Invoking(x => _ = x.Parameters)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.Parameters;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]
@@ -85,9 +85,9 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
             sut.Context = null!;
 
             // Act
-            sut.Invoking(x => _ = x.AdditionalIndents)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Context");
+            Action a = () => _ = sut.AdditionalIndents;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Context");
         }
 
         [Fact]

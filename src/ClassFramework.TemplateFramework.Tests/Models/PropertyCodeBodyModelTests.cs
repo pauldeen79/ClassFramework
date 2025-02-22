@@ -8,24 +8,24 @@ public class PropertyCodeBodyModelTests : TestBase
         public void Throws_On_Null_Verb()
         {
             // Act & Assert
-            this.Invoking(_ => new PropertyCodeBodyModel(verb: null!, default, default, default, Array.Empty<CodeStatementBase>(), CultureInfo.InvariantCulture))
-                .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("verb");
+            Action a = () => _ = new PropertyCodeBodyModel(verb: null!, default, default, default, Array.Empty<CodeStatementBase>(), CultureInfo.InvariantCulture);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("verb");
         }
 
         [Fact]
         public void Throws_On_Null_CodeStatementModels()
         {
             // Act & Assert
-            this.Invoking(_ => new PropertyCodeBodyModel("get", default, default, default, codeStatementModels: null!, CultureInfo.InvariantCulture))
-                .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("codeStatementModels");
+            Action a = () => _ = new PropertyCodeBodyModel("get", default, default, default, codeStatementModels: null!, CultureInfo.InvariantCulture);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("codeStatementModels");
         }
 
         [Fact]
         public void Throws_On_Null_CultureInfo()
         {
             // Act & Assert
-            this.Invoking(_ => new PropertyCodeBodyModel("get", default, default, default, Array.Empty<CodeStatementBase>(), cultureInfo: null!))
-                .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("cultureInfo");
+            Action a = () => _ = new PropertyCodeBodyModel("get", default, default, default, Array.Empty<CodeStatementBase>(), cultureInfo: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("cultureInfo");
         }
 
         [Theory]

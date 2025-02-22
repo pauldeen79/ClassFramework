@@ -1,4 +1,4 @@
-namespace ClassFramework.TemplateFramework.Tests.Templates;
+﻿namespace ClassFramework.TemplateFramework.Tests.Templates;
 
 public class ConstructorTemplateTests : TemplateTestBase<ConstructorTemplate>
 {
@@ -112,7 +112,7 @@ public class ConstructorTemplateTests : TemplateTestBase<ConstructorTemplate>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            builder.ToString().ShouldBe(@"        public MyClass();
+            builder.ToString().ShouldBe(@"        public MyClass()
         {
             //code goes here
         }

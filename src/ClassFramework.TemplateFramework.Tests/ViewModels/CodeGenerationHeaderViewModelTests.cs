@@ -12,9 +12,9 @@ public class CodeGenerationHeaderViewModelTests : TestBase<CodeGenerationHeaderV
             sut.Model = null;
 
             // Act
-            sut.Invoking(x => _ = x.Version)
-               .ShouldThrow<ArgumentNullException>();
-               .ParamName.ShouldBe("Model");
+            Action a = () => _ = sut.Version;
+            a.ShouldThrow<ArgumentNullException>()
+             .ParamName.ShouldBe("Model");
         }
 
         [Fact]

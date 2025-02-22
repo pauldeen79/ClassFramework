@@ -1,4 +1,4 @@
-namespace ClassFramework.TemplateFramework.Tests.Templates;
+﻿namespace ClassFramework.TemplateFramework.Tests.Templates;
 
 public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
 {
@@ -114,7 +114,7 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            builder.ToString().ShouldBe(@"        public int MyMethod();
+            builder.ToString().ShouldBe(@"        public int MyMethod()
         {
             //code goes here
         }
