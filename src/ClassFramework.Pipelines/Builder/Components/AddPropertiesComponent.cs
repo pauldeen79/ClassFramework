@@ -45,10 +45,10 @@ public class AddPropertiesComponent(IFormattableStringParser formattableStringPa
         }
 
         // Note that we are not checking the result, because the same formattable string (CustomBuilderArgumentType) has already been checked earlier in this class
-        // We can simple use GetValueOrThrow to keep the compiler happy (the value should be a string, and not be null)
+        // We can simple use Value with bang operator to keep the compiler happy (the value should be a string, and not be null)
         context.Request.Builder.AddFields(context.Request.SourceModel
             .GetBuilderClassFields(context, _formattableStringParser)
-            .Select(x => x.GetValueOrThrow()));
+            .Select(x => x.Value!));
 
         return Task.FromResult(Result.Success());
     }
