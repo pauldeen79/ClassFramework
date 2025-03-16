@@ -1,4 +1,4 @@
-namespace ClassFramework.Pipelines.Tests.Functions;
+﻿namespace ClassFramework.Pipelines.Tests.Functions;
 
 public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
 {
@@ -169,7 +169,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
                 .Returns(Result.Success<object?>("Kaboom"));
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             parser
-                .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>("string"));
             var sut = CreateSut();
             var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
@@ -225,7 +225,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
                 .Returns(Result.Success<object?>("MyGenericType<System.String>"));
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             parser
-                .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>(false));
             var sut = CreateSut();
             var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
@@ -255,7 +255,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
                 .Returns(Result.Success<object?>("MyGenericType<System.String>"));
             var parser = Fixture.Freeze<IExpressionEvaluator>();
             parser
-                .Evaluate(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
+                .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
                 .Returns(Result.Success<object?>(true));
             var sut = CreateSut();
             var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);

@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="pauldeen79.TemplateFramework.Core" Version="2.0.12" />
+    <PackageReference Include="pauldeen79.TemplateFramework.Core" Version="2.0.13" />
     <PackageReference Include="pauldeen79.TemplateFramework.TemplateProviders.ChildTemplateProvider" Version="2.0.12" />
   </ItemGroup>
 
