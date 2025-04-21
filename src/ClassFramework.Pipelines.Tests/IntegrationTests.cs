@@ -1,4 +1,4 @@
-namespace ClassFramework.Pipelines.Tests;
+﻿namespace ClassFramework.Pipelines.Tests;
 
 public class IntegrationTests : IntegrationTestBase<IFormattableStringParser>
 {
@@ -36,5 +36,18 @@ public class IntegrationTests : IntegrationTestBase<IFormattableStringParser>
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
         result.GetValueOrThrow().ToString().ShouldBe("foreach (var item in myProperty) MyProperty.Add(item);");
+    }
+
+    [Fact]
+    public void Can_Get_Descriptors_For_All_Functions()
+    {
+        // Arrange
+        var descriptorProvider = Scope!.ServiceProvider.GetRequiredService<IFunctionDescriptorProvider>();
+
+        // Act
+        var result = descriptorProvider.GetAll();
+
+        // Assert
+        result.Count.ShouldBeGreaterThan(0);
     }
 }
