@@ -26,7 +26,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
     public string MapNamespace(string? ns)
         => ns.MapNamespace(Settings);
 
-    public void AddNullChecks(MethodBuilder builder, Dictionary<string, Result<GenericFormattableString>> results)
+    public void AddNullChecks(MethodBuilder builder, IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
     {
         builder = builder.IsNotNull(nameof(builder));
         results = results.IsNotNull(nameof(results));
@@ -239,7 +239,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .WithParentTypeFullName(property.ParentTypeFullName);
     }
 
-    public Dictionary<string, Result<GenericFormattableString>> GetResultsForBuilderCollectionProperties(
+    public IReadOnlyDictionary<string, Result<GenericFormattableString>> GetResultsForBuilderCollectionProperties(
         Property property,
         object parentChildContext,
         IFormattableStringParser formattableStringParser,
@@ -262,7 +262,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .Build();
     }
 
-    public Dictionary<string, Result<GenericFormattableString>> GetResultsForBuilderNonCollectionProperties(
+    public IReadOnlyDictionary<string, Result<GenericFormattableString>> GetResultsForBuilderNonCollectionProperties(
         Property property,
         object parentChildContext,
         IFormattableStringParser formattableStringParser)

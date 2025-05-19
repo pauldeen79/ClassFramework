@@ -97,7 +97,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
         return Task.FromResult(AddExplicitInterfaceImplementations(context, methodName, typedMethodName));
     }
 
-    private static string GetBuilderInterfaceNamespace(PipelineContext<EntityContext> context, Dictionary<string, Result<GenericFormattableString>> results, string ns)
+    private static string GetBuilderInterfaceNamespace(PipelineContext<EntityContext> context, IReadOnlyDictionary<string, Result<GenericFormattableString>> results, string ns)
         => context.Request.Settings.InheritFromInterfaces
             ? results["BuilderInterfaceNamespace"].Value!.ToString()
             : $"{ns.AppendWhenNotNullOrEmpty(".")}Builders";
