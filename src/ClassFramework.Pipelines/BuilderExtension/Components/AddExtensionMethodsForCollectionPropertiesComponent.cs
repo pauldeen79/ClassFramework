@@ -1,29 +1,29 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class AddExtensionMethodsForCollectionPropertiesComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderExtensionContext>
+public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderExtensionContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
+    public async Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (string.IsNullOrEmpty(context.Request.Settings.AddMethodNameFormatString))
         {
-            return Task.FromResult(Result.Success());
+            return Result.Success();
         }
 
         foreach (var property in context.Request.GetSourceProperties().Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var parentChildContext = CreateParentChildContext(context, property);
 
-            var results = context.Request.GetResultsForBuilderCollectionProperties(property, parentChildContext, _formattableStringParser, GetCodeStatementsForEnumerableOverload(context, property, parentChildContext), GetCodeStatementsForArrayOverload(context, property));
+            var results = context.Request.GetResultsForBuilderCollectionProperties(property, parentChildContext, _evaluator, await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext).ConfigureAwait(false), await GetCodeStatementsForArrayOverload(context, property).ConfigureAwait(false));
 
             var error = results.GetError();
             if (error is not null)
             {
                 // Error in formattable string parsing
-                return Task.FromResult<Result>(error);
+                return error;
             }
 
             var returnType = $"{results["Namespace"].Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results["BuilderName"].Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
@@ -53,44 +53,42 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IFormattableStr
             );
         }
 
-        return Task.FromResult(Result.Success());
+        return Result.Success();
     }
 
-    private IEnumerable<Result<GenericFormattableString>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderExtensionContext> context, Property property, ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContext)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderExtensionContext> context, Property property, ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContext)
     {
         if (context.Request.Settings.AddNullChecks)
         {
-            yield return Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()));
+            return [Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))];
         }
 
-        yield return _formattableStringParser.Parse("return instance.{$addMethodNameFormatString}<T>({CsharpFriendlyName(ToCamelCase($property.Name))}.ToArray());", context.Request.FormatProvider, parentChildContext);
+        return [await _evaluator.Parse("return instance.{$addMethodNameFormatString}<T>({CsharpFriendlyName(ToCamelCase($property.Name))}.ToArray());", context.Request.FormatProvider, parentChildContext).ConfigureAwait(false)];
     }
 
-    private IEnumerable<Result<GenericFormattableString>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderExtensionContext> context, Property property)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderExtensionContext> context, Property property)
     {
         if (context.Request.Settings.AddNullChecks)
         {
-            var argumentNullCheckResult = _formattableStringParser.Parse
+            var argumentNullCheckResult = await _evaluator.Parse
             (
                 context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
                 context.Request.FormatProvider,
                 new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings)
-            );
-            yield return argumentNullCheckResult;
+            ).ConfigureAwait(false);
+            return [argumentNullCheckResult];
         }
 
-        var builderAddExpressionResult = _formattableStringParser.Parse
+        var builderAddExpressionResult = await _evaluator.Parse
         (
             context.Request
                 .GetMappingMetadata(property.TypeName)
                 .GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Request.Settings.CollectionCopyStatementFormatString),
             context.Request.FormatProvider,
             new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings)
-        );
+        ).ConfigureAwait(false);
 
-        yield return builderAddExpressionResult;
-
-        yield return Result.Success<GenericFormattableString>("return instance;");
+        return [builderAddExpressionResult, Result.Success<GenericFormattableString>("return instance;")];
     }
 
     private static ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> CreateParentChildContext(PipelineContext<BuilderExtensionContext> context, Property property)

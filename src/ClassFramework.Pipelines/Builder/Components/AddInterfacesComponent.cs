@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddInterfacesComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
+public class AddInterfacesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
     public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
@@ -16,7 +16,7 @@ public class AddInterfacesComponent(IFormattableStringParser formattableStringPa
         var interfaces = context.Request.GetInterfaceResults(
             (_, x) => x.ToString(),
             x => context.Request.MapTypeName(x.FixTypeName()),
-            _formattableStringParser,
+            _evaluator,
             true);
 
         var error = Array.Find(interfaces, x => !x.IsSuccessful());

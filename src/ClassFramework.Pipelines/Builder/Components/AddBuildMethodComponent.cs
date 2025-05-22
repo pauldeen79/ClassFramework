@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddBuildMethodComponent(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
+public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
     private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
     public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
@@ -37,7 +37,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
             return Task.FromResult(AddExplicitInterfaceImplementations(context));
         }
 
-        var instanciationResult = context.CreateEntityInstanciation(_formattableStringParser, _csharpExpressionDumper, string.Empty);
+        var instanciationResult = context.CreateEntityInstanciation(_evaluator, _csharpExpressionDumper, string.Empty);
         if (!instanciationResult.IsSuccessful())
         {
             return Task.FromResult<Result>(instanciationResult);
@@ -81,7 +81,7 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
         var interfaces = context.Request.GetInterfaceResults(
             (x, y) => new { EntityName = x, BuilderName = y.ToString() },
             x => new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) },
-            _formattableStringParser,
+            _evaluator,
             false);
 
         var error = Array.Find(interfaces, x => !x.IsSuccessful());

@@ -90,10 +90,10 @@ public static class TypeBaseExtensions
     public static IEnumerable<Result<FieldBuilder>> GetBuilderClassFields(
         this IType instance,
         PipelineContext<BuilderContext> context,
-        IFormattableStringParser formattableStringParser)
+        IExpressionEvaluator evaluator)
     {
         context = context.IsNotNull(nameof(context));
-        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        formattableStringParser = evaluator.IsNotNull(nameof(evaluator));
 
         if (!context.Request.HasBackingFields())
         {

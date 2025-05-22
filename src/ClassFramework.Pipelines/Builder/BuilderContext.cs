@@ -79,7 +79,7 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
     public Result<T>[] GetInterfaceResults<T>(
         Func<string, GenericFormattableString, T> namespaceTransformation,
         Func<string, T> noNamespaceTransformation,
-        IFormattableStringParser formattableStringParser,
+        IExpressionEvaluator evaluator,
         bool includeNonAbstractionNamespaces)
         => SourceModel.Interfaces
             .Where(x => (Settings.CopyInterfacePredicate?.Invoke(x) ?? true)

@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddPropertiesComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
+public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
     public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
@@ -16,8 +16,8 @@ public class AddPropertiesComponent(IFormattableStringParser formattableStringPa
         foreach (var property in context.Request.SourceModel.Properties.Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)))
         {
             var results = new ResultDictionaryBuilder<GenericFormattableString>()
-                .Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser))
-                .Add(NamedResults.ParentTypeName, () => property.GetBuilderParentTypeName(context, _formattableStringParser))
+                .Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator))
+                .Add(NamedResults.ParentTypeName, () => property.GetBuilderParentTypeName(context, _evaluator))
                 .Build();
 
             var error = results.GetError();
@@ -47,7 +47,7 @@ public class AddPropertiesComponent(IFormattableStringParser formattableStringPa
         // Note that we are not checking the result, because the same formattable string (CustomBuilderArgumentType) has already been checked earlier in this class
         // We can simple use Value with bang operator to keep the compiler happy (the value should be a string, and not be null)
         context.Request.Builder.AddFields(context.Request.SourceModel
-            .GetBuilderClassFields(context, _formattableStringParser)
+            .GetBuilderClassFields(context, _evaluator)
             .Select(x => x.Value!));
 
         return Task.FromResult(Result.Success());
@@ -70,7 +70,7 @@ public class AddPropertiesComponent(IFormattableStringParser formattableStringPa
                 var nullSuffix = context.Request.Settings.EnableNullableReferenceTypes && !property.IsValueType
                     ? "!"
                     : string.Empty;
-                yield return new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !{typeof(EqualityComparer<>).WithoutGenerics()}<{property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _formattableStringParser).Value}>.Default.Equals(_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});");
+                yield return new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !{typeof(EqualityComparer<>).WithoutGenerics()}<{property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator).Value}>.Default.Equals(_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});");
             }
 
             yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Request.Settings.AddNullChecks, context.Request.SourceModel)};");

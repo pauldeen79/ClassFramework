@@ -161,10 +161,10 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .Build();
     }
 
-    public Result<GenericFormattableString> GetBuilderPlaceholderProcessorResultForPipelineContext(string value, IFormattableStringParser formattableStringParser, object context, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
+    public Result<GenericFormattableString> GetBuilderPlaceholderProcessorResultForPipelineContext(string value, IExpressionEvaluator evaluator, object context, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
     {
         sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
-        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        formattableStringParser = evaluator.IsNotNull(nameof(evaluator));
         pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
 
         return value switch
@@ -180,7 +180,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
 
     public Result<GenericFormattableString> GetBuilderPlaceholderProcessorResultForParentChildContext(
         string value,
-        IFormattableStringParser formattableStringParser,
+        IExpressionEvaluator evaluator,
         ContextBase context,
         IType parentContextModel,
         Property childContext,
@@ -188,7 +188,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
     {
         sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
-        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        formattableStringParser = evaluator.IsNotNull(nameof(evaluator));
         context = context.IsNotNull(nameof(context));
         parentContextModel = parentContextModel.IsNotNull(nameof(parentContextModel));
         pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
@@ -210,7 +210,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             _ => Default(value, formattableStringParser, childContext, sourceModel, pipelinePlaceholderProcessors)
         };
 
-        Result<GenericFormattableString> Default(string value, IFormattableStringParser formattableStringParser, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
+        Result<GenericFormattableString> Default(string value, IExpressionEvaluator evaluator, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
         {
             var pipelinePlaceholderProcessorsArray = pipelinePlaceholderProcessors.ToArray();
             return pipelinePlaceholderProcessorsArray.Select(x => x.Evaluate(value, new PlaceholderSettingsBuilder().WithFormatProvider(context.FormatProvider), new PropertyContext(childContext, Settings, context.FormatProvider, MapTypeName(childContext.TypeName, string.Empty), Settings.BuilderNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
@@ -242,13 +242,13 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
     public IReadOnlyDictionary<string, Result<GenericFormattableString>> GetResultsForBuilderCollectionProperties(
         Property property,
         object parentChildContext,
-        IFormattableStringParser formattableStringParser,
+        IExpressionEvaluator evaluator,
         IEnumerable<Result<GenericFormattableString>> enumerableOverloadCode,
         IEnumerable<Result<GenericFormattableString>> arrayOverloadCode)
     {
         property = property.IsNotNull(nameof(property));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
-        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        formattableStringParser = evaluator.IsNotNull(nameof(evaluator));
         enumerableOverloadCode = enumerableOverloadCode.IsNotNull(nameof(enumerableOverloadCode));
         arrayOverloadCode = arrayOverloadCode.IsNotNull(nameof(arrayOverloadCode));
 
@@ -265,11 +265,11 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
     public IReadOnlyDictionary<string, Result<GenericFormattableString>> GetResultsForBuilderNonCollectionProperties(
         Property property,
         object parentChildContext,
-        IFormattableStringParser formattableStringParser)
+        IExpressionEvaluator evaluator)
     {
         property = property.IsNotNull(nameof(property));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
-        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        formattableStringParser = evaluator.IsNotNull(nameof(evaluator));
 
         return new ResultDictionaryBuilder<GenericFormattableString>()
             .Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser))

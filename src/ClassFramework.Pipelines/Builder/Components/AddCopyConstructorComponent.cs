@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddCopyConstructorComponent(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
+public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
     private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
     public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
@@ -37,9 +37,9 @@ public class AddCopyConstructorComponent(IFormattableStringParser formattableStr
     private Result<ConstructorBuilder> CreateCopyConstructor(PipelineContext<BuilderContext> context)
     {
         var results = new ResultDictionaryBuilder<GenericFormattableString>()
-            .Add("NullCheck.Source", () => _formattableStringParser.Parse("{NullCheck.Source}", context.Request.FormatProvider, context))
-            .Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request))
-            .Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)))
+            .Add("NullCheck.Source", () => _evaluator.Parse("{NullCheck.Source}", context.Request.FormatProvider, context))
+            .Add(NamedResults.Name, () => _evaluator.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request))
+            .Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, () => _evaluator.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)))
             .Build();
 
         var error = results.GetError();
@@ -120,13 +120,13 @@ public class AddCopyConstructorComponent(IFormattableStringParser formattableStr
             .Select(x => new Tuple<string, Result<GenericFormattableString>>
             (
                 x.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo()),
-                x.GetBuilderConstructorInitializer(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, MetadataNames.CustomBuilderConstructorInitializeExpression, _formattableStringParser)
+                x.GetBuilderConstructorInitializer(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, MetadataNames.CustomBuilderConstructorInitializeExpression, _evaluator)
             ))
             .TakeWhileWithFirstNonMatching(x => x.Item2.IsSuccessful())
             .ToArray();
 
     private Result<GenericFormattableString> CreateBuilderInitializationCode(Property property, PipelineContext<BuilderContext> context)
-        => _formattableStringParser.Parse
+        => _evaluator.Parse
         (
             ProcessCreateBuilderInitializationCode(context.Request.GetMappingMetadata(property.TypeName)
                 .GetStringValue

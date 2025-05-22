@@ -8,7 +8,7 @@ public abstract class IntegrationTestBase<T> : TestBase
     protected IntegrationTestBase()
     {
         Provider = new ServiceCollection()
-            .AddParsers()
+            .AddExpressionEvaluator()
             .AddClassFrameworkPipelines()
             .AddCsharpExpressionDumper()
             .AddSingleton<IFunction, PropertyNameResultParser>()

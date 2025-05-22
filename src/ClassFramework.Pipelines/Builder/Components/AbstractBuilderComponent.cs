@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AbstractBuilderComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
+public class AbstractBuilderComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
     public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
@@ -10,7 +10,7 @@ public class AbstractBuilderComponent(IFormattableStringParser formattableString
 
         if (context.Request.IsBuilderForAbstractEntity)
         {
-            var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
+            var nameResult = _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
             if (!nameResult.IsSuccessful())
             {
                 return Task.FromResult<Result>(nameResult);

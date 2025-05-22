@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddDefaultConstructorComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
+public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
     public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
@@ -35,7 +35,7 @@ public class AddDefaultConstructorComponent(IFormattableStringParser formattable
             .Select(x => new
             {
                 Name = x.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo()),
-                Result = x.GetBuilderConstructorInitializer(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, string.Empty, _formattableStringParser)
+                Result = x.GetBuilderConstructorInitializer(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, string.Empty, _evaluator)
             })
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
             .ToArray();
@@ -72,7 +72,7 @@ public class AddDefaultConstructorComponent(IFormattableStringParser formattable
 
             ctor.AddStringCodeStatements(defaultValueResults.Select(x => x.Value!.ToString()));
 
-            var setDefaultValuesMethodNameResult = _formattableStringParser.Parse(context.Request.Settings.SetDefaultValuesMethodName, context.Request.FormatProvider, context.Request);
+            var setDefaultValuesMethodNameResult = _evaluator.Parse(context.Request.Settings.SetDefaultValuesMethodName, context.Request.FormatProvider, context.Request);
             if (!setDefaultValuesMethodNameResult.IsSuccessful())
             {
                 return Result.FromExistingResult<ConstructorBuilder>(setDefaultValuesMethodNameResult);
@@ -96,7 +96,7 @@ public class AddDefaultConstructorComponent(IFormattableStringParser formattable
         => instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success<GenericFormattableString>("base()")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private Result<GenericFormattableString> GenerateDefaultValueStatement(Property property, PipelineContext<BuilderContext> context)
-        => _formattableStringParser.Parse
+        => _evaluator.Parse
         (
             "{$property.BuilderMemberName} = {$property.DefaultValue};",
             context.Request.FormatProvider,

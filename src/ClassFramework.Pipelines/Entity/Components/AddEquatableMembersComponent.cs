@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddEquatableMembersComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<EntityContext>
+public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
@@ -13,7 +13,7 @@ public class AddEquatableMembersComponent(IFormattableStringParser formattableSt
             return Task.FromResult(Result.Success());
         }
 
-        var nameResult = _formattableStringParser.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request);
+        var nameResult = _evaluator.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request);
         if (!nameResult.IsSuccessful())
         {
             return Task.FromResult<Result>(nameResult);

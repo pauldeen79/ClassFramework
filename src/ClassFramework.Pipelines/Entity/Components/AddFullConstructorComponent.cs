@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddFullConstructorComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<EntityContext>
+public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
@@ -33,7 +33,7 @@ public class AddFullConstructorComponent(IFormattableStringParser formattableStr
     {
         var initializationResults = context.Request.SourceModel.Properties
             .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
-            .Select(property => _formattableStringParser.Parse("this.{$property.EntityMemberName} = {$property.InitializationExpression};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings)))
+            .Select(property => _evaluator.Parse("this.{$property.EntityMemberName} = {$property.InitializationExpression};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings)))
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 

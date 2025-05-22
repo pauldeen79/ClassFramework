@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class BaseClassComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
+public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
     public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
@@ -34,7 +34,7 @@ public class BaseClassComponent(IFormattableStringParser formattableStringParser
             && !context.Request.Settings.IsForAbstractBuilder
             && context.Request.Settings.IsAbstract;
 
-        var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
+        var nameResult = _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
 
         if (!nameResult.IsSuccessful())
         {
@@ -51,7 +51,7 @@ public class BaseClassComponent(IFormattableStringParser formattableStringParser
             && context.Request.Settings.BaseClass is not null
             && !context.Request.Settings.IsForAbstractBuilder) // note that originally, this was only enabled when RemoveDuplicateWithMethods was true. But I don't know why you don't want this... The generics ensure that we don't have to duplicate them, right?
         {
-            var inheritanceNameResult = _formattableStringParser.Parse
+            var inheritanceNameResult = _evaluator.Parse
             (
                 context.Request.Settings.BuilderNameFormatString,
                 context.Request.FormatProvider,
@@ -84,7 +84,7 @@ public class BaseClassComponent(IFormattableStringParser formattableStringParser
     }
 
     private Result<GenericFormattableString> GetBaseClassName(PipelineContext<BuilderContext> context, IBaseClassContainer baseClassContainer)
-        => _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!)), context.Request.Settings, context.Request.FormatProvider));
+        => _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!)), context.Request.Settings, context.Request.FormatProvider));
 
     private static TypeBase CreateTypeBase(string baseClass)
         => new ClassBuilder()

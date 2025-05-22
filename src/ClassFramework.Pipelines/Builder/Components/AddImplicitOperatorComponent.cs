@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddImplicitOperatorComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
+public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
     public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
@@ -19,7 +19,7 @@ public class AddImplicitOperatorComponent(IFormattableStringParser formattableSt
             return Task.FromResult(Result.Success());
         }
 
-        var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
+        var nameResult = _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
         if (!nameResult.IsSuccessful())
         {
             return Task.FromResult((Result)nameResult);

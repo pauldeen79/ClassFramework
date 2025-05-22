@@ -2,9 +2,9 @@
 
 public static class PipelineContextExtensions
 {
-    public static Result<GenericFormattableString> CreateEntityInstanciation(this PipelineContext<BuilderContext> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix)
+    public static Result<GenericFormattableString> CreateEntityInstanciation(this PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix)
     {
-        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        formattableStringParser = evaluator.IsNotNull(nameof(evaluator));
 
         var customEntityInstanciation = context.Request
             .GetMappingMetadata(context.Request.SourceModel.GetFullName())
@@ -53,7 +53,7 @@ public static class PipelineContextExtensions
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName()));
 
-    private static Result<GenericFormattableString> GetConstructionMethodParameters(PipelineContext<BuilderContext> context, IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor)
+    private static Result<GenericFormattableString> GetConstructionMethodParameters(PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor)
     {
         var properties = context.Request.SourceModel.GetBuilderConstructorProperties(context.Request);
 

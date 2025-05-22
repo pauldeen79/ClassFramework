@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class AddExtensionMethodsForNonCollectionPropertiesComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderExtensionContext>
+public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderExtensionContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
     public Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
     {
@@ -17,7 +17,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IFormattable
         {
             var parentChildContext = new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings);
 
-            var results = context.Request.GetResultsForBuilderNonCollectionProperties(property, parentChildContext, _formattableStringParser);
+            var results = context.Request.GetResultsForBuilderNonCollectionProperties(property, parentChildContext, _evaluator);
 
             var error = results.GetError();
             if (error is not null)

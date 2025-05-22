@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddPublicParameterlessConstructorComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<EntityContext>
+public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
@@ -43,7 +43,7 @@ public class AddPublicParameterlessConstructorComponent(IFormattableStringParser
     }
 
     private Result<string> GenerateDefaultValueStatement(Property property, PipelineContext<EntityContext> context)
-        => _formattableStringParser.Parse
+        => _evaluator.Parse
         (
             property.TypeName.FixTypeName().IsCollectionTypeName()
                 ? "{$property.EntityMemberName} = new {$collectionTypeName}<{GenericArguments($property.TypeName)}>();"

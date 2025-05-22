@@ -10,15 +10,15 @@ public static class ServiceCollectionExtensions
             .AddReflectionPipeline()
             .AddInterfacePipeline()
             .AddSharedPipelineComponents()
-            .AddParserComponents()
+            //.AddParserComponents()
             .AddPipelineService();
 
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
         => services
-            .AddScoped<IVariable, AddMethodNameFormatStringVariable>()
-            .AddScoped<IVariable, ClassVariable>()
-            .AddScoped<IVariable, CollectionTypeNameVariable>()
-            .AddScoped<IVariable, PropertyVariable>()
+            //.AddScoped<IVariable, AddMethodNameFormatStringVariable>()
+            //.AddScoped<IVariable, ClassVariable>()
+            //.AddScoped<IVariable, CollectionTypeNameVariable>()
+            //.AddScoped<IVariable, PropertyVariable>()
             .AddScoped<IFunction, ClassNameFunction>()
             .AddScoped<IFunction, CollectionItemTypeFunction>()
             .AddScoped<IFunction, CsharpFriendlyNameFunction>()
@@ -29,14 +29,13 @@ public static class ServiceCollectionExtensions
             .AddScoped<IFunction, NoGenericsFunction>()
             .AddScoped<IFunction, NoInterfacePrefixFunction>()
             .AddScoped<IFunction, NullCheckFunction>()
-            .AddScoped<IFunction, ToCamelCaseFunction>()
-            .AddScoped<IFunction, ToPascalCaseFunction>()
-            .AddScoped<IObjectResolverProcessor, ClassModelResolver>()
-            .AddScoped<IObjectResolverProcessor, CultureInfoResolver>()
-            .AddScoped<IObjectResolverProcessor, MappedContextBaseResolver>()
-            .AddScoped<IObjectResolverProcessor, PipelineSettingsResolver>()
-            .AddScoped<IObjectResolverProcessor, PropertyResolver>()
-            .AddScoped<IObjectResolverProcessor, TypeNameMapperResolver>();
+            //.AddScoped<IObjectResolverProcessor, ClassModelResolver>()
+            //.AddScoped<IObjectResolverProcessor, CultureInfoResolver>()
+            //.AddScoped<IObjectResolverProcessor, MappedContextBaseResolver>()
+            //.AddScoped<IObjectResolverProcessor, PipelineSettingsResolver>()
+            //.AddScoped<IObjectResolverProcessor, PropertyResolver>()
+            //.AddScoped<IObjectResolverProcessor, TypeNameMapperResolver>()
+        ;
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
@@ -115,10 +114,10 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.PartialComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.SetNameComponent>();
 
-    private static IServiceCollection AddParserComponents(this IServiceCollection services)
-        => services
-            .AddScoped<IPlaceholder, BuilderPipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholder, BuilderExtensionPipelinePlaceholderProcessor>();
+    //private static IServiceCollection AddParserComponents(this IServiceCollection services)
+    //    => services
+    //        .AddScoped<IPlaceholder, BuilderPipelinePlaceholderProcessor>()
+    //        .AddScoped<IPlaceholder, BuilderExtensionPipelinePlaceholderProcessor>();
 
     private static IServiceCollection AddPipelineService(this IServiceCollection services)
         => services

@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddFluentMethodsForCollectionPropertiesComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
+public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
     public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
@@ -17,7 +17,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IFormattableString
         {
             var parentChildContext = CreateParentChildContext(context, property);
 
-            var results = context.Request.GetResultsForBuilderCollectionProperties(property, parentChildContext, _formattableStringParser, GetCodeStatementsForEnumerableOverload(context, property, parentChildContext), GetCodeStatementsForArrayOverload(context, property));
+            var results = context.Request.GetResultsForBuilderCollectionProperties(property, parentChildContext, _evaluator, GetCodeStatementsForEnumerableOverload(context, property, parentChildContext), GetCodeStatementsForArrayOverload(context, property));
 
             var error = results.GetError();
             if (error is not null)
@@ -67,14 +67,14 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IFormattableString
             yield return Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()));
         }
 
-        yield return _formattableStringParser.Parse("return {$addMethodNameFormatString}({CsharpFriendlyName(ToCamelCase($property.Name))}.ToArray());", context.Request.FormatProvider, parentChildContext);
+        yield return _evaluator.Parse("return {$addMethodNameFormatString}({CsharpFriendlyName(ToCamelCase($property.Name))}.ToArray());", context.Request.FormatProvider, parentChildContext);
     }
 
     private IEnumerable<Result<GenericFormattableString>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderContext> context, Property property)
     {
         if (context.Request.Settings.AddNullChecks)
         {
-            var argumentNullCheckResult = _formattableStringParser.Parse
+            var argumentNullCheckResult = _evaluator.Parse
             (
                 context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
                 context.Request.FormatProvider,
@@ -87,7 +87,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IFormattableString
             }
         }
 
-        var builderAddExpressionResult = _formattableStringParser.Parse
+        var builderAddExpressionResult = _evaluator.Parse
         (
             context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Request.Settings.CollectionCopyStatementFormatString),
             context.Request.FormatProvider,

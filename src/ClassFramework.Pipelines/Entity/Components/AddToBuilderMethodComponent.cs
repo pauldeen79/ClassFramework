@@ -1,20 +1,20 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddToBuilderMethodComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<EntityContext>
+public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         var results = new ResultDictionaryBuilder<GenericFormattableString>()
-            .Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request))
-            .Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)))
-            .Add("BuilderInterfaceNamespace", () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomBuilderInterfaceNamespace, () => _formattableStringParser.Parse(context.Request.Settings.BuilderNamespaceFormatString, context.Request.FormatProvider, context.Request)))
-            .Add("ToBuilderMethodName", () => _formattableStringParser.Parse(context.Request.Settings.ToBuilderFormatString, context.Request.FormatProvider, context.Request))
-            .Add("ToTypedBuilderMethodName", () => _formattableStringParser.Parse(context.Request.Settings.ToTypedBuilderFormatString, context.Request.FormatProvider, context.Request))
-            .Add("BuilderName", () => _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request))
+            .Add(NamedResults.Name, () => _evaluator.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request))
+            .Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, () => _evaluator.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)))
+            .Add("BuilderInterfaceNamespace", () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomBuilderInterfaceNamespace, () => _evaluator.Parse(context.Request.Settings.BuilderNamespaceFormatString, context.Request.FormatProvider, context.Request)))
+            .Add("ToBuilderMethodName", () => _evaluator.Parse(context.Request.Settings.ToBuilderFormatString, context.Request.FormatProvider, context.Request))
+            .Add("ToTypedBuilderMethodName", () => _evaluator.Parse(context.Request.Settings.ToTypedBuilderFormatString, context.Request.FormatProvider, context.Request))
+            .Add("BuilderName", () => _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request))
             .Build();
 
         var error = results.GetError();
@@ -148,7 +148,7 @@ public class AddToBuilderMethodComponent(IFormattableStringParser formattableStr
                     var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
                     var newFullName = $"{ns}.{newTypeName}";
 
-                    return _formattableStringParser.Parse
+                    return _evaluator.Parse
                     (
                         newFullName,
                         context.Request.FormatProvider,
