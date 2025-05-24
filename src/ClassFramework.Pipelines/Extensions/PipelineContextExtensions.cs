@@ -2,16 +2,16 @@
 
 public static class PipelineContextExtensions
 {
-    public static Result<GenericFormattableString> CreateEntityInstanciation(this PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix)
+    public static async Task<Result<GenericFormattableString>> CreateEntityInstanciation(this PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix)
     {
-        formattableStringParser = evaluator.IsNotNull(nameof(evaluator));
+        evaluator = evaluator.IsNotNull(nameof(evaluator));
 
         var customEntityInstanciation = context.Request
             .GetMappingMetadata(context.Request.SourceModel.GetFullName())
             .GetStringValue(MetadataNames.CustomBuilderEntityInstanciation);
         if (!string.IsNullOrEmpty(customEntityInstanciation))
         {
-            return formattableStringParser.Parse(customEntityInstanciation, context.Request.FormatProvider, context.Request);
+            return await evaluator.Parse(customEntityInstanciation, context.Request.FormatProvider, context.Request).ConfigureAwait(false);
         }
 
         if (context.Request.SourceModel is not IConstructorsContainer constructorsContainer)
@@ -28,7 +28,7 @@ public static class PipelineContextExtensions
         var openSign = GetBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Request.SourceModel.Properties.Count != 0);
         var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Request.SourceModel.Properties.Count != 0);
 
-        var parametersResult = GetConstructionMethodParameters(context, formattableStringParser, csharpExpressionDumper, hasPublicParameterlessConstructor);
+        var parametersResult = GetConstructionMethodParameters(context, evaluator, csharpExpressionDumper, hasPublicParameterlessConstructor);
         if (!parametersResult.IsSuccessful())
         {
             return parametersResult;
@@ -63,7 +63,7 @@ public static class PipelineContextExtensions
             {
                 property.Name,
                 Source = property,
-                Result = formattableStringParser.Parse
+                Result = evaluator.Parse
                 (
                     context.Request
                         .GetMappingMetadata(property.TypeName)

@@ -93,7 +93,7 @@ public static class TypeBaseExtensions
         IExpressionEvaluator evaluator)
     {
         context = context.IsNotNull(nameof(context));
-        formattableStringParser = evaluator.IsNotNull(nameof(evaluator));
+        evaluator = evaluator.IsNotNull(nameof(evaluator));
 
         if (!context.Request.HasBackingFields())
         {
@@ -104,7 +104,7 @@ public static class TypeBaseExtensions
             instance.IsMemberValidForBuilderClass(x, context.Request.Settings)
             && x.HasBackingFieldOnBuilder(context.Request.Settings)))
         {
-            var builderArgumentTypeResult = property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), formattableStringParser);
+            var builderArgumentTypeResult = property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator);
 
             if (!builderArgumentTypeResult.IsSuccessful())
             {

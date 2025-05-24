@@ -107,9 +107,9 @@ public static class PropertyExtensions
         mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
         newCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
         metadataName = metadataName.IsNotNull(nameof(metadataName));
-        formattableStringParser = evaluator.IsNotNull(nameof(evaluator));
+        evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, context, parentChildContext, mappedTypeName, formattableStringParser);
+        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, context, parentChildContext, mappedTypeName, evaluator);
 
         if (!builderArgumentTypeResult.IsSuccessful())
         {
@@ -122,7 +122,7 @@ public static class PropertyExtensions
                 .GetMappingMetadata(property.TypeName)
                 .GetStringValue(metadataName);
 
-        var result = formattableStringParser.Parse(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext);
+        var result = evaluator.Parse(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext);
         if (!result.IsSuccessful())
         {
             return result;
@@ -144,7 +144,7 @@ public static class PropertyExtensions
         context = context.IsNotNull(nameof(context));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
-        formattableStringParser = evaluator.IsNotNull(nameof(evaluator));
+        evaluator = evaluator.IsNotNull(nameof(evaluator));
 
         var metadata = context.GetMappingMetadata(property.TypeName).ToArray();
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderNamespace);
@@ -169,7 +169,7 @@ public static class PropertyExtensions
                 }
             }
 
-            return formattableStringParser.Parse
+            return evaluator.Parse
             (
                 newFullName,
                 context.FormatProvider,
@@ -177,7 +177,7 @@ public static class PropertyExtensions
             );
         }
 
-        return formattableStringParser.Parse
+        return evaluator.Parse
         (
             metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, mappedTypeName),
             context.FormatProvider,
@@ -188,7 +188,7 @@ public static class PropertyExtensions
     public static Result<GenericFormattableString> GetBuilderParentTypeName(this Property property, PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator)
     {
         context = context.IsNotNull(nameof(context));
-        formattableStringParser = evaluator.IsNotNull(nameof(evaluator));
+        evaluator = evaluator.IsNotNull(nameof(evaluator));
 
         if (string.IsNullOrEmpty(property.ParentTypeFullName))
         {
@@ -212,7 +212,7 @@ public static class PropertyExtensions
 
         var newFullName = $"{ns}.{newTypeName}";
 
-        return formattableStringParser.Parse
+        return evaluator.Parse
         (
             newFullName,
             context.Request.FormatProvider,
