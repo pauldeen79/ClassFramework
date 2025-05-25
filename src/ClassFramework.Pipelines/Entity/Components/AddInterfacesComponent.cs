@@ -2,23 +2,23 @@
 
 public class AddInterfacesComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public async Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Request.Settings.CopyInterfaces)
         {
-            return Task.FromResult(Result.Success());
+            return Result.Success();
         }
 
-        var baseClass = context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass);
+        var baseClass = await context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass).ConfigureAwait(false);
 
         context.Request.Builder.AddInterfaces(context.Request.SourceModel.Interfaces
             .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Where(x => x != baseClass)
-            .Select(x => context.Request.MapTypeName(x.FixTypeName()))
+            .Select(x => context.Request.MapTypeName(x.FixTypeName(), string.Empty))
             .Where(x => !string.IsNullOrEmpty(x)));
 
-        return Task.FromResult(Result.Success());
+        return Result.Success();
     }
 }

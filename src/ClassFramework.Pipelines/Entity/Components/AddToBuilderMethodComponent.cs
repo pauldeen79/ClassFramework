@@ -9,12 +9,12 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
         context = context.IsNotNull(nameof(context));
 
         var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add(NamedResults.Name, _evaluator.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request))
-            .Add(NamedResults.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, _evaluator.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)))
-            .Add("BuilderInterfaceNamespace", context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomBuilderInterfaceNamespace, _evaluator.Parse(context.Request.Settings.BuilderNamespaceFormatString, context.Request.FormatProvider, context.Request)))
-            .Add("ToBuilderMethodName", _evaluator.Parse(context.Request.Settings.ToBuilderFormatString, context.Request.FormatProvider, context.Request))
-            .Add("ToTypedBuilderMethodName", _evaluator.Parse(context.Request.Settings.ToTypedBuilderFormatString, context.Request.FormatProvider, context.Request))
-            .Add("BuilderName", _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request))
+            .Add(NamedResults.Name, _evaluator.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add(NamedResults.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, _evaluator.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
+            .Add("BuilderInterfaceNamespace", context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomBuilderInterfaceNamespace, _evaluator.Parse(context.Request.Settings.BuilderNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
+            .Add("ToBuilderMethodName", _evaluator.Parse(context.Request.Settings.ToBuilderFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add("ToTypedBuilderMethodName", _evaluator.Parse(context.Request.Settings.ToTypedBuilderFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add("BuilderName", _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token))
             .Build()
             .ConfigureAwait(false);
 
@@ -95,7 +95,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                     .AddStringCodeStatements($"return new {builderConcreteTypeName}{generics}(this);"));
         }
 
-        return await AddExplicitInterfaceImplementations(context, methodName, typedMethodName).ConfigureAwait(false);
+        return await AddExplicitInterfaceImplementations(context, methodName, typedMethodName, token).ConfigureAwait(false);
     }
 
     private static string GetBuilderInterfaceNamespace(PipelineContext<EntityContext> context, IReadOnlyDictionary<string, Result<GenericFormattableString>> results, string ns)
@@ -125,7 +125,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
         }
     }
 
-    private async Task<Result> AddExplicitInterfaceImplementations(PipelineContext<EntityContext> context, string methodName, string typedMethodName)
+    private async Task<Result> AddExplicitInterfaceImplementations(PipelineContext<EntityContext> context, string methodName, string typedMethodName, CancellationToken token)
     {
         if (!context.Request.Settings.UseBuilderAbstractionsTypeConversion)
         {
@@ -153,7 +153,8 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                     (
                         newFullName,
                         context.Request.FormatProvider,
-                        new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings)
+                        new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings),
+                        token
                     ).ConfigureAwait(false)).Transform(y => new { EntityName = x, BuilderName = y.ToString() });
                 }
                 return Result.Success(new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName(), string.Empty) });

@@ -4,26 +4,27 @@ public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineCompone
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public async Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        var results = new ResultDictionaryBuilder<GenericFormattableString>()
-            .Add(NamedResults.Name, () => _evaluator.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request))
-            .Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, () => _evaluator.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)))
-            .Build();
+        var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
+            .Add(NamedResults.Name, _evaluator.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add(NamedResults.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, _evaluator.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
+            .Build()
+            .ConfigureAwait(false);
 
         var error = results.GetError();
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Task.FromResult<Result>(error);
+            return error;
         }
 
         context.Request.Builder
             .WithName(results[NamedResults.Name].Value!)
             .WithNamespace(context.Request.MapNamespace(results[NamedResults.Namespace].Value!));
 
-        return Task.FromResult(Result.Success());
+        return Result.Success();
     }
 }

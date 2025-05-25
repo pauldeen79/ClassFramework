@@ -13,7 +13,7 @@ public class AddInterfacesComponent : IPipelineComponent<InterfaceContext>
 
         context.Request.Builder.AddInterfaces(context.Request.SourceModel.Interfaces
             .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-            .Select(x => context.Request.MapTypeName(x.FixTypeName()))
+            .Select(x => context.Request.MapTypeName(x.FixTypeName(), string.Empty))
             .Where(x => !string.IsNullOrEmpty(x)));
 
         return Task.FromResult(Result.Success());

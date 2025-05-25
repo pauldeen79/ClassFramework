@@ -100,7 +100,8 @@ public static class PropertyExtensions
         string mappedTypeName,
         string newCollectionTypeName,
         string metadataName,
-        IExpressionEvaluator evaluator)
+        IExpressionEvaluator evaluator,
+        CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
@@ -109,7 +110,7 @@ public static class PropertyExtensions
         metadataName = metadataName.IsNotNull(nameof(metadataName));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-        var builderArgumentTypeResult = await GetBuilderArgumentTypeName(property, context, parentChildContext, mappedTypeName, evaluator).ConfigureAwait(false);
+        var builderArgumentTypeResult = await GetBuilderArgumentTypeName(property, context, parentChildContext, mappedTypeName, evaluator, token).ConfigureAwait(false);
 
         if (!builderArgumentTypeResult.IsSuccessful())
         {
@@ -122,7 +123,7 @@ public static class PropertyExtensions
                 .GetMappingMetadata(property.TypeName)
                 .GetStringValue(metadataName);
 
-        var result = await evaluator.Parse(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext).ConfigureAwait(false);
+        var result = await evaluator.Parse(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext, token).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -139,7 +140,8 @@ public static class PropertyExtensions
         ContextBase<TSourceModel> context,
         object parentChildContext,
         string mappedTypeName,
-        IExpressionEvaluator evaluator)
+        IExpressionEvaluator evaluator,
+        CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
@@ -173,7 +175,8 @@ public static class PropertyExtensions
             (
                 newFullName,
                 context.FormatProvider,
-                parentChildContext
+                parentChildContext,
+                token
             ).ConfigureAwait(false);
         }
 
@@ -181,11 +184,12 @@ public static class PropertyExtensions
         (
             metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, mappedTypeName),
             context.FormatProvider,
-            parentChildContext
+            parentChildContext,
+            token
         ).ConfigureAwait(false);
     }
 
-    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeName(this Property property, PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator)
+    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeName(this Property property, PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
@@ -216,7 +220,8 @@ public static class PropertyExtensions
         (
             newFullName,
             context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
+            new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
+            token
         ).ConfigureAwait(false);
     }
 

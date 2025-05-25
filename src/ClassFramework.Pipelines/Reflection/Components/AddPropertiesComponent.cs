@@ -20,7 +20,7 @@ public class AddPropertiesComponent : IPipelineComponent<ReflectionContext>
                 .WithHasGetter(p.GetGetMethod() is not null)
                 .WithHasSetter(p.GetSetMethod() is not null)
                 .WithHasInitializer(p.IsInitOnly())
-                .WithParentTypeFullName(context.Request.MapTypeName(p.DeclaringType.GetParentTypeFullName()))
+                .WithParentTypeFullName(context.Request.MapTypeName(p.DeclaringType.GetParentTypeFullName(), string.Empty))
                 .SetTypeContainerPropertiesFrom(p.IsNullable(), p.PropertyType, context.Request.GetMappedTypeName)
                 .WithVisibility(Array.Exists(p.GetAccessors(), m => m.IsPublic).ToVisibility())
                 .AddAttributes(p.GetCustomAttributes(true).ToAttributes(

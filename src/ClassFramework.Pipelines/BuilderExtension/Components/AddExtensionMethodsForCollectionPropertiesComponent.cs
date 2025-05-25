@@ -17,7 +17,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
         {
             var parentChildContext = CreateParentChildContext(context, property);
 
-            var results = await context.Request.GetResultsForBuilderCollectionProperties(property, parentChildContext, _evaluator, await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext).ConfigureAwait(false), await GetCodeStatementsForArrayOverload(context, property).ConfigureAwait(false)).ConfigureAwait(false);
+            var results = await context.Request.GetResultsForBuilderCollectionProperties(property, parentChildContext, _evaluator, await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, token).ConfigureAwait(false), await GetCodeStatementsForArrayOverload(context, property, token).ConfigureAwait(false), token).ConfigureAwait(false);
 
             var error = results.GetError();
             if (error is not null)
@@ -56,17 +56,17 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
         return Result.Success();
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderExtensionContext> context, Property property, ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContext)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderExtensionContext> context, Property property, ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContext, CancellationToken token)
     {
         if (context.Request.Settings.AddNullChecks)
         {
             return [Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))];
         }
 
-        return [await _evaluator.Parse("return instance.{$addMethodNameFormatString}<T>({CsharpFriendlyName(ToCamelCase($property.Name))}.ToArray());", context.Request.FormatProvider, parentChildContext).ConfigureAwait(false)];
+        return [await _evaluator.Parse("return instance.{$addMethodNameFormatString}<T>({CsharpFriendlyName(ToCamelCase($property.Name))}.ToArray());", context.Request.FormatProvider, parentChildContext, token).ConfigureAwait(false)];
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderExtensionContext> context, Property property)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderExtensionContext> context, Property property, CancellationToken token)
     {
         if (context.Request.Settings.AddNullChecks)
         {
@@ -74,7 +74,8 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
             (
                 context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
                 context.Request.FormatProvider,
-                new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings)
+                new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings),
+                token
             ).ConfigureAwait(false);
             return [argumentNullCheckResult];
         }
@@ -85,7 +86,8 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                 .GetMappingMetadata(property.TypeName)
                 .GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Request.Settings.CollectionCopyStatementFormatString),
             context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings)
+            new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings),
+            token
         ).ConfigureAwait(false);
 
         return [builderAddExpressionResult, Result.Success<GenericFormattableString>("return instance;")];

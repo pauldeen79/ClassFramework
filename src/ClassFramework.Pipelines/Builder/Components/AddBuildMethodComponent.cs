@@ -34,10 +34,10 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
                     .WithReturnTypeName("TEntity"));
             }
 
-            return await AddExplicitInterfaceImplementations(context).ConfigureAwait(false);
+            return await AddExplicitInterfaceImplementations(context, token).ConfigureAwait(false);
         }
 
-        var instanciationResult = await context.CreateEntityInstanciation(_evaluator, _csharpExpressionDumper, string.Empty).ConfigureAwait(false);
+        var instanciationResult = await context.CreateEntityInstanciation(_evaluator, _csharpExpressionDumper, string.Empty, token).ConfigureAwait(false);
         if (!instanciationResult.IsSuccessful())
         {
             return instanciationResult;
@@ -68,10 +68,10 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
                 .AddStringCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
         }
 
-        return await AddExplicitInterfaceImplementations(context).ConfigureAwait(false);
+        return await AddExplicitInterfaceImplementations(context, token).ConfigureAwait(false);
     }
 
-    private async Task<Result> AddExplicitInterfaceImplementations(PipelineContext<BuilderContext> context)
+    private async Task<Result> AddExplicitInterfaceImplementations(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         if (!context.Request.Settings.UseBuilderAbstractionsTypeConversion)
         {
@@ -82,7 +82,8 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
             (x, y) => new { EntityName = x, BuilderName = y.ToString() },
             x => new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName(), string.Empty) },
             _evaluator,
-            false).ConfigureAwait(false);
+            false,
+            token).ConfigureAwait(false);
 
         var error = Array.Find(interfaces, x => !x.IsSuccessful());
         if (error is not null)

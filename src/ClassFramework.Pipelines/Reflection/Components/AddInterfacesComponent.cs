@@ -16,7 +16,7 @@ public class AddInterfacesComponent : IPipelineComponent<ReflectionContext>
                 .Where(x => !(context.Request.SourceModel.IsRecord() && x.FullName.StartsWith($"System.IEquatable`1[[{context.Request.SourceModel.FullName}")))
                 .Select(x => context.Request.GetMappedTypeName(x, context.Request.SourceModel))
                 .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-                .Select(x => context.Request.MapTypeName(x))
+                .Select(x => context.Request.MapTypeName(x, string.Empty))
         );
 
         return Task.FromResult(Result.Success());

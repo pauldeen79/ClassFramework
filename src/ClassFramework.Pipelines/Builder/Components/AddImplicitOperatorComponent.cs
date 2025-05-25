@@ -4,25 +4,25 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    public async Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Request.Settings.AddImplicitOperatorOnBuilder)
         {
-            return Task.FromResult(Result.Success());
+            return Result.Success();
         }
 
         if (context.Request.ReturnType.GetNamespaceWithDefault().EndsWithAny(".Contracts", ".Abstractions"))
         {
             // Implicit operators are not supported on interfaces (until maybe some future version of C#)
-            return Task.FromResult(Result.Success());
+            return Result.Success();
         }
 
-        var nameResult = _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
+        var nameResult = await _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
         if (!nameResult.IsSuccessful())
         {
-            return Task.FromResult((Result)nameResult);
+            return nameResult;
         }
 
         if (context.Request.Settings.EnableBuilderInheritance && context.Request.Settings.IsAbstract)
@@ -39,7 +39,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
                     ? "return entity.BuildTyped();"
                     : "return entity.Build();"));
 
-            return Task.FromResult(Result.Success());
+            return Result.Success();
         }
 
         var genericArgumentsFlat = context.Request.SourceModel.GenericTypeArguments.Count > 0
@@ -54,7 +54,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
             .AddParameter("entity", $"{nameResult.Value}{genericArgumentsFlat}")
             .AddStringCodeStatements($"return entity.{GetName(context)}();"));
 
-        return Task.FromResult(Result.Success());
+        return Result.Success();
     }
 
     private static string GetGenericArgumentsForInheritance(PipelineContext<BuilderContext> context)

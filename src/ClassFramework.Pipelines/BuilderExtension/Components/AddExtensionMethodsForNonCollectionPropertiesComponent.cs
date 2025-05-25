@@ -17,7 +17,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
         {
             var parentChildContext = new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings);
 
-            var results = await context.Request.GetResultsForBuilderNonCollectionProperties(property, parentChildContext, _evaluator).ConfigureAwait(false);
+            var results = await context.Request.GetResultsForBuilderNonCollectionProperties(property, parentChildContext, _evaluator, token).ConfigureAwait(false);
 
             var error = results.GetError();
             if (error is not null)

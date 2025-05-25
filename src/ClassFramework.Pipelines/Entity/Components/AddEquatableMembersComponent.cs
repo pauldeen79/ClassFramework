@@ -4,19 +4,19 @@ public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPip
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public async Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Request.Settings.ImplementIEquatable)
         {
-            return Task.FromResult(Result.Success());
+            return Result.Success();
         }
 
-        var nameResult = _evaluator.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request);
+        var nameResult = await _evaluator.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
         if (!nameResult.IsSuccessful())
         {
-            return Task.FromResult<Result>(nameResult);
+            return nameResult;
         }
 
         var getHashCodeStatements =
@@ -74,7 +74,7 @@ public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPip
                     .AddParameter("right", context.Request.SourceModel.Name)
                     .AddStringCodeStatements("return !(left == right);"));
 
-        return Task.FromResult(Result.Success());
+        return Result.Success();
     }
 
     private static IEnumerable<string> CreateHashCodeStatements<T>(IEnumerable<T> items, string notNullCheck)

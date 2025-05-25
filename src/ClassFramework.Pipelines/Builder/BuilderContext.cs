@@ -80,7 +80,8 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
         Func<string, GenericFormattableString, T> namespaceTransformation,
         Func<string, T> noNamespaceTransformation,
         IExpressionEvaluator evaluator,
-        bool includeNonAbstractionNamespaces)
+        bool includeNonAbstractionNamespaces,
+        CancellationToken token)
     {
         namespaceTransformation = ArgumentGuard.IsNotNull(namespaceTransformation, nameof(namespaceTransformation));
         noNamespaceTransformation = ArgumentGuard.IsNotNull(noNamespaceTransformation, nameof(noNamespaceTransformation));
@@ -109,7 +110,8 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
                 (
                     newFullName,
                     FormatProvider,
-                    new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(this), property, Settings)
+                    new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(this), property, Settings),
+                    token
                 ).ConfigureAwait(false)).Transform(y => namespaceTransformation(@interface, y));
 
                 results.Add(result);

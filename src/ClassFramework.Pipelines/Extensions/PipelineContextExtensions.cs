@@ -2,7 +2,7 @@
 
 public static class PipelineContextExtensions
 {
-    public static async Task<Result<GenericFormattableString>> CreateEntityInstanciation(this PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix)
+    public static async Task<Result<GenericFormattableString>> CreateEntityInstanciation(this PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix, CancellationToken token)
     {
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
@@ -11,7 +11,7 @@ public static class PipelineContextExtensions
             .GetStringValue(MetadataNames.CustomBuilderEntityInstanciation);
         if (!string.IsNullOrEmpty(customEntityInstanciation))
         {
-            return await evaluator.Parse(customEntityInstanciation, context.Request.FormatProvider, context.Request).ConfigureAwait(false);
+            return await evaluator.Parse(customEntityInstanciation, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
         }
 
         if (context.Request.SourceModel is not IConstructorsContainer constructorsContainer)
@@ -28,7 +28,7 @@ public static class PipelineContextExtensions
         var openSign = GetBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Request.SourceModel.Properties.Count != 0);
         var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Request.SourceModel.Properties.Count != 0);
 
-        var parametersResult = GetConstructionMethodParameters(context, evaluator, csharpExpressionDumper, hasPublicParameterlessConstructor);
+        var parametersResult = await GetConstructionMethodParameters(context, evaluator, csharpExpressionDumper, hasPublicParameterlessConstructor, token).ConfigureAwait(false);
         if (!parametersResult.IsSuccessful())
         {
             return parametersResult;
@@ -40,44 +40,45 @@ public static class PipelineContextExtensions
         return Result.Success<GenericFormattableString>($"new {ns}{context.Request.SourceModel.Name}{classNameSuffix}{context.Request.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
-    public static string CreateEntityChainCall(this PipelineContext<EntityContext> context)
+    public static async Task<string> CreateEntityChainCall(this PipelineContext<EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         return context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is not null
             ? $"base({GetPropertyNamesConcatenated(context.Request.Settings.BaseClass.Properties, context.Request.FormatProvider.ToCultureInfo())})"
-            : context.Request.SourceModel.GetCustomValueForInheritedClass(context.Request.Settings.EnableInheritance,
-            cls => Result.Success<GenericFormattableString>($"base({GetPropertyNamesConcatenated(context.Request.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Request.FormatProvider.ToCultureInfo())})")).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
+            : (await context.Request.SourceModel.GetCustomValueForInheritedClass(context.Request.Settings.EnableInheritance,
+                cls => Result.Success<GenericFormattableString>($"base({GetPropertyNamesConcatenated(context.Request.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Request.FormatProvider.ToCultureInfo())})")).ConfigureAwait(false)).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
     }
 
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName()));
 
-    private static Result<GenericFormattableString> GetConstructionMethodParameters(PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor)
+    private static async Task<Result<GenericFormattableString>> GetConstructionMethodParameters(PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor, CancellationToken token)
     {
         var properties = context.Request.SourceModel.GetBuilderConstructorProperties(context.Request);
 
-        var results = properties.Select
+        var results = (await Task.WhenAll(properties.Select
         (
-            property => new
+            async property => new
             {
                 property.Name,
                 Source = property,
-                Result = evaluator.Parse
+                Result = await evaluator.Parse
                 (
                     context.Request
                         .GetMappingMetadata(property.TypeName)
                         .GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, PlaceholderNames.NamePlaceholder),
                     context.Request.FormatProvider,
-                    new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
-                ),
+                    new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
+                    token
+                ).ConfigureAwait(false),
                 CollectionInitializer = context.Request.GetMappingMetadata
                     (
                         property.TypeName.FixTypeName().WithoutGenerics() // i.e. List<> etc.
                     ).GetStringValue(MetadataNames.CustomCollectionInitialization, () => "[Expression]"),
                 Suffix = property.GetSuffix(context.Request.Settings.EnableNullableReferenceTypes, csharpExpressionDumper, context.Request)
             }
-        ).TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful()).ToArray();
+        )).ConfigureAwait(false)).TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful()).ToArray();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());
         if (error is not null)
