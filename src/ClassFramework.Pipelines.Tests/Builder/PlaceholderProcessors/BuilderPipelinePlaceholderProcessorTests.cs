@@ -25,7 +25,7 @@
 //            var sut = CreateSut();
 
 //            // Act
-//            var result = sut.Evaluate("Placeholder", new PlaceholderSettingsBuilder(), null, Fixture.Freeze<IFormattableStringParser>());
+//            var result = sut.Evaluate("Placeholder", new PlaceholderSettingsBuilder(), null, Fixture.Freeze<IExpressionEvaluator>());
 
 //            // Assert
 //            result.Status.ShouldBe(ResultStatus.Continue);
@@ -43,7 +43,7 @@
 //            var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
 
 //            // Act
-//            var result = sut.Evaluate("Placeholder", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
+//            var result = sut.Evaluate("Placeholder", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IExpressionEvaluator>());
 
 //            // Assert
 //            result.ShouldBeSameAs(externalResult);
@@ -56,14 +56,14 @@
 //        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_ParentChildContext_With_NullChecks_Enabled(string value, string expectedValue)
 //        {
 //            // Arrange
-//            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+//            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 //            formattableStringParser.Parse("{$class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<GenericFormattableString>("MyNamespace.Builders"));
 //            var sut = CreateSut();
 //            var settings = CreateSettingsForBuilder(addNullChecks: true, validateArguments: ArgumentValidationType.None);
 //            var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
 
 //            // Act
-//            var result = sut.Evaluate(value, new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
+//            var result = sut.Evaluate(value, new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IExpressionEvaluator>());
 
 //            // Assert
 //            result.Status.ShouldBe(ResultStatus.Ok);
@@ -75,14 +75,14 @@
 //        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_ParentChildContext_With_NullChecks_Enabled_SourceEntity_Already_Validated(string value, string expectedValue)
 //        {
 //            // Arrange
-//            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+//            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 //            formattableStringParser.Parse("{$class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<GenericFormattableString>("MyNamespace.Builders"));
 //            var sut = CreateSut();
 //            var settings = CreateSettingsForBuilder(addNullChecks: true, validateArguments: ArgumentValidationType.IValidatableObject);
 //            var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
 
 //            // Act
-//            var result = sut.Evaluate(value, new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
+//            var result = sut.Evaluate(value, new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IExpressionEvaluator>());
 
 //            // Assert
 //            result.Status.ShouldBe(ResultStatus.Ok);
@@ -95,14 +95,14 @@
 //        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_ParentChildContext_Without_NullChecks(string value, string expectedValue)
 //        {
 //            // Arrange
-//            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+//            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 //            formattableStringParser.Parse("{$class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<GenericFormattableString>("MyNamespace.Builders"));
 //            var sut = CreateSut();
 //            var settings = CreateSettingsForBuilder(addNullChecks: false);
 //            var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
 
 //            // Act
-//            var result = sut.Evaluate(value, new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
+//            var result = sut.Evaluate(value, new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IExpressionEvaluator>());
 
 //            // Assert
 //            result.Status.ShouldBe(ResultStatus.Ok);
@@ -114,13 +114,13 @@
 //        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_PipelineContext(string value, string expectedValue)
 //        {
 //            // Arrange
-//            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+//            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 //            formattableStringParser.Parse("{$class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<GenericFormattableString>("MyNamespace.Builders"));
 //            var sut = CreateSut();
 //            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), CreateSettingsForBuilder(addNullChecks: true).Build(), CultureInfo.InvariantCulture));
 
 //            // Act
-//            var result = sut.Evaluate(value, new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
+//            var result = sut.Evaluate(value, new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IExpressionEvaluator>());
 
 //            // Assert
 //            result.Status.ShouldBe(ResultStatus.Ok);
@@ -138,7 +138,7 @@
 //            var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
 
 //            // Act
-//            var result = sut.Evaluate("Value", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
+//            var result = sut.Evaluate("Value", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IExpressionEvaluator>());
 
 //            // Assert
 //            result.Status.ShouldBe(ResultStatus.Ok);
@@ -156,7 +156,7 @@
 //            var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
 
 //            // Act
-//            var result = sut.Evaluate("Value", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
+//            var result = sut.Evaluate("Value", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IExpressionEvaluator>());
 
 //            // Assert
 //            result.Status.ShouldBe(ResultStatus.Continue);
@@ -172,7 +172,7 @@
 //            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), CreateSettingsForBuilder(addNullChecks: true).Build(), CultureInfo.InvariantCulture));
 
 //            // Act
-//            var result = sut.Evaluate("Value", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
+//            var result = sut.Evaluate("Value", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IExpressionEvaluator>());
 
 //            // Assert
 //            result.Status.ShouldBe(ResultStatus.Ok);
@@ -189,7 +189,7 @@
 //            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), CreateSettingsForBuilder(addNullChecks: true).Build(), CultureInfo.InvariantCulture));
 
 //            // Act
-//            var result = sut.Evaluate("Value", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IFormattableStringParser>());
+//            var result = sut.Evaluate("Value", new PlaceholderSettingsBuilder(), context, Fixture.Freeze<IExpressionEvaluator>());
 
 //            // Assert
 //            result.Status.ShouldBe(ResultStatus.Continue);

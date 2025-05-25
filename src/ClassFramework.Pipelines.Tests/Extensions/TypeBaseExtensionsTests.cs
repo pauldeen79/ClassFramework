@@ -70,18 +70,18 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
-            Action a = () => sut.GetCustomValueForInheritedClass(true, customValue: null!);
+            Action a = () => sut.GetCustomValueForInheritedClass(true, customValue: default(Func<IBaseClassContainer, Result<GenericFormattableString>>)!);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("customValue");
         }
 
         [Fact]
-        public void Returns_Empty_String_When_Entity_Inheritance_Is_Disabled()
+        public async Task Returns_Empty_String_When_Entity_Inheritance_Is_Disabled()
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetCustomValueForInheritedClass(false, _ => Result.Success<GenericFormattableString>("CustomValue"));
+            var result = await sut.GetCustomValueForInheritedClass(false, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
             result.Value.ShouldNotBeNull();
@@ -89,13 +89,13 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
         }
 
         [Fact]
-        public void Returns_Empty_String_When_Instance_Is_Not_A_BaseClassContainer()
+        public async Task Returns_Empty_String_When_Instance_Is_Not_A_BaseClassContainer()
         {
             // Arrange
             var sut = new StructBuilder().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
+            var result = await sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
             result.Value.ShouldNotBeNull();
@@ -103,13 +103,13 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
         }
 
         [Fact]
-        public void Returns_Empty_String_When_BaseClass_Is_Empty()
+        public async Task Returns_Empty_String_When_BaseClass_Is_Empty()
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act
-            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
+            var result = await sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
             result.Value.ShouldNotBeNull();
@@ -117,13 +117,13 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
         }
 
         [Fact]
-        public void Returns_CustomValue_When_BaseClass_Is_Not_Empty()
+        public async Task Returns_CustomValue_When_BaseClass_Is_Not_Empty()
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass").WithBaseClass("SomeBaseClass").Build();
 
             // Act
-            var result = sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
+            var result = await sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
             result.Value!.ToString().ShouldBe("CustomValue");
@@ -289,10 +289,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            Action a = () => _ = sut.GetBuilderClassFields(context: null!, formattableStringParser).ToArray();
+            Action a = async () => _ = (await sut.GetBuilderClassFields(context: null!, formattableStringParser, CancellationToken.None).ConfigureAwait(false)).ToArray();
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
@@ -305,12 +305,12 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
 
             // Act & Assert
-            Action a = () => _ = sut.GetBuilderClassFields(context, formattableStringParser: null!).ToArray();
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("formattableStringParser");
+            Action a = async () => _ = (await sut.GetBuilderClassFields(context, evaluator: null!, CancellationToken.None).ConfigureAwait(false)).ToArray();
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("evaluator");
         }
 
         [Fact]
-        public void Returns_Empty_Sequence_For_Abstract_Builder()
+        public async Task Returns_Empty_Sequence_For_Abstract_Builder()
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass")
@@ -328,17 +328,17 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
             var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = sut.GetBuilderClassFields(context, formattableStringParser);
+            var result = (await sut.GetBuilderClassFields(context, formattableStringParser, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ShouldBeEmpty();
         }
 
         [Fact]
-        public void Returns_Empty_Sequence_When_Not_Using_NullChecks()
+        public async Task Returns_Empty_Sequence_When_Not_Using_NullChecks()
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass")
@@ -356,17 +356,17 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
             var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = sut.GetBuilderClassFields(context, formattableStringParser);
+            var result = (await sut.GetBuilderClassFields(context, formattableStringParser, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ShouldBeEmpty();
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_NonAbstract_Builder_With_NullChecks_And_NonShared_OriginalValidateArguments()
+        public async Task Returns_Correct_Result_On_NonAbstract_Builder_With_NullChecks_And_NonShared_OriginalValidateArguments()
         {
             // Arrange
             await InitializeParser();
@@ -385,10 +385,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
             var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = sut.GetBuilderClassFields(context, formattableStringParser).ToArray();
+            var result = (await sut.GetBuilderClassFields(context, formattableStringParser, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1" });
@@ -397,7 +397,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
         }
 
         [Fact]
-        public void Returns_Correct_Result_On_NonAbstract_Builder_With_NullChecks_And_NonShared_OriginalValidateArguments_And_CustomBuilderArgumentType()
+        public async Task Returns_Correct_Result_On_NonAbstract_Builder_With_NullChecks_And_NonShared_OriginalValidateArguments_And_CustomBuilderArgumentType()
         {
             // Arrange
             await InitializeParser();
@@ -424,10 +424,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 ]
             );
             var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = sut.GetBuilderClassFields(context, formattableStringParser).ToArray();
+            var result = (await sut.GetBuilderClassFields(context, formattableStringParser, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1", "_property2" });
