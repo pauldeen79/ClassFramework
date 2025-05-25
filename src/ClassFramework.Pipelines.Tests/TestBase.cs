@@ -23,7 +23,7 @@ public abstract class TestBase : IDisposable
             if (_formattableStringParser is null)
             {
                 Provider = new ServiceCollection()
-                    .AddParsers()
+                    .AddExpressionEvaluator()
                     .AddClassFrameworkPipelines()
                     .AddCsharpExpressionDumper()
                     .BuildServiceProvider();
@@ -104,27 +104,29 @@ public abstract class TestBase : IDisposable
         if (itemType == IEquatableItemType.Properties)
         {
             builder
-                .AddProperties(new PropertyBuilder().WithName("Property1").WithType(typeof(int)))
-                .AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithIsNullable())
-                .AddProperties(new PropertyBuilder().WithName("Property3").WithType(typeof(string)))
-                .AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(string)).WithIsNullable())
-                .AddProperties(new PropertyBuilder().WithName("Property5").WithTypeName("MySourceNamespace.MyClass"))
-                .AddProperties(new PropertyBuilder().WithName("Property6").WithTypeName("MySourceNamespace.MyClass").WithIsNullable())
-                .AddProperties(new PropertyBuilder().WithName("Property7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")))
-                .AddProperties(new PropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")).WithIsNullable());
+                .AddProperties(
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
+                    new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithIsNullable(),
+                    new PropertyBuilder().WithName("Property3").WithType(typeof(string)),
+                    new PropertyBuilder().WithName("Property4").WithType(typeof(string)).WithIsNullable(),
+                    new PropertyBuilder().WithName("Property5").WithTypeName("MySourceNamespace.MyClass"),
+                    new PropertyBuilder().WithName("Property6").WithTypeName("MySourceNamespace.MyClass").WithIsNullable(),
+                    new PropertyBuilder().WithName("Property7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")),
+                    new PropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")).WithIsNullable());
         }
 
         if (itemType == IEquatableItemType.Fields)
         {
             builder
-                .AddFields(new FieldBuilder().WithName("_field1").WithType(typeof(int)))
-                .AddFields(new FieldBuilder().WithName("_field2").WithType(typeof(int)).WithIsNullable())
-                .AddFields(new FieldBuilder().WithName("_field3").WithType(typeof(string)))
-                .AddFields(new FieldBuilder().WithName("_field4").WithType(typeof(string)).WithIsNullable())
-                .AddFields(new FieldBuilder().WithName("_field5").WithTypeName("MySourceNamespace.MyClass"))
-                .AddFields(new FieldBuilder().WithName("_field6").WithTypeName("MySourceNamespace.MyClass").WithIsNullable())
-                .AddFields(new FieldBuilder().WithName("_field7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")))
-                .AddFields(new FieldBuilder().WithName("_field8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")).WithIsNullable());
+                .AddFields(
+                    new FieldBuilder().WithName("_field1").WithType(typeof(int)),
+                    new FieldBuilder().WithName("_field2").WithType(typeof(int)).WithIsNullable(),
+                    new FieldBuilder().WithName("_field3").WithType(typeof(string)),
+                    new FieldBuilder().WithName("_field4").WithType(typeof(string)).WithIsNullable(),
+                    new FieldBuilder().WithName("_field5").WithTypeName("MySourceNamespace.MyClass"),
+                    new FieldBuilder().WithName("_field6").WithTypeName("MySourceNamespace.MyClass").WithIsNullable(),
+                    new FieldBuilder().WithName("_field7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")),
+                    new FieldBuilder().WithName("_field8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")).WithIsNullable());
         }
 
         return builder.BuildTyped();
@@ -134,14 +136,15 @@ public abstract class TestBase : IDisposable
         => new InterfaceBuilder()
             .WithName("IMyClass")
             .WithNamespace("MySourceNamespace")
-            .AddProperties(new PropertyBuilder().WithName("Property1").WithType(typeof(int)))
-            .AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithIsNullable())
-            .AddProperties(new PropertyBuilder().WithName("Property3").WithType(typeof(string)))
-            .AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(string)).WithIsNullable())
-            .AddProperties(new PropertyBuilder().WithName("Property5").WithTypeName("MySourceNamespace.IMyClass"))
-            .AddProperties(new PropertyBuilder().WithName("Property6").WithTypeName("MySourceNamespace.IMyClass").WithIsNullable())
-            .AddProperties(new PropertyBuilder().WithName("Property7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.IMyClass")))
-            .AddProperties(new PropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.IMyClass")).WithIsNullable())
+            .AddProperties(
+                new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
+                new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithIsNullable(),
+                new PropertyBuilder().WithName("Property3").WithType(typeof(string)),
+                new PropertyBuilder().WithName("Property4").WithType(typeof(string)).WithIsNullable(),
+                new PropertyBuilder().WithName("Property5").WithTypeName("MySourceNamespace.IMyClass"),
+                new PropertyBuilder().WithName("Property6").WithTypeName("MySourceNamespace.IMyClass").WithIsNullable(),
+                new PropertyBuilder().WithName("Property7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.IMyClass")),
+                new PropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.IMyClass")).WithIsNullable())
             .BuildTyped();
 
     protected static Class CreateClassWithPropertyThatHasAReservedName(Type propertyType)

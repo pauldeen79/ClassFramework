@@ -10,7 +10,7 @@ public class ServiceCollectionExtensionsTests
             // Arrange
             var serviceCollection = new ServiceCollection()
                 .AddCsharpExpressionDumper() // dependency of some templates
-                .AddParsers()
+                .AddExpressionEvaluator()
                 .AddClassFrameworkPipelines()
                 .AddClassFrameworkTemplates();
 
