@@ -93,7 +93,7 @@ public static class PropertyExtensions
             || settings.CreateAsObservable;
     }
 
-    public static Result<GenericFormattableString> GetBuilderConstructorInitializer<TSourceModel>(
+    public static async Task<Result<GenericFormattableString>> GetBuilderConstructorInitializer<TSourceModel>(
         this Property property,
         ContextBase<TSourceModel> context,
         object parentChildContext,
@@ -109,7 +109,7 @@ public static class PropertyExtensions
         metadataName = metadataName.IsNotNull(nameof(metadataName));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, context, parentChildContext, mappedTypeName, evaluator);
+        var builderArgumentTypeResult = await GetBuilderArgumentTypeName(property, context, parentChildContext, mappedTypeName, evaluator).ConfigureAwait(false);
 
         if (!builderArgumentTypeResult.IsSuccessful())
         {
@@ -122,7 +122,7 @@ public static class PropertyExtensions
                 .GetMappingMetadata(property.TypeName)
                 .GetStringValue(metadataName);
 
-        var result = evaluator.Parse(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext);
+        var result = await evaluator.Parse(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -134,7 +134,7 @@ public static class PropertyExtensions
             .GetCsharpFriendlyTypeName());
     }
 
-    public static Result<GenericFormattableString> GetBuilderArgumentTypeName<TSourceModel>(
+    public static async Task<Result<GenericFormattableString>> GetBuilderArgumentTypeName<TSourceModel>(
         this Property property,
         ContextBase<TSourceModel> context,
         object parentChildContext,
@@ -169,23 +169,23 @@ public static class PropertyExtensions
                 }
             }
 
-            return evaluator.Parse
+            return await evaluator.Parse
             (
                 newFullName,
                 context.FormatProvider,
                 parentChildContext
-            );
+            ).ConfigureAwait(false);
         }
 
-        return evaluator.Parse
+        return await evaluator.Parse
         (
             metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, mappedTypeName),
             context.FormatProvider,
             parentChildContext
-        );
+        ).ConfigureAwait(false);
     }
 
-    public static Result<GenericFormattableString> GetBuilderParentTypeName(this Property property, PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator)
+    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeName(this Property property, PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator)
     {
         context = context.IsNotNull(nameof(context));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
@@ -200,7 +200,7 @@ public static class PropertyExtensions
 
         if (string.IsNullOrEmpty(ns))
         {
-            return Result.Success<GenericFormattableString>(context.Request.MapTypeName(property.ParentTypeFullName.FixTypeName()));
+            return Result.Success<GenericFormattableString>(context.Request.MapTypeName(property.ParentTypeFullName.FixTypeName(), string.Empty));
         }
 
         var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ClassName($property.ParentTypeFullName)}");
@@ -212,12 +212,12 @@ public static class PropertyExtensions
 
         var newFullName = $"{ns}.{newTypeName}";
 
-        return evaluator.Parse
+        return await evaluator.Parse
         (
             newFullName,
             context.Request.FormatProvider,
             new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
-        );
+        ).ConfigureAwait(false);
     }
 
     public static string GetSuffix<TSourceModel>(this Property source, bool enableNullableReferenceTypes, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<TSourceModel> context)

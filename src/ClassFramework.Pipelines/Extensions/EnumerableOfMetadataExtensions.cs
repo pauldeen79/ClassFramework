@@ -19,14 +19,14 @@ public static class EnumerableOfMetadataExtensions
             : Result.Success(value);
     }
 
-    public static Result<GenericFormattableString> GetGenericFormattableString(this IEnumerable<Metadata> metadata, string metadataName, Func<Result<GenericFormattableString>> defaultValueDelegate)
+    public static async Task<Result<GenericFormattableString>> GetGenericFormattableString(this IEnumerable<Metadata> metadata, string metadataName, Task<Result<GenericFormattableString>> defaultValueDelegate)
     {
         defaultValueDelegate = defaultValueDelegate.IsNotNull(nameof(defaultValueDelegate));
 
         var value = metadata.GetValue<object?>(metadataName, () => null).ToStringWithDefault();
 
         return string.IsNullOrEmpty(value)
-            ? defaultValueDelegate()
+            ? await defaultValueDelegate.ConfigureAwait(false)
             : Result.Success<GenericFormattableString>(value);
     }
 

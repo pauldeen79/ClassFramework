@@ -2,6 +2,6 @@
 
 public class NoGenericsFunction : IFunction
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
+    public Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
         => FunctionHelpers.ParseFromStringArgument(context, "NoGenerics", s => Result.Success<object?>(s.WithoutGenerics()));
 }

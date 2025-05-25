@@ -136,7 +136,7 @@ public abstract class MappedContextBase(PipelineSettings settings, IFormatProvid
     }
 }
 
-public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : MappedContextBase(settings, formatProvider), ITypeNameMapper
+public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : MappedContextBase(settings, formatProvider)
 {
     public TSourceModel SourceModel { get; } = sourceModel.IsNotNull(nameof(sourceModel));
 
@@ -161,68 +161,68 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .Build();
     }
 
-    public Result<GenericFormattableString> GetBuilderPlaceholderProcessorResultForPipelineContext(
-        string value,
-        IExpressionEvaluator evaluator,
-        object context,
-        IType sourceModel,
-        IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
-    {
-        sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
-        evaluator = evaluator.IsNotNull(nameof(evaluator));
-        pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
+    //public Result<GenericFormattableString> GetBuilderPlaceholderProcessorResultForPipelineContext(
+    //    string value,
+    //    IExpressionEvaluator evaluator,
+    //    object context,
+    //    IType sourceModel,
+    //    IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
+    //{
+    //    sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
+    //    evaluator = evaluator.IsNotNull(nameof(evaluator));
+    //    pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
 
-        return value switch
-        {
-            "NullCheck.Source" => Result.Success<GenericFormattableString>(Settings.AddNullChecks
-                ? CreateArgumentNullException("source")
-                : string.Empty),
-            "BuildersNamespace" => evaluator.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, context),
-            _ => pipelinePlaceholderProcessors.Select(x => x.Evaluate(value, new PlaceholderSettingsBuilder().WithFormatProvider(FormatProvider), new PipelineContext<IType>(sourceModel), evaluator)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Continue<GenericFormattableString>()
-        };
-    }
+    //    return value switch
+    //    {
+    //        "NullCheck.Source" => Result.Success<GenericFormattableString>(Settings.AddNullChecks
+    //            ? CreateArgumentNullException("source")
+    //            : string.Empty),
+    //        "BuildersNamespace" => evaluator.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, context),
+    //        _ => pipelinePlaceholderProcessors.Select(x => x.Evaluate(value, new PlaceholderSettingsBuilder().WithFormatProvider(FormatProvider), new PipelineContext<IType>(sourceModel), evaluator)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+    //            ?? Result.Continue<GenericFormattableString>()
+    //    };
+    //}
 
-    public Result<GenericFormattableString> GetBuilderPlaceholderProcessorResultForParentChildContext(
-        string value,
-        IExpressionEvaluator evaluator,
-        ContextBase context,
-        IType parentContextModel,
-        Property childContext,
-        IType sourceModel,
-        IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
-    {
-        sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
-        evaluator = evaluator.IsNotNull(nameof(evaluator));
-        context = context.IsNotNull(nameof(context));
-        parentContextModel = parentContextModel.IsNotNull(nameof(parentContextModel));
-        pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
-        childContext = childContext.IsNotNull(nameof(childContext));
+    //public Result<GenericFormattableString> GetBuilderPlaceholderProcessorResultForParentChildContext(
+    //    string value,
+    //    IExpressionEvaluator evaluator,
+    //    ContextBase context,
+    //    IType parentContextModel,
+    //    Property childContext,
+    //    IType sourceModel,
+    //    IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
+    //{
+    //    sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
+    //    evaluator = evaluator.IsNotNull(nameof(evaluator));
+    //    context = context.IsNotNull(nameof(context));
+    //    parentContextModel = parentContextModel.IsNotNull(nameof(parentContextModel));
+    //    pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
+    //    childContext = childContext.IsNotNull(nameof(childContext));
 
-        // note that for now, we assume that a generic type argument should not be included in argument null checks...
-        // this might be the case (for example there is a constraint on class), but this is not supported yet
-        var isGenericArgument = parentContextModel.GenericTypeArguments.Contains(childContext.TypeName);
+    //    // note that for now, we assume that a generic type argument should not be included in argument null checks...
+    //    // this might be the case (for example there is a constraint on class), but this is not supported yet
+    //    var isGenericArgument = parentContextModel.GenericTypeArguments.Contains(childContext.TypeName);
 
-        return value switch
-        {
-            "NullCheck.Source.Argument" => Result.Success<GenericFormattableString>(Settings.AddNullChecks && Settings.AddValidationCode() == ArgumentValidationType.None && !childContext.IsNullable && !childContext.IsValueType && !isGenericArgument// only if the source entity does not use validation...
-                ? $"if (source.{childContext.Name} is not null) "
-                : string.Empty),
-            "NullCheck.Argument" => Result.Success<GenericFormattableString>(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
-                ? CreateArgumentNullException(childContext.Name.ToCamelCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())
-                : string.Empty),
-            "BuildersNamespace" => evaluator.Parse(Settings.BuilderNamespaceFormatString, context.FormatProvider, context),
-            _ => Default(value, evaluator, childContext, sourceModel, pipelinePlaceholderProcessors)
-        };
+    //    return value switch
+    //    {
+    //        "NullCheck.Source.Argument" => Result.Success<GenericFormattableString>(Settings.AddNullChecks && Settings.AddValidationCode() == ArgumentValidationType.None && !childContext.IsNullable && !childContext.IsValueType && !isGenericArgument// only if the source entity does not use validation...
+    //            ? $"if (source.{childContext.Name} is not null) "
+    //            : string.Empty),
+    //        "NullCheck.Argument" => Result.Success<GenericFormattableString>(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
+    //            ? CreateArgumentNullException(childContext.Name.ToCamelCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())
+    //            : string.Empty),
+    //        "BuildersNamespace" => evaluator.Parse(Settings.BuilderNamespaceFormatString, context.FormatProvider, context),
+    //        _ => Default(value, evaluator, childContext, sourceModel, pipelinePlaceholderProcessors)
+    //    };
 
-        Result<GenericFormattableString> Default(string value, IExpressionEvaluator evaluator, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
-        {
-            var pipelinePlaceholderProcessorsArray = pipelinePlaceholderProcessors.ToArray();
-            return pipelinePlaceholderProcessorsArray.Select(x => x.Evaluate(value, new PlaceholderSettingsBuilder().WithFormatProvider(context.FormatProvider), new PropertyContext(childContext, Settings, context.FormatProvider, MapTypeName(childContext.TypeName, string.Empty), Settings.BuilderNewCollectionTypeName), evaluator)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? pipelinePlaceholderProcessorsArray.Select(x => x.Evaluate(value, new PlaceholderSettingsBuilder().WithFormatProvider(context.FormatProvider), new PipelineContext<IType>(sourceModel), evaluator)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? Result.Continue<GenericFormattableString>();
-        }
-    }
+    //    Result<GenericFormattableString> Default(string value, IExpressionEvaluator evaluator, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
+    //    {
+    //        var pipelinePlaceholderProcessorsArray = pipelinePlaceholderProcessors.ToArray();
+    //        return pipelinePlaceholderProcessorsArray.Select(x => x.Evaluate(value, new PlaceholderSettingsBuilder().WithFormatProvider(context.FormatProvider), new PropertyContext(childContext, Settings, context.FormatProvider, MapTypeName(childContext.TypeName, string.Empty), Settings.BuilderNewCollectionTypeName), evaluator)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+    //            ?? pipelinePlaceholderProcessorsArray.Select(x => x.Evaluate(value, new PlaceholderSettingsBuilder().WithFormatProvider(context.FormatProvider), new PipelineContext<IType>(sourceModel), evaluator)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+    //            ?? Result.Continue<GenericFormattableString>();
+    //    }
+    //}
 
     public PropertyBuilder CreatePropertyForEntity(Property property, string alternateTypeMetadataName = "")
     {
@@ -257,14 +257,15 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         enumerableOverloadCode = enumerableOverloadCode.IsNotNull(nameof(enumerableOverloadCode));
         arrayOverloadCode = arrayOverloadCode.IsNotNull(nameof(arrayOverloadCode));
 
-        return new AsyncResultDictionaryBuilder<GenericFormattableString>()
+        return await new AsyncResultDictionaryBuilder<GenericFormattableString>()
             .Add(NamedResults.TypeName, () => property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator))
             .Add(NamedResults.Namespace, evaluator.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext))
             .Add(NamedResults.BuilderName, evaluator.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext))
             .Add("AddMethodName", evaluator.Parse(Settings.AddMethodNameFormatString, FormatProvider, parentChildContext))
-            .AddRange("EnumerableOverload.{0}", () => enumerableOverloadCode)
-            .AddRange("ArrayOverload.{0}", () => arrayOverloadCode)
-            .Build();
+            .AddRange("EnumerableOverload.{0}", enumerableOverloadCode)
+            .AddRange("ArrayOverload.{0}", arrayOverloadCode)
+            .Build()
+            .ConfigureAwait(false);
     }
 
     public async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsForBuilderNonCollectionProperties(

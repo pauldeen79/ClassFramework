@@ -4,16 +4,16 @@ public class AbstractBuilderComponent(IExpressionEvaluator evaluator) : IPipelin
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    public async Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (context.Request.IsBuilderForAbstractEntity)
         {
-            var nameResult = _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
+            var nameResult = await _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request).ConfigureAwait(false);
             if (!nameResult.IsSuccessful())
             {
-                return Task.FromResult<Result>(nameResult);
+                return nameResult;
             }
 
             context.Request.Builder.WithAbstract();
@@ -33,6 +33,6 @@ public class AbstractBuilderComponent(IExpressionEvaluator evaluator) : IPipelin
             }
         }
 
-        return Task.FromResult(Result.Success());
+        return Result.Success();
     }
 }

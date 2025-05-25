@@ -4,30 +4,31 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public async Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        var results = new ResultDictionaryBuilder<GenericFormattableString>()
-            .Add(NamedResults.Name, () => _evaluator.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request))
-            .Add(NamedResults.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, () => _evaluator.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)))
-            .Add("BuilderInterfaceNamespace", () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomBuilderInterfaceNamespace, () => _evaluator.Parse(context.Request.Settings.BuilderNamespaceFormatString, context.Request.FormatProvider, context.Request)))
-            .Add("ToBuilderMethodName", () => _evaluator.Parse(context.Request.Settings.ToBuilderFormatString, context.Request.FormatProvider, context.Request))
-            .Add("ToTypedBuilderMethodName", () => _evaluator.Parse(context.Request.Settings.ToTypedBuilderFormatString, context.Request.FormatProvider, context.Request))
-            .Add("BuilderName", () => _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request))
-            .Build();
+        var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
+            .Add(NamedResults.Name, _evaluator.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request))
+            .Add(NamedResults.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, _evaluator.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request)))
+            .Add("BuilderInterfaceNamespace", context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomBuilderInterfaceNamespace, _evaluator.Parse(context.Request.Settings.BuilderNamespaceFormatString, context.Request.FormatProvider, context.Request)))
+            .Add("ToBuilderMethodName", _evaluator.Parse(context.Request.Settings.ToBuilderFormatString, context.Request.FormatProvider, context.Request))
+            .Add("ToTypedBuilderMethodName", _evaluator.Parse(context.Request.Settings.ToTypedBuilderFormatString, context.Request.FormatProvider, context.Request))
+            .Add("BuilderName", _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request))
+            .Build()
+            .ConfigureAwait(false);
 
         var error = results.GetError();
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Task.FromResult<Result>(error);
+            return error;
         }
 
         var methodName = results["ToBuilderMethodName"].Value!;
         if (string.IsNullOrEmpty(methodName))
         {
-            return Task.FromResult(Result.Success());
+            return Result.Success();
         }
 
         var typedMethodName = results["ToTypedBuilderMethodName"].Value!;
@@ -55,7 +56,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
         if (customNamespaceError is not null)
         {
             // Error in formattable string parsing
-            return Task.FromResult<Result>(customNamespaceError);
+            return customNamespaceError;
         }
 
         var builderConcreteName = context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is null
@@ -94,7 +95,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                     .AddStringCodeStatements($"return new {builderConcreteTypeName}{generics}(this);"));
         }
 
-        return Task.FromResult(AddExplicitInterfaceImplementations(context, methodName, typedMethodName));
+        return await AddExplicitInterfaceImplementations(context, methodName, typedMethodName).ConfigureAwait(false);
     }
 
     private static string GetBuilderInterfaceNamespace(PipelineContext<EntityContext> context, IReadOnlyDictionary<string, Result<GenericFormattableString>> results, string ns)
@@ -124,17 +125,17 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
         }
     }
 
-    private Result AddExplicitInterfaceImplementations(PipelineContext<EntityContext> context, string methodName, string typedMethodName)
+    private async Task<Result> AddExplicitInterfaceImplementations(PipelineContext<EntityContext> context, string methodName, string typedMethodName)
     {
         if (!context.Request.Settings.UseBuilderAbstractionsTypeConversion)
         {
             return Result.Continue();
         }
 
-        var interfaces = context.Request.SourceModel.Interfaces
+        var interfaces = (await Task.WhenAll(context.Request.SourceModel.Interfaces
             .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Where(x => context.Request.Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(x.GetNamespaceWithDefault()))
-            .Select(x =>
+            .Select(async x =>
             {
                 var metadata = context.Request.GetMappingMetadata(x).ToArray();
                 var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
@@ -148,15 +149,15 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                     var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
                     var newFullName = $"{ns}.{newTypeName}";
 
-                    return _evaluator.Parse
+                    return (await _evaluator.Parse
                     (
                         newFullName,
                         context.Request.FormatProvider,
                         new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings)
-                    ).Transform(y => new { EntityName = x, BuilderName = y.ToString() });
+                    ).ConfigureAwait(false)).Transform(y => new { EntityName = x, BuilderName = y.ToString() });
                 }
-                return Result.Success(new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) });
-            })
+                return Result.Success(new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName(), string.Empty) });
+            })).ConfigureAwait(false))
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 
