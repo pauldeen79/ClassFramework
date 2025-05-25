@@ -1,22 +1,22 @@
-namespace ClassFramework.Pipelines.Tests.Extensions;
+﻿namespace ClassFramework.Pipelines.Tests.Extensions;
 
 public class PipelineContextExtensionsTests : TestBase
 {
     public class CreateEntityInstanciation : PipelineContextExtensionsTests
     {
         [Fact]
-        public void Returns_Invalid_On_Abstract_Class()
+        public async Task Returns_Invalid_On_Abstract_Class()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").WithAbstract().AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            InitializeParser();
+            await InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
+            var result = await context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -24,18 +24,18 @@ public class PipelineContextExtensionsTests : TestBase
         }
 
         [Fact]
-        public void Rrturns_Invalid_On_Interface()
+        public async Task Returns_Invalid_On_Interface()
         {
             // Arrange
             var sourceModel = new InterfaceBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            InitializeParser();
+            await InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
+            var result = await context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -43,18 +43,18 @@ public class PipelineContextExtensionsTests : TestBase
         }
 
         [Fact]
-        public void Returns_Correct_Result_For_Class_With_Public_Parameterless_Constructor()
+        public async Task Returns_Correct_Result_For_Class_With_Public_Parameterless_Constructor()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            InitializeParser();
+            await InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
+            var result = await context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -62,18 +62,18 @@ public class PipelineContextExtensionsTests : TestBase
         }
 
         [Fact]
-        public void Returns_Correct_Result_For_Class_With_Public_Constructor_With_Parameters()
+        public async Task Returns_Correct_Result_For_Class_With_Public_Constructor_With_Parameters()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).AddConstructors(new ConstructorBuilder().AddParameter("myProperty", typeof(string))).Build();
-            InitializeParser();
+            await InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
+            var result = await context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -81,18 +81,18 @@ public class PipelineContextExtensionsTests : TestBase
         }
 
         [Fact]
-        public void Returns_Correct_Result_For_Struct_With_Public_Parameterless_Constructor()
+        public async Task Returns_Correct_Result_For_Struct_With_Public_Parameterless_Constructor()
         {
             // Arrange
             var sourceModel = new StructBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            InitializeParser();
+            await InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
+            var result = await context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -100,7 +100,7 @@ public class PipelineContextExtensionsTests : TestBase
         }
 
         [Fact]
-        public void Returns_Correct_Result_For_Class_With_CustomEntityInstanciation_Metadata()
+        public async Task Returns_Correct_Result_For_Class_With_CustomEntityInstanciation_Metadata()
         {
             // Arrange
             var sourceModel = new ClassBuilder()
@@ -108,7 +108,7 @@ public class PipelineContextExtensionsTests : TestBase
                 .WithName("MyClass")
                 .AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
                 .Build();
-            InitializeParser();
+            await InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder()
                 .AddTypenameMappings(new TypenameMappingBuilder()
                     .WithSourceType(sourceModel)
@@ -116,11 +116,11 @@ public class PipelineContextExtensionsTests : TestBase
                     .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderEntityInstanciation).WithValue("Factory.DoSomething(this)")))
                 .Build(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty);
+            var result = await context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

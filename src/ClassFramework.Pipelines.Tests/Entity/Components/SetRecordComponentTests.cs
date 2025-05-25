@@ -22,7 +22,7 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetR
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(createRecord: createRecordSettingValue);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));

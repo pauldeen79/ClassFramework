@@ -21,7 +21,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties();
-            InitializeParser();
+            await InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: false);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
@@ -39,7 +39,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties();
-            InitializeParser();
+            await InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "{Error}", implementIEquatable: true);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
@@ -57,7 +57,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties();
-            InitializeParser();
+            await InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
@@ -75,7 +75,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties(itemType: IEquatableItemType.Properties);
-            InitializeParser();
+            await InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true, iEquatableItemType: IEquatableItemType.Properties);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
@@ -112,7 +112,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties(itemType: IEquatableItemType.Fields);
-            InitializeParser();
+            await InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true, iEquatableItemType: IEquatableItemType.Fields);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));

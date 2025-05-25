@@ -20,7 +20,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
         {
             // Arrange
             var sourceModel = CreateClass(baseClass: string.Empty);
-            InitializeParser();
+            await InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(
                 baseClass: null,
@@ -42,7 +42,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
         {
             // Arrange
             var sourceModel = CreateClass(baseClass: sourceModelBaseClass);
-            InitializeParser();
+            await InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(
                 baseClass: new ClassBuilder().WithName("MyBaseClass").WithNamespace("MyBaseNamespace").BuildTyped(),
@@ -62,7 +62,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
         {
             // Arrange
             var sourceModel = CreateClass(baseClass: "MyBaseNamespace.MyBaseClass");
-            InitializeParser();
+            await InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(
                 baseClass: null,
