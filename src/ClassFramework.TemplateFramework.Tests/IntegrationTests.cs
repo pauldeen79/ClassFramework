@@ -562,7 +562,7 @@ namespace Test.Domain.Builders
         result.InnerResults.First().ErrorMessage.ShouldBe("An error occured while processing the pipeline. See the inner results for more details.");
         result.InnerResults.First().InnerResults.Count.ShouldBe(1);
         result.InnerResults.First().InnerResults.First().Status.ShouldBe(ResultStatus.Invalid);
-        result.InnerResults.First().InnerResults.First().ErrorMessage.ShouldBe("Unknown variable found: property.Kaboom");
+        result.InnerResults.First().InnerResults.First().ErrorMessage.ShouldBe("Unknown property on type System.Object: Kaboom");
     }
 
     [Fact]

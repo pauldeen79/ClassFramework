@@ -34,7 +34,9 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IMember, NamespaceFunction>()
             .AddSingleton<IMember, NoGenericsFunction>()
             .AddSingleton<IMember, NoInterfacePrefixFunction>()
-            .AddSingleton<IMember, NullCheckFunction>();
+            .AddSingleton<IMember, NullCheckFunction>()
+            .AddSingleton<IMember, SourceArgumentNullCheckFunction>()
+            .AddSingleton<IMember, SourceNullCheckFunction>();
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services

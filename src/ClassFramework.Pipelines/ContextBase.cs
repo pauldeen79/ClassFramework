@@ -174,9 +174,6 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
 
     //    return value switch
     //    {
-    //        "NullCheck.Source" => Result.Success<GenericFormattableString>(Settings.AddNullChecks
-    //            ? CreateArgumentNullException("source")
-    //            : string.Empty),
     //        "BuildersNamespace" => evaluator.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, context),
     //        _ => pipelinePlaceholderProcessors.Select(x => x.Evaluate(value, new PlaceholderSettingsBuilder().WithFormatProvider(FormatProvider), new PipelineContext<IType>(sourceModel), evaluator)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
     //            ?? Result.Continue<GenericFormattableString>()
@@ -205,9 +202,6 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
 
     //    return value switch
     //    {
-    //        "NullCheck.Source.Argument" => Result.Success<GenericFormattableString>(Settings.AddNullChecks && Settings.AddValidationCode() == ArgumentValidationType.None && !childContext.IsNullable && !childContext.IsValueType && !isGenericArgument// only if the source entity does not use validation...
-    //            ? $"if (source.{childContext.Name} is not null) "
-    //            : string.Empty),
     //        "NullCheck.Argument" => Result.Success<GenericFormattableString>(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
     //            ? CreateArgumentNullException(childContext.Name.ToCamelCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())
     //            : string.Empty),

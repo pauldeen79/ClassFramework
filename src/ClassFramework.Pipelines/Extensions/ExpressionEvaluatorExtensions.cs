@@ -71,7 +71,7 @@ public static class ExpressionEvaluatorExtensions
         else if (context is ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContextBuilder)
         {
             builder
-                .Add("class", parentChildContextBuilder.ParentContext.Request.SourceModel)
+                .Add("class", new ClassModel(parentChildContextBuilder.ParentContext.Request.SourceModel))
                 .Add("property", parentChildContextBuilder.ChildContext)
                 .Add("collectionTypeName", parentChildContextBuilder.Settings.CollectionTypeName)
                 .Add("addMethodNameFormatString", parentChildContextBuilder.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
@@ -82,7 +82,7 @@ public static class ExpressionEvaluatorExtensions
         else if (context is ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContextBuilderExtension)
         {
             builder
-                .Add("class", parentChildContextBuilderExtension.ParentContext.Request.SourceModel)
+                .Add("class", new ClassModel(parentChildContextBuilderExtension.ParentContext.Request.SourceModel))
                 .Add("property", parentChildContextBuilderExtension.ChildContext)
                 .Add("collectionTypeName", parentChildContextBuilderExtension.Settings.CollectionTypeName)
                 .Add("addMethodNameFormatString", parentChildContextBuilderExtension.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
@@ -93,7 +93,7 @@ public static class ExpressionEvaluatorExtensions
         else if (context is ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity)
         {
             builder
-                .Add("class", parentChildContextEntity.ParentContext.Request.SourceModel)
+                .Add("class", new ClassModel(parentChildContextEntity.ParentContext.Request.SourceModel))
                 .Add("property", parentChildContextEntity.ChildContext)
                 .Add("collectionTypeName", parentChildContextEntity.Settings.CollectionTypeName)
                 .Add("addMethodNameFormatString", parentChildContextEntity.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))

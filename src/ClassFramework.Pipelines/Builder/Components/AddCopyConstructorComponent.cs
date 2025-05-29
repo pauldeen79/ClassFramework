@@ -37,7 +37,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
     private async Task<Result<ConstructorBuilder>> CreateCopyConstructor(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add("NullCheck.Source", _evaluator.EvaluateAsync("{NullCheck.Source}", context.Request.FormatProvider, context, token))
+            .Add("NullCheck.Source", _evaluator.EvaluateAsync("{SourceNullCheck()}", context.Request.FormatProvider, context.Request, token))
             .Add(NamedResults.Name, _evaluator.EvaluateAsync(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token))
             .Add(NamedResults.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateAsync(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
             .Build()
