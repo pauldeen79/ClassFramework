@@ -72,7 +72,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
         {
             var argumentNullCheckResult = await _evaluator.EvaluateAsync
             (
-                context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
+                context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{ArgumentNullCheck()}"),
                 context.Request.FormatProvider,
                 new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings),
                 token

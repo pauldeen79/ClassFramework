@@ -25,6 +25,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IMember, PropertyNullableRequiredSuffixProperty>()
             .AddSingleton<IMember, PropertyParentTypeFullNameProperty>()
             .AddSingleton<IMember, PropertyTypeNameProperty>()
+            .AddSingleton<IMember, ArgumentNullCheckFunction>()
             .AddSingleton<IMember, ClassNameFunction>()
             .AddSingleton<IMember, CollectionItemTypeFunction>()
             .AddSingleton<IMember, CsharpFriendlyNameFunction>()

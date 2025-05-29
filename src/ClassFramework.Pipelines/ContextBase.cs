@@ -161,61 +161,6 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .Build();
     }
 
-    //public Result<GenericFormattableString> GetBuilderPlaceholderProcessorResultForPipelineContext(
-    //    string value,
-    //    IExpressionEvaluator evaluator,
-    //    object context,
-    //    IType sourceModel,
-    //    IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
-    //{
-    //    sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
-    //    evaluator = evaluator.IsNotNull(nameof(evaluator));
-    //    pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
-
-    //    return value switch
-    //    {
-    //        _ => pipelinePlaceholderProcessors.Select(x => x.Evaluate(value, new PlaceholderSettingsBuilder().WithFormatProvider(FormatProvider), new PipelineContext<IType>(sourceModel), evaluator)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-    //            ?? Result.Continue<GenericFormattableString>()
-    //    };
-    //}
-
-    //public Result<GenericFormattableString> GetBuilderPlaceholderProcessorResultForParentChildContext(
-    //    string value,
-    //    IExpressionEvaluator evaluator,
-    //    ContextBase context,
-    //    IType parentContextModel,
-    //    Property childContext,
-    //    IType sourceModel,
-    //    IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
-    //{
-    //    sourceModel = sourceModel.IsNotNull(nameof(sourceModel));
-    //    evaluator = evaluator.IsNotNull(nameof(evaluator));
-    //    context = context.IsNotNull(nameof(context));
-    //    parentContextModel = parentContextModel.IsNotNull(nameof(parentContextModel));
-    //    pipelinePlaceholderProcessors = pipelinePlaceholderProcessors.IsNotNull(nameof(pipelinePlaceholderProcessors));
-    //    childContext = childContext.IsNotNull(nameof(childContext));
-
-    //    // note that for now, we assume that a generic type argument should not be included in argument null checks...
-    //    // this might be the case (for example there is a constraint on class), but this is not supported yet
-    //    var isGenericArgument = parentContextModel.GenericTypeArguments.Contains(childContext.TypeName);
-
-    //    return value switch
-    //    {
-    //        "NullCheck.Argument" => Result.Success<GenericFormattableString>(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
-    //            ? CreateArgumentNullException(childContext.Name.ToCamelCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())
-    //            : string.Empty),
-    //        _ => Default(value, evaluator, childContext, sourceModel, pipelinePlaceholderProcessors)
-    //    };
-
-    //    Result<GenericFormattableString> Default(string value, IExpressionEvaluator evaluator, Property childContext, IType sourceModel, IEnumerable<IPipelinePlaceholderProcessor> pipelinePlaceholderProcessors)
-    //    {
-    //        var pipelinePlaceholderProcessorsArray = pipelinePlaceholderProcessors.ToArray();
-    //        return pipelinePlaceholderProcessorsArray.Select(x => x.Evaluate(value, new PlaceholderSettingsBuilder().WithFormatProvider(context.FormatProvider), new PropertyContext(childContext, Settings, context.FormatProvider, MapTypeName(childContext.TypeName, string.Empty), Settings.BuilderNewCollectionTypeName), evaluator)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-    //            ?? pipelinePlaceholderProcessorsArray.Select(x => x.Evaluate(value, new PlaceholderSettingsBuilder().WithFormatProvider(context.FormatProvider), new PipelineContext<IType>(sourceModel), evaluator)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-    //            ?? Result.Continue<GenericFormattableString>();
-    //    }
-    //}
-
     public PropertyBuilder CreatePropertyForEntity(Property property, string alternateTypeMetadataName = "")
     {
         property = property.IsNotNull(nameof(property));
@@ -276,7 +221,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .Add(NamedResults.Namespace, evaluator.EvaluateAsync(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, token))
             .Add("MethodName", evaluator.EvaluateAsync(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext, token))
             .Add(NamedResults.BuilderName, evaluator.EvaluateAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, token))
-            .Add("ArgumentNullCheck", evaluator.EvaluateAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), FormatProvider, parentChildContext, token))
+            .Add("ArgumentNullCheck", evaluator.EvaluateAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{ArgumentNullCheck()}"), FormatProvider, parentChildContext, token))
             .Add("BuilderWithExpression", evaluator.EvaluateAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{property.Name} = {CsharpFriendlyName(ToCamelCase(property.Name))};"), FormatProvider, parentChildContext, token))
             .Build()
             .ConfigureAwait(false);
