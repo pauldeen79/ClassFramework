@@ -10,6 +10,7 @@ public class ClassFullNameProperty : IProperty
         {
             context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-            return context.GetInstanceValueResult<ClassModel>().Transform<object?>(result => result.FullName);
+            return context.GetInstanceValueResult<ClassModel>()
+                .Transform<object?>(classModel => classModel.FullName.WithoutTypeGenerics());
         }, token);
 }

@@ -10,7 +10,6 @@ internal static class FunctionHelpers
             .OnSuccess(results => functionDelegate(results.GetValue<string>("Expression")));
 
     internal static async Task<Result<object?>> ParseFromContextAsync(FunctionCallContext context, string functionName, Func<ContextBase, Result<object?>> functionDelegate)
-        //TODO: Replace ["context"]
         => (await context.IsNotNull(nameof(context)).Context.State["context"].ConfigureAwait(false)).Value switch
         {
             ContextBase contextBase => functionDelegate(contextBase),

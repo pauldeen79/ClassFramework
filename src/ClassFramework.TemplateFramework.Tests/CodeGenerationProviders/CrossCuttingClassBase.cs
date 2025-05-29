@@ -69,7 +69,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                .WithCopyAttributePredicate(CopyAttributePredicate)
                .WithCopyInterfacePredicate(CopyInterfacePredicate)
                .WithCopyMethodPredicate(CopyMethodPredicate)
-               .WithEntityNameFormatString("{NoInterfacePrefix($class.Name)}")
+               .WithEntityNameFormatString("{NoInterfacePrefix(class.Name)}")
                .WithEntityNamespaceFormatString(@namespace)
                .WithEnableInheritance()
                .WithIsAbstract()

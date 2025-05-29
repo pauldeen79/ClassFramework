@@ -1,5 +1,7 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
+[MemberArgument("Expression", typeof(string))]
+[MemberArgument("AddBrackets", typeof(string), false)]
 public class GenericArgumentsFunction : IFunction
 {
     public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
@@ -15,7 +17,7 @@ public class GenericArgumentsFunction : IFunction
         var addBrackets = false;
         if (context.FunctionCall.Arguments.Count >= 2)
         {
-            var result = await context.FunctionCall.GetArgumentValueResultAsync(1, "GenericArguments", context, token).ConfigureAwait(false);
+            var result = await context.FunctionCall.GetArgumentValueResultAsync(1, "AddBrackets", context, token).ConfigureAwait(false);
             if (!result.IsSuccessful())
             {
                 return result;

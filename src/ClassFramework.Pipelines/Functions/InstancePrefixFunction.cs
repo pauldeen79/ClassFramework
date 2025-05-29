@@ -6,7 +6,6 @@ public class InstancePrefixFunction : IFunction
     {
         context = context.IsNotNull(nameof(context));
 
-        //TODO: Replace ["context"]
         var contextValue = (await context.Context.State["context"].ConfigureAwait(false)).Value;
         var value = contextValue is ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>
             ? "instance."

@@ -1,16 +1,16 @@
 ﻿namespace ClassFramework.Pipelines.InstanceProperties;
 
-[MemberName(nameof(ClassModel.Namespace))]
-[MemberInstanceType(typeof(ClassModel))]
+[MemberName(nameof(Property.TypeName))]
+[MemberInstanceType(typeof(Property))]
 [MemberResultType(typeof(string))]
-public class ClassNamespaceProperty : IProperty
+public class PropertyTypeNameProperty : IProperty
 {
     public Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
         => Task.Run(() =>
         {
             context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-            return context.GetInstanceValueResult<ClassModel>()
-                .Transform<object?>(classModel => classModel.Namespace);
+            return context.GetInstanceValueResult<Property>()
+                .Transform<object?>(property => property.TypeName);
         }, token);
 }
