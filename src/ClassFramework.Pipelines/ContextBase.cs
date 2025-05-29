@@ -174,7 +174,6 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
 
     //    return value switch
     //    {
-    //        "BuildersNamespace" => evaluator.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, context),
     //        _ => pipelinePlaceholderProcessors.Select(x => x.Evaluate(value, new PlaceholderSettingsBuilder().WithFormatProvider(FormatProvider), new PipelineContext<IType>(sourceModel), evaluator)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
     //            ?? Result.Continue<GenericFormattableString>()
     //    };
@@ -205,7 +204,6 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
     //        "NullCheck.Argument" => Result.Success<GenericFormattableString>(Settings.AddNullChecks && !childContext.IsValueType && !childContext.IsNullable && !isGenericArgument
     //            ? CreateArgumentNullException(childContext.Name.ToCamelCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())
     //            : string.Empty),
-    //        "BuildersNamespace" => evaluator.Parse(Settings.BuilderNamespaceFormatString, context.FormatProvider, context),
     //        _ => Default(value, evaluator, childContext, sourceModel, pipelinePlaceholderProcessors)
     //    };
 
