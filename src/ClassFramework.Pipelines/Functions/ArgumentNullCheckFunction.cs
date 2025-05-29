@@ -12,6 +12,8 @@ public class ArgumentNullCheckFunction : IFunction<string>
         return (await new AsyncResultDictionaryBuilder()
             .Add("settings", context.GetSettingsAsync())
             .Add("property", context.Context.State.TryGetValueAsync<Property>("property"))
+            .Add("class", context.Context.State.TryGetValueAsync<ClassModel>("class"))
+            .Add("context", context.Context.State.TryGetValueAsync<ContextBase>("context"))
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(results =>
