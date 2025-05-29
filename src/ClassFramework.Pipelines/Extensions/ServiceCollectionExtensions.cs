@@ -10,7 +10,6 @@ public static class ServiceCollectionExtensions
             .AddReflectionPipeline()
             .AddInterfacePipeline()
             .AddSharedPipelineComponents()
-            //.AddParserComponents()
             .AddPipelineService();
 
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
@@ -18,8 +17,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IMember, ClassFullNameProperty>()
             .AddSingleton<IMember, ClassNameProperty>()
             .AddSingleton<IMember, ClassNamespaceProperty>()
-            //.AddScoped<IVariable, AddMethodNameFormatStringVariable>()
-            //.AddScoped<IVariable, CollectionTypeNameVariable>()
             //.AddScoped<IVariable, PropertyVariable>()
             .AddSingleton<IFunction, ClassNameFunction>()
             .AddSingleton<IFunction, CollectionItemTypeFunction>()
@@ -30,13 +27,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IFunction, NamespaceFunction>()
             .AddSingleton<IFunction, NoGenericsFunction>()
             .AddSingleton<IFunction, NoInterfacePrefixFunction>()
-            .AddSingleton<IFunction, NullCheckFunction>()
-            //.AddScoped<IObjectResolverProcessor, CultureInfoResolver>()
-            //.AddScoped<IObjectResolverProcessor, MappedContextBaseResolver>()
-            //.AddScoped<IObjectResolverProcessor, PipelineSettingsResolver>()
-            //.AddScoped<IObjectResolverProcessor, PropertyResolver>()
-            //.AddScoped<IObjectResolverProcessor, TypeNameMapperResolver>()
-        ;
+            .AddSingleton<IFunction, NullCheckFunction>();
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
@@ -114,11 +105,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.GenericsComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.PartialComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.SetNameComponent>();
-
-    //private static IServiceCollection AddParserComponents(this IServiceCollection services)
-    //    => services
-    //        .AddScoped<IPlaceholder, BuilderPipelinePlaceholderProcessor>()
-    //        .AddScoped<IPlaceholder, BuilderExtensionPipelinePlaceholderProcessor>();
 
     private static IServiceCollection AddPipelineService(this IServiceCollection services)
         => services

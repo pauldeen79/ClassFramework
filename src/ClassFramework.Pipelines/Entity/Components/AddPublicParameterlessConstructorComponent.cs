@@ -45,7 +45,7 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
         => (await _evaluator.EvaluateAsync
         (
             property.TypeName.FixTypeName().IsCollectionTypeName()
-                ? "{property.EntityMemberName} = new {$collectionTypeName}<{GenericArguments(property.TypeName)}>();"
+                ? "{property.EntityMemberName} = new {collectionTypeName}<{GenericArguments(property.TypeName)}>();"
                 : "{property.EntityMemberName} = {property.DefaultValue};",
             context.Request.FormatProvider,
             new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings),
