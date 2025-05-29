@@ -58,8 +58,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool IsAbstract => false;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
     protected virtual bool AllowGenerationWithoutProperties => true;
-    protected virtual string SetMethodNameFormatString => "With{$property.Name}";
-    protected virtual string AddMethodNameFormatString => "Add{$property.Name}";
+    protected virtual string SetMethodNameFormatString => "With{property.Name}";
+    protected virtual string AddMethodNameFormatString => "Add{property.Name}";
     protected virtual string ToBuilderFormatString => "ToBuilder";
     protected virtual string ToTypedBuilderFormatString => "ToTypedBuilder";
     protected virtual string BuildMethodName => "Build";
@@ -316,10 +316,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .AddMetadata
             (
                 new MetadataBuilder().WithValue(InheritFromInterfaces ? $"{RootNamespace}.Builders" : $"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderInterfaceNamespace),
-                new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}").WithName(MetadataNames.CustomBuilderInterfaceName),
-                new MetadataBuilder().WithValue(InheritFromInterfaces ? $"{RootNamespace}.Builders.I{{NoGenerics(ClassName($property.TypeName))}}Builder{{GenericArguments($property.TypeName, true)}}" : $"{CoreNamespace}.Builders.Abstractions.I{{NoGenerics(ClassName($property.TypeName))}}Builder{{GenericArguments($property.TypeName, true)}}").WithName(MetadataNames.CustomBuilderInterfaceTypeName),
+                new MetadataBuilder().WithValue("{NoGenerics(ClassName(property.TypeName))}Builder{GenericArguments(property.TypeName, true)}").WithName(MetadataNames.CustomBuilderInterfaceName),
+                new MetadataBuilder().WithValue(InheritFromInterfaces ? $"{RootNamespace}.Builders.I{{NoGenerics(ClassName(property.TypeName))}}Builder{{GenericArguments(property.TypeName, true)}}" : $"{CoreNamespace}.Builders.Abstractions.I{{NoGenerics(ClassName(property.TypeName))}}Builder{{GenericArguments(property.TypeName, true)}}").WithName(MetadataNames.CustomBuilderInterfaceTypeName),
                 new MetadataBuilder().WithValue(InheritFromInterfaces ? $"{RootNamespace}.Builders" : $"{CoreNamespace}.Builders.Abstractions").WithName(MetadataNames.CustomBuilderParentTypeNamespace),
-                new MetadataBuilder().WithValue("{NoGenerics(ClassName($property.ParentTypeFullName))}Builder{GenericArguments($property.ParentTypeFullName, true)}").WithName(MetadataNames.CustomBuilderParentTypeName)
+                new MetadataBuilder().WithValue("{NoGenerics(ClassName(property.ParentTypeFullName))}Builder{GenericArguments(property.ParentTypeFullName, true)}").WithName(MetadataNames.CustomBuilderParentTypeName)
             );
 
         foreach (var entityClassName in GetPureAbstractModels().Select(x => x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)))
@@ -454,7 +454,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return
         [
             new MetadataBuilder().WithValue(buildersNamespace).WithName(MetadataNames.CustomBuilderNamespace),
-            new MetadataBuilder().WithValue("{ClassName($property.TypeName)}Builder").WithName(MetadataNames.CustomBuilderName),
+            new MetadataBuilder().WithValue("{ClassName(property.TypeName)}Builder").WithName(MetadataNames.CustomBuilderName),
             new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
             new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
         ];

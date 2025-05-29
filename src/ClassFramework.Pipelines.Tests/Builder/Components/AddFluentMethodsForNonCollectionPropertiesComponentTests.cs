@@ -41,7 +41,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var sourceModel = CreateClass();
             await InitializeParser();
             var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{$property.Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{property.Name}");
             var context = CreateContext(sourceModel, settings);
 
             // Act
@@ -75,7 +75,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var sourceModel = CreateClassWithPropertyThatHasAReservedName(typeof(int));
             await InitializeParser();
             var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{$property.Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{property.Name}");
             var context = CreateContext(sourceModel, settings);
 
             // Act
@@ -108,7 +108,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             await InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
-                setMethodNameFormatString: "With{$property.Name}",
+                setMethodNameFormatString: "With{property.Name}",
                 addNullChecks: true);
             var context = CreateContext(sourceModel, settings);
 
@@ -149,7 +149,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             await InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
-                setMethodNameFormatString: "With{$property.Name}",
+                setMethodNameFormatString: "With{property.Name}",
                 addNullChecks: true);
             var context = CreateContext(sourceModel, settings);
 
@@ -189,7 +189,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             await InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
-                setMethodNameFormatString: "With{$property.Name}",
+                setMethodNameFormatString: "With{property.Name}",
                 addNullChecks: true);
             var context = CreateContext(sourceModel, settings);
 
@@ -226,7 +226,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             await InitializeParser();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
-                setMethodNameFormatString: "With{$property.Name}",
+                setMethodNameFormatString: "With{property.Name}",
                 addNullChecks: true,
                 typenameMappings:
                 [
@@ -276,7 +276,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableEntityInheritance: true,
-                setMethodNameFormatString: "With{$property.Name}");
+                setMethodNameFormatString: "With{property.Name}");
             var context = CreateContext(sourceModel, settings);
 
             // Act
@@ -310,16 +310,16 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var sourceModel = CreateClass();
             await InitializeParser();
             var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{$property.Name}", typenameMappings:
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{property.Name}", typenameMappings:
             [
                 new TypenameMappingBuilder()
                     .WithSourceType(typeof(int))
                     .WithTargetType(typeof(int))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("Custom{$property.Name}")),
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("Custom{property.Name}")),
                 new TypenameMappingBuilder()
                     .WithSourceType(typeof(string))
                     .WithTargetType(typeof(string))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("Custom{$property.Name}"))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("Custom{property.Name}"))
             ]);
             var context = CreateContext(sourceModel, settings);
 
@@ -357,7 +357,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var sourceModel = CreateClass();
             await InitializeParser();
             var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{$property.Name}", typenameMappings:
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{property.Name}", typenameMappings:
             [
                 new TypenameMappingBuilder()
                     .WithSourceType(typeof(int))
@@ -391,16 +391,16 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             var sourceModel = CreateClass();
             await InitializeParser();
             var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{$property.Name}", typenameMappings:
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{property.Name}", typenameMappings:
             [
                 new TypenameMappingBuilder()
                     .WithSourceType(typeof(int))
                     .WithTargetType(typeof(int))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{$property.Name} = {ToCamelCase($property.Name)}; // custom")),
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{property.Name} = {ToCamelCase(property.Name)}; // custom")),
                 new TypenameMappingBuilder()
                     .WithSourceType(typeof(string))
                     .WithTargetType(typeof(string))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{$property.Name} = {ToCamelCase($property.Name)}; // custom"))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{property.Name} = {ToCamelCase(property.Name)}; // custom"))
             ]);
             var context = CreateContext(sourceModel, settings);
 
