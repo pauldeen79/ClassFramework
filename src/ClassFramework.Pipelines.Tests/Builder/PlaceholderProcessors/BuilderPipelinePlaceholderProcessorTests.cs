@@ -57,7 +57,7 @@
 //        {
 //            // Arrange
 //            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
-//            formattableStringParser.Parse("{$class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<GenericFormattableString>("MyNamespace.Builders"));
+//            formattableStringParser.Parse("{class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<GenericFormattableString>("MyNamespace.Builders"));
 //            var sut = CreateSut();
 //            var settings = CreateSettingsForBuilder(addNullChecks: true, validateArguments: ArgumentValidationType.None);
 //            var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
@@ -76,7 +76,7 @@
 //        {
 //            // Arrange
 //            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
-//            formattableStringParser.Parse("{$class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<GenericFormattableString>("MyNamespace.Builders"));
+//            formattableStringParser.Parse("{class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<GenericFormattableString>("MyNamespace.Builders"));
 //            var sut = CreateSut();
 //            var settings = CreateSettingsForBuilder(addNullChecks: true, validateArguments: ArgumentValidationType.IValidatableObject);
 //            var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
@@ -96,7 +96,7 @@
 //        {
 //            // Arrange
 //            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
-//            formattableStringParser.Parse("{$class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<GenericFormattableString>("MyNamespace.Builders"));
+//            formattableStringParser.Parse("{class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<GenericFormattableString>("MyNamespace.Builders"));
 //            var sut = CreateSut();
 //            var settings = CreateSettingsForBuilder(addNullChecks: false);
 //            var context = new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
@@ -115,7 +115,7 @@
 //        {
 //            // Arrange
 //            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
-//            formattableStringParser.Parse("{$class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<GenericFormattableString>("MyNamespace.Builders"));
+//            formattableStringParser.Parse("{class.Namespace}.Builders", Arg.Any<FormattableStringParserSettings>(), Arg.Any<object?>()).Returns(Result.Success<GenericFormattableString>("MyNamespace.Builders"));
 //            var sut = CreateSut();
 //            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateModel().Build(), CreateSettingsForBuilder(addNullChecks: true).Build(), CultureInfo.InvariantCulture));
 

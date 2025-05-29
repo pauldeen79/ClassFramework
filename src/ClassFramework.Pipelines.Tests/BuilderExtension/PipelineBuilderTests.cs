@@ -9,7 +9,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderExtensi
                 CreateGenericClass(addProperties),
                 CreateSettingsForBuilder
                 (
-                    builderNamespaceFormatString: "{$class.Namespace}.Builders",
+                    builderNamespaceFormatString: "{class.Namespace}.Builders",
                     allowGenerationWithoutProperties: false,
                     copyAttributes: true
                 ),

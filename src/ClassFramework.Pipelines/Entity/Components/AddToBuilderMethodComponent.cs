@@ -146,7 +146,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                         .WithName("Dummy")
                         .WithTypeName(x)
                         .Build();
-                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
+                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName(property.TypeName))}Builder{GenericArguments(property.TypeName, true)}");
                     var newFullName = $"{ns}.{newTypeName}";
 
                     return (await _evaluator.EvaluateAsync

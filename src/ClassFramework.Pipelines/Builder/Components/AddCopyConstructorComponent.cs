@@ -146,7 +146,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
     {
         if (!isCollectionTypeName)
         {
-            return $"{{$property.BuilderMemberName}} = {result}";
+            return $"{{property.BuilderMemberName}} = {result}";
         }
 
         return result;

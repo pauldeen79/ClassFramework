@@ -153,7 +153,7 @@ public static class PropertyExtensions
 
         if (!string.IsNullOrEmpty(ns))
         {
-            var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{NoGenerics(ClassName($property.TypeName))}Builder");
+            var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{NoGenerics(ClassName(property.TypeName))}Builder");
             var newFullName = $"{ns}.{newTypeName}";
             if (property.TypeName.FixTypeName().IsCollectionTypeName())
             {
@@ -162,11 +162,11 @@ public static class PropertyExtensions
                 {
                     if (!string.IsNullOrEmpty(property.TypeName.FixTypeName().GetCollectionItemType().GetGenericArguments()))
                     {
-                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}").Replace("{NoGenerics(ClassName($property.TypeName))}", "{NoGenerics(ClassName(GenericArguments($property.TypeName)))}").Replace("{GenericArguments($property.TypeName, true)}", "{GenericArguments(CollectionItemType($property.TypeName), true)}")}>";
+                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName(property.TypeName)}", "{ClassName(GenericArguments(property.TypeName))}").Replace("{NoGenerics(ClassName(property.TypeName))}", "{NoGenerics(ClassName(GenericArguments(property.TypeName)))}").Replace("{GenericArguments(property.TypeName, true)}", "{GenericArguments(CollectionItemType(property.TypeName), true)}")}>";
                     }
                     else
                     {
-                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}").Replace("{NoGenerics(ClassName($property.TypeName))}", "{NoGenerics(ClassName(GenericArguments($property.TypeName)))}")}>";
+                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName(property.TypeName)}", "{ClassName(GenericArguments(property.TypeName))}").Replace("{NoGenerics(ClassName(property.TypeName))}", "{NoGenerics(ClassName(GenericArguments(property.TypeName)))}")}>";
                     }
                 }
             }
@@ -207,11 +207,11 @@ public static class PropertyExtensions
             return Result.Success<GenericFormattableString>(context.Request.MapTypeName(property.ParentTypeFullName.FixTypeName(), string.Empty));
         }
 
-        var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ClassName($property.ParentTypeFullName)}");
+        var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ClassName(property.ParentTypeFullName)}");
 
         if (property.TypeName.FixTypeName().IsCollectionTypeName())
         {
-            newTypeName = newTypeName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}");
+            newTypeName = newTypeName.Replace("{ClassName(property.TypeName)}", "{ClassName(GenericArguments(property.TypeName))}");
         }
 
         var newFullName = $"{ns}.{newTypeName}";

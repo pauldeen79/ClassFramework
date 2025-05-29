@@ -71,7 +71,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
             return [Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))];
         }
 
-        return [await _evaluator.EvaluateAsync("return {$addMethodNameFormatString}({CsharpFriendlyName(ToCamelCase($property.Name))}.ToArray());", context.Request.FormatProvider, parentChildContext, token).ConfigureAwait(false)];
+        return [await _evaluator.EvaluateAsync("return {$addMethodNameFormatString}({CsharpFriendlyName(ToCamelCase(property.Name))}.ToArray());", context.Request.FormatProvider, parentChildContext, token).ConfigureAwait(false)];
     }
 
     private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderContext> context, Property property, CancellationToken token)

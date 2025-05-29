@@ -15,8 +15,10 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
         => services
+            .AddSingleton<IMember, ClassFullNameProperty>()
+            .AddSingleton<IMember, ClassNameProperty>()
+            .AddSingleton<IMember, ClassNamespaceProperty>()
             //.AddScoped<IVariable, AddMethodNameFormatStringVariable>()
-            //.AddScoped<IVariable, ClassVariable>()
             //.AddScoped<IVariable, CollectionTypeNameVariable>()
             //.AddScoped<IVariable, PropertyVariable>()
             .AddScoped<IFunction, ClassNameFunction>()
@@ -29,7 +31,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IFunction, NoGenericsFunction>()
             .AddScoped<IFunction, NoInterfacePrefixFunction>()
             .AddScoped<IFunction, NullCheckFunction>()
-            //.AddScoped<IObjectResolverProcessor, ClassModelResolver>()
             //.AddScoped<IObjectResolverProcessor, CultureInfoResolver>()
             //.AddScoped<IObjectResolverProcessor, MappedContextBaseResolver>()
             //.AddScoped<IObjectResolverProcessor, PipelineSettingsResolver>()

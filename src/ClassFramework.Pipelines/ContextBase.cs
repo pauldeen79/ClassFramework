@@ -285,7 +285,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .Add("MethodName", evaluator.EvaluateAsync(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext, token))
             .Add(NamedResults.BuilderName, evaluator.EvaluateAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, token))
             .Add("ArgumentNullCheck", evaluator.EvaluateAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), FormatProvider, parentChildContext, token))
-            .Add("BuilderWithExpression", evaluator.EvaluateAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{$property.Name} = {CsharpFriendlyName(ToCamelCase($property.Name))};"), FormatProvider, parentChildContext, token))
+            .Add("BuilderWithExpression", evaluator.EvaluateAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{property.Name} = {CsharpFriendlyName(ToCamelCase(property.Name))};"), FormatProvider, parentChildContext, token))
             .Build()
             .ConfigureAwait(false);
     }

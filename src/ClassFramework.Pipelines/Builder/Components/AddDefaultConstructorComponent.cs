@@ -98,7 +98,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
     private Task<Result<GenericFormattableString>> GenerateDefaultValueStatement(Property property, PipelineContext<BuilderContext> context, CancellationToken token)
         => _evaluator.EvaluateAsync
         (
-            "{$property.BuilderMemberName} = {$property.DefaultValue};",
+            "{property.BuilderMemberName} = {property.DefaultValue};",
             context.Request.FormatProvider,
             new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
             token
