@@ -106,7 +106,7 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
                 var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
                 var newFullName = $"{ns}.{newTypeName}";
 
-                var result = (await evaluator.Parse
+                var result = (await evaluator.EvaluateAsync
                 (
                     newFullName,
                     FormatProvider,

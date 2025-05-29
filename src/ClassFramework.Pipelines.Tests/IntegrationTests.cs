@@ -13,7 +13,7 @@ public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
         var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutGenerics());
 
         // Act
-        var result = await sut.Parse(formatString, CultureInfo.InvariantCulture, propertyContext, CancellationToken.None);
+        var result = await sut.EvaluateAsync(formatString, CultureInfo.InvariantCulture, propertyContext, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -31,7 +31,7 @@ public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
         var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutGenerics());
 
         // Act
-        var result = await sut.Parse(formatString, CultureInfo.InvariantCulture, propertyContext, CancellationToken.None);
+        var result = await sut.EvaluateAsync(formatString, CultureInfo.InvariantCulture, propertyContext, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

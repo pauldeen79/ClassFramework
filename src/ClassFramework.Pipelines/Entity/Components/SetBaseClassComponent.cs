@@ -6,7 +6,7 @@ public class SetBaseClassComponent : IPipelineComponent<EntityContext>
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Request.Builder.WithBaseClass(await context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass).ConfigureAwait(false));
+        context.Request.Builder.WithBaseClass(await context.Request.SourceModel.GetEntityBaseClassAsync(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass).ConfigureAwait(false));
 
         return Result.Success();
     }

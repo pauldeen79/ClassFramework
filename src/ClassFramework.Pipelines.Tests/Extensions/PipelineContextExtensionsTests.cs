@@ -16,7 +16,7 @@ public class PipelineContextExtensionsTests : TestBase
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = await context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
+            var result = await context.CreateEntityInstanciationAsync(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -35,7 +35,7 @@ public class PipelineContextExtensionsTests : TestBase
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = await context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
+            var result = await context.CreateEntityInstanciationAsync(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -54,7 +54,7 @@ public class PipelineContextExtensionsTests : TestBase
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = await context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
+            var result = await context.CreateEntityInstanciationAsync(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -73,7 +73,7 @@ public class PipelineContextExtensionsTests : TestBase
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = await context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
+            var result = await context.CreateEntityInstanciationAsync(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -92,7 +92,7 @@ public class PipelineContextExtensionsTests : TestBase
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = await context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
+            var result = await context.CreateEntityInstanciationAsync(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -120,7 +120,7 @@ public class PipelineContextExtensionsTests : TestBase
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = await context.CreateEntityInstanciation(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
+            var result = await context.CreateEntityInstanciationAsync(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

@@ -33,7 +33,7 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
     {
         var initializationResults = (await Task.WhenAll(context.Request.SourceModel.Properties
             .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
-            .Select(async property => await _evaluator.Parse("this.{$property.EntityMemberName} = {$property.InitializationExpression};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings), token).ConfigureAwait(false))).ConfigureAwait(false))
+            .Select(async property => await _evaluator.EvaluateAsync("this.{$property.EntityMemberName} = {$property.InitializationExpression};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings), token).ConfigureAwait(false))).ConfigureAwait(false))
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 
@@ -55,6 +55,6 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
             )
             .AddStringCodeStatements(initializationResults.Select(x => x.Value!.ToString()))
             .AddStringCodeStatements(context.Request.CreateEntityValidationCode())
-            .WithChainCall(await context.CreateEntityChainCall().ConfigureAwait(false)));
+            .WithChainCall(await context.CreateEntityChainCallAsync().ConfigureAwait(false)));
     }
 }

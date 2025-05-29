@@ -19,7 +19,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
             return Result.Success();
         }
 
-        var nameResult = await _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
+        var nameResult = await _evaluator.EvaluateAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
         if (!nameResult.IsSuccessful())
         {
             return nameResult;

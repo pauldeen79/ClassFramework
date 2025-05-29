@@ -259,10 +259,10 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         arrayOverloadCode = arrayOverloadCode.IsNotNull(nameof(arrayOverloadCode));
 
         return await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add(NamedResults.TypeName, property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token))
-            .Add(NamedResults.Namespace, evaluator.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, token))
-            .Add(NamedResults.BuilderName, evaluator.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, token))
-            .Add("AddMethodName", evaluator.Parse(Settings.AddMethodNameFormatString, FormatProvider, parentChildContext, token))
+            .Add(NamedResults.TypeName, property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token))
+            .Add(NamedResults.Namespace, evaluator.EvaluateAsync(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, token))
+            .Add(NamedResults.BuilderName, evaluator.EvaluateAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, token))
+            .Add("AddMethodName", evaluator.EvaluateAsync(Settings.AddMethodNameFormatString, FormatProvider, parentChildContext, token))
             .AddRange("EnumerableOverload.{0}", enumerableOverloadCode)
             .AddRange("ArrayOverload.{0}", arrayOverloadCode)
             .Build()
@@ -280,12 +280,12 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
         return await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add(NamedResults.TypeName, property.GetBuilderArgumentTypeName(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token))
-            .Add(NamedResults.Namespace, evaluator.Parse(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, token))
-            .Add("MethodName", evaluator.Parse(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext, token))
-            .Add(NamedResults.BuilderName, evaluator.Parse(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, token))
-            .Add("ArgumentNullCheck", evaluator.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), FormatProvider, parentChildContext, token))
-            .Add("BuilderWithExpression", evaluator.Parse(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{$property.Name} = {CsharpFriendlyName(ToCamelCase($property.Name))};"), FormatProvider, parentChildContext, token))
+            .Add(NamedResults.TypeName, property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token))
+            .Add(NamedResults.Namespace, evaluator.EvaluateAsync(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, token))
+            .Add("MethodName", evaluator.EvaluateAsync(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext, token))
+            .Add(NamedResults.BuilderName, evaluator.EvaluateAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, token))
+            .Add("ArgumentNullCheck", evaluator.EvaluateAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), FormatProvider, parentChildContext, token))
+            .Add("BuilderWithExpression", evaluator.EvaluateAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{$property.Name} = {CsharpFriendlyName(ToCamelCase($property.Name))};"), FormatProvider, parentChildContext, token))
             .Build()
             .ConfigureAwait(false);
     }

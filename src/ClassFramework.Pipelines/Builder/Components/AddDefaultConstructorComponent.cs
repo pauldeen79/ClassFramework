@@ -35,7 +35,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
             .Select(async x => new
             {
                 Name = x.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo()),
-                Result = await x.GetBuilderConstructorInitializer(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, string.Empty, _evaluator, token).ConfigureAwait(false)
+                Result = await x.GetBuilderConstructorInitializerAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, string.Empty, _evaluator, token).ConfigureAwait(false)
             })).ConfigureAwait(false))
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
             .ToArray();
@@ -72,7 +72,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
 
             ctor.AddStringCodeStatements(defaultValueResults.Select(x => x.Value!.ToString()));
 
-            var setDefaultValuesMethodNameResult = await _evaluator.Parse(context.Request.Settings.SetDefaultValuesMethodName, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
+            var setDefaultValuesMethodNameResult = await _evaluator.EvaluateAsync(context.Request.Settings.SetDefaultValuesMethodName, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
             if (!setDefaultValuesMethodNameResult.IsSuccessful())
             {
                 return Result.FromExistingResult<ConstructorBuilder>(setDefaultValuesMethodNameResult);
@@ -93,10 +93,10 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
     }
 
     private static async Task<string> CreateBuilderClassConstructorChainCall(IType instance, PipelineSettings settings)
-        => (await instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success<GenericFormattableString>("base()")).ConfigureAwait(false)).Value!; //note that the delegate always returns success, so we can simply use the Value here
+        => (await instance.GetCustomValueForInheritedClassAsync(settings.EnableInheritance, _ => Result.Success<GenericFormattableString>("base()")).ConfigureAwait(false)).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private Task<Result<GenericFormattableString>> GenerateDefaultValueStatement(Property property, PipelineContext<BuilderContext> context, CancellationToken token)
-        => _evaluator.Parse
+        => _evaluator.EvaluateAsync
         (
             "{$property.BuilderMemberName} = {$property.DefaultValue};",
             context.Request.FormatProvider,

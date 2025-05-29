@@ -20,7 +20,7 @@ public static class TypeBaseExtensions
         return parentTypeContainer.IsDefinedOn(parent, settings.InheritanceComparisonDelegate);
     }
 
-    public static Task<Result<GenericFormattableString>> GetCustomValueForInheritedClass(
+    public static Task<Result<GenericFormattableString>> GetCustomValueForInheritedClassAsync(
         this IType instance,
         bool enableInheritance,
         Func<IBaseClassContainer, Result<GenericFormattableString>> customValue)
@@ -93,7 +93,7 @@ public static class TypeBaseExtensions
             .Where(x => x is not null);
     }
 
-    public static async Task<IEnumerable<Result<FieldBuilder>>> GetBuilderClassFields(
+    public static async Task<IEnumerable<Result<FieldBuilder>>> GetBuilderClassFieldsAsync(
         this IType instance,
         PipelineContext<BuilderContext> context,
         IExpressionEvaluator evaluator,
@@ -113,7 +113,7 @@ public static class TypeBaseExtensions
             instance.IsMemberValidForBuilderClass(x, context.Request.Settings)
             && x.HasBackingFieldOnBuilder(context.Request.Settings)))
         {
-            var builderArgumentTypeResult = await property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token).ConfigureAwait(false);
+            var builderArgumentTypeResult = await property.GetBuilderArgumentTypeNameAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token).ConfigureAwait(false);
             if (!builderArgumentTypeResult.IsSuccessful())
             {
                 results.Add(Result.FromExistingResult<FieldBuilder>(builderArgumentTypeResult));
@@ -131,11 +131,11 @@ public static class TypeBaseExtensions
         return results;
     }
 
-    public static async Task<string> GetEntityBaseClass(this IType instance, bool enableInheritance, IType? baseClass)
+    public static async Task<string> GetEntityBaseClassAsync(this IType instance, bool enableInheritance, IType? baseClass)
         => enableInheritance
         && baseClass is not null
             ? baseClass.GetFullName()
-            : (await instance.GetCustomValueForInheritedClass(enableInheritance, cls => Result.Success<GenericFormattableString>(cls.BaseClass)).ConfigureAwait(false)).Value!; // we're always returning Success here, so we can shortcut the validation of the result by getting .Value
+            : (await instance.GetCustomValueForInheritedClassAsync(enableInheritance, cls => Result.Success<GenericFormattableString>(cls.BaseClass)).ConfigureAwait(false)).Value!; // we're always returning Success here, so we can shortcut the validation of the result by getting .Value
 
     public static string WithoutInterfacePrefix(this IType instance)
         => instance is Domain.Types.Interface

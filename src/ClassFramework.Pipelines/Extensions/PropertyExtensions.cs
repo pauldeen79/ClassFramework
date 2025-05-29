@@ -93,7 +93,7 @@ public static class PropertyExtensions
             || settings.CreateAsObservable;
     }
 
-    public static async Task<Result<GenericFormattableString>> GetBuilderConstructorInitializer<TSourceModel>(
+    public static async Task<Result<GenericFormattableString>> GetBuilderConstructorInitializerAsync<TSourceModel>(
         this Property property,
         ContextBase<TSourceModel> context,
         object parentChildContext,
@@ -110,7 +110,7 @@ public static class PropertyExtensions
         metadataName = metadataName.IsNotNull(nameof(metadataName));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-        var builderArgumentTypeResult = await GetBuilderArgumentTypeName(property, context, parentChildContext, mappedTypeName, evaluator, token).ConfigureAwait(false);
+        var builderArgumentTypeResult = await GetBuilderArgumentTypeNameAsync(property, context, parentChildContext, mappedTypeName, evaluator, token).ConfigureAwait(false);
 
         if (!builderArgumentTypeResult.IsSuccessful())
         {
@@ -123,7 +123,7 @@ public static class PropertyExtensions
                 .GetMappingMetadata(property.TypeName)
                 .GetStringValue(metadataName);
 
-        var result = await evaluator.Parse(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext, token).ConfigureAwait(false);
+        var result = await evaluator.EvaluateAsync(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext, token).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -135,7 +135,7 @@ public static class PropertyExtensions
             .GetCsharpFriendlyTypeName());
     }
 
-    public static async Task<Result<GenericFormattableString>> GetBuilderArgumentTypeName<TSourceModel>(
+    public static async Task<Result<GenericFormattableString>> GetBuilderArgumentTypeNameAsync<TSourceModel>(
         this Property property,
         ContextBase<TSourceModel> context,
         object parentChildContext,
@@ -171,7 +171,7 @@ public static class PropertyExtensions
                 }
             }
 
-            return await evaluator.Parse
+            return await evaluator.EvaluateAsync
             (
                 newFullName,
                 context.FormatProvider,
@@ -180,7 +180,7 @@ public static class PropertyExtensions
             ).ConfigureAwait(false);
         }
 
-        return await evaluator.Parse
+        return await evaluator.EvaluateAsync
         (
             metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, mappedTypeName),
             context.FormatProvider,
@@ -189,7 +189,7 @@ public static class PropertyExtensions
         ).ConfigureAwait(false);
     }
 
-    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeName(this Property property, PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, CancellationToken token)
+    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeNameAsync(this Property property, PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
@@ -216,7 +216,7 @@ public static class PropertyExtensions
 
         var newFullName = $"{ns}.{newTypeName}";
 
-        return await evaluator.Parse
+        return await evaluator.EvaluateAsync
         (
             newFullName,
             context.Request.FormatProvider,

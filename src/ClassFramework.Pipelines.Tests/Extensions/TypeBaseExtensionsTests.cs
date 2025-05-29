@@ -70,7 +70,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
-            Action a = () => sut.GetCustomValueForInheritedClass(true, customValue: default(Func<IBaseClassContainer, Result<GenericFormattableString>>)!);
+            Action a = () => sut.GetCustomValueForInheritedClassAsync(true, customValue: default(Func<IBaseClassContainer, Result<GenericFormattableString>>)!);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("customValue");
         }
 
@@ -81,7 +81,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act
-            var result = await sut.GetCustomValueForInheritedClass(false, _ => Result.Success<GenericFormattableString>("CustomValue"));
+            var result = await sut.GetCustomValueForInheritedClassAsync(false, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
             result.Value.ShouldNotBeNull();
@@ -95,7 +95,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = new StructBuilder().WithName("MyClass").Build();
 
             // Act
-            var result = await sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
+            var result = await sut.GetCustomValueForInheritedClassAsync(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
             result.Value.ShouldNotBeNull();
@@ -109,7 +109,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act
-            var result = await sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
+            var result = await sut.GetCustomValueForInheritedClassAsync(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
             result.Value.ShouldNotBeNull();
@@ -123,7 +123,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").WithBaseClass("SomeBaseClass").Build();
 
             // Act
-            var result = await sut.GetCustomValueForInheritedClass(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
+            var result = await sut.GetCustomValueForInheritedClassAsync(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
 
             // Assert
             result.Value!.ToString().ShouldBe("CustomValue");
@@ -292,7 +292,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            Action a = async () => _ = (await sut.GetBuilderClassFields(context: null!, formattableStringParser, CancellationToken.None).ConfigureAwait(false)).ToArray();
+            Action a = async () => _ = (await sut.GetBuilderClassFieldsAsync(context: null!, formattableStringParser, CancellationToken.None).ConfigureAwait(false)).ToArray();
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
@@ -305,7 +305,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
 
             // Act & Assert
-            Action a = async () => _ = (await sut.GetBuilderClassFields(context, evaluator: null!, CancellationToken.None).ConfigureAwait(false)).ToArray();
+            Action a = async () => _ = (await sut.GetBuilderClassFieldsAsync(context, evaluator: null!, CancellationToken.None).ConfigureAwait(false)).ToArray();
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("evaluator");
         }
 
@@ -331,7 +331,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = (await sut.GetBuilderClassFields(context, formattableStringParser, CancellationToken.None)).ToArray();
+            var result = (await sut.GetBuilderClassFieldsAsync(context, formattableStringParser, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ShouldBeEmpty();
@@ -359,7 +359,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = (await sut.GetBuilderClassFields(context, formattableStringParser, CancellationToken.None)).ToArray();
+            var result = (await sut.GetBuilderClassFieldsAsync(context, formattableStringParser, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ShouldBeEmpty();
@@ -388,7 +388,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = (await sut.GetBuilderClassFields(context, formattableStringParser, CancellationToken.None)).ToArray();
+            var result = (await sut.GetBuilderClassFieldsAsync(context, formattableStringParser, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1" });
@@ -427,7 +427,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = (await sut.GetBuilderClassFields(context, formattableStringParser, CancellationToken.None)).ToArray();
+            var result = (await sut.GetBuilderClassFieldsAsync(context, formattableStringParser, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1", "_property2" });

@@ -63,14 +63,14 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
             return [Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))];
         }
 
-        return [await _evaluator.Parse("return instance.{$addMethodNameFormatString}<T>({CsharpFriendlyName(ToCamelCase($property.Name))}.ToArray());", context.Request.FormatProvider, parentChildContext, token).ConfigureAwait(false)];
+        return [await _evaluator.EvaluateAsync("return instance.{$addMethodNameFormatString}<T>({CsharpFriendlyName(ToCamelCase($property.Name))}.ToArray());", context.Request.FormatProvider, parentChildContext, token).ConfigureAwait(false)];
     }
 
     private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderExtensionContext> context, Property property, CancellationToken token)
     {
         if (context.Request.Settings.AddNullChecks)
         {
-            var argumentNullCheckResult = await _evaluator.Parse
+            var argumentNullCheckResult = await _evaluator.EvaluateAsync
             (
                 context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
                 context.Request.FormatProvider,
@@ -80,7 +80,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
             return [argumentNullCheckResult];
         }
 
-        var builderAddExpressionResult = await _evaluator.Parse
+        var builderAddExpressionResult = await _evaluator.EvaluateAsync
         (
             context.Request
                 .GetMappingMetadata(property.TypeName)

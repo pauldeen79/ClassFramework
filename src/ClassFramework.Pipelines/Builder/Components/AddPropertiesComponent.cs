@@ -16,8 +16,8 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
         foreach (var property in context.Request.SourceModel.Properties.Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)))
         {
             var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-                .Add(NamedResults.TypeName, property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token))
-                .Add(NamedResults.ParentTypeName, property.GetBuilderParentTypeName(context, _evaluator, token))
+                .Add(NamedResults.TypeName, property.GetBuilderArgumentTypeNameAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token))
+                .Add(NamedResults.ParentTypeName, property.GetBuilderParentTypeNameAsync(context, _evaluator, token))
                 .Build()
                 .ConfigureAwait(false);
 
@@ -48,7 +48,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
         // Note that we are not checking the result, because the same formattable string (CustomBuilderArgumentType) has already been checked earlier in this class
         // We can simple use Value with bang operator to keep the compiler happy (the value should be a string, and not be null)
         context.Request.Builder.AddFields((await context.Request.SourceModel
-            .GetBuilderClassFields(context, _evaluator, token).ConfigureAwait(false))
+            .GetBuilderClassFieldsAsync(context, _evaluator, token).ConfigureAwait(false))
             .Select(x => x.Value!));
 
         return Result.Success();
@@ -72,7 +72,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
                 var nullSuffix = context.Request.Settings.EnableNullableReferenceTypes && !property.IsValueType
                     ? "!"
                     : string.Empty;
-                results.Add(new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !{typeof(EqualityComparer<>).WithoutGenerics()}<{(await property.GetBuilderArgumentTypeName(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token).ConfigureAwait(false)).Value}>.Default.Equals(_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});"));
+                results.Add(new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !{typeof(EqualityComparer<>).WithoutGenerics()}<{(await property.GetBuilderArgumentTypeNameAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token).ConfigureAwait(false)).Value}>.Default.Equals(_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});"));
             }
 
             results.Add(new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Request.Settings.AddNullChecks, context.Request.SourceModel)};"));

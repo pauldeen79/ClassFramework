@@ -37,7 +37,7 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
             return await AddExplicitInterfaceImplementations(context, token).ConfigureAwait(false);
         }
 
-        var instanciationResult = await context.CreateEntityInstanciation(_evaluator, _csharpExpressionDumper, string.Empty, token).ConfigureAwait(false);
+        var instanciationResult = await context.CreateEntityInstanciationAsync(_evaluator, _csharpExpressionDumper, string.Empty, token).ConfigureAwait(false);
         if (!instanciationResult.IsSuccessful())
         {
             return instanciationResult;

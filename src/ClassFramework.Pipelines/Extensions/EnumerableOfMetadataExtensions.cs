@@ -19,7 +19,7 @@ public static class EnumerableOfMetadataExtensions
             : Result.Success(value);
     }
 
-    public static async Task<Result<GenericFormattableString>> GetGenericFormattableString(this IEnumerable<Metadata> metadata, string metadataName, Task<Result<GenericFormattableString>> defaultValueDelegate)
+    public static async Task<Result<GenericFormattableString>> GetGenericFormattableStringAsync(this IEnumerable<Metadata> metadata, string metadataName, Task<Result<GenericFormattableString>> defaultValueDelegate)
     {
         defaultValueDelegate = defaultValueDelegate.IsNotNull(nameof(defaultValueDelegate));
 

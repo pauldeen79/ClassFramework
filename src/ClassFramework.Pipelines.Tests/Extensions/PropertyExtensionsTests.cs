@@ -196,7 +196,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            Action a = async () => await sut.GetBuilderConstructorInitializer<string>(context: default!, new object(), string.Empty, string.Empty, string.Empty, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
+            Action a = async () => await sut.GetBuilderConstructorInitializerAsync<string>(context: default!, new object(), string.Empty, string.Empty, string.Empty, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
         }
 
@@ -211,7 +211,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            Action a = () => sut.GetBuilderConstructorInitializer(context, parentChildContext: default!, string.Empty, string.Empty, string.Empty, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
+            Action a = () => sut.GetBuilderConstructorInitializerAsync(context, parentChildContext: default!, string.Empty, string.Empty, string.Empty, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("parentChildContext");
         }
 
@@ -226,7 +226,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            Action a = () => sut.GetBuilderConstructorInitializer(context, new object(), mappedTypeName: default!, string.Empty, string.Empty, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
+            Action a = () => sut.GetBuilderConstructorInitializerAsync(context, new object(), mappedTypeName: default!, string.Empty, string.Empty, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("mappedTypeName");
         }
 
@@ -241,7 +241,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            Action a = async () => await sut.GetBuilderConstructorInitializer(context, new object(), string.Empty, newCollectionTypeName: default!, string.Empty, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
+            Action a = async () => await sut.GetBuilderConstructorInitializerAsync(context, new object(), string.Empty, newCollectionTypeName: default!, string.Empty, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("newCollectionTypeName");
         }
 
@@ -255,7 +255,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var context = new TestContext(settings, formatProvider);
 
             // Act & Assert
-            Action a = () => sut.GetBuilderConstructorInitializer(context, new object(), string.Empty, string.Empty, string.Empty, evaluator: null!, CancellationToken.None).ConfigureAwait(false);
+            Action a = () => sut.GetBuilderConstructorInitializerAsync(context, new object(), string.Empty, string.Empty, string.Empty, evaluator: null!, CancellationToken.None).ConfigureAwait(false);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("evaluator");
         }
 
@@ -270,7 +270,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            Action a = async () => await sut.GetBuilderConstructorInitializer(context, new object(), string.Empty, string.Empty, metadataName: null!, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
+            Action a = async () => await sut.GetBuilderConstructorInitializerAsync(context, new object(), string.Empty, string.Empty, metadataName: null!, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("metadataName");
         }
 
@@ -303,7 +303,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
                 .Returns(x => Result.Success<GenericFormattableString>(x.ArgAt<string>(0)));
 
             // Act
-            var result = await sut.GetBuilderArgumentTypeName(context, parentChildContext, sut.TypeName, formattableStringParser, CancellationToken.None);
+            var result = await sut.GetBuilderArgumentTypeNameAsync(context, parentChildContext, sut.TypeName, formattableStringParser, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

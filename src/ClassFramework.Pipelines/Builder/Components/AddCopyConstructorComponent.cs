@@ -37,9 +37,9 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
     private async Task<Result<ConstructorBuilder>> CreateCopyConstructor(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add("NullCheck.Source", _evaluator.Parse("{NullCheck.Source}", context.Request.FormatProvider, context, token))
-            .Add(NamedResults.Name, _evaluator.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token))
-            .Add(NamedResults.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, _evaluator.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
+            .Add("NullCheck.Source", _evaluator.EvaluateAsync("{NullCheck.Source}", context.Request.FormatProvider, context, token))
+            .Add(NamedResults.Name, _evaluator.EvaluateAsync(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add(NamedResults.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateAsync(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
             .Build()
             .ConfigureAwait(false);
 
@@ -121,13 +121,13 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
             .Select(async x => new Tuple<string, Result<GenericFormattableString>>
             (
                 x.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo()),
-                await x.GetBuilderConstructorInitializer(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, MetadataNames.CustomBuilderConstructorInitializeExpression, _evaluator, token).ConfigureAwait(false)
+                await x.GetBuilderConstructorInitializerAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, MetadataNames.CustomBuilderConstructorInitializeExpression, _evaluator, token).ConfigureAwait(false)
             ))).ConfigureAwait(false))
             .TakeWhileWithFirstNonMatching(x => x.Item2.IsSuccessful())
             .ToArray();
 
     private Task<Result<GenericFormattableString>> CreateBuilderInitializationCode(Property property, PipelineContext<BuilderContext> context, CancellationToken token)
-        => _evaluator.Parse
+        => _evaluator.EvaluateAsync
         (
             ProcessCreateBuilderInitializationCode(context.Request.GetMappingMetadata(property.TypeName)
                 .GetStringValue
@@ -185,7 +185,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
     }
 
     private static async Task<string> CreateBuilderClassCopyConstructorChainCall(IType instance, PipelineSettings settings)
-        => (await instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success<GenericFormattableString>("base(source)")).ConfigureAwait(false)).Value!; //note that the delegate always returns success, so we can simply use the Value here
+        => (await instance.GetCustomValueForInheritedClassAsync(settings.EnableInheritance, _ => Result.Success<GenericFormattableString>("base(source)")).ConfigureAwait(false)).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private static ConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<BuilderContext> context)
     {

@@ -3,5 +3,5 @@
 public class NamespaceFunction : IFunction
 {
     public Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
-        => FunctionHelpers.ParseFromStringArgument(context, "Namespace", s => Result.Success<object?>(s.GetNamespaceWithDefault()), token);
+        => FunctionHelpers.ParseFromStringArgumentAsync(context, "Namespace", s => Result.Success<object?>(s.GetNamespaceWithDefault()), token);
 }

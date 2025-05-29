@@ -11,7 +11,7 @@ public class AddInterfacesComponent : IPipelineComponent<EntityContext>
             return Result.Success();
         }
 
-        var baseClass = await context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass).ConfigureAwait(false);
+        var baseClass = await context.Request.SourceModel.GetEntityBaseClassAsync(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass).ConfigureAwait(false);
 
         context.Request.Builder.AddInterfaces(context.Request.SourceModel.Interfaces
             .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)

@@ -9,12 +9,12 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
         context = context.IsNotNull(nameof(context));
 
         var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add(NamedResults.Name, _evaluator.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token))
-            .Add(NamedResults.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomEntityNamespace, _evaluator.Parse(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
-            .Add("BuilderInterfaceNamespace", context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableString(MetadataNames.CustomBuilderInterfaceNamespace, _evaluator.Parse(context.Request.Settings.BuilderNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
-            .Add("ToBuilderMethodName", _evaluator.Parse(context.Request.Settings.ToBuilderFormatString, context.Request.FormatProvider, context.Request, token))
-            .Add("ToTypedBuilderMethodName", _evaluator.Parse(context.Request.Settings.ToTypedBuilderFormatString, context.Request.FormatProvider, context.Request, token))
-            .Add("BuilderName", _evaluator.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add(NamedResults.Name, _evaluator.EvaluateAsync(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add(NamedResults.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateAsync(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
+            .Add("BuilderInterfaceNamespace", context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomBuilderInterfaceNamespace, _evaluator.EvaluateAsync(context.Request.Settings.BuilderNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
+            .Add("ToBuilderMethodName", _evaluator.EvaluateAsync(context.Request.Settings.ToBuilderFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add("ToTypedBuilderMethodName", _evaluator.EvaluateAsync(context.Request.Settings.ToTypedBuilderFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add("BuilderName", _evaluator.EvaluateAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token))
             .Build()
             .ConfigureAwait(false);
 
@@ -149,7 +149,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                     var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
                     var newFullName = $"{ns}.{newTypeName}";
 
-                    return (await _evaluator.Parse
+                    return (await _evaluator.EvaluateAsync
                     (
                         newFullName,
                         context.Request.FormatProvider,

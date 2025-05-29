@@ -2,8 +2,7 @@
 
 public static class ExpressionEvaluatorExtensions
 {
-    //Task<Result<object?>> EvaluateAsync(ExpressionEvaluatorContext context, CancellationToken token);
-    public static Task<Result<GenericFormattableString>> Parse(this IExpressionEvaluator instance, string formatString, IFormatProvider formatProvider, object context, CancellationToken token)
+    public static Task<Result<GenericFormattableString>> EvaluateAsync(this IExpressionEvaluator instance, string formatString, IFormatProvider formatProvider, object context, CancellationToken token)
         => instance.EvaluateTypedAsync<GenericFormattableString>
         (
             new ExpressionEvaluatorContext

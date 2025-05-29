@@ -42,7 +42,7 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
     }
 
     private async Task<Result<string>> GenerateDefaultValueStatement(Property property, PipelineContext<EntityContext> context, CancellationToken token)
-        => (await _evaluator.Parse
+        => (await _evaluator.EvaluateAsync
         (
             property.TypeName.FixTypeName().IsCollectionTypeName()
                 ? "{$property.EntityMemberName} = new {$collectionTypeName}<{GenericArguments($property.TypeName)}>();"
