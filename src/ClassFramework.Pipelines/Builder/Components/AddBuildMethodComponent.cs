@@ -80,7 +80,7 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
 
         var interfaces = await context.Request.GetInterfaceResults(
             (x, y) => new { EntityName = x, BuilderName = y.ToString() },
-            x => new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName(), string.Empty) },
+            x => new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) },
             _evaluator,
             false,
             token).ConfigureAwait(false);

@@ -157,7 +157,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                         token
                     ).ConfigureAwait(false)).Transform(y => new { EntityName = x, BuilderName = y.ToString() });
                 }
-                return Result.Success(new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName(), string.Empty) });
+                return Result.Success(new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) });
             })).ConfigureAwait(false))
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();

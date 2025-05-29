@@ -115,7 +115,7 @@ public class BuilderContextTests : TestBase
             var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
-            Action a = () => sut.MapTypeName(typeName: null!, string.Empty);
+            Action a = () => sut.MapTypeName(typeName: null!);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("typeName");
         }

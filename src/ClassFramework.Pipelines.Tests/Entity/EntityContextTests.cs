@@ -39,7 +39,7 @@ public class EntityContextTests : TestBase
             var sut = new EntityContext(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
-            Action a = () => sut.MapTypeName(typeName: null!, string.Empty);
+            Action a = () => sut.MapTypeName(typeName: null!);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("typeName");
         }

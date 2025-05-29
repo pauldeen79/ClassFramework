@@ -128,6 +128,9 @@ public abstract class MappedContextBase(PipelineSettings settings, IFormatProvid
 {
     protected abstract string NewCollectionTypeName { get; }
 
+    public string MapTypeName(string typeName)
+        => MapTypeName(typeName, string.Empty);
+
     public string MapTypeName(string typeName, string alternateTypeMetadataName)
     {
         typeName = typeName.IsNotNull(nameof(typeName));
@@ -157,7 +160,7 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         attribute = attribute.IsNotNull(nameof(attribute));
 
         return new AttributeBuilder(attribute)
-            .WithName(MapTypeName(attribute.Name.FixTypeName(), string.Empty))
+            .WithName(MapTypeName(attribute.Name.FixTypeName()))
             .Build();
     }
 

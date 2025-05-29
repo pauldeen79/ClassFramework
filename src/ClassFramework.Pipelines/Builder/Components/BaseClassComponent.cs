@@ -86,7 +86,7 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
     }
 
     private Task<Result<GenericFormattableString>> GetBaseClassName(PipelineContext<BuilderContext> context, IBaseClassContainer baseClassContainer, CancellationToken token)
-        => _evaluator.EvaluateAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!, string.Empty)), context.Request.Settings, context.Request.FormatProvider), token);
+        => _evaluator.EvaluateAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!)), context.Request.Settings, context.Request.FormatProvider), token);
 
     private static TypeBase CreateTypeBase(string baseClass)
         => new ClassBuilder()

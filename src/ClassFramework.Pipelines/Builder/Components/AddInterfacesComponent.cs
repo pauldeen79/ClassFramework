@@ -15,7 +15,7 @@ public class AddInterfacesComponent(IExpressionEvaluator evaluator) : IPipelineC
 
         var interfaces = await context.Request.GetInterfaceResults(
             (_, x) => x.ToString(),
-            x => context.Request.MapTypeName(x.FixTypeName(), string.Empty),
+            x => context.Request.MapTypeName(x.FixTypeName()),
             _evaluator,
             true,
             token).ConfigureAwait(false);

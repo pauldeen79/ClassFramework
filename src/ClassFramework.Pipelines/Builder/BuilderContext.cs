@@ -67,12 +67,12 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
         {
             if (IsBuilderForAbstractEntity || IsBuilderForOverrideEntity)
             {
-                return MapTypeName(SourceModel.GetFullName(), string.Empty);
+                return MapTypeName(SourceModel.GetFullName());
             }
 
             return Settings.InheritFromInterfaces
-                ? MapTypeName(SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{SourceModel.Name}") ?? SourceModel.GetFullName(), string.Empty)
-                : MapTypeName(SourceModel.GetFullName(), string.Empty);
+                ? MapTypeName(SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{SourceModel.Name}") ?? SourceModel.GetFullName())
+                : MapTypeName(SourceModel.GetFullName());
         }
     }
 
