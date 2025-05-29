@@ -14,8 +14,8 @@ public class PropertyEntityMemberNameProperty : IProperty
             .Add("settings", context.GetSettingsAsync())
             .Build()
             .ConfigureAwait(false))
-            .OnSuccess(results => Result.Success<object?>(results
+            .OnSuccess<object?>(results => results
                 .GetValue<Property>("instance")
-                .GetEntityMemberName(results.GetValue<PipelineSettings>("settings").AddBackingFields || results.GetValue<PipelineSettings>("settings").CreateAsObservable, context.Context.Settings.FormatProvider.ToCultureInfo())));
+                .GetEntityMemberName(results.GetValue<PipelineSettings>("settings").AddBackingFields || results.GetValue<PipelineSettings>("settings").CreateAsObservable, context.Context.Settings.FormatProvider.ToCultureInfo()));
     }
 }

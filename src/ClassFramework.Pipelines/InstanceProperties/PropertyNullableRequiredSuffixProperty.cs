@@ -14,7 +14,7 @@ public class PropertyNullableRequiredSuffixProperty : IProperty
             .Add("settings", context.GetSettingsAsync())
             .Build()
             .ConfigureAwait(false))
-            .OnSuccess(results => Result.Success<object?>(GetNullableRequiredSuffix(results.GetValue<PipelineSettings>("settings"), results.GetValue<Property>(""))));
+            .OnSuccess<object?>(results => GetNullableRequiredSuffix(results.GetValue<PipelineSettings>("settings"), results.GetValue<Property>("instance")));
     }
 
     private static string GetNullableRequiredSuffix(PipelineSettings settings, Property property)

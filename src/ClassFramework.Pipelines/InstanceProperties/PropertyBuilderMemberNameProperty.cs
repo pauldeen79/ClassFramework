@@ -14,8 +14,8 @@ public class PropertyBuilderMemberNameProperty : IProperty
             .Add("settings", context.GetSettingsAsync())
             .Build()
             .ConfigureAwait(false))
-            .OnSuccess(results => Result.Success<object?>(results
+            .OnSuccess<object?>(results => results
                 .GetValue<Property>("instance")
-                .GetBuilderMemberName(results.GetValue<PipelineSettings>("settings"), context.Context.Settings.FormatProvider.ToCultureInfo())));
+                .GetBuilderMemberName(results.GetValue<PipelineSettings>("settings"), context.Context.Settings.FormatProvider.ToCultureInfo()));
     }
 }

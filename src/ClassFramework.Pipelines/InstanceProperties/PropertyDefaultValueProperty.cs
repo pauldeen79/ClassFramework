@@ -24,8 +24,8 @@ public class PropertyDefaultValueProperty : IProperty
             .Add("mappedContextBase", context.GetMappedContextBaseAsync())
             .Build()
             .ConfigureAwait(false))
-            .OnSuccess(results => Result.Success<object?>(results
+            .OnSuccess<object?>(results => results
                 .GetValue<Property>("instance")
-                .GetDefaultValue(_csharpExpressionDumper, results.GetValue<string>("typeName"), results.GetValue<MappedContextBase>("mappedContextBase"))));
+                .GetDefaultValue(_csharpExpressionDumper, results.GetValue<string>("typeName"), results.GetValue<MappedContextBase>("mappedContextBase")));
     }
 }
