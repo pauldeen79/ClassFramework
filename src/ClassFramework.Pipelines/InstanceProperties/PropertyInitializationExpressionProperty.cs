@@ -23,12 +23,12 @@ public class PropertyInitializationExpressionProperty : IProperty
         => typeName.FixTypeName().IsCollectionTypeName()
             && (settings.CollectionTypeName.Length == 0 || settings.CollectionTypeName != property.TypeName.WithoutGenerics())
                 ? GetCollectionFormatStringForInitialization(property, settings)
-                : "{CsharpFriendlyName(ToCamelCase(property.Name))}{property.NullableRequiredSuffix}";
+                : "{CsharpFriendlyName(property.Name.ToCamelCase())}{property.NullableRequiredSuffix}";
 
     private static string GetCollectionFormatStringForInitialization(Property property, PipelineSettings settings)
         => property.IsNullable || (settings.AddNullChecks && settings.ValidateArguments != ArgumentValidationType.None)
-            ? $"{{ToCamelCase(property.Name)}} {{NullCheck()}} ? null{GetPropertyInitializationNullSuffix(property, settings)} : new {{collectionTypeName}}<{{GenericArguments(property.TypeName)}}>({{CsharpFriendlyName(ToCamelCase(property.Name))}})"
-            : $"new {{collectionTypeName}}<{{GenericArguments(property.TypeName)}}>({{CsharpFriendlyName(ToCamelCase(property.Name))}})";
+            ? $"{{property.Name.ToCamelCase()}} {{NullCheck()}} ? null{GetPropertyInitializationNullSuffix(property, settings)} : new {{collectionTypeName}}<{{GenericArguments(property.TypeName)}}>({{CsharpFriendlyName(ToCamelCase(property.Name))}})"
+            : $"new {{collectionTypeName}}<{{GenericArguments(property.TypeName)}}>({{CsharpFriendlyName(property.Name.ToCamelCase())}})";
 
     private static string GetPropertyInitializationNullSuffix(Property property, PipelineSettings settings)
         => settings.EnableNullableReferenceTypes && !property.IsNullable

@@ -6,7 +6,7 @@ public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
     public async Task Can_Use_FormattableStringParser_With_PlaceholderProcessors_To_Get_Formatted_String()
     {
         // Arrange
-        var formatString = "foreach (var item in {CsharpFriendlyName(ToCamelCase(property.Name))}) {property.Name}.Add(item);";
+        var formatString = "foreach (var item in {CsharpFriendlyName(property.Name.ToCamelCase())}) {property.Name}.Add(item);";
         var sut = CreateSut();
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
         var pipelineSettings = new PipelineSettingsBuilder();
@@ -24,7 +24,7 @@ public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
     public async Task Can_Use_FormattableStringParser_With_Functions_To_Get_Formatted_String_And_Apply_Processing_Like_Casing()
     {
         // Arrange
-        var formatString = "foreach (var item in {ToCamelCase(property.Name)}) {property.Name}.Add(item);";
+        var formatString = "foreach (var item in {property.Name.ToCamelCase()}) {property.Name}.Add(item);";
         var sut = CreateSut();
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
         var pipelineSettings = new PipelineSettingsBuilder();

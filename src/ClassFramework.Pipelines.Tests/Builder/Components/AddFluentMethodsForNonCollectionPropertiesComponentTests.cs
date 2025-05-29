@@ -396,11 +396,11 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
                 new TypenameMappingBuilder()
                     .WithSourceType(typeof(int))
                     .WithTargetType(typeof(int))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{property.Name} = {ToCamelCase(property.Name)}; // custom")),
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{property.Name} = {property.Name.ToCamelCase()}; // custom")),
                 new TypenameMappingBuilder()
                     .WithSourceType(typeof(string))
                     .WithTargetType(typeof(string))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{property.Name} = {ToCamelCase(property.Name)}; // custom"))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{property.Name} = {property.Name.ToCamelCase()}; // custom"))
             ]);
             var context = CreateContext(sourceModel, settings);
 
