@@ -1,7 +1,7 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
 [MemberArgument("Expression", typeof(string))]
-[MemberArgument("AddBrackets", typeof(string), false)]
+[MemberArgument("AddBrackets", typeof(bool), false)]
 public class GenericArgumentsFunction : IFunction
 {
     public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
