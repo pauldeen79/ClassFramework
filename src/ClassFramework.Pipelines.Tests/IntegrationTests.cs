@@ -42,7 +42,7 @@ public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
     public void Can_Get_Descriptors_For_All_Functions()
     {
         // Arrange
-        var descriptorProvider = Scope!.ServiceProvider.GetRequiredService<MemberDescriptorProvider>();
+        var descriptorProvider = Scope!.ServiceProvider.GetRequiredService<IMemberDescriptorProvider>();
 
         // Act
         var result = descriptorProvider.GetAll();
