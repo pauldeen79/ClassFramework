@@ -76,7 +76,7 @@ public static class ExpressionEvaluatorExtensions
                 .Add("collectionTypeName", parentChildContextBuilder.Settings.CollectionTypeName)
                 .Add("addMethodNameFormatString", () => Result.Success<object?>(parentChildContextBuilder.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())))
                 .Add("settings", parentChildContextBuilder.Settings)
-                .Add("typename", () => Result.Success<object?>(parentChildContextBuilder.ParentContext.Request.MapTypeName(parentChildContextBuilder.ParentContext.Request.SourceModel.GetFullName())))
+                .Add("typename", () => Result.Success<object?>(parentChildContextBuilder.ParentContext.Request.MapTypeName(parentChildContextBuilder.ChildContext.TypeName)))
                 .Add("context", parentChildContextBuilder.ParentContext.Request);
         }
         else if (context is ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContextBuilderExtension)
@@ -87,7 +87,7 @@ public static class ExpressionEvaluatorExtensions
                 .Add("collectionTypeName", parentChildContextBuilderExtension.Settings.CollectionTypeName)
                 .Add("addMethodNameFormatString", () => Result.Success<object?>(parentChildContextBuilderExtension.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())))
                 .Add("settings", parentChildContextBuilderExtension.Settings)
-                .Add("typename", () => Result.Success<object?>(parentChildContextBuilderExtension.ParentContext.Request.MapTypeName(parentChildContextBuilderExtension.ParentContext.Request.SourceModel.GetFullName())))
+                .Add("typename", () => Result.Success<object?>(parentChildContextBuilderExtension.ParentContext.Request.MapTypeName(parentChildContextBuilderExtension.ChildContext.TypeName)))
                 .Add("context", parentChildContextBuilderExtension.ParentContext.Request);
         }
         else if (context is ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity)
@@ -98,7 +98,7 @@ public static class ExpressionEvaluatorExtensions
                 .Add("collectionTypeName", parentChildContextEntity.Settings.CollectionTypeName)
                 .Add("addMethodNameFormatString", () => Result.Success<object?>(parentChildContextEntity.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())))
                 .Add("settings", parentChildContextEntity.Settings)
-                .Add("typename", () => Result.Success<object?>(parentChildContextEntity.ParentContext.Request.MapTypeName(parentChildContextEntity.ParentContext.Request.SourceModel.GetFullName())))
+                .Add("typename", () => Result.Success<object?>(parentChildContextEntity.ParentContext.Request.MapTypeName(parentChildContextEntity.ChildContext.TypeName)))
                 .Add("context", parentChildContextEntity.ParentContext.Request);
         }
         else if (context is PropertyContext propertyContext)
@@ -106,6 +106,7 @@ public static class ExpressionEvaluatorExtensions
             builder
                 .Add("property", propertyContext.SourceModel)
                 .Add("settings", propertyContext.Settings)
+                .Add("typename", () => Result.Success<object?>(propertyContext.MapTypeName(propertyContext.SourceModel.TypeName)))
                 .Add("context", propertyContext);
         }
         else
