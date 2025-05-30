@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.BuilderExtension;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderExtensionContext>>
+public class PipelineTests : IntegrationTestBase<IPipeline<BuilderExtensionContext>>
 {
-    public class ProcessAsync : PipelineBuilderTests
+    public class ProcessAsync : PipelineTests
     {
         private static BuilderExtensionContext CreateContext(bool addProperties = true)
             => new(
@@ -43,7 +43,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderExtensi
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Where(x => x.Name == "WithProperty1").Count().ShouldBe(1);
+            context.Builder.Methods.Count(x => x.Name == "WithProperty1").ShouldBe(1);
             var method = context.Builder.Methods.Single(x => x.Name == "WithProperty1");
             method.ReturnTypeName.ShouldBe("T");
             method.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);

@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Reflection;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipeline<ReflectionContext>>
+public class PipelineTests : IntegrationTestBase<IPipeline<ReflectionContext>>
 {
-    public class IntegrationTests : PipelineBuilderTests
+    public class IntegrationTests : PipelineTests
     {
         [Fact]
         public async Task Creates_Class_With_NamespaceMapping()

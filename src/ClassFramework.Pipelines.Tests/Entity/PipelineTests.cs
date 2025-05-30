@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipeline<EntityContext>>
+public class PipelineTests : IntegrationTestBase<IPipeline<EntityContext>>
 {
-    public class ProcessAsync : PipelineBuilderTests
+    public class ProcessAsync : PipelineTests
     {
         private static EntityContext CreateContext(bool addProperties = true) => new(
             CreateGenericClass(addProperties),
@@ -62,7 +62,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<EntityContext>
         }
     }
 
-    public class IntegrationTests : PipelineBuilderTests
+    public class IntegrationTests : PipelineTests
     {
         [Fact]
         public async Task Creates_ReadOnly_Entity_With_NamespaceMapping()
