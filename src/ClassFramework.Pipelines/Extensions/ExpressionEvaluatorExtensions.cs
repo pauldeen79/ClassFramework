@@ -23,9 +23,9 @@ public static class ExpressionEvaluatorExtensions
             builder
                 .Add("class", new ClassModel(builderContext.SourceModel))
                 .Add("collectionTypeName", builderContext.Settings.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => Result.Success<object?>(builderContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())))
+                .Add("addMethodNameFormatString", () => builderContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", builderContext.Settings)
-                .Add("typename", () => Result.Success<object?>(builderContext.MapTypeName(builderContext.SourceModel.GetFullName())))
+                .Add("typename", () => builderContext.MapTypeName(builderContext.SourceModel.GetFullName()))
                 .Add("context", builderContext);
         }
         else if (context is BuilderExtensionContext builderExtensionContext)
@@ -33,9 +33,9 @@ public static class ExpressionEvaluatorExtensions
             builder
                 .Add("class", new ClassModel(builderExtensionContext.SourceModel))
                 .Add("collectionTypeName", builderExtensionContext.Settings.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => Result.Success<object?>(builderExtensionContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())))
+                .Add("addMethodNameFormatString", () => builderExtensionContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", builderExtensionContext.Settings)
-                .Add("typename", () => Result.Success<object?>(builderExtensionContext.MapTypeName(builderExtensionContext.SourceModel.GetFullName())))
+                .Add("typename", () => builderExtensionContext.MapTypeName(builderExtensionContext.SourceModel.GetFullName()))
                 .Add("context", builderExtensionContext);
         }
         else if (context is EntityContext entityContext)
@@ -43,9 +43,9 @@ public static class ExpressionEvaluatorExtensions
             builder
                 .Add("class", new ClassModel(entityContext.SourceModel))
                 .Add("collectionTypeName", entityContext.Settings.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => Result.Success<object?>(entityContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())))
+                .Add("addMethodNameFormatString", () => entityContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", entityContext.Settings)
-                .Add("typename", () => Result.Success<object?>(entityContext.MapTypeName(entityContext.SourceModel.GetFullName())))
+                .Add("typename", () => entityContext.MapTypeName(entityContext.SourceModel.GetFullName()))
                 .Add("context", entityContext);
         }
         else if (context is InterfaceContext interfaceContext)
@@ -53,9 +53,9 @@ public static class ExpressionEvaluatorExtensions
             builder
                 .Add("class", new ClassModel(interfaceContext.SourceModel))
                 .Add("collectionTypeName", interfaceContext.Settings.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => Result.Success<object?>(interfaceContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())))
+                .Add("addMethodNameFormatString", () => interfaceContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", interfaceContext.Settings)
-                .Add("typename", () => Result.Success<object?>(interfaceContext.MapTypeName(interfaceContext.SourceModel.GetFullName())))
+                .Add("typename", () => interfaceContext.MapTypeName(interfaceContext.SourceModel.GetFullName()))
                 .Add("context", interfaceContext);
         }
         else if (context is Reflection.ReflectionContext reflectionContext)
@@ -63,9 +63,9 @@ public static class ExpressionEvaluatorExtensions
             builder
                 .Add("class", new ClassModel(reflectionContext.SourceModel))
                 .Add("collectionTypeName", reflectionContext.Settings.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => Result.Success<object?>(reflectionContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())))
+                .Add("addMethodNameFormatString", () => reflectionContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", reflectionContext.Settings)
-                .Add("typename", () => Result.Success<object?>(reflectionContext.MapTypeName(reflectionContext.SourceModel.FullName)))
+                .Add("typename", () => reflectionContext.MapTypeName(reflectionContext.SourceModel.FullName))
                 .Add("context", reflectionContext);
         }
         else if (context is ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContextBuilder)
@@ -74,9 +74,9 @@ public static class ExpressionEvaluatorExtensions
                 .Add("class", new ClassModel(parentChildContextBuilder.ParentContext.Request.SourceModel))
                 .Add("property", parentChildContextBuilder.ChildContext)
                 .Add("collectionTypeName", parentChildContextBuilder.Settings.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => Result.Success<object?>(parentChildContextBuilder.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())))
+                .Add("addMethodNameFormatString", () => parentChildContextBuilder.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", parentChildContextBuilder.Settings)
-                .Add("typename", () => Result.Success<object?>(parentChildContextBuilder.ParentContext.Request.MapTypeName(parentChildContextBuilder.ChildContext.TypeName)))
+                .Add("typename", () => parentChildContextBuilder.ParentContext.Request.MapTypeName(parentChildContextBuilder.ChildContext.TypeName))
                 .Add("context", parentChildContextBuilder.ParentContext.Request);
         }
         else if (context is ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContextBuilderExtension)
@@ -85,9 +85,9 @@ public static class ExpressionEvaluatorExtensions
                 .Add("class", new ClassModel(parentChildContextBuilderExtension.ParentContext.Request.SourceModel))
                 .Add("property", parentChildContextBuilderExtension.ChildContext)
                 .Add("collectionTypeName", parentChildContextBuilderExtension.Settings.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => Result.Success<object?>(parentChildContextBuilderExtension.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())))
+                .Add("addMethodNameFormatString", () => parentChildContextBuilderExtension.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", parentChildContextBuilderExtension.Settings)
-                .Add("typename", () => Result.Success<object?>(parentChildContextBuilderExtension.ParentContext.Request.MapTypeName(parentChildContextBuilderExtension.ChildContext.TypeName)))
+                .Add("typename", () => parentChildContextBuilderExtension.ParentContext.Request.MapTypeName(parentChildContextBuilderExtension.ChildContext.TypeName))
                 .Add("context", parentChildContextBuilderExtension.ParentContext.Request);
         }
         else if (context is ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity)
@@ -96,9 +96,9 @@ public static class ExpressionEvaluatorExtensions
                 .Add("class", new ClassModel(parentChildContextEntity.ParentContext.Request.SourceModel))
                 .Add("property", parentChildContextEntity.ChildContext)
                 .Add("collectionTypeName", parentChildContextEntity.Settings.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => Result.Success<object?>(parentChildContextEntity.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics())))
+                .Add("addMethodNameFormatString", () => parentChildContextEntity.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", parentChildContextEntity.Settings)
-                .Add("typename", () => Result.Success<object?>(parentChildContextEntity.ParentContext.Request.MapTypeName(parentChildContextEntity.ChildContext.TypeName)))
+                .Add("typename", () => parentChildContextEntity.ParentContext.Request.MapTypeName(parentChildContextEntity.ChildContext.TypeName))
                 .Add("context", parentChildContextEntity.ParentContext.Request);
         }
         else if (context is PropertyContext propertyContext)
@@ -106,7 +106,7 @@ public static class ExpressionEvaluatorExtensions
             builder
                 .Add("property", propertyContext.SourceModel)
                 .Add("settings", propertyContext.Settings)
-                .Add("typename", () => Result.Success<object?>(propertyContext.MapTypeName(propertyContext.SourceModel.TypeName)))
+                .Add("typename", () => propertyContext.MapTypeName(propertyContext.SourceModel.TypeName))
                 .Add("context", propertyContext);
         }
         else
