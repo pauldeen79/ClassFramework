@@ -1,6 +1,4 @@
-﻿using NSubstitute.Extensions;
-
-namespace ClassFramework.Pipelines.Tests;
+﻿namespace ClassFramework.Pipelines.Tests;
 
 public abstract class TestBase : IDisposable
 {
@@ -48,7 +46,7 @@ public abstract class TestBase : IDisposable
         // Pass through real IFormattableStringParser implementation, with all placeholder processors and stuff in our ClassFramework.Pipelines project.
         // One exception: If we supply "{Error}" as placeholder, then simply return an error with the error message "Kaboom".
         parser.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
-              .Returns(async x => forceError || x.ArgAt<string>(0) == "{Error}"
+              .Returns(async x => forceError || x.ArgAt<ExpressionEvaluatorContext>(0).Expression == "{Error}"
                 ? Result.Error<GenericFormattableString>("Kaboom")
                 : (await FormattableStringParser.EvaluateAsync(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)).ConfigureAwait(false))
                     .Transform(x => x.ErrorMessage == "Unknown placeholder in value: Error"
