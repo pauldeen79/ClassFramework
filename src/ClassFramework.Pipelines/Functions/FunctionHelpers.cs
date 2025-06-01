@@ -10,10 +10,14 @@ internal static class FunctionHelpers
             .OnSuccess(results => functionDelegate(results.GetValue<string>("Expression")));
 
     internal static async Task<Result<object?>> ParseFromContextAsync(FunctionCallContext context, string functionName, Func<ContextBase, Result<object?>> functionDelegate)
-        => (await context.IsNotNull(nameof(context)).Context.State["context"].ConfigureAwait(false)).Value switch
+    {
+        var ctx = await context.IsNotNull(nameof(context)).Context.State["context"].ConfigureAwait(false);
+
+        return ctx.Value switch
         {
             ContextBase contextBase => functionDelegate(contextBase),
             ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity => functionDelegate(parentChildContextEntity.ParentContext.Request),
-            _ => Result.Invalid<object?>($"{functionName} function does not support type {context!.Context?.GetType().FullName ?? "null"}, only ContextBase is supported")
+            _ => Result.Invalid<object?>($"{functionName} function does not support type {ctx?.Value?.GetType().FullName ?? "null"}, only ContextBase is supported")
         };
+    }
 }
