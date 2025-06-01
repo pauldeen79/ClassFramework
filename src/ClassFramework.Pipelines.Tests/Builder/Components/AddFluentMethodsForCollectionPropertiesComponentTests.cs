@@ -5,14 +5,14 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
     public class ProcessAsync : AddFluentMethodsForCollectionPropertiesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>()
+            var t = sut.ProcessAsync(context: null!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
 
@@ -21,7 +21,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addMethodNameFormatString: string.Empty);
             var context = CreateContext(sourceModel, settings);
@@ -39,7 +39,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{property.Name}");
             var context = CreateContext(sourceModel, settings);
@@ -72,7 +72,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{property.Name}", typenameMappings:
             [
@@ -111,7 +111,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
@@ -147,7 +147,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClassWithPropertyThatHasAReservedName(typeof(List<int>));
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
@@ -184,7 +184,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableEntityInheritance: true,
@@ -221,7 +221,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: addNullChecks, validateArguments: validateArguments, typenameMappings:
             [
@@ -245,7 +245,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(builderNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);
@@ -263,7 +263,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addMethodNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);
@@ -281,7 +281,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: true, typenameMappings:
             [
@@ -305,7 +305,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: true, newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics(), typenameMappings:
             [

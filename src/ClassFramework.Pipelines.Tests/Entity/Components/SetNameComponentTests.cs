@@ -20,7 +20,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
@@ -38,7 +38,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "CustomClassName");
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
@@ -56,7 +56,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
@@ -74,7 +74,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "CustomNamespace");
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
@@ -92,7 +92,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "{Error}");
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
@@ -110,7 +110,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "{Error}");
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));

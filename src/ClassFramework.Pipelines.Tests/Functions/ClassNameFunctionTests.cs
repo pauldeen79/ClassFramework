@@ -8,7 +8,7 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
         public async Task Returns_Invalid_When_FunctionName_Is_Invalid()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("Invalid")
                 .Build();
@@ -28,7 +28,7 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
         public async Task Returns_Invalid_When_No_Arguments_Are_Provided()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("ClassName")
                 .Build();
@@ -49,7 +49,7 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
         public async Task Returns_InnerResult_When_Argument_ValueResult_Is_Not_Successful()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("ClassName")
                 .AddArguments("Error()")
@@ -74,7 +74,7 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
         public async Task Returns_Invalid_When_Argument_ValueResult_Is_Not_Of_Type_String()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("ClassName")
                 .AddArguments("Numeric()")
@@ -99,7 +99,7 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
         public async Task Returns_Invalid_When_Argument_ValueResult_Is_Null()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("ClassName")
                 .AddArguments("Null()")
@@ -124,7 +124,7 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
         public async Task Returns_Success_When_Argument_ValueResult_Is_Of_Type_String()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("ClassName")
                 .AddArguments("MyStringFunction()")

@@ -20,7 +20,7 @@ public class ObservableComponentTests : TestBase<Pipelines.Entity.Components.Obs
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(createAsObservable: false);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
@@ -39,7 +39,7 @@ public class ObservableComponentTests : TestBase<Pipelines.Entity.Components.Obs
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(createAsObservable: true);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));

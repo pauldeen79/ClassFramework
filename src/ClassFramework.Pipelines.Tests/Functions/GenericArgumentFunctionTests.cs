@@ -8,7 +8,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Invalid_When_FunctionName_Is_Invalid()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("Invalid")
                 .Build();
@@ -28,7 +28,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Invalid_When_No_Arguments_Are_Provided()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .Build();
@@ -49,7 +49,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_InnerResult_When_Argument_ValueResult_Is_Not_Successful()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .AddArguments("Error()")
@@ -74,7 +74,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_InnerResult_When_Second_Argument_ValueResult_Is_Not_Successful()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .AddArguments("Success()", "Kaboom()")
@@ -99,7 +99,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Invalid_When_Argument_ValueResult_Is_Not_Of_Type_String()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .AddArguments("Integer()")
@@ -124,7 +124,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Invalid_When_Argument_ValueResult_Is_Null()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .AddArguments("Null()")
@@ -149,7 +149,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Invalid_When_Second_Argument_ValueResult_Is_Not_Of_Type_Boolean()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .AddArguments("Error()", "string")
@@ -179,7 +179,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Success_When_Argument_ValueResult_Is_Of_Type_String()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .AddArguments("MyFunction()")
@@ -204,7 +204,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Success_When_Argument_ValueResult_Is_Of_Type_String_With_AddBrackets_False()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .AddArguments("MyFunction()", "false")
@@ -234,7 +234,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Success_When_Argument_ValueResult_Is_Of_Type_String_With_AddBrackets_True()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .AddArguments("MyFunction()", "true")

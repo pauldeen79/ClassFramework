@@ -5,14 +5,14 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
     public class ProcessAsync : AddFluentMethodsForNonCollectionPropertiesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>()
+            var t = sut.ProcessAsync(context: null!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
 
@@ -21,7 +21,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setMethodNameFormatString: string.Empty);
             var context = CreateContext(sourceModel, settings);
@@ -39,7 +39,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{property.Name}");
             var context = CreateContext(sourceModel, settings);
@@ -73,7 +73,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         {
             // Arrange
             var sourceModel = CreateClassWithPropertyThatHasAReservedName(typeof(int));
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{property.Name}");
             var context = CreateContext(sourceModel, settings);
@@ -105,7 +105,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 setMethodNameFormatString: "With{property.Name}",
@@ -146,7 +146,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
                 .With(x => x.Properties.First(y => y.Name == "Property2").TypeName = "T")
                 .AddGenericTypeArguments("T")
                 .BuildTyped();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 setMethodNameFormatString: "With{property.Name}",
@@ -186,7 +186,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
                 .With(x => x.Properties.First(y => y.Name == "Property2").TypeName = "System.Func<T>")
                 .AddGenericTypeArguments("T")
                 .BuildTyped();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 setMethodNameFormatString: "With{property.Name}",
@@ -223,7 +223,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 setMethodNameFormatString: "With{property.Name}",
@@ -272,7 +272,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableEntityInheritance: true,
@@ -308,7 +308,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{property.Name}", typenameMappings:
             [
@@ -355,7 +355,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
             // If you would use a string without wrapping it in a Literal, then it will get formatted to "customDefaultValue" which may not be what you want.
             // Or, in case you just want a default boolean value, you might also use true and false directly, without wrapping it in a Literal...
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{property.Name}", typenameMappings:
             [
@@ -389,7 +389,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{property.Name}", typenameMappings:
             [
@@ -429,7 +429,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(builderNameFormatString: "My{class.Name}Builder");
             var context = CreateContext(sourceModel, settings);
@@ -448,7 +448,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(typenameMappings:
             [

@@ -5,14 +5,14 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
     public class ProcessAsync : AbstractBuilderComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>()
+            var t = sut.ProcessAsync(context: null!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
 
@@ -21,7 +21,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(enableEntityInheritance: true);
             var context = CreateContext(sourceModel, settings);
@@ -60,7 +60,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(enableEntityInheritance: true, builderNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);

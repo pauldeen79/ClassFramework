@@ -9,7 +9,7 @@ public class PipelineContextExtensionsTests : TestBase
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").WithAbstract().AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
@@ -28,7 +28,7 @@ public class PipelineContextExtensionsTests : TestBase
         {
             // Arrange
             var sourceModel = new InterfaceBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
@@ -47,7 +47,7 @@ public class PipelineContextExtensionsTests : TestBase
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
@@ -66,7 +66,7 @@ public class PipelineContextExtensionsTests : TestBase
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).AddConstructors(new ConstructorBuilder().AddParameter("myProperty", typeof(string))).Build();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
@@ -85,7 +85,7 @@ public class PipelineContextExtensionsTests : TestBase
         {
             // Arrange
             var sourceModel = new StructBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
@@ -108,7 +108,7 @@ public class PipelineContextExtensionsTests : TestBase
                 .WithName("MyClass")
                 .AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
                 .Build();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder()
                 .AddTypenameMappings(new TypenameMappingBuilder()
                     .WithSourceType(sourceModel)
@@ -116,11 +116,11 @@ public class PipelineContextExtensionsTests : TestBase
                     .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderEntityInstanciation).WithValue("Factory.DoSomething(this)")))
                 .Build(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
-            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
+            var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = await context.CreateEntityInstanciationAsync(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
+            var result = await context.CreateEntityInstanciationAsync(expressionEvaluator, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

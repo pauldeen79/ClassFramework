@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests;
+﻿using NSubstitute;
+
+namespace ClassFramework.Pipelines.Tests;
 
 public abstract class TestBase : IDisposable
 {
@@ -13,47 +15,61 @@ public abstract class TestBase : IDisposable
 
     protected ServiceProvider? Provider { get; set; }
     protected IServiceScope? Scope { get; set; }
-    private IExpressionEvaluator? _formattableStringParser;
+    private IExpressionEvaluator? _expressionEvaluator;
     private bool disposedValue;
 
-    private IExpressionEvaluator FormattableStringParser
+    private IExpressionEvaluator ExpressionEvaluator
     {
         get
         {
-            if (_formattableStringParser is null)
+            if (_expressionEvaluator is null)
             {
                 Provider = new ServiceCollection()
                     .AddExpressionEvaluator()
                     .AddClassFrameworkPipelines()
                     .AddCsharpExpressionDumper()
                     .BuildServiceProvider();
-                Scope = Provider.CreateScope();
-                _formattableStringParser = Scope.ServiceProvider.GetRequiredService<IExpressionEvaluator>();
+                _expressionEvaluator = Provider.GetRequiredService<IExpressionEvaluator>();
             }
 
-            return _formattableStringParser;
+            return _expressionEvaluator;
         }
     }
 
-    protected Task<IExpressionEvaluator> InitializeParser(bool forceError = false)
+    protected Task<IExpressionEvaluator> InitializeExpressionEvaluator(bool forceError = false)
     {
-        var parser = Fixture.Freeze<IExpressionEvaluator>();
+        var evaluator = Fixture.Freeze<IExpressionEvaluator>();
         var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
         csharpExpressionDumper
             .Dump(Arg.Any<object?>(), Arg.Any<Type?>())
             .Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
 
-        // Pass through real IFormattableStringParser implementation, with all placeholder processors and stuff in our ClassFramework.Pipelines project.
-        // One exception: If we supply "{Error}" as placeholder, then simply return an error with the error message "Kaboom".
-        parser.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
-              .Returns(async x => forceError || x.ArgAt<ExpressionEvaluatorContext>(0).Expression == "{Error}"
-                ? Result.Error<GenericFormattableString>("Kaboom")
-                : (await FormattableStringParser.EvaluateAsync(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)).ConfigureAwait(false))
-                    .Transform(x => x.ErrorMessage == "Unknown placeholder in value: Error"
-                        ? Result.Error<GenericFormattableString>("Kaboom")
-                        : x));
+        // Pass through real IExpressionEvaluator implementation, with all placeholder processors and stuff in our ClassFramework.ExpressionEvaluator project.
+        // One exception: If we supply $"{Error}" as placeholder, then simply return an error with the error message "Kaboom".
+        evaluator.EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                 .Returns(async x => forceError || x.ArgAt<ExpressionEvaluatorContext>(0).Expression == "Error"
+                   ? Result.Error<GenericFormattableString>("Kaboom")
+                   : (await ExpressionEvaluator.EvaluateTypedAsync<GenericFormattableString>(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)).ConfigureAwait(false))
+                       /*.Transform(x => x.ErrorMessage == "Unknown expression type found in fragment: Error"
+                           ? Result.Error<GenericFormattableString>("Kaboom")
+                           : x)*/);
+        evaluator.EvaluateCallbackAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                 .Returns(async x => forceError || x.ArgAt<ExpressionEvaluatorContext>(0).Expression == "Error"
+                   ? Result.Error<GenericFormattableString>("Kaboom")
+                   : (await ExpressionEvaluator.EvaluateCallbackAsync(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)).ConfigureAwait(false))
+                       /*.Transform(x => x.ErrorMessage == "Unknown expression type found in fragment: Error"
+                           ? Result.Error<object?>("Kaboom")
+                           : x)*/);
+        evaluator.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                 .Returns(async x => forceError || x.ArgAt<ExpressionEvaluatorContext>(0).Expression == "Error"
+                    ? Result.Error<object?>("Kaboom")
+                    : await ExpressionEvaluator.EvaluateAsync(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)).ConfigureAwait(false));
+        evaluator.ParseAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                 .Returns(x => ExpressionEvaluator.ParseAsync(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)));
+        evaluator.ParseCallbackAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                 .Returns(x => ExpressionEvaluator.ParseCallbackAsync(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)));
 
-        return Task.FromResult(parser);
+        return Task.FromResult(evaluator);
     }
 
     protected static Class CreateClass(string baseClass = "")
@@ -61,9 +77,10 @@ public abstract class TestBase : IDisposable
             .WithName("SomeClass")
             .WithNamespace("SomeNamespace")
             .WithBaseClass(baseClass)
-            .AddProperties(new PropertyBuilder().WithName("Property1").WithType(typeof(int)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
-            .AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(string)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
-            .AddProperties(new PropertyBuilder().WithName("Property3").WithType(typeof(List<int>)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
+            .AddProperties(
+                new PropertyBuilder().WithName("Property1").WithType(typeof(int)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")),
+                new PropertyBuilder().WithName("Property2").WithType(typeof(string)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")),
+                new PropertyBuilder().WithName("Property3").WithType(typeof(List<int>)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
             .BuildTyped();
 
     protected static Domain.Types.Interface CreateInterface(bool addProperties)

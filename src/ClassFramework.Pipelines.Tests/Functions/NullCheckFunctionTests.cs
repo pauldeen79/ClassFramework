@@ -8,7 +8,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         public async Task Returns_Success_On_Context_Of_Type_ContextBase()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NullCheck")
                 .Build();
@@ -29,7 +29,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         public async Task Returns_Invalid_On_Unsupported_Context_Type()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NullCheck")
                 .Build();
@@ -50,7 +50,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         public async Task Returns_Invalid_On_Null_Context()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NullCheck")
                 .Build();
@@ -71,7 +71,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         public async Task Returns_Invalid_On_Wrong_FunctionName()
         {
             // Arrange
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("WrongFunctionName")
                 .Build();

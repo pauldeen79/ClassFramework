@@ -21,7 +21,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -42,7 +42,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -64,7 +64,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -86,7 +86,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -109,7 +109,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass("MyBaseClass");
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -129,7 +129,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass("MyBaseClass");
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
@@ -149,7 +149,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,

@@ -5,14 +5,14 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
     public class ProcessAsync : AddImplicitOperatorComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>()
+            var t = sut.ProcessAsync(context: null!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
 
@@ -38,7 +38,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
             var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture));
-            await InitializeParser(forceError: true);
+            await InitializeExpressionEvaluator(forceError: true);
             var sut = CreateSut();
 
             // Act
@@ -55,7 +55,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
             var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture));
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
             // Act
@@ -78,7 +78,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
             var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture));
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
             // Act
@@ -104,7 +104,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract();
             var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture));
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
             // Act
@@ -130,7 +130,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract();
             var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture));
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
             // Act
@@ -157,7 +157,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithIsAbstract()
                 .WithIsForAbstractBuilder();
             var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture));
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
             // Act
@@ -184,7 +184,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithIsAbstract()
                 .WithIsForAbstractBuilder();
             var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture));
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
             // Act
@@ -210,7 +210,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithEnableBuilderInheritance()
                 .WithBaseClass(new ClassBuilder().WithName("Dummy"));
             var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture));
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
             // Act
@@ -236,7 +236,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithEnableBuilderInheritance()
                 .WithBaseClass(new ClassBuilder().WithName("Dummy"));
             var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture));
-            await InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
             // Act
