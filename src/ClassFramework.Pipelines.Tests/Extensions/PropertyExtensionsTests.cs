@@ -189,19 +189,20 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
     public class GetBuilderClassConstructorInitializer : PropertyExtensionsTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            Action a = async () => await sut.GetBuilderConstructorInitializerAsync<string>(context: default!, new object(), string.Empty, string.Empty, string.Empty, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
+            var t = sut.GetBuilderConstructorInitializerAsync<string>(context: default!, new object(), string.Empty, string.Empty, string.Empty, formattableStringParser, CancellationToken.None);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]
-        public void Throws_On_Null_ParentChildContext()
+        public async Task Throws_On_Null_ParentChildContext()
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
@@ -211,12 +212,13 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            Action a = () => sut.GetBuilderConstructorInitializerAsync(context, parentChildContext: default!, string.Empty, string.Empty, string.Empty, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("parentChildContext");
+            var t = sut.GetBuilderConstructorInitializerAsync(context, parentChildContext: default!, string.Empty, string.Empty, string.Empty, formattableStringParser, CancellationToken.None);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
+             .ParamName.ShouldBe("parentChildContext");
         }
 
         [Fact]
-        public void Throws_On_Null_MappedTypeName()
+        public async Task Throws_On_Null_MappedTypeName()
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
@@ -226,12 +228,13 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            Action a = () => sut.GetBuilderConstructorInitializerAsync(context, new object(), mappedTypeName: default!, string.Empty, string.Empty, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("mappedTypeName");
+            var t = sut.GetBuilderConstructorInitializerAsync(context, new object(), mappedTypeName: default!, string.Empty, string.Empty, formattableStringParser, CancellationToken.None);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
+             .ParamName.ShouldBe("mappedTypeName");
         }
 
         [Fact]
-        public void Throws_On_Null_NewCollectionTypeName()
+        public async Task Throws_On_Null_NewCollectionTypeName()
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
@@ -241,12 +244,13 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            Action a = async () => await sut.GetBuilderConstructorInitializerAsync(context, new object(), string.Empty, newCollectionTypeName: default!, string.Empty, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("newCollectionTypeName");
+            var t = sut.GetBuilderConstructorInitializerAsync(context, new object(), string.Empty, newCollectionTypeName: default!, string.Empty, formattableStringParser, CancellationToken.None);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
+             .ParamName.ShouldBe("newCollectionTypeName");
         }
 
         [Fact]
-        public void Throws_On_Null_FormatStringParser()
+        public async Task Throws_On_Null_Evaluator()
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
@@ -255,12 +259,13 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var context = new TestContext(settings, formatProvider);
 
             // Act & Assert
-            Action a = () => sut.GetBuilderConstructorInitializerAsync(context, new object(), string.Empty, string.Empty, string.Empty, evaluator: null!, CancellationToken.None).ConfigureAwait(false);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("evaluator");
+            var t = sut.GetBuilderConstructorInitializerAsync(context, new object(), string.Empty, string.Empty, string.Empty, evaluator: null!, CancellationToken.None);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
+             .ParamName.ShouldBe("evaluator");
         }
 
         [Fact]
-        public void Throws_On_Null_MetadataName()
+        public async Task Throws_On_Null_MetadataName()
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
@@ -270,8 +275,9 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            Action a = async () => await sut.GetBuilderConstructorInitializerAsync(context, new object(), string.Empty, string.Empty, metadataName: null!, formattableStringParser, CancellationToken.None).ConfigureAwait(false);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("metadataName");
+            var t = sut.GetBuilderConstructorInitializerAsync(context, new object(), string.Empty, string.Empty, metadataName: null!, formattableStringParser, CancellationToken.None);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
+             .ParamName.ShouldBe("metadataName");
         }
 
         private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider)

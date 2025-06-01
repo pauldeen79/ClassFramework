@@ -64,14 +64,15 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
     public class GetCustomValueForInheritedClass : TypeBaseExtensionsTests
     {
         [Fact]
-        public void Throws_When_CustomValue_Is_Null()
+        public async Task Throws_When_CustomValue_Is_Null()
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
-            Action a = () => sut.GetCustomValueForInheritedClassAsync(true, customValue: default(Func<IBaseClassContainer, Result<GenericFormattableString>>)!);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("customValue");
+            var t = sut.GetCustomValueForInheritedClassAsync(true, customValue: default(Func<IBaseClassContainer, Task<Result<GenericFormattableString>>>)!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
+             .ParamName.ShouldBe("customValue");
         }
 
         [Fact]
@@ -81,7 +82,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act
-            var result = await sut.GetCustomValueForInheritedClassAsync(false, _ => Result.Success<GenericFormattableString>("CustomValue"));
+            var result = await sut.GetCustomValueForInheritedClassAsync(false, _ => Task.FromResult(Result.Success<GenericFormattableString>("CustomValue")));
 
             // Assert
             result.Value.ShouldNotBeNull();
@@ -95,7 +96,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = new StructBuilder().WithName("MyClass").Build();
 
             // Act
-            var result = await sut.GetCustomValueForInheritedClassAsync(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
+            var result = await sut.GetCustomValueForInheritedClassAsync(true, _ => Task.FromResult(Result.Success<GenericFormattableString>("CustomValue")));
 
             // Assert
             result.Value.ShouldNotBeNull();
@@ -109,7 +110,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act
-            var result = await sut.GetCustomValueForInheritedClassAsync(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
+            var result = await sut.GetCustomValueForInheritedClassAsync(true, _ => Task.FromResult(Result.Success<GenericFormattableString>("CustomValue")));
 
             // Assert
             result.Value.ShouldNotBeNull();
@@ -123,7 +124,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").WithBaseClass("SomeBaseClass").Build();
 
             // Act
-            var result = await sut.GetCustomValueForInheritedClassAsync(true, _ => Result.Success<GenericFormattableString>("CustomValue"));
+            var result = await sut.GetCustomValueForInheritedClassAsync(true, _ => Task.FromResult(Result.Success<GenericFormattableString>("CustomValue")));
 
             // Assert
             result.Value!.ToString().ShouldBe("CustomValue");
@@ -285,19 +286,20 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
     public class GetBuilderClassFields : TypeBaseExtensionsTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
             var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            Action a = async () => _ = (await sut.GetBuilderClassFieldsAsync(context: null!, formattableStringParser, CancellationToken.None).ConfigureAwait(false)).ToArray();
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
+            var t = sut.GetBuilderClassFieldsAsync(context: null!, formattableStringParser, CancellationToken.None);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]
-        public void Throws_On_Null_FormattableStringParser()
+        public async Task Throws_On_Null_Evaluator()
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
@@ -305,8 +307,9 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
 
             // Act & Assert
-            Action a = async () => _ = (await sut.GetBuilderClassFieldsAsync(context, evaluator: null!, CancellationToken.None).ConfigureAwait(false)).ToArray();
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("evaluator");
+            var t = sut.GetBuilderClassFieldsAsync(context, evaluator: null!, CancellationToken.None);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
+             .ParamName.ShouldBe("evaluator");
         }
 
         [Fact]

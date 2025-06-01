@@ -93,7 +93,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
     }
 
     private static async Task<string> CreateBuilderClassConstructorChainCall(IType instance, PipelineSettings settings)
-        => (await instance.GetCustomValueForInheritedClassAsync(settings.EnableInheritance, _ => Result.Success<GenericFormattableString>("base()")).ConfigureAwait(false)).Value!; //note that the delegate always returns success, so we can simply use the Value here
+        => (await instance.GetCustomValueForInheritedClassAsync(settings.EnableInheritance, _ => Task.FromResult(Result.Success<GenericFormattableString>("base()"))).ConfigureAwait(false)).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private Task<Result<GenericFormattableString>> GenerateDefaultValueStatement(Property property, PipelineContext<BuilderContext> context, CancellationToken token)
         => _evaluator.EvaluateInterpolatedStringAsync

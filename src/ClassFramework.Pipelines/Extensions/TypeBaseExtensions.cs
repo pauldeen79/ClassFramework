@@ -23,13 +23,13 @@ public static class TypeBaseExtensions
     public static Task<Result<GenericFormattableString>> GetCustomValueForInheritedClassAsync(
         this IType instance,
         bool enableInheritance,
-        Func<IBaseClassContainer, Result<GenericFormattableString>> customValue)
-        => instance.GetCustomValueForInheritedClass(enableInheritance, x => Task.FromResult(customValue(x)));
+        Func<IBaseClassContainer, Task<Result<GenericFormattableString>>> customValue)
+        => instance.GetCustomValueForInheritedClass(enableInheritance, customValue);
 
     public static async Task<Result<GenericFormattableString>> GetCustomValueForInheritedClass(
         this IType instance,
         bool enableInheritance,
-        Func<IBaseClassContainer,Task<Result<GenericFormattableString>>> customValue)
+        Func<IBaseClassContainer, Task<Result<GenericFormattableString>>> customValue)
     {
         customValue = customValue.IsNotNull(nameof(customValue));
 
@@ -135,7 +135,7 @@ public static class TypeBaseExtensions
         => enableInheritance
         && baseClass is not null
             ? baseClass.GetFullName()
-            : (await instance.GetCustomValueForInheritedClassAsync(enableInheritance, cls => Result.Success<GenericFormattableString>(cls.BaseClass)).ConfigureAwait(false)).Value!; // we're always returning Success here, so we can shortcut the validation of the result by getting .Value
+            : (await instance.GetCustomValueForInheritedClassAsync(enableInheritance, cls => Task.FromResult(Result.Success<GenericFormattableString>(cls.BaseClass))).ConfigureAwait(false)).Value!; // we're always returning Success here, so we can shortcut the validation of the result by getting .Value
 
     public static string WithoutInterfacePrefix(this IType instance)
         => instance is Domain.Types.Interface
