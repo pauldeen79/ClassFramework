@@ -35,6 +35,5 @@ global using CrossCutting.ProcessingPipeline;
 global using CrossCutting.Utilities.ExpressionEvaluator;
 global using CrossCutting.Utilities.ExpressionEvaluator.Abstractions;
 global using CrossCutting.Utilities.ExpressionEvaluator.Builders;
-global using CrossCutting.Utilities.ExpressionEvaluator.Extensions;
 global using CsharpExpressionDumper.Abstractions;
 global using Microsoft.Extensions.DependencyInjection;

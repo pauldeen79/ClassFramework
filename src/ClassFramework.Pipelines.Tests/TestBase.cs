@@ -1,6 +1,4 @@
-﻿using NSubstitute;
-
-namespace ClassFramework.Pipelines.Tests;
+﻿namespace ClassFramework.Pipelines.Tests;
 
 public abstract class TestBase : IDisposable
 {
@@ -45,21 +43,14 @@ public abstract class TestBase : IDisposable
             .Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
 
         // Pass through real IExpressionEvaluator implementation, with all placeholder processors and stuff in our ClassFramework.ExpressionEvaluator project.
-        // One exception: If we supply $"{Error}" as placeholder, then simply return an error with the error message "Kaboom".
         evaluator.EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                  .Returns(async x => forceError || x.ArgAt<ExpressionEvaluatorContext>(0).Expression == "Error"
-                   ? Result.Error<GenericFormattableString>("Kaboom")
-                   : (await ExpressionEvaluator.EvaluateTypedAsync<GenericFormattableString>(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)).ConfigureAwait(false))
-                       /*.Transform(x => x.ErrorMessage == "Unknown expression type found in fragment: Error"
-                           ? Result.Error<GenericFormattableString>("Kaboom")
-                           : x)*/);
+                    ? Result.Error<GenericFormattableString>("Kaboom")
+                    : await ExpressionEvaluator.EvaluateTypedAsync<GenericFormattableString>(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)).ConfigureAwait(false));
         evaluator.EvaluateCallbackAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                  .Returns(async x => forceError || x.ArgAt<ExpressionEvaluatorContext>(0).Expression == "Error"
-                   ? Result.Error<GenericFormattableString>("Kaboom")
-                   : (await ExpressionEvaluator.EvaluateCallbackAsync(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)).ConfigureAwait(false))
-                       /*.Transform(x => x.ErrorMessage == "Unknown expression type found in fragment: Error"
-                           ? Result.Error<object?>("Kaboom")
-                           : x)*/);
+                    ? Result.Error<GenericFormattableString>("Kaboom")
+                    : await ExpressionEvaluator.EvaluateCallbackAsync(x.ArgAt<ExpressionEvaluatorContext>(0), x.ArgAt<CancellationToken>(1)).ConfigureAwait(false));
         evaluator.EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                  .Returns(async x => forceError || x.ArgAt<ExpressionEvaluatorContext>(0).Expression == "Error"
                     ? Result.Error<object?>("Kaboom")
