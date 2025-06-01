@@ -58,16 +58,22 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
 
     private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderExtensionContext> context, Property property, ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContext, CancellationToken token)
     {
+        var results = new List<Result<GenericFormattableString>>();
+
         if (context.Request.Settings.AddNullChecks)
         {
-            return [Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))];
+            results.Add(Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())));
         }
 
-        return [await _evaluator.EvaluateInterpolatedStringAsync("return instance.{addMethodNameFormatString}<T>({CsharpFriendlyName(property.Name.ToCamelCase())}.ToArray());", context.Request.FormatProvider, parentChildContext, token).ConfigureAwait(false)];
+        results.Add(await _evaluator.EvaluateInterpolatedStringAsync("return instance.{addMethodNameFormatString}<T>({CsharpFriendlyName(property.Name.ToCamelCase())}.ToArray());", context.Request.FormatProvider, parentChildContext, token).ConfigureAwait(false));
+
+        return results;
     }
 
     private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderExtensionContext> context, Property property, CancellationToken token)
     {
+        var results = new List<Result<GenericFormattableString>>();
+
         if (context.Request.Settings.AddNullChecks)
         {
             var argumentNullCheckResult = await _evaluator.EvaluateInterpolatedStringAsync
@@ -77,7 +83,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                 new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings),
                 token
             ).ConfigureAwait(false);
-            return [argumentNullCheckResult];
+            results.Add(argumentNullCheckResult);
         }
 
         var builderAddExpressionResult = await _evaluator.EvaluateInterpolatedStringAsync
@@ -90,7 +96,10 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
             token
         ).ConfigureAwait(false);
 
-        return [builderAddExpressionResult, Result.Success<GenericFormattableString>("return instance;")];
+        results.Add(builderAddExpressionResult);
+        results.Add(Result.Success<GenericFormattableString>("return instance;"));
+
+        return results;
     }
 
     private static ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> CreateParentChildContext(PipelineContext<BuilderExtensionContext> context, Property property)

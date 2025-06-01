@@ -64,18 +64,24 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
             return await GetCodeStatementsForArrayOverload(context, property, token).ConfigureAwait(false);
         }
 
+        var results = new List<Result<GenericFormattableString>>();
+
         // When not using IEnumerable<>, we can simply force ToArray because it's stored in a generic list or collection of some sort anyway.
         // (in other words, materialization is always performed)
         if (context.Request.Settings.AddNullChecks)
         {
-            return [Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))];
+            results.Add(Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())));
         }
 
-        return [await _evaluator.EvaluateInterpolatedStringAsync("return {addMethodNameFormatString}({CsharpFriendlyName(property.Name.ToCamelCase())}.ToArray());", context.Request.FormatProvider, parentChildContext, token).ConfigureAwait(false)];
+        results.Add(await _evaluator.EvaluateInterpolatedStringAsync("return {addMethodNameFormatString}({CsharpFriendlyName(property.Name.ToCamelCase())}.ToArray());", context.Request.FormatProvider, parentChildContext, token).ConfigureAwait(false));
+
+        return results;
     }
 
     private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderContext> context, Property property, CancellationToken token)
     {
+        var results = new List<Result<GenericFormattableString>>();
+
         if (context.Request.Settings.AddNullChecks)
         {
             var argumentNullCheckResult = await _evaluator.EvaluateInterpolatedStringAsync
@@ -88,7 +94,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
 
             if (!argumentNullCheckResult.IsSuccessful() || !string.IsNullOrEmpty(argumentNullCheckResult.Value!.ToString()))
             {
-                return [argumentNullCheckResult];
+                results.Add(argumentNullCheckResult);
             }
         }
 
@@ -100,11 +106,11 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
             token
         ).ConfigureAwait(false);
 
-        return
-        [
-            builderAddExpressionResult,
-            Result.Success<GenericFormattableString>(context.Request.ReturnValueStatementForFluentMethod)
-        ];
+
+        results.Add(builderAddExpressionResult);
+        results.Add(Result.Success<GenericFormattableString>(context.Request.ReturnValueStatementForFluentMethod));
+
+        return results;
     }
 
     private static ParentChildContext<PipelineContext<BuilderContext>, Property> CreateParentChildContext(PipelineContext<BuilderContext> context, Property property)
