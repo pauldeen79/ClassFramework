@@ -11,6 +11,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NullCheck")
+                .WithMemberType(MemberType.Function)
                 .Build();
             var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().WithAddNullChecks().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
@@ -32,6 +33,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NullCheck")
+                .WithMemberType(MemberType.Function)
                 .Build();
             var context = this;
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
@@ -53,6 +55,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NullCheck")
+                .WithMemberType(MemberType.Function)
                 .Build();
             object? context = null;
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
@@ -74,6 +77,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("WrongFunctionName")
+                .WithMemberType(MemberType.Function)
                 .Build();
             object? context = null;
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();

@@ -11,6 +11,7 @@ public class NoGenericsFunctionTests : TestBase<NoGenericsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("Invalid")
+                .WithMemberType(MemberType.Function)
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
@@ -31,6 +32,7 @@ public class NoGenericsFunctionTests : TestBase<NoGenericsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NoGenerics")
+                .WithMemberType(MemberType.Function)
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
@@ -52,6 +54,7 @@ public class NoGenericsFunctionTests : TestBase<NoGenericsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NoGenerics")
+                .WithMemberType(MemberType.Function)
                 .AddArguments("Error()")
                 .Build();
             object? context = default;
@@ -77,6 +80,7 @@ public class NoGenericsFunctionTests : TestBase<NoGenericsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NoGenerics")
+                .WithMemberType(MemberType.Function)
                 .AddArguments("Integer()")
                 .Build();
             object? context = default;
@@ -92,7 +96,7 @@ public class NoGenericsFunctionTests : TestBase<NoGenericsFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Expression is not of type string");
+            result.ErrorMessage.ShouldBe("Could not cast System.Int32 to System.String");
         }
 
         [Fact]
@@ -102,6 +106,7 @@ public class NoGenericsFunctionTests : TestBase<NoGenericsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NoGenerics")
+                .WithMemberType(MemberType.Function)
                 .AddArguments("Null()")
                 .Build();
             object? context = default;
@@ -117,7 +122,7 @@ public class NoGenericsFunctionTests : TestBase<NoGenericsFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Expression is not of type string");
+            result.ErrorMessage.ShouldBe("Could not cast  to System.String");
         }
 
         [Fact]
@@ -127,6 +132,7 @@ public class NoGenericsFunctionTests : TestBase<NoGenericsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NoGenerics")
+                .WithMemberType(MemberType.Function)
                 .AddArguments("MyFunction()")
                 .Build();
             object? context = default;

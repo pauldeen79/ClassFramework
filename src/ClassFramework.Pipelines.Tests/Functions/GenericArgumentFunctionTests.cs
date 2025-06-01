@@ -11,6 +11,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("Invalid")
+                .WithMemberType(MemberType.Function)
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
@@ -31,6 +32,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
+                .WithMemberType(MemberType.Function)
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
@@ -52,6 +54,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
+                .WithMemberType(MemberType.Function)
                 .AddArguments("Error()")
                 .Build();
             object? context = default;
@@ -77,13 +80,16 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
+                .WithMemberType(MemberType.Function)
                 .AddArguments("Success()", "Kaboom()")
                 .Build();
             object? context = default;
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             evaluator
                 .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
-                .Returns(x => x.ArgAt<FunctionCall>(0).Name == "Success" ? Result.Success<object?>("Success") : Result.Error<object?>("Kaboom"));
+                .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression == "Success()"
+                    ? Result.Success<object?>("Success")
+                    : Result.Error<object?>("Kaboom"));
             var sut = CreateSut();
             var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
@@ -102,6 +108,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
+                .WithMemberType(MemberType.Function)
                 .AddArguments("Integer()")
                 .Build();
             object? context = default;
@@ -117,7 +124,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Expression is not of type string");
+            result.ErrorMessage.ShouldBe("Could not cast System.Int32 to System.String");
         }
 
         [Fact]
@@ -127,6 +134,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
+                .WithMemberType(MemberType.Function)
                 .AddArguments("Null()")
                 .Build();
             object? context = default;
@@ -142,7 +150,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Expression is not of type string");
+            result.ErrorMessage.ShouldBe("Could not cast  to System.String");
         }
 
         [Fact]
@@ -152,6 +160,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
+                .WithMemberType(MemberType.Function)
                 .AddArguments("Error()", "string")
                 .Build();
             object? context = default;
@@ -160,7 +169,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
                 .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression switch
                 {
-                    "Error" => Result.Success<object?>("Kaboom"),
+                    "Error()" => Result.Success<object?>("Kaboom"),
                     "string" => Result.Success<object?>("string"),
                     _ => Result.NotSupported<object?>()
                 });
@@ -182,6 +191,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
+                .WithMemberType(MemberType.Function)
                 .AddArguments("MyFunction()")
                 .Build();
             object? context = default;
@@ -207,6 +217,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
+                .WithMemberType(MemberType.Function)
                 .AddArguments("MyFunction()", "false")
                 .Build();
             object? context = default;
@@ -237,6 +248,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
+                .WithMemberType(MemberType.Function)
                 .AddArguments("MyFunction()", "true")
                 .Build();
             object? context = default;

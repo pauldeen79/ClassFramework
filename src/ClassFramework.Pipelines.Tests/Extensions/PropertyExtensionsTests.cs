@@ -303,13 +303,13 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var context = new TestContext(settings, formatProvider);
             var parentChildContext = new ParentChildContext<TestContext, PropertyContext>(context, new PropertyContext(sut, settings, formatProvider, sut.TypeName, string.Empty), settings);
-            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
-            formattableStringParser
-                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
-                .Returns(x => Result.Success<GenericFormattableString>(x.ArgAt<string>(0)));
+            var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
+            expressionEvaluator
+                .EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(x => Result.Success<GenericFormattableString>(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.Substring(2, x.ArgAt<ExpressionEvaluatorContext>(0).Expression.Length - 3)));
 
             // Act
-            var result = await sut.GetBuilderArgumentTypeNameAsync(context, parentChildContext, sut.TypeName, formattableStringParser, CancellationToken.None);
+            var result = await sut.GetBuilderArgumentTypeNameAsync(context, parentChildContext, sut.TypeName, expressionEvaluator, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

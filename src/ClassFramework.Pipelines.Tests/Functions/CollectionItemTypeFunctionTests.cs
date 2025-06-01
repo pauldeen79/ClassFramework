@@ -10,6 +10,7 @@ public class CollectionItemTypeFunctionTests : TestBase<CollectionItemTypeFuncti
         await InitializeExpressionEvaluator();
         var functionCall = new FunctionCallBuilder()
             .WithName("ClassName")
+            .WithMemberType(MemberType.Function)
             .AddArguments("MyFunction()")
             .Build();
         object? context = default;
