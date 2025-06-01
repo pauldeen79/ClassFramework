@@ -10,12 +10,12 @@ public class PropertyBuilderMemberNameProperty : IProperty
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add("instance", context.GetInstanceValueResult<Property>())
-            .Add("settings", context.GetSettingsAsync())
+            .Add(Constants.Instance, context.GetInstanceValueResult<Property>())
+            .Add(ResultNames.Settings, context.GetSettingsAsync())
             .Build()
             .ConfigureAwait(false))
             .OnSuccess<object?>(results => results
-                .GetValue<Property>("instance")
-                .GetBuilderMemberName(results.GetValue<PipelineSettings>("settings"), context.Context.Settings.FormatProvider.ToCultureInfo()));
+                .GetValue<Property>(Constants.Instance)
+                .GetBuilderMemberName(results.GetValue<PipelineSettings>(ResultNames.Settings), context.Context.Settings.FormatProvider.ToCultureInfo()));
     }
 }

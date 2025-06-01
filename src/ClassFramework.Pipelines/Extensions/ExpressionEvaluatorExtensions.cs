@@ -22,101 +22,101 @@ public static class ExpressionEvaluatorExtensions
         if (context is BuilderContext builderContext)
         {
             builder
-                .Add("class", new ClassModel(builderContext.SourceModel))
-                .Add("collectionTypeName", builderContext.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => builderContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add("settings", builderContext.Settings)
-                .Add("typename", () => builderContext.MapTypeName(builderContext.SourceModel.GetFullName()))
-                .Add("context", builderContext);
+                .Add(ResultNames.Class, new ClassModel(builderContext.SourceModel))
+                .Add(ResultNames.CollectionTypeName, builderContext.CollectionTypeName)
+                .Add(ResultNames.AddMethodNameFormatString, () => builderContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
+                .Add(ResultNames.Settings, builderContext.Settings)
+                .Add(ResultNames.TypeName, () => builderContext.MapTypeName(builderContext.SourceModel.GetFullName()))
+                .Add(ResultNames.Context, builderContext);
         }
         else if (context is BuilderExtensionContext builderExtensionContext)
         {
             builder
-                .Add("class", new ClassModel(builderExtensionContext.SourceModel))
-                .Add("collectionTypeName", builderExtensionContext.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => builderExtensionContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add("settings", builderExtensionContext.Settings)
-                .Add("typename", () => builderExtensionContext.MapTypeName(builderExtensionContext.SourceModel.GetFullName()))
-                .Add("context", builderExtensionContext);
+                .Add(ResultNames.Class, new ClassModel(builderExtensionContext.SourceModel))
+                .Add(ResultNames.CollectionTypeName, builderExtensionContext.CollectionTypeName)
+                .Add(ResultNames.AddMethodNameFormatString, () => builderExtensionContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
+                .Add(ResultNames.Settings, builderExtensionContext.Settings)
+                .Add(ResultNames.TypeName, () => builderExtensionContext.MapTypeName(builderExtensionContext.SourceModel.GetFullName()))
+                .Add(ResultNames.Context, builderExtensionContext);
         }
         else if (context is EntityContext entityContext)
         {
             builder
-                .Add("class", new ClassModel(entityContext.SourceModel))
-                .Add("collectionTypeName", entityContext.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => entityContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add("settings", entityContext.Settings)
-                .Add("typename", () => entityContext.MapTypeName(entityContext.SourceModel.GetFullName()))
-                .Add("context", entityContext);
+                .Add(ResultNames.Class, new ClassModel(entityContext.SourceModel))
+                .Add(ResultNames.CollectionTypeName, entityContext.CollectionTypeName)
+                .Add(ResultNames.AddMethodNameFormatString, () => entityContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
+                .Add(ResultNames.Settings, entityContext.Settings)
+                .Add(ResultNames.TypeName, () => entityContext.MapTypeName(entityContext.SourceModel.GetFullName()))
+                .Add(ResultNames.Context, entityContext);
         }
         else if (context is InterfaceContext interfaceContext)
         {
             builder
-                .Add("class", new ClassModel(interfaceContext.SourceModel))
-                .Add("collectionTypeName", interfaceContext.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => interfaceContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add("settings", interfaceContext.Settings)
-                .Add("typename", () => interfaceContext.MapTypeName(interfaceContext.SourceModel.GetFullName()))
-                .Add("context", interfaceContext);
+                .Add(ResultNames.Class, new ClassModel(interfaceContext.SourceModel))
+                .Add(ResultNames.CollectionTypeName, interfaceContext.CollectionTypeName)
+                .Add(ResultNames.AddMethodNameFormatString, () => interfaceContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
+                .Add(ResultNames.Settings, interfaceContext.Settings)
+                .Add(ResultNames.TypeName, () => interfaceContext.MapTypeName(interfaceContext.SourceModel.GetFullName()))
+                .Add(ResultNames.Context, interfaceContext);
         }
         else if (context is Reflection.ReflectionContext reflectionContext)
         {
             builder
-                .Add("class", new ClassModel(reflectionContext.SourceModel))
-                .Add("collectionTypeName", reflectionContext.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => reflectionContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add("settings", reflectionContext.Settings)
-                .Add("typename", () => reflectionContext.MapTypeName(reflectionContext.SourceModel.FullName))
-                .Add("context", reflectionContext);
+                .Add(ResultNames.Class, new ClassModel(reflectionContext.SourceModel))
+                .Add(ResultNames.CollectionTypeName, reflectionContext.CollectionTypeName)
+                .Add(ResultNames.AddMethodNameFormatString, () => reflectionContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
+                .Add(ResultNames.Settings, reflectionContext.Settings)
+                .Add(ResultNames.TypeName, () => reflectionContext.MapTypeName(reflectionContext.SourceModel.FullName))
+                .Add(ResultNames.Context, reflectionContext);
         }
         else if (context is ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContextBuilder)
         {
             builder
-                .Add("class", new ClassModel(parentChildContextBuilder.ParentContext.Request.SourceModel))
-                .Add("property", parentChildContextBuilder.ChildContext)
-                .Add("collectionTypeName", parentChildContextBuilder.ParentContext.Request.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => parentChildContextBuilder.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add("settings", parentChildContextBuilder.Settings)
-                .Add("typename", () => parentChildContextBuilder.ParentContext.Request.MapTypeName(parentChildContextBuilder.ChildContext.TypeName))
-                .Add("context", parentChildContextBuilder.ParentContext.Request);
+                .Add(ResultNames.Class, new ClassModel(parentChildContextBuilder.ParentContext.Request.SourceModel))
+                .Add(ResultNames.Property, parentChildContextBuilder.ChildContext)
+                .Add(ResultNames.CollectionTypeName, parentChildContextBuilder.ParentContext.Request.CollectionTypeName)
+                .Add(ResultNames.AddMethodNameFormatString, () => parentChildContextBuilder.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
+                .Add(ResultNames.Settings, parentChildContextBuilder.Settings)
+                .Add(ResultNames.TypeName, () => parentChildContextBuilder.ParentContext.Request.MapTypeName(parentChildContextBuilder.ChildContext.TypeName))
+                .Add(ResultNames.Context, parentChildContextBuilder.ParentContext.Request);
         }
         else if (context is ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContextBuilderExtension)
         {
             builder
-                .Add("class", new ClassModel(parentChildContextBuilderExtension.ParentContext.Request.SourceModel))
-                .Add("property", parentChildContextBuilderExtension.ChildContext)
-                .Add("collectionTypeName", parentChildContextBuilderExtension.ParentContext.Request.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => parentChildContextBuilderExtension.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add("settings", parentChildContextBuilderExtension.Settings)
-                .Add("typename", () => parentChildContextBuilderExtension.ParentContext.Request.MapTypeName(parentChildContextBuilderExtension.ChildContext.TypeName))
-                .Add("context", parentChildContextBuilderExtension.ParentContext.Request);
+                .Add(ResultNames.Class, new ClassModel(parentChildContextBuilderExtension.ParentContext.Request.SourceModel))
+                .Add(ResultNames.Property, parentChildContextBuilderExtension.ChildContext)
+                .Add(ResultNames.CollectionTypeName, parentChildContextBuilderExtension.ParentContext.Request.CollectionTypeName)
+                .Add(ResultNames.AddMethodNameFormatString, () => parentChildContextBuilderExtension.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
+                .Add(ResultNames.Settings, parentChildContextBuilderExtension.Settings)
+                .Add(ResultNames.TypeName, () => parentChildContextBuilderExtension.ParentContext.Request.MapTypeName(parentChildContextBuilderExtension.ChildContext.TypeName))
+                .Add(ResultNames.Context, parentChildContextBuilderExtension.ParentContext.Request);
         }
         else if (context is ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity)
         {
             builder
-                .Add("class", new ClassModel(parentChildContextEntity.ParentContext.Request.SourceModel))
-                .Add("property", parentChildContextEntity.ChildContext)
-                .Add("collectionTypeName", parentChildContextEntity.ParentContext.Request.CollectionTypeName)
-                .Add("addMethodNameFormatString", () => parentChildContextEntity.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add("settings", parentChildContextEntity.Settings)
-                .Add("typename", () => parentChildContextEntity.ParentContext.Request.MapTypeName(parentChildContextEntity.ChildContext.TypeName))
-                .Add("context", parentChildContextEntity.ParentContext.Request);
+                .Add(ResultNames.Class, new ClassModel(parentChildContextEntity.ParentContext.Request.SourceModel))
+                .Add(ResultNames.Property, parentChildContextEntity.ChildContext)
+                .Add(ResultNames.CollectionTypeName, parentChildContextEntity.ParentContext.Request.CollectionTypeName)
+                .Add(ResultNames.AddMethodNameFormatString, () => parentChildContextEntity.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
+                .Add(ResultNames.Settings, parentChildContextEntity.Settings)
+                .Add(ResultNames.TypeName, () => parentChildContextEntity.ParentContext.Request.MapTypeName(parentChildContextEntity.ChildContext.TypeName))
+                .Add(ResultNames.Context, parentChildContextEntity.ParentContext.Request);
         }
         else if (context is PropertyContext propertyContext)
         {
             builder
-                .Add("property", propertyContext.SourceModel)
-                .Add("settings", propertyContext.Settings)
-                .Add("typename", () => propertyContext.MapTypeName(propertyContext.SourceModel.TypeName))
-                .Add("context", propertyContext);
+                .Add(ResultNames.Property, propertyContext.SourceModel)
+                .Add(ResultNames.Settings, propertyContext.Settings)
+                .Add(ResultNames.TypeName, () => propertyContext.MapTypeName(propertyContext.SourceModel.TypeName))
+                .Add(ResultNames.Context, propertyContext);
         }
         else
         {
             builder
-                .Add("class", Result.NotSupported<object?>($"Could not get class from state, because the context type {context?.GetType().FullName ?? "null"} is not supported"))
-                .Add("collectionTypeName", Result.NotSupported<object?>($"Could not get collection typename from state, because the context type {context?.GetType().FullName ?? "null"} is not supported"))
-                .Add("settings", Result.NotSupported<object?>($"Could not get settings from state, because the context type {context?.GetType().FullName ?? "null"} is not supported"))
-                .Add("context", Result.NotSupported<object?>($"Could not get context from state, because the context type {context?.GetType().FullName ?? "null"} is not supported"));
+                .Add(ResultNames.Class, Result.NotSupported<object?>($"Could not get class from state, because the context type {context?.GetType().FullName ?? "null"} is not supported"))
+                .Add(ResultNames.CollectionTypeName, Result.NotSupported<object?>($"Could not get collection typename from state, because the context type {context?.GetType().FullName ?? "null"} is not supported"))
+                .Add(ResultNames.Settings, Result.NotSupported<object?>($"Could not get settings from state, because the context type {context?.GetType().FullName ?? "null"} is not supported"))
+                .Add(ResultNames.Context, Result.NotSupported<object?>($"Could not get context from state, because the context type {context?.GetType().FullName ?? "null"} is not supported"));
         }
 
         return builder.BuildDeferred();

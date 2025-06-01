@@ -10,13 +10,13 @@ public class PropertyInitializationExpressionProperty : IProperty
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add("instance", context.GetInstanceValueResult<Property>())
-            .Add("typeName", context.GetTypeNameAsync())
-            .Add("settings", context.GetSettingsAsync())
-            .Add("mappedContextBase", context.GetMappedContextBaseAsync())
+            .Add(Constants.Instance, context.GetInstanceValueResult<Property>())
+            .Add(ResultNames.TypeName, context.GetTypeNameAsync())
+            .Add(ResultNames.Settings, context.GetSettingsAsync())
+            .Add(ResultNames.Context, context.GetMappedContextBaseAsync())
             .Build()
             .ConfigureAwait(false))
-            .OnSuccess<object?>(results => GetInitializationExpression(results.GetValue<Property>("instance"), results.GetValue<string>("typeName"), results.GetValue<PipelineSettings>("settings")));
+            .OnSuccess<object?>(results => GetInitializationExpression(results.GetValue<Property>(Constants.Instance), results.GetValue<string>(ResultNames.TypeName), results.GetValue<PipelineSettings>(ResultNames.Settings)));
     }
 
     private static string GetInitializationExpression(Property property, string typeName, PipelineSettings settings)

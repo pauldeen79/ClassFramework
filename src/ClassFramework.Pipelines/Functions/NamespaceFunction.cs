@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
-[MemberArgument("Expression", typeof(string))]
+[MemberArgument(Constants.Expression, typeof(string))]
 public class NamespaceFunction : IFunction
 {
     public Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)

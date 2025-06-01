@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
-[MemberArgument("Expression", typeof(string))]
+[MemberArgument(Constants.Expression, typeof(string))]
 [MemberArgument("AddBrackets", typeof(bool), false)]
 public class GenericArgumentsFunction : IFunction
 {
@@ -8,7 +8,7 @@ public class GenericArgumentsFunction : IFunction
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        var expressionResult = await context.GetArgumentValueResultAsync<string>(0, "Expression", token).ConfigureAwait(false);
+        var expressionResult = await context.GetArgumentValueResultAsync<string>(0, Constants.Expression, token).ConfigureAwait(false);
         if (!expressionResult.IsSuccessful())
         {
             return expressionResult;

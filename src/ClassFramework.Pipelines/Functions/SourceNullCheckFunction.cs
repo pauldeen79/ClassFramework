@@ -10,12 +10,12 @@ public class SourceNullCheckFunction : IFunction<string>
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add("settings", context.GetSettingsAsync())
-            .Add("context", context.Context.State.TryCastValueAsync<ContextBase>("context"))
+            .Add(ResultNames.Settings, context.GetSettingsAsync())
+            .Add(ResultNames.Context, context.Context.State.TryCastValueAsync<ContextBase>(ResultNames.Context))
             .Build()
             .ConfigureAwait(false))
-            .OnSuccess(results => results.GetValue<PipelineSettings>("settings").AddNullChecks
-                ? results.GetValue<ContextBase>("context").CreateArgumentNullException("source")
+            .OnSuccess(results => results.GetValue<PipelineSettings>(ResultNames.Settings).AddNullChecks
+                ? results.GetValue<ContextBase>(ResultNames.Context).CreateArgumentNullException("source")
                 : string.Empty);
     }
 }

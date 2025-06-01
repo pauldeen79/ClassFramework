@@ -10,10 +10,10 @@ public class PropertyTypeNameProperty : IProperty
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add("instance", context.GetInstanceValueResult<Property>())
-            .Add("mappedContextBase", context.GetMappedContextBaseAsync())
+            .Add(Constants.Instance, context.GetInstanceValueResult<Property>())
+            .Add(ResultNames.Context, context.GetMappedContextBaseAsync())
             .Build()
             .ConfigureAwait(false))
-            .OnSuccess(results => results.GetValue<MappedContextBase>("mappedContextBase").MapTypeName(results.GetValue<Property>("instance").TypeName));
+            .OnSuccess(results => results.GetValue<MappedContextBase>(ResultNames.Context).MapTypeName(results.GetValue<Property>(Constants.Instance).TypeName));
     }
 }

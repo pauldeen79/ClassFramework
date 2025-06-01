@@ -36,7 +36,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results["TypeName"].Value!));
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results[ResultNames.TypeName].Value!));
 
             context.Request.AddNullChecks(builder, results);
 

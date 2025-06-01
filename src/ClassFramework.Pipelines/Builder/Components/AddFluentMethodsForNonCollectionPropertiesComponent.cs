@@ -31,7 +31,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
                 .WithReturnTypeName(context.Request.IsBuilderForAbstractEntity
                       ? $"TBuilder{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
                       : $"{results["Namespace"].Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results["BuilderName"].Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results["TypeName"].Value!));
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results[ResultNames.TypeName].Value!));
 
             context.Request.AddNullChecks(builder, results);
 

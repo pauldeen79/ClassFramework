@@ -10,11 +10,11 @@ public class PropertyNullableRequiredSuffixProperty : IProperty
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return (await new AsyncResultDictionaryBuilder()
-            .Add("instance", context.GetInstanceValueResult<Property>())
-            .Add("settings", context.GetSettingsAsync())
+            .Add(Constants.Instance, context.GetInstanceValueResult<Property>())
+            .Add(ResultNames.Settings, context.GetSettingsAsync())
             .Build()
             .ConfigureAwait(false))
-            .OnSuccess<object?>(results => GetNullableRequiredSuffix(results.GetValue<PipelineSettings>("settings"), results.GetValue<Property>("instance")));
+            .OnSuccess<object?>(results => GetNullableRequiredSuffix(results.GetValue<PipelineSettings>(ResultNames.Settings), results.GetValue<Property>(Constants.Instance)));
     }
 
     private static string GetNullableRequiredSuffix(PipelineSettings settings, Property property)

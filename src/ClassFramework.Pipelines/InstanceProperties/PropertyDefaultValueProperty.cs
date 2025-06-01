@@ -19,16 +19,16 @@ public class PropertyDefaultValueProperty : IProperty
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return await (await new AsyncResultDictionaryBuilder()
-            .Add("instance", context.GetInstanceValueResult<Property>())
-            .Add("typeName", context.GetTypeNameAsync())
-            .Add("mappedContextBase", context.GetMappedContextBaseAsync())
+            .Add(Constants.Instance, context.GetInstanceValueResult<Property>())
+            .Add(ResultNames.TypeName, context.GetTypeNameAsync())
+            .Add(ResultNames.Context, context.GetMappedContextBaseAsync())
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(async results =>
             {
                 var defaultValue = results
-                    .GetValue<Property>("instance")
-                    .GetDefaultValue(_csharpExpressionDumper, results.GetValue<string>("typeName"), results.GetValue<MappedContextBase>("mappedContextBase"));
+                    .GetValue<Property>(Constants.Instance)
+                    .GetDefaultValue(_csharpExpressionDumper, results.GetValue<string>(ResultNames.TypeName), results.GetValue<MappedContextBase>(ResultNames.Context));
 
                 return await context.Context.EvaluateAsync($"$\"{defaultValue}\"", token).ConfigureAwait(false);
             }).ConfigureAwait(false);
