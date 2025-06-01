@@ -85,7 +85,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Methods.Where(x => x.Name == nameof(GetHashCode)).Count().ShouldBe(1);
+            context.Request.Builder.Methods.Count(x => x.Name == nameof(GetHashCode)).ShouldBe(1);
             context.Request.Builder.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             context.Request.Builder.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(
                 new[]
@@ -122,7 +122,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Methods.Where(x => x.Name == nameof(GetHashCode)).Count().ShouldBe(1);
+            context.Request.Builder.Methods.Count(x => x.Name == nameof(GetHashCode)).ShouldBe(1);
             context.Request.Builder.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             context.Request.Builder.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(
                 new[]

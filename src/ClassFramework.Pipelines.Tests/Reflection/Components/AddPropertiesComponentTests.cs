@@ -47,18 +47,17 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Compone
             // Assert
             result.IsSuccessful().ShouldBeTrue();
             context.Request.Builder.Properties.Count.ShouldBe(1);
-            //public Func<object, IEnumerable<object?>> MyDelegateProperty { get; set; } = default!;
-            //model.Properties.Single().TypeName.ShouldBe("System.Func<System.Object,System.Collections.Generic.IEnumerable<System.Object?>>");
+            //context.Request.Builder.Properties.Single().TypeName.ShouldBe("System.Func<System.Object,System.Collections.Generic.IEnumerable<System.Object?>>");
             context.Request.Builder.Properties.Single().IsNullable.ShouldBeFalse();
             context.Request.Builder.Properties.Single().GenericTypeArguments.Count.ShouldBe(2);
             context.Request.Builder.Properties.Single().GenericTypeArguments[0].TypeName.ShouldBe("System.Object");
             context.Request.Builder.Properties.Single().GenericTypeArguments[0].IsNullable.ShouldBeFalse();
             context.Request.Builder.Properties.Single().GenericTypeArguments[0].GenericTypeArguments.ShouldBeEmpty();
-            //model.Properties.Single().GenericTypeArguments[1].TypeName.ShouldBe("System.Collections.Generic.IEnumerable<System.Object?>");
+            //context.Request.Builder.Properties.Single().GenericTypeArguments[1].TypeName.ShouldBe("System.Collections.Generic.IEnumerable<System.Object?>");
             context.Request.Builder.Properties.Single().GenericTypeArguments[1].IsNullable.ShouldBeFalse();
             context.Request.Builder.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Count.ShouldBe(1);
             context.Request.Builder.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Single().TypeName.ShouldBe("System.Object");
-            //model.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Single().IsNullable.ShouldBeTrue();
+            //context.Request.Builder.Properties.Single().GenericTypeArguments[1].GenericTypeArguments.Single().IsNullable.ShouldBeTrue();
         }
     }
 }

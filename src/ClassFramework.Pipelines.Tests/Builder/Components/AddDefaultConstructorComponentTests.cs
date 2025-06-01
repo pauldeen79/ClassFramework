@@ -40,7 +40,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
             ctor.Protected.ShouldBe(expectedProtected);
-            ctor.ChainCall.ShouldBe(!hasBaseClass ? "base()" : string.Empty); // sounds unlogical, but this is the non-abstract base class for the builder, and it needs the base() chaincall to the abstract base class for the builder;
+            ctor.ChainCall.ShouldBe(!hasBaseClass ? "base()" : string.Empty); /// sounds unlogical, but this is the non-abstract base class for the builder, and it needs the base() chaincall to the abstract base class for the builder;
             ctor.Parameters.ShouldBeEmpty();
             if (expectedCodeStatements)
             {
@@ -253,7 +253,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Methods.Where(x => x.Name == "SetDefaultValues").Count().ShouldBe(1);
+            context.Request.Builder.Methods.Count(x => x.Name == "SetDefaultValues").ShouldBe(1);
             var method = context.Request.Builder.Methods.Single(x => x.Name == "SetDefaultValues");
             method.Partial.ShouldBeTrue();
             method.Parameters.ShouldBeEmpty();

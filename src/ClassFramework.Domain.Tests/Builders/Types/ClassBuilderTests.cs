@@ -14,6 +14,6 @@ public class ClassBuilderTests : TestBase<ClassBuilder>
 
         // Assert
         success.ShouldBeFalse();
-        validationResults.Count.ShouldBe(2); //both the validation errors in Class and Field;
+        validationResults.Count.ShouldBe(2); ///both the validation errors in Class and Field;
     }
 }
