@@ -22,7 +22,7 @@ public static class ExpressionEvaluatorExtensions
         {
             builder
                 .Add("class", new ClassModel(builderContext.SourceModel))
-                .Add("collectionTypeName", builderContext.Settings.CollectionTypeName)
+                .Add("collectionTypeName", builderContext.CollectionTypeName)
                 .Add("addMethodNameFormatString", () => builderContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", builderContext.Settings)
                 .Add("typename", () => builderContext.MapTypeName(builderContext.SourceModel.GetFullName()))
@@ -32,7 +32,7 @@ public static class ExpressionEvaluatorExtensions
         {
             builder
                 .Add("class", new ClassModel(builderExtensionContext.SourceModel))
-                .Add("collectionTypeName", builderExtensionContext.Settings.CollectionTypeName)
+                .Add("collectionTypeName", builderExtensionContext.CollectionTypeName)
                 .Add("addMethodNameFormatString", () => builderExtensionContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", builderExtensionContext.Settings)
                 .Add("typename", () => builderExtensionContext.MapTypeName(builderExtensionContext.SourceModel.GetFullName()))
@@ -42,7 +42,7 @@ public static class ExpressionEvaluatorExtensions
         {
             builder
                 .Add("class", new ClassModel(entityContext.SourceModel))
-                .Add("collectionTypeName", entityContext.Settings.CollectionTypeName)
+                .Add("collectionTypeName", entityContext.CollectionTypeName)
                 .Add("addMethodNameFormatString", () => entityContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", entityContext.Settings)
                 .Add("typename", () => entityContext.MapTypeName(entityContext.SourceModel.GetFullName()))
@@ -52,7 +52,7 @@ public static class ExpressionEvaluatorExtensions
         {
             builder
                 .Add("class", new ClassModel(interfaceContext.SourceModel))
-                .Add("collectionTypeName", interfaceContext.Settings.CollectionTypeName)
+                .Add("collectionTypeName", interfaceContext.CollectionTypeName)
                 .Add("addMethodNameFormatString", () => interfaceContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", interfaceContext.Settings)
                 .Add("typename", () => interfaceContext.MapTypeName(interfaceContext.SourceModel.GetFullName()))
@@ -62,7 +62,7 @@ public static class ExpressionEvaluatorExtensions
         {
             builder
                 .Add("class", new ClassModel(reflectionContext.SourceModel))
-                .Add("collectionTypeName", reflectionContext.Settings.CollectionTypeName)
+                .Add("collectionTypeName", reflectionContext.CollectionTypeName)
                 .Add("addMethodNameFormatString", () => reflectionContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", reflectionContext.Settings)
                 .Add("typename", () => reflectionContext.MapTypeName(reflectionContext.SourceModel.FullName))
@@ -73,7 +73,7 @@ public static class ExpressionEvaluatorExtensions
             builder
                 .Add("class", new ClassModel(parentChildContextBuilder.ParentContext.Request.SourceModel))
                 .Add("property", parentChildContextBuilder.ChildContext)
-                .Add("collectionTypeName", parentChildContextBuilder.Settings.CollectionTypeName)
+                .Add("collectionTypeName", parentChildContextBuilder.ParentContext.Request.CollectionTypeName)
                 .Add("addMethodNameFormatString", () => parentChildContextBuilder.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", parentChildContextBuilder.Settings)
                 .Add("typename", () => parentChildContextBuilder.ParentContext.Request.MapTypeName(parentChildContextBuilder.ChildContext.TypeName))
@@ -84,7 +84,7 @@ public static class ExpressionEvaluatorExtensions
             builder
                 .Add("class", new ClassModel(parentChildContextBuilderExtension.ParentContext.Request.SourceModel))
                 .Add("property", parentChildContextBuilderExtension.ChildContext)
-                .Add("collectionTypeName", parentChildContextBuilderExtension.Settings.CollectionTypeName)
+                .Add("collectionTypeName", parentChildContextBuilderExtension.ParentContext.Request.CollectionTypeName)
                 .Add("addMethodNameFormatString", () => parentChildContextBuilderExtension.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", parentChildContextBuilderExtension.Settings)
                 .Add("typename", () => parentChildContextBuilderExtension.ParentContext.Request.MapTypeName(parentChildContextBuilderExtension.ChildContext.TypeName))
@@ -95,7 +95,7 @@ public static class ExpressionEvaluatorExtensions
             builder
                 .Add("class", new ClassModel(parentChildContextEntity.ParentContext.Request.SourceModel))
                 .Add("property", parentChildContextEntity.ChildContext)
-                .Add("collectionTypeName", parentChildContextEntity.Settings.CollectionTypeName)
+                .Add("collectionTypeName", parentChildContextEntity.ParentContext.Request.CollectionTypeName)
                 .Add("addMethodNameFormatString", () => parentChildContextEntity.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add("settings", parentChildContextEntity.Settings)
                 .Add("typename", () => parentChildContextEntity.ParentContext.Request.MapTypeName(parentChildContextEntity.ChildContext.TypeName))

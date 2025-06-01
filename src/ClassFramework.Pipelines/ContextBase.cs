@@ -13,6 +13,9 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         ? "is not null"
         : "!= null";
 
+    public string CollectionTypeName
+        => Settings.CollectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
+
     public string CreateArgumentNullException(string argumentName)
     {
         if (Settings.UseExceptionThrowIfNull)
