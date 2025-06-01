@@ -12,11 +12,11 @@ public class PipelineContextExtensionsTests : TestBase
             await InitializeExpressionEvaluator();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
-            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
+            var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = await context.CreateEntityInstanciationAsync(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
+            var result = await context.CreateEntityInstanciationAsync(expressionEvaluator, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -31,11 +31,11 @@ public class PipelineContextExtensionsTests : TestBase
             await InitializeExpressionEvaluator();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
-            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
+            var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = await context.CreateEntityInstanciationAsync(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
+            var result = await context.CreateEntityInstanciationAsync(expressionEvaluator, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -50,11 +50,11 @@ public class PipelineContextExtensionsTests : TestBase
             await InitializeExpressionEvaluator();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
-            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
+            var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = await context.CreateEntityInstanciationAsync(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
+            var result = await context.CreateEntityInstanciationAsync(expressionEvaluator, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -69,11 +69,11 @@ public class PipelineContextExtensionsTests : TestBase
             await InitializeExpressionEvaluator();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
-            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
+            var expressionEaluator = Fixture.Freeze<IExpressionEvaluator>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = await context.CreateEntityInstanciationAsync(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
+            var result = await context.CreateEntityInstanciationAsync(expressionEaluator, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -88,11 +88,11 @@ public class PipelineContextExtensionsTests : TestBase
             await InitializeExpressionEvaluator();
             var builderContext = new BuilderContext(sourceModel, new PipelineSettingsBuilder(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<BuilderContext>(builderContext);
-            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
+            var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
 
             // Act
-            var result = await context.CreateEntityInstanciationAsync(formattableStringParser, csharpExpressionDumper, string.Empty, CancellationToken.None);
+            var result = await context.CreateEntityInstanciationAsync(expressionEvaluator, csharpExpressionDumper, string.Empty, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

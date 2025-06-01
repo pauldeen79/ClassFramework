@@ -290,10 +290,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
-            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
+            var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderClassFieldsAsync(context: null!, formattableStringParser, CancellationToken.None);
+            var t = sut.GetBuilderClassFieldsAsync(context: null!, expressionEvaluator, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -331,10 +331,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
             var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
-            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
+            var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = (await sut.GetBuilderClassFieldsAsync(context, formattableStringParser, CancellationToken.None)).ToArray();
+            var result = (await sut.GetBuilderClassFieldsAsync(context, expressionEvaluator, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ShouldBeEmpty();
@@ -359,10 +359,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
             var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
-            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
+            var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = (await sut.GetBuilderClassFieldsAsync(context, formattableStringParser, CancellationToken.None)).ToArray();
+            var result = (await sut.GetBuilderClassFieldsAsync(context, expressionEvaluator, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ShouldBeEmpty();
@@ -388,10 +388,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
             var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
-            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
+            var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = (await sut.GetBuilderClassFieldsAsync(context, formattableStringParser, CancellationToken.None)).ToArray();
+            var result = (await sut.GetBuilderClassFieldsAsync(context, expressionEvaluator, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1" });
@@ -427,10 +427,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 ]
             );
             var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
-            var formattableStringParser = Fixture.Freeze<IExpressionEvaluator>();
+            var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = (await sut.GetBuilderClassFieldsAsync(context, formattableStringParser, CancellationToken.None)).ToArray();
+            var result = (await sut.GetBuilderClassFieldsAsync(context, expressionEvaluator, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1", "_property2" });
