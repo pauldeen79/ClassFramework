@@ -121,7 +121,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
             .Select(async x => new Tuple<string, Result<GenericFormattableString>>
             (
                 x.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo()),
-                await x.GetBuilderConstructorInitializerAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, MetadataNames.CustomBuilderConstructorInitializeExpression, _evaluator, token).ConfigureAwait(false)
+                await x.GetBuilderConstructorInitializerAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, MetadataNames.CustomBuilderConstructorInitializeExpression, _evaluator).ConfigureAwait(false)
             ))).ConfigureAwait(false))
             .TakeWhileWithFirstNonMatching(x => x.Item2.IsSuccessful())
             .ToArray();

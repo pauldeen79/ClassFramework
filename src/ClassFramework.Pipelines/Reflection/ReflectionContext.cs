@@ -2,8 +2,8 @@
 
 public class ReflectionContext : ContextBase<Type>
 {
-    public ReflectionContext(Type sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
-        : base(sourceModel, settings, formatProvider)
+    public ReflectionContext(Type sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken)
+        : base(sourceModel, settings, formatProvider, cancellationToken)
     {
         _wrappedBuilder = new TypeBaseBuilderWrapper(SourceModel);
     }

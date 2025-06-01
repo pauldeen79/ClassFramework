@@ -91,7 +91,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                .WithAddNullChecks(AddNullChecks)
                .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull);
 
-            return await PipelineService.ProcessAsync(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo)).ConfigureAwait(false);
+            return await PipelineService.ProcessAsync(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo, CancellationToken.None)).ConfigureAwait(false);
         }).ConfigureAwait(false);
     }
 

@@ -21,7 +21,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(false);
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None));
             var sut = CreateSut();
 
             // Act
@@ -37,7 +37,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None));
             await InitializeExpressionEvaluator(forceError: true);
             var sut = CreateSut();
 
@@ -54,7 +54,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None));
             await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
@@ -77,7 +77,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None));
             await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
@@ -103,7 +103,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract();
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None));
             await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
@@ -129,7 +129,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract();
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None));
             await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
@@ -156,7 +156,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract()
                 .WithIsForAbstractBuilder();
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None));
             await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
@@ -183,7 +183,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract()
                 .WithIsForAbstractBuilder();
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None));
             await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
@@ -209,7 +209,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithBaseClass(new ClassBuilder().WithName("Dummy"));
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None));
             await InitializeExpressionEvaluator();
             var sut = CreateSut();
 
@@ -235,7 +235,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithBaseClass(new ClassBuilder().WithName("Dummy"));
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<BuilderContext>(new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None));
             await InitializeExpressionEvaluator();
             var sut = CreateSut();
 

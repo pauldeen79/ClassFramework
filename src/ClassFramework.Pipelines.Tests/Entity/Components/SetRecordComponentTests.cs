@@ -25,7 +25,7 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetR
             await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(createRecord: createRecordSettingValue);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);

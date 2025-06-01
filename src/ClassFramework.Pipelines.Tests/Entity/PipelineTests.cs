@@ -10,7 +10,8 @@ public class PipelineTests : IntegrationTestBase<IPipeline<EntityContext>>
             (
                 allowGenerationWithoutProperties: false
             ).Build(),
-            CultureInfo.InvariantCulture
+            CultureInfo.InvariantCulture,
+            CancellationToken.None
         );
 
         [Fact]
@@ -450,6 +451,6 @@ public class PipelineTests : IntegrationTestBase<IPipeline<EntityContext>>
         }
 
         private static EntityContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
-            => new(model, settings, CultureInfo.InvariantCulture);
+            => new(model, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

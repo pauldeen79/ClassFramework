@@ -14,7 +14,8 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
                     copyAttributes: true,
                     createAsObservable: createAsObservable
                 ),
-                CultureInfo.InvariantCulture
+                CultureInfo.InvariantCulture,
+                CancellationToken.None
             );
 
         [Fact]
@@ -343,6 +344,6 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
         }
 
         private static BuilderContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
-            => new(model, settings, CultureInfo.InvariantCulture);
+            => new(model, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

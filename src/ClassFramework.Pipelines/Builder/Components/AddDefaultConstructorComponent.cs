@@ -35,7 +35,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
             .Select(async x => new
             {
                 Name = x.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo()),
-                Result = await x.GetBuilderConstructorInitializerAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, string.Empty, _evaluator, token).ConfigureAwait(false)
+                Result = await x.GetBuilderConstructorInitializerAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, string.Empty, _evaluator).ConfigureAwait(false)
             })).ConfigureAwait(false))
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
             .ToArray();

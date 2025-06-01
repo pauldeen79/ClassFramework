@@ -26,7 +26,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
             var settings = CreateSettingsForEntity(
                 baseClass: null,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -48,7 +48,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
             var settings = CreateSettingsForEntity(
                 baseClass: new ClassBuilder().WithName("MyBaseClass").WithNamespace("MyBaseNamespace").BuildTyped(),
                 enableEntityInheritance: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -68,7 +68,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
             var settings = CreateSettingsForEntity(
                 baseClass: null,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);

@@ -11,7 +11,8 @@ public static class ExpressionEvaluatorExtensions
                 new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(formatProvider),
                 instance,
                 CreateState(context)
-            ), token
+            ),
+            token
         );
 
     private static IReadOnlyDictionary<string, Task<Result<object?>>> CreateState(object context)

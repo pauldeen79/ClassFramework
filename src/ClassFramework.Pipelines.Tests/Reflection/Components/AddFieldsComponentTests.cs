@@ -22,7 +22,7 @@ public class AddFieldsComponentTests : TestBase<Pipelines.Reflection.Components.
             var sut = CreateSut();
             var sourceModel = typeof(MyFieldTestClass);
             var settings = CreateSettingsForReflection(copyAttributes: true);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);

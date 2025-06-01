@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Entity;
 
-public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<TypeBase>(sourceModel, settings, formatProvider)
+public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
 {
     public bool IsAbstract
         => Settings.EnableInheritance

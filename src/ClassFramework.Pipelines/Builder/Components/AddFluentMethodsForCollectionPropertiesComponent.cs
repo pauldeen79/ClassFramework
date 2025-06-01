@@ -23,8 +23,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
                 parentChildContext,
                 _evaluator,
                 await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, token).ConfigureAwait(false),
-                await GetCodeStatementsForArrayOverload(context, property, token).ConfigureAwait(false),
-                token
+                await GetCodeStatementsForArrayOverload(context, property, token).ConfigureAwait(false)
             ).ConfigureAwait(false);
 
             var error = results.GetError();

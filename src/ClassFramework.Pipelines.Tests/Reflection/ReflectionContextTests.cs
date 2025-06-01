@@ -8,7 +8,7 @@ public class ReflectionContextTests : TestBase
         public void Throws_On_Null_SourceModel()
         {
             // Act & Assert
-            Action a = () => _ = new ReflectionContext(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture);
+            Action a = () => _ = new ReflectionContext(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, CancellationToken.None);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("sourceModel");
         }
 
@@ -16,7 +16,7 @@ public class ReflectionContextTests : TestBase
         public void Throws_On_Null_Settings()
         {
             // Act & Assert
-            Action a = () => _ = new ReflectionContext(sourceModel: GetType(), settings: null!, CultureInfo.InvariantCulture);
+            Action a = () => _ = new ReflectionContext(sourceModel: GetType(), settings: null!, CultureInfo.InvariantCulture, CancellationToken.None);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("settings");
         }
 
@@ -24,7 +24,7 @@ public class ReflectionContextTests : TestBase
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            Action a = () => _ = new ReflectionContext(sourceModel: GetType(), new PipelineSettingsBuilder(), formatProvider: null!);
+            Action a = () => _ = new ReflectionContext(sourceModel: GetType(), new PipelineSettingsBuilder(), formatProvider: null!, CancellationToken.None);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("formatProvider");
         }
     }
@@ -36,7 +36,7 @@ public class ReflectionContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false);
-            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture);
+            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act & Assert
             Action a = () => sut.MapTypeName(typeName: null!);
@@ -52,7 +52,7 @@ public class ReflectionContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForReflection();
-            var sut = new ReflectionContext(GetType(), settings, CultureInfo.InvariantCulture);
+            var sut = new ReflectionContext(GetType(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act & Assert
             Action a = () => sut.MapAttribute(attribute: null!);

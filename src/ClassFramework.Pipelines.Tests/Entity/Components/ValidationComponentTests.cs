@@ -22,7 +22,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Components.Val
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -38,7 +38,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Components.Val
             var sourceModel = new ClassBuilder().WithName("MyClass").BuildTyped();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(allowGenerationWithoutProperties: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -56,7 +56,7 @@ public class ValidationComponentTests : TestBase<Pipelines.Entity.Components.Val
             var settings = CreateSettingsForEntity(
                 allowGenerationWithoutProperties: false,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);

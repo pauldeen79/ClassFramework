@@ -10,7 +10,7 @@ public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
         var sut = CreateSut();
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
         var pipelineSettings = new PipelineSettingsBuilder();
-        var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutGenerics());
+        var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutGenerics(), CancellationToken.None);
 
         // Act
         var result = await sut.EvaluateInterpolatedStringAsync(formatString, CultureInfo.InvariantCulture, propertyContext, CancellationToken.None);
@@ -28,7 +28,7 @@ public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
         var sut = CreateSut();
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
         var pipelineSettings = new PipelineSettingsBuilder();
-        var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutGenerics());
+        var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutGenerics(), CancellationToken.None);
 
         // Act
         var result = await sut.EvaluateInterpolatedStringAsync(formatString, CultureInfo.InvariantCulture, propertyContext, CancellationToken.None);

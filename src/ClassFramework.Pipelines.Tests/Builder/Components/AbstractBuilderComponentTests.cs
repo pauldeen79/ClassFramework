@@ -74,6 +74,6 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
     }
 }

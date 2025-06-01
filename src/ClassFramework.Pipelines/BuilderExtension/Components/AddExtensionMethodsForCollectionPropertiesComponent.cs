@@ -17,7 +17,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
         {
             var parentChildContext = CreateParentChildContext(context, property);
 
-            var results = await context.Request.GetResultsForBuilderCollectionProperties(property, parentChildContext, _evaluator, await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, token).ConfigureAwait(false), await GetCodeStatementsForArrayOverload(context, property, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            var results = await context.Request.GetResultsForBuilderCollectionProperties(property, parentChildContext, _evaluator, await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, token).ConfigureAwait(false), await GetCodeStatementsForArrayOverload(context, property, token).ConfigureAwait(false)).ConfigureAwait(false);
 
             var error = results.GetError();
             if (error is not null)

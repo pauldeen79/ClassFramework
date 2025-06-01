@@ -89,6 +89,6 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
         }
 
         private static PipelineContext<ReflectionContext> CreateContext(Type sourceModel, PipelineSettingsBuilder settings)
-            => new(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            => new(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
     }
 }

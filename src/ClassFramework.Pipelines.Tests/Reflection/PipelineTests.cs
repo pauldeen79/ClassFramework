@@ -11,7 +11,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<ReflectionContext>>
             var sourceModel = typeof(MyClass);
             var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true, copyInterfaces: true);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture);
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             var sut = CreateSut();
 
@@ -39,7 +39,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<ReflectionContext>>
             var sourceModel = typeof(IMyInterface);
             var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture);
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             var sut = CreateSut();
 
@@ -65,7 +65,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<ReflectionContext>>
             var sourceModel = typeof(IMyInternalInterface);
             var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture);
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             var sut = CreateSut();
 
@@ -90,7 +90,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<ReflectionContext>>
             // Arrange
             var sourceModel = GetType(); // this unit test class does not have properties
             var settings = CreateSettingsForReflection();
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture);
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var sut = CreateSut();
 
             // Act

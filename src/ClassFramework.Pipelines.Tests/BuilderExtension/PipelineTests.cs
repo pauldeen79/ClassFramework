@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.BuilderExtension;
+﻿using System.Threading;
+
+namespace ClassFramework.Pipelines.Tests.BuilderExtension;
 
 public class PipelineTests : IntegrationTestBase<IPipeline<BuilderExtensionContext>>
 {
@@ -13,7 +15,8 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderExtensionConte
                     allowGenerationWithoutProperties: false,
                     copyAttributes: true
                 ),
-                CultureInfo.InvariantCulture
+                CultureInfo.InvariantCulture,
+                CancellationToken.None
             );
 
         [Fact]

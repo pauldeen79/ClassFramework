@@ -22,7 +22,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
             var settings = CreateSettingsForReflection(createConstructors: false);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -39,7 +39,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
             var settings = CreateSettingsForReflection(createConstructors: false);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -56,7 +56,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
             var settings = CreateSettingsForReflection(createConstructors: true);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);

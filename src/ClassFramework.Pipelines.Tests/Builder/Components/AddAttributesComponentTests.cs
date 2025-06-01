@@ -78,6 +78,6 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
     }
 }

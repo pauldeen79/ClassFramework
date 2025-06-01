@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<TypeBase>(sourceModel, settings, formatProvider)
+public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
 {
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));

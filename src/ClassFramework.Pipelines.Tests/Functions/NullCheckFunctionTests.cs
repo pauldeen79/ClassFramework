@@ -13,7 +13,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
                 .WithName("NullCheck")
                 .WithMemberType(MemberType.Function)
                 .Build();
-            var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().WithAddNullChecks().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
+            var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().WithAddNullChecks().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics(), CancellationToken.None);
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
             var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(context)) } }));
