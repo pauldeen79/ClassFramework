@@ -72,7 +72,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
 
             ctor.AddStringCodeStatements(defaultValueResults.Select(x => x.Value!.ToString()));
 
-            var setDefaultValuesMethodNameResult = await _evaluator.EvaluateAsync(context.Request.Settings.SetDefaultValuesMethodName, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
+            var setDefaultValuesMethodNameResult = await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.SetDefaultValuesMethodName, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
             if (!setDefaultValuesMethodNameResult.IsSuccessful())
             {
                 return Result.FromExistingResult<ConstructorBuilder>(setDefaultValuesMethodNameResult);
@@ -96,7 +96,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         => (await instance.GetCustomValueForInheritedClassAsync(settings.EnableInheritance, _ => Result.Success<GenericFormattableString>("base()")).ConfigureAwait(false)).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private Task<Result<GenericFormattableString>> GenerateDefaultValueStatement(Property property, PipelineContext<BuilderContext> context, CancellationToken token)
-        => _evaluator.EvaluateAsync
+        => _evaluator.EvaluateInterpolatedStringAsync
         (
             "{property.BuilderMemberName} = {property.DefaultValue};",
             context.Request.FormatProvider,

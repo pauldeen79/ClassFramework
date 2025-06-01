@@ -200,9 +200,9 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
 
         return await new AsyncResultDictionaryBuilder<GenericFormattableString>()
             .Add(NamedResults.TypeName, property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token))
-            .Add(NamedResults.Namespace, evaluator.EvaluateAsync(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, token))
-            .Add(NamedResults.BuilderName, evaluator.EvaluateAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, token))
-            .Add("AddMethodName", evaluator.EvaluateAsync(Settings.AddMethodNameFormatString, FormatProvider, parentChildContext, token))
+            .Add(NamedResults.Namespace, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, token))
+            .Add(NamedResults.BuilderName, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, token))
+            .Add("AddMethodName", evaluator.EvaluateInterpolatedStringAsync(Settings.AddMethodNameFormatString, FormatProvider, parentChildContext, token))
             .AddRange("EnumerableOverload.{0}", enumerableOverloadCode)
             .AddRange("ArrayOverload.{0}", arrayOverloadCode)
             .Build()
@@ -221,11 +221,11 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
 
         return await new AsyncResultDictionaryBuilder<GenericFormattableString>()
             .Add(NamedResults.TypeName, property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token))
-            .Add(NamedResults.Namespace, evaluator.EvaluateAsync(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, token))
-            .Add("MethodName", evaluator.EvaluateAsync(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext, token))
-            .Add(NamedResults.BuilderName, evaluator.EvaluateAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, token))
-            .Add("ArgumentNullCheck", evaluator.EvaluateAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{ArgumentNullCheck()}"), FormatProvider, parentChildContext, token))
-            .Add("BuilderWithExpression", evaluator.EvaluateAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{property.Name} = {CsharpFriendlyName(property.Name.ToCamelCase())};"), FormatProvider, parentChildContext, token))
+            .Add(NamedResults.Namespace, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, token))
+            .Add("MethodName", evaluator.EvaluateInterpolatedStringAsync(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext, token))
+            .Add(NamedResults.BuilderName, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, token))
+            .Add("ArgumentNullCheck", evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{ArgumentNullCheck()}"), FormatProvider, parentChildContext, token))
+            .Add("BuilderWithExpression", evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{property.Name} = {CsharpFriendlyName(property.Name.ToCamelCase())};"), FormatProvider, parentChildContext, token))
             .Build()
             .ConfigureAwait(false);
     }

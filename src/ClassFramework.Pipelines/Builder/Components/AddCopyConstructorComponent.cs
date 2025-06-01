@@ -37,9 +37,9 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
     private async Task<Result<ConstructorBuilder>> CreateCopyConstructor(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add("NullCheck.Source", _evaluator.EvaluateAsync("{SourceNullCheck()}", context.Request.FormatProvider, context.Request, token))
-            .Add(NamedResults.Name, _evaluator.EvaluateAsync(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token))
-            .Add(NamedResults.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateAsync(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
+            .Add("NullCheck.Source", _evaluator.EvaluateInterpolatedStringAsync("{SourceNullCheck()}", context.Request.FormatProvider, context.Request, token))
+            .Add(NamedResults.Name, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add(NamedResults.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
             .Build()
             .ConfigureAwait(false);
 
@@ -127,7 +127,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
             .ToArray();
 
     private Task<Result<GenericFormattableString>> CreateBuilderInitializationCode(Property property, PipelineContext<BuilderContext> context, CancellationToken token)
-        => _evaluator.EvaluateAsync
+        => _evaluator.EvaluateInterpolatedStringAsync
         (
             ProcessCreateBuilderInitializationCode(context.Request.GetMappingMetadata(property.TypeName)
                 .GetStringValue

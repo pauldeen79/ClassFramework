@@ -11,7 +11,7 @@ public static class PipelineContextExtensions
             .GetStringValue(MetadataNames.CustomBuilderEntityInstanciation);
         if (!string.IsNullOrEmpty(customEntityInstanciation))
         {
-            return await evaluator.EvaluateAsync(customEntityInstanciation, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
+            return await evaluator.EvaluateInterpolatedStringAsync(customEntityInstanciation, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
         }
 
         if (context.Request.SourceModel is not IConstructorsContainer constructorsContainer)
@@ -60,7 +60,7 @@ public static class PipelineContextExtensions
             {
                 property.Name,
                 Source = property,
-                Result = await evaluator.EvaluateAsync
+                Result = await evaluator.EvaluateInterpolatedStringAsync
                 (
                     context.Request
                         .GetMappingMetadata(property.TypeName)

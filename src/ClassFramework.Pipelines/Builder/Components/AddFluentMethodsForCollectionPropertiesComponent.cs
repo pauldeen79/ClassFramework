@@ -71,14 +71,14 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
             return [Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))];
         }
 
-        return [await _evaluator.EvaluateAsync("return {addMethodNameFormatString}({CsharpFriendlyName(property.Name.ToCamelCase())}.ToArray());", context.Request.FormatProvider, parentChildContext, token).ConfigureAwait(false)];
+        return [await _evaluator.EvaluateInterpolatedStringAsync("return {addMethodNameFormatString}({CsharpFriendlyName(property.Name.ToCamelCase())}.ToArray());", context.Request.FormatProvider, parentChildContext, token).ConfigureAwait(false)];
     }
 
     private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderContext> context, Property property, CancellationToken token)
     {
         if (context.Request.Settings.AddNullChecks)
         {
-            var argumentNullCheckResult = await _evaluator.EvaluateAsync
+            var argumentNullCheckResult = await _evaluator.EvaluateInterpolatedStringAsync
             (
                 context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{ArgumentNullCheck()}"),
                 context.Request.FormatProvider,
@@ -92,7 +92,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
             }
         }
 
-        var builderAddExpressionResult = await _evaluator.EvaluateAsync
+        var builderAddExpressionResult = await _evaluator.EvaluateInterpolatedStringAsync
         (
             context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Request.Settings.CollectionCopyStatementFormatString),
             context.Request.FormatProvider,

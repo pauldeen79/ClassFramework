@@ -34,7 +34,7 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
             && !context.Request.Settings.IsForAbstractBuilder
             && context.Request.Settings.IsAbstract;
 
-        var nameResult = await _evaluator.EvaluateAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
+        var nameResult = await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
 
         if (!nameResult.IsSuccessful())
         {
@@ -51,7 +51,7 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
             && context.Request.Settings.BaseClass is not null
             && !context.Request.Settings.IsForAbstractBuilder) // note that originally, this was only enabled when RemoveDuplicateWithMethods was true. But I don't know why you don't want this... The generics ensure that we don't have to duplicate them, right?
         {
-            var inheritanceNameResult = await _evaluator.EvaluateAsync
+            var inheritanceNameResult = await _evaluator.EvaluateInterpolatedStringAsync
             (
                 context.Request.Settings.BuilderNameFormatString,
                 context.Request.FormatProvider,
@@ -86,7 +86,7 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
     }
 
     private Task<Result<GenericFormattableString>> GetBaseClassName(PipelineContext<BuilderContext> context, IBaseClassContainer baseClassContainer, CancellationToken token)
-        => _evaluator.EvaluateAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!)), context.Request.Settings, context.Request.FormatProvider), token);
+        => _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!)), context.Request.Settings, context.Request.FormatProvider), token);
 
     private static TypeBase CreateTypeBase(string baseClass)
         => new ClassBuilder()

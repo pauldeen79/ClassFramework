@@ -123,7 +123,7 @@ public static class PropertyExtensions
                 .GetMappingMetadata(property.TypeName)
                 .GetStringValue(metadataName);
 
-        var result = await evaluator.EvaluateAsync(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext, token).ConfigureAwait(false);
+        var result = await evaluator.EvaluateInterpolatedStringAsync(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext, token).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -171,7 +171,7 @@ public static class PropertyExtensions
                 }
             }
 
-            return await evaluator.EvaluateAsync
+            return await evaluator.EvaluateInterpolatedStringAsync
             (
                 newFullName,
                 context.FormatProvider,
@@ -180,7 +180,7 @@ public static class PropertyExtensions
             ).ConfigureAwait(false);
         }
 
-        return await evaluator.EvaluateAsync
+        return await evaluator.EvaluateInterpolatedStringAsync
         (
             metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, mappedTypeName),
             context.FormatProvider,
@@ -216,7 +216,7 @@ public static class PropertyExtensions
 
         var newFullName = $"{ns}.{newTypeName}";
 
-        return await evaluator.EvaluateAsync
+        return await evaluator.EvaluateInterpolatedStringAsync
         (
             newFullName,
             context.Request.FormatProvider,
