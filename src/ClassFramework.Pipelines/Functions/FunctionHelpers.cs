@@ -4,7 +4,7 @@ internal static class FunctionHelpers
 {
     internal static async Task<Result<object?>> ParseFromStringArgumentAsync(FunctionCallContext context, string functionName, Func<string, Result<object?>> functionDelegate, CancellationToken token)
         => (await new AsyncResultDictionaryBuilder()
-            .Add("Expression", context.IsNotNull(nameof(context)).GetArgumentValueResultAsync(0, "Expression", token))
+            .Add("Expression", (await context.IsNotNull(nameof(context)).GetArgumentValueResultAsync(0, "Expression", token).ConfigureAwait(false)).TryCast<string>())
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(results => functionDelegate(results.GetValue<string>("Expression")));
