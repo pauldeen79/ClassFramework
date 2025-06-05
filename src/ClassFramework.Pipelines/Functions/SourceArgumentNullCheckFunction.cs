@@ -9,30 +9,14 @@ public class SourceArgumentNullCheckFunction : IFunction<string>
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return (await new AsyncResultDictionaryBuilder()
-            .Add(ResultNames.Settings, context.GetSettingsAsync())
-            .Add(ResultNames.Property, context.Context.State.TryCastValueAsync<Property>(ResultNames.Property))
-            .Add(ResultNames.Class, context.Context.State.TryCastValueAsync<ClassModel>(ResultNames.Class))
-            .Add(ResultNames.Context, context.Context.State.TryCastValueAsync<ContextBase>(ResultNames.Context))
-            .Build()
-            .ConfigureAwait(false))
-            .OnSuccess(results =>
-            {
-                var settings = results.GetValue<PipelineSettings>(ResultNames.Settings);
-                var classModel = results.GetValue<ClassModel>(ResultNames.Class);
-                var property = results.GetValue<Property>(ResultNames.Property);
-
-                // note that for now, we assume that a generic type argument should not be included in argument null checks...
-                // this might be the case (for example there is a constraint on class), but this is not supported yet
-                var isGenericArgument = classModel.GetGenericTypeArguments().Contains(property.TypeName);
-
-                return settings.AddNullChecks
-                    && settings.AddValidationCode() == ArgumentValidationType.None
-                    && !property.IsNullable
-                    && !property.IsValueType
-                    && !isGenericArgument // only if the source entity does not use validation...
-                        ? $"if (source.{property.Name} {results.GetValue<ContextBase>(ResultNames.Context).NotNullCheck}) "
-                        : string.Empty;
-            });
+        return await FunctionHelpers.ParseFromContextAsync(context, (contextBase, settings, classModel, property, isGenericArgument)
+            => settings.AddNullChecks
+                && settings.AddValidationCode() == ArgumentValidationType.None
+                && !property.IsNullable
+                && !property.IsValueType
+                && !isGenericArgument // only if the source entity does not use validation...
+                    ? $"if (source.{property.Name} {contextBase.NotNullCheck}) "
+                    : string.Empty
+            ).ConfigureAwait(false);
     }
 }

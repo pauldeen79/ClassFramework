@@ -4,14 +4,36 @@ internal static class FunctionHelpers
 {
     internal static async Task<Result<object?>> ParseFromStringArgumentAsync(FunctionCallContext context, string functionName, Func<string, Result<object?>> functionDelegate, CancellationToken token)
         => (await new AsyncResultDictionaryBuilder()
-            .Add(Constants.Expression, (await context.IsNotNull(nameof(context)).GetArgumentValueResultAsync(0, Constants.Expression, token).ConfigureAwait(false)).TryCast<string>())
+                .Add(Constants.Expression, (await context.GetArgumentValueResultAsync(0, Constants.Expression, token).ConfigureAwait(false)).TryCast<string>())
+                .Build()
+                .ConfigureAwait(false))
+                .OnSuccess(results => functionDelegate(results.GetValue<string>(Constants.Expression)));
+
+    internal static async Task<Result<string>> ParseFromContextAsync(FunctionCallContext context, Func<ContextBase, PipelineSettings, ClassModel, Property, bool, string> resultDelegate)
+        => (await new AsyncResultDictionaryBuilder()
+            .Add(ResultNames.Settings, context.GetSettingsAsync())
+            .Add(ResultNames.Context, context.Context.State.TryCastValueAsync<ContextBase>(ResultNames.Context))
+            .Add(ResultNames.Property, context.Context.State.TryCastValueAsync<Property>(ResultNames.Property))
+            .Add(ResultNames.Class, context.Context.State.TryCastValueAsync<ClassModel>(ResultNames.Class))
             .Build()
             .ConfigureAwait(false))
-            .OnSuccess(results => functionDelegate(results.GetValue<string>(Constants.Expression)));
+            .OnSuccess(results =>
+            {
+                var contextBase = results.GetValue<ContextBase>(ResultNames.Context);
+                var settings = results.GetValue<PipelineSettings>(ResultNames.Settings);
+                var classModel = results.GetValue<ClassModel>(ResultNames.Class);
+                var property = results.GetValue<Property>(ResultNames.Property);
+
+                // note that for now, we assume that a generic type argument should not be included in argument null checks...
+                // this might be the case (for example there is a constraint on class), but this is not supported yet
+                var isGenericArgument = classModel.GetGenericTypeArguments().Contains(property.TypeName);
+
+                return resultDelegate(contextBase, settings, classModel, property, isGenericArgument);
+            });
 
     internal static async Task<Result<object?>> ParseFromContextAsync(FunctionCallContext context, string functionName, Func<ContextBase, Result<object?>> functionDelegate)
     {
-        var ctx = await context.IsNotNull(nameof(context)).Context.State[ResultNames.Context].ConfigureAwait(false);
+        var ctx = await context.Context.State[ResultNames.Context].ConfigureAwait(false);
 
         return ctx.Value switch
         {
