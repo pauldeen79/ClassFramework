@@ -30,13 +30,13 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
 
             context.Request.Builder.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
-                .WithTypeName(results[NamedResults.TypeName].Value!.ToString()
+                .WithTypeName(results.GetValue(NamedResults.TypeName).ToString()
                     .FixCollectionTypeName(context.Request.Settings.BuilderNewCollectionTypeName)
                     .FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
                 .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder().WithTypeName(context.Request.MapTypeName(x.TypeName))))
-                .WithParentTypeFullName(results[NamedResults.ParentTypeName].Value!)
+                .WithParentTypeFullName(results.GetValue(NamedResults.ParentTypeName))
                 .AddAttributes(property.Attributes
                     .Where(_ => context.Request.Settings.CopyAttributes)
                     .Select(x => context.Request.MapAttribute(x).ToBuilder()))

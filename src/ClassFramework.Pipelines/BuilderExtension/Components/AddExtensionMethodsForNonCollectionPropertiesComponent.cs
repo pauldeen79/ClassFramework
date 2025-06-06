@@ -26,23 +26,23 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
                 return error;
             }
 
-            var returnType = $"{results["Namespace"].Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results["BuilderName"].Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
+            var returnType = $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue("BuilderName")}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
 
             var builder = new MethodBuilder()
-                .WithName(results["MethodName"].Value!)
+                .WithName(results.GetValue("MethodName"))
                 .WithReturnTypeName("T")
                 .WithStatic()
                 .WithExtensionMethod()
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results[ResultNames.TypeName].Value!));
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName)));
 
             context.Request.AddNullChecks(builder, results);
 
             builder.AddStringCodeStatements
             (
-                results["BuilderWithExpression"].Value!,
+                results.GetValue("BuilderWithExpression"),
                 "return instance;"
             );
 

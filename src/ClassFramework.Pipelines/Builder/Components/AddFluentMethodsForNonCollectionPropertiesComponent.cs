@@ -27,17 +27,17 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
             }
 
             var builder = new MethodBuilder()
-                .WithName(results["MethodName"].Value!)
+                .WithName(results.GetValue("MethodName"))
                 .WithReturnTypeName(context.Request.IsBuilderForAbstractEntity
                       ? $"TBuilder{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
-                      : $"{results["Namespace"].Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results["BuilderName"].Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results[ResultNames.TypeName].Value!));
+                      : $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue("BuilderName")}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName)));
 
             context.Request.AddNullChecks(builder, results);
 
             builder.AddStringCodeStatements
             (
-                results["BuilderWithExpression"].Value!,
+                results.GetValue("BuilderWithExpression"),
                 context.Request.ReturnValueStatementForFluentMethod
             );
 

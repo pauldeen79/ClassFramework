@@ -22,8 +22,8 @@ public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineCompone
         }
 
         context.Request.Builder
-            .WithName(results[NamedResults.Name].Value!)
-            .WithNamespace(context.Request.MapNamespace(results[NamedResults.Namespace].Value!));
+            .WithName(results.GetValue(NamedResults.Name))
+            .WithNamespace(context.Request.MapNamespace(results.GetValue(NamedResults.Namespace)));
 
         return Result.Success();
     }

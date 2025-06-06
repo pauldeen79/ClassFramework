@@ -64,18 +64,18 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
             return Result.FromExistingResult<ConstructorBuilder>(initializerErrorResult.Item2);
         }
 
-        var name = results[NamedResults.Name].Value!.ToString();
-        name = FixEntityName(context, name, $"{results[NamedResults.Namespace].Value!.ToString().AppendWhenNotNullOrEmpty(".")}{name}");
+        var name = results.GetValue(NamedResults.Name).ToString();
+        name = FixEntityName(context, name, $"{results.GetValue(NamedResults.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{name}");
         var nsPlusPrefix = context.Request.Settings.InheritFromInterfaces
             ? string.Empty
-            : results[NamedResults.Namespace].Value!.ToString().AppendWhenNotNullOrEmpty(".");
+            : results.GetValue(NamedResults.Namespace).ToString().AppendWhenNotNullOrEmpty(".");
 
         return Result.Success(new ConstructorBuilder()
             .WithChainCall(await CreateBuilderClassCopyConstructorChainCall(context.Request.SourceModel, context.Request.Settings).ConfigureAwait(false))
             .WithProtected(context.Request.IsBuilderForAbstractEntity)
             .AddStringCodeStatements
             (
-                new[] { results["NullCheck.Source"].Value!.ToString() }.Where(x => !string.IsNullOrEmpty(x))
+                new string[] { results.GetValue("NullCheck.Source") }.Where(x => !string.IsNullOrEmpty(x))
             )
             .AddParameters
             (

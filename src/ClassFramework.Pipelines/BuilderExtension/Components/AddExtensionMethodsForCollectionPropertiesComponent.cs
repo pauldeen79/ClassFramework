@@ -26,29 +26,29 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                 return error;
             }
 
-            var returnType = $"{results["Namespace"].Value!.ToString().AppendWhenNotNullOrEmpty(".")}{results["BuilderName"].Value}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
+            var returnType = $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue("BuilderName")}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
 
             context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithName(results["AddMethodName"].Value!)
+                .WithName(results.GetValue("AddMethodName"))
                 .WithReturnTypeName("T")
                 .WithStatic()
                 .WithExtensionMethod()
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results[ResultNames.TypeName].Value!.ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
                 .AddStringCodeStatements(results.Where(x => x.Key.StartsWith("EnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
             );
 
             context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithName(results["AddMethodName"].Value!)
+                .WithName(results.GetValue("AddMethodName"))
                 .WithReturnTypeName("T")
                 .WithStatic()
                 .WithExtensionMethod()
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results[ResultNames.TypeName].Value!.ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
                 .AddStringCodeStatements(results.Where(x => x.Key.StartsWith("ArrayOverload.")).Select(x => x.Value.Value!.ToString()))
             );
         }
