@@ -3,7 +3,7 @@
 public class InstancePrefixFunction : IFunction<string>
 {
     public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
-        => await EvaluateTypedAsync(context, token);
+        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
     public async Task<Result<string>> EvaluateTypedAsync(FunctionCallContext context, CancellationToken token)
     {
