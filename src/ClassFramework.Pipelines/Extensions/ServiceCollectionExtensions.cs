@@ -14,7 +14,6 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
         => services
-            .AddSingleton<IMember, ClassFullNameProperty>()
             .AddSingleton<IMember, ClassNameProperty>()
             .AddSingleton<IMember, ClassNamespaceProperty>()
             .AddSingleton<IMember, PropertyBuilderMemberNameProperty>()
