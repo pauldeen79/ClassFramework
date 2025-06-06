@@ -9,13 +9,7 @@ public class PropertyEntityMemberNameProperty : IProperty
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return (await new AsyncResultDictionaryBuilder()
-            .Add(Constants.Instance, context.GetInstanceValueResult<Property>())
-            .Add(ResultNames.Settings, context.GetSettingsAsync())
-            .Build()
-            .ConfigureAwait(false))
-            .OnSuccess<object?>(results => results
-                .GetValue<Property>(Constants.Instance)
-                .GetEntityMemberName(results.GetValue<PipelineSettings>(ResultNames.Settings).AddBackingFields || results.GetValue<PipelineSettings>(ResultNames.Settings).CreateAsObservable, context.Context.Settings.FormatProvider.ToCultureInfo()));
+        return await context.EvaluateForProperty(
+            (property, settings) => property.GetEntityMemberName(settings.AddBackingFields || settings.CreateAsObservable, context.Context.Settings.FormatProvider.ToCultureInfo())).ConfigureAwait(false);
     }
 }

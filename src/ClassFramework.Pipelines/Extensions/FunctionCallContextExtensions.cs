@@ -10,4 +10,13 @@ public static class FunctionCallContextExtensions
 
     public static Task<Result<MappedContextBase>> GetMappedContextBaseAsync(this FunctionCallContext instance)
         => instance.Context.State.TryCastValueAsync<MappedContextBase>(ResultNames.Context);
+
+    public static async Task<Result<object?>> EvaluateForProperty(this FunctionCallContext instance, Func<Property, PipelineSettings, string> evaluationDelegate)
+        => (await new AsyncResultDictionaryBuilder()
+            .Add(Constants.Instance, instance.GetInstanceValueResult<Property>())
+            .Add(ResultNames.Settings, instance.GetSettingsAsync())
+            .Build()
+            .ConfigureAwait(false))
+            .OnSuccess<object?>(results => evaluationDelegate(results
+                .GetValue<Property>(Constants.Instance), results.GetValue<PipelineSettings>(ResultNames.Settings)));
 }
