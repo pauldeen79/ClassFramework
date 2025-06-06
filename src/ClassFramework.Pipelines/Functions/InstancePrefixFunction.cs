@@ -1,8 +1,11 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
-public class InstancePrefixFunction : IFunction
+public class InstancePrefixFunction : IFunction<string>
 {
     public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
+        => await EvaluateTypedAsync(context, token);
+
+    public async Task<Result<string>> EvaluateTypedAsync(FunctionCallContext context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -11,6 +14,6 @@ public class InstancePrefixFunction : IFunction
             ? "instance."
             : string.Empty;
 
-        return Result.Success<object?>(value);
+        return Result.Success(value);
     }
 }

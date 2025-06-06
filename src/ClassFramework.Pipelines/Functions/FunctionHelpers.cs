@@ -2,7 +2,7 @@
 
 internal static class FunctionHelpers
 {
-    internal static async Task<Result<object?>> ParseFromStringArgumentAsync(FunctionCallContext context, string functionName, Func<string, Result<object?>> functionDelegate, CancellationToken token)
+    internal static async Task<Result<T>> ParseFromStringArgumentAsync<T>(FunctionCallContext context, string functionName, Func<string, Result<T>> functionDelegate, CancellationToken token)
         => (await new AsyncResultDictionaryBuilder()
                 .Add(Constants.Expression, (await context.GetArgumentValueResultAsync(0, Constants.Expression, token).ConfigureAwait(false)).TryCast<string>())
                 .Build()
@@ -31,7 +31,7 @@ internal static class FunctionHelpers
                 return resultDelegate(contextBase, settings, classModel, property, isGenericArgument);
             });
 
-    internal static async Task<Result<object?>> ParseFromContextAsync(FunctionCallContext context, string functionName, Func<ContextBase, Result<object?>> functionDelegate)
+    internal static async Task<Result<T>> ParseFromContextAsync<T>(FunctionCallContext context, string functionName, Func<ContextBase, Result<T>> functionDelegate)
     {
         var ctx = await context.Context.State[ResultNames.Context].ConfigureAwait(false);
 
@@ -39,7 +39,7 @@ internal static class FunctionHelpers
         {
             ContextBase contextBase => functionDelegate(contextBase),
             ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity => functionDelegate(parentChildContextEntity.ParentContext.Request),
-            _ => Result.Invalid<object?>($"{functionName} function does not support type {ctx.Value?.GetType().FullName ?? "null"}, only ContextBase is supported")
+            _ => Result.Invalid<T>($"{functionName} function does not support type {ctx.Value?.GetType().FullName ?? "null"}, only ContextBase is supported")
         };
     }
 }
