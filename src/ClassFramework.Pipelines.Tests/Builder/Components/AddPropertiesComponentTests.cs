@@ -5,14 +5,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
     public class ProcessAsync : AddPropertiesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>()
+            var t = sut.ProcessAsync(context: null!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
 
@@ -38,7 +38,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -62,7 +62,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -90,7 +90,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -113,7 +113,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyAttributes: true);
             var context = CreateContext(sourceModel, settings);
@@ -132,7 +132,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyAttributes: false);
             var context = CreateContext(sourceModel, settings);
@@ -150,7 +150,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: false);
             var context = CreateContext(sourceModel, settings);
@@ -176,7 +176,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
                 .AddProperties(new PropertyBuilder().WithName("MyOptionalProperty").WithType(typeof(string)).WithIsNullable())
                 .AddProperties(new PropertyBuilder().WithName("MyRequiredProperty").WithType(typeof(string)))
                 .BuildTyped();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
@@ -208,7 +208,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
                 .WithNamespace("SomeNamespace")
                 .AddProperties(new PropertyBuilder().WithName("Delegate").WithType(typeof(string)))
                 .BuildTyped();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
@@ -240,7 +240,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
                 .WithNamespace("SomeNamespace")
                 .AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
                 .BuildTyped();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
@@ -261,7 +261,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 typenameMappings:
@@ -282,6 +282,6 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Builder.Components
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
     }
 }

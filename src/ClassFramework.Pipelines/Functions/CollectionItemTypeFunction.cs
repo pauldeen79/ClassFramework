@@ -1,7 +1,11 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
-public class CollectionItemTypeFunction : IFunction
+[MemberArgument(Constants.Expression, typeof(string))]
+public class CollectionItemTypeFunction : IFunction<string>
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
-        => FunctionHelpers.ParseFromStringArgument(context, "CollectionItemType", s => Result.Success<object?>(s.GetCollectionItemType()));
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
+        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
+
+    public Task<Result<string>> EvaluateTypedAsync(FunctionCallContext context, CancellationToken token)
+        => FunctionHelpers.ParseFromStringArgumentAsync(context.IsNotNull(nameof(context)), "CollectionItemType", s => Result.Success(s.GetCollectionItemType()), token);
 }

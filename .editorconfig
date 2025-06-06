@@ -178,6 +178,7 @@ dotnet_diagnostic.CA1812.severity = none # CA1812 'x' is an internal class that 
 dotnet_diagnostic.CA1861.severity = none # CA1861 Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array
 dotnet_diagnostic.CA1862.severity = none # CA1862 Prefer using 'string.Equals(string, StringComparison)' to perform a case-insensitive comparison, but keep in mind that this might cause subtle changes in behavior, so make sure to conduct thorough testing after applying the suggestion, or if culturally sensitive comparison is not required, consider using 'StringComparison.OrdinalIgnoreCase'
 dotnet_diagnostic.CA1861.severity = none # Avoid constant arrays as arguments
+dotnet_diagnostic.S107.severity = none # Method has x parameters, which is greater than the 7 authorized.
 csharp_style_unused_value_expression_statement_preference = true:silent
 
 ###############################

@@ -5,14 +5,15 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
     public class ProcessAsync : AddInterfacesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
+            var t = sut.ProcessAsync(context: null!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -22,7 +23,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").BuildTyped();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyInterfacePredicate: _ => true, copyInterfaces: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -39,7 +40,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").BuildTyped();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyInterfacePredicate: null, copyInterfaces: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -56,7 +57,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").BuildTyped();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyInterfaces: false);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);

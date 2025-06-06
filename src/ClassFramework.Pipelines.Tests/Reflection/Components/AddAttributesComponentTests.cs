@@ -23,7 +23,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sourceModel = GetType();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(copyAttributePredicate: _ => true, copyAttributes: true);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -40,7 +40,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sourceModel = GetType();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(copyAttributePredicate: null, copyAttributes: true);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -57,7 +57,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sourceModel = GetType();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(copyAttributes: false);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);

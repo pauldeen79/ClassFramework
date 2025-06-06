@@ -5,14 +5,14 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
     public class ProcessAsync : AddFluentMethodsForCollectionPropertiesComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>()
+            var t = sut.ProcessAsync(context: null!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
 
@@ -21,7 +21,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addMethodNameFormatString: string.Empty);
             var context = CreateContext(sourceModel, settings);
@@ -39,9 +39,9 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{$property.Name}");
+            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{property.Name}");
             var context = CreateContext(sourceModel, settings);
 
             // Act
@@ -51,10 +51,10 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             result.IsSuccessful().ShouldBeTrue();
             context.Request.Builder.Methods.Count.ShouldBe(2);
             context.Request.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "AddProperty3", "AddProperty3" });
-            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).ToArray().ShouldAllBe(x => x == "SomeNamespace.Builders.SomeClassBuilder");
+            context.Request.Builder.Methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "SomeNamespace.Builders.SomeClassBuilder");
             context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property3", "property3" });
             context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]" });
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).ToArray().ShouldAllBe(x => x == default(object));
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).ShouldAllBe(x => x == default(object));
             context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
             context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
@@ -72,9 +72,9 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{$property.Name}", typenameMappings:
+            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{property.Name}", typenameMappings:
             [
                 new TypenameMappingBuilder()
                     .WithSourceType(typeof(int))
@@ -111,11 +111,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
-                addMethodNameFormatString: "Add{$property.Name}");
+                addMethodNameFormatString: "Add{property.Name}");
             var context = CreateContext(sourceModel, settings);
 
             // Act
@@ -147,11 +147,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClassWithPropertyThatHasAReservedName(typeof(List<int>));
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
-                addMethodNameFormatString: "Add{$property.Name}");
+                addMethodNameFormatString: "Add{property.Name}");
             var context = CreateContext(sourceModel, settings);
 
             // Act
@@ -184,11 +184,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableEntityInheritance: true,
-                addMethodNameFormatString: "Add{$property.Name}");
+                addMethodNameFormatString: "Add{property.Name}");
             var context = CreateContext(sourceModel, settings);
 
             // Act
@@ -201,7 +201,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             context.Request.Builder.Methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "TBuilder");
             context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property3", "property3" });
             context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]" });
-            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).ToArray().ShouldAllBe(x => x == default(object));
+            context.Request.Builder.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).ShouldAllBe(x => x == default(object));
             context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
             context.Request.Builder.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
@@ -221,7 +221,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: addNullChecks, validateArguments: validateArguments, typenameMappings:
             [
@@ -245,7 +245,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(builderNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);
@@ -263,7 +263,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addMethodNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);
@@ -281,7 +281,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: true, typenameMappings:
             [
@@ -305,7 +305,7 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addNullChecks: true, newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics(), typenameMappings:
             [
@@ -325,6 +325,6 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
     }
 }

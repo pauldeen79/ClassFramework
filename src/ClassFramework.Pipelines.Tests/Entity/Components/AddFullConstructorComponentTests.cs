@@ -5,14 +5,15 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
     public class ProcessAsync : AddFullConstructorComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
+            var t = sut.ProcessAsync(context: null!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -20,10 +21,10 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addNullChecks: false);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -53,10 +54,10 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addNullChecks: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -88,10 +89,10 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addNullChecks: true, useExceptionThrowIfNull: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -123,10 +124,10 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addNullChecks: true, addBackingFields: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -158,10 +159,10 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(validateArguments: ArgumentValidationType.IValidatableObject);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -192,10 +193,10 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(namespaceMappings: CreateNamespaceMappings());
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);

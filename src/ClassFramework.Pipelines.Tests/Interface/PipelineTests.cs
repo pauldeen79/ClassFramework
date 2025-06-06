@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Interface;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceContext>>
+public class PipelineTests : IntegrationTestBase<IPipeline<InterfaceContext>>
 {
-    public class ProcessAsync : PipelineBuilderTests
+    public class ProcessAsync : PipelineTests
     {
         private static InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, CopyMethodPredicate? copyMethodPredicate = null) => new(
             CreateInterface(addProperties),
@@ -12,7 +12,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
                 copyMethods: copyMethods,
                 copyMethodPredicate: copyMethodPredicate
             ).Build(),
-            CultureInfo.InvariantCulture
+            CultureInfo.InvariantCulture,
+            CancellationToken.None
         );
 
         [Fact]
@@ -126,7 +127,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
         }
     }
 
-    public class IntegrationTests : PipelineBuilderTests
+    public class IntegrationTests : PipelineTests
     {
         [Fact]
         public async Task Creates_Interface_With_NamespaceMapping()
@@ -202,6 +203,6 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<InterfaceConte
         }
 
         private static InterfaceContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
-            => new(model, settings, CultureInfo.InvariantCulture);
+            => new(model, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

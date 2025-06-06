@@ -5,14 +5,14 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
     public class ProcessAsync : AddEquatableMembersComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>()
+            var t = sut.ProcessAsync(context: null!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
 
@@ -21,10 +21,10 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: false);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -39,10 +39,10 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "{Error}", implementIEquatable: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -57,10 +57,10 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -75,17 +75,17 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties(itemType: IEquatableItemType.Properties);
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true, iEquatableItemType: IEquatableItemType.Properties);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Methods.Where(x => x.Name == nameof(GetHashCode)).Count().ShouldBe(1);
+            context.Request.Builder.Methods.Count(x => x.Name == nameof(GetHashCode)).ShouldBe(1);
             context.Request.Builder.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             context.Request.Builder.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(
                 new[]
@@ -112,17 +112,17 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties(itemType: IEquatableItemType.Fields);
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true, iEquatableItemType: IEquatableItemType.Fields);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Methods.Where(x => x.Name == nameof(GetHashCode)).Count().ShouldBe(1);
+            context.Request.Builder.Methods.Count(x => x.Name == nameof(GetHashCode)).ShouldBe(1);
             context.Request.Builder.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             context.Request.Builder.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(
                 new[]

@@ -69,7 +69,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                .WithCopyAttributePredicate(CopyAttributePredicate)
                .WithCopyInterfacePredicate(CopyInterfacePredicate)
                .WithCopyMethodPredicate(CopyMethodPredicate)
-               .WithEntityNameFormatString("{NoInterfacePrefix($class.Name)}")
+               .WithEntityNameFormatString("{NoInterfacePrefix(class.Name)}")
                .WithEntityNamespaceFormatString(@namespace)
                .WithEnableInheritance()
                .WithIsAbstract()
@@ -91,7 +91,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                .WithAddNullChecks(AddNullChecks)
                .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull);
 
-            return await PipelineService.ProcessAsync(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo)).ConfigureAwait(false);
+            return await PipelineService.ProcessAsync(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo, CancellationToken.None)).ConfigureAwait(false);
         }).ConfigureAwait(false);
     }
 

@@ -1,25 +1,25 @@
-namespace ClassFramework.Pipelines.Tests.Functions;
+﻿namespace ClassFramework.Pipelines.Tests.Functions;
 
 public class NullCheckFunctionTests : TestBase<NullCheckFunction>
 {
     public class Evaluate : NullCheckFunctionTests
     {
         [Fact]
-        public void Returns_Success_On_Context_Of_Type_ContextBase()
+        public async Task Returns_Success_On_Context_Of_Type_ContextBase()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NullCheck")
+                .WithMemberType(MemberType.Function)
                 .Build();
-            var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().WithAddNullChecks().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics());
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
+            var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().WithAddNullChecks().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics(), CancellationToken.None);
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -27,21 +27,21 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         }
 
         [Fact]
-        public void Returns_Invalid_On_Unsupported_Context_Type()
+        public async Task Returns_Invalid_On_Unsupported_Context_Type()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NullCheck")
+                .WithMemberType(MemberType.Function)
                 .Build();
             var context = this;
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success<object?>(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -49,21 +49,21 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         }
 
         [Fact]
-        public void Returns_Invalid_On_Null_Context()
+        public async Task Returns_Invalid_On_Null_Context()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NullCheck")
+                .WithMemberType(MemberType.Function)
                 .Build();
             object? context = null;
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -71,21 +71,21 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         }
 
         [Fact]
-        public void Returns_Invalid_On_Wrong_FunctionName()
+        public async Task Returns_Invalid_On_Wrong_FunctionName()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("WrongFunctionName")
+                .WithMemberType(MemberType.Function)
                 .Build();
             object? context = null;
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

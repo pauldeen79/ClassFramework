@@ -5,14 +5,14 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
     public class ProcessAsync : BaseClassComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>()
+            var t = sut.ProcessAsync(context: null!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
 
@@ -21,7 +21,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -42,7 +42,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -64,7 +64,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -86,7 +86,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -109,7 +109,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass("MyBaseClass");
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -129,7 +129,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass("MyBaseClass");
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
@@ -149,7 +149,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -167,6 +167,6 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
     }
 }

@@ -1,15 +1,19 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
-public class InstancePrefixFunction : IFunction
+public class InstancePrefixFunction : IFunction<string>
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
+        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
+
+    public async Task<Result<string>> EvaluateTypedAsync(FunctionCallContext context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        var value = context.Context is ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>
+        var contextValue = (await context.Context.State[ResultNames.Context].ConfigureAwait(false)).Value;
+        var value = contextValue is BuilderExtensionContext
             ? "instance."
             : string.Empty;
 
-        return Result.Success<object?>(value);
+        return Result.Success(value);
     }
 }

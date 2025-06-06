@@ -5,14 +5,14 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
     public class ProcessAsync : AddBuildMethodComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>()
+            var t = sut.ProcessAsync(context: null!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
 
@@ -39,7 +39,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, settings);
@@ -67,7 +67,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(enableEntityInheritance: true);
             var context = CreateContext(sourceModel, settings);
@@ -104,7 +104,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(typenameMappings:
             [
@@ -124,6 +124,6 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
     }
 }

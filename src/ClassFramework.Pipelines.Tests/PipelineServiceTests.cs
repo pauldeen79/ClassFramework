@@ -1,4 +1,4 @@
-namespace ClassFramework.Pipelines.Tests;
+﻿namespace ClassFramework.Pipelines.Tests;
 
 public class PipelineServiceTests : TestBase<PipelineService>
 {
@@ -15,7 +15,7 @@ public class PipelineServiceTests : TestBase<PipelineService>
             var sut = CreateSut();
             var sourceModel = CreateClass();
             var settings = CreateSettingsForBuilder();
-            var context = new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture);
+            var context = new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -33,7 +33,7 @@ public class PipelineServiceTests : TestBase<PipelineService>
             var sut = CreateSut();
             var sourceModel = CreateClass();
             var settings = CreateSettingsForBuilder();
-            var context = new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture);
+            var context = new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
             var result = await sut.ProcessAsync(context);
@@ -49,15 +49,17 @@ public class PipelineServiceTests : TestBase<PipelineService>
         {
             // Arrange
             var pipeline = Fixture.Freeze<IPipeline<BuilderContext>>();
-            pipeline.ProcessAsync(Arg.Any<BuilderContext>(), Arg.Any<CancellationToken>()).Returns(x =>
-            {
-                x.ArgAt<BuilderContext>(0).Builder.WithName("MyClass").WithNamespace("MyNamespace");
-                return Result.Success("Kaboom!");
-            });
+            pipeline
+                .ProcessAsync(Arg.Any<BuilderContext>(), Arg.Any<CancellationToken>())
+                .Returns(x =>
+                {
+                    x.ArgAt<BuilderContext>(0).Builder.WithName("MyClass").WithNamespace("MyNamespace");
+                    return Result.Success("Kaboom!");
+                });
             var sut = CreateSut();
             var sourceModel = CreateClass();
             var settings = CreateSettingsForBuilder();
-            var context = new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture);
+            var context = new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
             var result = await sut.ProcessAsync(context);

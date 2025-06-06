@@ -99,7 +99,7 @@ public class ContextBaseTests : TestBase
         }
     }
 
-    private sealed class TestContext(PipelineSettings settings) : ContextBase<string>(string.Empty, settings, CultureInfo.InvariantCulture)
+    private sealed class TestContext(PipelineSettings settings) : ContextBase<string>(string.Empty, settings, CultureInfo.InvariantCulture, CancellationToken.None)
     {
         protected override string NewCollectionTypeName => string.Empty;
     }

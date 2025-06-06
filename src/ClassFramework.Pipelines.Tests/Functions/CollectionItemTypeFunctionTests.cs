@@ -1,28 +1,28 @@
-namespace ClassFramework.Pipelines.Tests.Functions;
+﻿namespace ClassFramework.Pipelines.Tests.Functions;
 
 public class CollectionItemTypeFunctionTests : TestBase<CollectionItemTypeFunction>
 {
 
     [Fact]
-    public void Returns_Success_When_Argument_ValueResult_Is_Of_Type_String()
+    public async Task Returns_Success_When_Argument_ValueResult_Is_Of_Type_String()
     {
         // Arrange
-        InitializeParser();
+        await InitializeExpressionEvaluator();
         var functionCall = new FunctionCallBuilder()
             .WithName("ClassName")
-            .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("MyFunction")))
+            .WithMemberType(MemberType.Function)
+            .AddArguments("MyFunction()")
             .Build();
         object? context = default;
-        var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+        var evaluator = Fixture.Freeze<IExpressionEvaluator>();
         evaluator
-            .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
+            .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
             .Returns(Result.Success<object?>("System.Collections.Generic.IEnumerable<MyClass>"));
-        var parser = Fixture.Freeze<IExpressionEvaluator>();
         var sut = CreateSut();
-        var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+        var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
         // Act
-        var result = sut.Evaluate(functionCallContext);
+        var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);

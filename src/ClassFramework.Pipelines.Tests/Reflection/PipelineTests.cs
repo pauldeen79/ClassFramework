@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Reflection;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipeline<ReflectionContext>>
+public class PipelineTests : IntegrationTestBase<IPipeline<ReflectionContext>>
 {
-    public class IntegrationTests : PipelineBuilderTests
+    public class IntegrationTests : PipelineTests
     {
         [Fact]
         public async Task Creates_Class_With_NamespaceMapping()
@@ -11,7 +11,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<ReflectionCont
             var sourceModel = typeof(MyClass);
             var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true, copyInterfaces: true);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture);
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             var sut = CreateSut();
 
@@ -39,7 +39,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<ReflectionCont
             var sourceModel = typeof(IMyInterface);
             var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture);
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             var sut = CreateSut();
 
@@ -65,7 +65,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<ReflectionCont
             var sourceModel = typeof(IMyInternalInterface);
             var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture);
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             var sut = CreateSut();
 
@@ -90,7 +90,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<ReflectionCont
             // Arrange
             var sourceModel = GetType(); // this unit test class does not have properties
             var settings = CreateSettingsForReflection();
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture);
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var sut = CreateSut();
 
             // Act

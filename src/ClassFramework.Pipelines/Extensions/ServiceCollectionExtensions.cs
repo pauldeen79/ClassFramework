@@ -10,33 +10,33 @@ public static class ServiceCollectionExtensions
             .AddReflectionPipeline()
             .AddInterfacePipeline()
             .AddSharedPipelineComponents()
-            .AddParserComponents()
             .AddPipelineService();
 
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
         => services
-            .AddScoped<IVariable, AddMethodNameFormatStringVariable>()
-            .AddScoped<IVariable, ClassVariable>()
-            .AddScoped<IVariable, CollectionTypeNameVariable>()
-            .AddScoped<IVariable, PropertyVariable>()
-            .AddScoped<IFunction, ClassNameFunction>()
-            .AddScoped<IFunction, CollectionItemTypeFunction>()
-            .AddScoped<IFunction, CsharpFriendlyNameFunction>()
-            .AddScoped<IFunction, CsharpFriendlyTypeNameFunction>()
-            .AddScoped<IFunction, GenericArgumentsFunction>()
-            .AddScoped<IFunction, InstancePrefixFunction>()
-            .AddScoped<IFunction, NamespaceFunction>()
-            .AddScoped<IFunction, NoGenericsFunction>()
-            .AddScoped<IFunction, NoInterfacePrefixFunction>()
-            .AddScoped<IFunction, NullCheckFunction>()
-            .AddScoped<IFunction, ToCamelCaseFunction>()
-            .AddScoped<IFunction, ToPascalCaseFunction>()
-            .AddScoped<IObjectResolverProcessor, ClassModelResolver>()
-            .AddScoped<IObjectResolverProcessor, CultureInfoResolver>()
-            .AddScoped<IObjectResolverProcessor, MappedContextBaseResolver>()
-            .AddScoped<IObjectResolverProcessor, PipelineSettingsResolver>()
-            .AddScoped<IObjectResolverProcessor, PropertyResolver>()
-            .AddScoped<IObjectResolverProcessor, TypeNameMapperResolver>();
+            .AddSingleton<IMember, ClassNameProperty>()
+            .AddSingleton<IMember, ClassNamespaceProperty>()
+            .AddSingleton<IMember, PropertyBuilderMemberNameProperty>()
+            .AddSingleton<IMember, PropertyDefaultValueProperty>()
+            .AddSingleton<IMember, PropertyEntityMemberNameProperty>()
+            .AddSingleton<IMember, PropertyInitializationExpressionProperty>()
+            .AddSingleton<IMember, PropertyNameProperty>()
+            .AddSingleton<IMember, PropertyNullableRequiredSuffixProperty>()
+            .AddSingleton<IMember, PropertyParentTypeFullNameProperty>()
+            .AddSingleton<IMember, PropertyTypeNameProperty>()
+            .AddSingleton<IMember, ArgumentNullCheckFunction>()
+            .AddSingleton<IMember, ClassNameFunction>()
+            .AddSingleton<IMember, CollectionItemTypeFunction>()
+            .AddSingleton<IMember, CsharpFriendlyNameFunction>()
+            .AddSingleton<IMember, CsharpFriendlyTypeNameFunction>()
+            .AddSingleton<IMember, GenericArgumentsFunction>()
+            .AddSingleton<IMember, InstancePrefixFunction>()
+            .AddSingleton<IMember, NamespaceFunction>()
+            .AddSingleton<IMember, NoGenericsFunction>()
+            .AddSingleton<IMember, NoInterfacePrefixFunction>()
+            .AddSingleton<IMember, NullCheckFunction>()
+            .AddSingleton<IMember, SourceArgumentNullCheckFunction>()
+            .AddSingleton<IMember, SourceNullCheckFunction>();
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
@@ -114,11 +114,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.GenericsComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.PartialComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.SetNameComponent>();
-
-    private static IServiceCollection AddParserComponents(this IServiceCollection services)
-        => services
-            .AddScoped<IPlaceholder, BuilderPipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholder, BuilderExtensionPipelinePlaceholderProcessor>();
 
     private static IServiceCollection AddPipelineService(this IServiceCollection services)
         => services

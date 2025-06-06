@@ -5,14 +5,15 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
     public class ProcessAsync : SetNameComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
+            var t = sut.ProcessAsync(context: null!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
+             .ParamName.ShouldBe("context");
         }
 
         [Fact]
@@ -20,7 +21,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
         {
             // Arrange
             var sourceModel = typeof(MyClass);
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection();
             var context = CreateContext(sourceModel, settings);
@@ -38,7 +39,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
         {
             // Arrange
             var sourceModel = typeof(MyClass);
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection();
             var context = CreateContext(sourceModel, settings);
@@ -56,7 +57,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
         {
             // Arrange
             var sourceModel = typeof(MyClass);
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(nameFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);
@@ -74,7 +75,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
         {
             // Arrange
             var sourceModel = typeof(MyClass);
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(namespaceFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);
@@ -88,6 +89,6 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
         }
 
         private static PipelineContext<ReflectionContext> CreateContext(Type sourceModel, PipelineSettingsBuilder settings)
-            => new(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            => new(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
     }
 }

@@ -1,7 +1,11 @@
 ﻿namespace ClassFramework.Pipelines.Functions;
 
-public class ClassNameFunction : IFunction
+[MemberArgument(Constants.Expression, typeof(string))]
+public class ClassNameFunction : IFunction<string>
 {
-    public Result<object?> Evaluate(FunctionCallContext context)
-        => FunctionHelpers.ParseFromStringArgument(context, "ClassName", s => Result.Success<object?>(s.GetClassName()));
+    public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
+        => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
+
+    public Task<Result<string>> EvaluateTypedAsync(FunctionCallContext context, CancellationToken token)
+        => FunctionHelpers.ParseFromStringArgumentAsync(context.IsNotNull(nameof(context)), "ClassName", s => Result.Success(s.GetClassName()), token);
 }

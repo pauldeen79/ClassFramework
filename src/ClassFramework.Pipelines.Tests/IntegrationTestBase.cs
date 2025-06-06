@@ -8,7 +8,7 @@ public abstract class IntegrationTestBase<T> : TestBase
     protected IntegrationTestBase()
     {
         Provider = new ServiceCollection()
-            .AddParsers()
+            .AddExpressionEvaluator()
             .AddClassFrameworkPipelines()
             .AddCsharpExpressionDumper()
             .AddSingleton<IFunction, PropertyNameResultParser>()
@@ -18,17 +18,15 @@ public abstract class IntegrationTestBase<T> : TestBase
 
     private sealed class PropertyNameResultParser : IFunction
     {
-        public Result<object?> Evaluate(FunctionCallContext context)
+        public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
         {
-            if (context.Context is PropertyContext propertyContext)
+            var ctx = await context.Context.State["context"].ConfigureAwait(false);
+            if (ctx.GetValueOrThrow() is PropertyContext propertyContext)
             {
                 return Result.Success<object?>(propertyContext.SourceModel.Name);
             }
 
             return Result.Invalid<object?>("Could not get property name from context, because the context is not of type PropertyContext");
         }
-
-        public Result Validate(FunctionCallContext context)
-            => Result.Success();
     }
 }

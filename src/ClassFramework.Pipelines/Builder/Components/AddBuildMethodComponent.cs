@@ -1,11 +1,11 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddBuildMethodComponent(IFormattableStringParser formattableStringParser, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
+public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
     private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
-    public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    public async Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -34,13 +34,13 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                     .WithReturnTypeName("TEntity"));
             }
 
-            return Task.FromResult(AddExplicitInterfaceImplementations(context));
+            return await AddExplicitInterfaceImplementations(context, token).ConfigureAwait(false);
         }
 
-        var instanciationResult = context.CreateEntityInstanciation(_formattableStringParser, _csharpExpressionDumper, string.Empty);
+        var instanciationResult = await context.CreateEntityInstanciationAsync(_evaluator, _csharpExpressionDumper, string.Empty, token).ConfigureAwait(false);
         if (!instanciationResult.IsSuccessful())
         {
-            return Task.FromResult<Result>(instanciationResult);
+            return instanciationResult;
         }
 
         context.Request.Builder.AddMethods(new MethodBuilder()
@@ -68,21 +68,22 @@ public class AddBuildMethodComponent(IFormattableStringParser formattableStringP
                 .AddStringCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
         }
 
-        return Task.FromResult(AddExplicitInterfaceImplementations(context));
+        return await AddExplicitInterfaceImplementations(context, token).ConfigureAwait(false);
     }
 
-    private Result AddExplicitInterfaceImplementations(PipelineContext<BuilderContext> context)
+    private async Task<Result> AddExplicitInterfaceImplementations(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         if (!context.Request.Settings.UseBuilderAbstractionsTypeConversion)
         {
             return Result.Continue();
         }
 
-        var interfaces = context.Request.GetInterfaceResults(
+        var interfaces = await context.Request.GetInterfaceResults(
             (x, y) => new { EntityName = x, BuilderName = y.ToString() },
             x => new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) },
-            _formattableStringParser,
-            false);
+            _evaluator,
+            false,
+            token).ConfigureAwait(false);
 
         var error = Array.Find(interfaces, x => !x.IsSuccessful());
         if (error is not null)

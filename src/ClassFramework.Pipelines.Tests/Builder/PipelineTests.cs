@@ -1,20 +1,21 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderContext>>
+public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
 {
-    public class ProcessAsync : PipelineBuilderTests
+    public class ProcessAsync : PipelineTests
     {
         private static BuilderContext CreateContext(bool addProperties = true, bool createAsObservable = false)
             => new(
                 CreateGenericClass(addProperties),
                 CreateSettingsForBuilder
                 (
-                    builderNamespaceFormatString: "{$class.Namespace}.Builders",
+                    builderNamespaceFormatString: "{class.Namespace}.Builders",
                     allowGenerationWithoutProperties: false,
                     copyAttributes: true,
                     createAsObservable: createAsObservable
                 ),
-                CultureInfo.InvariantCulture
+                CultureInfo.InvariantCulture,
+                CancellationToken.None
             );
 
         [Fact]
@@ -228,7 +229,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderContext
         }
     }
 
-    public class IntegrationTests : PipelineBuilderTests
+    public class IntegrationTests : PipelineTests
     {
         [Fact]
         public async Task Creates_Builder_With_NamespaceMapping()
@@ -343,6 +344,6 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipeline<BuilderContext
         }
 
         private static BuilderContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
-            => new(model, settings, CultureInfo.InvariantCulture);
+            => new(model, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

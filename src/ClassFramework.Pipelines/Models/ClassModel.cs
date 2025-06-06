@@ -20,5 +20,5 @@ public class ClassModel
 
     public string Name => _type?.Name ?? _typeBase!.Name;
     public string Namespace => _type?.Namespace ?? _typeBase!.Namespace;
-    public string FullName => _type?.FullName ?? _typeBase!.GetFullName();
+    public string[] GetGenericTypeArguments() => _type?.GetGenericArguments().Select(x => x.FullName).ToArray() ?? _typeBase!.GenericTypeArguments.ToArray();
 }

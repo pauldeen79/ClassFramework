@@ -5,42 +5,42 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
     public class Evaluate : GenericArgumentsFunctionTests
     {
         [Fact]
-        public void Returns_Invalid_When_FunctionName_Is_Invalid()
+        public async Task Returns_Invalid_When_FunctionName_Is_Invalid()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("Invalid")
+                .WithMemberType(MemberType.Function)
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
         [Fact]
-        public void Returns_Invalid_When_No_Arguments_Are_Provided()
+        public async Task Returns_Invalid_When_No_Arguments_Are_Provided()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
+                .WithMemberType(MemberType.Function)
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -48,25 +48,25 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         }
 
         [Fact]
-        public void Returns_InnerResult_When_Argument_ValueResult_Is_Not_Successful()
+        public async Task Returns_InnerResult_When_Argument_ValueResult_Is_Not_Successful()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
+                .WithMemberType(MemberType.Function)
+                .AddArguments("Error()")
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Error<object?>("Kaboom"));
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -74,26 +74,27 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         }
 
         [Fact]
-        public void Returns_InnerResult_When_Second_Argument_ValueResult_Is_Not_Successful()
+        public async Task Returns_InnerResult_When_Second_Argument_ValueResult_Is_Not_Successful()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Success")))
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Kaboom")))
+                .WithMemberType(MemberType.Function)
+                .AddArguments("Success()", "Kaboom()")
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
-                .Returns(x => x.ArgAt<FunctionCall>(0).Name == "Success" ? Result.Success<object?>("Success") : Result.Error<object?>("Kaboom"));
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression == "Success()"
+                    ? Result.Success<object?>("Success")
+                    : Result.Error<object?>("Kaboom"));
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -101,81 +102,82 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         }
 
         [Fact]
-        public void Returns_Invalid_When_Argument_ValueResult_Is_Not_Of_Type_String()
+        public async Task Returns_Invalid_When_Argument_ValueResult_Is_Not_Of_Type_String()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Integer")))
+                .WithMemberType(MemberType.Function)
+                .AddArguments("Integer()")
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success<object?>(12345));
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Expression is not of type string");
+            result.ErrorMessage.ShouldBe("Could not cast System.Int32 to System.String");
         }
 
         [Fact]
-        public void Returns_Invalid_When_Argument_ValueResult_Is_Null()
+        public async Task Returns_Invalid_When_Argument_ValueResult_Is_Null()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Null")))
+                .WithMemberType(MemberType.Function)
+                .AddArguments("Null()")
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success<object?>(null));
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Expression is not of type string");
+            result.ErrorMessage.ShouldBe("Could not cast  to System.String");
         }
 
         [Fact]
-        public void Returns_Invalid_When_Second_Argument_ValueResult_Is_Not_Of_Type_Boolean()
+        public async Task Returns_Invalid_When_Second_Argument_ValueResult_Is_Not_Of_Type_Boolean()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("Error")))
-                .AddArguments(new ConstantArgumentBuilder().WithValue("string"))
+                .WithMemberType(MemberType.Function)
+                .AddArguments("Error()", "string")
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
-                .Returns(Result.Success<object?>("Kaboom"));
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
-            parser
-                .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
-                .Returns(Result.Success<object?>("string"));
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression switch
+                {
+                    "Error()" => Result.Success<object?>("Kaboom"),
+                    "string" => Result.Success<object?>("string"),
+                    _ => Result.NotSupported<object?>()
+                });
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -183,25 +185,25 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         }
 
         [Fact]
-        public void Returns_Success_When_Argument_ValueResult_Is_Of_Type_String()
+        public async Task Returns_Success_When_Argument_ValueResult_Is_Of_Type_String()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("MyFunction")))
+                .WithMemberType(MemberType.Function)
+                .AddArguments("MyFunction()")
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success<object?>("MyGenericType<System.String>"));
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -209,29 +211,30 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         }
 
         [Fact]
-        public void Returns_Success_When_Argument_ValueResult_Is_Of_Type_String_With_AddBrackets_False()
+        public async Task Returns_Success_When_Argument_ValueResult_Is_Of_Type_String_With_AddBrackets_False()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("MyFunction")))
-                .AddArguments(new ConstantArgumentBuilder().WithValue(false))
+                .WithMemberType(MemberType.Function)
+                .AddArguments("MyFunction()", "false")
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
-                .Returns(Result.Success<object?>("MyGenericType<System.String>"));
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
-            parser
-                .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
-                .Returns(Result.Success<object?>(false));
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression switch
+                {
+                    "MyFunction()" => Result.Success<object?>("MyGenericType<System.String>"),
+                    "false" => Result.Success<object?>(false),
+                    _ => Result.NotSupported<object?>()
+                });
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -239,29 +242,30 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         }
 
         [Fact]
-        public void Returns_Success_When_Argument_ValueResult_Is_Of_Type_String_With_AddBrackets_True()
+        public async Task Returns_Success_When_Argument_ValueResult_Is_Of_Type_String_With_AddBrackets_True()
         {
             // Arrange
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
-                .AddArguments(new FunctionArgumentBuilder().WithFunction(new FunctionCallBuilder().WithName("MyFunction")))
-                .AddArguments(new ConstantArgumentBuilder().WithValue(true))
+                .WithMemberType(MemberType.Function)
+                .AddArguments("MyFunction()", "true")
                 .Build();
             object? context = default;
-            var evaluator = Fixture.Freeze<IFunctionEvaluator>();
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             evaluator
-                .Evaluate(Arg.Any<FunctionCall>(), Arg.Any<FunctionEvaluatorSettings>(), Arg.Any<object?>())
-                .Returns(Result.Success<object?>("MyGenericType<System.String>"));
-            var parser = Fixture.Freeze<IExpressionEvaluator>();
-            parser
-                .Evaluate(Arg.Any<string>(), Arg.Any<ExpressionEvaluatorSettings>(), Arg.Any<object?>())
-                .Returns(Result.Success<object?>(true));
+                .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(x => x.ArgAt<ExpressionEvaluatorContext>(0).Expression switch
+                {
+                    "MyFunction()" => Result.Success<object?>("MyGenericType<System.String>"),
+                    "true" => Result.Success<object?>(true),
+                    _ => Result.NotSupported<object?>()
+                });
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, evaluator, parser, new FunctionEvaluatorSettingsBuilder(), context);
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
 
             // Act
-            var result = sut.Evaluate(functionCallContext);
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

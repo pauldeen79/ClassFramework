@@ -2,12 +2,12 @@
 
 public class SetBaseClassComponent : IPipelineComponent<EntityContext>
 {
-    public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public async Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Request.Builder.WithBaseClass(context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass));
+        context.Request.Builder.WithBaseClass(await context.Request.SourceModel.GetEntityBaseClassAsync(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass).ConfigureAwait(false));
 
-        return Task.FromResult(Result.Success());
+        return Result.Success();
     }
 }

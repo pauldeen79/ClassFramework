@@ -93,23 +93,23 @@ public static class PropertyExtensions
             || settings.CreateAsObservable;
     }
 
-    public static Result<GenericFormattableString> GetBuilderConstructorInitializer<TSourceModel>(
+    public static async Task<Result<GenericFormattableString>> GetBuilderConstructorInitializerAsync<TSourceModel>(
         this Property property,
         ContextBase<TSourceModel> context,
         object parentChildContext,
         string mappedTypeName,
         string newCollectionTypeName,
         string metadataName,
-        IFormattableStringParser formattableStringParser)
+        IExpressionEvaluator evaluator)
     {
         context = context.IsNotNull(nameof(context));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
         newCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
         metadataName = metadataName.IsNotNull(nameof(metadataName));
-        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, context, parentChildContext, mappedTypeName, formattableStringParser);
+        var builderArgumentTypeResult = await GetBuilderArgumentTypeNameAsync(property, context, parentChildContext, mappedTypeName, evaluator, context.CancellationToken).ConfigureAwait(false);
 
         if (!builderArgumentTypeResult.IsSuccessful())
         {
@@ -122,7 +122,7 @@ public static class PropertyExtensions
                 .GetMappingMetadata(property.TypeName)
                 .GetStringValue(metadataName);
 
-        var result = formattableStringParser.Parse(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext);
+        var result = await evaluator.EvaluateInterpolatedStringAsync(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext, context.CancellationToken).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -134,24 +134,25 @@ public static class PropertyExtensions
             .GetCsharpFriendlyTypeName());
     }
 
-    public static Result<GenericFormattableString> GetBuilderArgumentTypeName<TSourceModel>(
+    public static async Task<Result<GenericFormattableString>> GetBuilderArgumentTypeNameAsync<TSourceModel>(
         this Property property,
         ContextBase<TSourceModel> context,
         object parentChildContext,
         string mappedTypeName,
-        IFormattableStringParser formattableStringParser)
+        IExpressionEvaluator evaluator,
+        CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
-        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        evaluator = evaluator.IsNotNull(nameof(evaluator));
 
         var metadata = context.GetMappingMetadata(property.TypeName).ToArray();
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderNamespace);
 
         if (!string.IsNullOrEmpty(ns))
         {
-            var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{NoGenerics(ClassName($property.TypeName))}Builder");
+            var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{NoGenerics(ClassName(property.TypeName))}Builder");
             var newFullName = $"{ns}.{newTypeName}";
             if (property.TypeName.FixTypeName().IsCollectionTypeName())
             {
@@ -160,35 +161,37 @@ public static class PropertyExtensions
                 {
                     if (!string.IsNullOrEmpty(property.TypeName.FixTypeName().GetCollectionItemType().GetGenericArguments()))
                     {
-                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}").Replace("{NoGenerics(ClassName($property.TypeName))}", "{NoGenerics(ClassName(GenericArguments($property.TypeName)))}").Replace("{GenericArguments($property.TypeName, true)}", "{GenericArguments(CollectionItemType($property.TypeName), true)}")}>";
+                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName(property.TypeName)}", "{ClassName(GenericArguments(property.TypeName))}").Replace("{NoGenerics(ClassName(property.TypeName))}", "{NoGenerics(ClassName(GenericArguments(property.TypeName)))}").Replace("{GenericArguments(property.TypeName, true)}", "{GenericArguments(CollectionItemType(property.TypeName), true)}")}>";
                     }
                     else
                     {
-                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}").Replace("{NoGenerics(ClassName($property.TypeName))}", "{NoGenerics(ClassName(GenericArguments($property.TypeName)))}")}>";
+                        newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{ClassName(property.TypeName)}", "{ClassName(GenericArguments(property.TypeName))}").Replace("{NoGenerics(ClassName(property.TypeName))}", "{NoGenerics(ClassName(GenericArguments(property.TypeName)))}")}>";
                     }
                 }
             }
 
-            return formattableStringParser.Parse
+            return await evaluator.EvaluateInterpolatedStringAsync
             (
                 newFullName,
                 context.FormatProvider,
-                parentChildContext
-            );
+                parentChildContext,
+                token
+            ).ConfigureAwait(false);
         }
 
-        return formattableStringParser.Parse
+        return await evaluator.EvaluateInterpolatedStringAsync
         (
             metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, mappedTypeName),
             context.FormatProvider,
-            parentChildContext
-        );
+            parentChildContext,
+            token
+        ).ConfigureAwait(false);
     }
 
-    public static Result<GenericFormattableString> GetBuilderParentTypeName(this Property property, PipelineContext<BuilderContext> context, IFormattableStringParser formattableStringParser)
+    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeNameAsync(this Property property, PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
-        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+        evaluator = evaluator.IsNotNull(nameof(evaluator));
 
         if (string.IsNullOrEmpty(property.ParentTypeFullName))
         {
@@ -203,21 +206,22 @@ public static class PropertyExtensions
             return Result.Success<GenericFormattableString>(context.Request.MapTypeName(property.ParentTypeFullName.FixTypeName()));
         }
 
-        var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ClassName($property.ParentTypeFullName)}");
+        var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ClassName(property.ParentTypeFullName)}");
 
         if (property.TypeName.FixTypeName().IsCollectionTypeName())
         {
-            newTypeName = newTypeName.Replace("{ClassName($property.TypeName)}", "{ClassName(GenericArguments($property.TypeName))}");
+            newTypeName = newTypeName.Replace("{ClassName(property.TypeName)}", "{ClassName(GenericArguments(property.TypeName))}");
         }
 
         var newFullName = $"{ns}.{newTypeName}";
 
-        return formattableStringParser.Parse
+        return await evaluator.EvaluateInterpolatedStringAsync
         (
             newFullName,
             context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings)
-        );
+            new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
+            token
+        ).ConfigureAwait(false);
     }
 
     public static string GetSuffix<TSourceModel>(this Property source, bool enableNullableReferenceTypes, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<TSourceModel> context)

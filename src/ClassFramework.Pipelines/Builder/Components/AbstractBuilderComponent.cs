@@ -1,19 +1,19 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AbstractBuilderComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderContext>
+public class AbstractBuilderComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    public async Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (context.Request.IsBuilderForAbstractEntity)
         {
-            var nameResult = _formattableStringParser.Parse(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request);
+            var nameResult = await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
             if (!nameResult.IsSuccessful())
             {
-                return Task.FromResult<Result>(nameResult);
+                return nameResult;
             }
 
             context.Request.Builder.WithAbstract();
@@ -33,6 +33,6 @@ public class AbstractBuilderComponent(IFormattableStringParser formattableString
             }
         }
 
-        return Task.FromResult(Result.Success());
+        return Result.Success();
     }
 }

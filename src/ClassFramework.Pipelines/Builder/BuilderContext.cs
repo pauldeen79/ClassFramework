@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<TypeBase>(sourceModel, settings, formatProvider)
+public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
 {
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
@@ -67,48 +67,68 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
         {
             if (IsBuilderForAbstractEntity || IsBuilderForOverrideEntity)
             {
-                return MapTypeName(SourceModel.GetFullName(), string.Empty);
+                return MapTypeName(SourceModel.GetFullName());
             }
 
             return Settings.InheritFromInterfaces
-                ? MapTypeName(SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{SourceModel.Name}") ?? SourceModel.GetFullName(), string.Empty)
-                : MapTypeName(SourceModel.GetFullName(), string.Empty);
+                ? MapTypeName(SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{SourceModel.Name}") ?? SourceModel.GetFullName())
+                : MapTypeName(SourceModel.GetFullName());
         }
     }
 
-    public Result<T>[] GetInterfaceResults<T>(
+    public async Task<Result<T>[]> GetInterfaceResults<T>(
         Func<string, GenericFormattableString, T> namespaceTransformation,
         Func<string, T> noNamespaceTransformation,
-        IFormattableStringParser formattableStringParser,
-        bool includeNonAbstractionNamespaces)
-        => SourceModel.Interfaces
+        IExpressionEvaluator evaluator,
+        bool includeNonAbstractionNamespaces,
+        CancellationToken token)
+    {
+        namespaceTransformation = ArgumentGuard.IsNotNull(namespaceTransformation, nameof(namespaceTransformation));
+        noNamespaceTransformation = ArgumentGuard.IsNotNull(noNamespaceTransformation, nameof(noNamespaceTransformation));
+        evaluator = ArgumentGuard.IsNotNull(evaluator, nameof(evaluator));
+
+        var results = new List<Result<T>>();
+
+        foreach (var @interface in SourceModel.Interfaces
             .Where(x => (Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-                        && (includeNonAbstractionNamespaces || Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(x.GetNamespaceWithDefault())))
-            .Select(x =>
+                        && (includeNonAbstractionNamespaces || Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(x.GetNamespaceWithDefault()))))
+        {
+            var metadata = GetMappingMetadata(@interface).ToArray();
+            var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
+
+            if (!string.IsNullOrEmpty(ns))
             {
-                var metadata = GetMappingMetadata(x).ToArray();
-                var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
+                var property = new PropertyBuilder()
+                    .WithName("Dummy")
+                    .WithTypeName(@interface)
+                    .Build();
 
-                if (!string.IsNullOrEmpty(ns))
+                var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName(property.TypeName))}Builder{GenericArguments(property.TypeName, true)}");
+                var newFullName = $"{ns}.{newTypeName}";
+
+                var result = (await evaluator.EvaluateInterpolatedStringAsync
+                (
+                    newFullName,
+                    FormatProvider,
+                    new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(this), property, Settings),
+                    token
+                ).ConfigureAwait(false)).Transform(y => namespaceTransformation(@interface, y));
+
+                results.Add(result);
+
+                if (!result.IsSuccessful())
                 {
-                    var property = new PropertyBuilder()
-                        .WithName("Dummy")
-                        .WithTypeName(x)
-                        .Build();
-                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName($property.TypeName))}Builder{GenericArguments($property.TypeName, true)}");
-                    var newFullName = $"{ns}.{newTypeName}";
-
-                    return formattableStringParser.Parse
-                    (
-                        newFullName,
-                        FormatProvider,
-                        new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(this), property, Settings)
-                    ).Transform(y => namespaceTransformation(x, y));
+                    break;
                 }
-                return Result.Success(noNamespaceTransformation(x));
-            })
-            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
-            .ToArray();
+            }
+            else
+            {
+                results.Add(Result.Success(noNamespaceTransformation(@interface)));
+            }
+        }
+
+        return results.ToArray();
+    }
 
     private string ReturnValue
     {

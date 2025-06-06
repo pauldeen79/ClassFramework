@@ -1,29 +1,30 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class SetNameComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<BuilderExtensionContext>
+public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderExtensionContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
+    public async Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        var results = new ResultDictionaryBuilder<GenericFormattableString>()
-            .Add(NamedResults.Name, () => _formattableStringParser.Parse(context.Request.Settings.BuilderExtensionsNameFormatString, context.Request.FormatProvider, context.Request))
-            .Add(NamedResults.Namespace, () => _formattableStringParser.Parse(context.Request.Settings.BuilderExtensionsNamespaceFormatString, context.Request.FormatProvider, context.Request))
-            .Build();
+        var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
+            .Add(NamedResults.Name, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderExtensionsNameFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add(NamedResults.Namespace, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderExtensionsNamespaceFormatString, context.Request.FormatProvider, context.Request, token))
+            .Build()
+            .ConfigureAwait(false);
 
         var error = results.GetError();
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Task.FromResult<Result>(error);
+            return error;
         }
 
         context.Request.Builder
-            .WithName(results[NamedResults.Name].Value!)
-            .WithNamespace(results[NamedResults.Namespace].Value!);
+            .WithName(results.GetValue(NamedResults.Name))
+            .WithNamespace(results.GetValue(NamedResults.Namespace));
 
-        return Task.FromResult(Result.Success());
+        return Result.Success();
     }
 }

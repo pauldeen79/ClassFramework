@@ -1,22 +1,22 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddEquatableMembersComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<EntityContext>
+public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public async Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Request.Settings.ImplementIEquatable)
         {
-            return Task.FromResult(Result.Success());
+            return Result.Success();
         }
 
-        var nameResult = _formattableStringParser.Parse(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request);
+        var nameResult = await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
         if (!nameResult.IsSuccessful())
         {
-            return Task.FromResult<Result>(nameResult);
+            return nameResult;
         }
 
         var getHashCodeStatements =
@@ -74,7 +74,7 @@ public class AddEquatableMembersComponent(IFormattableStringParser formattableSt
                     .AddParameter("right", context.Request.SourceModel.Name)
                     .AddStringCodeStatements("return !(left == right);"));
 
-        return Task.FromResult(Result.Success());
+        return Result.Success();
     }
 
     private static IEnumerable<string> CreateHashCodeStatements<T>(IEnumerable<T> items, string notNullCheck)

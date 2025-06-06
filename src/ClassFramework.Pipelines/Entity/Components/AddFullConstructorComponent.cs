@@ -1,22 +1,22 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddFullConstructorComponent(IFormattableStringParser formattableStringParser) : IPipelineComponent<EntityContext>
+public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext>
 {
-    private readonly IFormattableStringParser _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+    private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public async Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Request.Settings.AddFullConstructor)
         {
-            return Task.FromResult(Result.Success());
+            return Result.Success();
         }
 
-        var ctorResult = CreateEntityConstructor(context);
+        var ctorResult = await CreateEntityConstructor(context, token).ConfigureAwait(false);
         if (!ctorResult.IsSuccessful())
         {
-            return Task.FromResult<Result>(ctorResult);
+            return ctorResult;
         }
 
         context.Request.Builder.AddConstructors(ctorResult.Value!);
@@ -26,14 +26,14 @@ public class AddFullConstructorComponent(IFormattableStringParser formattableStr
             context.Request.Builder.AddMethods(new MethodBuilder().WithName("Validate").WithPartial().WithVisibility(Visibility.Private));
         }
 
-        return Task.FromResult(Result.Success());
+        return Result.Success();
     }
 
-    private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<EntityContext> context)
+    private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(PipelineContext<EntityContext> context, CancellationToken token)
     {
-        var initializationResults = context.Request.SourceModel.Properties
+        var initializationResults = (await Task.WhenAll(context.Request.SourceModel.Properties
             .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
-            .Select(property => _formattableStringParser.Parse("this.{$property.EntityMemberName} = {$property.InitializationExpression};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings)))
+            .Select(async property => await _evaluator.EvaluateInterpolatedStringAsync("this.{property.EntityMemberName} = {property.InitializationExpression};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings), token).ConfigureAwait(false))).ConfigureAwait(false))
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 
@@ -55,6 +55,6 @@ public class AddFullConstructorComponent(IFormattableStringParser formattableStr
             )
             .AddStringCodeStatements(initializationResults.Select(x => x.Value!.ToString()))
             .AddStringCodeStatements(context.Request.CreateEntityValidationCode())
-            .WithChainCall(context.CreateEntityChainCall()));
+            .WithChainCall(await context.CreateEntityChainCallAsync().ConfigureAwait(false)));
     }
 }

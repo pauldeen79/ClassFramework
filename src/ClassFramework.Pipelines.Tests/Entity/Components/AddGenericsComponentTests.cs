@@ -22,7 +22,7 @@ public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.Ad
             var sourceModel = CreateGenericClass(addProperties: false);
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
             var result = await sut.ProcessAsync(context);

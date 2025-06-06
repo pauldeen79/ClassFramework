@@ -5,14 +5,14 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
     public class ProcessAsync : AddDefaultConstructorComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>()
+            var t = sut.ProcessAsync(context: null!);
+            (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
 
@@ -23,7 +23,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -40,7 +40,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             context.Request.Builder.Constructors.Count.ShouldBe(1);
             var ctor = context.Request.Builder.Constructors.Single();
             ctor.Protected.ShouldBe(expectedProtected);
-            ctor.ChainCall.ShouldBe(!hasBaseClass ? "base()" : string.Empty); // sounds unlogical, but this is the non-abstract base class for the builder, and it needs the base() chaincall to the abstract base class for the builder;
+            ctor.ChainCall.ShouldBe(!hasBaseClass ? "base()" : string.Empty); /// sounds unlogical, but this is the non-abstract base class for the builder, and it needs the base() chaincall to the abstract base class for the builder;
             ctor.Parameters.ShouldBeEmpty();
             if (expectedCodeStatements)
             {
@@ -66,7 +66,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
@@ -101,7 +101,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableNullableReferenceTypes: true, // important for backing fields
@@ -138,7 +138,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
@@ -174,7 +174,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         {
             // Arrange
             var sourceModel = CreateClass("MyBaseClass");
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
@@ -209,7 +209,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
@@ -243,7 +243,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setDefaultValues: true);
             var context = CreateContext(sourceModel, settings);
@@ -253,7 +253,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Methods.Where(x => x.Name == "SetDefaultValues").Count().ShouldBe(1);
+            context.Request.Builder.Methods.Count(x => x.Name == "SetDefaultValues").ShouldBe(1);
             var method = context.Request.Builder.Methods.Single(x => x.Name == "SetDefaultValues");
             method.Partial.ShouldBeTrue();
             method.Parameters.ShouldBeEmpty();
@@ -265,7 +265,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setDefaultValues: false);
             var context = CreateContext(sourceModel, settings);
@@ -283,7 +283,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
@@ -311,7 +311,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         {
             // Arrange
             var sourceModel = CreateClass();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
@@ -342,7 +342,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 .WithName("MyClass")
                 .AddProperties(new PropertyBuilder().WithName("Filter").WithTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable"))
                 .BuildTyped();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder().AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
             var context = CreateContext(sourceModel, settings);
@@ -366,7 +366,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 .WithName("MyClass")
                 .AddProperties(new PropertyBuilder().WithName("GroupByFields").WithTypeName(typeof(IReadOnlyCollection<string>).ReplaceGenericTypeName("ExpressionFramework.Domain.Expression")))
                 .BuildTyped();
-            InitializeParser();
+            await InitializeExpressionEvaluator();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder().AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
             var context = CreateContext(sourceModel, settings);
@@ -383,6 +383,6 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
     }
 }
