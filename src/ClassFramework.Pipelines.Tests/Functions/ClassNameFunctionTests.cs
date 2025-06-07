@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Functions;
+﻿using Shouldly;
+
+namespace ClassFramework.Pipelines.Tests.Functions;
 
 public class ClassNameFunctionTests : TestBase<ClassNameFunction>
 {
@@ -44,7 +46,9 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Missing argument: Expression");
+            result.ErrorMessage.ShouldBe("ClassName function failed, see inner results for details");
+            result.InnerResults.Count.ShouldBe(1);
+            result.InnerResults.First().ErrorMessage.ShouldBe("Missing argument: Expression");
         }
 
         [Fact]
@@ -70,7 +74,9 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
-            result.ErrorMessage.ShouldBe("Kaboom");
+            result.ErrorMessage.ShouldBe("ClassName function failed, see inner results for details");
+            result.InnerResults.Count.ShouldBe(1);
+            result.InnerResults.First().ErrorMessage.ShouldBe("Kaboom");
         }
 
         [Fact]
@@ -96,7 +102,9 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Could not cast System.Int32 to System.String");
+            result.ErrorMessage.ShouldBe("ClassName function failed, see inner results for details");
+            result.InnerResults.Count.ShouldBe(1);
+            result.InnerResults.First().ErrorMessage.ShouldBe("Could not cast System.Int32 to System.String");
         }
 
         [Fact]
@@ -122,7 +130,9 @@ public class ClassNameFunctionTests : TestBase<ClassNameFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("Could not cast  to System.String");
+            result.ErrorMessage.ShouldBe("ClassName function failed, see inner results for details");
+            result.InnerResults.Count.ShouldBe(1);
+            result.InnerResults.First().ErrorMessage.ShouldBe("Could not cast  to System.String");
         }
 
         [Fact]

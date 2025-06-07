@@ -7,6 +7,7 @@ internal static class FunctionHelpers
                 .Add(Constants.Expression, (await context.GetArgumentValueResultAsync(0, Constants.Expression, token).ConfigureAwait(false)).TryCast<string>())
                 .Build()
                 .ConfigureAwait(false))
+                .OnFailure(result => result.Wrap($"{functionName} function failed, see inner results for details"))
                 .OnSuccess(results => functionDelegate(results.GetValue<string>(Constants.Expression)));
 
     internal static async Task<Result<string>> ParseFromContextAsync(FunctionCallContext context, Func<ContextBase, PipelineSettings, ClassModel, Property, bool, string> resultDelegate)
