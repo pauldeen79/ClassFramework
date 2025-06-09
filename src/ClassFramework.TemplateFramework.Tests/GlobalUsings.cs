@@ -1,4 +1,5 @@
-﻿global using System.Collections.ObjectModel;
+﻿global using System.ComponentModel;
+global using System.Collections.ObjectModel;
 global using System.ComponentModel.DataAnnotations;
 global using System.Globalization;
 global using System.Text;

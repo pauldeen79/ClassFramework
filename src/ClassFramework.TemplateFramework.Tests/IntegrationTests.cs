@@ -51,6 +51,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ObservableCoreEntities>()
             .AddScoped<OverrideTypeBuilders>()
             .AddScoped<OverrideTypeEntities>()
+            .AddScoped<TemplateFrameworkBuilders>()
             .AddScoped<TemplateFrameworkEntities>()
             .AddScoped<CrossCuttingAbstractBuilders>()
             .AddScoped<CrossCuttingAbstractEntities>()
@@ -1784,6 +1785,7 @@ namespace ClassFramework.TemplateFramework
             get;
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
         public bool GenerateMultipleFiles
         {
             get;
@@ -1841,6 +1843,277 @@ namespace ClassFramework.TemplateFramework
         public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder ToBuilder()
         {
             return new ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder(this);
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_Non_Core_Builders()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TemplateFrameworkBuilders>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace ClassFramework.TemplateFramework.Builders
+{
+#nullable enable
+    public partial class CsharpClassGeneratorSettingsBuilder
+    {
+        private string _lastGeneratedFilesFilename;
+
+        private System.Text.Encoding _encoding;
+
+        private string _path;
+
+        private System.Globalization.CultureInfo _cultureInfo;
+
+        private string _environmentVersion;
+
+        private string _filenameSuffix;
+
+        public bool RecurseOnDeleteGeneratedFiles
+        {
+            get;
+            set;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string LastGeneratedFilesFilename
+        {
+            get
+            {
+                return _lastGeneratedFilesFilename;
+            }
+            set
+            {
+                _lastGeneratedFilesFilename = value ?? throw new System.ArgumentNullException(nameof(value));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Text.Encoding Encoding
+        {
+            get
+            {
+                return _encoding;
+            }
+            set
+            {
+                _encoding = value ?? throw new System.ArgumentNullException(nameof(value));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Path
+        {
+            get
+            {
+                return _path;
+            }
+            set
+            {
+                _path = value ?? throw new System.ArgumentNullException(nameof(value));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Globalization.CultureInfo CultureInfo
+        {
+            get
+            {
+                return _cultureInfo;
+            }
+            set
+            {
+                _cultureInfo = value ?? throw new System.ArgumentNullException(nameof(value));
+            }
+        }
+
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool GenerateMultipleFiles
+        {
+            get;
+            set;
+        }
+
+        public bool SkipWhenFileExists
+        {
+            get;
+            set;
+        }
+
+        public bool CreateCodeGenerationHeader
+        {
+            get;
+            set;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string EnvironmentVersion
+        {
+            get
+            {
+                return _environmentVersion;
+            }
+            set
+            {
+                _environmentVersion = value ?? throw new System.ArgumentNullException(nameof(value));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string FilenameSuffix
+        {
+            get
+            {
+                return _filenameSuffix;
+            }
+            set
+            {
+                _filenameSuffix = value ?? throw new System.ArgumentNullException(nameof(value));
+            }
+        }
+
+        public bool EnableNullableContext
+        {
+            get;
+            set;
+        }
+
+        public bool EnableGlobalUsings
+        {
+            get;
+            set;
+        }
+
+        public CsharpClassGeneratorSettingsBuilder(ClassFramework.TemplateFramework.CsharpClassGeneratorSettings source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            RecurseOnDeleteGeneratedFiles = source.RecurseOnDeleteGeneratedFiles;
+            _lastGeneratedFilesFilename = source.LastGeneratedFilesFilename;
+            _encoding = source.Encoding;
+            _path = source.Path;
+            _cultureInfo = source.CultureInfo;
+            GenerateMultipleFiles = source.GenerateMultipleFiles;
+            SkipWhenFileExists = source.SkipWhenFileExists;
+            CreateCodeGenerationHeader = source.CreateCodeGenerationHeader;
+            _environmentVersion = source.EnvironmentVersion;
+            _filenameSuffix = source.FilenameSuffix;
+            EnableNullableContext = source.EnableNullableContext;
+            EnableGlobalUsings = source.EnableGlobalUsings;
+        }
+
+        public CsharpClassGeneratorSettingsBuilder()
+        {
+            _lastGeneratedFilesFilename = string.Empty;
+            _encoding = default(System.Text.Encoding)!;
+            _path = string.Empty;
+            _cultureInfo = default(System.Globalization.CultureInfo)!;
+            GenerateMultipleFiles = true;
+            _environmentVersion = string.Empty;
+            _filenameSuffix = string.Empty;
+            SetDefaultValues();
+        }
+
+        public ClassFramework.TemplateFramework.CsharpClassGeneratorSettings Build()
+        {
+            return new ClassFramework.TemplateFramework.CsharpClassGeneratorSettings(RecurseOnDeleteGeneratedFiles, LastGeneratedFilesFilename, Encoding, Path, CultureInfo, GenerateMultipleFiles, SkipWhenFileExists, CreateCodeGenerationHeader, EnvironmentVersion, FilenameSuffix, EnableNullableContext, EnableGlobalUsings);
+        }
+
+        partial void SetDefaultValues();
+
+        public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithRecurseOnDeleteGeneratedFiles(bool recurseOnDeleteGeneratedFiles = true)
+        {
+            RecurseOnDeleteGeneratedFiles = recurseOnDeleteGeneratedFiles;
+            return this;
+        }
+
+        public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithLastGeneratedFilesFilename(string lastGeneratedFilesFilename)
+        {
+            if (lastGeneratedFilesFilename is null) throw new System.ArgumentNullException(nameof(lastGeneratedFilesFilename));
+            LastGeneratedFilesFilename = lastGeneratedFilesFilename;
+            return this;
+        }
+
+        public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithEncoding(System.Text.Encoding encoding)
+        {
+            if (encoding is null) throw new System.ArgumentNullException(nameof(encoding));
+            Encoding = encoding;
+            return this;
+        }
+
+        public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithPath(string path)
+        {
+            if (path is null) throw new System.ArgumentNullException(nameof(path));
+            Path = path;
+            return this;
+        }
+
+        public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithCultureInfo(System.Globalization.CultureInfo cultureInfo)
+        {
+            if (cultureInfo is null) throw new System.ArgumentNullException(nameof(cultureInfo));
+            CultureInfo = cultureInfo;
+            return this;
+        }
+
+        public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithGenerateMultipleFiles(bool generateMultipleFiles = true)
+        {
+            GenerateMultipleFiles = generateMultipleFiles;
+            return this;
+        }
+
+        public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithSkipWhenFileExists(bool skipWhenFileExists = true)
+        {
+            SkipWhenFileExists = skipWhenFileExists;
+            return this;
+        }
+
+        public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithCreateCodeGenerationHeader(bool createCodeGenerationHeader = true)
+        {
+            CreateCodeGenerationHeader = createCodeGenerationHeader;
+            return this;
+        }
+
+        public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithEnvironmentVersion(string environmentVersion)
+        {
+            if (environmentVersion is null) throw new System.ArgumentNullException(nameof(environmentVersion));
+            EnvironmentVersion = environmentVersion;
+            return this;
+        }
+
+        public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithFilenameSuffix(string filenameSuffix)
+        {
+            if (filenameSuffix is null) throw new System.ArgumentNullException(nameof(filenameSuffix));
+            FilenameSuffix = filenameSuffix;
+            return this;
+        }
+
+        public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithEnableNullableContext(bool enableNullableContext = true)
+        {
+            EnableNullableContext = enableNullableContext;
+            return this;
+        }
+
+        public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder WithEnableGlobalUsings(bool enableGlobalUsings = true)
+        {
+            EnableGlobalUsings = enableGlobalUsings;
+            return this;
         }
     }
 #nullable restore

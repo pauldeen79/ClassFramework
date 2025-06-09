@@ -8,7 +8,7 @@ internal interface ICsharpClassGeneratorSettings
 
     [Required(AllowEmptyStrings = true)] string Path { get; }
     [Required] CultureInfo CultureInfo { get; }
-    bool GenerateMultipleFiles { get; }
+    [DefaultValue(true)] bool GenerateMultipleFiles { get; }
     bool SkipWhenFileExists { get; }
     bool CreateCodeGenerationHeader { get; }
     [Required(AllowEmptyStrings = true)] string EnvironmentVersion { get; }
