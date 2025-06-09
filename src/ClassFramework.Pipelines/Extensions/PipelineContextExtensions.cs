@@ -54,30 +54,38 @@ public static class PipelineContextExtensions
     {
         var properties = context.Request.SourceModel.GetBuilderConstructorProperties(context.Request);
 
-        var results = (await Task.WhenAll(properties.Select
-        (
-            async property => new
-            {
-                property.Name,
-                Source = property,
-                Result = await evaluator.EvaluateInterpolatedStringAsync
-                (
-                    context.Request
-                        .GetMappingMetadata(property.TypeName)
-                        .GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, PlaceholderNames.NamePlaceholder),
-                    context.Request.FormatProvider,
-                    new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
-                    token
-                ).ConfigureAwait(false),
-                CollectionInitializer = context.Request.GetMappingMetadata
+        var results = new List<ConstructionMethodParameterInfo>();
+        foreach (var property in properties)
+        {
+            var info =
+                new ConstructionMethodParameterInfo(
+                    property.Name,
+                    property,
+                    await evaluator.EvaluateInterpolatedStringAsync
+                    (
+                        context.Request
+                            .GetMappingMetadata(property.TypeName)
+                            .GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, PlaceholderNames.NamePlaceholder),
+                        context.Request.FormatProvider,
+                        new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
+                        token
+                    ).ConfigureAwait(false),
+                    context.Request.GetMappingMetadata
                     (
                         property.TypeName.FixTypeName().WithoutGenerics() // i.e. List<> etc.
                     ).GetStringValue(MetadataNames.CustomCollectionInitialization, () => "[Expression]"),
-                Suffix = property.GetSuffix(context.Request.Settings.EnableNullableReferenceTypes, csharpExpressionDumper, context.Request)
-            }
-        )).ConfigureAwait(false)).TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful()).ToArray();
+                    property.GetSuffix(context.Request.Settings.EnableNullableReferenceTypes, csharpExpressionDumper, context.Request)
+                );
 
-        var error = Array.Find(results, x => !x.Result.IsSuccessful());
+            results.Add(info);
+
+            if (!info.Result.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        var error = results.Find(x => !x.Result.IsSuccessful());
         if (error is not null)
         {
             return error.Result;
@@ -131,4 +139,43 @@ public static class PipelineContextExtensions
         => poco
             ? " { "
             : "(";
+}
+
+internal class ConstructionMethodParameterInfo
+{
+    public string Name { get; }
+    public Property Source { get; }
+    public Result<GenericFormattableString> Result { get; }
+    public string CollectionInitializer { get; }
+    public string Suffix { get; }
+
+    public ConstructionMethodParameterInfo(string name, Property source, Result<GenericFormattableString> result, string collectionInitializer, string suffix)
+    {
+        Name = name;
+        Source = source;
+        Result = result;
+        CollectionInitializer = collectionInitializer;
+        Suffix = suffix;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is ConstructionMethodParameterInfo other &&
+               Name == other.Name &&
+               EqualityComparer<Property>.Default.Equals(Source, other.Source) &&
+               EqualityComparer<Result<GenericFormattableString>>.Default.Equals(Result, other.Result) &&
+               CollectionInitializer == other.CollectionInitializer &&
+               Suffix == other.Suffix;
+    }
+
+    public override int GetHashCode()
+    {
+        var hashCode = -673813403;
+        hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+        hashCode = hashCode * -1521134295 + EqualityComparer<Property>.Default.GetHashCode(Source);
+        hashCode = hashCode * -1521134295 + EqualityComparer<Result<GenericFormattableString>>.Default.GetHashCode(Result);
+        hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CollectionInitializer);
+        hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Suffix);
+        return hashCode;
+    }
 }

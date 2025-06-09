@@ -105,26 +105,54 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
     }
 
     private async Task<Tuple<Property, Result<GenericFormattableString>>[]> GetInitializationCodeResults(PipelineContext<BuilderContext> context, CancellationToken token)
-        => (await Task.WhenAll(context.Request.SourceModel.Properties
-            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings) && !(x.TypeName.FixTypeName().IsCollectionTypeName() && context.Request.GetMappingMetadata(x.TypeName).Any(y => y.Name == MetadataNames.CustomBuilderConstructorInitializeExpression)))
-            .Select(async x => new Tuple<Property, Result<GenericFormattableString>>
-            (
-                x,
-                await CreateBuilderInitializationCode(x, context, token).ConfigureAwait(false)
-            ))).ConfigureAwait(false))
-            .TakeWhileWithFirstNonMatching(x => x.Item2.IsSuccessful())
-            .ToArray();
+    {
+        var results = new List<Tuple<Property, Result<GenericFormattableString>>>();
+
+        foreach (var property in context.Request.SourceModel.Properties
+            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)
+                    && !(x.TypeName.FixTypeName().IsCollectionTypeName()
+                    && context.Request.GetMappingMetadata(x.TypeName).Any(y => y.Name == MetadataNames.CustomBuilderConstructorInitializeExpression))))
+        {
+            var result = await CreateBuilderInitializationCode(property, context, token).ConfigureAwait(false);
+
+            results.Add(new Tuple<Property, Result<GenericFormattableString>>(property, result));
+
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        return results.ToArray();
+    }
 
     private async Task<Tuple<string, Result<GenericFormattableString>>[]> GetConstructorInitializerResults(PipelineContext<BuilderContext> context)
-        => (await Task.WhenAll(context.Request.SourceModel.Properties
-            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
-            .Select(async x => new Tuple<string, Result<GenericFormattableString>>
-            (
-                x.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo()),
-                await x.GetBuilderConstructorInitializerAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, MetadataNames.CustomBuilderConstructorInitializeExpression, _evaluator).ConfigureAwait(false)
-            ))).ConfigureAwait(false))
-            .TakeWhileWithFirstNonMatching(x => x.Item2.IsSuccessful())
-            .ToArray();
+    {
+        var results = new List<Tuple<string, Result<GenericFormattableString>>>();
+
+        foreach (var property in context.Request.SourceModel.Properties
+            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)
+                    && x.TypeName.FixTypeName().IsCollectionTypeName()))
+        {
+            var name = property.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo());
+            var result = await property.GetBuilderConstructorInitializerAsync(
+                context.Request,
+                new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
+                context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName),
+                context.Request.Settings.BuilderNewCollectionTypeName,
+                MetadataNames.CustomBuilderConstructorInitializeExpression,
+                _evaluator).ConfigureAwait(false);
+
+            results.Add(new Tuple<string, Result<GenericFormattableString>>(name, result));
+            
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        return results.ToArray();
+    }
 
     private Task<Result<GenericFormattableString>> CreateBuilderInitializationCode(Property property, PipelineContext<BuilderContext> context, CancellationToken token)
         => _evaluator.EvaluateInterpolatedStringAsync

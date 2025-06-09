@@ -132,37 +132,40 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
             return Result.Continue();
         }
 
-        var interfaces = (await Task.WhenAll(context.Request.SourceModel.Interfaces
+        var interfaces = new List<Result<NameInfo>>();
+
+        foreach (var x in context.Request.SourceModel.Interfaces
             .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-            .Where(x => context.Request.Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(x.GetNamespaceWithDefault()))
-            .Select(async x =>
+            .Where(x => context.Request.Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(x.GetNamespaceWithDefault())))
+        {
+            var metadata = context.Request.GetMappingMetadata(x).ToArray();
+            var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
+
+            if (!string.IsNullOrEmpty(ns))
             {
-                var metadata = context.Request.GetMappingMetadata(x).ToArray();
-                var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
+                var property = new PropertyBuilder()
+                    .WithName("Dummy")
+                    .WithTypeName(x)
+                    .Build();
+                var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName(property.TypeName))}Builder{GenericArguments(property.TypeName, true)}");
+                var newFullName = $"{ns}.{newTypeName}";
 
-                if (!string.IsNullOrEmpty(ns))
-                {
-                    var property = new PropertyBuilder()
-                        .WithName("Dummy")
-                        .WithTypeName(x)
-                        .Build();
-                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName(property.TypeName))}Builder{GenericArguments(property.TypeName, true)}");
-                    var newFullName = $"{ns}.{newTypeName}";
+                interfaces.Add((await _evaluator.EvaluateInterpolatedStringAsync
+                (
+                    newFullName,
+                    context.Request.FormatProvider,
+                    new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings),
+                    token
+                ).ConfigureAwait(false)).Transform(y => new NameInfo { EntityName = x, BuilderName = y.ToString() }));
+            }
+            else
+            {
+                interfaces.Add(Result.Success(new NameInfo { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) }));
+            }
 
-                    return (await _evaluator.EvaluateInterpolatedStringAsync
-                    (
-                        newFullName,
-                        context.Request.FormatProvider,
-                        new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings),
-                        token
-                    ).ConfigureAwait(false)).Transform(y => new { EntityName = x, BuilderName = y.ToString() });
-                }
-                return Result.Success(new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) });
-            })).ConfigureAwait(false))
-            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
-            .ToArray();
+        }
 
-        var error = Array.Find(interfaces, x => !x.IsSuccessful());
+        var error = interfaces.Find(x => !x.IsSuccessful());
         if (error is not null)
         {
             return error;
@@ -179,5 +182,11 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
             .AddStringCodeStatements($"return {methodCallName}();")));
 
         return Result.Success();
+    }
+
+    private sealed class NameInfo
+    {
+        public string EntityName { get; set; } = default!;
+        public string BuilderName { get; set; } = default!;
     }
 }

@@ -31,13 +31,21 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
 
     private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(PipelineContext<EntityContext> context, CancellationToken token)
     {
-        var initializationResults = (await Task.WhenAll(context.Request.SourceModel.Properties
-            .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
-            .Select(async property => await _evaluator.EvaluateInterpolatedStringAsync("this.{property.EntityMemberName} = {property.InitializationExpression};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings), token).ConfigureAwait(false))).ConfigureAwait(false))
-            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
-            .ToArray();
+        var initializationResults = new List<Result<GenericFormattableString>>();
 
-        var error = Array.Find(initializationResults, x => !x.IsSuccessful());
+        foreach (var property in context.Request.SourceModel.Properties
+            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)))
+        {
+            var result = await _evaluator.EvaluateInterpolatedStringAsync("this.{property.EntityMemberName} = {property.InitializationExpression};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings), token).ConfigureAwait(false);
+
+            initializationResults.Add(result);
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        var error = initializationResults.Find(x => !x.IsSuccessful());
         if (error is not null)
         {
             return Result.FromExistingResult<ConstructorBuilder>(error);

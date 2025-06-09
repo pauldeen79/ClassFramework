@@ -30,41 +30,24 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
 
     private async Task<Result<ConstructorBuilder>> CreateDefaultConstructor(PipelineContext<BuilderContext> context, CancellationToken token)
     {
-        var constructorInitializerResults = (await Task.WhenAll(context.Request.SourceModel.Properties
-            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
-            .Select(async x => new
-            {
-                Name = x.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo()),
-                Result = await x.GetBuilderConstructorInitializerAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, x, context.Request.Settings), context.Request.MapTypeName(x.TypeName, MetadataNames.CustomEntityInterfaceTypeName), context.Request.Settings.BuilderNewCollectionTypeName, string.Empty, _evaluator).ConfigureAwait(false)
-            })).ConfigureAwait(false))
-            .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
-            .ToArray();
+        var constructorInitializerResults = await GetConstructorInitializerResults(context).ConfigureAwait(false);
 
-        var errorResult = Array.Find(constructorInitializerResults, x => !x.Result.IsSuccessful());
+        var errorResult = constructorInitializerResults.Find(x => !x.Item2.IsSuccessful());
         if (errorResult is not null)
         {
-            return Result.FromExistingResult<ConstructorBuilder>(errorResult.Result);
+            return Result.FromExistingResult<ConstructorBuilder>(errorResult.Item2);
         }
 
         var ctor = new ConstructorBuilder()
             .WithChainCall(await CreateBuilderClassConstructorChainCall(context.Request.SourceModel, context.Request.Settings).ConfigureAwait(false))
             .WithProtected(context.Request.IsBuilderForAbstractEntity)
-            .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"));
+            .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Item1} = {x.Item2.Value};"));
 
         if (context.Request.Settings.SetDefaultValuesInEntityConstructor)
         {
-            var defaultValueResults = (await Task.WhenAll(context.Request.SourceModel.Properties
-                .Where
-                (x =>
-                    context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)
-                    && !x.TypeName.FixTypeName().IsCollectionTypeName()
-                    && ((!x.IsValueType && !x.IsNullable) || (x.Attributes.Any(y => y.Name == typeof(DefaultValueAttribute).FullName) && context.Request.Settings.UseDefaultValueAttributeValuesForBuilderInitialization))
-                )
-                .Select(x => GenerateDefaultValueStatement(x, context, token))).ConfigureAwait(false))
-                .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
-                .ToArray();
+            var defaultValueResults = await GetDefaultValueResults(context, token).ConfigureAwait(false);
 
-            var defaultValueErrorResult = Array.Find(defaultValueResults, x => !x.IsSuccessful());
+            var defaultValueErrorResult = defaultValueResults.Find(x => !x.IsSuccessful());
             if (defaultValueErrorResult is not null)
             {
                 return Result.FromExistingResult<ConstructorBuilder>(defaultValueErrorResult);
@@ -90,6 +73,57 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         }
 
         return Result.Success(ctor);
+    }
+
+    private async Task<List<Result<GenericFormattableString>>> GetDefaultValueResults(PipelineContext<BuilderContext> context, CancellationToken token)
+    {
+        var defaultValueResults = new List<Result<GenericFormattableString>>();
+
+        foreach (var property in context.Request.SourceModel.Properties
+            .Where
+            (x =>
+                context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)
+                && !x.TypeName.FixTypeName().IsCollectionTypeName()
+                && ((!x.IsValueType && !x.IsNullable) || (x.Attributes.Any(y => y.Name == typeof(DefaultValueAttribute).FullName) && context.Request.Settings.UseDefaultValueAttributeValuesForBuilderInitialization))
+            ))
+        {
+            var result = await GenerateDefaultValueStatement(property, context, token).ConfigureAwait(false);
+            defaultValueResults.Add(result);
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        return defaultValueResults;
+    }
+
+    private async Task<List<Tuple<string, Result<GenericFormattableString>>>> GetConstructorInitializerResults(PipelineContext<BuilderContext> context)
+    {
+        var constructorInitializerResults = new List<Tuple<string, Result<GenericFormattableString>>>();
+
+        foreach (var property in context.Request.SourceModel.Properties
+            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)
+                && x.TypeName.FixTypeName().IsCollectionTypeName()))
+        {
+            var name = property.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo());
+            var result = await property.GetBuilderConstructorInitializerAsync(
+                context.Request,
+                new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
+                context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName),
+                context.Request.Settings.BuilderNewCollectionTypeName,
+                string.Empty,
+                _evaluator).ConfigureAwait(false);
+
+            constructorInitializerResults.Add(new Tuple<string, Result<GenericFormattableString>>(name, result));
+
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        return constructorInitializerResults;
     }
 
     private static async Task<string> CreateBuilderClassConstructorChainCall(IType instance, PipelineSettings settings)

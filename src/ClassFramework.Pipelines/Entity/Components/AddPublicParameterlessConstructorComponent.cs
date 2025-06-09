@@ -26,12 +26,20 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
 
     private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(PipelineContext<EntityContext> context, CancellationToken token)
     {
-        var initializationStatements = (await Task.WhenAll(context.Request.SourceModel.Properties
-            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings))
-            .Select(x => GenerateDefaultValueStatement(x, context, token))).ConfigureAwait(false))
-            .ToArray();
+        var initializationStatements = new List<Result<string>>();
 
-        var errorResult = Array.Find(initializationStatements, x => !x.IsSuccessful());
+        foreach (var property in context.Request.SourceModel.Properties
+            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)))
+        {
+            var result = await GenerateDefaultValueStatement(property, context, token).ConfigureAwait(false);
+            initializationStatements.Add(result);
+            if (!result.IsSuccessful())
+            {
+                break;
+            }
+        }
+
+        var errorResult = initializationStatements.Find(x => !x.IsSuccessful());
         if (errorResult is not null)
         {
             return Result.FromExistingResult<ConstructorBuilder>(errorResult);
