@@ -141,7 +141,7 @@ public static class PipelineContextExtensions
             : "(";
 }
 
-internal class ConstructionMethodParameterInfo
+internal sealed class ConstructionMethodParameterInfo
 {
     public string Name { get; }
     public Property Source { get; }
