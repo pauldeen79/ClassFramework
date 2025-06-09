@@ -558,7 +558,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.ShouldBe(ResultStatus.Error);
         result.ErrorMessage.ShouldBe("Could not create builders. See the inner results for more details.");
-        result.InnerResults.Count.ShouldBe(2);
+        result.InnerResults.Count.ShouldBe(1);
         result.InnerResults.First().Status.ShouldBe(ResultStatus.Error);
         result.InnerResults.First().ErrorMessage.ShouldBe("An error occured while processing the pipeline. See the inner results for more details.");
         result.InnerResults.First().InnerResults.Count.ShouldBe(1);
@@ -598,7 +598,7 @@ namespace Test.Domain.Builders
         // Assert
         result.Status.ShouldBe(ResultStatus.Error);
         result.ErrorMessage.ShouldBe("Could not create builders. See the inner results for more details.");
-        result.InnerResults.Count.ShouldBe(2);
+        result.InnerResults.Count.ShouldBe(1);
         result.InnerResults.First().ErrorMessage.ShouldBe("Could not create settings, see inner results for details");
         result.InnerResults.First().InnerResults.Count.ShouldBe(1);
         result.InnerResults.First().InnerResults.First().ErrorMessage.ShouldBe("Could not get base class, see inner results for details");

@@ -644,17 +644,26 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
         var modelsResult = await modelsResultTask.ConfigureAwait(false);
 
-        return await modelsResult.OnSuccess(
-            async () =>
+        if (!modelsResult.EnsureValue().IsSuccessful())
+        {
+            return modelsResult;
+        }
+
+        var results = new List<Result<TypeBase>>();
+
+        foreach (var typeBase in modelsResult.Value!)
+        {
+            var result = await ProcessSettingsResult(settingsTask, settings => successTask(settings, typeBase)).ConfigureAwait(false);
+
+            results.Add(result);
+
+            if (!result.IsSuccessful())
             {
-                var results = await modelsResult.Value!.SelectAsync(x => ProcessSettingsResult(settingsTask, settings => successTask(settings, x))).ConfigureAwait(false);
-                return Result.Aggregate
-                (
-                    results,
-                    Result.Success(results.Select(x => x.Value!)),
-                    y => Result.Error<IEnumerable<TypeBase>>(y, $"Could not create {resultType}. See the inner results for more details.")
-                );
-            }).ConfigureAwait(false);
+                return Result.Error<IEnumerable<TypeBase>>(results, $"Could not create {resultType}. See the inner results for more details.");
+            }
+        }
+
+        return Result.Success(results.Select(x => x.Value!));
     }
 
     private static async Task<Result<IEnumerable<TypeBase>>> ProcessModelsResult(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, Func<TypeBase, Task<Result<TypeBase>>> successTask, string resultType)
