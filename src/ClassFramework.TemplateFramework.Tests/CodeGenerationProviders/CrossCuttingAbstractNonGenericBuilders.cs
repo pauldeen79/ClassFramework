@@ -18,6 +18,6 @@ public class CrossCuttingAbstractNonGenericBuilders(IPipelineService pipelineSer
     protected override string SetMethodNameFormatString => string.Empty;
     protected override string AddMethodNameFormatString => string.Empty;
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
         => GetNonGenericBuilders(GetAbstractModels(), CurrentNamespace, "CrossCutting.Utilities.Parsers");
 }

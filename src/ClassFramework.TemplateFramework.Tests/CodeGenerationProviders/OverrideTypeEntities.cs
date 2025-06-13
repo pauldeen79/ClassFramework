@@ -7,6 +7,6 @@ public class OverrideTypeEntities(IPipelineService pipelineService) : ImmutableC
     protected override bool EnableEntityInheritance => true;
     protected override Task<Result<TypeBase>> GetBaseClass() => CreateBaseClass(typeof(IAbstractBase), "Test.Domain");
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
         => GetEntities(GetOverrideModels(typeof(IAbstractBase)), "Test.Domain.Types");
 }

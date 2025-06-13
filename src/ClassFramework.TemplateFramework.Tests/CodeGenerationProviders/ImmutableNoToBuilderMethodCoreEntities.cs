@@ -2,7 +2,7 @@
 
 public class ImmutableNoToBuilderMethodCoreEntities(IPipelineService pipelineService) : ImmutableNoToBuilderMethodCSharpClassBase(pipelineService)
 {
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => GetEntities(GetCoreModels(), "Test.Domain");
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetEntities(GetCoreModels(), "Test.Domain");
 
     public override string Path => "Test.Domain";
 }

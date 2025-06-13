@@ -13,10 +13,10 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
 
     public async Task<Result<object?>> CreateModelAsync(CancellationToken cancellationToken)
     {
-        var modelResult = await GetModel(cancellationToken).ConfigureAwait(false);
+        var modelResult = await GetModelAsync(cancellationToken).ConfigureAwait(false);
         if (!modelResult.IsSuccessful())
         {
-            return modelResult.TryCast<object?>();
+            return modelResult;
         }
 
         return Result.Success<object?>(new CsharpClassGeneratorViewModel
@@ -32,7 +32,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
             ? new MultipleStringContentBuilderEnvironment()
             : new StringBuilderEnvironment();
 
-    public abstract Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken);
+    public abstract Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken);
     public abstract CsharpClassGeneratorSettings Settings { get; }
 
     protected virtual string CurrentNamespace => Path.Replace('/', '.');

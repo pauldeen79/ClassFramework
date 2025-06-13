@@ -2,7 +2,7 @@
 
 public class AbstractNonGenericBuilders(IPipelineService pipelineService) : ImmutableCSharpClassBase(pipelineService)
 {
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => GetNonGenericBuilders(GetAbstractModels(), "Test.Domain.Builders", "Test.Domain");
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetNonGenericBuilders(GetAbstractModels(), "Test.Domain.Builders", "Test.Domain");
 
     public override string Path => "Test.Domain/Builders";
 
