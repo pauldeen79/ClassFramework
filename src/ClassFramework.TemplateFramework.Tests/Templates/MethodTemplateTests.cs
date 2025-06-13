@@ -15,12 +15,12 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
                 Model = new MethodBuilder().WithName("MyMethod").WithReturnType(typeof(int)).AddAttributes(new AttributeBuilder().WithName("Test")).Build()
             };
             var engine = Substitute.For<ITemplateEngine>();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is Domain.Attribute ? Result.Error("Kaboom!") : Result.Success());
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is Domain.Attribute ? Result.Error("Kaboom!") : Result.Success());
             sut.Context = CreateContext(engine, sut);
             var builder = new StringBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -38,12 +38,12 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
                 Model = new MethodBuilder().WithName("MyMethod").WithReturnType(typeof(int)).AddAttributes(new AttributeBuilder().WithName("Test")).AddParameter("MyParameter", typeof(int)).Build()
             };
             var engine = Substitute.For<ITemplateEngine>();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is Parameter ? Result.Error("Kaboom!") : Result.Success());
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is Parameter ? Result.Error("Kaboom!") : Result.Success());
             sut.Context = CreateContext(engine, sut);
             var builder = new StringBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -68,12 +68,12 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
                     .Build()
             };
             var engine = Substitute.For<ITemplateEngine>();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             sut.Context = CreateContext(engine, sut);
             var builder = new StringBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -98,7 +98,7 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
             };
             var engine = Substitute.For<ITemplateEngine>();
             var builder = new StringBuilder();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => Result.Success().Chain(() =>
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => Result.Success().Chain(() =>
             {
                 // Simulate child template rendering for code statement :)
                 var model = x.ArgAt<IRenderTemplateRequest>(0).Model;
@@ -110,7 +110,7 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
             sut.Context = CreateContext(engine, sut);
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -138,7 +138,7 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
             };
             var engine = Substitute.For<ITemplateEngine>();
             var builder = new StringBuilder();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x =>
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x =>
             {
                 // Simulate child template rendering for code statement :)
                 var model = x.ArgAt<IRenderTemplateRequest>(0).Model;
@@ -152,7 +152,7 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
             sut.Context = CreateContext(engine, sut);
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

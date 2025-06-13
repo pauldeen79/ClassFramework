@@ -2,7 +2,7 @@
 
 public class NewLineTemplate : CsharpClassGeneratorBase<NewLineViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
+    public Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
 

@@ -2,7 +2,7 @@
 
 public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMultipleContentBuilderTemplate, IBuilderTemplate<StringBuilder>
 {
-    public async Task<Result> Render(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -25,7 +25,7 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
             var filename = $"{Model.FilenamePrefix}{Model.Name}{Model.Settings.FilenameSuffix}.cs";
             var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
             generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
-            result = await RenderChildTemplateByModel(Model.CodeGenerationHeaders, generationEnvironment, cancellationToken).ConfigureAwait(false);
+            result = await RenderChildTemplateByModelAsync(Model.CodeGenerationHeaders, generationEnvironment, cancellationToken).ConfigureAwait(false);
             if (!result.IsSuccessful())
             {
                 return result;
@@ -33,7 +33,7 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
 
             if (!Model.Settings.EnableGlobalUsings)
             {
-                result = await RenderChildTemplateByModel(Model.Usings(), generationEnvironment, cancellationToken).ConfigureAwait(false);
+                result = await RenderChildTemplateByModelAsync(Model.Usings(), generationEnvironment, cancellationToken).ConfigureAwait(false);
                 if (!result.IsSuccessful())
                 {
                     return result;
@@ -51,7 +51,7 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
             .OnSuccess(() => generationEnvironment.Builder.AppendLineWithCondition("}", Model.ShouldRenderNamespaceScope)); // end namespace
     }
 
-    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -72,7 +72,7 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
         var indentedBuilder = new IndentedStringBuilder(generationEnvironment.Builder);
         PushIndent(indentedBuilder);
 
-        var result = await RenderChildTemplatesByModel(Model.Attributes, generationEnvironment, cancellationToken).ConfigureAwait(false);
+        var result = await RenderChildTemplatesByModelAsync(Model.Attributes, generationEnvironment, cancellationToken).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -82,14 +82,14 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
         indentedBuilder.AppendLine("{"); // start class
 
         // Fields, Properties, Methods, Constructors, Enumerations
-        result = await RenderChildTemplatesByModel(Model.Members, generationEnvironment, cancellationToken).ConfigureAwait(false);
+        result = await RenderChildTemplatesByModelAsync(Model.Members, generationEnvironment, cancellationToken).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
         }
 
         // Subclasses
-        return (await RenderChildTemplatesByModel(Model.SubClasses, generationEnvironment, cancellationToken).ConfigureAwait(false))
+        return (await RenderChildTemplatesByModelAsync(Model.SubClasses, generationEnvironment, cancellationToken).ConfigureAwait(false))
             .OnSuccess(() =>
             {
                 indentedBuilder.AppendLine("}"); // end class

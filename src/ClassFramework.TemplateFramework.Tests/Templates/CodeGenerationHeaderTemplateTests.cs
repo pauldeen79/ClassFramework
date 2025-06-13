@@ -1,4 +1,4 @@
-namespace ClassFramework.TemplateFramework.Tests.Templates;
+﻿namespace ClassFramework.TemplateFramework.Tests.Templates;
 
 public class CodeGenerationHeaderTemplateTests : TemplateTestBase<CodeGenerationHeaderTemplate>
 {
@@ -13,7 +13,7 @@ public class CodeGenerationHeaderTemplateTests : TemplateTestBase<CodeGeneration
             var builder = new StringBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -29,7 +29,7 @@ public class CodeGenerationHeaderTemplateTests : TemplateTestBase<CodeGeneration
             var builder = new StringBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

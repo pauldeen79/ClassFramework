@@ -7,11 +7,11 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     public abstract string LastGeneratedFilesFilename { get; }
     public abstract Encoding Encoding { get; }
 
-    public Task<Result<object?>> CreateAdditionalParameters(CancellationToken cancellationToken) => Task.FromResult(Result.Success(default(object?)));
+    public Task<Result<object?>> CreateAdditionalParametersAsync(CancellationToken cancellationToken) => Task.FromResult(Result.Success(default(object?)));
 
     public Type GetGeneratorType() => typeof(CsharpClassGenerator);
 
-    public async Task<Result<object?>> CreateModel(CancellationToken cancellationToken)
+    public async Task<Result<object?>> CreateModelAsync(CancellationToken cancellationToken)
     {
         var modelResult = await GetModel(cancellationToken).ConfigureAwait(false);
         if (!modelResult.IsSuccessful())

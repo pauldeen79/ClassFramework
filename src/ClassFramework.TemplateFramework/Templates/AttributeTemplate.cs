@@ -2,7 +2,7 @@
 
 public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
+    public Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
