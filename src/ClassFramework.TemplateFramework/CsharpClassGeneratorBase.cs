@@ -29,7 +29,7 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
         return await Context.Engine.RenderChildTemplateAsync(model, generationEnvironment, Context, new TemplateByModelIdentifier(model), cancellationToken).ConfigureAwait(false);
     }
 
-    protected Task<Result> RenderChildTemplatesByModel(IEnumerable models, StringBuilder builder, CancellationToken cancellationToken)
+    protected Task<Result> RenderChildTemplatesByModelAsync(IEnumerable models, StringBuilder builder, CancellationToken cancellationToken)
         => RenderChildTemplatesByModelAsync(models, new StringBuilderEnvironment(builder), cancellationToken);
 
     protected async Task<Result> RenderChildTemplatesByModelAsync(IEnumerable models, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)

@@ -7,7 +7,7 @@ public class FieldTemplate : CsharpClassGeneratorBase<FieldViewModel>, IBuilderT
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        return (await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false))
+        return (await RenderChildTemplatesByModelAsync(Model.Attributes, builder, cancellationToken).ConfigureAwait(false))
             .OnSuccess(() =>
             {
 
