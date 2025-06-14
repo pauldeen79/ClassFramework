@@ -21,7 +21,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: false);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
@@ -39,7 +39,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "{Error}", implementIEquatable: true);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
@@ -57,7 +57,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
@@ -75,7 +75,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties(itemType: IEquatableItemType.Properties);
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true, iEquatableItemType: IEquatableItemType.Properties);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
@@ -112,7 +112,7 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
         {
             // Arrange
             var sourceModel = CreateClassWithCustomTypeProperties(itemType: IEquatableItemType.Fields);
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true, iEquatableItemType: IEquatableItemType.Fields);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));

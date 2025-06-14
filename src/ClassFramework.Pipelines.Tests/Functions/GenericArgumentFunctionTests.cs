@@ -8,7 +8,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Invalid_When_FunctionName_Is_Invalid()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("Invalid")
                 .WithMemberType(MemberType.Function)
@@ -29,7 +29,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Invalid_When_No_Arguments_Are_Provided()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .WithMemberType(MemberType.Function)
@@ -51,7 +51,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_InnerResult_When_Argument_ValueResult_Is_Not_Successful()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .WithMemberType(MemberType.Function)
@@ -77,7 +77,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_InnerResult_When_Second_Argument_ValueResult_Is_Not_Successful()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .WithMemberType(MemberType.Function)
@@ -105,7 +105,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Invalid_When_Argument_ValueResult_Is_Not_Of_Type_String()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .WithMemberType(MemberType.Function)
@@ -131,7 +131,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Invalid_When_Argument_ValueResult_Is_Null()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .WithMemberType(MemberType.Function)
@@ -157,7 +157,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Invalid_When_Second_Argument_ValueResult_Is_Not_Of_Type_Boolean()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .WithMemberType(MemberType.Function)
@@ -188,7 +188,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Success_When_Argument_ValueResult_Is_Of_Type_String()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .WithMemberType(MemberType.Function)
@@ -214,7 +214,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Success_When_Argument_ValueResult_Is_Of_Type_String_With_AddBrackets_False()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .WithMemberType(MemberType.Function)
@@ -245,7 +245,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
         public async Task Returns_Success_When_Argument_ValueResult_Is_Of_Type_String_With_AddBrackets_True()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("GenericArguments")
                 .WithMemberType(MemberType.Function)

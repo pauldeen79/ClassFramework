@@ -34,7 +34,7 @@ public abstract class TestBase : IDisposable
         }
     }
 
-    protected Task<IExpressionEvaluator> InitializeExpressionEvaluator(bool forceError = false)
+    protected Task<IExpressionEvaluator> InitializeExpressionEvaluatorAsync(bool forceError = false)
     {
         var evaluator = Fixture.Freeze<IExpressionEvaluator>();
         var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();

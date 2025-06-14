@@ -21,7 +21,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(enableEntityInheritance: true);
             var context = CreateContext(sourceModel, settings);
@@ -60,7 +60,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(enableEntityInheritance: true, builderNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);

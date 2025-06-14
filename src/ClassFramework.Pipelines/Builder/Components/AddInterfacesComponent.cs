@@ -13,7 +13,7 @@ public class AddInterfacesComponent(IExpressionEvaluator evaluator) : IPipelineC
             return Result.Success();
         }
 
-        var interfaces = await context.Request.GetInterfaceResults(
+        var interfaces = await context.Request.GetInterfaceResultsAsync(
             (_, x) => x.ToString(),
             x => context.Request.MapTypeName(x.FixTypeName()),
             _evaluator,

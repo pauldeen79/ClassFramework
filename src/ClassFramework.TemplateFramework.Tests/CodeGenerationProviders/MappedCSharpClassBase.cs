@@ -28,6 +28,6 @@ public abstract class MappedCSharpClassBase(IPipelineService pipelineService) : 
     }
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetTypeNamedModels()
-    => await GetNonCoreModels($"{CodeGenerationRootNamespace}.SomeNamespace").ConfigureAwait(false);
+    => await GetNonCoreModelsAsync($"{CodeGenerationRootNamespace}.SomeNamespace").ConfigureAwait(false);
 
 }

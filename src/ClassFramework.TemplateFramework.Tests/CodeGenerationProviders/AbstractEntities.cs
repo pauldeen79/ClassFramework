@@ -2,7 +2,7 @@
 
 public class AbstractEntities(IPipelineService pipelineService) : ImmutableCSharpClassBase(pipelineService)
 {
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetEntities(GetAbstractModels(), "Test.Domain");
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetEntitiesAsync(GetAbstractModelsAsync(), "Test.Domain");
 
     public override string Path => "Test.Domain";
 

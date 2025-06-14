@@ -20,7 +20,7 @@ public abstract class ImmutableCSharpClassBase(IPipelineService pipelineService)
     protected override bool UseBuilderAbstractionsTypeConversion => false;
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetTemplateFrameworkModels()
-        => await GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework").ConfigureAwait(false);
+        => await GetNonCoreModelsAsync($"{CodeGenerationRootNamespace}.Models.TemplateFramework").ConfigureAwait(false);
 
     protected override bool SkipNamespaceOnTypenameMappings(string @namespace)
         => @namespace == $"{CodeGenerationRootNamespace}.Models.TemplateFramework";

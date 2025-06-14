@@ -25,21 +25,21 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
         return type.IsInterface && type.Name.WithoutTypeGenerics().EndsWith("Base");
     }
 
-    protected static Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingAbstractModels()
+    protected static Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingAbstractModelsAsync()
     {
         var modelsResult = GetCrossCuttingModels().Where(x => x.Name.EndsWith("Base")).Select(x => Result.Success(x.Build())).ToArray();
 
         return Task.FromResult(Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract models. See the inner results for more details.")));
     }
 
-    protected Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingAbstractionsInterfaces()
+    protected Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingAbstractionsInterfacesAsync()
     {
         var modelsResult = GetCrossCuttingModels().Where(x => x.Namespace == $"{CoreNamespace}.Abstractions").Select(x => Result.Success(x.Build())).ToArray();
 
         return Task.FromResult(Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract interfaces. See the inner results for more details.")));
     }
 
-    protected static Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingOverrideModels(string abstractTypeName)
+    protected static Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingOverrideModelsAsync(string abstractTypeName)
     {
         Guard.IsNotNull(abstractTypeName);
 
@@ -48,12 +48,12 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
         return Task.FromResult(Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create override models. See the inner results for more details.")));
     }
 
-    protected async Task<Result<TypeBase>> CreateCrossCuttingBaseClass(string typeName, string @namespace)
+    protected async Task<Result<TypeBase>> CreateCrossCuttingBaseClassAsync(string typeName, string @namespace)
     {
         Guard.IsNotNull(typeName);
         Guard.IsNotNull(@namespace);
 
-        return await ProcessCrossCuttingBaseClassResult(Task.FromResult(Result.Success(GetCrossCuttingModels().Single(x => x.GetFullName() == typeName).Build())), async typeBaseResult =>
+        return await ProcessCrossCuttingBaseClassResultAsync(Task.FromResult(Result.Success(GetCrossCuttingModels().Single(x => x.GetFullName() == typeName).Build())), async typeBaseResult =>
         {
             var entitySettings = new PipelineSettingsBuilder()
                .WithAddSetters(AddSetters)
@@ -1262,7 +1262,7 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
 #pragma warning restore CA1861 // Avoid constant arrays as arguments
     }
 
-    private static async Task<Result<T>> ProcessCrossCuttingBaseClassResult<T>(Task<Result<TypeBase>> baseClassResultTask, Func<TypeBase?, Task<Result<T>>> successTask)
+    private static async Task<Result<T>> ProcessCrossCuttingBaseClassResultAsync<T>(Task<Result<TypeBase>> baseClassResultTask, Func<TypeBase?, Task<Result<T>>> successTask)
     {
         Guard.IsNotNull(baseClassResultTask);
         Guard.IsNotNull(successTask);

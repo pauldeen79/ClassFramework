@@ -23,7 +23,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
@@ -54,7 +54,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
@@ -93,7 +93,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
         {
             // Arrange
             var sourceModel = CreateClass("MyBaseClass");
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
@@ -132,7 +132,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
@@ -173,7 +173,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
@@ -201,7 +201,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
@@ -232,7 +232,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
                 .WithName("MyClass")
                 .AddProperties(new PropertyBuilder().WithName("Filter").WithTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable"))
                 .BuildTyped();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true).AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
             var context = CreateContext(sourceModel, settings);
@@ -256,7 +256,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
                 .WithName("MyClass")
                 .AddProperties(new PropertyBuilder().WithName("Filter").WithTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable"))
                 .BuildTyped();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true, addNullChecks: true).AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
             var context = CreateContext(sourceModel, settings);
@@ -280,7 +280,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
                 .WithName("MyClass")
                 .AddProperties(new PropertyBuilder().WithName("GroupByFields").WithTypeName(typeof(IReadOnlyCollection<string>).ReplaceGenericTypeName("ExpressionFramework.Domain.Expression")))
                 .BuildTyped();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true).AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
             var context = CreateContext(sourceModel, settings);
@@ -304,7 +304,7 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
                 .WithName("MyClass")
                 .AddProperties(new PropertyBuilder().WithName("GroupByFields").WithTypeName(typeof(IReadOnlyCollection<string>).ReplaceGenericTypeName("ExpressionFramework.Domain.Expression")))
                 .BuildTyped();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true, addNullChecks: true).AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
             var context = CreateContext(sourceModel, settings);

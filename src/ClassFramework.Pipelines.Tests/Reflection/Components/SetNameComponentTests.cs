@@ -21,7 +21,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
         {
             // Arrange
             var sourceModel = typeof(MyClass);
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection();
             var context = CreateContext(sourceModel, settings);
@@ -39,7 +39,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
         {
             // Arrange
             var sourceModel = typeof(MyClass);
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection();
             var context = CreateContext(sourceModel, settings);
@@ -57,7 +57,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
         {
             // Arrange
             var sourceModel = typeof(MyClass);
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(nameFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);
@@ -75,7 +75,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
         {
             // Arrange
             var sourceModel = typeof(MyClass);
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(namespaceFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);

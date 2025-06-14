@@ -14,5 +14,5 @@ public class CrossCuttingAbstractBuilders(IPipelineService pipelineService) : Cr
     protected override bool AddImplicitOperatorOnBuilder => false; // does not work when using builder abstraction interfaces
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetBuilders(GetCrossCuttingAbstractModels(), CurrentNamespace, CurrentNamespace.GetParentNamespace());
+        => GetBuildersAsync(GetCrossCuttingAbstractModelsAsync(), CurrentNamespace, CurrentNamespace.GetParentNamespace());
 }

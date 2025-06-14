@@ -8,7 +8,7 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
     {
         context = context.IsNotNull(nameof(context));
 
-        var baseClassResult = await GetBuilderBaseClass(context.Request.SourceModel, context, token).ConfigureAwait(false);
+        var baseClassResult = await GetBuilderBaseClassAsync(context.Request.SourceModel, context, token).ConfigureAwait(false);
         if (!baseClassResult.IsSuccessful())
         {
             return baseClassResult;
@@ -19,7 +19,7 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
         return Result.Success();
     }
 
-    private async Task<Result<GenericFormattableString>> GetBuilderBaseClass(IType instance, PipelineContext<BuilderContext> context, CancellationToken token)
+    private async Task<Result<GenericFormattableString>> GetBuilderBaseClassAsync(IType instance, PipelineContext<BuilderContext> context, CancellationToken token)
     {
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
@@ -72,7 +72,7 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
             context.Request.Settings.EnableInheritance,
             async baseClassContainer =>
             {
-                var baseClassResult = await GetBaseClassName(context, baseClassContainer, token).ConfigureAwait(false);
+                var baseClassResult = await GetBaseClassNameAsync(context, baseClassContainer, token).ConfigureAwait(false);
                 if (!baseClassResult.IsSuccessful())
                 {
                     return baseClassResult;
@@ -85,7 +85,7 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
         ).ConfigureAwait(false);
     }
 
-    private Task<Result<GenericFormattableString>> GetBaseClassName(PipelineContext<BuilderContext> context, IBaseClassContainer baseClassContainer, CancellationToken token)
+    private Task<Result<GenericFormattableString>> GetBaseClassNameAsync(PipelineContext<BuilderContext> context, IBaseClassContainer baseClassContainer, CancellationToken token)
         => _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!)), context.Request.Settings, context.Request.FormatProvider, token), token);
 
     private static TypeBase CreateTypeBase(string baseClass)

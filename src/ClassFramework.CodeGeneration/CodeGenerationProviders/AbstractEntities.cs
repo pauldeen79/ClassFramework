@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractEntities(IPipelineService pipelineService) : ClassFrameworkCSharpClassBase(pipelineService)
 {
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetEntities(GetAbstractModels(), "ClassFramework.Domain");
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetEntitiesAsync(GetAbstractModelsAsync(), "ClassFramework.Domain");
 
     public override string Path => "ClassFramework.Domain";
 

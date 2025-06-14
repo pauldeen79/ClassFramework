@@ -22,7 +22,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         }
         else
         {
-            var copyConstructorResult = await CreateCopyConstructor(context, token).ConfigureAwait(false);
+            var copyConstructorResult = await CreateCopyConstructorAsync(context, token).ConfigureAwait(false);
             if (!copyConstructorResult.IsSuccessful())
             {
                 return copyConstructorResult;
@@ -34,7 +34,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         return Result.Success();
     }
 
-    private async Task<Result<ConstructorBuilder>> CreateCopyConstructor(PipelineContext<BuilderContext> context, CancellationToken token)
+    private async Task<Result<ConstructorBuilder>> CreateCopyConstructorAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
             .Add("NullCheck.Source", _evaluator.EvaluateInterpolatedStringAsync("{SourceNullCheck()}", context.Request.FormatProvider, context.Request, token))
@@ -50,14 +50,14 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
             return Result.FromExistingResult<ConstructorBuilder>(error);
         }
 
-        var initializationCodeResults = await GetInitializationCodeResults(context, token).ConfigureAwait(false);
+        var initializationCodeResults = await GetInitializationCodeResultsAsync(context, token).ConfigureAwait(false);
         var initializationCodeErrorResult = Array.Find(initializationCodeResults, x => !x.Item2.IsSuccessful());
         if (initializationCodeErrorResult is not null)
         {
             return Result.FromExistingResult<ConstructorBuilder>(initializationCodeErrorResult.Item2);
         }
 
-        var constructorInitializerResults = await GetConstructorInitializerResults(context).ConfigureAwait(false);
+        var constructorInitializerResults = await GetConstructorInitializerResultsAsync(context).ConfigureAwait(false);
         var initializerErrorResult = Array.Find(constructorInitializerResults, x => !x.Item2.IsSuccessful());
         if (initializerErrorResult is not null)
         {
@@ -71,7 +71,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
             : results.GetValue(NamedResults.Namespace).ToString().AppendWhenNotNullOrEmpty(".");
 
         return Result.Success(new ConstructorBuilder()
-            .WithChainCall(await CreateBuilderClassCopyConstructorChainCall(context.Request.SourceModel, context.Request.Settings).ConfigureAwait(false))
+            .WithChainCall(await CreateBuilderClassCopyConstructorChainCallAsync(context.Request.SourceModel, context.Request.Settings).ConfigureAwait(false))
             .WithProtected(context.Request.IsBuilderForAbstractEntity)
             .AddStringCodeStatements
             (
@@ -104,7 +104,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         return name;
     }
 
-    private async Task<Tuple<Property, Result<GenericFormattableString>>[]> GetInitializationCodeResults(PipelineContext<BuilderContext> context, CancellationToken token)
+    private async Task<Tuple<Property, Result<GenericFormattableString>>[]> GetInitializationCodeResultsAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         var results = new List<Tuple<Property, Result<GenericFormattableString>>>();
 
@@ -113,7 +113,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
                     && !(x.TypeName.FixTypeName().IsCollectionTypeName()
                     && context.Request.GetMappingMetadata(x.TypeName).Any(y => y.Name == MetadataNames.CustomBuilderConstructorInitializeExpression))))
         {
-            var result = await CreateBuilderInitializationCode(property, context, token).ConfigureAwait(false);
+            var result = await CreateBuilderInitializationCodeAsync(property, context, token).ConfigureAwait(false);
 
             results.Add(new Tuple<Property, Result<GenericFormattableString>>(property, result));
 
@@ -126,7 +126,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         return results.ToArray();
     }
 
-    private async Task<Tuple<string, Result<GenericFormattableString>>[]> GetConstructorInitializerResults(PipelineContext<BuilderContext> context)
+    private async Task<Tuple<string, Result<GenericFormattableString>>[]> GetConstructorInitializerResultsAsync(PipelineContext<BuilderContext> context)
     {
         var results = new List<Tuple<string, Result<GenericFormattableString>>>();
 
@@ -154,7 +154,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         return results.ToArray();
     }
 
-    private Task<Result<GenericFormattableString>> CreateBuilderInitializationCode(Property property, PipelineContext<BuilderContext> context, CancellationToken token)
+    private Task<Result<GenericFormattableString>> CreateBuilderInitializationCodeAsync(Property property, PipelineContext<BuilderContext> context, CancellationToken token)
         => _evaluator.EvaluateInterpolatedStringAsync
         (
             ProcessCreateBuilderInitializationCode(context.Request.GetMappingMetadata(property.TypeName)
@@ -212,7 +212,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
             .Replace("[ForcedNullableSuffix]", string.IsNullOrEmpty(suffix) ? string.Empty : "!");
     }
 
-    private static async Task<string> CreateBuilderClassCopyConstructorChainCall(IType instance, PipelineSettings settings)
+    private static async Task<string> CreateBuilderClassCopyConstructorChainCallAsync(IType instance, PipelineSettings settings)
         => (await instance.GetCustomValueForInheritedClassAsync(settings.EnableInheritance, _ => Task.FromResult(Result.Success<GenericFormattableString>("base(source)"))).ConfigureAwait(false)).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private static ConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<BuilderContext> context)

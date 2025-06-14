@@ -9,5 +9,5 @@ public class CrossCuttingAbstractEntities(IPipelineService pipelineService) : Cr
     protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.None; // not needed for abstract entities, because each derived class will do its own validation
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetEntities(GetCrossCuttingAbstractModels(), CurrentNamespace);
+        => GetEntitiesAsync(GetCrossCuttingAbstractModelsAsync(), CurrentNamespace);
 }

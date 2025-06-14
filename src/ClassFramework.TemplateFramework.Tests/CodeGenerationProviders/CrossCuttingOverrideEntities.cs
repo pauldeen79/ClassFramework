@@ -5,8 +5,8 @@ public class CrossCuttingOverrideEntities(IPipelineService pipelineService) : Cr
     public override string Path => "CrossCutting.Utilities.Parsers/FunctionCallArguments";
 
     protected override bool EnableEntityInheritance => true;
-    protected override Task<Result<TypeBase>> GetBaseClass() => CreateCrossCuttingBaseClass("CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase", "CrossCutting.Utilities.Parsers");
+    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateCrossCuttingBaseClassAsync("CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase", "CrossCutting.Utilities.Parsers");
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
-        => GetEntities(GetCrossCuttingOverrideModels("CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase"), CurrentNamespace);
+        => GetEntitiesAsync(GetCrossCuttingOverrideModelsAsync("CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase"), CurrentNamespace);
 }
