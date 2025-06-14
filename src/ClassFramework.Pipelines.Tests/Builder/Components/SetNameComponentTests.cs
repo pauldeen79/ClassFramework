@@ -21,7 +21,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, settings);
@@ -39,7 +39,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, settings);
@@ -57,7 +57,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(builderNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);
@@ -75,7 +75,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(builderNamespaceFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);

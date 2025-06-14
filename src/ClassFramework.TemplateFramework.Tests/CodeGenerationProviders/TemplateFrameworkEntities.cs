@@ -2,7 +2,7 @@
 
 public class TemplateFrameworkEntities(IPipelineService pipelineService) : ImmutableCSharpClassBase(pipelineService)
 {
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => GetEntities(GetTemplateFrameworkModels(), "ClassFramework.TemplateFramework");
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetEntitiesAsync(GetTemplateFrameworkModels(), "ClassFramework.TemplateFramework");
 
     public override string Path => "ClassFramework.TemplateFramework";
 }

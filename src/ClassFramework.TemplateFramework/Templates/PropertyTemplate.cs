@@ -2,12 +2,12 @@
 
 public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        return await (await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false))
+        return await (await RenderChildTemplatesByModelAsync(Model.Attributes, builder, cancellationToken).ConfigureAwait(false))
             .OnSuccess(async () =>
             {
                 builder.Append(Model.CreateIndentation(1));
@@ -25,7 +25,7 @@ public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, IBu
                 builder.Append(Model.CreateIndentation(1));
                 builder.AppendLine("{");
 
-                return (await RenderChildTemplatesByModel(Model.CodeBodyItems, builder, cancellationToken).ConfigureAwait(false))
+                return (await RenderChildTemplatesByModelAsync(Model.CodeBodyItems, builder, cancellationToken).ConfigureAwait(false))
                     .OnSuccess(() =>
                     {
                         builder.Append(Model.CreateIndentation(1));

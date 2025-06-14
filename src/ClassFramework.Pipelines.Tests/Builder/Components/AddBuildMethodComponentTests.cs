@@ -39,7 +39,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, settings);
@@ -67,7 +67,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(enableEntityInheritance: true);
             var context = CreateContext(sourceModel, settings);
@@ -104,7 +104,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
         {
             // Arrange
             var sourceModel = CreateClass();
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(typenameMappings:
             [

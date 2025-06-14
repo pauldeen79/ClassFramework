@@ -4,8 +4,8 @@ public class MultipleInterfacesAbstractEntities(IPipelineService pipelineService
 {
     public override string Path => "ClassFramework.Domain";
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
-        => GetEntities(GetAbstractTypes(), CurrentNamespace);
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+        => GetEntitiesAsync(GetAbstractTypesAsync(), CurrentNamespace);
 
     protected override bool AddNullChecks => false; // not needed for abstract entities, because each derived class will do its own validation
 

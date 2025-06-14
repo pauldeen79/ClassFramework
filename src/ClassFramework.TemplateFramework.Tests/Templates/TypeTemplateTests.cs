@@ -1,4 +1,4 @@
-namespace ClassFramework.TemplateFramework.Tests.Templates;
+﻿namespace ClassFramework.TemplateFramework.Tests.Templates;
 
 public class TypeTemplateTests : TemplateTestBase<TypeTemplate>
 {
@@ -10,7 +10,7 @@ public class TypeTemplateTests : TemplateTestBase<TypeTemplate>
             // Arrange
             var sut = CreateSut();
             var engine = Substitute.For<ITemplateEngine>();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is CodeGenerationHeaderModel ? Result.Error("Kaboom!") : Result.Success());
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is CodeGenerationHeaderModel ? Result.Error("Kaboom!") : Result.Success());
             sut.Model = new TypeViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: true),
@@ -20,7 +20,7 @@ public class TypeTemplateTests : TemplateTestBase<TypeTemplate>
             var builder = new MultipleContentBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -33,7 +33,7 @@ public class TypeTemplateTests : TemplateTestBase<TypeTemplate>
             // Arrange
             var sut = CreateSut();
             var engine = Substitute.For<ITemplateEngine>();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is UsingsModel ? Result.Error("Kaboom!") : Result.Success());
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is UsingsModel ? Result.Error("Kaboom!") : Result.Success());
             sut.Model = new TypeViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: true),
@@ -43,7 +43,7 @@ public class TypeTemplateTests : TemplateTestBase<TypeTemplate>
             var builder = new MultipleContentBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

@@ -8,7 +8,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
         public async Task Returns_Invalid_When_FunctionName_Is_Invalid()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("Invalid")
                 .WithMemberType(MemberType.Function)
@@ -29,7 +29,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
         public async Task Returns_Invalid_When_No_Arguments_Are_Provided()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("CsharpFriendlyTypeName")
                 .WithMemberType(MemberType.Function)
@@ -53,7 +53,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
         public async Task Returns_InnerResult_When_Argument_ValueResult_Is_Not_Successful()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("CsharpFriendlyTypeName")
                 .WithMemberType(MemberType.Function)
@@ -81,7 +81,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
         public async Task Returns_Invalid_When_Argument_ValueResult_Is_Not_Of_Type_String()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("CsharpFriendlyTypeName")
                 .WithMemberType(MemberType.Function)
@@ -109,7 +109,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
         public async Task Returns_Invalid_When_Argument_ValueResult_Is_Null()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("CsharpFriendlyTypeName")
                 .WithMemberType(MemberType.Function)
@@ -137,7 +137,7 @@ public class CsharpFriendlyTypeNameFunctionTests : TestBase<CsharpFriendlyTypeNa
         public async Task Returns_Success_When_Argument_ValueResult_Is_Of_Type_String()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("CsharpFriendlyTypeName")
                 .WithMemberType(MemberType.Function)

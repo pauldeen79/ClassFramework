@@ -372,7 +372,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
         public async Task Returns_Correct_Result_On_NonAbstract_Builder_With_NullChecks_And_NonShared_OriginalValidateArguments()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut().WithName("MyClass")
                 .AddProperties
                 (
@@ -403,7 +403,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
         public async Task Returns_Correct_Result_On_NonAbstract_Builder_With_NullChecks_And_NonShared_OriginalValidateArguments_And_CustomBuilderArgumentType()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut().WithName("MyClass")
                 .AddProperties
                 (

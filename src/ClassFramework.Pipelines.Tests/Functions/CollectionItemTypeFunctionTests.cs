@@ -7,7 +7,7 @@ public class CollectionItemTypeFunctionTests : TestBase<CollectionItemTypeFuncti
     public async Task Returns_Success_When_Argument_ValueResult_Is_Of_Type_String()
     {
         // Arrange
-        await InitializeExpressionEvaluator();
+        await InitializeExpressionEvaluatorAsync();
         var functionCall = new FunctionCallBuilder()
             .WithName("ClassName")
             .WithMemberType(MemberType.Function)

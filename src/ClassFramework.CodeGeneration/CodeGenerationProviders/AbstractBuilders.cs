@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractBuilders(IPipelineService pipelineService) : ClassFrameworkCSharpClassBase(pipelineService)
 {
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken) => GetBuilders(GetAbstractModels(), "ClassFramework.Domain.Builders", "ClassFramework.Domain");
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetBuildersAsync(GetAbstractModelsAsync(), "ClassFramework.Domain.Builders", "ClassFramework.Domain");
 
     public override string Path => "ClassFramework.Domain/Builders";
 

@@ -6,6 +6,6 @@ public class CrossCuttingAbstractionsBuildersInterfaces(IPipelineService pipelin
 
     protected override bool EnableEntityInheritance => true;
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
-        => GetBuilderInterfaces(GetCrossCuttingAbstractionsInterfaces(), CurrentNamespace, "CrossCutting.Utilities.Parsers.Abstractions", CurrentNamespace);
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+        => GetBuilderInterfacesAsync(GetCrossCuttingAbstractionsInterfacesAsync(), CurrentNamespace, "CrossCutting.Utilities.Parsers.Abstractions", CurrentNamespace);
 }

@@ -76,7 +76,7 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
         }
     }
 
-    public async Task<Result<T>[]> GetInterfaceResults<T>(
+    public async Task<Result<T>[]> GetInterfaceResultsAsync<T>(
         Func<string, GenericFormattableString, T> namespaceTransformation,
         Func<string, T> noNamespaceTransformation,
         IExpressionEvaluator evaluator,

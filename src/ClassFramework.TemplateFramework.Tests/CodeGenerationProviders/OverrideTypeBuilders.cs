@@ -6,8 +6,8 @@ public class OverrideTypeBuilders(IPipelineService pipelineService) : ImmutableC
 
     protected override bool EnableEntityInheritance => true;
     protected override bool CreateAsObservable => true;
-    protected override Task<Result<TypeBase>> GetBaseClass() => CreateBaseClass(typeof(IAbstractBase), "Test.Domain");
+    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IAbstractBase), "Test.Domain");
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
-        => GetBuilders(GetOverrideModels(typeof(IAbstractBase)), "Test.Domain.Builders.Types", "Test.Domain.Types");
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+        => GetBuildersAsync(GetOverrideModelsAsync(typeof(IAbstractBase)), "Test.Domain.Builders.Types", "Test.Domain.Types");
 }

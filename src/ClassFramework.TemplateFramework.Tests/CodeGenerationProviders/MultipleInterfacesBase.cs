@@ -19,7 +19,7 @@ public abstract class MultipleInterfacesBase(IPipelineService pipelineService) :
     protected override bool CreateCodeGenerationHeader => false;
     protected override bool UseBuilderAbstractionsTypeConversion => true;
 
-    protected static Task<Result<IEnumerable<TypeBase>>> GetAbstractionsTypes()
+    protected static Task<Result<IEnumerable<TypeBase>>> GetAbstractionsTypesAsync()
         => Task.FromResult(Result.Success<IEnumerable<TypeBase>>(
             [
                 new InterfaceBuilder().WithName("IDefaultValueContainer").WithNamespace("ClassFramework.Domain.Abstractions").AddProperties(new PropertyBuilder().WithName("DefaultValue").WithType(typeof(object)).WithIsNullable().WithHasSetter(false).WithParentTypeFullName("ClassFramework.Domain.Abstractions.IDefaultValueContainer")).Build(),
@@ -27,10 +27,10 @@ public abstract class MultipleInterfacesBase(IPipelineService pipelineService) :
                 new InterfaceBuilder().WithName("IType").WithNamespace("ClassFramework.Domain.Abstractions").AddProperties(new PropertyBuilder().WithName("Namespace").WithType(typeof(string)).WithHasSetter(false).WithParentTypeFullName("ClassFramework.Domain.Abstractions.IType")).AddInterfaces("ClassFramework.Domain.Abstractions.INameContainer", "ClassFramework.Domain.Abstractions.IDefaultValueContainer").Build()
             ]));
 
-    protected static Task<Result<IEnumerable<TypeBase>>> GetAbstractTypes()
+    protected static Task<Result<IEnumerable<TypeBase>>> GetAbstractTypesAsync()
         => Task.FromResult(Result.Success<IEnumerable<TypeBase>>([ GetAbstractTypeBase() ]));
 
-    protected static Task<Result<TypeBase>> GetAbstractType()
+    protected static Task<Result<TypeBase>> GetAbstractTypeAsync()
         => Task.FromResult(Result.Success(GetAbstractTypeBase()));
 
     private static TypeBase GetAbstractTypeBase()
@@ -40,15 +40,15 @@ public abstract class MultipleInterfacesBase(IPipelineService pipelineService) :
             .AddInterfaces("ClassFramework.Domain.Abstractions.IType", "ClassFramework.Domain.Abstractions.INameContainer", "ClassFramework.Domain.Abstractions.IDefaultValueContainer")
             .Build();
 
-    protected async Task<Result<TypeBase>> CreateBaseClass(Task<Result<TypeBase>> baseClassTypeResult, string @namespace)
+    protected async Task<Result<TypeBase>> CreateBaseClassAsync(Task<Result<TypeBase>> baseClassTypeResult, string @namespace)
     {
         Guard.IsNotNull(baseClassTypeResult);
         Guard.IsNotNull(@namespace);
 
-        return await ProcessBaseClassResult(baseClassTypeResult, GenerateBaseClass(@namespace)).ConfigureAwait(false);
+        return await ProcessBaseClassResultAsync(baseClassTypeResult, GenerateBaseClass(@namespace)).ConfigureAwait(false);
     }
 
-    protected static Task<Result<IEnumerable<TypeBase>>> GetOverrideTypes()
+    protected static Task<Result<IEnumerable<TypeBase>>> GetOverrideTypesAsync()
         => Task.FromResult(Result.Success<IEnumerable<TypeBase>>(
             [
                 new ClassBuilder().WithNamespace("ClassFramework.Domain.Types").WithName("Class").AddInterfaces("ClassFramework.Domain.ITypeBase").Build()

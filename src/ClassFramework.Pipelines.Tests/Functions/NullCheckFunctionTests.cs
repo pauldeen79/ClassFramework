@@ -8,7 +8,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         public async Task Returns_Success_On_Context_Of_Type_ContextBase()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NullCheck")
                 .WithMemberType(MemberType.Function)
@@ -30,7 +30,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         public async Task Returns_Invalid_On_Unsupported_Context_Type()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NullCheck")
                 .WithMemberType(MemberType.Function)
@@ -52,7 +52,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         public async Task Returns_Invalid_On_Null_Context()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("NullCheck")
                 .WithMemberType(MemberType.Function)
@@ -74,7 +74,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         public async Task Returns_Invalid_On_Wrong_FunctionName()
         {
             // Arrange
-            await InitializeExpressionEvaluator();
+            await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
                 .WithName("WrongFunctionName")
                 .WithMemberType(MemberType.Function)

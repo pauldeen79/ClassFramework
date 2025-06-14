@@ -23,18 +23,18 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
 
     public TModel? Model { get; set; }
 
-    protected async Task<Result> RenderChildTemplateByModel(object model, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
+    protected async Task<Result> RenderChildTemplateByModelAsync(object model, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(Context);
-        return await Context.Engine.RenderChildTemplate(model, generationEnvironment, Context, new TemplateByModelIdentifier(model), cancellationToken).ConfigureAwait(false);
+        return await Context.Engine.RenderChildTemplateAsync(model, generationEnvironment, Context, new TemplateByModelIdentifier(model), cancellationToken).ConfigureAwait(false);
     }
 
-    protected Task<Result> RenderChildTemplatesByModel(IEnumerable models, StringBuilder builder, CancellationToken cancellationToken)
-        => RenderChildTemplatesByModel(models, new StringBuilderEnvironment(builder), cancellationToken);
+    protected Task<Result> RenderChildTemplatesByModelAsync(IEnumerable models, StringBuilder builder, CancellationToken cancellationToken)
+        => RenderChildTemplatesByModelAsync(models, new StringBuilderEnvironment(builder), cancellationToken);
 
-    protected async Task<Result> RenderChildTemplatesByModel(IEnumerable models, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
+    protected async Task<Result> RenderChildTemplatesByModelAsync(IEnumerable models, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(Context);
-        return await Context.Engine.RenderChildTemplates(models, generationEnvironment, Context, model => new TemplateByModelIdentifier(model), cancellationToken).ConfigureAwait(false);
+        return await Context.Engine.RenderChildTemplatesAsync(models, generationEnvironment, Context, model => new TemplateByModelIdentifier(model), cancellationToken).ConfigureAwait(false);
     }
 }

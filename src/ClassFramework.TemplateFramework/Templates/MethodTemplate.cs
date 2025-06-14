@@ -2,12 +2,12 @@
 
 public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        var result = await RenderChildTemplatesByModel(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
+        var result = await RenderChildTemplatesByModelAsync(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -38,7 +38,7 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IBuilde
             builder.Append("this ");
         }
 
-        result = await RenderChildTemplatesByModel(Model.Parameters, builder, cancellationToken).ConfigureAwait(false);
+        result = await RenderChildTemplatesByModelAsync(Model.Parameters, builder, cancellationToken).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -53,7 +53,7 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IBuilde
         }
         else
         {
-            result = await builder.RenderMethodBody(Model.CreateIndentation(1), () => RenderChildTemplatesByModel(Model.CodeStatements, builder, cancellationToken)).ConfigureAwait(false);
+            result = await builder.RenderMethodBody(Model.CreateIndentation(1), () => RenderChildTemplatesByModelAsync(Model.CodeStatements, builder, cancellationToken)).ConfigureAwait(false);
             if (!result.IsSuccessful())
             {
                 return result;

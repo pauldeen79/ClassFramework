@@ -4,8 +4,8 @@ public class MultipleInterfacesAbstractionsInterfaces(IPipelineService pipelineS
 {
     public override string Path => "ClassFramework.Domain/Abstractions";
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
-        => GetEntityInterfaces(GetAbstractionsTypes(), CurrentNamespace.GetParentNamespace(), CurrentNamespace);
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+        => GetEntityInterfacesAsync(GetAbstractionsTypesAsync(), CurrentNamespace.GetParentNamespace(), CurrentNamespace);
 
     protected override bool EnableEntityInheritance => true;
 }

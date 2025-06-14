@@ -6,8 +6,8 @@ public class MultipleInterfacesOverrideEntities(IPipelineService pipelineService
 
     protected override bool EnableEntityInheritance => true;
     protected override bool CreateAsObservable => true;
-    protected override Task<Result<TypeBase>> GetBaseClass() => CreateBaseClass(GetAbstractType(), "ClassFramework.Domain");
+    protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(GetAbstractTypeAsync(), "ClassFramework.Domain");
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModel(CancellationToken cancellationToken)
-        => GetEntities(GetOverrideTypes(), "ClassFramework.Domain.Types");
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+        => GetEntitiesAsync(GetOverrideTypesAsync(), "ClassFramework.Domain.Types");
 }

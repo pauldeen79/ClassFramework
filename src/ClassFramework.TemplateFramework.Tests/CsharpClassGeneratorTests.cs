@@ -1,4 +1,4 @@
-namespace ClassFramework.TemplateFramework.Tests;
+﻿namespace ClassFramework.TemplateFramework.Tests;
 
 public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
 {
@@ -16,7 +16,7 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var builder = new StringBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.NotSupported);
@@ -29,7 +29,7 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             // Arrange
             var sut = CreateSut();
             var engine = Substitute.For<ITemplateEngine>();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Error("Kaboom!"));
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Error("Kaboom!"));
             sut.Model = new CsharpClassGeneratorViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false),
@@ -39,7 +39,7 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var builder = new StringBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -52,7 +52,7 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             // Arrange
             var sut = CreateSut();
             var engine = Substitute.For<ITemplateEngine>();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is TypeBase ? Result.Error("Kaboom!") : Result.Success());
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is TypeBase ? Result.Error("Kaboom!") : Result.Success());
             sut.Model = new CsharpClassGeneratorViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false),
@@ -62,7 +62,7 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var builder = new StringBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -75,7 +75,7 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             // Arrange
             var sut = CreateSut();
             var engine = Substitute.For<ITemplateEngine>();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             sut.Model = new CsharpClassGeneratorViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false, enableGlobalUsings: false),
@@ -85,7 +85,7 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var builder = new StringBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -97,7 +97,7 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             // Arrange
             var sut = CreateSut();
             var engine = Substitute.For<ITemplateEngine>();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Success());
             sut.Model = new CsharpClassGeneratorViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false, enableGlobalUsings: true),
@@ -107,7 +107,7 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var builder = new StringBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -122,7 +122,7 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             // Arrange
             var sut = CreateSut();
             var engine = Substitute.For<ITemplateEngine>();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Error("Kaboom!"));
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(Result.Error("Kaboom!"));
             sut.Model = new CsharpClassGeneratorViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(generateMultipleFiles: false),
@@ -132,7 +132,7 @@ public class CsharpClassGeneratorTests : TemplateTestBase<CsharpClassGenerator>
             var builder = new MultipleContentBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

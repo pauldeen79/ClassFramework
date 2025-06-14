@@ -2,7 +2,7 @@
 
 public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel>, IMultipleContentBuilderTemplate, IBuilderTemplate<StringBuilder>
 {
-    public async Task<Result> Render(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(IMultipleContentBuilder<StringBuilder> builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -16,7 +16,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
             // Generate a single generation environment, so we create only a single file in the multiple content builder environment.
             singleStringBuilder = builder.AddContent(Context.DefaultFilename, Model.Settings.SkipWhenFileExists).Builder;
             generationEnvironment = new StringBuilderEnvironment(singleStringBuilder);
-            var result = await RenderHeader(generationEnvironment, cancellationToken).ConfigureAwait(false);
+            var result = await RenderHeaderAsync(generationEnvironment, cancellationToken).ConfigureAwait(false);
             if (!result.IsSuccessful())
             {
                 return result;
@@ -24,11 +24,11 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
         }
 
         singleStringBuilder?.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
-        return (await RenderNamespaceHierarchy(generationEnvironment, singleStringBuilder, cancellationToken).ConfigureAwait(false))
+        return (await RenderNamespaceHierarchyAsync(generationEnvironment, singleStringBuilder, cancellationToken).ConfigureAwait(false))
             .OnSuccess(() => singleStringBuilder?.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas));
     }
 
-    public async Task<Result> Render(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
@@ -39,29 +39,29 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
         }
 
         var generationEnvironment = new StringBuilderEnvironment(builder);
-        return await (await RenderHeader(generationEnvironment, cancellationToken).ConfigureAwait(false))
+        return await (await RenderHeaderAsync(generationEnvironment, cancellationToken).ConfigureAwait(false))
             .OnSuccess(async () =>
             {
                 generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
-                return (await RenderNamespaceHierarchy(generationEnvironment, builder, cancellationToken).ConfigureAwait(false))
+                return (await RenderNamespaceHierarchyAsync(generationEnvironment, builder, cancellationToken).ConfigureAwait(false))
                     .OnSuccess(() => generationEnvironment.Builder.AppendLineWithCondition("#nullable disable", Model.ShouldRenderNullablePragmas));
             }).ConfigureAwait(false);
     }
 
-    private async Task<Result> RenderHeader(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
+    private async Task<Result> RenderHeaderAsync(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
-        return await (await RenderChildTemplateByModel(Model!.CodeGenerationHeaderModel, generationEnvironment, cancellationToken).ConfigureAwait(false))
+        return await (await RenderChildTemplateByModelAsync(Model!.CodeGenerationHeaderModel, generationEnvironment, cancellationToken).ConfigureAwait(false))
             .OnSuccess(async () =>
             {
                 if (!Model.Settings.EnableGlobalUsings)
                 {
-                    return await RenderChildTemplateByModel(Model.Usings, generationEnvironment, cancellationToken).ConfigureAwait(false);
+                    return await RenderChildTemplateByModelAsync(Model.Usings, generationEnvironment, cancellationToken).ConfigureAwait(false);
                 }
                 return Result.Success();
             }).ConfigureAwait(false);
     }
 
-    private async Task<Result> RenderNamespaceHierarchy(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder, CancellationToken cancellationToken)
+    private async Task<Result> RenderNamespaceHierarchyAsync(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder, CancellationToken cancellationToken)
     {
         foreach (var @namespace in Model!.Namespaces)
         {
@@ -71,7 +71,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
                 singleStringBuilder.AppendLine("{"); // open namespace
             }
 
-            var result = await RenderChildTemplatesByModel(Model.GetTypes(@namespace), generationEnvironment, cancellationToken).ConfigureAwait(false);
+            var result = await RenderChildTemplatesByModelAsync(Model.GetTypes(@namespace), generationEnvironment, cancellationToken).ConfigureAwait(false);
 
             if (!result.IsSuccessful())
             {

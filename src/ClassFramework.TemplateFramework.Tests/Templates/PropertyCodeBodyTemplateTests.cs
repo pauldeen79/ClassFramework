@@ -16,12 +16,12 @@ public class PropertyCodeBodyTemplateTests : TemplateTestBase<PropertyCodeBodyTe
                 Model = new PropertyCodeBodyModel("get", Visibility.Public, SubVisibility.InheritFromParent, parentModel, new[] { new StringCodeStatementBuilder().WithStatement("//code goes here").Build() }.AsReadOnly(), CultureInfo.InvariantCulture)
             };
             var engine = Substitute.For<ITemplateEngine>();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is CodeStatementBase ? Result.Error("Kaboom!") : Result.Success());
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is CodeStatementBase ? Result.Error("Kaboom!") : Result.Success());
             sut.Context = CreateContext(engine, sut);
             var builder = new StringBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -40,12 +40,12 @@ public class PropertyCodeBodyTemplateTests : TemplateTestBase<PropertyCodeBodyTe
                 Model = new PropertyCodeBodyModel("get", Visibility.Public, SubVisibility.InheritFromParent, parentModel, new[] { new StringCodeStatementBuilder().WithStatement("//code goes here").Build() }.AsReadOnly(), CultureInfo.InvariantCulture)
             };
             var engine = Substitute.For<ITemplateEngine>();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is CodeStatementBase ? Result.Error("Kaboom!") : Result.Success());
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is CodeStatementBase ? Result.Error("Kaboom!") : Result.Success());
             sut.Context = CreateContext(engine, sut);
             var builder = new StringBuilder();
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -66,7 +66,7 @@ public class PropertyCodeBodyTemplateTests : TemplateTestBase<PropertyCodeBodyTe
             };
             var engine = Substitute.For<ITemplateEngine>();
             var builder = new StringBuilder();
-            engine.Render(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x =>
+            engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x =>
             {
                 // Simulate child template rendering for code statement :)
                 var model = x.ArgAt<IRenderTemplateRequest>(0).Model;
@@ -80,7 +80,7 @@ public class PropertyCodeBodyTemplateTests : TemplateTestBase<PropertyCodeBodyTe
             sut.Context = CreateContext(engine, sut);
 
             // Act
-            var result = await sut.Render(builder, CancellationToken.None);
+            var result = await sut.RenderAsync(builder, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
