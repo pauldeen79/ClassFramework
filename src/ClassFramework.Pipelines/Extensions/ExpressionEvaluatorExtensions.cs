@@ -8,9 +8,7 @@ public static class ExpressionEvaluatorExtensions
             new ExpressionEvaluatorContext
             (
                 $"$\"{formatString}\"",
-                new ExpressionEvaluatorSettingsBuilder()
-                    .WithFormatProvider(formatProvider)
-                    .WithMaximumRecursion(50),
+                new ExpressionEvaluatorSettingsBuilder().WithFormatProvider(formatProvider),
                 instance,
                 CreateState(context)
             ),
