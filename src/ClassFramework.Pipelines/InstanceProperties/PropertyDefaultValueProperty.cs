@@ -30,7 +30,12 @@ public class PropertyDefaultValueProperty : IProperty
                     .GetValue<Property>(Constants.Instance)
                     .GetDefaultValue(_csharpExpressionDumper, results.GetValue<string>(ResultNames.TypeName), results.GetValue<MappedContextBase>(ResultNames.Context));
 
-                return await context.Context.EvaluateTypedAsync<GenericFormattableString>($"$\"{defaultValue}\"", token).ConfigureAwait(false);
+                if (defaultValue.Length >= 3 && defaultValue.StartsWith("$\"") && defaultValue.EndsWith("\""))
+                {
+                    return await context.Context.EvaluateTypedAsync<GenericFormattableString>(defaultValue, token).ConfigureAwait(false);
+                }
+
+                return Result.Success<object?>(defaultValue);
             }).ConfigureAwait(false);
     }
 }

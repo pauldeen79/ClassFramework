@@ -322,7 +322,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                     new TypenameMappingBuilder()
                         .WithSourceType(typeof(string))
                         .WithTargetType(typeof(string))
-                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderDefaultValue).WithValue("{Error}"))
+                        .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderDefaultValue).WithValue(new Literal("$\"{Error}\"", null)))
                 ]);
             var context = CreateContext(sourceModel, settings);
 
