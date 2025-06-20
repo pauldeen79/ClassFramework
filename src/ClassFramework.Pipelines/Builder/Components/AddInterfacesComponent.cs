@@ -8,6 +8,11 @@ public class AddInterfacesComponent(IExpressionEvaluator evaluator) : IPipelineC
     {
         context = context.IsNotNull(nameof(context));
 
+        if (context.Request.Settings.UseCrossCuttingInterfaces)
+        {
+            context.Request.Builder.AddInterfaces(typeof(IBuilder<object>).ReplaceGenericTypeName(context.Request.MapTypeName(context.Request.SourceModel.GetFullName())));
+        }
+
         if (!context.Request.Settings.CopyInterfaces)
         {
             return Result.Success();

@@ -61,7 +61,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
         }
 
         [Fact]
-        public async Task Does_Not_Add_Interfaces_When_CopyInterfaces_Setting_Is_False()
+        public async Task Only_Adds_IBuilder_Interface_When_CopyInterfaces_Setting_Is_False()
         {
             // Arrange
             var sourceModel = new ClassBuilder()
@@ -70,7 +70,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
                 .AddInterfaces("IMyInterface")
                 .Build();
             var sut = CreateSut();
-            var settings = CreateSettingsForBuilder(copyInterfaces: false);
+            var settings = CreateSettingsForBuilder(copyInterfaces: false, useCrossCuttingInterfaces: true);
             var context = CreateContext(sourceModel, settings);
 
             // Act
@@ -78,7 +78,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Interfaces.ShouldBeEmpty();
+            context.Request.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new string[] { "CrossCutting.Common.Abstractions.IBuilder<SomeNamespace.SomeClass>" });
         }
 
         private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
