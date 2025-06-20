@@ -6,6 +6,11 @@ public class AddInterfacesComponent : IPipelineComponent<EntityContext>
     {
         context = context.IsNotNull(nameof(context));
 
+        if (context.Request.Settings.UseCrossCuttingInterfaces)
+        {
+            context.Request.Builder.AddInterfaces(typeof(IBuildableEntity<object>).ReplaceGenericTypeName(context.Request.MapTypeName(context.Request.SourceModel.GetFullName())));
+        }
+
         if (!context.Request.Settings.CopyInterfaces)
         {
             return Result.Success();

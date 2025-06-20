@@ -51,12 +51,12 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
         }
 
         [Fact]
-        public async Task Does_Not_Add_Interfaces_When_And_CopyAttributes_Is_False()
+        public async Task Only_Adds_IBuildableEntity_Interface_When_CopyInterfaces_Setting_Is_False()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").BuildTyped();
             var sut = CreateSut();
-            var settings = CreateSettingsForEntity(copyInterfaces: false);
+            var settings = CreateSettingsForEntity(copyInterfaces: false, useCrossCuttingInterfaces: true);
             var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
 
             // Act
@@ -64,7 +64,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Interfaces.ShouldBeEmpty();
+            context.Request.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new string[] { "CrossCutting.Common.Abstractions.IBuildableEntity<SomeNamespace.SomeClass>" });
         }
     }
 }

@@ -259,6 +259,7 @@ public abstract class TestBase : IDisposable
         bool inheritFromInterfaces = false,
         bool implementIEquatable = false,
         bool usePatternMatchingForNullChecks = true,
+        bool useCrossCuttingInterfaces = false,
         IEquatableItemType iEquatableItemType = IEquatableItemType.Properties,
         SubVisibility setterVisibility = SubVisibility.InheritFromParent,
         IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
@@ -284,6 +285,7 @@ public abstract class TestBase : IDisposable
             .WithCollectionTypeName(collectionTypeName)
             .WithAddFullConstructor(addFullConstructor)
             .WithUsePatternMatchingForNullChecks(usePatternMatchingForNullChecks)
+            .WithUseCrossCuttingInterfaces(useCrossCuttingInterfaces)
             .WithAddPublicParameterlessConstructor(addPublicParameterlessConstructor)
             .WithEntityNamespaceFormatString(entityNamespaceFormatString)
             .WithEntityNameFormatString(entityNameFormatString)
