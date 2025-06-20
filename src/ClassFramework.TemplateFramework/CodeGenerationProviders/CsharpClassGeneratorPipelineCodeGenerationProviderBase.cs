@@ -134,7 +134,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
 
-        return await ProcessModelsResultAsync(modelsResultTask, CreateEntityPipelineSettingsAsync(entitiesNamespace, useBuilderAbstractionsTypeConversion: useBuilderAbstractionsTypeConversion), async (settings, x) =>
+        return await ProcessModelsResultAsync(modelsResultTask, CreateEntityPipelineSettingsAsync(entitiesNamespace, useBuilderAbstractionsTypeConversion: useBuilderAbstractionsTypeConversion, useCrossCuttingInterfaces: false), async (settings, x) =>
         {
             var context = new EntityContext(x, settings, Settings.CultureInfo, CancellationToken.None);
             var entityResult = await PipelineService.ProcessAsync(context).ConfigureAwait(false);
@@ -467,7 +467,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         ArgumentValidationType? forceValidateArgumentsInConstructor = null,
         bool? overrideAddNullChecks = null,
         string entityNameFormatString = "{NoInterfacePrefix(class.Name)}",
-        bool? useBuilderAbstractionsTypeConversion = null)
+        bool? useBuilderAbstractionsTypeConversion = null,
+        bool? useCrossCuttingInterfaces = null)
         => ProcessBaseClassResultAsync(baseClass => Task.FromResult(Result.Success(new PipelineSettingsBuilder()
             .WithAddSetters(AddSetters)
             .WithAddBackingFields(AddBackingFields)
@@ -501,7 +502,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithAddNullChecks(overrideAddNullChecks ?? false)
             .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
             .WithUseBuilderAbstractionsTypeConversion(useBuilderAbstractionsTypeConversion ?? UseBuilderAbstractionsTypeConversion)
-            .WithUseCrossCuttingInterfaces(UseCrossCuttingInterfaces)
+            .WithUseCrossCuttingInterfaces(useCrossCuttingInterfaces ?? UseCrossCuttingInterfaces)
             .AddTypenameMappings(CreateTypenameMappings(useBuilderAbstractionsTypeConversion))
             .AddNamespaceMappings(CreateNamespaceMappings())
             .AddBuilderAbstractionsTypeConversionNamespaces(GetBuilderAbstractionsTypeConversionNamespaces())
