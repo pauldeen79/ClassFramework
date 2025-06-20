@@ -6,6 +6,7 @@ internal interface IPipelineSettings
     bool AddCopyConstructor { get; }
     bool AddFullConstructor { get; }
     [DefaultValue(true)] bool AddImplicitOperatorOnBuilder { get; }
+    bool UseCrossCuttingInterfaces { get; }
     [Required(AllowEmptyStrings = true)] string AddMethodNameFormatString { get; }
     bool AddNullChecks { get; }
     bool AddPublicParameterlessConstructor { get; }

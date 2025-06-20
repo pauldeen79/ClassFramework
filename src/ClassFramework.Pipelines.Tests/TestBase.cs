@@ -193,6 +193,7 @@ public abstract class TestBase : IDisposable
         ArgumentValidationType validateArguments = ArgumentValidationType.None,
         string? baseClassBuilderNameSpace = null,
         bool allowGenerationWithoutProperties = false,
+        bool useCrossCuttingInterfaces = false,
         Class? baseClass = null,
         InheritanceComparisonDelegate? inheritanceComparisonDelegate = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
@@ -229,7 +230,8 @@ public abstract class TestBase : IDisposable
             .WithBuilderNameFormatString(builderNameFormatString)
             .WithBuildMethodName(buildMethodName)
             .WithBuildTypedMethodName(buildTypedMethodName)
-            .WithSetDefaultValuesMethodName(setDefaultValuesMethodName);
+            .WithSetDefaultValuesMethodName(setDefaultValuesMethodName)
+            .WithUseCrossCuttingInterfaces(useCrossCuttingInterfaces);
 
     protected static PipelineSettingsBuilder CreateSettingsForEntity(
         bool enableEntityInheritance = false,
