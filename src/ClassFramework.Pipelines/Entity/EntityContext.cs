@@ -11,4 +11,37 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
     public ClassBuilder Builder => _wrappedBuilder.Builder;
 
     private readonly ClassBuilderWrapper _wrappedBuilder = new();
+
+    public string GetBuilderTypeName(
+        string builderInterfaceNamespace,
+        string concreteBuilderNamespace,
+        string builderConcreteName,
+        string builderConcreteTypeName,
+        string builderNameValue)
+    {
+        builderInterfaceNamespace = ArgumentGuard.IsNotNull(builderInterfaceNamespace, nameof(builderInterfaceNamespace));
+        concreteBuilderNamespace = ArgumentGuard.IsNotNull(concreteBuilderNamespace, nameof(concreteBuilderNamespace));
+        builderConcreteName = ArgumentGuard.IsNotNull(builderConcreteName, nameof(builderConcreteName));
+        builderConcreteTypeName = ArgumentGuard.IsNotNull(builderConcreteTypeName, nameof(builderConcreteTypeName));
+        builderNameValue = ArgumentGuard.IsNotNull(builderNameValue, nameof(builderNameValue));
+
+        if (Settings.InheritFromInterfaces)
+        {
+            if (SourceModel.Interfaces.Count >= 2 && !Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(SourceModel.Namespace))
+            {
+                var builderName = builderNameValue.Replace(SourceModel.Name, SourceModel.Interfaces.ElementAt(1).GetClassName());
+                return $"{builderInterfaceNamespace}.{builderName}";
+            }
+            return $"{builderInterfaceNamespace}.I{builderConcreteName}Builder";
+        }
+        else if (Settings.EnableInheritance && Settings.BaseClass is not null)
+        {
+            var builderName = builderNameValue.Replace(SourceModel.Name, Settings.BaseClass.Name);
+            return $"{concreteBuilderNamespace}.{builderName}";
+        }
+        else
+        {
+            return builderConcreteTypeName;
+        }
+    }
 }
