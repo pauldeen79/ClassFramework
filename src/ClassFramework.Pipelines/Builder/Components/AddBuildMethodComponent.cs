@@ -92,7 +92,9 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
 
         var interfaces = await context.Request.GetInterfaceResultsAsync(
             (x, y) => new { EntityName = x, BuilderName = y.ToString() },
-            x => new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) },
+            x => new { EntityName = x, BuilderName = context.Request.Settings.UseCrossCuttingInterfaces
+                ? typeof(IBuilder<object>).ReplaceGenericTypeName(x)
+                : context.Request.MapTypeName(x.FixTypeName()) },
             _evaluator,
             false,
             token).ConfigureAwait(false);
@@ -103,9 +105,11 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
             return error;
         }
 
-        var methodName = context.Request.Settings.EnableBuilderInheritance && context.Request.Settings.IsAbstract && context.Request.Settings.IsForAbstractBuilder
-            ? context.Request.Settings.BuildMethodName
-            : GetName(context);
+        var methodName = context.Request.Settings.EnableBuilderInheritance
+            && context.Request.Settings.IsAbstract
+            && context.Request.Settings.IsForAbstractBuilder
+                ? context.Request.Settings.BuildMethodName
+                : GetName(context);
 
         context.Request.Builder.AddMethods(interfaces.Select(x => new MethodBuilder()
             .WithName(context.Request.Settings.BuildMethodName)
