@@ -84,6 +84,11 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                     : context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
                 .AddStringCodeStatements(returnStatement));
 
+        if (context.Request.Settings.UseCrossCuttingInterfaces)
+        {
+            context.Request.Builder.AddInterfaces(typeof(IBuildableEntity<object>).ReplaceGenericTypeName(builderTypeName));
+        }
+
         if (context.Request.Settings.EnableInheritance
             && context.Request.Settings.BaseClass is not null
             && !string.IsNullOrEmpty(typedMethodName))
@@ -141,7 +146,6 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
             {
                 interfaces.Add(Result.Success(new NameInfo { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) }));
             }
-
         }
 
         var error = interfaces.Find(x => !x.IsSuccessful());
@@ -150,9 +154,11 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
             return error;
         }
 
-        var methodCallName = context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is not null && !string.IsNullOrEmpty(typedMethodName)
-            ? typedMethodName
-            : methodName;
+        var methodCallName = context.Request.Settings.EnableInheritance
+            && context.Request.Settings.BaseClass is not null
+            && !string.IsNullOrEmpty(typedMethodName)
+                ? typedMethodName
+                : methodName;
 
         context.Request.Builder.AddMethods(interfaces.Select(x => new MethodBuilder()
             .WithName(methodName)

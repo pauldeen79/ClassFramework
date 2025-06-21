@@ -68,6 +68,11 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
                 .AddStringCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
         }
 
+        if (context.Request.Settings.UseCrossCuttingInterfaces)
+        {
+            context.Request.Builder.AddInterfaces(typeof(IBuilder<object>).ReplaceGenericTypeName(context.Request.ReturnType));
+        }
+
         return await AddExplicitInterfaceImplementations(context, token).ConfigureAwait(false);
     }
 
