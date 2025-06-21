@@ -92,7 +92,9 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
 
         var interfaces = await context.Request.GetInterfaceResultsAsync(
             (x, y) => new { EntityName = x, BuilderName = y.ToString() },
-            x => new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) },
+            x => new { EntityName = x, BuilderName = context.Request.Settings.UseCrossCuttingInterfaces
+                ? typeof(IBuilder<object>).ReplaceGenericTypeName(x)
+                : context.Request.MapTypeName(x.FixTypeName()) },
             _evaluator,
             false,
             token).ConfigureAwait(false);
