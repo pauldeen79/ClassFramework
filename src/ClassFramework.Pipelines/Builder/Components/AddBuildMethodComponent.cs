@@ -76,7 +76,7 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
         {
             if (context.Request.Settings.UseCrossCuttingInterfaces)
             {
-                context.Request.Builder.AddInterfaces(typeof(IBuilder<object>).ReplaceGenericTypeName(context.Request.ReturnType));
+                context.Request.Builder.AddInterfaces(context.Request.ReturnType);
             }
         }
 
@@ -103,9 +103,11 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
             return error;
         }
 
-        var methodName = context.Request.Settings.EnableBuilderInheritance && context.Request.Settings.IsAbstract && context.Request.Settings.IsForAbstractBuilder
-            ? context.Request.Settings.BuildMethodName
-            : GetName(context);
+        var methodName = context.Request.Settings.EnableBuilderInheritance
+            && context.Request.Settings.IsAbstract
+            && context.Request.Settings.IsForAbstractBuilder
+                ? context.Request.Settings.BuildMethodName
+                : GetName(context);
 
         context.Request.Builder.AddMethods(interfaces.Select(x => new MethodBuilder()
             .WithName(context.Request.Settings.BuildMethodName)
