@@ -84,11 +84,6 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                     : context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
                 .AddStringCodeStatements(returnStatement));
 
-        if (context.Request.Settings.UseCrossCuttingInterfaces)
-        {
-            context.Request.Builder.AddInterfaces(typeof(IBuildableEntity<object>).ReplaceGenericTypeName(builderTypeName));
-        }
-
         if (context.Request.Settings.EnableInheritance
             && context.Request.Settings.BaseClass is not null
             && !string.IsNullOrEmpty(typedMethodName))
@@ -99,6 +94,13 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                     .WithReturnTypeName(builderConcreteTypeName)
                     .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
                     .AddStringCodeStatements($"return new {builderConcreteTypeName}{generics}(this);"));
+        }
+        else
+        {
+            if (context.Request.Settings.UseCrossCuttingInterfaces)
+            {
+                context.Request.Builder.AddInterfaces(typeof(IBuildableEntity<object>).ReplaceGenericTypeName(builderTypeName));
+            }
         }
 
         return await AddExplicitInterfaceImplementations(context, methodName, typedMethodName, token).ConfigureAwait(false);

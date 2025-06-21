@@ -66,11 +66,18 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
                 .WithOverride()
                 .WithReturnTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}")
                 .AddStringCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
-        }
 
-        if (context.Request.Settings.UseCrossCuttingInterfaces)
+            if (context.Request.Settings.UseCrossCuttingInterfaces)
+            {
+                context.Request.Builder.AddInterfaces(typeof(IBuilder<object>).ReplaceGenericTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}"));
+            }
+        }
+        else
         {
-            context.Request.Builder.AddInterfaces(typeof(IBuilder<object>).ReplaceGenericTypeName(context.Request.ReturnType));
+            if (context.Request.Settings.UseCrossCuttingInterfaces)
+            {
+                context.Request.Builder.AddInterfaces(typeof(IBuilder<object>).ReplaceGenericTypeName(context.Request.ReturnType));
+            }
         }
 
         return await AddExplicitInterfaceImplementations(context, token).ConfigureAwait(false);
