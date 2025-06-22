@@ -76,7 +76,7 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
         {
             if (context.Request.Settings.UseCrossCuttingInterfaces)
             {
-                context.Request.Builder.AddInterfaces(context.Request.ReturnType);
+                context.Request.Builder.AddInterfaces(typeof(IBuilder<object>).ReplaceGenericTypeName(context.Request.ReturnType));
             }
         }
 
@@ -91,7 +91,9 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
         }
 
         var interfaces = await context.Request.GetInterfaceResultsAsync(
-            (x, y) => new { EntityName = x, BuilderName = y.ToString() },
+            (x, y) => new { EntityName = x, BuilderName = context.Request.Settings.UseCrossCuttingInterfaces
+                ? typeof(IBuilder<object>).ReplaceGenericTypeName(x)
+                : y.ToString() },
             x => new { EntityName = x, BuilderName = context.Request.Settings.UseCrossCuttingInterfaces
                 ? typeof(IBuilder<object>).ReplaceGenericTypeName(x)
                 : context.Request.MapTypeName(x.FixTypeName()) },

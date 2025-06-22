@@ -35,13 +35,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
 
         var ns = results.GetValue(NamedResults.Namespace).ToString();
         var name = results.GetValue(NamedResults.Name).ToString();
-
-        var entityFullName = $"{ns.AppendWhenNotNullOrEmpty(".")}{name}";
-        if (context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is not null)
-        {
-            entityFullName = entityFullName.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
-        }
-
+        var entityFullName = GetEntityFullName(context, ns, name);
         var entityConcreteFullName = context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is not null
             ? context.Request.Settings.BaseClass.GetFullName()
             : entityFullName;
@@ -95,15 +89,23 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                     .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
                     .AddStringCodeStatements($"return new {builderConcreteTypeName}{generics}(this);"));
         }
-        else
+        else if (context.Request.Settings.UseCrossCuttingInterfaces)
         {
-            if (context.Request.Settings.UseCrossCuttingInterfaces)
-            {
-                context.Request.Builder.AddInterfaces(typeof(IBuildableEntity<object>).ReplaceGenericTypeName(builderTypeName));
-            }
+            context.Request.Builder.AddInterfaces(typeof(IBuildableEntity<object>).ReplaceGenericTypeName(builderTypeName));
         }
 
         return await AddExplicitInterfaceImplementations(context, methodName, typedMethodName, token).ConfigureAwait(false);
+    }
+
+    private static string GetEntityFullName(PipelineContext<EntityContext> context, string ns, string name)
+    {
+        var entityFullName = $"{ns.AppendWhenNotNullOrEmpty(".")}{name}";
+        if (context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is not null)
+        {
+            entityFullName = entityFullName.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
+        }
+
+        return entityFullName;
     }
 
     private static string GetBuilderInterfaceNamespace(PipelineContext<EntityContext> context, IReadOnlyDictionary<string, Result<GenericFormattableString>> results, string ns)
@@ -124,29 +126,40 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
             .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Where(x => context.Request.Settings.BuilderAbstractionsTypeConversionNamespaces.Contains(x.GetNamespaceWithDefault())))
         {
-            var metadata = context.Request.GetMappingMetadata(x).ToArray();
-            var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
-
-            if (!string.IsNullOrEmpty(ns))
+            if (context.Request.Settings.UseCrossCuttingInterfaces)
             {
-                var property = new PropertyBuilder()
-                    .WithName("Dummy")
-                    .WithTypeName(x)
-                    .Build();
-                var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName(property.TypeName))}Builder{GenericArguments(property.TypeName, true)}");
-                var newFullName = $"{ns}.{newTypeName}";
-
-                interfaces.Add((await _evaluator.EvaluateInterpolatedStringAsync
-                (
-                    newFullName,
-                    context.Request.FormatProvider,
-                    new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings),
-                    token
-                ).ConfigureAwait(false)).Transform(y => new NameInfo { EntityName = x, BuilderName = y.ToString() }));
+                interfaces.Add(Result.Success(new NameInfo
+                {
+                    EntityName = x,
+                    BuilderName = typeof(IBuilder<object>).ReplaceGenericTypeName(x)
+                }));
             }
             else
             {
-                interfaces.Add(Result.Success(new NameInfo { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) }));
+                var metadata = context.Request.GetMappingMetadata(x).ToArray();
+                var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
+
+                if (!string.IsNullOrEmpty(ns))
+                {
+                    var property = new PropertyBuilder()
+                        .WithName("Dummy")
+                        .WithTypeName(x)
+                        .Build();
+                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "I{NoGenerics(ClassName(property.TypeName))}Builder{GenericArguments(property.TypeName, true)}");
+                    var newFullName = $"{ns}.{newTypeName}";
+
+                    interfaces.Add((await _evaluator.EvaluateInterpolatedStringAsync
+                    (
+                        newFullName,
+                        context.Request.FormatProvider,
+                        new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings),
+                        token
+                    ).ConfigureAwait(false)).Transform(y => new NameInfo { EntityName = x, BuilderName = y.ToString() }));
+                }
+                else
+                {
+                    interfaces.Add(Result.Success(new NameInfo { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) }));
+                }
             }
         }
 
