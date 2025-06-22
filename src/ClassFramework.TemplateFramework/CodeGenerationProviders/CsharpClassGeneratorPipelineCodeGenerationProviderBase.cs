@@ -163,7 +163,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(buildersNamespace);
         Guard.IsNotNull(entitiesNamespace);
 
-        return await ProcessModelsResultAsync(modelsResultTask, CreateEntityPipelineSettingsAsync(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), async (settings, x) =>
+        return await ProcessModelsResultAsync(modelsResultTask, CreateEntityPipelineSettingsAsync(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), useCrossCuttingInterfaces: false), async (settings, x) =>
         {
             var context = new EntityContext(x, settings, Settings.CultureInfo, CancellationToken.None);
             var typeBaseResult = await PipelineService.ProcessAsync(context).ConfigureAwait(false);
