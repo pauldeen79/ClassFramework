@@ -35,7 +35,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
 
             var returnType = context.Request.IsBuilderForAbstractEntity
                 ? $"TBuilder{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
-                : $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue("BuilderName")}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
+                : $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(NamedResults.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
 
             context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithName(results.GetValue("AddMethodName"))

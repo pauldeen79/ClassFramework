@@ -1,4 +1,5 @@
-﻿namespace ClassFramework.Pipelines.Entity;
+﻿
+namespace ClassFramework.Pipelines.Entity;
 
 public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
 {
@@ -44,4 +45,25 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
             return builderConcreteTypeName;
         }
     }
+
+    public string GetEntityFullName(string @namespace, string name)
+    {
+        var entityFullName = $"{@namespace.AppendWhenNotNullOrEmpty(".")}{name}";
+        if (Settings.EnableInheritance && Settings.BaseClass is not null)
+        {
+            entityFullName = entityFullName.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
+        }
+
+        return entityFullName;
+    }
+
+    public string GetEntityConcreteFullName(string @namespace, string name)
+        => Settings.EnableInheritance && Settings.BaseClass is not null
+            ? Settings.BaseClass.GetFullName()
+            : GetEntityFullName(@namespace, name);
+
+    public string GetBuilderInterfaceNamespace(string builderInterfaceNamespace, string @namespace)
+        => Settings.InheritFromInterfaces
+            ? builderInterfaceNamespace
+            : $"{@namespace.AppendWhenNotNullOrEmpty(".")}Builders";
 }
