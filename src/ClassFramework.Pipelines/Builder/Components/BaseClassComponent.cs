@@ -78,6 +78,11 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
                     return baseClassResult;
                 }
 
+                context.Request.Builder.Interfaces
+                    .Where(x => x.WithoutGenerics() == typeof(IBuilder<object>).WithoutGenerics())
+                    .ToList()
+                    .ForEach(x => context.Request.Builder.Interfaces.Remove(x));
+
                 return Result.Success<GenericFormattableString>(context.Request.Settings.EnableBuilderInheritance
                     ? $"{baseClassResult.Value}{genericTypeArgumentsString}"
                     : $"{baseClassResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
