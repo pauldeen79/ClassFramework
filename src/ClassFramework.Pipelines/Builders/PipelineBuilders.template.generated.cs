@@ -223,17 +223,17 @@ namespace ClassFramework.Pipelines.Builders
 
         private bool _addSetters;
 
-        private bool _implementIEquatable;
-
         private bool _allowGenerationWithoutProperties;
-
-        private bool _useBuilderAbstractionsTypeConversion;
 
         private System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.AttributeInitializerDelegate> _attributeInitializers;
 
         private ClassFramework.Domain.Builders.TypeBaseBuilder? _baseClass;
 
         private string _baseClassBuilderNameSpace;
+
+        private string _builderAbstractionsTypeConversionMetadataName;
+
+        private System.Collections.ObjectModel.ObservableCollection<string> _builderAbstractionsTypeConversionNamespaces;
 
         private string _builderExtensionsCollectionCopyStatementFormatString;
 
@@ -244,6 +244,8 @@ namespace ClassFramework.Pipelines.Builders
         private string _builderNameFormatString;
 
         private string _builderNamespaceFormatString;
+
+        private string _builderNewCollectionTypeName;
 
         private string _buildMethodName;
 
@@ -267,9 +269,9 @@ namespace ClassFramework.Pipelines.Builders
 
         private bool _copyMethods;
 
-        private bool _inheritFromInterfaces;
-
         private bool _createAsObservable;
+
+        private bool _createAsPartial;
 
         private bool _createConstructors;
 
@@ -285,9 +287,17 @@ namespace ClassFramework.Pipelines.Builders
 
         private string _entityNamespaceFormatString;
 
+        private string _entityNewCollectionTypeName;
+
+        private ClassFramework.Pipelines.Domains.IEquatableItemType _iEquatableItemType;
+
+        private bool _implementIEquatable;
+
         private ClassFramework.Pipelines.InheritanceComparisonDelegate? _inheritanceComparisonDelegate;
 
         private ClassFramework.Pipelines.ReflectionInheritanceComparisonDelegate? _inheritanceComparisonDelegateForReflection;
+
+        private bool _inheritFromInterfaces;
 
         private bool _isAbstract;
 
@@ -299,13 +309,7 @@ namespace ClassFramework.Pipelines.Builders
 
         private System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.NamespaceMappingBuilder> _namespaceMappings;
 
-        private string _builderNewCollectionTypeName;
-
-        private string _entityNewCollectionTypeName;
-
         private string _nonCollectionInitializationStatementFormatString;
-
-        private bool _createAsPartial;
 
         private bool _setDefaultValuesInEntityConstructor;
 
@@ -315,6 +319,8 @@ namespace ClassFramework.Pipelines.Builders
 
         private ClassFramework.Domain.Domains.SubVisibility _setterVisibility;
 
+        private System.Collections.ObjectModel.ObservableCollection<string> _skipNamespacesOnFluentBuilderMethods;
+
         private string _toBuilderFormatString;
 
         private string _toTypedBuilderFormatString;
@@ -323,21 +329,17 @@ namespace ClassFramework.Pipelines.Builders
 
         private bool _useBaseClassFromSourceModel;
 
+        private bool _useBuilderAbstractionsTypeConversion;
+
+        private bool _useCrossCuttingInterfaces;
+
+        private bool _useDefaultValueAttributeValuesForBuilderInitialization;
+
         private bool _useExceptionThrowIfNull;
 
         private bool _usePatternMatchingForNullChecks;
 
         private ClassFramework.Pipelines.Domains.ArgumentValidationType _validateArguments;
-
-        private bool _useDefaultValueAttributeValuesForBuilderInitialization;
-
-        private ClassFramework.Pipelines.Domains.IEquatableItemType _iEquatableItemType;
-
-        private System.Collections.ObjectModel.ObservableCollection<string> _builderAbstractionsTypeConversionNamespaces;
-
-        private string _builderAbstractionsTypeConversionMetadataName;
-
-        private System.Collections.ObjectModel.ObservableCollection<string> _skipNamespacesOnFluentBuilderMethods;
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -455,20 +457,6 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
-        public bool ImplementIEquatable
-        {
-            get
-            {
-                return _implementIEquatable;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_implementIEquatable, value);
-                _implementIEquatable = value;
-                if (hasChanged) HandlePropertyChanged(nameof(ImplementIEquatable));
-            }
-        }
-
         public bool AllowGenerationWithoutProperties
         {
             get
@@ -480,21 +468,6 @@ namespace ClassFramework.Pipelines.Builders
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_allowGenerationWithoutProperties, value);
                 _allowGenerationWithoutProperties = value;
                 if (hasChanged) HandlePropertyChanged(nameof(AllowGenerationWithoutProperties));
-            }
-        }
-
-        [System.ComponentModel.DefaultValueAttribute(true)]
-        public bool UseBuilderAbstractionsTypeConversion
-        {
-            get
-            {
-                return _useBuilderAbstractionsTypeConversion;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_useBuilderAbstractionsTypeConversion, value);
-                _useBuilderAbstractionsTypeConversion = value;
-                if (hasChanged) HandlePropertyChanged(nameof(UseBuilderAbstractionsTypeConversion));
             }
         }
 
@@ -540,6 +513,36 @@ namespace ClassFramework.Pipelines.Builders
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_baseClassBuilderNameSpace!, value!);
                 _baseClassBuilderNameSpace = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(BaseClassBuilderNameSpace));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string BuilderAbstractionsTypeConversionMetadataName
+        {
+            get
+            {
+                return _builderAbstractionsTypeConversionMetadataName;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_builderAbstractionsTypeConversionMetadataName!, value!);
+                _builderAbstractionsTypeConversionMetadataName = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(BuilderAbstractionsTypeConversionMetadataName));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Collections.ObjectModel.ObservableCollection<string> BuilderAbstractionsTypeConversionNamespaces
+        {
+            get
+            {
+                return _builderAbstractionsTypeConversionNamespaces;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.ObjectModel.ObservableCollection<System.String>>.Default.Equals(_builderAbstractionsTypeConversionNamespaces!, value!);
+                _builderAbstractionsTypeConversionNamespaces = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(BuilderAbstractionsTypeConversionNamespaces));
             }
         }
 
@@ -615,6 +618,21 @@ namespace ClassFramework.Pipelines.Builders
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_builderNamespaceFormatString!, value!);
                 _builderNamespaceFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(BuilderNamespaceFormatString));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string BuilderNewCollectionTypeName
+        {
+            get
+            {
+                return _builderNewCollectionTypeName;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_builderNewCollectionTypeName!, value!);
+                _builderNewCollectionTypeName = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(BuilderNewCollectionTypeName));
             }
         }
 
@@ -777,20 +795,6 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
-        public bool InheritFromInterfaces
-        {
-            get
-            {
-                return _inheritFromInterfaces;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_inheritFromInterfaces, value);
-                _inheritFromInterfaces = value;
-                if (hasChanged) HandlePropertyChanged(nameof(InheritFromInterfaces));
-            }
-        }
-
         public bool CreateAsObservable
         {
             get
@@ -802,6 +806,20 @@ namespace ClassFramework.Pipelines.Builders
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_createAsObservable, value);
                 _createAsObservable = value;
                 if (hasChanged) HandlePropertyChanged(nameof(CreateAsObservable));
+            }
+        }
+
+        public bool CreateAsPartial
+        {
+            get
+            {
+                return _createAsPartial;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_createAsPartial, value);
+                _createAsPartial = value;
+                if (hasChanged) HandlePropertyChanged(nameof(CreateAsPartial));
             }
         }
 
@@ -905,6 +923,49 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string EntityNewCollectionTypeName
+        {
+            get
+            {
+                return _entityNewCollectionTypeName;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_entityNewCollectionTypeName!, value!);
+                _entityNewCollectionTypeName = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(EntityNewCollectionTypeName));
+            }
+        }
+
+        public ClassFramework.Pipelines.Domains.IEquatableItemType IEquatableItemType
+        {
+            get
+            {
+                return _iEquatableItemType;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Pipelines.Domains.IEquatableItemType>.Default.Equals(_iEquatableItemType, value);
+                _iEquatableItemType = value;
+                if (hasChanged) HandlePropertyChanged(nameof(IEquatableItemType));
+            }
+        }
+
+        public bool ImplementIEquatable
+        {
+            get
+            {
+                return _implementIEquatable;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_implementIEquatable, value);
+                _implementIEquatable = value;
+                if (hasChanged) HandlePropertyChanged(nameof(ImplementIEquatable));
+            }
+        }
+
         public ClassFramework.Pipelines.InheritanceComparisonDelegate? InheritanceComparisonDelegate
         {
             get
@@ -930,6 +991,20 @@ namespace ClassFramework.Pipelines.Builders
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Pipelines.ReflectionInheritanceComparisonDelegate>.Default.Equals(_inheritanceComparisonDelegateForReflection!, value!);
                 _inheritanceComparisonDelegateForReflection = value;
                 if (hasChanged) HandlePropertyChanged(nameof(InheritanceComparisonDelegateForReflection));
+            }
+        }
+
+        public bool InheritFromInterfaces
+        {
+            get
+            {
+                return _inheritFromInterfaces;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_inheritFromInterfaces, value);
+                _inheritFromInterfaces = value;
+                if (hasChanged) HandlePropertyChanged(nameof(InheritFromInterfaces));
             }
         }
 
@@ -1007,36 +1082,6 @@ namespace ClassFramework.Pipelines.Builders
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string BuilderNewCollectionTypeName
-        {
-            get
-            {
-                return _builderNewCollectionTypeName;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_builderNewCollectionTypeName!, value!);
-                _builderNewCollectionTypeName = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(BuilderNewCollectionTypeName));
-            }
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string EntityNewCollectionTypeName
-        {
-            get
-            {
-                return _entityNewCollectionTypeName;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_entityNewCollectionTypeName!, value!);
-                _entityNewCollectionTypeName = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(EntityNewCollectionTypeName));
-            }
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         public string NonCollectionInitializationStatementFormatString
         {
             get
@@ -1048,20 +1093,6 @@ namespace ClassFramework.Pipelines.Builders
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_nonCollectionInitializationStatementFormatString!, value!);
                 _nonCollectionInitializationStatementFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(NonCollectionInitializationStatementFormatString));
-            }
-        }
-
-        public bool CreateAsPartial
-        {
-            get
-            {
-                return _createAsPartial;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_createAsPartial, value);
-                _createAsPartial = value;
-                if (hasChanged) HandlePropertyChanged(nameof(CreateAsPartial));
             }
         }
 
@@ -1120,6 +1151,21 @@ namespace ClassFramework.Pipelines.Builders
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Domain.Domains.SubVisibility>.Default.Equals(_setterVisibility, value);
                 _setterVisibility = value;
                 if (hasChanged) HandlePropertyChanged(nameof(SetterVisibility));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Collections.ObjectModel.ObservableCollection<string> SkipNamespacesOnFluentBuilderMethods
+        {
+            get
+            {
+                return _skipNamespacesOnFluentBuilderMethods;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.ObjectModel.ObservableCollection<System.String>>.Default.Equals(_skipNamespacesOnFluentBuilderMethods!, value!);
+                _skipNamespacesOnFluentBuilderMethods = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(SkipNamespacesOnFluentBuilderMethods));
             }
         }
 
@@ -1182,6 +1228,49 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool UseBuilderAbstractionsTypeConversion
+        {
+            get
+            {
+                return _useBuilderAbstractionsTypeConversion;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_useBuilderAbstractionsTypeConversion, value);
+                _useBuilderAbstractionsTypeConversion = value;
+                if (hasChanged) HandlePropertyChanged(nameof(UseBuilderAbstractionsTypeConversion));
+            }
+        }
+
+        public bool UseCrossCuttingInterfaces
+        {
+            get
+            {
+                return _useCrossCuttingInterfaces;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_useCrossCuttingInterfaces, value);
+                _useCrossCuttingInterfaces = value;
+                if (hasChanged) HandlePropertyChanged(nameof(UseCrossCuttingInterfaces));
+            }
+        }
+
+        public bool UseDefaultValueAttributeValuesForBuilderInitialization
+        {
+            get
+            {
+                return _useDefaultValueAttributeValuesForBuilderInitialization;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_useDefaultValueAttributeValuesForBuilderInitialization, value);
+                _useDefaultValueAttributeValuesForBuilderInitialization = value;
+                if (hasChanged) HandlePropertyChanged(nameof(UseDefaultValueAttributeValuesForBuilderInitialization));
+            }
+        }
+
         public bool UseExceptionThrowIfNull
         {
             get
@@ -1225,87 +1314,14 @@ namespace ClassFramework.Pipelines.Builders
             }
         }
 
-        public bool UseDefaultValueAttributeValuesForBuilderInitialization
-        {
-            get
-            {
-                return _useDefaultValueAttributeValuesForBuilderInitialization;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_useDefaultValueAttributeValuesForBuilderInitialization, value);
-                _useDefaultValueAttributeValuesForBuilderInitialization = value;
-                if (hasChanged) HandlePropertyChanged(nameof(UseDefaultValueAttributeValuesForBuilderInitialization));
-            }
-        }
-
-        public ClassFramework.Pipelines.Domains.IEquatableItemType IEquatableItemType
-        {
-            get
-            {
-                return _iEquatableItemType;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Pipelines.Domains.IEquatableItemType>.Default.Equals(_iEquatableItemType, value);
-                _iEquatableItemType = value;
-                if (hasChanged) HandlePropertyChanged(nameof(IEquatableItemType));
-            }
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Collections.ObjectModel.ObservableCollection<string> BuilderAbstractionsTypeConversionNamespaces
-        {
-            get
-            {
-                return _builderAbstractionsTypeConversionNamespaces;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.ObjectModel.ObservableCollection<System.String>>.Default.Equals(_builderAbstractionsTypeConversionNamespaces!, value!);
-                _builderAbstractionsTypeConversionNamespaces = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(BuilderAbstractionsTypeConversionNamespaces));
-            }
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string BuilderAbstractionsTypeConversionMetadataName
-        {
-            get
-            {
-                return _builderAbstractionsTypeConversionMetadataName;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_builderAbstractionsTypeConversionMetadataName!, value!);
-                _builderAbstractionsTypeConversionMetadataName = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(BuilderAbstractionsTypeConversionMetadataName));
-            }
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Collections.ObjectModel.ObservableCollection<string> SkipNamespacesOnFluentBuilderMethods
-        {
-            get
-            {
-                return _skipNamespacesOnFluentBuilderMethods;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Collections.ObjectModel.ObservableCollection<System.String>>.Default.Equals(_skipNamespacesOnFluentBuilderMethods!, value!);
-                _skipNamespacesOnFluentBuilderMethods = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(SkipNamespacesOnFluentBuilderMethods));
-            }
-        }
-
         public PipelineSettingsBuilder(ClassFramework.Pipelines.PipelineSettings source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _attributeInitializers = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.AttributeInitializerDelegate>();
-            _namespaceMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.NamespaceMappingBuilder>();
-            _typenameMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.TypenameMappingBuilder>();
             _builderAbstractionsTypeConversionNamespaces = new System.Collections.ObjectModel.ObservableCollection<string>();
+            _namespaceMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.NamespaceMappingBuilder>();
             _skipNamespacesOnFluentBuilderMethods = new System.Collections.ObjectModel.ObservableCollection<string>();
+            _typenameMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.TypenameMappingBuilder>();
             _addBackingFields = source.AddBackingFields;
             _addCopyConstructor = source.AddCopyConstructor;
             _addFullConstructor = source.AddFullConstructor;
@@ -1314,17 +1330,18 @@ namespace ClassFramework.Pipelines.Builders
             _addNullChecks = source.AddNullChecks;
             _addPublicParameterlessConstructor = source.AddPublicParameterlessConstructor;
             _addSetters = source.AddSetters;
-            _implementIEquatable = source.ImplementIEquatable;
             _allowGenerationWithoutProperties = source.AllowGenerationWithoutProperties;
-            _useBuilderAbstractionsTypeConversion = source.UseBuilderAbstractionsTypeConversion;
             if (source.AttributeInitializers is not null) foreach (var item in source.AttributeInitializers) _attributeInitializers.Add(item);
             _baseClass = source.BaseClass?.ToBuilder()!;
             _baseClassBuilderNameSpace = source.BaseClassBuilderNameSpace;
+            _builderAbstractionsTypeConversionMetadataName = source.BuilderAbstractionsTypeConversionMetadataName;
+            if (source.BuilderAbstractionsTypeConversionNamespaces is not null) foreach (var item in source.BuilderAbstractionsTypeConversionNamespaces) _builderAbstractionsTypeConversionNamespaces.Add(item);
             _builderExtensionsCollectionCopyStatementFormatString = source.BuilderExtensionsCollectionCopyStatementFormatString;
             _builderExtensionsNameFormatString = source.BuilderExtensionsNameFormatString;
             _builderExtensionsNamespaceFormatString = source.BuilderExtensionsNamespaceFormatString;
             _builderNameFormatString = source.BuilderNameFormatString;
             _builderNamespaceFormatString = source.BuilderNamespaceFormatString;
+            _builderNewCollectionTypeName = source.BuilderNewCollectionTypeName;
             _buildMethodName = source.BuildMethodName;
             _buildTypedMethodName = source.BuildTypedMethodName;
             _collectionCopyStatementFormatString = source.CollectionCopyStatementFormatString;
@@ -1336,8 +1353,8 @@ namespace ClassFramework.Pipelines.Builders
             _copyInterfaces = source.CopyInterfaces;
             _copyMethodPredicate = source.CopyMethodPredicate;
             _copyMethods = source.CopyMethods;
-            _inheritFromInterfaces = source.InheritFromInterfaces;
             _createAsObservable = source.CreateAsObservable;
+            _createAsPartial = source.CreateAsPartial;
             _createConstructors = source.CreateConstructors;
             _createRecord = source.CreateRecord;
             _enableBuilderInheritance = source.EnableBuilderInheritance;
@@ -1345,51 +1362,52 @@ namespace ClassFramework.Pipelines.Builders
             _enableNullableReferenceTypes = source.EnableNullableReferenceTypes;
             _entityNameFormatString = source.EntityNameFormatString;
             _entityNamespaceFormatString = source.EntityNamespaceFormatString;
+            _entityNewCollectionTypeName = source.EntityNewCollectionTypeName;
+            _iEquatableItemType = source.IEquatableItemType;
+            _implementIEquatable = source.ImplementIEquatable;
             _inheritanceComparisonDelegate = source.InheritanceComparisonDelegate;
             _inheritanceComparisonDelegateForReflection = source.InheritanceComparisonDelegateForReflection;
+            _inheritFromInterfaces = source.InheritFromInterfaces;
             _isAbstract = source.IsAbstract;
             _isForAbstractBuilder = source.IsForAbstractBuilder;
             _nameFormatString = source.NameFormatString;
             _namespaceFormatString = source.NamespaceFormatString;
             if (source.NamespaceMappings is not null) foreach (var item in source.NamespaceMappings.Select(x => x.ToBuilder())) _namespaceMappings.Add(item);
-            _builderNewCollectionTypeName = source.BuilderNewCollectionTypeName;
-            _entityNewCollectionTypeName = source.EntityNewCollectionTypeName;
             _nonCollectionInitializationStatementFormatString = source.NonCollectionInitializationStatementFormatString;
-            _createAsPartial = source.CreateAsPartial;
             _setDefaultValuesInEntityConstructor = source.SetDefaultValuesInEntityConstructor;
             _setDefaultValuesMethodName = source.SetDefaultValuesMethodName;
             _setMethodNameFormatString = source.SetMethodNameFormatString;
             _setterVisibility = source.SetterVisibility;
+            if (source.SkipNamespacesOnFluentBuilderMethods is not null) foreach (var item in source.SkipNamespacesOnFluentBuilderMethods) _skipNamespacesOnFluentBuilderMethods.Add(item);
             _toBuilderFormatString = source.ToBuilderFormatString;
             _toTypedBuilderFormatString = source.ToTypedBuilderFormatString;
             if (source.TypenameMappings is not null) foreach (var item in source.TypenameMappings.Select(x => x.ToBuilder())) _typenameMappings.Add(item);
             _useBaseClassFromSourceModel = source.UseBaseClassFromSourceModel;
+            _useBuilderAbstractionsTypeConversion = source.UseBuilderAbstractionsTypeConversion;
+            _useCrossCuttingInterfaces = source.UseCrossCuttingInterfaces;
+            _useDefaultValueAttributeValuesForBuilderInitialization = source.UseDefaultValueAttributeValuesForBuilderInitialization;
             _useExceptionThrowIfNull = source.UseExceptionThrowIfNull;
             _usePatternMatchingForNullChecks = source.UsePatternMatchingForNullChecks;
             _validateArguments = source.ValidateArguments;
-            _useDefaultValueAttributeValuesForBuilderInitialization = source.UseDefaultValueAttributeValuesForBuilderInitialization;
-            _iEquatableItemType = source.IEquatableItemType;
-            if (source.BuilderAbstractionsTypeConversionNamespaces is not null) foreach (var item in source.BuilderAbstractionsTypeConversionNamespaces) _builderAbstractionsTypeConversionNamespaces.Add(item);
-            _builderAbstractionsTypeConversionMetadataName = source.BuilderAbstractionsTypeConversionMetadataName;
-            if (source.SkipNamespacesOnFluentBuilderMethods is not null) foreach (var item in source.SkipNamespacesOnFluentBuilderMethods) _skipNamespacesOnFluentBuilderMethods.Add(item);
         }
 
         public PipelineSettingsBuilder()
         {
             _attributeInitializers = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.AttributeInitializerDelegate>();
-            _namespaceMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.NamespaceMappingBuilder>();
-            _typenameMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.TypenameMappingBuilder>();
             _builderAbstractionsTypeConversionNamespaces = new System.Collections.ObjectModel.ObservableCollection<string>();
+            _namespaceMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.NamespaceMappingBuilder>();
             _skipNamespacesOnFluentBuilderMethods = new System.Collections.ObjectModel.ObservableCollection<string>();
+            _typenameMappings = new System.Collections.ObjectModel.ObservableCollection<ClassFramework.Pipelines.Builders.TypenameMappingBuilder>();
             _addImplicitOperatorOnBuilder = true;
             _addMethodNameFormatString = string.Empty;
-            _useBuilderAbstractionsTypeConversion = true;
             _baseClassBuilderNameSpace = string.Empty;
+            _builderAbstractionsTypeConversionMetadataName = string.Empty;
             _builderExtensionsCollectionCopyStatementFormatString = string.Empty;
             _builderExtensionsNameFormatString = string.Empty;
             _builderExtensionsNamespaceFormatString = string.Empty;
             _builderNameFormatString = string.Empty;
             _builderNamespaceFormatString = string.Empty;
+            _builderNewCollectionTypeName = string.Empty;
             _buildMethodName = string.Empty;
             _buildTypedMethodName = string.Empty;
             _collectionCopyStatementFormatString = string.Empty;
@@ -1397,23 +1415,22 @@ namespace ClassFramework.Pipelines.Builders
             _collectionTypeName = string.Empty;
             _entityNameFormatString = string.Empty;
             _entityNamespaceFormatString = string.Empty;
+            _entityNewCollectionTypeName = string.Empty;
             _nameFormatString = string.Empty;
             _namespaceFormatString = string.Empty;
-            _builderNewCollectionTypeName = string.Empty;
-            _entityNewCollectionTypeName = string.Empty;
             _nonCollectionInitializationStatementFormatString = string.Empty;
             _setDefaultValuesMethodName = string.Empty;
             _setMethodNameFormatString = string.Empty;
             _toBuilderFormatString = string.Empty;
             _toTypedBuilderFormatString = string.Empty;
+            _useBuilderAbstractionsTypeConversion = true;
             _usePatternMatchingForNullChecks = true;
-            _builderAbstractionsTypeConversionMetadataName = string.Empty;
             SetDefaultValues();
         }
 
         public ClassFramework.Pipelines.PipelineSettings Build()
         {
-            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddImplicitOperatorOnBuilder, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, ImplementIEquatable, AllowGenerationWithoutProperties, UseBuilderAbstractionsTypeConversion, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, InheritFromInterfaces, CreateAsObservable, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), BuilderNewCollectionTypeName, EntityNewCollectionTypeName, NonCollectionInitializationStatementFormatString, CreateAsPartial, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseExceptionThrowIfNull, UsePatternMatchingForNullChecks, ValidateArguments, UseDefaultValueAttributeValuesForBuilderInitialization, IEquatableItemType, BuilderAbstractionsTypeConversionNamespaces, BuilderAbstractionsTypeConversionMetadataName, SkipNamespacesOnFluentBuilderMethods);
+            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddImplicitOperatorOnBuilder, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderAbstractionsTypeConversionMetadataName, BuilderAbstractionsTypeConversionNamespaces, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuilderNewCollectionTypeName, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, CreateAsObservable, CreateAsPartial, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, EntityNewCollectionTypeName, IEquatableItemType, ImplementIEquatable, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, InheritFromInterfaces, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), NonCollectionInitializationStatementFormatString, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, SkipNamespacesOnFluentBuilderMethods, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseBuilderAbstractionsTypeConversion, UseCrossCuttingInterfaces, UseDefaultValueAttributeValuesForBuilderInitialization, UseExceptionThrowIfNull, UsePatternMatchingForNullChecks, ValidateArguments);
         }
 
         partial void SetDefaultValues();
@@ -1431,32 +1448,6 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder AddNamespaceMappings(System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.Builders.NamespaceMappingBuilder> namespaceMappings)
-        {
-            if (namespaceMappings is null) throw new System.ArgumentNullException(nameof(namespaceMappings));
-            return AddNamespaceMappings(namespaceMappings.ToArray());
-        }
-
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder AddNamespaceMappings(params ClassFramework.Pipelines.Builders.NamespaceMappingBuilder[] namespaceMappings)
-        {
-            if (namespaceMappings is null) throw new System.ArgumentNullException(nameof(namespaceMappings));
-            foreach (var item in namespaceMappings) NamespaceMappings.Add(item);
-            return this;
-        }
-
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder AddTypenameMappings(System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.Builders.TypenameMappingBuilder> typenameMappings)
-        {
-            if (typenameMappings is null) throw new System.ArgumentNullException(nameof(typenameMappings));
-            return AddTypenameMappings(typenameMappings.ToArray());
-        }
-
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder AddTypenameMappings(params ClassFramework.Pipelines.Builders.TypenameMappingBuilder[] typenameMappings)
-        {
-            if (typenameMappings is null) throw new System.ArgumentNullException(nameof(typenameMappings));
-            foreach (var item in typenameMappings) TypenameMappings.Add(item);
-            return this;
-        }
-
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder AddBuilderAbstractionsTypeConversionNamespaces(System.Collections.Generic.IEnumerable<string> builderAbstractionsTypeConversionNamespaces)
         {
             if (builderAbstractionsTypeConversionNamespaces is null) throw new System.ArgumentNullException(nameof(builderAbstractionsTypeConversionNamespaces));
@@ -1470,6 +1461,19 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder AddNamespaceMappings(System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.Builders.NamespaceMappingBuilder> namespaceMappings)
+        {
+            if (namespaceMappings is null) throw new System.ArgumentNullException(nameof(namespaceMappings));
+            return AddNamespaceMappings(namespaceMappings.ToArray());
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder AddNamespaceMappings(params ClassFramework.Pipelines.Builders.NamespaceMappingBuilder[] namespaceMappings)
+        {
+            if (namespaceMappings is null) throw new System.ArgumentNullException(nameof(namespaceMappings));
+            foreach (var item in namespaceMappings) NamespaceMappings.Add(item);
+            return this;
+        }
+
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder AddSkipNamespacesOnFluentBuilderMethods(System.Collections.Generic.IEnumerable<string> skipNamespacesOnFluentBuilderMethods)
         {
             if (skipNamespacesOnFluentBuilderMethods is null) throw new System.ArgumentNullException(nameof(skipNamespacesOnFluentBuilderMethods));
@@ -1480,6 +1484,19 @@ namespace ClassFramework.Pipelines.Builders
         {
             if (skipNamespacesOnFluentBuilderMethods is null) throw new System.ArgumentNullException(nameof(skipNamespacesOnFluentBuilderMethods));
             foreach (var item in skipNamespacesOnFluentBuilderMethods) SkipNamespacesOnFluentBuilderMethods.Add(item);
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder AddTypenameMappings(System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.Builders.TypenameMappingBuilder> typenameMappings)
+        {
+            if (typenameMappings is null) throw new System.ArgumentNullException(nameof(typenameMappings));
+            return AddTypenameMappings(typenameMappings.ToArray());
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder AddTypenameMappings(params ClassFramework.Pipelines.Builders.TypenameMappingBuilder[] typenameMappings)
+        {
+            if (typenameMappings is null) throw new System.ArgumentNullException(nameof(typenameMappings));
+            foreach (var item in typenameMappings) TypenameMappings.Add(item);
             return this;
         }
 
@@ -1532,21 +1549,9 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithImplementIEquatable(bool implementIEquatable = true)
-        {
-            ImplementIEquatable = implementIEquatable;
-            return this;
-        }
-
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithAllowGenerationWithoutProperties(bool allowGenerationWithoutProperties = true)
         {
             AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
-            return this;
-        }
-
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithUseBuilderAbstractionsTypeConversion(bool useBuilderAbstractionsTypeConversion = true)
-        {
-            UseBuilderAbstractionsTypeConversion = useBuilderAbstractionsTypeConversion;
             return this;
         }
 
@@ -1560,6 +1565,13 @@ namespace ClassFramework.Pipelines.Builders
         {
             if (baseClassBuilderNameSpace is null) throw new System.ArgumentNullException(nameof(baseClassBuilderNameSpace));
             BaseClassBuilderNameSpace = baseClassBuilderNameSpace;
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithBuilderAbstractionsTypeConversionMetadataName(string builderAbstractionsTypeConversionMetadataName)
+        {
+            if (builderAbstractionsTypeConversionMetadataName is null) throw new System.ArgumentNullException(nameof(builderAbstractionsTypeConversionMetadataName));
+            BuilderAbstractionsTypeConversionMetadataName = builderAbstractionsTypeConversionMetadataName;
             return this;
         }
 
@@ -1595,6 +1607,13 @@ namespace ClassFramework.Pipelines.Builders
         {
             if (builderNamespaceFormatString is null) throw new System.ArgumentNullException(nameof(builderNamespaceFormatString));
             BuilderNamespaceFormatString = builderNamespaceFormatString;
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithBuilderNewCollectionTypeName(string builderNewCollectionTypeName)
+        {
+            if (builderNewCollectionTypeName is null) throw new System.ArgumentNullException(nameof(builderNewCollectionTypeName));
+            BuilderNewCollectionTypeName = builderNewCollectionTypeName;
             return this;
         }
 
@@ -1669,15 +1688,15 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithInheritFromInterfaces(bool inheritFromInterfaces = true)
-        {
-            InheritFromInterfaces = inheritFromInterfaces;
-            return this;
-        }
-
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithCreateAsObservable(bool createAsObservable = true)
         {
             CreateAsObservable = createAsObservable;
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithCreateAsPartial(bool createAsPartial = true)
+        {
+            CreateAsPartial = createAsPartial;
             return this;
         }
 
@@ -1725,6 +1744,25 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithEntityNewCollectionTypeName(string entityNewCollectionTypeName)
+        {
+            if (entityNewCollectionTypeName is null) throw new System.ArgumentNullException(nameof(entityNewCollectionTypeName));
+            EntityNewCollectionTypeName = entityNewCollectionTypeName;
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithIEquatableItemType(ClassFramework.Pipelines.Domains.IEquatableItemType iEquatableItemType)
+        {
+            IEquatableItemType = iEquatableItemType;
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithImplementIEquatable(bool implementIEquatable = true)
+        {
+            ImplementIEquatable = implementIEquatable;
+            return this;
+        }
+
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithInheritanceComparisonDelegate(ClassFramework.Pipelines.InheritanceComparisonDelegate? inheritanceComparisonDelegate)
         {
             InheritanceComparisonDelegate = inheritanceComparisonDelegate;
@@ -1734,6 +1772,12 @@ namespace ClassFramework.Pipelines.Builders
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithInheritanceComparisonDelegateForReflection(ClassFramework.Pipelines.ReflectionInheritanceComparisonDelegate? inheritanceComparisonDelegateForReflection)
         {
             InheritanceComparisonDelegateForReflection = inheritanceComparisonDelegateForReflection;
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithInheritFromInterfaces(bool inheritFromInterfaces = true)
+        {
+            InheritFromInterfaces = inheritFromInterfaces;
             return this;
         }
 
@@ -1763,30 +1807,10 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithBuilderNewCollectionTypeName(string builderNewCollectionTypeName)
-        {
-            if (builderNewCollectionTypeName is null) throw new System.ArgumentNullException(nameof(builderNewCollectionTypeName));
-            BuilderNewCollectionTypeName = builderNewCollectionTypeName;
-            return this;
-        }
-
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithEntityNewCollectionTypeName(string entityNewCollectionTypeName)
-        {
-            if (entityNewCollectionTypeName is null) throw new System.ArgumentNullException(nameof(entityNewCollectionTypeName));
-            EntityNewCollectionTypeName = entityNewCollectionTypeName;
-            return this;
-        }
-
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithNonCollectionInitializationStatementFormatString(string nonCollectionInitializationStatementFormatString)
         {
             if (nonCollectionInitializationStatementFormatString is null) throw new System.ArgumentNullException(nameof(nonCollectionInitializationStatementFormatString));
             NonCollectionInitializationStatementFormatString = nonCollectionInitializationStatementFormatString;
-            return this;
-        }
-
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithCreateAsPartial(bool createAsPartial = true)
-        {
-            CreateAsPartial = createAsPartial;
             return this;
         }
 
@@ -1836,6 +1860,24 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithUseBuilderAbstractionsTypeConversion(bool useBuilderAbstractionsTypeConversion = true)
+        {
+            UseBuilderAbstractionsTypeConversion = useBuilderAbstractionsTypeConversion;
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithUseCrossCuttingInterfaces(bool useCrossCuttingInterfaces = true)
+        {
+            UseCrossCuttingInterfaces = useCrossCuttingInterfaces;
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithUseDefaultValueAttributeValuesForBuilderInitialization(bool useDefaultValueAttributeValuesForBuilderInitialization = true)
+        {
+            UseDefaultValueAttributeValuesForBuilderInitialization = useDefaultValueAttributeValuesForBuilderInitialization;
+            return this;
+        }
+
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithUseExceptionThrowIfNull(bool useExceptionThrowIfNull = true)
         {
             UseExceptionThrowIfNull = useExceptionThrowIfNull;
@@ -1851,25 +1893,6 @@ namespace ClassFramework.Pipelines.Builders
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithValidateArguments(ClassFramework.Pipelines.Domains.ArgumentValidationType validateArguments)
         {
             ValidateArguments = validateArguments;
-            return this;
-        }
-
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithUseDefaultValueAttributeValuesForBuilderInitialization(bool useDefaultValueAttributeValuesForBuilderInitialization = true)
-        {
-            UseDefaultValueAttributeValuesForBuilderInitialization = useDefaultValueAttributeValuesForBuilderInitialization;
-            return this;
-        }
-
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithIEquatableItemType(ClassFramework.Pipelines.Domains.IEquatableItemType iEquatableItemType)
-        {
-            IEquatableItemType = iEquatableItemType;
-            return this;
-        }
-
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithBuilderAbstractionsTypeConversionMetadataName(string builderAbstractionsTypeConversionMetadataName)
-        {
-            if (builderAbstractionsTypeConversionMetadataName is null) throw new System.ArgumentNullException(nameof(builderAbstractionsTypeConversionMetadataName));
-            BuilderAbstractionsTypeConversionMetadataName = builderAbstractionsTypeConversionMetadataName;
             return this;
         }
 

@@ -45,6 +45,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableUseBuilderAbstractionsTypeConversionAbstractionsInterfaces>()
             .AddScoped<ImmutableUseBuilderAbstractionsTypeConversionAbstractionsBuilderInterfaces>()
             .AddScoped<ImmutableNoToBuilderMethodCoreEntities>()
+            .AddScoped<ImmutableCoreCrossCuttingInterfacesBuilders>()
+            .AddScoped<ImmutableCoreCrossCuttingInterfacesEntities>()
             .AddScoped<MappedTypeBuilders>()
             .AddScoped<MappedTypeEntities>()
             .AddScoped<ObservableCoreBuilders>()
@@ -408,6 +410,88 @@ namespace Test.Domain
     }
 
     [Fact]
+    public async Task Can_Generate_Code_For_Entity_With_CrossCutting_Abstractions()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreCrossCuttingInterfacesEntities>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(2);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public partial class Generic<T> : CrossCutting.Common.Abstractions.IBuildableEntity<Test.Domain.Builders.GenericBuilder>
+    {
+        public T MyProperty
+        {
+            get;
+        }
+
+        public Generic(T myProperty)
+        {
+            this.MyProperty = myProperty;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public Test.Domain.Builders.GenericBuilder<T> ToBuilder()
+        {
+            return new Test.Domain.Builders.GenericBuilder<T>(this);
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain
+{
+#nullable enable
+    public partial class Literal : CrossCutting.Common.Abstractions.IBuildableEntity<Test.Domain.Builders.LiteralBuilder>
+    {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Value
+        {
+            get;
+        }
+
+        public object? OriginalValue
+        {
+            get;
+        }
+
+        public Literal(string value, object? originalValue)
+        {
+            this.Value = value;
+            this.OriginalValue = originalValue;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public Test.Domain.Builders.LiteralBuilder ToBuilder()
+        {
+            return new Test.Domain.Builders.LiteralBuilder(this);
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
     public async Task Can_Generate_Code_For_Builder()
     {
         // Arrange
@@ -483,6 +567,142 @@ namespace Test.Domain.Builders
 {
 #nullable enable
     public partial class LiteralBuilder
+    {
+        private string _value;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+            }
+        }
+
+        public object? OriginalValue
+        {
+            get;
+            set;
+        }
+
+        public LiteralBuilder(Test.Domain.Literal source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _value = source.Value;
+            OriginalValue = source.OriginalValue;
+        }
+
+        public LiteralBuilder()
+        {
+            _value = string.Empty;
+            SetDefaultValues();
+        }
+
+        public Test.Domain.Literal Build()
+        {
+            return new Test.Domain.Literal(Value, OriginalValue);
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.LiteralBuilder WithValue(string value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
+
+        public Test.Domain.Builders.LiteralBuilder WithOriginalValue(object? originalValue)
+        {
+            OriginalValue = originalValue;
+            return this;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_Builder_With_CrossCutting_Abstractions()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreCrossCuttingInterfacesBuilders>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(2);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class GenericBuilder<T> : CrossCutting.Common.Abstractions.IBuilder<Test.Domain.Generic>
+    {
+        private T _myProperty;
+
+        public T MyProperty
+        {
+            get
+            {
+                return _myProperty;
+            }
+            set
+            {
+                _myProperty = value;
+            }
+        }
+
+        public GenericBuilder(Test.Domain.Generic<T> source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _myProperty = source.MyProperty;
+        }
+
+        public GenericBuilder()
+        {
+            _myProperty = default(T)!;
+            SetDefaultValues();
+        }
+
+        public Test.Domain.Generic<T> Build()
+        {
+            return new Test.Domain.Generic<T>(MyProperty);
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.GenericBuilder<T> WithMyProperty(T myProperty)
+        {
+            MyProperty = myProperty;
+            return this;
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class LiteralBuilder : CrossCutting.Common.Abstractions.IBuilder<Test.Domain.Literal>
     {
         private string _value;
 

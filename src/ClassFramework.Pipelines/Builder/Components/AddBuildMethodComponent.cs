@@ -66,6 +66,18 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
                 .WithOverride()
                 .WithReturnTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}")
                 .AddStringCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
+
+            if (context.Request.Settings.UseCrossCuttingInterfaces)
+            {
+                context.Request.Builder.AddInterfaces(typeof(IBuilder<object>).ReplaceGenericTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}"));
+            }
+        }
+        else
+        {
+            if (context.Request.Settings.UseCrossCuttingInterfaces)
+            {
+                context.Request.Builder.AddInterfaces(typeof(IBuilder<object>).ReplaceGenericTypeName(context.Request.ReturnType));
+            }
         }
 
         return await AddExplicitInterfaceImplementations(context, token).ConfigureAwait(false);
@@ -79,8 +91,12 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
         }
 
         var interfaces = await context.Request.GetInterfaceResultsAsync(
-            (x, y) => new { EntityName = x, BuilderName = y.ToString() },
-            x => new { EntityName = x, BuilderName = context.Request.MapTypeName(x.FixTypeName()) },
+            (x, y) => new { EntityName = x, BuilderName = context.Request.Settings.UseCrossCuttingInterfaces
+                ? typeof(IBuilder<object>).ReplaceGenericTypeName(x)
+                : y.ToString() },
+            x => new { EntityName = x, BuilderName = context.Request.Settings.UseCrossCuttingInterfaces
+                ? typeof(IBuilder<object>).ReplaceGenericTypeName(x)
+                : context.Request.MapTypeName(x.FixTypeName()) },
             _evaluator,
             false,
             token).ConfigureAwait(false);
@@ -91,9 +107,11 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
             return error;
         }
 
-        var methodName = context.Request.Settings.EnableBuilderInheritance && context.Request.Settings.IsAbstract && context.Request.Settings.IsForAbstractBuilder
-            ? context.Request.Settings.BuildMethodName
-            : GetName(context);
+        var methodName = context.Request.Settings.EnableBuilderInheritance
+            && context.Request.Settings.IsAbstract
+            && context.Request.Settings.IsForAbstractBuilder
+                ? context.Request.Settings.BuildMethodName
+                : GetName(context);
 
         context.Request.Builder.AddMethods(interfaces.Select(x => new MethodBuilder()
             .WithName(context.Request.Settings.BuildMethodName)

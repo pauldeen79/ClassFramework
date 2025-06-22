@@ -118,18 +118,7 @@ namespace ClassFramework.Pipelines
             get;
         }
 
-        public bool ImplementIEquatable
-        {
-            get;
-        }
-
         public bool AllowGenerationWithoutProperties
-        {
-            get;
-        }
-
-        [System.ComponentModel.DefaultValueAttribute(true)]
-        public bool UseBuilderAbstractionsTypeConversion
         {
             get;
         }
@@ -148,6 +137,18 @@ namespace ClassFramework.Pipelines
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         public string BaseClassBuilderNameSpace
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string BuilderAbstractionsTypeConversionMetadataName
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Collections.Generic.IReadOnlyCollection<string> BuilderAbstractionsTypeConversionNamespaces
         {
             get;
         }
@@ -178,6 +179,12 @@ namespace ClassFramework.Pipelines
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         public string BuilderNamespaceFormatString
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string BuilderNewCollectionTypeName
         {
             get;
         }
@@ -242,12 +249,12 @@ namespace ClassFramework.Pipelines
             get;
         }
 
-        public bool InheritFromInterfaces
+        public bool CreateAsObservable
         {
             get;
         }
 
-        public bool CreateAsObservable
+        public bool CreateAsPartial
         {
             get;
         }
@@ -289,12 +296,33 @@ namespace ClassFramework.Pipelines
             get;
         }
 
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string EntityNewCollectionTypeName
+        {
+            get;
+        }
+
+        public ClassFramework.Pipelines.Domains.IEquatableItemType IEquatableItemType
+        {
+            get;
+        }
+
+        public bool ImplementIEquatable
+        {
+            get;
+        }
+
         public ClassFramework.Pipelines.InheritanceComparisonDelegate? InheritanceComparisonDelegate
         {
             get;
         }
 
         public ClassFramework.Pipelines.ReflectionInheritanceComparisonDelegate? InheritanceComparisonDelegateForReflection
+        {
+            get;
+        }
+
+        public bool InheritFromInterfaces
         {
             get;
         }
@@ -328,24 +356,7 @@ namespace ClassFramework.Pipelines
         }
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string BuilderNewCollectionTypeName
-        {
-            get;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string EntityNewCollectionTypeName
-        {
-            get;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         public string NonCollectionInitializationStatementFormatString
-        {
-            get;
-        }
-
-        public bool CreateAsPartial
         {
             get;
         }
@@ -368,6 +379,12 @@ namespace ClassFramework.Pipelines
         }
 
         public ClassFramework.Domain.Domains.SubVisibility SetterVisibility
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public System.Collections.Generic.IReadOnlyCollection<string> SkipNamespacesOnFluentBuilderMethods
         {
             get;
         }
@@ -395,6 +412,22 @@ namespace ClassFramework.Pipelines
             get;
         }
 
+        [System.ComponentModel.DefaultValueAttribute(true)]
+        public bool UseBuilderAbstractionsTypeConversion
+        {
+            get;
+        }
+
+        public bool UseCrossCuttingInterfaces
+        {
+            get;
+        }
+
+        public bool UseDefaultValueAttributeValuesForBuilderInitialization
+        {
+            get;
+        }
+
         public bool UseExceptionThrowIfNull
         {
             get;
@@ -411,35 +444,7 @@ namespace ClassFramework.Pipelines
             get;
         }
 
-        public bool UseDefaultValueAttributeValuesForBuilderInitialization
-        {
-            get;
-        }
-
-        public ClassFramework.Pipelines.Domains.IEquatableItemType IEquatableItemType
-        {
-            get;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<string> BuilderAbstractionsTypeConversionNamespaces
-        {
-            get;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string BuilderAbstractionsTypeConversionMetadataName
-        {
-            get;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute]
-        public System.Collections.Generic.IReadOnlyCollection<string> SkipNamespacesOnFluentBuilderMethods
-        {
-            get;
-        }
-
-        public PipelineSettings(bool addBackingFields, bool addCopyConstructor, bool addFullConstructor, bool addImplicitOperatorOnBuilder, string addMethodNameFormatString, bool addNullChecks, bool addPublicParameterlessConstructor, bool addSetters, bool implementIEquatable, bool allowGenerationWithoutProperties, bool useBuilderAbstractionsTypeConversion, System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.AttributeInitializerDelegate> attributeInitializers, ClassFramework.Domain.TypeBase? baseClass, string baseClassBuilderNameSpace, string builderExtensionsCollectionCopyStatementFormatString, string builderExtensionsNameFormatString, string builderExtensionsNamespaceFormatString, string builderNameFormatString, string builderNamespaceFormatString, string buildMethodName, string buildTypedMethodName, string collectionCopyStatementFormatString, string collectionInitializationStatementFormatString, string collectionTypeName, System.Predicate<ClassFramework.Domain.Attribute>? copyAttributePredicate, bool copyAttributes, System.Predicate<string>? copyInterfacePredicate, bool copyInterfaces, ClassFramework.Pipelines.CopyMethodPredicate? copyMethodPredicate, bool copyMethods, bool inheritFromInterfaces, bool createAsObservable, bool createConstructors, bool createRecord, bool enableBuilderInheritance, bool enableInheritance, bool enableNullableReferenceTypes, string entityNameFormatString, string entityNamespaceFormatString, ClassFramework.Pipelines.InheritanceComparisonDelegate? inheritanceComparisonDelegate, ClassFramework.Pipelines.ReflectionInheritanceComparisonDelegate? inheritanceComparisonDelegateForReflection, bool isAbstract, bool isForAbstractBuilder, string nameFormatString, string namespaceFormatString, System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.NamespaceMapping> namespaceMappings, string builderNewCollectionTypeName, string entityNewCollectionTypeName, string nonCollectionInitializationStatementFormatString, bool createAsPartial, bool setDefaultValuesInEntityConstructor, string setDefaultValuesMethodName, string setMethodNameFormatString, ClassFramework.Domain.Domains.SubVisibility setterVisibility, string toBuilderFormatString, string toTypedBuilderFormatString, System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.TypenameMapping> typenameMappings, bool useBaseClassFromSourceModel, bool useExceptionThrowIfNull, bool usePatternMatchingForNullChecks, ClassFramework.Pipelines.Domains.ArgumentValidationType validateArguments, bool useDefaultValueAttributeValuesForBuilderInitialization, ClassFramework.Pipelines.Domains.IEquatableItemType iEquatableItemType, System.Collections.Generic.IEnumerable<string> builderAbstractionsTypeConversionNamespaces, string builderAbstractionsTypeConversionMetadataName, System.Collections.Generic.IEnumerable<string> skipNamespacesOnFluentBuilderMethods)
+        public PipelineSettings(bool addBackingFields, bool addCopyConstructor, bool addFullConstructor, bool addImplicitOperatorOnBuilder, string addMethodNameFormatString, bool addNullChecks, bool addPublicParameterlessConstructor, bool addSetters, bool allowGenerationWithoutProperties, System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.AttributeInitializerDelegate> attributeInitializers, ClassFramework.Domain.TypeBase? baseClass, string baseClassBuilderNameSpace, string builderAbstractionsTypeConversionMetadataName, System.Collections.Generic.IEnumerable<string> builderAbstractionsTypeConversionNamespaces, string builderExtensionsCollectionCopyStatementFormatString, string builderExtensionsNameFormatString, string builderExtensionsNamespaceFormatString, string builderNameFormatString, string builderNamespaceFormatString, string builderNewCollectionTypeName, string buildMethodName, string buildTypedMethodName, string collectionCopyStatementFormatString, string collectionInitializationStatementFormatString, string collectionTypeName, System.Predicate<ClassFramework.Domain.Attribute>? copyAttributePredicate, bool copyAttributes, System.Predicate<string>? copyInterfacePredicate, bool copyInterfaces, ClassFramework.Pipelines.CopyMethodPredicate? copyMethodPredicate, bool copyMethods, bool createAsObservable, bool createAsPartial, bool createConstructors, bool createRecord, bool enableBuilderInheritance, bool enableInheritance, bool enableNullableReferenceTypes, string entityNameFormatString, string entityNamespaceFormatString, string entityNewCollectionTypeName, ClassFramework.Pipelines.Domains.IEquatableItemType iEquatableItemType, bool implementIEquatable, ClassFramework.Pipelines.InheritanceComparisonDelegate? inheritanceComparisonDelegate, ClassFramework.Pipelines.ReflectionInheritanceComparisonDelegate? inheritanceComparisonDelegateForReflection, bool inheritFromInterfaces, bool isAbstract, bool isForAbstractBuilder, string nameFormatString, string namespaceFormatString, System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.NamespaceMapping> namespaceMappings, string nonCollectionInitializationStatementFormatString, bool setDefaultValuesInEntityConstructor, string setDefaultValuesMethodName, string setMethodNameFormatString, ClassFramework.Domain.Domains.SubVisibility setterVisibility, System.Collections.Generic.IEnumerable<string> skipNamespacesOnFluentBuilderMethods, string toBuilderFormatString, string toTypedBuilderFormatString, System.Collections.Generic.IEnumerable<ClassFramework.Pipelines.TypenameMapping> typenameMappings, bool useBaseClassFromSourceModel, bool useBuilderAbstractionsTypeConversion, bool useCrossCuttingInterfaces, bool useDefaultValueAttributeValuesForBuilderInitialization, bool useExceptionThrowIfNull, bool usePatternMatchingForNullChecks, ClassFramework.Pipelines.Domains.ArgumentValidationType validateArguments)
         {
             this.AddBackingFields = addBackingFields;
             this.AddCopyConstructor = addCopyConstructor;
@@ -449,17 +454,18 @@ namespace ClassFramework.Pipelines
             this.AddNullChecks = addNullChecks;
             this.AddPublicParameterlessConstructor = addPublicParameterlessConstructor;
             this.AddSetters = addSetters;
-            this.ImplementIEquatable = implementIEquatable;
             this.AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
-            this.UseBuilderAbstractionsTypeConversion = useBuilderAbstractionsTypeConversion;
             this.AttributeInitializers = attributeInitializers is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Pipelines.AttributeInitializerDelegate>(attributeInitializers);
             this.BaseClass = baseClass;
             this.BaseClassBuilderNameSpace = baseClassBuilderNameSpace;
+            this.BuilderAbstractionsTypeConversionMetadataName = builderAbstractionsTypeConversionMetadataName;
+            this.BuilderAbstractionsTypeConversionNamespaces = builderAbstractionsTypeConversionNamespaces is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(builderAbstractionsTypeConversionNamespaces);
             this.BuilderExtensionsCollectionCopyStatementFormatString = builderExtensionsCollectionCopyStatementFormatString;
             this.BuilderExtensionsNameFormatString = builderExtensionsNameFormatString;
             this.BuilderExtensionsNamespaceFormatString = builderExtensionsNamespaceFormatString;
             this.BuilderNameFormatString = builderNameFormatString;
             this.BuilderNamespaceFormatString = builderNamespaceFormatString;
+            this.BuilderNewCollectionTypeName = builderNewCollectionTypeName;
             this.BuildMethodName = buildMethodName;
             this.BuildTypedMethodName = buildTypedMethodName;
             this.CollectionCopyStatementFormatString = collectionCopyStatementFormatString;
@@ -471,8 +477,8 @@ namespace ClassFramework.Pipelines
             this.CopyInterfaces = copyInterfaces;
             this.CopyMethodPredicate = copyMethodPredicate;
             this.CopyMethods = copyMethods;
-            this.InheritFromInterfaces = inheritFromInterfaces;
             this.CreateAsObservable = createAsObservable;
+            this.CreateAsPartial = createAsPartial;
             this.CreateConstructors = createConstructors;
             this.CreateRecord = createRecord;
             this.EnableBuilderInheritance = enableBuilderInheritance;
@@ -480,33 +486,33 @@ namespace ClassFramework.Pipelines
             this.EnableNullableReferenceTypes = enableNullableReferenceTypes;
             this.EntityNameFormatString = entityNameFormatString;
             this.EntityNamespaceFormatString = entityNamespaceFormatString;
+            this.EntityNewCollectionTypeName = entityNewCollectionTypeName;
+            this.IEquatableItemType = iEquatableItemType;
+            this.ImplementIEquatable = implementIEquatable;
             this.InheritanceComparisonDelegate = inheritanceComparisonDelegate;
             this.InheritanceComparisonDelegateForReflection = inheritanceComparisonDelegateForReflection;
+            this.InheritFromInterfaces = inheritFromInterfaces;
             this.IsAbstract = isAbstract;
             this.IsForAbstractBuilder = isForAbstractBuilder;
             this.NameFormatString = nameFormatString;
             this.NamespaceFormatString = namespaceFormatString;
             this.NamespaceMappings = namespaceMappings is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Pipelines.NamespaceMapping>(namespaceMappings);
-            this.BuilderNewCollectionTypeName = builderNewCollectionTypeName;
-            this.EntityNewCollectionTypeName = entityNewCollectionTypeName;
             this.NonCollectionInitializationStatementFormatString = nonCollectionInitializationStatementFormatString;
-            this.CreateAsPartial = createAsPartial;
             this.SetDefaultValuesInEntityConstructor = setDefaultValuesInEntityConstructor;
             this.SetDefaultValuesMethodName = setDefaultValuesMethodName;
             this.SetMethodNameFormatString = setMethodNameFormatString;
             this.SetterVisibility = setterVisibility;
+            this.SkipNamespacesOnFluentBuilderMethods = skipNamespacesOnFluentBuilderMethods is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(skipNamespacesOnFluentBuilderMethods);
             this.ToBuilderFormatString = toBuilderFormatString;
             this.ToTypedBuilderFormatString = toTypedBuilderFormatString;
             this.TypenameMappings = typenameMappings is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Pipelines.TypenameMapping>(typenameMappings);
             this.UseBaseClassFromSourceModel = useBaseClassFromSourceModel;
+            this.UseBuilderAbstractionsTypeConversion = useBuilderAbstractionsTypeConversion;
+            this.UseCrossCuttingInterfaces = useCrossCuttingInterfaces;
+            this.UseDefaultValueAttributeValuesForBuilderInitialization = useDefaultValueAttributeValuesForBuilderInitialization;
             this.UseExceptionThrowIfNull = useExceptionThrowIfNull;
             this.UsePatternMatchingForNullChecks = usePatternMatchingForNullChecks;
             this.ValidateArguments = validateArguments;
-            this.UseDefaultValueAttributeValuesForBuilderInitialization = useDefaultValueAttributeValuesForBuilderInitialization;
-            this.IEquatableItemType = iEquatableItemType;
-            this.BuilderAbstractionsTypeConversionNamespaces = builderAbstractionsTypeConversionNamespaces is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(builderAbstractionsTypeConversionNamespaces);
-            this.BuilderAbstractionsTypeConversionMetadataName = builderAbstractionsTypeConversionMetadataName;
-            this.SkipNamespacesOnFluentBuilderMethods = skipNamespacesOnFluentBuilderMethods is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<System.String>(skipNamespacesOnFluentBuilderMethods);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
