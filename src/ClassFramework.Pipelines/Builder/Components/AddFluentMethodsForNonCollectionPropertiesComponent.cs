@@ -13,7 +13,8 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
             return Result.Success();
         }
 
-        foreach (var property in context.Request.GetSourceProperties().Where(x => context.Request.IsValidForFluentMethod(x) && !x.TypeName.FixTypeName().IsCollectionTypeName()))
+        foreach (var property in context.Request.GetSourceProperties()
+            .Where(x => context.Request.IsValidForFluentMethod(x) && !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var parentChildContext = new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings);
 

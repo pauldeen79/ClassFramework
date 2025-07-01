@@ -13,7 +13,8 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
             return Result.Success();
         }
 
-        foreach (var property in context.Request.GetSourceProperties().Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
+        foreach (var property in context.Request.GetSourceProperties()
+            .Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var parentChildContext = new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings);
 

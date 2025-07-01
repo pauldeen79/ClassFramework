@@ -1,5 +1,4 @@
-﻿
-namespace ClassFramework.Pipelines.Entity;
+﻿namespace ClassFramework.Pipelines.Entity;
 
 public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
 {
