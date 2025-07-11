@@ -39,6 +39,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
     protected virtual string CoreNamespace => $"{ProjectName}.Core";
     protected virtual string BuilderAbstractionsNamespace => $"{RootNamespace}.Builders.Abstractions";
+    protected virtual string AbstractionsParentNamespace => InheritFromInterfaces
+        ? ProjectName
+        : CoreNamespace;
     protected virtual bool CopyAttributes => false;
     protected virtual bool CopyInterfaces => false;
     protected virtual bool CopyMethods => false;
@@ -89,7 +92,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 || (baseClass is not null && !baseClass.Properties.Any(x => x.Name == (parentNameContainer as INameContainer)?.Name))
                 || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
                 || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
-                || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders", BuilderAbstractionsNamespace))
+                || (parentNameContainer.ParentTypeFullName.StartsWith($"{ProjectName}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders", BuilderAbstractionsNamespace))
             );
 
     protected virtual string[] GetModelAbstractBaseTyped() => [];
@@ -277,7 +280,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                         && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
                             || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
                             || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
-                            || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
+                            || (parentNameContainer.ParentTypeFullName.StartsWith($"{ProjectName}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
                         ))
                 .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
                 .WithEnableNullableReferenceTypes()
@@ -312,10 +315,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         // From models to domain entities
         yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models").WithTargetNamespace(CoreNamespace);
         yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Domains").WithTargetNamespace($"{RootNamespace}.Domains");
-        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Abstractions").WithTargetNamespace($"{CoreNamespace}.Abstractions");
+        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Abstractions").WithTargetNamespace($"{AbstractionsParentNamespace}.Abstractions");
 
         // From domain entities to builders
-        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CoreNamespace}.Abstractions").WithTargetNamespace($"{CoreNamespace}.Abstractions")
+        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{AbstractionsParentNamespace}.Abstractions").WithTargetNamespace($"{AbstractionsParentNamespace}.Abstractions")
             .AddMetadata
             (
                 new MetadataBuilder().WithValue(InheritFromInterfaces ? $"{RootNamespace}.Builders" : BuilderAbstractionsNamespace).WithName(MetadataNames.CustomBuilderInterfaceNamespace),
@@ -325,12 +328,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 new MetadataBuilder().WithValue("{NoGenerics(ClassName(property.ParentTypeFullName))}Builder{GenericArguments(property.ParentTypeFullName, true)}").WithName(MetadataNames.CustomBuilderParentTypeName)
             );
 
-        foreach (var entityClassName in GetPureAbstractModels().Select(x => x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)))
-        {
-            yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.{entityClassName}s").WithTargetNamespace($"{CoreNamespace}.{entityClassName}s");
-            yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CoreNamespace}.{entityClassName}s").WithTargetNamespace($"{CoreNamespace}.{entityClassName}s");
-        }
-
         foreach (var mapping in CreateAdditionalNamespaceMappings())
         {
             yield return mapping;
@@ -339,10 +336,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     protected virtual IEnumerable<NamespaceMappingBuilder> CreateAdditionalNamespaceMappings()
         => [];
-
-    protected string AbstractionsParentNamespace => InheritFromInterfaces
-        ? ProjectName
-        : CoreNamespace;
 
     protected IEnumerable<TypenameMappingBuilder> CreateTypenameMappings(bool? useBuilderAbstractionsTypeConversion = null)
         => GetType().Assembly.GetTypes()
@@ -421,6 +414,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithTargetTypeName($"{BuilderAbstractionsNamespace}.I{entityClassName}Builder"),
             new TypenameMappingBuilder()
                 .WithSourceTypeName($"{CoreNamespace}.Abstractions.{entityClassName}")
+                .WithTargetTypeName($"{AbstractionsParentNamespace}.Abstractions.I{entityClassName}"),
+            new TypenameMappingBuilder()
+                .WithSourceTypeName($"{AbstractionsParentNamespace}.Abstractions.{entityClassName}")
                 .WithTargetTypeName($"{AbstractionsParentNamespace}.Abstractions.I{entityClassName}")
         ];
 

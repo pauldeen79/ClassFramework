@@ -1245,7 +1245,7 @@ namespace Test.Domain.Builders
             SetDefaultValues();
         }
 
-        public Test.Domain.Abstractions.IGeneric<T> Build()
+        public Test.Abstractions.IGeneric<T> Build()
         {
             return new Test.Domain.Generic<T>(MyProperty);
         }
@@ -1305,7 +1305,7 @@ namespace Test.Domain.Builders
             SetDefaultValues();
         }
 
-        public Test.Domain.Abstractions.ILiteral Build()
+        public Test.Abstractions.ILiteral Build()
         {
             return new Test.Domain.Literal(Value, OriginalValue);
         }
