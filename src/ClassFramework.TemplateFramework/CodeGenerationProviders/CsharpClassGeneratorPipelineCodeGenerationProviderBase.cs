@@ -92,7 +92,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 || (baseClass is not null && !baseClass.Properties.Any(x => x.Name == (parentNameContainer as INameContainer)?.Name))
                 || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
                 || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
-                || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders", BuilderAbstractionsNamespace))
+                || (parentNameContainer.ParentTypeFullName.StartsWith($"{ProjectName}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders", BuilderAbstractionsNamespace))
             );
 
     protected virtual string[] GetModelAbstractBaseTyped() => [];
@@ -280,7 +280,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                         && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
                             || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
                             || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
-                            || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
+                            || (parentNameContainer.ParentTypeFullName.StartsWith($"{ProjectName}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
                         ))
                 .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
                 .WithEnableNullableReferenceTypes()
