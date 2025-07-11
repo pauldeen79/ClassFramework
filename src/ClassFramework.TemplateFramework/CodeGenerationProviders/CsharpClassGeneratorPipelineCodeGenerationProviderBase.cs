@@ -39,6 +39,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
     protected virtual string CoreNamespace => $"{ProjectName}.Core";
     protected virtual string BuilderAbstractionsNamespace => $"{RootNamespace}.Builders.Abstractions";
+    protected virtual string AbstractionsParentNamespace => InheritFromInterfaces
+        ? ProjectName
+        : CoreNamespace;
     protected virtual bool CopyAttributes => false;
     protected virtual bool CopyInterfaces => false;
     protected virtual bool CopyMethods => false;
@@ -312,10 +315,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         // From models to domain entities
         yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models").WithTargetNamespace(CoreNamespace);
         yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Domains").WithTargetNamespace($"{RootNamespace}.Domains");
-        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Abstractions").WithTargetNamespace($"{CoreNamespace}.Abstractions");
+        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Abstractions").WithTargetNamespace($"{AbstractionsParentNamespace}.Abstractions");
 
         // From domain entities to builders
-        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CoreNamespace}.Abstractions").WithTargetNamespace($"{CoreNamespace}.Abstractions")
+        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{AbstractionsParentNamespace}.Abstractions").WithTargetNamespace($"{AbstractionsParentNamespace}.Abstractions")
             .AddMetadata
             (
                 new MetadataBuilder().WithValue(InheritFromInterfaces ? $"{RootNamespace}.Builders" : BuilderAbstractionsNamespace).WithName(MetadataNames.CustomBuilderInterfaceNamespace),
@@ -325,12 +328,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 new MetadataBuilder().WithValue("{NoGenerics(ClassName(property.ParentTypeFullName))}Builder{GenericArguments(property.ParentTypeFullName, true)}").WithName(MetadataNames.CustomBuilderParentTypeName)
             );
 
-        foreach (var entityClassName in GetPureAbstractModels().Select(x => x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)))
-        {
-            yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.{entityClassName}s").WithTargetNamespace($"{CoreNamespace}.{entityClassName}s");
-            yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CoreNamespace}.{entityClassName}s").WithTargetNamespace($"{CoreNamespace}.{entityClassName}s");
-        }
-
         foreach (var mapping in CreateAdditionalNamespaceMappings())
         {
             yield return mapping;
@@ -339,10 +336,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     protected virtual IEnumerable<NamespaceMappingBuilder> CreateAdditionalNamespaceMappings()
         => [];
-
-    protected string AbstractionsParentNamespace => InheritFromInterfaces
-        ? ProjectName
-        : CoreNamespace;
 
     protected IEnumerable<TypenameMappingBuilder> CreateTypenameMappings(bool? useBuilderAbstractionsTypeConversion = null)
         => GetType().Assembly.GetTypes()
