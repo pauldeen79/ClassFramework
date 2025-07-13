@@ -354,7 +354,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     protected IEnumerable<TypenameMappingBuilder> CreateTypenameMappings(bool? useBuilderAbstractionsTypeConversion = null)
     {
-        var skipNamespaceOnTypenameMappings = SkipsNamespaceOnTypenameMappings();
+        var skipNamespaceOnTypenameMappings = GetSkippedNamespacesOnTypenameMappings();
 
         return GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface
@@ -445,19 +445,19 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             && type.Name.WithoutTypeGenerics().EndsWith("Base");
     }
 
-    protected IEnumerable<string> SkipsNamespaceOnTypenameMappings()
+    protected IEnumerable<string> GetSkippedNamespacesOnTypenameMappings()
     {
         yield return $"{CodeGenerationRootNamespace}.Models.Abstractions";
         yield return $"{CodeGenerationRootNamespace}.Models.Domains";
         yield return $"{CodeGenerationRootNamespace}.Validation";
 
-        foreach (var ns in GetAdditionalNamespacesToSkipOnTypenameMappings())
+        foreach (var ns in GetAdditionalSkippedNamespacesOnTypenameMappings())
         {
             yield return ns;
         }
     }
 
-    protected virtual string[] GetAdditionalNamespacesToSkipOnTypenameMappings() => [];
+    protected virtual string[] GetAdditionalSkippedNamespacesOnTypenameMappings() => [];
 
     protected static ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
         => secondCondition
