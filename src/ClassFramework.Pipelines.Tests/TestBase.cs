@@ -400,45 +400,41 @@ public abstract class TestBase : IDisposable
     protected static IEnumerable<NamespaceMappingBuilder> CreateNamespaceMappings(string sourceNamespace = "MySourceNamespace")
         =>
         [
-            new NamespaceMappingBuilder().WithSourceNamespace(sourceNamespace).WithTargetNamespace("MyNamespace")
-                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderNamespace).WithValue("MyNamespace.Builders"))
-                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderName).WithValue("{ClassName(property.TypeName)}Builder"))
-                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomEntityNamespace).WithValue("MyNamespace"))
-                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]"))
-                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]"))
+            new NamespaceMappingBuilder(sourceNamespace, "MyNamespace")
+                .AddMetadata(new MetadataBuilder(MetadataNames.CustomBuilderNamespace, "MyNamespace.Builders"))
+                .AddMetadata(new MetadataBuilder(MetadataNames.CustomBuilderName, "{ClassName(property.TypeName)}Builder"))
+                .AddMetadata(new MetadataBuilder(MetadataNames.CustomEntityNamespace, "MyNamespace"))
+                .AddMetadata(new MetadataBuilder(MetadataNames.CustomBuilderSourceExpression, "[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]"))
+                .AddMetadata(new MetadataBuilder(MetadataNames.CustomBuilderMethodParameterExpression, "[Name][NullableSuffix].Build()[ForcedNullableSuffix]"))
         ];
 
     protected static IEnumerable<TypenameMappingBuilder> CreateTypenameMappings()
         =>
         [
-            new TypenameMappingBuilder().WithSourceTypeName(typeof(List<>).WithoutGenerics()).WithTargetTypeName(typeof(List<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "new [Type][Generics]([Expression])"), //"[Expression].ToList()"
-            new TypenameMappingBuilder().WithSourceTypeName(typeof(IList<>).WithoutGenerics()).WithTargetTypeName(typeof(IList<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "[Expression].ToList()"),
+            new TypenameMappingBuilder(typeof(List<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "new [Type][Generics]([Expression])"), //"[Expression].ToList()"
+            new TypenameMappingBuilder(typeof(IList<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "[Expression].ToList()"),
         ];
 
     protected static TypenameMappingBuilder[] CreateExpressionFrameworkTypenameMappings()
         =>
         [
-            new TypenameMappingBuilder()
-                .WithSourceTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable")
-                .WithTargetTypeName("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable")
+            new TypenameMappingBuilder("ExpressionFramework.Domain.Evaluatables.ComposedEvaluatable")
                 .AddMetadata
                 (
-                    new MetadataBuilder().WithValue("ExpressionFramework.Domain.Builders.Evaluatables").WithName(MetadataNames.CustomBuilderNamespace),
-                    new MetadataBuilder().WithValue("{ClassName(property.TypeName)}Builder").WithName(MetadataNames.CustomBuilderName),
-                    new MetadataBuilder().WithValue("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.[Name])").WithName(MetadataNames.CustomBuilderConstructorInitializeExpression),
-                    new MetadataBuilder().WithValue(new LiteralBuilder("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder()").Build()).WithName(MetadataNames.CustomBuilderDefaultValue),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].BuildTyped()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
+                    new MetadataBuilder(MetadataNames.CustomBuilderNamespace, "ExpressionFramework.Domain.Builders.Evaluatables"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderName, "{ClassName(property.TypeName)}Builder"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderConstructorInitializeExpression, "new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.[Name])"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new LiteralBuilder("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder()").Build()),
+                    new MetadataBuilder(MetadataNames.CustomBuilderMethodParameterExpression, "[Name][NullableSuffix].BuildTyped()[ForcedNullableSuffix]")
                 ),
-            new TypenameMappingBuilder()
-                .WithSourceTypeName("ExpressionFramework.Domain.Expression")
-                .WithTargetTypeName("ExpressionFramework.Domain.Expression")
+            new TypenameMappingBuilder("ExpressionFramework.Domain.Expression")
                 .AddMetadata
                 (
-                    new MetadataBuilder().WithValue("ExpressionFramework.Domain.Builders").WithName(MetadataNames.CustomBuilderNamespace),
-                    new MetadataBuilder().WithValue("{ClassName(property.TypeName)}Builder").WithName(MetadataNames.CustomBuilderName),
-                    new MetadataBuilder().WithValue("ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(source.[Name])").WithName(MetadataNames.CustomBuilderConstructorInitializeExpression),
-                    new MetadataBuilder().WithValue(new LiteralBuilder("default(ExpressionFramework.Domain.Builders.ExpressionBuilder)!").Build()).WithName(MetadataNames.CustomBuilderDefaultValue),
-                    new MetadataBuilder().WithValue($"[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
+                    new MetadataBuilder(MetadataNames.CustomBuilderNamespace, "ExpressionFramework.Domain.Builders"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderName, "{ClassName(property.TypeName)}Builder"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderConstructorInitializeExpression, "ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(source.[Name])"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new LiteralBuilder("default(ExpressionFramework.Domain.Builders.ExpressionBuilder)!").Build()),
+                    new MetadataBuilder(MetadataNames.CustomBuilderMethodParameterExpression, $"[Name][NullableSuffix].Build()[ForcedNullableSuffix]")
                 ),
         ];
 
