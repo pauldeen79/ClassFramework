@@ -363,21 +363,21 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .SelectMany(x =>
                 (new[]
                 {
-                    new TypenameMappingBuilder(x, $"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}"),
-                    new TypenameMappingBuilder($"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}")
+                    new TypenameMappingBuilder(x, $"{CoreNamespace}.{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}"),
+                    new TypenameMappingBuilder($"{CoreNamespace}.{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}")
                         .AddMetadata
                         (
-                            new MetadataBuilder(MetadataNames.CustomBuilderNamespace, $"{CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}"),
+                            new MetadataBuilder(MetadataNames.CustomBuilderNamespace, $"{CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}"),
                             new MetadataBuilder(MetadataNames.CustomBuilderName, $"{x.GetEntityClassName()}Builder"),
                             new MetadataBuilder(MetadataNames.CustomBuilderInterfaceNamespace, $"{AbstractionsNamespace}.Builders"),
                             new MetadataBuilder(MetadataNames.CustomBuilderInterfaceName, $"I{x.GetEntityClassName()}Builder"),
                             new MetadataBuilder(MetadataNames.CustomBuilderInterfaceTypeName, $"{AbstractionsNamespace}.Builders.I{x.GetEntityClassName()}Builder"),
                             new MetadataBuilder(MetadataNames.CustomBuilderSourceExpression, x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
-                                ? $"new {CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder([Name])"
+                                ? $"new {CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder([Name])"
                                 : "[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]"),
                             new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && IsAbstractType(x)
-                                ? new Literal($"default({CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder)", null)
-                                : new Literal($"new {CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder()", null)),
+                                ? new Literal($"default({CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder)", null)
+                                : new Literal($"new {CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder()", null)),
                             new MetadataBuilder(MetadataNames.CustomBuilderMethodParameterExpression, x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
                                 ? "[Name][NullableSuffix].BuildTyped()[ForcedNullableSuffix]"
                                 : "[Name][NullableSuffix].Build()[ForcedNullableSuffix]"),
@@ -724,23 +724,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         }
 
         return await successTask(settingsResult.Value!).ConfigureAwait(false);
-    }
-
-    private static string ReplaceStart(string fullNamespace, string baseNamespace, bool appendDot)
-    {
-        if (fullNamespace.Length == 0)
-        {
-            return fullNamespace;
-        }
-
-        if (fullNamespace.StartsWith($"{baseNamespace}."))
-        {
-            return appendDot
-                ? string.Concat(fullNamespace.AsSpan(baseNamespace.Length + 1), ".")
-                : string.Concat(".", fullNamespace.AsSpan(baseNamespace.Length + 1));
-        }
-
-        return string.Empty;
     }
 
     private static bool DefaultCopyAttributePredicate(Domain.Attribute attribute)
