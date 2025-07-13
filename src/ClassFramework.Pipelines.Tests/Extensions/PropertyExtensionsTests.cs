@@ -26,7 +26,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
             csharpExpressionDumper.Dump(Arg.Any<IStringLiteral>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<IStringLiteral>(0).Value); // note that we mock the behavior of the real csharp expression dumper here :)
-            var settings = new PipelineSettingsBuilder().AddTypenameMappings(new TypenameMappingBuilder().WithSourceType(typeof(string)).WithTargetType(typeof(string)).AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal("custom value", null))).Build();
+            var settings = new PipelineSettingsBuilder().AddTypenameMappings(new TypenameMappingBuilder().WithSourceType(typeof(string)).WithTargetType(typeof(string)).AddMetadata(MetadataNames.CustomBuilderDefaultValue, new LiteralBuilder("custom value").Build())).Build();
             var context = new PropertyContext(sut, settings, CultureInfo.InvariantCulture, typeof(string).FullName!, string.Empty, CancellationToken.None);
 
             // Act
@@ -86,7 +86,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut()
                 .WithName("MyProperty")
                 .WithType(typeof(string))
-                .AddAttributes(new AttributeBuilder().WithName(typeof(DefaultValueAttribute)).AddParameters(new AttributeParameterBuilder().WithValue(new Literal("custom value", null))))
+                .AddAttributes(new AttributeBuilder().WithName(typeof(DefaultValueAttribute)).AddParameters(new AttributeParameterBuilder().WithValue(new LiteralBuilder("custom value").Build())))
                 .Build();
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
             csharpExpressionDumper.Dump(Arg.Any<IStringLiteral>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<IStringLiteral>(0).Value); // note that we mock the behavior of the real csharp expression dumper here :)
