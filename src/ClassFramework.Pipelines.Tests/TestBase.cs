@@ -424,7 +424,7 @@ public abstract class TestBase : IDisposable
                     new MetadataBuilder(MetadataNames.CustomBuilderNamespace, "ExpressionFramework.Domain.Builders.Evaluatables"),
                     new MetadataBuilder(MetadataNames.CustomBuilderName, "{ClassName(property.TypeName)}Builder"),
                     new MetadataBuilder(MetadataNames.CustomBuilderConstructorInitializeExpression, "new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.[Name])"),
-                    new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new LiteralBuilder("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder()").Build()),
+                    new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal("new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder()")),
                     new MetadataBuilder(MetadataNames.CustomBuilderMethodParameterExpression, "[Name][NullableSuffix].BuildTyped()[ForcedNullableSuffix]")
                 ),
             new TypenameMappingBuilder("ExpressionFramework.Domain.Expression")
@@ -433,7 +433,7 @@ public abstract class TestBase : IDisposable
                     new MetadataBuilder(MetadataNames.CustomBuilderNamespace, "ExpressionFramework.Domain.Builders"),
                     new MetadataBuilder(MetadataNames.CustomBuilderName, "{ClassName(property.TypeName)}Builder"),
                     new MetadataBuilder(MetadataNames.CustomBuilderConstructorInitializeExpression, "ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(source.[Name])"),
-                    new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new LiteralBuilder("default(ExpressionFramework.Domain.Builders.ExpressionBuilder)!").Build()),
+                    new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal("default(ExpressionFramework.Domain.Builders.ExpressionBuilder)!")),
                     new MetadataBuilder(MetadataNames.CustomBuilderMethodParameterExpression, $"[Name][NullableSuffix].Build()[ForcedNullableSuffix]")
                 ),
         ];
