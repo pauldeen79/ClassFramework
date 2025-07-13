@@ -29,9 +29,13 @@ public abstract class ClassFrameworkCSharpClassBase(IPipelineService pipelineSer
     protected Task<Result<IEnumerable<TypeBase>>> GetTemplateFrameworkModelsAsync()
         => GetNonCoreModelsAsync($"{CodeGenerationRootNamespace}.Models.TemplateFramework");
 
-    protected override bool SkipNamespaceOnTypenameMappings(string @namespace)
-        => @namespace.In($"{CodeGenerationRootNamespace}.Models.Pipelines",
-                         $"{CodeGenerationRootNamespace}.Models.TemplateFramework");
+    protected override string[] SkipsNamespaceOnTypenameMappings() =>
+    [
+        $"{CodeGenerationRootNamespace}.Models.Abstractions",
+        $"{CodeGenerationRootNamespace}.Models.Domains",
+        $"{CodeGenerationRootNamespace}.Models.Pipelines",
+        $"{CodeGenerationRootNamespace}.Models.TemplateFramework",
+    ];
 
     protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
         => GetType().Assembly.GetTypes()

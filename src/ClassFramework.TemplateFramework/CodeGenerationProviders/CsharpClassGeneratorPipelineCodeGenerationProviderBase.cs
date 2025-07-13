@@ -344,12 +344,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         => [];
 
     protected IEnumerable<TypenameMappingBuilder> CreateTypenameMappings(bool? useBuilderAbstractionsTypeConversion = null)
-        => GetType().Assembly.GetTypes()
+    {
+        var skipNamespaceOnTypenameMappings = SkipsNamespaceOnTypenameMappings();
+
+        return GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface
                 && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models", StringComparison.Ordinal) == true
-                && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
-                && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Domains"
-                && !SkipNamespaceOnTypenameMappings(x.Namespace)
+                && !skipNamespaceOnTypenameMappings.Contains(x.Namespace)
                 && x.FullName is not null)
             .SelectMany(x =>
                 (new[]
@@ -394,6 +395,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             ])
             .Concat(CreateBuilderAbstractionsTypeConversionTypenameMapping(useBuilderAbstractionsTypeConversion))
             .Concat(CreateAdditionalTypenameMappings());
+    }
 
     private IEnumerable<TypenameMappingBuilder> CreateBuilderAbstractionsTypeConversionTypenameMapping(bool? useBuilderAbstractionsTypeConversion)
         => GetType().Assembly.GetTypes()
@@ -437,7 +439,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             && type.Name.WithoutTypeGenerics().EndsWith("Base");
     }
 
-    protected virtual bool SkipNamespaceOnTypenameMappings(string @namespace) => false;
+    protected virtual string[] SkipsNamespaceOnTypenameMappings() =>
+        [
+            $"{CodeGenerationRootNamespace}.Models.Abstractions",
+            $"{CodeGenerationRootNamespace}.Models.Domains",
+        ];
 
     protected static ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
         => secondCondition
