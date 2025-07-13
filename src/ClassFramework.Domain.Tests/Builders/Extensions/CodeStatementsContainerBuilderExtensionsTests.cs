@@ -11,7 +11,7 @@ public class CodeStatementsContainerBuilderExtensionsTests : TestBase<Constructo
             var sut = CreateSut();
 
             // Act
-            var result = sut.AddStringCodeStatements("StatementOne();", "StatementTwo();");
+            var result = sut.AddCodeStatements("StatementOne();", "StatementTwo();");
 
             // Assert
             result.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
@@ -25,7 +25,7 @@ public class CodeStatementsContainerBuilderExtensionsTests : TestBase<Constructo
             var sut = CreateSut();
 
             // Act
-            var result = sut.AddStringCodeStatements(new[] { "StatementOne();", "StatementTwo();" }.AsEnumerable());
+            var result = sut.AddCodeStatements(new[] { "StatementOne();", "StatementTwo();" }.AsEnumerable());
 
             // Assert
             result.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
@@ -39,7 +39,7 @@ public class CodeStatementsContainerBuilderExtensionsTests : TestBase<Constructo
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.AddStringCodeStatements(statements: null!);
+            Action a = () => sut.AddCodeStatements(statements: null!);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("statements");
         }
@@ -51,7 +51,7 @@ public class CodeStatementsContainerBuilderExtensionsTests : TestBase<Constructo
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.AddStringCodeStatements(statements: (IEnumerable<string>)null!);
+            Action a = () => sut.AddCodeStatements(statements: (IEnumerable<string>)null!);
             a.ShouldThrow<ArgumentNullException>()
              .ParamName.ShouldBe("statements");
         }

@@ -40,7 +40,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
             var nullCheckStatement = results.GetValue("ArgumentNullCheck");
             if (!string.IsNullOrEmpty(nullCheckStatement))
             {
-                builder.AddStringCodeStatements(nullCheckStatement);
+                builder.AddCodeStatements(nullCheckStatement);
             }
         }
     }

@@ -398,6 +398,25 @@ public static class StringExtensions
             ? string.Empty
             : $"{instance}.";
 
+    public static string ReplaceStartNamespace(this string? fullNamespace, string baseNamespace, bool appendDot)
+    {
+        baseNamespace = ArgumentGuard.IsNotNullOrEmpty(baseNamespace, nameof(baseNamespace));
+
+        if (fullNamespace is null || fullNamespace.Length == 0)
+        {
+            return fullNamespace ?? string.Empty;
+        }
+
+        if (fullNamespace.StartsWith($"{baseNamespace}."))
+        {
+            return appendDot
+                ? string.Concat(fullNamespace.Substring(baseNamespace.Length + 1), ".")
+                : string.Concat(".", fullNamespace.Substring(baseNamespace.Length + 1));
+        }
+
+        return string.Empty;
+    }
+
     public static string GetCollectionInitializeStatement(this string instance, string customBuilderConstructorInitializeExpression)
     {
         if (instance.StartsWith(typeof(IEnumerable<>).WithoutGenerics()))

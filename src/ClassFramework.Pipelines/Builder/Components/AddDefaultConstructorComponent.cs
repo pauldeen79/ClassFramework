@@ -41,7 +41,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         var ctor = new ConstructorBuilder()
             .WithChainCall(await CreateBuilderClassConstructorChainCallAsync(context.Request.SourceModel, context.Request.Settings).ConfigureAwait(false))
             .WithProtected(context.Request.IsBuilderForAbstractEntity)
-            .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Item1} = {x.Item2.Value};"));
+            .AddCodeStatements(constructorInitializerResults.Select(x => $"{x.Item1} = {x.Item2.Value};"));
 
         if (context.Request.Settings.SetDefaultValuesInEntityConstructor)
         {
@@ -53,7 +53,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
                 return Result.FromExistingResult<ConstructorBuilder>(defaultValueErrorResult);
             }
 
-            ctor.AddStringCodeStatements(defaultValueResults.Select(x => x.Value!.ToString()));
+            ctor.AddCodeStatements(defaultValueResults.Select(x => x.Value!.ToString()));
 
             var setDefaultValuesMethodNameResult = await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.SetDefaultValuesMethodName, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
             if (!setDefaultValuesMethodNameResult.IsSuccessful())
@@ -63,7 +63,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
 
             if (!string.IsNullOrEmpty(setDefaultValuesMethodNameResult.Value!.ToString()))
             {
-                ctor.AddStringCodeStatements($"{setDefaultValuesMethodNameResult.Value}();");
+                ctor.AddCodeStatements($"{setDefaultValuesMethodNameResult.Value}();");
                 context.Request.Builder.AddMethods(new MethodBuilder()
                     .WithName(setDefaultValuesMethodNameResult.Value)
                     .WithPartial()

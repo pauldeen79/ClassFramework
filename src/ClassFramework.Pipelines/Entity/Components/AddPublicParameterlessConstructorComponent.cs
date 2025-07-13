@@ -46,7 +46,7 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
         }
 
         return Result.Success(new ConstructorBuilder()
-            .AddStringCodeStatements(initializationStatements.Select(x => x.Value!)));
+            .AddCodeStatements(initializationStatements.Select(x => x.Value!)));
     }
 
     private async Task<Result<string>> GenerateDefaultValueStatement(Property property, PipelineContext<EntityContext> context, CancellationToken token)

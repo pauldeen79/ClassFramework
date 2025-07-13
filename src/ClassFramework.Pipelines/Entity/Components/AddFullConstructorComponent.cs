@@ -54,15 +54,15 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
         return Result.Success(new ConstructorBuilder()
             .WithProtected(context.Request.Settings.EnableInheritance && context.Request.Settings.IsAbstract)
             .AddParameters(context.Request.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Request.FormatProvider, n => context.Request.MapTypeName(n, MetadataNames.CustomEntityInterfaceTypeName)))
-            .AddStringCodeStatements
+            .AddCodeStatements
             (
                 context.Request.SourceModel.Properties
                     .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
                     .Where(property => context.Request.Settings.AddNullChecks && context.Request.Settings.AddValidationCode() == ArgumentValidationType.None && context.Request.GetMappingMetadata(property.TypeName).GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
                     .Select(property => context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
-            .AddStringCodeStatements(initializationResults.Select(x => x.Value!.ToString()))
-            .AddStringCodeStatements(context.Request.CreateEntityValidationCode())
+            .AddCodeStatements(initializationResults.Select(x => x.Value!.ToString()))
+            .AddCodeStatements(context.Request.CreateEntityValidationCode())
             .WithChainCall(await context.CreateEntityChainCallAsync().ConfigureAwait(false)));
     }
 }

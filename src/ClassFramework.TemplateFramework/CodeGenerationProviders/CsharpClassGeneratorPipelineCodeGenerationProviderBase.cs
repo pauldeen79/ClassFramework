@@ -32,16 +32,23 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected abstract Type EntityConcreteCollectionType { get; }
     protected abstract Type BuilderCollectionType { get; }
 
-    protected virtual string EnvironmentVersion => string.Empty;
     protected virtual string RootNamespace => InheritFromInterfaces
         ? $"{ProjectName}.Abstractions"
         : CoreNamespace;
     protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
     protected virtual string CoreNamespace => $"{ProjectName}.Core";
     protected virtual string BuilderAbstractionsNamespace => $"{RootNamespace}.Builders.Abstractions";
-    protected virtual string AbstractionsParentNamespace => InheritFromInterfaces
-        ? ProjectName
-        : CoreNamespace;
+    protected virtual string AbstractionsNamespace => InheritFromInterfaces
+        ? $"{ProjectName}.Abstractions"
+        : $"{CoreNamespace}.Abstractions";
+    protected virtual string ValidationNamespace => InheritFromInterfaces
+        ? $"{AbstractionsNamespace}.Validation"
+        : $"{RootNamespace}.Validation";
+    protected virtual string DomainsNamespace => InheritFromInterfaces
+        ? $"{AbstractionsNamespace}.Domains"
+        : $"{RootNamespace}.Domains";
+
+    protected virtual string EnvironmentVersion => string.Empty;
     protected virtual bool CopyAttributes => false;
     protected virtual bool CopyInterfaces => false;
     protected virtual bool CopyMethods => false;
@@ -99,15 +106,19 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     protected virtual string[] GetExternalCustomBuilderTypes() => [];
 
+    protected virtual IEnumerable<TypenameMappingBuilder> GetAdditionalTypenameMappings() => [];
+
+    protected virtual IEnumerable<NamespaceMappingBuilder> GetAdditionalNamespaceMappings() => [];
+
     protected virtual string[] GetCustomBuilderTypes()
         => GetPureAbstractModels()
             .Select(x => x.GetEntityClassName())
             .Concat(GetExternalCustomBuilderTypes())
             .ToArray();
 
-    protected virtual string[] GetBuilderAbstractionsTypeConversionNamespaces() => [$"{AbstractionsParentNamespace}.Abstractions"];
+    protected virtual string[] GetBuilderAbstractionsTypeConversionNamespaces() => [AbstractionsNamespace];
     protected virtual string[] GetCodeGenerationBuilderAbstractionsTypeConversionNamespaces() => [$"{CodeGenerationRootNamespace}.Models.Abstractions"];
-    protected virtual string[] GetSkipNamespacesOnFluentBuilderMethods() => [$"{AbstractionsParentNamespace}.Abstractions"];
+    protected virtual string[] GetSkipNamespacesOnFluentBuilderMethods() => [AbstractionsNamespace];
 
     protected virtual IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetTypes().Where(IsAbstractType);
@@ -313,74 +324,87 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected IEnumerable<NamespaceMappingBuilder> CreateNamespaceMappings()
     {
         // From models to domain entities
-        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models").WithTargetNamespace(CoreNamespace);
-        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Domains").WithTargetNamespace($"{RootNamespace}.Domains");
-        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Abstractions").WithTargetNamespace($"{AbstractionsParentNamespace}.Abstractions");
+        yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Models", CoreNamespace);
+        yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Models.Domains", DomainsNamespace);
+        yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Models.Abstractions", AbstractionsNamespace);
+        yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Validation", ValidationNamespace);
 
         // From domain entities to builders
-        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{AbstractionsParentNamespace}.Abstractions").WithTargetNamespace($"{AbstractionsParentNamespace}.Abstractions")
+        yield return new NamespaceMappingBuilder(AbstractionsNamespace)
             .AddMetadata
             (
-                new MetadataBuilder().WithValue(InheritFromInterfaces ? $"{RootNamespace}.Builders" : BuilderAbstractionsNamespace).WithName(MetadataNames.CustomBuilderInterfaceNamespace),
-                new MetadataBuilder().WithValue("{NoGenerics(ClassName(property.TypeName))}Builder{GenericArguments(property.TypeName, true)}").WithName(MetadataNames.CustomBuilderInterfaceName),
-                new MetadataBuilder().WithValue(InheritFromInterfaces ? $"{RootNamespace}.Builders.I{{NoGenerics(ClassName(property.TypeName))}}Builder{{GenericArguments(property.TypeName, true)}}" : $"{BuilderAbstractionsNamespace}.I{{NoGenerics(ClassName(property.TypeName))}}Builder{{GenericArguments(property.TypeName, true)}}").WithName(MetadataNames.CustomBuilderInterfaceTypeName),
-                new MetadataBuilder().WithValue(InheritFromInterfaces ? $"{RootNamespace}.Builders" : BuilderAbstractionsNamespace).WithName(MetadataNames.CustomBuilderParentTypeNamespace),
-                new MetadataBuilder().WithValue("{NoGenerics(ClassName(property.ParentTypeFullName))}Builder{GenericArguments(property.ParentTypeFullName, true)}").WithName(MetadataNames.CustomBuilderParentTypeName)
+                new MetadataBuilder(MetadataNames.CustomBuilderInterfaceNamespace, InheritFromInterfaces
+                    ? $"{RootNamespace}.Builders"
+                    : BuilderAbstractionsNamespace),
+                new MetadataBuilder(MetadataNames.CustomBuilderInterfaceName, "{NoGenerics(ClassName(property.TypeName))}Builder{GenericArguments(property.TypeName, true)}"),
+                new MetadataBuilder(MetadataNames.CustomBuilderInterfaceTypeName, InheritFromInterfaces
+                    ? $"{RootNamespace}.Builders.I{{NoGenerics(ClassName(property.TypeName))}}Builder{{GenericArguments(property.TypeName, true)}}"
+                    : $"{BuilderAbstractionsNamespace}.I{{NoGenerics(ClassName(property.TypeName))}}Builder{{GenericArguments(property.TypeName, true)}}"),
+                new MetadataBuilder(MetadataNames.CustomBuilderParentTypeNamespace, InheritFromInterfaces
+                    ? $"{RootNamespace}.Builders"
+                    : BuilderAbstractionsNamespace),
+                new MetadataBuilder(MetadataNames.CustomBuilderParentTypeName, "{NoGenerics(ClassName(property.ParentTypeFullName))}Builder{GenericArguments(property.ParentTypeFullName, true)}")
             );
 
-        foreach (var mapping in CreateAdditionalNamespaceMappings())
+        foreach (var mapping in GetAdditionalNamespaceMappings())
         {
             yield return mapping;
         }
     }
 
-    protected virtual IEnumerable<NamespaceMappingBuilder> CreateAdditionalNamespaceMappings()
-        => [];
-
     protected IEnumerable<TypenameMappingBuilder> CreateTypenameMappings(bool? useBuilderAbstractionsTypeConversion = null)
-        => GetType().Assembly.GetTypes()
+    {
+        var skipNamespaceOnTypenameMappings = GetSkippedNamespacesOnTypenameMappings();
+
+        return GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface
                 && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models", StringComparison.Ordinal) == true
-                && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
-                && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Domains"
-                && !SkipNamespaceOnTypenameMappings(x.Namespace)
+                && !skipNamespaceOnTypenameMappings.Contains(x.Namespace)
                 && x.FullName is not null)
             .SelectMany(x =>
                 (new[]
                 {
-                    new TypenameMappingBuilder().WithSourceType(x).WithTargetTypeName($"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}"),
-                    new TypenameMappingBuilder().WithSourceTypeName($"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}").WithTargetTypeName($"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}")
+                    new TypenameMappingBuilder(x, $"{CoreNamespace}.{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}"),
+                    new TypenameMappingBuilder($"{CoreNamespace}.{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}")
                         .AddMetadata
                         (
-                            new MetadataBuilder().WithValue($"{CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}").WithName(MetadataNames.CustomBuilderNamespace),
-                            new MetadataBuilder().WithValue($"{x.GetEntityClassName()}Builder").WithName(MetadataNames.CustomBuilderName),
-                            new MetadataBuilder().WithValue($"{AbstractionsParentNamespace}.Abstractions.Builders").WithName(MetadataNames.CustomBuilderInterfaceNamespace),
-                            new MetadataBuilder().WithValue($"I{x.GetEntityClassName()}Builder").WithName(MetadataNames.CustomBuilderInterfaceName),
-                            new MetadataBuilder().WithValue($"{AbstractionsParentNamespace}.Abstractions.Builders.I{x.GetEntityClassName()}Builder").WithName(MetadataNames.CustomBuilderInterfaceTypeName),
-                            new MetadataBuilder().WithValue(x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
-                                ? $"new {CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder([Name])"
-                                : "[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
-                            new MetadataBuilder().WithValue(x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && IsAbstractType(x)
-                                ? new Literal($"default({CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder)", null)
-                                : new Literal($"new {CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder()", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
-                            new MetadataBuilder().WithValue(x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
+                            new MetadataBuilder(MetadataNames.CustomBuilderNamespace, $"{CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}"),
+                            new MetadataBuilder(MetadataNames.CustomBuilderName, $"{x.GetEntityClassName()}Builder"),
+                            new MetadataBuilder(MetadataNames.CustomBuilderInterfaceNamespace, $"{AbstractionsNamespace}.Builders"),
+                            new MetadataBuilder(MetadataNames.CustomBuilderInterfaceName, $"I{x.GetEntityClassName()}Builder"),
+                            new MetadataBuilder(MetadataNames.CustomBuilderInterfaceTypeName, $"{AbstractionsNamespace}.Builders.I{x.GetEntityClassName()}Builder"),
+                            new MetadataBuilder(MetadataNames.CustomBuilderSourceExpression, x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
+                                ? $"new {CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder([Name])"
+                                : "[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]"),
+                            new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && IsAbstractType(x)
+                                ? new Literal($"default({CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder)")
+                                : new Literal($"new {CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder()")),
+                            new MetadataBuilder(MetadataNames.CustomBuilderMethodParameterExpression, x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
                                 ? "[Name][NullableSuffix].BuildTyped()[ForcedNullableSuffix]"
-                                : "[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression),
-                            new MetadataBuilder().WithName(MetadataNames.CustomEntityInterfaceTypeName).WithValue($"{AbstractionsParentNamespace}.Abstractions.I{x.GetEntityClassName()}")
+                                : "[Name][NullableSuffix].Build()[ForcedNullableSuffix]"),
+                            new MetadataBuilder(MetadataNames.CustomEntityInterfaceTypeName, $"{AbstractionsNamespace}.I{x.GetEntityClassName()}")
                         )
                 }))
             .Concat(
             [
-                new TypenameMappingBuilder().WithSourceType(typeof(bool)).WithTargetType(typeof(bool)).AddMetadata(new MetadataBuilder().WithValue(true).WithName(MetadataNames.CustomBuilderWithDefaultPropertyValue)),
-                new TypenameMappingBuilder().WithSourceTypeName(typeof(List<>).WithoutGenerics()).WithTargetTypeName(typeof(List<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(MetadataNames.CustomCollectionInitialization)),
-                new TypenameMappingBuilder().WithSourceTypeName(typeof(Collection<>).WithoutGenerics()).WithTargetTypeName(typeof(Collection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("new [Type][Generics]([Expression].ToList())").WithName(MetadataNames.CustomCollectionInitialization)),
-                new TypenameMappingBuilder().WithSourceTypeName(typeof(ObservableCollection<>).WithoutGenerics()).WithTargetTypeName(typeof(ObservableCollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("new [Type][Generics]([Expression])").WithName(MetadataNames.CustomCollectionInitialization)),
-                new TypenameMappingBuilder().WithSourceTypeName(typeof(IReadOnlyCollection<>).WithoutGenerics()).WithTargetTypeName(typeof(IReadOnlyCollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList().AsReadOnly()").WithName(MetadataNames.CustomCollectionInitialization)),
-                new TypenameMappingBuilder().WithSourceTypeName(typeof(IList<>).WithoutGenerics()).WithTargetTypeName(typeof(IList<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(MetadataNames.CustomCollectionInitialization)),
-                new TypenameMappingBuilder().WithSourceTypeName(typeof(ICollection<>).WithoutGenerics()).WithTargetTypeName(typeof(ICollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(MetadataNames.CustomCollectionInitialization)),
+                new TypenameMappingBuilder(typeof(bool))
+                    .AddMetadata(new MetadataBuilder(MetadataNames.CustomBuilderWithDefaultPropertyValue, true)),
+                new TypenameMappingBuilder(typeof(List<>).WithoutGenerics())
+                    .AddMetadata(new MetadataBuilder(MetadataNames.CustomCollectionInitialization, "[Expression].ToList()")),
+                new TypenameMappingBuilder(typeof(Collection<>).WithoutGenerics())
+                    .AddMetadata(new MetadataBuilder(MetadataNames.CustomCollectionInitialization, "new [Type][Generics]([Expression].ToList())")),
+                new TypenameMappingBuilder(typeof(ObservableCollection<>).WithoutGenerics())
+                    .AddMetadata(new MetadataBuilder(MetadataNames.CustomCollectionInitialization, "new [Type][Generics]([Expression])")),
+                new TypenameMappingBuilder(typeof(IReadOnlyCollection<>).WithoutGenerics())
+                    .AddMetadata(new MetadataBuilder(MetadataNames.CustomCollectionInitialization, "[Expression].ToList().AsReadOnly()")),
+                new TypenameMappingBuilder(typeof(IList<>).WithoutGenerics())
+                    .AddMetadata(new MetadataBuilder(MetadataNames.CustomCollectionInitialization, "[Expression].ToList()")),
+                new TypenameMappingBuilder(typeof(ICollection<>).WithoutGenerics())
+                    .AddMetadata(new MetadataBuilder(MetadataNames.CustomCollectionInitialization, "[Expression].ToList()")),
             ])
             .Concat(CreateBuilderAbstractionsTypeConversionTypenameMapping(useBuilderAbstractionsTypeConversion))
-            .Concat(CreateAdditionalTypenameMappings());
+            .Concat(GetAdditionalTypenameMappings());
+    }
 
     private IEnumerable<TypenameMappingBuilder> CreateBuilderAbstractionsTypeConversionTypenameMapping(bool? useBuilderAbstractionsTypeConversion)
         => GetType().Assembly.GetTypes()
@@ -393,35 +417,24 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected TypenameMappingBuilder[] CreateBuilderAbstractionTypeConversionTypenameMapping(string entityClassName, string genericTypeArgumentsString)
         =>
         [
-            new TypenameMappingBuilder()
-                .WithSourceTypeName($"{AbstractionsParentNamespace}.Abstractions.I{entityClassName}{genericTypeArgumentsString}")
-                .WithTargetTypeName($"{AbstractionsParentNamespace}.Abstractions.I{entityClassName}")
+            new TypenameMappingBuilder($"{AbstractionsNamespace}.I{entityClassName}{genericTypeArgumentsString}", $"{AbstractionsNamespace}.I{entityClassName}")
                 .AddMetadata
                 (
-                    new MetadataBuilder().WithValue(BuilderAbstractionsNamespace).WithName(MetadataNames.CustomBuilderNamespace),
-                    new MetadataBuilder().WithValue($"I{entityClassName.WithoutGenerics()}Builder").WithName(MetadataNames.CustomBuilderName),
-                    new MetadataBuilder().WithValue(BuilderAbstractionsNamespace).WithName(MetadataNames.CustomBuilderInterfaceNamespace),
-                    new MetadataBuilder().WithValue($"I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString}").WithName(MetadataNames.CustomBuilderInterfaceName),
-                    new MetadataBuilder().WithValue($"{BuilderAbstractionsNamespace}.I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString}").WithName(MetadataNames.CustomBuilderInterfaceTypeName),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
-                    new MetadataBuilder().WithValue(new Literal($"default({BuilderAbstractionsNamespace}.I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString})", null)).WithName(MetadataNames.CustomBuilderDefaultValue),
-                    new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression),
-                    new MetadataBuilder().WithValue($"{AbstractionsParentNamespace}.Abstractions.I{entityClassName}").WithName(MetadataNames.CustomEntityInterfaceTypeName)
+                    new MetadataBuilder(MetadataNames.CustomBuilderNamespace, BuilderAbstractionsNamespace),
+                    new MetadataBuilder(MetadataNames.CustomBuilderName, $"I{entityClassName.WithoutGenerics()}Builder"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderInterfaceNamespace, BuilderAbstractionsNamespace),
+                    new MetadataBuilder(MetadataNames.CustomBuilderInterfaceName, $"I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString}"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderInterfaceTypeName, $"{BuilderAbstractionsNamespace}.I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString}"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderSourceExpression, "[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal($"default({BuilderAbstractionsNamespace}.I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString})")),
+                    new MetadataBuilder(MetadataNames.CustomBuilderMethodParameterExpression, "[Name][NullableSuffix].Build()[ForcedNullableSuffix]"),
+                    new MetadataBuilder(MetadataNames.CustomEntityInterfaceTypeName, $"{AbstractionsNamespace}.I{entityClassName}")
                 ),
             //Temporary fix for flaw in abstractions typename mapping
-            new TypenameMappingBuilder()
-                .WithSourceTypeName($"{CoreNamespace}.Builders.I{entityClassName}Builder")
-                .WithTargetTypeName($"{BuilderAbstractionsNamespace}.I{entityClassName}Builder"),
-            new TypenameMappingBuilder()
-                .WithSourceTypeName($"{CoreNamespace}.Abstractions.{entityClassName}")
-                .WithTargetTypeName($"{AbstractionsParentNamespace}.Abstractions.I{entityClassName}"),
-            new TypenameMappingBuilder()
-                .WithSourceTypeName($"{AbstractionsParentNamespace}.Abstractions.{entityClassName}")
-                .WithTargetTypeName($"{AbstractionsParentNamespace}.Abstractions.I{entityClassName}")
+            new TypenameMappingBuilder($"{CoreNamespace}.Builders.I{entityClassName}Builder", $"{BuilderAbstractionsNamespace}.I{entityClassName}Builder"),
+            new TypenameMappingBuilder($"{CoreNamespace}.Abstractions.{entityClassName}", $"{AbstractionsNamespace}.I{entityClassName}"),
+            new TypenameMappingBuilder($"{AbstractionsNamespace}.{entityClassName}", $"{AbstractionsNamespace}.I{entityClassName}")
         ];
-
-    protected virtual IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
-         => [];
 
     protected virtual bool IsAbstractType(Type type)
     {
@@ -432,7 +445,19 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             && type.Name.WithoutTypeGenerics().EndsWith("Base");
     }
 
-    protected virtual bool SkipNamespaceOnTypenameMappings(string @namespace) => false;
+    protected IEnumerable<string> GetSkippedNamespacesOnTypenameMappings()
+    {
+        yield return $"{CodeGenerationRootNamespace}.Models.Abstractions";
+        yield return $"{CodeGenerationRootNamespace}.Models.Domains";
+        yield return $"{CodeGenerationRootNamespace}.Validation";
+
+        foreach (var ns in GetAdditionalSkippedNamespacesOnTypenameMappings())
+        {
+            yield return ns;
+        }
+    }
+
+    protected virtual string[] GetAdditionalSkippedNamespacesOnTypenameMappings() => [];
 
     protected static ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
         => secondCondition
@@ -452,10 +477,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
         return
         [
-            new MetadataBuilder().WithValue(buildersNamespace).WithName(MetadataNames.CustomBuilderNamespace),
-            new MetadataBuilder().WithValue("{ClassName(property.TypeName)}Builder").WithName(MetadataNames.CustomBuilderName),
-            new MetadataBuilder().WithValue("[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderSourceExpression),
-            new MetadataBuilder().WithValue("[Name][NullableSuffix].Build()[ForcedNullableSuffix]").WithName(MetadataNames.CustomBuilderMethodParameterExpression)
+            new MetadataBuilder(MetadataNames.CustomBuilderNamespace, buildersNamespace),
+            new MetadataBuilder(MetadataNames.CustomBuilderName, "{ClassName(property.TypeName)}Builder"),
+            new MetadataBuilder(MetadataNames.CustomBuilderSourceExpression, "[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]"),
+            new MetadataBuilder(MetadataNames.CustomBuilderMethodParameterExpression, "[Name][NullableSuffix].Build()[ForcedNullableSuffix]")
         ];
     }
 
@@ -704,23 +729,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         }
 
         return await successTask(settingsResult.Value!).ConfigureAwait(false);
-    }
-
-    private static string ReplaceStart(string fullNamespace, string baseNamespace, bool appendDot)
-    {
-        if (fullNamespace.Length == 0)
-        {
-            return fullNamespace;
-        }
-
-        if (fullNamespace.StartsWith($"{baseNamespace}."))
-        {
-            return appendDot
-                ? string.Concat(fullNamespace.AsSpan(baseNamespace.Length + 1), ".")
-                : string.Concat(".", fullNamespace.AsSpan(baseNamespace.Length + 1));
-        }
-
-        return string.Empty;
     }
 
     private static bool DefaultCopyAttributePredicate(Domain.Attribute attribute)

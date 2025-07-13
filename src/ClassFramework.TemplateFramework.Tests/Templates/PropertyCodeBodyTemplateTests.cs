@@ -13,7 +13,7 @@ public class PropertyCodeBodyTemplateTests : TemplateTestBase<PropertyCodeBodyTe
             sut.Model = new PropertyCodeBodyViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(),
-                Model = new PropertyCodeBodyModel("get", Visibility.Public, SubVisibility.InheritFromParent, parentModel, new[] { new StringCodeStatementBuilder().WithStatement("//code goes here").Build() }.AsReadOnly(), CultureInfo.InvariantCulture)
+                Model = new PropertyCodeBodyModel("get", Visibility.Public, SubVisibility.InheritFromParent, parentModel, new[] { new StringCodeStatementBuilder("//code goes here").Build() }.AsReadOnly(), CultureInfo.InvariantCulture)
             };
             var engine = Substitute.For<ITemplateEngine>();
             engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is CodeStatementBase ? Result.Error("Kaboom!") : Result.Success());
@@ -37,7 +37,7 @@ public class PropertyCodeBodyTemplateTests : TemplateTestBase<PropertyCodeBodyTe
             sut.Model = new PropertyCodeBodyViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(),
-                Model = new PropertyCodeBodyModel("get", Visibility.Public, SubVisibility.InheritFromParent, parentModel, new[] { new StringCodeStatementBuilder().WithStatement("//code goes here").Build() }.AsReadOnly(), CultureInfo.InvariantCulture)
+                Model = new PropertyCodeBodyModel("get", Visibility.Public, SubVisibility.InheritFromParent, parentModel, new[] { new StringCodeStatementBuilder("//code goes here").Build() }.AsReadOnly(), CultureInfo.InvariantCulture)
             };
             var engine = Substitute.For<ITemplateEngine>();
             engine.RenderAsync(Arg.Any<IRenderTemplateRequest>(), Arg.Any<CancellationToken>()).Returns(x => x.ArgAt<IRenderTemplateRequest>(0).Model is CodeStatementBase ? Result.Error("Kaboom!") : Result.Success());
@@ -62,7 +62,7 @@ public class PropertyCodeBodyTemplateTests : TemplateTestBase<PropertyCodeBodyTe
             sut.Model = new PropertyCodeBodyViewModel
             {
                 Settings = CreateCsharpClassGeneratorSettings(),
-                Model = new PropertyCodeBodyModel("get", Visibility.Public, SubVisibility.InheritFromParent, parentModel, new[] { new StringCodeStatementBuilder().WithStatement("//code goes here").Build() }.AsReadOnly(), CultureInfo.InvariantCulture)
+                Model = new PropertyCodeBodyModel("get", Visibility.Public, SubVisibility.InheritFromParent, parentModel, new[] { new StringCodeStatementBuilder("//code goes here").Build() }.AsReadOnly(), CultureInfo.InvariantCulture)
             };
             var engine = Substitute.For<ITemplateEngine>();
             var builder = new StringBuilder();

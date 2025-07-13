@@ -57,7 +57,7 @@ public class PropertyCodeBodyModelTests : TestBase
             var codeStatementsList = new List<CodeStatementBase>();
             if (filledCodeStatements)
             {
-                codeStatementsList.Add(new StringCodeStatementBuilder().WithStatement("// statement goes here").Build());
+                codeStatementsList.Add(new StringCodeStatementBuilder("// statement goes here").Build());
             }
             object? parentModel = parentModelType switch
             {

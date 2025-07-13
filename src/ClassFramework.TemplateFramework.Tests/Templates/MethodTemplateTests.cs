@@ -63,7 +63,7 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
                     .WithReturnType(typeof(int))
                     .AddAttributes(new AttributeBuilder().WithName("Test"))
                     .AddParameter("MyParameter", typeof(int))
-                    .AddStringCodeStatements("//code goes here")
+                    .AddCodeStatements("//code goes here")
                     .WithAbstract() // this sets OmitCode to true
                     .Build()
             };
@@ -92,7 +92,7 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
                 Model = new MethodBuilder().WithName("MyMethod").WithReturnType(typeof(int))
                     .AddAttributes(new AttributeBuilder().WithName("Test"))
                     .AddParameter("MyParameter", typeof(int))
-                    .AddStringCodeStatements("//code goes here")
+                    .AddCodeStatements("//code goes here")
                     .WithAbstract(false) // this sets OmitCode to false
                     .Build()
             };
@@ -132,7 +132,7 @@ public class MethodTemplateTests : TemplateTestBase<MethodTemplate>
                 Model = new MethodBuilder().WithName("MyMethod").WithReturnType(typeof(int))
                     .AddAttributes(new AttributeBuilder().WithName("Test"))
                     .AddParameter("MyParameter", typeof(int))
-                    .AddStringCodeStatements("//code goes here")
+                    .AddCodeStatements("//code goes here")
                     .WithAbstract(false) // this sets OmitCode to false
                     .Build()
             };

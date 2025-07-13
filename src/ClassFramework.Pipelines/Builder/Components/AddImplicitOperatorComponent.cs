@@ -35,7 +35,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
                 .WithName($"{context.Request.ReturnType}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
                 .WithReturnTypeName("implicit")
                 .AddParameter("entity", $"{nameResult.Value}{genericArguments}")
-                .AddStringCodeStatements(!context.Request.Settings.IsForAbstractBuilder
+                .AddCodeStatements(!context.Request.Settings.IsForAbstractBuilder
                     ? "return entity.BuildTyped();"
                     : "return entity.Build();"));
 
@@ -52,7 +52,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
             .WithName($"{context.Request.ReturnType}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
             .WithReturnTypeName("implicit")
             .AddParameter("entity", $"{nameResult.Value}{genericArgumentsFlat}")
-            .AddStringCodeStatements($"return entity.{GetName(context)}();"));
+            .AddCodeStatements($"return entity.{GetName(context)}();"));
 
         return Result.Success();
     }

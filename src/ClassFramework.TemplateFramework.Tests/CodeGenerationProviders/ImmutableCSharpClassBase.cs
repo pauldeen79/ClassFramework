@@ -22,6 +22,8 @@ public abstract class ImmutableCSharpClassBase(IPipelineService pipelineService)
     protected async Task<Result<IEnumerable<TypeBase>>> GetTemplateFrameworkModels()
         => await GetNonCoreModelsAsync($"{CodeGenerationRootNamespace}.Models.TemplateFramework").ConfigureAwait(false);
 
-    protected override bool SkipNamespaceOnTypenameMappings(string @namespace)
-        => @namespace == $"{CodeGenerationRootNamespace}.Models.TemplateFramework";
+    protected override string[] GetAdditionalSkippedNamespacesOnTypenameMappings() =>
+    [
+        $"{CodeGenerationRootNamespace}.Models.TemplateFramework",
+    ];
 }

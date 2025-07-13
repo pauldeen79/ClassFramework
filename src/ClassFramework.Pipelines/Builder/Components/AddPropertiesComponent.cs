@@ -59,7 +59,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
     {
         if (property.HasBackingFieldOnBuilder(context.Request.Settings))
         {
-            yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())};");
+            yield return new StringCodeStatementBuilder($"return _{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())};");
         }
     }
 
@@ -73,14 +73,14 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
                 var nullSuffix = context.Request.Settings.EnableNullableReferenceTypes && !property.IsValueType
                     ? "!"
                     : string.Empty;
-                results.Add(new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !{typeof(EqualityComparer<>).WithoutGenerics()}<{(await property.GetBuilderArgumentTypeNameAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token).ConfigureAwait(false)).Value}>.Default.Equals(_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});"));
+                results.Add(new StringCodeStatementBuilder($"bool hasChanged = !{typeof(EqualityComparer<>).WithoutGenerics()}<{(await property.GetBuilderArgumentTypeNameAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token).ConfigureAwait(false)).Value}>.Default.Equals(_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});"));
             }
 
-            results.Add(new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Request.Settings.AddNullChecks, context.Request.SourceModel)};"));
+            results.Add(new StringCodeStatementBuilder($"_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Request.Settings.AddNullChecks, context.Request.SourceModel)};"));
 
             if (context.Request.Settings.CreateAsObservable)
             {
-                results.Add(new StringCodeStatementBuilder().WithStatement($"if (hasChanged) HandlePropertyChanged(nameof({property.Name}));"));
+                results.Add(new StringCodeStatementBuilder($"if (hasChanged) HandlePropertyChanged(nameof({property.Name}));"));
             }
         }
 

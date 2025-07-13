@@ -32,13 +32,13 @@ public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPip
                     .WithOverride()
                     .WithName(nameof(Equals))
                     .AddParameter("obj", typeof(object))
-                    .AddStringCodeStatements($"return Equals(obj as {nameResult.Value});"),
+                    .AddCodeStatements($"return Equals(obj as {nameResult.Value});"),
 
                 new MethodBuilder()
                     .WithReturnType(typeof(bool))
                     .WithName(nameof(IEquatable<object>.Equals))
                     .AddParameter("other", nameResult.Value!)
-                    .AddStringCodeStatements(
+                    .AddCodeStatements(
                         $"if (other {context.Request.NullCheck}) return false;",
                         $"return {CreateEqualsCode(context.Request.Settings.IEquatableItemType == IEquatableItemType.Fields ? context.Request.SourceModel.Fields : context.Request.SourceModel.Properties)};"),
 
@@ -46,13 +46,13 @@ public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPip
                     .WithReturnType(typeof(int))
                     .WithOverride()
                     .WithName(nameof(GetHashCode))
-                    .AddStringCodeStatements(
+                    .AddCodeStatements(
                         "unchecked",
                         "{",
                         "    int hash = 17;"
                     )
-                    .AddStringCodeStatements(getHashCodeStatements)
-                    .AddStringCodeStatements(
+                    .AddCodeStatements(getHashCodeStatements)
+                    .AddCodeStatements(
                         "    return hash;",
                         "}"),
 
@@ -63,7 +63,7 @@ public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPip
                     .WithOperator()
                     .AddParameter("left", context.Request.SourceModel.Name)
                     .AddParameter("right", context.Request.SourceModel.Name)
-                    .AddStringCodeStatements($"return {typeof(EqualityComparer<>).WithoutGenerics()}<{context.Request.SourceModel.Name}>.Default.Equals(left, right);"),
+                    .AddCodeStatements($"return {typeof(EqualityComparer<>).WithoutGenerics()}<{context.Request.SourceModel.Name}>.Default.Equals(left, right);"),
 
                 new MethodBuilder()
                     .WithName("!=")
@@ -72,7 +72,7 @@ public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPip
                     .WithOperator()
                     .AddParameter("left", context.Request.SourceModel.Name)
                     .AddParameter("right", context.Request.SourceModel.Name)
-                    .AddStringCodeStatements("return !(left == right);"));
+                    .AddCodeStatements("return !(left == right);"));
 
         return Result.Success();
     }

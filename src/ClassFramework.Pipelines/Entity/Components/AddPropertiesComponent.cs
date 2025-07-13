@@ -62,7 +62,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
     {
         if (context.Settings.AddBackingFields || context.Settings.CreateAsObservable)
         {
-            yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())};");
+            yield return new StringCodeStatementBuilder($"return _{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())};");
         }
     }
 
@@ -75,14 +75,14 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
                 var nullSuffix = context.Settings.EnableNullableReferenceTypes && !property.IsValueType
                     ? "!"
                     : string.Empty;
-                yield return new StringCodeStatementBuilder().WithStatement($"bool hasChanged = !{typeof(EqualityComparer<>).WithoutGenerics()}<{context.CreatePropertyForEntity(property).TypeName}>.Default.Equals(_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});");
+                yield return new StringCodeStatementBuilder($"bool hasChanged = !{typeof(EqualityComparer<>).WithoutGenerics()}<{context.CreatePropertyForEntity(property).TypeName}>.Default.Equals(_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});");
             }
 
-            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks, context.SourceModel)};");
+            yield return new StringCodeStatementBuilder($"_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks, context.SourceModel)};");
 
             if (context.Settings.CreateAsObservable)
             {
-                yield return new StringCodeStatementBuilder().WithStatement($"if (hasChanged) HandlePropertyChanged(nameof({property.Name}));");
+                yield return new StringCodeStatementBuilder($"if (hasChanged) HandlePropertyChanged(nameof({property.Name}));");
             }
         }
     }
