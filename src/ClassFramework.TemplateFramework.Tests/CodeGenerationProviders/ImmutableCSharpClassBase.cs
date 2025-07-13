@@ -26,6 +26,7 @@ public abstract class ImmutableCSharpClassBase(IPipelineService pipelineService)
     [
         $"{CodeGenerationRootNamespace}.Models.Abstractions",
         $"{CodeGenerationRootNamespace}.Models.Domains",
+        $"{CodeGenerationRootNamespace}.Validation",
         $"{CodeGenerationRootNamespace}.Models.TemplateFramework",
     ];
 }

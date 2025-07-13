@@ -33,6 +33,7 @@ public abstract class ClassFrameworkCSharpClassBase(IPipelineService pipelineSer
     [
         $"{CodeGenerationRootNamespace}.Models.Abstractions",
         $"{CodeGenerationRootNamespace}.Models.Domains",
+        $"{CodeGenerationRootNamespace}.Validation",
         $"{CodeGenerationRootNamespace}.Models.Pipelines",
         $"{CodeGenerationRootNamespace}.Models.TemplateFramework",
     ];
@@ -43,22 +44,18 @@ public abstract class ClassFrameworkCSharpClassBase(IPipelineService pipelineSer
             .SelectMany(x => CreateCustomTypenameMappings(x, "ClassFramework.Pipelines", "ClassFramework.Pipelines.Builders"))
             .Concat(
             [
-                new TypenameMappingBuilder().WithSourceType(typeof(ArgumentValidationType)).WithTargetTypeName($"ClassFramework.Pipelines.Domains.{nameof(ArgumentValidationType)}"),
-                new TypenameMappingBuilder().WithSourceType(typeof(IEquatableItemType)).WithTargetTypeName($"ClassFramework.Pipelines.Domains.{nameof(IEquatableItemType)}"),
-                new TypenameMappingBuilder().WithSourceType(typeof(Models.Pipelines.AttributeInitializerDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(Models.Pipelines.AttributeInitializerDelegate)}"),
-                new TypenameMappingBuilder().WithSourceType(typeof(Models.Pipelines.CopyMethodPredicate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(Models.Pipelines.CopyMethodPredicate)}"),
-                new TypenameMappingBuilder().WithSourceType(typeof(Models.Pipelines.InheritanceComparisonDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(Models.Pipelines.InheritanceComparisonDelegate)}"),
-                new TypenameMappingBuilder().WithSourceType(typeof(Models.Pipelines.ReflectionInheritanceComparisonDelegate)).WithTargetTypeName($"ClassFramework.Pipelines.{nameof(Models.Pipelines.ReflectionInheritanceComparisonDelegate)}"),
+                new TypenameMappingBuilder(typeof(ArgumentValidationType), $"ClassFramework.Pipelines.Domains.{nameof(ArgumentValidationType)}"),
+                new TypenameMappingBuilder(typeof(IEquatableItemType), $"ClassFramework.Pipelines.Domains.{nameof(IEquatableItemType)}"),
+                new TypenameMappingBuilder(typeof(Models.Pipelines.AttributeInitializerDelegate), $"ClassFramework.Pipelines.{nameof(Models.Pipelines.AttributeInitializerDelegate)}"),
+                new TypenameMappingBuilder(typeof(Models.Pipelines.CopyMethodPredicate), $"ClassFramework.Pipelines.{nameof(Models.Pipelines.CopyMethodPredicate)}"),
+                new TypenameMappingBuilder(typeof(Models.Pipelines.InheritanceComparisonDelegate), $"ClassFramework.Pipelines.{nameof(Models.Pipelines.InheritanceComparisonDelegate)}"),
+                new TypenameMappingBuilder(typeof(Models.Pipelines.ReflectionInheritanceComparisonDelegate), $"ClassFramework.Pipelines.{nameof(Models.Pipelines.ReflectionInheritanceComparisonDelegate)}"),
             ]);
 
     private static IEnumerable<TypenameMappingBuilder> CreateCustomTypenameMappings(Type modelType, string entityNamespace, string buildersNamespace) =>
         [
-            new TypenameMappingBuilder()
-                .WithSourceType(modelType)
-                .WithTargetTypeName($"{entityNamespace}.{modelType.GetEntityClassName()}"),
-            new TypenameMappingBuilder()
-                .WithSourceTypeName($"{entityNamespace}.{modelType.GetEntityClassName()}")
-                .WithTargetTypeName($"{entityNamespace}.{modelType.GetEntityClassName()}")
+            new TypenameMappingBuilder(modelType, $"{entityNamespace}.{modelType.GetEntityClassName()}"),
+            new TypenameMappingBuilder($"{entityNamespace}.{modelType.GetEntityClassName()}", $"{entityNamespace}.{modelType.GetEntityClassName()}")
                 .AddMetadata(CreateTypenameMappingMetadata(buildersNamespace)),
         ];
 }

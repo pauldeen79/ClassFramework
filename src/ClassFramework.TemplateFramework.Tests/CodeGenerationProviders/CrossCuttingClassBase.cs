@@ -56,25 +56,25 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
         return await ProcessCrossCuttingBaseClassResultAsync(Task.FromResult(Result.Success(GetCrossCuttingModels().Single(x => x.GetFullName() == typeName).Build())), async typeBaseResult =>
         {
             var entitySettings = new PipelineSettingsBuilder()
-               .WithAddSetters(AddSetters)
-               .WithAddBackingFields(AddBackingFields)
-               .WithSetterVisibility(SetterVisibility)
-               .WithCreateAsObservable(CreateAsObservable)
-               .WithCreateRecord(CreateRecord)
-               .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
-               .WithCopyAttributes(CopyAttributes)
-               .WithCopyInterfaces(CopyInterfaces)
-               .WithCopyMethods(CopyMethods)
-               .WithInheritFromInterfaces(InheritFromInterfaces)
-               .WithCopyAttributePredicate(CopyAttributePredicate)
-               .WithCopyInterfacePredicate(CopyInterfacePredicate)
-               .WithCopyMethodPredicate(CopyMethodPredicate)
-               .WithEntityNameFormatString("{NoInterfacePrefix(class.Name)}")
-               .WithEntityNamespaceFormatString(@namespace)
-               .WithEnableInheritance()
-               .WithIsAbstract()
-               .WithBaseClass(null)
-               .WithInheritanceComparisonDelegate(
+                .WithAddSetters(AddSetters)
+                .WithAddBackingFields(AddBackingFields)
+                .WithSetterVisibility(SetterVisibility)
+                .WithCreateAsObservable(CreateAsObservable)
+                .WithCreateRecord(CreateRecord)
+                .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+                .WithCopyAttributes(CopyAttributes)
+                .WithCopyInterfaces(CopyInterfaces)
+                .WithCopyMethods(CopyMethods)
+                .WithInheritFromInterfaces(InheritFromInterfaces)
+                .WithCopyAttributePredicate(CopyAttributePredicate)
+                .WithCopyInterfacePredicate(CopyInterfacePredicate)
+                .WithCopyMethodPredicate(CopyMethodPredicate)
+                .WithEntityNameFormatString("{NoInterfacePrefix(class.Name)}")
+                .WithEntityNamespaceFormatString(@namespace)
+                .WithEnableInheritance()
+                .WithIsAbstract()
+                .WithBaseClass(null)
+                .WithInheritanceComparisonDelegate(
                    (parentNameContainer, typeBase)
                        => parentNameContainer is not null
                        && typeBase is not null
@@ -83,13 +83,13 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                            || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
                            || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.") && typeBase.Namespace.In(CoreNamespace, $"{RootNamespace}.Builders"))
                        ))
-               .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
-               .WithEnableNullableReferenceTypes()
-               .AddTypenameMappings(CreateTypenameMappings())
-               .AddNamespaceMappings(CreateNamespaceMappings())
-               .WithValidateArguments(ValidateArgumentsInConstructor)
-               .WithAddNullChecks(AddNullChecks)
-               .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull);
+                .WithEntityNewCollectionTypeName(EntityCollectionType.WithoutGenerics())
+                .WithEnableNullableReferenceTypes()
+                .AddTypenameMappings(CreateTypenameMappings())
+                .AddNamespaceMappings(CreateNamespaceMappings())
+                .WithValidateArguments(ValidateArgumentsInConstructor)
+                .WithAddNullChecks(AddNullChecks)
+                .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull);
 
             return await PipelineService.ProcessAsync(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo, CancellationToken.None)).ConfigureAwait(false);
         }).ConfigureAwait(false);

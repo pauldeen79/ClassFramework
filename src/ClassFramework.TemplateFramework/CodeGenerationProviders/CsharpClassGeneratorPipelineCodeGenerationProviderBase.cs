@@ -32,7 +32,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected abstract Type EntityConcreteCollectionType { get; }
     protected abstract Type BuilderCollectionType { get; }
 
-    protected virtual string EnvironmentVersion => string.Empty;
     protected virtual string RootNamespace => InheritFromInterfaces
         ? $"{ProjectName}.Abstractions"
         : CoreNamespace;
@@ -42,6 +41,14 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual string AbstractionsNamespace => InheritFromInterfaces
         ? $"{ProjectName}.Abstractions"
         : $"{CoreNamespace}.Abstractions";
+    protected virtual string ValidationNamespace => InheritFromInterfaces
+        ? $"{AbstractionsNamespace}.Validation"
+        : $"{RootNamespace}.Validation";
+    protected virtual string DomainsNamespace => InheritFromInterfaces
+        ? $"{AbstractionsNamespace}.Domains"
+        : $"{RootNamespace}.Domains";
+
+    protected virtual string EnvironmentVersion => string.Empty;
     protected virtual bool CopyAttributes => false;
     protected virtual bool CopyInterfaces => false;
     protected virtual bool CopyMethods => false;
@@ -314,8 +321,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     {
         // From models to domain entities
         yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Models", CoreNamespace);
-        yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Models.Domains", $"{RootNamespace}.Domains");
+        yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Models.Domains", DomainsNamespace);
         yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Models.Abstractions", $"{AbstractionsNamespace}");
+        yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Validation", ValidationNamespace);
 
         // From domain entities to builders
         yield return new NamespaceMappingBuilder($"{AbstractionsNamespace}")
@@ -443,6 +451,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         [
             $"{CodeGenerationRootNamespace}.Models.Abstractions",
             $"{CodeGenerationRootNamespace}.Models.Domains",
+            $"{CodeGenerationRootNamespace}.Validation",
         ];
 
     protected static ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
