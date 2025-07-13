@@ -106,6 +106,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     protected virtual string[] GetExternalCustomBuilderTypes() => [];
 
+    protected virtual IEnumerable<NamespaceMappingBuilder> GetAdditionalNamespaceMappings() => [];
+
     protected virtual string[] GetCustomBuilderTypes()
         => GetPureAbstractModels()
             .Select(x => x.GetEntityClassName())
@@ -342,14 +344,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 new MetadataBuilder(MetadataNames.CustomBuilderParentTypeName, "{NoGenerics(ClassName(property.ParentTypeFullName))}Builder{GenericArguments(property.ParentTypeFullName, true)}")
             );
 
-        foreach (var mapping in CreateAdditionalNamespaceMappings())
+        foreach (var mapping in GetAdditionalNamespaceMappings())
         {
             yield return mapping;
         }
     }
-
-    protected virtual IEnumerable<NamespaceMappingBuilder> CreateAdditionalNamespaceMappings()
-        => [];
 
     protected IEnumerable<TypenameMappingBuilder> CreateTypenameMappings(bool? useBuilderAbstractionsTypeConversion = null)
     {
@@ -447,12 +446,19 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             && type.Name.WithoutTypeGenerics().EndsWith("Base");
     }
 
-    protected virtual string[] SkipsNamespaceOnTypenameMappings() =>
-        [
-            $"{CodeGenerationRootNamespace}.Models.Abstractions",
-            $"{CodeGenerationRootNamespace}.Models.Domains",
-            $"{CodeGenerationRootNamespace}.Validation",
-        ];
+    protected IEnumerable<string> SkipsNamespaceOnTypenameMappings()
+    {
+        yield return $"{CodeGenerationRootNamespace}.Models.Abstractions";
+        yield return $"{CodeGenerationRootNamespace}.Models.Domains";
+        yield return $"{CodeGenerationRootNamespace}.Validation";
+
+        foreach (var ns in GetAdditionalNamespacesToSkipOnTypenameMappings())
+        {
+            yield return ns;
+        }
+    }
+
+    protected virtual string[] GetAdditionalNamespacesToSkipOnTypenameMappings() => [];
 
     protected static ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
         => secondCondition
