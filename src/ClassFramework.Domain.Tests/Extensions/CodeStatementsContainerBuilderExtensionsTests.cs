@@ -1,5 +1,4 @@
-﻿
-namespace ClassFramework.Domain.Tests.Extensions;
+﻿namespace ClassFramework.Domain.Tests.Extensions;
 
 public class CodeStatementsContainerBuilderExtensionsTests : TestBase<TestCodeStatementsContainerBuilder>
 {
@@ -15,11 +14,11 @@ public class CodeStatementsContainerBuilderExtensionsTests : TestBase<TestCodeSt
             var result = sut.NotImplemented();
 
             // Assert
-            result.CodeStatements.ToArray().ShouldBeEquivalentTo(new CodeStatementBaseBuilder[] { new StringCodeStatementBuilder().WithStatement("throw new System.NotImplementedException();") });
+            result.CodeStatements.ToArray().ShouldBeEquivalentTo(new CodeStatementBaseBuilder[] { new StringCodeStatementBuilder("throw new System.NotImplementedException();") });
         }
     }
 
-    public class AddStringCodeStatements : CodeStatementsContainerBuilderExtensionsTests
+    public class AddCodeStatements : CodeStatementsContainerBuilderExtensionsTests
     {
         [Fact]
         public void Adds_Correct_Statement()
@@ -28,10 +27,10 @@ public class CodeStatementsContainerBuilderExtensionsTests : TestBase<TestCodeSt
             var sut = CreateSut();
 
             // Act
-            var result = sut.AddStringCodeStatements(new[] { "// code goes here" }.AsEnumerable());
+            var result = sut.AddCodeStatements(new[] { "// code goes here" }.AsEnumerable());
 
             // Assert
-            result.CodeStatements.ToArray().ShouldBeEquivalentTo(new CodeStatementBaseBuilder[] { new StringCodeStatementBuilder().WithStatement("// code goes here") });
+            result.CodeStatements.ToArray().ShouldBeEquivalentTo(new CodeStatementBaseBuilder[] { new StringCodeStatementBuilder("// code goes here") });
         }
     }
 }

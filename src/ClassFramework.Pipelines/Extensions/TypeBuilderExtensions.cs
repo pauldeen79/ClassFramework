@@ -17,7 +17,7 @@ public static class TypeBuilderExtensions
                 .WithName("HandlePropertyChanged")
                 .AddParameter("propertyName", typeof(string))
                 .WithProtected()
-                .AddStringCodeStatements("PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));")
+                .AddCodeStatements("PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));")
             );
     }
 }

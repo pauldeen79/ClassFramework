@@ -41,7 +41,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
 
             context.Request.AddNullChecks(builder, results);
 
-            builder.AddStringCodeStatements
+            builder.AddCodeStatements
             (
                 results.GetValue("BuilderWithExpression"),
                 "return instance;"

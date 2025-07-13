@@ -36,7 +36,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
 
             context.Request.AddNullChecks(builder, results);
 
-            builder.AddStringCodeStatements
+            builder.AddCodeStatements
             (
                 results.GetValue("BuilderWithExpression"),
                 context.Request.ReturnValueStatementForFluentMethod

@@ -38,7 +38,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
                 .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
-                .AddStringCodeStatements(results.Where(x => x.Key.StartsWith("EnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
+                .AddCodeStatements(results.Where(x => x.Key.StartsWith("EnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
             );
 
             context.Request.Builder.AddMethods(new MethodBuilder()
@@ -50,7 +50,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
                 .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
-                .AddStringCodeStatements(results.Where(x => x.Key.StartsWith("ArrayOverload.")).Select(x => x.Value.Value!.ToString()))
+                .AddCodeStatements(results.Where(x => x.Key.StartsWith("ArrayOverload.")).Select(x => x.Value.Value!.ToString()))
             );
         }
 

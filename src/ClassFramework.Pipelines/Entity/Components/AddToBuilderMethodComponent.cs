@@ -76,7 +76,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                 .AddReturnTypeGenericTypeArguments(context.Request.Settings.BaseClass is not null
                     ? Enumerable.Empty<ITypeContainerBuilder>()
                     : context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
-                .AddStringCodeStatements(returnStatement));
+                .AddCodeStatements(returnStatement));
 
         if (context.Request.Settings.EnableInheritance
             && context.Request.Settings.BaseClass is not null
@@ -87,7 +87,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                     .WithName(typedMethodName)
                     .WithReturnTypeName(builderConcreteTypeName)
                     .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
-                    .AddStringCodeStatements($"return new {builderConcreteTypeName}{generics}(this);"));
+                    .AddCodeStatements($"return new {builderConcreteTypeName}{generics}(this);"));
         }
         else if (context.Request.Settings.UseCrossCuttingInterfaces)
         {
@@ -155,7 +155,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
             .WithName(methodName)
             .WithReturnTypeName(x.Value!.BuilderName)
             .WithExplicitInterfaceName(x.Value!.EntityName)
-            .AddStringCodeStatements($"return {methodCallName}();")));
+            .AddCodeStatements($"return {methodCallName}();")));
 
         return Result.Success();
     }

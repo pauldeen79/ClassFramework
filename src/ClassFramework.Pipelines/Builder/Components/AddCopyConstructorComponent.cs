@@ -73,7 +73,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         return Result.Success(new ConstructorBuilder()
             .WithChainCall(await CreateBuilderClassCopyConstructorChainCallAsync(context.Request.SourceModel, context.Request.Settings).ConfigureAwait(false))
             .WithProtected(context.Request.IsBuilderForAbstractEntity)
-            .AddStringCodeStatements
+            .AddCodeStatements
             (
                 new string[] { results.GetValue("NullCheck.Source") }.Where(x => !string.IsNullOrEmpty(x))
             )
@@ -89,8 +89,8 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
                     .GetValues<Parameter>(MetadataNames.CustomBuilderCopyConstructorParameter)
                     .Select(x => x.ToBuilder())
             )
-            .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Item1} = {x.Item2.Value};"))
-            .AddStringCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Item2.Value!, x.Item1, context)};"))
+            .AddCodeStatements(constructorInitializerResults.Select(x => $"{x.Item1} = {x.Item2.Value};"))
+            .AddCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Item2.Value!, x.Item1, context)};"))
         );
     }
 
