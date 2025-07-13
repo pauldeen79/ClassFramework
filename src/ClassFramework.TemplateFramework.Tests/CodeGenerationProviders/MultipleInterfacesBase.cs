@@ -55,7 +55,7 @@ public abstract class MultipleInterfacesBase(IPipelineService pipelineService) :
             ]));
 
     // this quirk is only needed because I build types using TypeBase derived entities instead of reflection
-    protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
+    protected override IEnumerable<TypenameMappingBuilder> GetAdditionalTypenameMappings()
     {
         foreach (var item in CreateBuilderAbstractionTypeConversionTypenameMapping("DefaultValueContainer", string.Empty))
         {

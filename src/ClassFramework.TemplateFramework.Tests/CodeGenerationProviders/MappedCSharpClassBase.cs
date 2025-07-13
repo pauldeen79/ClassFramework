@@ -19,7 +19,7 @@ public abstract class MappedCSharpClassBase(IPipelineService pipelineService) : 
     protected override bool AddImplicitOperatorOnBuilder => false;
     protected override bool UseBuilderAbstractionsTypeConversion => false;
 
-    protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
+    protected override IEnumerable<TypenameMappingBuilder> GetAdditionalTypenameMappings()
     {
         yield return new TypenameMappingBuilder()
             .WithSourceType(typeof(IMyMappedType))

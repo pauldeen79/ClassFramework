@@ -106,6 +106,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     protected virtual string[] GetExternalCustomBuilderTypes() => [];
 
+    protected virtual IEnumerable<TypenameMappingBuilder> GetAdditionalTypenameMappings() => [];
+
     protected virtual IEnumerable<NamespaceMappingBuilder> GetAdditionalNamespaceMappings() => [];
 
     protected virtual string[] GetCustomBuilderTypes()
@@ -114,9 +116,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Concat(GetExternalCustomBuilderTypes())
             .ToArray();
 
-    protected virtual string[] GetBuilderAbstractionsTypeConversionNamespaces() => [$"{AbstractionsNamespace}"];
+    protected virtual string[] GetBuilderAbstractionsTypeConversionNamespaces() => [AbstractionsNamespace];
     protected virtual string[] GetCodeGenerationBuilderAbstractionsTypeConversionNamespaces() => [$"{CodeGenerationRootNamespace}.Models.Abstractions"];
-    protected virtual string[] GetSkipNamespacesOnFluentBuilderMethods() => [$"{AbstractionsNamespace}"];
+    protected virtual string[] GetSkipNamespacesOnFluentBuilderMethods() => [AbstractionsNamespace];
 
     protected virtual IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetTypes().Where(IsAbstractType);
@@ -324,11 +326,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         // From models to domain entities
         yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Models", CoreNamespace);
         yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Models.Domains", DomainsNamespace);
-        yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Models.Abstractions", $"{AbstractionsNamespace}");
+        yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Models.Abstractions", AbstractionsNamespace);
         yield return new NamespaceMappingBuilder($"{CodeGenerationRootNamespace}.Validation", ValidationNamespace);
 
         // From domain entities to builders
-        yield return new NamespaceMappingBuilder($"{AbstractionsNamespace}")
+        yield return new NamespaceMappingBuilder(AbstractionsNamespace)
             .AddMetadata
             (
                 new MetadataBuilder(MetadataNames.CustomBuilderInterfaceNamespace, InheritFromInterfaces
@@ -401,7 +403,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                     .AddMetadata(new MetadataBuilder(MetadataNames.CustomCollectionInitialization, "[Expression].ToList()")),
             ])
             .Concat(CreateBuilderAbstractionsTypeConversionTypenameMapping(useBuilderAbstractionsTypeConversion))
-            .Concat(CreateAdditionalTypenameMappings());
+            .Concat(GetAdditionalTypenameMappings());
     }
 
     private IEnumerable<TypenameMappingBuilder> CreateBuilderAbstractionsTypeConversionTypenameMapping(bool? useBuilderAbstractionsTypeConversion)
@@ -433,9 +435,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             new TypenameMappingBuilder($"{CoreNamespace}.Abstractions.{entityClassName}", $"{AbstractionsNamespace}.I{entityClassName}"),
             new TypenameMappingBuilder($"{AbstractionsNamespace}.{entityClassName}", $"{AbstractionsNamespace}.I{entityClassName}")
         ];
-
-    protected virtual IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
-         => [];
 
     protected virtual bool IsAbstractType(Type type)
     {

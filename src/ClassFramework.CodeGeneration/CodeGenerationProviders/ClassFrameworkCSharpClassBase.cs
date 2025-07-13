@@ -35,7 +35,7 @@ public abstract class ClassFrameworkCSharpClassBase(IPipelineService pipelineSer
         $"{CodeGenerationRootNamespace}.Models.TemplateFramework",
     ];
 
-    protected override IEnumerable<TypenameMappingBuilder> CreateAdditionalTypenameMappings()
+    protected override IEnumerable<TypenameMappingBuilder> GetAdditionalTypenameMappings()
         => GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Pipelines" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
             .SelectMany(x => CreateCustomTypenameMappings(x, "ClassFramework.Pipelines", "ClassFramework.Pipelines.Builders"))
