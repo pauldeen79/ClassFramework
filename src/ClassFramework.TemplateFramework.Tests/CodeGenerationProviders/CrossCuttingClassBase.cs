@@ -65,7 +65,6 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                 .WithCopyAttributes(CopyAttributes)
                 .WithCopyInterfaces(CopyInterfaces)
                 .WithCopyMethods(CopyMethods)
-                .WithInheritFromInterfaces(InheritFromInterfaces)
                 .WithCopyAttributePredicate(CopyAttributePredicate)
                 .WithCopyInterfacePredicate(CopyInterfacePredicate)
                 .WithCopyMethodPredicate(CopyMethodPredicate)
