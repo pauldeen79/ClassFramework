@@ -4,6 +4,9 @@ public class InterfaceContext(TypeBase sourceModel, PipelineSettings settings, I
 {
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
 
+    public IEnumerable<Property> GetSourceProperties()
+        => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
+
     public InterfaceBuilder Builder => _wrappedBuilder.Builder;
 
     private readonly InterfaceBuilderWrapper _wrappedBuilder = new();

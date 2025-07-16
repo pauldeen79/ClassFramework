@@ -13,8 +13,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
             return Result.Success();
         }
 
-        foreach (var property in context.Request.SourceModel.Properties
-            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)))
+        foreach (var property in context.Request.GetSourceProperties())
         {
             var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
                 .Add(NamedResults.TypeName, property.GetBuilderArgumentTypeNameAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token))

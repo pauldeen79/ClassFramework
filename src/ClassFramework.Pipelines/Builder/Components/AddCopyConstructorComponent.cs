@@ -95,9 +95,8 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
     {
         var results = new List<Tuple<Property, Result<GenericFormattableString>>>();
 
-        foreach (var property in context.Request.SourceModel.Properties
-            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)
-                    && !(x.TypeName.FixTypeName().IsCollectionTypeName()
+        foreach (var property in context.Request.GetSourceProperties()
+            .Where(x => !(x.TypeName.FixTypeName().IsCollectionTypeName()
                     && context.Request.GetMappingMetadata(x.TypeName).Any(y => y.Name == MetadataNames.CustomBuilderConstructorInitializeExpression))))
         {
             var result = await CreateBuilderInitializationCodeAsync(property, context, token).ConfigureAwait(false);
@@ -117,9 +116,8 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
     {
         var results = new List<Tuple<string, Result<GenericFormattableString>>>();
 
-        foreach (var property in context.Request.SourceModel.Properties
-            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)
-                    && x.TypeName.FixTypeName().IsCollectionTypeName()))
+        foreach (var property in context.Request.GetSourceProperties()
+            .Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var name = property.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo());
             var result = await property.GetBuilderConstructorInitializerAsync(

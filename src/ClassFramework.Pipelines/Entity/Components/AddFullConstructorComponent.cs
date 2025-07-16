@@ -33,8 +33,7 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
     {
         var initializationResults = new List<Result<GenericFormattableString>>();
 
-        foreach (var property in context.Request.SourceModel.Properties
-            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)))
+        foreach (var property in context.Request.GetSourceProperties())
         {
             var result = await _evaluator.EvaluateInterpolatedStringAsync("this.{property.EntityMemberName} = {property.InitializationExpression};", context.Request.FormatProvider, new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings), token).ConfigureAwait(false);
 
@@ -56,8 +55,7 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
             .AddParameters(context.Request.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Request.FormatProvider, n => context.Request.MapTypeName(n, MetadataNames.CustomEntityInterfaceTypeName)))
             .AddCodeStatements
             (
-                context.Request.SourceModel.Properties
-                    .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
+                context.Request.GetSourceProperties()
                     .Where(property => context.Request.Settings.AddNullChecks && context.Request.Settings.AddValidationCode() == ArgumentValidationType.None && context.Request.GetMappingMetadata(property.TypeName).GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
                     .Select(property => context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )

@@ -6,10 +6,7 @@ public class AddPropertiesComponent : IPipelineComponent<InterfaceContext>
     {
         context = context.IsNotNull(nameof(context));
 
-        var properties = context.Request.SourceModel
-            .Properties
-            .Where(property => context.Request.SourceModel.IsMemberValidForBuilderClass(property, context.Request.Settings))
-            .ToArray();
+        var properties = context.Request.GetSourceProperties().ToArray();
 
         context.Request.Builder.AddProperties
         (
