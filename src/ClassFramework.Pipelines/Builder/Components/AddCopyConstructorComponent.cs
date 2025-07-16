@@ -65,10 +65,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         }
 
         var name = results.GetValue(NamedResults.Name).ToString();
-        name = FixEntityName(context, name, $"{results.GetValue(NamedResults.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{name}");
-        var nsPlusPrefix = context.Request.Settings.InheritFromInterfaces
-            ? string.Empty
-            : results.GetValue(NamedResults.Namespace).ToString().AppendWhenNotNullOrEmpty(".");
+        var nsPlusPrefix = results.GetValue(NamedResults.Namespace).ToString().AppendWhenNotNullOrEmpty(".");
 
         return Result.Success(new ConstructorBuilder()
             .WithChainCall(await CreateBuilderClassCopyConstructorChainCallAsync(context.Request.SourceModel, context.Request.Settings).ConfigureAwait(false))
@@ -92,16 +89,6 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
             .AddCodeStatements(constructorInitializerResults.Select(x => $"{x.Item1} = {x.Item2.Value};"))
             .AddCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Item2.Value!, x.Item1, context)};"))
         );
-    }
-
-    private static string FixEntityName(PipelineContext<BuilderContext> context, string name, string fullName)
-    {
-        if (context.Request.Settings.InheritFromInterfaces)
-        {
-            return context.Request.MapTypeName(fullName, MetadataNames.CustomEntityInterfaceTypeName);
-        }
-
-        return name;
     }
 
     private async Task<Tuple<Property, Result<GenericFormattableString>>[]> GetInitializationCodeResultsAsync(PipelineContext<BuilderContext> context, CancellationToken token)
@@ -218,11 +205,6 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
     private static ConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<BuilderContext> context)
     {
         var typeName = context.Request.SourceModel.GetFullName();
-
-        if (context.Request.Settings.InheritFromInterfaces)
-        {
-            typeName = context.Request.MapTypeName(typeName, MetadataNames.CustomEntityInterfaceTypeName);
-        }
 
         return new ConstructorBuilder()
             .WithChainCall("base(source)")

@@ -43,20 +43,8 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
             return true;
         }
 
-        if (!Settings.CopyInterfaces || !Settings.InheritFromInterfaces)
-        {
-            return Settings.SkipNamespacesOnFluentBuilderMethods.Count == 0
-                || !Settings.SkipNamespacesOnFluentBuilderMethods.Contains(property.ParentTypeFullName.GetNamespaceWithDefault());
-        }
-
-        if (property.ParentTypeFullName == SourceModel.GetFullName())
-        {
-            return true;
-        }
-
-        var isInterfaced = SourceModel.Interfaces.Any(x => x == property.ParentTypeFullName);
-
-        return !isInterfaced;
+        return Settings.SkipNamespacesOnFluentBuilderMethods.Count == 0
+            || !Settings.SkipNamespacesOnFluentBuilderMethods.Contains(property.ParentTypeFullName.GetNamespaceWithDefault());
     }
 
     public string ReturnValueStatementForFluentMethod => $"return {ReturnValue};";
