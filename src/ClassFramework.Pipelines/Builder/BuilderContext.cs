@@ -70,9 +70,7 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
                 return MapTypeName(SourceModel.GetFullName());
             }
 
-            return Settings.InheritFromInterfaces
-                ? MapTypeName(SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{SourceModel.Name}") ?? SourceModel.GetFullName())
-                : MapTypeName(SourceModel.GetFullName());
+            return MapTypeName(SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{SourceModel.Name}") ?? SourceModel.GetFullName());
         }
     }
 

@@ -6,4 +6,5 @@ public abstract class ImmutableInheritFromInterfacesCSharpClassBase(IPipelineSer
     protected override string AbstractionsNamespace => $"{ProjectName}.Abstractions";
     protected override string DomainsNamespace => $"{ProjectName}.Abstractions.Domains";
     protected override string ValidationNamespace => $"{ProjectName}.Abstractions.Validation";
+    protected override bool UseBuilderAbstractionsTypeConversion => true;
 }
