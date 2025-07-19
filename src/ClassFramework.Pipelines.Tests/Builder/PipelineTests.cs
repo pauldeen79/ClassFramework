@@ -4,7 +4,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
 {
     public class ProcessAsync : PipelineTests
     {
-        private static BuilderContext CreateContext(bool addProperties = true, bool createAsObservable = false)
+        private static BuilderContext CreateContext(bool addProperties = true, bool createAsObservable = false, bool useBuilderLazyValues = false)
             => new(
                 CreateGenericClass(addProperties),
                 CreateSettingsForBuilder
@@ -12,7 +12,8 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
                     builderNamespaceFormatString: "{class.Namespace}.Builders",
                     allowGenerationWithoutProperties: false,
                     copyAttributes: true,
-                    createAsObservable: createAsObservable
+                    createAsObservable: createAsObservable,
+                    useBuilderLazyValues: useBuilderLazyValues
                 ),
                 CultureInfo.InvariantCulture,
                 CancellationToken.None
@@ -50,7 +51,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
         }
 
         [Fact]
-        public async Task Adds_Properties()
+        public async Task Adds_Non_Lazy_Properties()
         {
             // Arrange
             var sut = CreateSut();
@@ -64,6 +65,23 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
             context.Builder.Properties.Select(x => x.HasSetter).ShouldAllBe(x => x == true);
             context.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
             context.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.String", "System.Collections.Generic.List<System.String>" });
+        }
+
+        [Fact]
+        public async Task Adds_Lazy_Properties()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var context = CreateContext(useBuilderLazyValues: true);
+
+            // Act
+            var result = await sut.ProcessAsync(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Builder.Properties.Select(x => x.HasSetter).ShouldAllBe(x => x == true);
+            context.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
+            context.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Func<System.String>", "System.Collections.Generic.List<System.Func<System.String>>" });
         }
 
         [Fact]

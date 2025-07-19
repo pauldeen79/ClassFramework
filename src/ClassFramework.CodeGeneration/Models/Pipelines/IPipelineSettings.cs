@@ -64,6 +64,7 @@ internal interface IPipelineSettings
     [Required] IReadOnlyCollection<ITypenameMapping> TypenameMappings { get; }
     bool UseBaseClassFromSourceModel { get; }
     [DefaultValue(true)] bool UseBuilderAbstractionsTypeConversion { get; }
+    bool UseBuilderLazyValues { get; }
     bool UseCrossCuttingInterfaces { get; }
     bool UseDefaultValueAttributeValuesForBuilderInitialization { get; }
     bool UseExceptionThrowIfNull { get; }

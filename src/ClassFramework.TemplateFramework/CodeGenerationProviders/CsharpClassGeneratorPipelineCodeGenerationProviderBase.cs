@@ -45,6 +45,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool CopyInterfaces => false;
     protected virtual bool CopyMethods => false;
     protected virtual bool UseBuilderAbstractionsTypeConversion => true;
+    protected virtual bool UseBuilderLazyValues => false;
     protected virtual bool AddNullChecks => true;
     protected virtual bool UseExceptionThrowIfNull => false;
     protected virtual bool CreateRecord => false;
@@ -558,6 +559,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithAddCopyConstructor(AddCopyConstructor)
                 .WithAddImplicitOperatorOnBuilder(AddImplicitOperatorOnBuilder)
                 .WithSetDefaultValuesInEntityConstructor(SetDefaultValues)
+                .WithUseBuilderLazyValues(UseBuilderLazyValues)
                 .AddSkipNamespacesOnFluentBuilderMethods(GetSkipNamespacesOnFluentBuilderMethods())
                 .Build())
             ));
@@ -571,6 +573,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithSetMethodNameFormatString(SetMethodNameFormatString)
                 .WithAddMethodNameFormatString(AddMethodNameFormatString)
                 .WithEnableBuilderInheritance(EnableBuilderInhericance)
+                .WithUseBuilderLazyValues(UseBuilderLazyValues)
                 .Build())
             ));
 

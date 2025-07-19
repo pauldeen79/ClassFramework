@@ -36,6 +36,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableCoreErrorBuilders>()
             .AddScoped<ImmutableCoreModelErrorBuilders>()
             .AddScoped<ImmutableCoreBaseClassErrorBuilders>()
+            .AddScoped<ImmutableCoreUseBuilderLazyValuesBuilders>()
             .AddScoped<ImmutablePrivateSettersCoreBuilders>()
             .AddScoped<ImmutablePrivateSettersCoreEntities>()
             .AddScoped<ImmutableInheritFromInterfacesCoreBuilders>()
@@ -753,6 +754,142 @@ namespace Test.Domain.Builders
         }
 
         public Test.Domain.Builders.LiteralBuilder WithOriginalValue(object? originalValue)
+        {
+            OriginalValue = originalValue;
+            return this;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_Builder_With_Lazy_Values()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreUseBuilderLazyValuesBuilders>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(2);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class GenericBuilder<T>
+    {
+        private System.Func<T> _myProperty;
+
+        public System.Func<T> MyProperty
+        {
+            get
+            {
+                return _myProperty;
+            }
+            set
+            {
+                _myProperty = value;
+            }
+        }
+
+        public GenericBuilder(Test.Domain.Generic<T> source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _myProperty = source.MyProperty;
+        }
+
+        public GenericBuilder()
+        {
+            _myProperty = default(T)!;
+            SetDefaultValues();
+        }
+
+        public Test.Domain.Generic<T> Build()
+        {
+            return new Test.Domain.Generic<T>(MyProperty);
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.GenericBuilder<T> WithMyProperty(System.Func<T> myProperty)
+        {
+            MyProperty = myProperty;
+            return this;
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class LiteralBuilder
+    {
+        private System.Func<string> _value;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public System.Func<string> Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+            }
+        }
+
+        public System.Func<object>? OriginalValue
+        {
+            get;
+            set;
+        }
+
+        public LiteralBuilder(Test.Domain.Literal source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _value = source.Value;
+            OriginalValue = source.OriginalValue;
+        }
+
+        public LiteralBuilder()
+        {
+            _value = string.Empty;
+            SetDefaultValues();
+        }
+
+        public Test.Domain.Literal Build()
+        {
+            return new Test.Domain.Literal(Value, OriginalValue);
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.LiteralBuilder WithValue(System.Func<string> value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
+
+        public Test.Domain.Builders.LiteralBuilder WithOriginalValue(System.Func<object>? originalValue)
         {
             OriginalValue = originalValue;
             return this;
