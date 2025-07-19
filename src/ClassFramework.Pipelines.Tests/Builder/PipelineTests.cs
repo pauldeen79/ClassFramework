@@ -312,6 +312,34 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
         }
 
         [Fact]
+        public async Task Adds_Fluent_Method_For_Lazy_Collection_Property()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var context = CreateContext(useBuilderLazyValues: true);
+
+            // Act
+            var result = await sut.ProcessAsync(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            var methods = context.Builder.Methods.Where(x => x.Name == "AddProperty2").ToArray();
+            methods.Count(x => x.Name == "AddProperty2").ShouldBe(2);
+            methods.Select(x => x.ReturnTypeName).ToArray().ShouldBeEquivalentTo(new[] { "MyNamespace.Builders.MyClassBuilder<T>", "MyNamespace.Builders.MyClassBuilder<T>" });
+            methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).ToArray().ShouldBeEquivalentTo(new[] { "System.Collections.Generic.IEnumerable<System.Func<System.String>>", "System.Func<System.String>[]" });
+            methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
+            (
+                new[]
+                {
+                    "return AddProperty2(property2.ToArray());",
+                    "foreach (var item in property2) Property2.Add(item);",
+                    "return this;"
+                }
+            );
+        }
+
+        [Fact]
         public async Task Adds_PropertyChanged_Event_When_Creating_Observable_Builder()
         {
             // Arrange
