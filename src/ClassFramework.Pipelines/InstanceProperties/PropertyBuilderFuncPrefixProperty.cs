@@ -18,7 +18,7 @@ public class PropertyBuilderFuncPrefixProperty : IProperty
                 //var useBuilderLazyValues = settings.UseBuilderLazyValues && builderName == DefaultBuilderName;
                 var useBuilderLazyValues = settings.UseBuilderLazyValues;
                 return useBuilderLazyValues
-                    ? $"new {typeof(Func<object>).ReplaceGenericTypeName(property.TypeName)}(() => "
+                    ? $"new {property.TypeName.ToLazy()}(() => "
                     : string.Empty;
             }).ConfigureAwait(false);
     }

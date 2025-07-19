@@ -361,9 +361,12 @@ public static class StringExtensions
         return $"{lazyPrefix}default({typeName}{preNullableSuffix}){postNullableSuffix}{lazySuffix}";
     }
 
+    public static string ToLazy(this string typeName)
+        => typeof(Func<object>).ReplaceGenericTypeName(typeName);
+
     private static string GetLazyPrefix(string typeName, bool useBuilderLazyValues)
         => useBuilderLazyValues
-            ? $"new {typeof(Func<object>).ReplaceGenericTypeName(typeName)}(() => "
+            ? $"new {typeName.ToLazy()}(() => "
             : string.Empty;
 
     private static string GetLazySuffix(bool useBuilderLazyValues)
