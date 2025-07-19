@@ -46,9 +46,26 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
                 )
             );
 
-            if (results.GetValue(ResultNames.TypeName) != results.GetValue(ResultNames.NonLazyTypeName))
+            //TODO: Add functionality to GenericFormattableString, so we can compare them by value (just like string)
+            if (results.GetValue(ResultNames.TypeName).ToString() != results.GetValue(ResultNames.NonLazyTypeName).ToString())
             {
-                //TODO: Add overload for non-func type
+                //Add overload for non-func type
+                context.Request.Builder.AddMethods(new MethodBuilder()
+                    .WithName(results.GetValue("MethodName"))
+                    .WithReturnTypeName("T")
+                    .WithStatic()
+                    .WithExtensionMethod()
+                    .AddGenericTypeArguments("T")
+                    .AddGenericTypeArgumentConstraints($"where T : {returnType}")
+                    .AddParameter("instance", "T")
+                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName)))
+                    .Chain(method => context.Request.AddNullChecks(method, results))
+                    .AddCodeStatements
+                    (
+                        results.GetValue(ResultNames.BuilderNonLazyWithExpression),
+                        "return instance;"
+                    )
+                );
             }
         }
 

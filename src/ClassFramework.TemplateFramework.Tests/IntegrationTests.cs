@@ -48,6 +48,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableNoToBuilderMethodCoreEntities>()
             .AddScoped<ImmutableCoreCrossCuttingInterfacesBuilders>()
             .AddScoped<ImmutableCoreCrossCuttingInterfacesEntities>()
+            .AddScoped<LazyAbstractionsBuildersExtensions>()
             .AddScoped<MappedTypeBuilders>()
             .AddScoped<MappedTypeEntities>()
             .AddScoped<ObservableCoreBuilders>()
@@ -285,6 +286,52 @@ namespace Test.Domain.Builders.Extensions
         {
             if (myProperty is null) throw new System.ArgumentNullException(nameof(myProperty));
             instance.MyProperty = myProperty;
+            return instance;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_Lazy_Abstractions_BuilderExtensions()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<LazyAbstractionsBuildersExtensions>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders.Extensions
+{
+#nullable enable
+    public static partial class MyAbstractionBuilderExtensions
+    {
+        public static T WithMyProperty<T>(this T instance, System.Func<string> myProperty)
+            where T : Test.Domain.Builders.Abstractions.IMyAbstractionBuilder
+        {
+            if (myProperty is null) throw new System.ArgumentNullException(nameof(myProperty));
+            instance.MyProperty = myProperty;
+            return instance;
+        }
+
+        public static T WithMyProperty<T>(this T instance, string myProperty)
+            where T : Test.Domain.Builders.Abstractions.IMyAbstractionBuilder
+        {
+            if (myProperty is null) throw new System.ArgumentNullException(nameof(myProperty));
+            instance.MyProperty = new System.Func<System.String>(() => myProperty);
             return instance;
         }
     }

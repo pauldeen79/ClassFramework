@@ -53,7 +53,8 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                 .AddCodeStatements(results.Where(x => x.Key.StartsWith("ArrayOverload.")).Select(x => x.Value.Value!.ToString()))
             );
 
-            if (results.GetValue(ResultNames.TypeName) != results.GetValue(ResultNames.NonLazyTypeName))
+            //TODO: Add functionality to GenericFormattableString, so we can compare them by value (just like string)
+            if (results.GetValue(ResultNames.TypeName).ToString() != results.GetValue(ResultNames.NonLazyTypeName).ToString())
             {
                 //TODO: Add overloads for non-func type with array and enumerable type
             }
