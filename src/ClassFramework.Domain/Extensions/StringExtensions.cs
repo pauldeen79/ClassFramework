@@ -390,15 +390,11 @@ public static class StringExtensions
     {
         namespacesToAbbreviate = ArgumentGuard.IsNotNull(namespacesToAbbreviate, nameof(namespacesToAbbreviate));
 
-        foreach (var ns in namespacesToAbbreviate)
-        {
-            if (instance.GetNamespaceWithDefault() == ns)
-            {
-                return instance.GetClassName();
-            }
-        }
-
-        return instance;
+        var namespaceWithDefault = instance.GetNamespaceWithDefault();
+        var canAbbreviate = !string.IsNullOrEmpty(namespaceWithDefault) && namespacesToAbbreviate.Contains(namespaceWithDefault);
+        return canAbbreviate
+            ? instance.GetClassName()
+            : instance;
     }
 
     public static string ReplaceGenericTypeName(this string instance, string genericArguments)

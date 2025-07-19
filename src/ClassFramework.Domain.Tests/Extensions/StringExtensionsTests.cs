@@ -512,6 +512,20 @@ public class StringExtensionsTests
             // Assert
             actual.ShouldBe("MyClass");
         }
+
+        [Fact]
+        public void Returns_Input_Value_When_Namespace_Is_Supplied_But_Input_Value_Does_Not_Contain_Any_Namespac()
+        {
+            // Arrange
+            var sut = "MyClass";
+            var namespacesToAbbreviate = new[] { "MyNamespace" };
+
+            // Act
+            var actual = sut.AbbreviateNamespaces(namespacesToAbbreviate);
+
+            // Assert
+            actual.ShouldBe("MyClass");
+        }
     }
 
     [Theory,
