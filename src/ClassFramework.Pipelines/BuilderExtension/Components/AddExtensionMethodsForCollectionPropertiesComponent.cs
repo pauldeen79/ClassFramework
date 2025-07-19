@@ -27,10 +27,10 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                 return error;
             }
 
-            var returnType = $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(NamedResults.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
+            var returnType = $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(ResultNames.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
 
             context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithName(results.GetValue("AddMethodName"))
+                .WithName(results.GetValue(ResultNames.AddMethodName))
                 .WithReturnTypeName("T")
                 .WithStatic()
                 .WithExtensionMethod()
@@ -42,7 +42,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
             );
 
             context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithName(results.GetValue("AddMethodName"))
+                .WithName(results.GetValue(ResultNames.AddMethodName))
                 .WithReturnTypeName("T")
                 .WithStatic()
                 .WithExtensionMethod()
@@ -52,6 +52,11 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                 .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
                 .AddCodeStatements(results.Where(x => x.Key.StartsWith("ArrayOverload.")).Select(x => x.Value.Value!.ToString()))
             );
+
+            if (results.GetValue(ResultNames.TypeName) != results.GetValue(ResultNames.NonLazyTypeName))
+            {
+                //TODO: Add overloads for non-func type with array and enumerable type
+            }
         }
 
         return Result.Success();

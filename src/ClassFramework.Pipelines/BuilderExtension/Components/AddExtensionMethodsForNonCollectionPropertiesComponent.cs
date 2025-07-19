@@ -27,9 +27,9 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
                 return error;
             }
 
-            var returnType = $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(NamedResults.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
+            var returnType = $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(ResultNames.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
 
-            var builder = new MethodBuilder()
+            context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithName(results.GetValue("MethodName"))
                 .WithReturnTypeName("T")
                 .WithStatic()
@@ -37,17 +37,19 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName)));
-
-            context.Request.AddNullChecks(builder, results);
-
-            builder.AddCodeStatements
-            (
-                results.GetValue("BuilderWithExpression"),
-                "return instance;"
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName)))
+                .Chain(method => context.Request.AddNullChecks(method, results))
+                .AddCodeStatements
+                (
+                    results.GetValue(ResultNames.BuilderWithExpression),
+                    "return instance;"
+                )
             );
 
-            context.Request.Builder.AddMethods(builder);
+            if (results.GetValue(ResultNames.TypeName) != results.GetValue(ResultNames.NonLazyTypeName))
+            {
+                //TODO: Add overload for non-func type
+            }
         }
 
         return Result.Success();

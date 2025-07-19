@@ -325,26 +325,29 @@ public static class StringExtensions
             : instance.Substring(0, index);
     }
 
-    public static string GetDefaultValue(this string typeName, bool isNullable, bool isValueType, bool enableNullableReferenceTypes)
+    public static string GetDefaultValue(this string typeName, bool isNullable, bool isValueType, bool enableNullableReferenceTypes, bool useBuilderLazyValues)
     {
+        var lazyPrefix = GetLazyPrefix(typeName, useBuilderLazyValues);
+        var lazySuffix = GetLazySuffix(useBuilderLazyValues);
+
         if ((typeName.IsStringTypeName() || typeName == WellKnownTypes.String) && !isNullable)
         {
-            return "string.Empty";
+            return $"{lazyPrefix}string.Empty{lazySuffix}";
         }
 
         if ((typeName.IsObjectTypeName() || typeName == WellKnownTypes.Object) && !isNullable)
         {
-            return $"new {typeof(object).FullName}()";
+            return $"{lazyPrefix}new {typeof(object).FullName}(){lazySuffix}";
         }
 
         if (typeName == typeof(IEnumerable).FullName && !isNullable)
         {
-            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{typeof(object).FullName}>()";
+            return $"{lazyPrefix}{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{typeof(object).FullName}>(){lazySuffix}";
         }
 
         if (typeName.WithoutGenerics() == typeof(IEnumerable<>).WithoutGenerics() && !isNullable)
         {
-            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{typeName.GetGenericArguments(addBrackets: true)}()";
+            return $"{lazyPrefix}{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{typeName.GetGenericArguments(addBrackets: true)}(){lazySuffix}";
         }
 
         var preNullableSuffix = isNullable && (enableNullableReferenceTypes || isValueType) && !typeName.EndsWith("?") && !typeName.StartsWith(typeof(Nullable<>).WithoutGenerics())
@@ -355,8 +358,18 @@ public static class StringExtensions
             ? "!"
             : string.Empty;
 
-        return $"default({typeName}{preNullableSuffix}){postNullableSuffix}";
+        return $"{lazyPrefix}default({typeName}{preNullableSuffix}){postNullableSuffix}{lazySuffix}";
     }
+
+    private static string GetLazyPrefix(string typeName, bool useBuilderLazyValues)
+        => useBuilderLazyValues
+            ? $"new {typeof(Func<object>).ReplaceGenericTypeName(typeName)}(() => "
+            : string.Empty;
+
+    private static string GetLazySuffix(bool useBuilderLazyValues)
+        => useBuilderLazyValues
+            ? ")"
+            : string.Empty;
 
     public static string AppendNullableAnnotation(this string instance,
                                                   bool isNullable,
@@ -372,7 +385,9 @@ public static class StringExtensions
 
     public static string AbbreviateNamespaces(this string instance, IEnumerable<string> namespacesToAbbreviate)
     {
-        foreach (var ns in namespacesToAbbreviate.IsNotNull(nameof(namespacesToAbbreviate)))
+        namespacesToAbbreviate = ArgumentGuard.IsNotNull(namespacesToAbbreviate, nameof(namespacesToAbbreviate));
+
+        foreach (var ns in namespacesToAbbreviate)
         {
             if (instance.GetNamespaceWithDefault() == ns)
             {

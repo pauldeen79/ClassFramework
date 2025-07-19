@@ -806,18 +806,18 @@ namespace Test.Domain.Builders
         public GenericBuilder(Test.Domain.Generic<T> source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _myProperty = source.MyProperty;
+            _myProperty = new System.Func<T>(() => source.MyProperty);
         }
 
         public GenericBuilder()
         {
-            _myProperty = default(T)!;
+            _myProperty = new System.Func<T>(() => default(T)!);
             SetDefaultValues();
         }
 
         public Test.Domain.Generic<T> Build()
         {
-            return new Test.Domain.Generic<T>(MyProperty);
+            return new Test.Domain.Generic<T>(MyProperty());
         }
 
         partial void SetDefaultValues();
@@ -825,6 +825,12 @@ namespace Test.Domain.Builders
         public Test.Domain.Builders.GenericBuilder<T> WithMyProperty(System.Func<T> myProperty)
         {
             MyProperty = myProperty;
+            return this;
+        }
+
+        public Test.Domain.Builders.GenericBuilder<T> WithMyProperty(T myProperty)
+        {
+            MyProperty = new System.Func<T>(() => myProperty);
             return this;
         }
     }
@@ -865,19 +871,19 @@ namespace Test.Domain.Builders
         public LiteralBuilder(Test.Domain.Literal source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _value = source.Value;
-            OriginalValue = source.OriginalValue;
+            _value = new System.Func<System.String>(() => source.Value);
+            OriginalValue = new System.Func<System.Object>(() => source.OriginalValue);
         }
 
         public LiteralBuilder()
         {
-            _value = string.Empty;
+            _value = new System.Func<System.String>(() => string.Empty);
             SetDefaultValues();
         }
 
         public Test.Domain.Literal Build()
         {
-            return new Test.Domain.Literal(Value, OriginalValue);
+            return new Test.Domain.Literal(Value(), OriginalValue());
         }
 
         partial void SetDefaultValues();
@@ -889,9 +895,22 @@ namespace Test.Domain.Builders
             return this;
         }
 
+        public Test.Domain.Builders.LiteralBuilder WithValue(string value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = new System.Func<System.String>(() => value);
+            return this;
+        }
+
         public Test.Domain.Builders.LiteralBuilder WithOriginalValue(System.Func<object>? originalValue)
         {
             OriginalValue = originalValue;
+            return this;
+        }
+
+        public Test.Domain.Builders.LiteralBuilder WithOriginalValue(object? originalValue)
+        {
+            OriginalValue = new System.Func<System.Object>(() => originalValue);
             return this;
         }
     }

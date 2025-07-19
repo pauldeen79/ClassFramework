@@ -57,6 +57,9 @@ public static class PipelineContextExtensions
         var results = new List<ConstructionMethodParameterInfo>();
         foreach (var property in properties)
         {
+            var metadata = context.Request.GetMappingMetadata(property.TypeName).ToArray();
+            var builderName = metadata.GetStringValue(MetadataNames.CustomBuilderName, ContextBase.DefaultBuilderName);
+            var useBuilderLazyValues = context.Request.Settings.UseBuilderLazyValues && builderName == ContextBase.DefaultBuilderName;
             var info =
                 new ConstructionMethodParameterInfo(
                     property.Name,
@@ -74,7 +77,8 @@ public static class PipelineContextExtensions
                     (
                         property.TypeName.FixTypeName().WithoutGenerics() // i.e. List<> etc.
                     ).GetStringValue(MetadataNames.CustomCollectionInitialization, () => "[Expression]"),
-                    property.GetSuffix(context.Request.Settings.EnableNullableReferenceTypes, csharpExpressionDumper, context.Request)
+                    property.GetSuffix(context.Request.Settings.EnableNullableReferenceTypes, csharpExpressionDumper, context.Request),
+                    useBuilderLazyValues
                 );
 
             results.Add(info);
@@ -92,43 +96,48 @@ public static class PipelineContextExtensions
         }
 
         return Result.Success<GenericFormattableString>(string.Join(", ", results.Select(x => hasPublicParameterlessConstructor
-            ? $"{x.Name} = {GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix)}"
-            : GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix))));
+            ? $"{x.Name} = {GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix, x.UseBuilderLazyValues)}"
+            : GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix, x.UseBuilderLazyValues))));
     }
 
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName()));
 
-    private static string? GetBuilderPropertyExpression(this string? value, Property sourceProperty, string collectionInitializer, string suffix)
+    private static string? GetBuilderPropertyExpression(this string? value, Property sourceProperty, string collectionInitializer, string suffix, bool useBuilderLazyValues)
     {
         if (value is null || !value.Contains(PlaceholderNames.NamePlaceholder))
         {
             return value;
         }
 
+        var lazySuffix = useBuilderLazyValues
+            ? "()"
+            : string.Empty;
+
         if (value == PlaceholderNames.NamePlaceholder)
         {
-            return sourceProperty.Name;
+            return sourceProperty.Name + lazySuffix;
         }
 
         if (sourceProperty.TypeName.FixTypeName().IsCollectionTypeName())
         {
-            return GetCollectionBuilderPropertyExpression(value, sourceProperty, collectionInitializer, suffix);
+            return GetCollectionBuilderPropertyExpression(value, sourceProperty, collectionInitializer, suffix, lazySuffix);
         }
         else
         {
             return value!
                 .Replace(PlaceholderNames.NamePlaceholder, sourceProperty.Name)
                 .Replace("[NullableSuffix]", suffix)
-                .Replace("[ForcedNullableSuffix]", string.IsNullOrEmpty(suffix) ? string.Empty : "!");
+                .Replace("[ForcedNullableSuffix]", string.IsNullOrEmpty(suffix) ? string.Empty : "!")
+                + lazySuffix;
         }
     }
 
-    private static string GetCollectionBuilderPropertyExpression(string? value, Property sourceProperty, string collectionInitializer, string suffix)
+    private static string GetCollectionBuilderPropertyExpression(string? value, Property sourceProperty, string collectionInitializer, string suffix, string lazySuffix)
         => collectionInitializer
             .Replace("[Type]", sourceProperty.TypeName.FixTypeName().WithoutGenerics())
             .Replace("[Generics]", sourceProperty.TypeName.FixTypeName().GetGenericArguments(addBrackets: true))
-            .Replace("[Expression]", $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty).Replace("[ForcedNullableSuffix]", sourceProperty.IsValueType ? string.Empty : "!")})");
+            .Replace("[Expression]", $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty).Replace("[ForcedNullableSuffix]", sourceProperty.IsValueType ? string.Empty : "!") + lazySuffix})");
 
     private static string GetBuilderPocoCloseSign(bool poco)
         => poco
@@ -148,34 +157,15 @@ internal sealed class ConstructionMethodParameterInfo
     public Result<GenericFormattableString> Result { get; }
     public string CollectionInitializer { get; }
     public string Suffix { get; }
+    public bool UseBuilderLazyValues { get; }
 
-    public ConstructionMethodParameterInfo(string name, Property source, Result<GenericFormattableString> result, string collectionInitializer, string suffix)
+    public ConstructionMethodParameterInfo(string name, Property source, Result<GenericFormattableString> result, string collectionInitializer, string suffix, bool useBuilderLazyValues)
     {
         Name = name;
         Source = source;
         Result = result;
         CollectionInitializer = collectionInitializer;
         Suffix = suffix;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return obj is ConstructionMethodParameterInfo other &&
-               Name == other.Name &&
-               EqualityComparer<Property>.Default.Equals(Source, other.Source) &&
-               EqualityComparer<Result<GenericFormattableString>>.Default.Equals(Result, other.Result) &&
-               CollectionInitializer == other.CollectionInitializer &&
-               Suffix == other.Suffix;
-    }
-
-    public override int GetHashCode()
-    {
-        var hashCode = -673813403;
-        hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
-        hashCode = hashCode * -1521134295 + EqualityComparer<Property>.Default.GetHashCode(Source);
-        hashCode = hashCode * -1521134295 + EqualityComparer<Result<GenericFormattableString>>.Default.GetHashCode(Result);
-        hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CollectionInitializer);
-        hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Suffix);
-        return hashCode;
+        UseBuilderLazyValues = useBuilderLazyValues;
     }
 }

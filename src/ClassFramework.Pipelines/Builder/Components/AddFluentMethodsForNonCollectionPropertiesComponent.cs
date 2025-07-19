@@ -27,22 +27,38 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
                 return error;
             }
 
-            var builder = new MethodBuilder()
+            context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithName(results.GetValue("MethodName"))
                 .WithReturnTypeName(context.Request.IsBuilderForAbstractEntity
                       ? $"TBuilder{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
-                      : $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(NamedResults.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName)));
-
-            context.Request.AddNullChecks(builder, results);
-
-            builder.AddCodeStatements
-            (
-                results.GetValue("BuilderWithExpression"),
-                context.Request.ReturnValueStatementForFluentMethod
+                      : $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(ResultNames.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName)))
+                .Chain(method => context.Request.AddNullChecks(method, results))
+                .AddCodeStatements
+                (
+                    results.GetValue(ResultNames.BuilderWithExpression),
+                    context.Request.ReturnValueStatementForFluentMethod
+                )
             );
 
-            context.Request.Builder.AddMethods(builder);
+            //TODO: Add functionality to GenericFormattableString, so we can compare them by value (just like string)
+            if (results.GetValue(ResultNames.TypeName).ToString() != results.GetValue(ResultNames.NonLazyTypeName).ToString())
+            {
+                //Add overload for non-func type
+                context.Request.Builder.AddMethods(new MethodBuilder()
+                    .WithName(results.GetValue("MethodName"))
+                    .WithReturnTypeName(context.Request.IsBuilderForAbstractEntity
+                          ? $"TBuilder{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
+                          : $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(ResultNames.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName)))
+                    .Chain(method => context.Request.AddNullChecks(method, results))
+                    .AddCodeStatements
+                    (
+                        results.GetValue(ResultNames.BuilderNonLazyWithExpression),
+                        context.Request.ReturnValueStatementForFluentMethod
+                    )
+                );
+            }
         }
 
         return Result.Success();

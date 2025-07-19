@@ -9,8 +9,8 @@ public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineCompone
         context = context.IsNotNull(nameof(context));
 
         var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add(NamedResults.Name, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.NameFormatString, context.Request.FormatProvider, context.Request, token))
-            .Add(NamedResults.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.NamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
+            .Add(ResultNames.Name, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.NameFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add(ResultNames.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.NamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
             .Build()
             .ConfigureAwait(false);
 
@@ -22,8 +22,8 @@ public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineCompone
         }
 
         context.Request.Builder
-            .WithName(results.GetValue(NamedResults.Name))
-            .WithNamespace(context.Request.MapNamespace(results.GetValue(NamedResults.Namespace)));
+            .WithName(results.GetValue(ResultNames.Name))
+            .WithNamespace(context.Request.MapNamespace(results.GetValue(ResultNames.Namespace)));
 
         return Result.Success();
     }

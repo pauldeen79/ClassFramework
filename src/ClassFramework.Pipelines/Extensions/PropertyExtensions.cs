@@ -23,10 +23,9 @@ public static class PropertyExtensions
             return $"{csharpExpressionDumper.Dump(value)}{suffix}";
         }
 
-        var md = context
-            .GetMappingMetadata(property.TypeName)
-            .LastOrDefault(x => x.Name == MetadataNames.CustomBuilderDefaultValue);
+        var metadata = context.GetMappingMetadata(property.TypeName).ToArray();
 
+        var md = metadata.LastOrDefault(x => x.Name == MetadataNames.CustomBuilderDefaultValue);
         if (md is not null && md.Value is not null)
         {
             var value = md.Value;
@@ -39,7 +38,10 @@ public static class PropertyExtensions
             return $"{csharpExpressionDumper.Dump(value)}{suffix}";
         }
 
-        return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, context.Settings.EnableNullableReferenceTypes);
+        var builderName = metadata.GetStringValue(MetadataNames.CustomBuilderName, ContextBase.DefaultBuilderName);
+        var useBuilderLazyValues = context.Settings.UseBuilderLazyValues && builderName == ContextBase.DefaultBuilderName;
+
+        return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, context.Settings.EnableNullableReferenceTypes, useBuilderLazyValues);
     }
 
     public static string GetNullCheckSuffix(this Property property, string name, bool addNullChecks, IType sourceModel)
@@ -110,7 +112,6 @@ public static class PropertyExtensions
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
         var builderArgumentTypeResult = await GetBuilderArgumentTypeNameAsync(property, context, parentChildContext, mappedTypeName, evaluator, context.CancellationToken).ConfigureAwait(false);
-
         if (!builderArgumentTypeResult.IsSuccessful())
         {
             return builderArgumentTypeResult;
@@ -134,12 +135,20 @@ public static class PropertyExtensions
             .GetCsharpFriendlyTypeName());
     }
 
-    private const string DefaultBuilderName = "{NoGenerics(ClassName(property.TypeName))}Builder";
     private const string DefaultBuilderArgumentType = "{NoGenerics(property.TypeName)}";
     private const string ClassNameFormatString = "{ClassName(property.TypeName)}";
     private const string ClassNameGenericArgumentsFormatString = "{ClassName(GenericArguments(property.TypeName))}";
     private const string NoGenericsClassNameFormatString = "{NoGenerics(ClassName(property.TypeName))}";
     private const string NoGenericsClassNameGenericArgumentsFormatString = "{NoGenerics(ClassName(GenericArguments(property.TypeName)))}";
+
+    public static Task<Result<GenericFormattableString>> GetBuilderArgumentTypeNameAsync<TSourceModel>(
+        this Property property,
+        ContextBase<TSourceModel> context,
+        object parentChildContext,
+        string mappedTypeName,
+        IExpressionEvaluator evaluator,
+        CancellationToken token)
+        => GetBuilderArgumentTypeNameAsync(property, context, parentChildContext, mappedTypeName, evaluator, false, token);
 
     public static async Task<Result<GenericFormattableString>> GetBuilderArgumentTypeNameAsync<TSourceModel>(
         this Property property,
@@ -147,6 +156,7 @@ public static class PropertyExtensions
         object parentChildContext,
         string mappedTypeName,
         IExpressionEvaluator evaluator,
+        bool forceNonLazy,
         CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
@@ -159,9 +169,9 @@ public static class PropertyExtensions
 
         if (!string.IsNullOrEmpty(ns))
         {
-            var builderName = metadata.GetStringValue(MetadataNames.CustomBuilderName, DefaultBuilderName);
+            var builderName = metadata.GetStringValue(MetadataNames.CustomBuilderName, ContextBase.DefaultBuilderName);
             var newFullName = $"{ns}.{builderName}";
-            var useBuilderLazyValues = context.Settings.UseBuilderLazyValues && builderName == DefaultBuilderName;
+            var useBuilderLazyValues = context.Settings.UseBuilderLazyValues && builderName == ContextBase.DefaultBuilderName;
             if (property.TypeName.FixTypeName().IsCollectionTypeName())
             {
                 newFullName = GetFullNameForCollectionPropertyWithCustomBuilderNamespace(property, newFullName, useBuilderLazyValues);
@@ -181,7 +191,7 @@ public static class PropertyExtensions
         }
 
         var builderArgumentType = metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, DefaultBuilderArgumentType);
-        if (context.Settings.UseBuilderLazyValues && builderArgumentType == DefaultBuilderArgumentType)
+        if (context.Settings.UseBuilderLazyValues && !forceNonLazy && builderArgumentType == DefaultBuilderArgumentType)
         {
             if (property.TypeName.FixTypeName().IsCollectionTypeName())
             {
