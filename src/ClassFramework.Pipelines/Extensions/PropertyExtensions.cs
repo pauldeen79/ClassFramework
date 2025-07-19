@@ -134,6 +134,8 @@ public static class PropertyExtensions
             .GetCsharpFriendlyTypeName());
     }
 
+    private const string DefaultBuilderName = "{NoGenerics(ClassName(property.TypeName))}Builder";
+    private const string DefaultBuilderArgumentType = "{NoGenerics(property.TypeName)}";
     private const string ClassNameFormatString = "{ClassName(property.TypeName)}";
     private const string ClassNameGenericArgumentsFormatString = "{ClassName(GenericArguments(property.TypeName))}";
     private const string NoGenericsClassNameFormatString = "{NoGenerics(ClassName(property.TypeName))}";
@@ -157,13 +159,14 @@ public static class PropertyExtensions
 
         if (!string.IsNullOrEmpty(ns))
         {
-            var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{NoGenerics(ClassName(property.TypeName))}Builder");
-            var newFullName = $"{ns}.{newTypeName}";
+            var builderName = metadata.GetStringValue(MetadataNames.CustomBuilderName, DefaultBuilderName);
+            var newFullName = $"{ns}.{builderName}";
+            var useBuilderLazyValues = context.Settings.UseBuilderLazyValues && builderName == DefaultBuilderName;
             if (property.TypeName.FixTypeName().IsCollectionTypeName())
             {
-                newFullName = GetFullNameForCollectionPropertyWithCustomBuilderNamespace(property, context, newFullName);
+                newFullName = GetFullNameForCollectionPropertyWithCustomBuilderNamespace(property, newFullName, useBuilderLazyValues);
             }
-            else if (context.Settings.UseBuilderLazyValues)
+            else if (useBuilderLazyValues)
             {
                 newFullName = $"{typeof(Func<object>).ReplaceGenericTypeName(newFullName)}";
             }
@@ -177,22 +180,21 @@ public static class PropertyExtensions
             ).ConfigureAwait(false);
         }
 
-        if (context.Settings.UseBuilderLazyValues)
+        var builderArgumentType = metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, DefaultBuilderArgumentType);
+        if (context.Settings.UseBuilderLazyValues && builderArgumentType == DefaultBuilderArgumentType)
         {
-            var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, "{NoGenerics(property.TypeName)}");
-
             if (property.TypeName.FixTypeName().IsCollectionTypeName())
             {
-                newTypeName = GetFullNameForCollectionPropertyWithoutCustomBuilderNamespace(property, newTypeName);
+                builderArgumentType = GetFullNameForCollectionPropertyWithoutCustomBuilderNamespace(property, builderArgumentType);
             }
             else
             {
-                newTypeName = $"{typeof(Func<object>).ReplaceGenericTypeName(newTypeName)}";
+                builderArgumentType = $"{typeof(Func<object>).ReplaceGenericTypeName(builderArgumentType)}";
             }
 
             return await evaluator.EvaluateInterpolatedStringAsync
             (
-                newTypeName,
+                builderArgumentType,
                 context.FormatProvider,
                 parentChildContext,
                 token
@@ -209,47 +211,47 @@ public static class PropertyExtensions
         ).ConfigureAwait(false);
     }
 
-    private static string GetFullNameForCollectionPropertyWithoutCustomBuilderNamespace(Property property, string newTypeName)
+    private static string GetFullNameForCollectionPropertyWithoutCustomBuilderNamespace(Property property, string builderArgumentType)
     {
         var idx = property.TypeName.IndexOf('<');
         if (idx == -1)
         {
-            return newTypeName;
+            return builderArgumentType;
         }
 
         if (!string.IsNullOrEmpty(property.TypeName.FixTypeName().GetCollectionItemType().GetGenericArguments()))
         {
-            var name = newTypeName
+            var name = builderArgumentType
                 .Replace("{property.TypeName}", typeof(Func<object>).ReplaceGenericTypeName("{GenericArguments(property.TypeName)}"))
                 .Replace("{NoGenerics(property.TypeName)}", typeof(Func<object>).ReplaceGenericTypeName("{NoGenerics(GenericArguments(property.TypeName))}"))
                 .Replace("{GenericArguments(property.TypeName, true)}", "{GenericArguments(CollectionItemType(property.TypeName), true)}");
-            newTypeName = $"{property.TypeName.Substring(0, idx)}<{name}>";
+            builderArgumentType = $"{property.TypeName.Substring(0, idx)}<{name}>";
         }
         else
         {
-            var name = newTypeName
+            var name = builderArgumentType
                 .Replace("{property.TypeName}", typeof(Func<object>).ReplaceGenericTypeName("{GenericArguments(property.TypeName)}"))
                 .Replace("{NoGenerics(property.TypeName)}", typeof(Func<object>).ReplaceGenericTypeName("{NoGenerics(GenericArguments(property.TypeName))}"));
-            newTypeName = $"{property.TypeName.Substring(0, idx)}<{name}>";
+            builderArgumentType = $"{property.TypeName.Substring(0, idx)}<{name}>";
         }
 
-        return newTypeName;
+        return builderArgumentType;
     }
 
-    private static string GetFullNameForCollectionPropertyWithCustomBuilderNamespace<TSourceModel>(Property property, ContextBase<TSourceModel> context, string newFullName)
+    private static string GetFullNameForCollectionPropertyWithCustomBuilderNamespace(Property property, string newFullName, bool useBuilderLazyValues)
     {
         var idx = property.TypeName.IndexOf('<');
         if (idx > -1)
         {
             if (!string.IsNullOrEmpty(property.TypeName.FixTypeName().GetCollectionItemType().GetGenericArguments()))
             {
-                newFullName = context.Settings.UseBuilderLazyValues
+                newFullName = useBuilderLazyValues
                     ? $"{property.TypeName.Substring(0, idx)}<{typeof(Func<object>).ReplaceGenericTypeName(newFullName.Replace(ClassNameFormatString, ClassNameGenericArgumentsFormatString).Replace(NoGenericsClassNameFormatString, NoGenericsClassNameGenericArgumentsFormatString).Replace("{GenericArguments(property.TypeName, true)}", "{GenericArguments(CollectionItemType(property.TypeName), true)}"))}>"
                     : $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace(ClassNameFormatString, ClassNameGenericArgumentsFormatString).Replace(NoGenericsClassNameFormatString, NoGenericsClassNameGenericArgumentsFormatString).Replace("{GenericArguments(property.TypeName, true)}", "{GenericArguments(CollectionItemType(property.TypeName), true)}")}>";
             }
             else
             {
-                newFullName = context.Settings.UseBuilderLazyValues
+                newFullName = useBuilderLazyValues
                     ? $"{property.TypeName.Substring(0, idx)}<{typeof(Func<object>).ReplaceGenericTypeName(newFullName.Replace(ClassNameFormatString, ClassNameGenericArgumentsFormatString).Replace(NoGenericsClassNameFormatString, NoGenericsClassNameGenericArgumentsFormatString))}>"
                     : $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace(ClassNameFormatString, ClassNameGenericArgumentsFormatString).Replace(NoGenericsClassNameFormatString, NoGenericsClassNameGenericArgumentsFormatString)}>";
             }
