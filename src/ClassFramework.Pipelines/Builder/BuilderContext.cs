@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Builder;
+﻿using CrossCutting.Common.Results;
+
+namespace ClassFramework.Pipelines.Builder;
 
 public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
 {
@@ -49,7 +51,7 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
 
     public string ReturnValueStatementForFluentMethod => $"return {ReturnValue};";
 
-    public string ReturnType
+    public string BuildReturnTypeName
     {
         get
         {
@@ -61,6 +63,11 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
             return MapTypeName(SourceModel.Interfaces.FirstOrDefault(x => x.GetClassName() == $"I{SourceModel.Name}") ?? SourceModel.GetFullName());
         }
     }
+
+    public string GetReturnTypeForFluentMethod(string builderNamespace, string builderName)
+        => IsBuilderForAbstractEntity
+            ? $"TBuilder{SourceModel.GetGenericTypeArgumentsString()}"
+            : $"{builderNamespace.AppendWhenNotNullOrEmpty(".")}{builderName}{SourceModel.GetGenericTypeArgumentsString()}";
 
     public async Task<Result<T>[]> GetInterfaceResultsAsync<T>(
         Func<string, GenericFormattableString, T> namespaceTransformation,

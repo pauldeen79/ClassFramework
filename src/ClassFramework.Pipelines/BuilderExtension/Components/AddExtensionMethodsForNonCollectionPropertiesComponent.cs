@@ -27,7 +27,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
                 return error;
             }
 
-            var returnType = $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(ResultNames.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
+            var returnType = context.Request.GetReturnTypeForFluentMethod(results.GetValue(ResultNames.Namespace), results.GetValue(ResultNames.BuilderName));
 
             context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithName(results.GetValue("MethodName"))

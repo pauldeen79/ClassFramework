@@ -13,7 +13,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
             return Result.Success();
         }
 
-        if (context.Request.ReturnType.GetNamespaceWithDefault().EndsWithAny(".Contracts", ".Abstractions"))
+        if (context.Request.BuildReturnTypeName.GetNamespaceWithDefault().EndsWithAny(".Contracts", ".Abstractions"))
         {
             // Implicit operators are not supported on interfaces (until maybe some future version of C#)
             return Result.Success();
@@ -32,7 +32,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
             context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithOperator()
                 .WithStatic()
-                .WithName($"{context.Request.ReturnType}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+                .WithName($"{context.Request.BuildReturnTypeName}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
                 .WithReturnTypeName("implicit")
                 .AddParameter("entity", $"{nameResult.Value}{genericArguments}")
                 .AddCodeStatements(!context.Request.Settings.IsForAbstractBuilder
@@ -49,7 +49,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
         context.Request.Builder.AddMethods(new MethodBuilder()
             .WithOperator()
             .WithStatic()
-            .WithName($"{context.Request.ReturnType}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+            .WithName($"{context.Request.BuildReturnTypeName}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
             .WithReturnTypeName("implicit")
             .AddParameter("entity", $"{nameResult.Value}{genericArgumentsFlat}")
             .AddCodeStatements($"return entity.{GetName(context)}();"));

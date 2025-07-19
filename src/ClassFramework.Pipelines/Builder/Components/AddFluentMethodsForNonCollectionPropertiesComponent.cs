@@ -27,11 +27,11 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
                 return error;
             }
 
+            var returnType = context.Request.GetReturnTypeForFluentMethod(results.GetValue(ResultNames.Namespace), results.GetValue(ResultNames.BuilderName));
+
             context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithName(results.GetValue("MethodName"))
-                .WithReturnTypeName(context.Request.IsBuilderForAbstractEntity
-                      ? $"TBuilder{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
-                      : $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(ResultNames.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+                .WithReturnTypeName(returnType)
                 .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName)))
                 .Chain(method => context.Request.AddNullChecks(method, results))
                 .AddCodeStatements
@@ -47,9 +47,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
                 //Add overload for non-func type
                 context.Request.Builder.AddMethods(new MethodBuilder()
                     .WithName(results.GetValue("MethodName"))
-                    .WithReturnTypeName(context.Request.IsBuilderForAbstractEntity
-                          ? $"TBuilder{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
-                          : $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(ResultNames.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+                    .WithReturnTypeName(returnType)
                     .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName)))
                     .Chain(method => context.Request.AddNullChecks(method, results))
                     .AddCodeStatements
