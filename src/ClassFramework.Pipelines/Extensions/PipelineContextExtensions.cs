@@ -110,11 +110,7 @@ public static class PipelineContextExtensions
             return value;
         }
 
-        var lazySuffix = useBuilderLazyValues
-            ? sourceProperty.TypeName.FixTypeName().IsCollectionTypeName()
-                ? ".Select(x => x())"
-                : "()"
-            : string.Empty;
+        var lazySuffix = GetLazySuffix(sourceProperty, useBuilderLazyValues);
 
         if (value == PlaceholderNames.NamePlaceholder)
         {
@@ -123,23 +119,47 @@ public static class PipelineContextExtensions
 
         if (sourceProperty.TypeName.FixTypeName().IsCollectionTypeName())
         {
-            return GetCollectionBuilderPropertyExpression(value, sourceProperty, collectionInitializer, suffix, lazySuffix);
+            var valueExpression = value!
+                .Replace(PlaceholderNames.NamePlaceholder, "x")
+                .Replace("[NullableSuffix]", string.Empty)
+                .Replace("[ForcedNullableSuffix]", sourceProperty.IsValueType
+                    ? string.Empty
+                    : "!");
+
+            return collectionInitializer
+                .Replace("[Type]", sourceProperty.TypeName.FixTypeName().WithoutGenerics())
+                .Replace("[Generics]", sourceProperty.TypeName.FixTypeName().GetGenericArguments(addBrackets: true))
+                .Replace("[Expression]", $"{sourceProperty.Name}{suffix}.Select(x => {valueExpression}{lazySuffix})");
         }
         else
         {
-            return value!
+            var valueExpression = value!
                 .Replace(PlaceholderNames.NamePlaceholder, sourceProperty.Name)
                 .Replace("[NullableSuffix]", suffix)
-                .Replace("[ForcedNullableSuffix]", string.IsNullOrEmpty(suffix) ? string.Empty : "!")
-                + lazySuffix;
+                .Replace("[ForcedNullableSuffix]", string.IsNullOrEmpty(suffix)
+                    ? string.Empty
+                    : "!");
+
+            return $"{valueExpression}{lazySuffix}";
         }
     }
 
-    private static string GetCollectionBuilderPropertyExpression(string? value, Property sourceProperty, string collectionInitializer, string suffix, string lazySuffix)
-        => collectionInitializer
-            .Replace("[Type]", sourceProperty.TypeName.FixTypeName().WithoutGenerics())
-            .Replace("[Generics]", sourceProperty.TypeName.FixTypeName().GetGenericArguments(addBrackets: true))
-            .Replace("[Expression]", $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace(PlaceholderNames.NamePlaceholder, "x").Replace("[NullableSuffix]", string.Empty).Replace("[ForcedNullableSuffix]", sourceProperty.IsValueType ? string.Empty : "!") + lazySuffix})");
+    private static string GetLazySuffix(Property sourceProperty, bool useBuilderLazyValues)
+    {
+        if (!useBuilderLazyValues)
+        {
+            return string.Empty;
+        }
+
+        if (sourceProperty.TypeName.FixTypeName().IsCollectionTypeName())
+        {
+            // for a collection property, we need to call Invoke using () on each item
+            return ".Select(x => x())";
+        }
+
+        // for a non collection property, we can just call the Invoke using ()
+        return "()";
+    }
 
     private static string GetBuilderPocoCloseSign(bool poco)
         => poco
