@@ -15,8 +15,11 @@ public class PropertyBuilderFuncPrefixProperty : IProperty
                 var metadata = mappedContextBase.GetMappingMetadata(property.TypeName).ToArray();
                 var builderName = metadata.GetStringValue(MetadataNames.CustomBuilderName, ContextBase.DefaultBuilderName);
                 var useBuilderLazyValues = settings.UseBuilderLazyValues && builderName == ContextBase.DefaultBuilderName;
+                var typeName = property.TypeName.FixTypeName().IsCollectionTypeName()
+                    ? property.TypeName.FixTypeName().GetCollectionItemType()
+                    : property.TypeName.FixTypeName();
                 return useBuilderLazyValues
-                    ? $"new {property.TypeName.ToLazy()}(() => "
+                    ? $"new {typeName.ToLazy()}(() => "
                     : string.Empty;
             }).ConfigureAwait(false);
     }
