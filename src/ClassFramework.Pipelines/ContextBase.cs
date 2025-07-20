@@ -189,29 +189,21 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .WithParentTypeFullName(property.ParentTypeFullName);
     }
 
-    public async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsForBuilderCollectionProperties(
+    public AsyncResultDictionaryBuilder<GenericFormattableString> GetResultDictionaryForBuilderCollectionProperties(
         Property property,
         object parentChildContext,
-        IExpressionEvaluator evaluator,
-        IEnumerable<Result<GenericFormattableString>> enumerableOverloadCode,
-        IEnumerable<Result<GenericFormattableString>> arrayOverloadCode)
+        IExpressionEvaluator evaluator)
     {
         property = property.IsNotNull(nameof(property));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
-        enumerableOverloadCode = enumerableOverloadCode.IsNotNull(nameof(enumerableOverloadCode));
-        arrayOverloadCode = arrayOverloadCode.IsNotNull(nameof(arrayOverloadCode));
 
-        return await new AsyncResultDictionaryBuilder<GenericFormattableString>()
+        return new AsyncResultDictionaryBuilder<GenericFormattableString>()
             .Add(ResultNames.TypeName, property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, CancellationToken))
             .Add(ResultNames.Namespace, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, CancellationToken))
             .Add(ResultNames.BuilderName, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, CancellationToken))
             .Add(ResultNames.AddMethodName, evaluator.EvaluateInterpolatedStringAsync(Settings.AddMethodNameFormatString, FormatProvider, parentChildContext, CancellationToken))
-            .Add(ResultNames.NonLazyTypeName, property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, true, CancellationToken))
-            .AddRange("EnumerableOverload.{0}", enumerableOverloadCode)
-            .AddRange("ArrayOverload.{0}", arrayOverloadCode)
-            .Build()
-            .ConfigureAwait(false);
+            .Add(ResultNames.NonLazyTypeName, property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, true, CancellationToken));
     }
 
     public async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsForBuilderNonCollectionProperties(
