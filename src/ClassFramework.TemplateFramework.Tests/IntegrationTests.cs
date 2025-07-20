@@ -37,6 +37,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableCoreModelErrorBuilders>()
             .AddScoped<ImmutableCoreBaseClassErrorBuilders>()
             .AddScoped<ImmutableCoreUseBuilderLazyValuesBuilders>()
+            .AddScoped<ImmutableCoreUseBuilderLazyValuesBuilderExtensions>()
             .AddScoped<ImmutablePrivateSettersCoreBuilders>()
             .AddScoped<ImmutablePrivateSettersCoreEntities>()
             .AddScoped<ImmutableInheritFromInterfacesCoreBuilders>()
@@ -1086,6 +1087,93 @@ namespace Test.Domain.Extensions
             where T : Test.Domain.Builders.ILiteralBuilder
         {
             instance.OriginalValue = originalValue;
+            return instance;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_Builder_Extensions_With_Lazy_Values()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreUseBuilderLazyValuesBuilderExtensions>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(2);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Extensions
+{
+#nullable enable
+    public static partial class GenericBuilderExtensions
+    {
+        public static T WithMyProperty<T>(this T instance, System.Func<T> myProperty)
+            where T : Test.Domain.Builders.IGenericBuilder<T>
+        {
+            instance.MyProperty = myProperty;
+            return instance;
+        }
+
+        public static T WithMyProperty<T>(this T instance, T myProperty)
+            where T : Test.Domain.Builders.IGenericBuilder<T>
+        {
+            instance.MyProperty = new System.Func<T>(() => myProperty);
+            return instance;
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Extensions
+{
+#nullable enable
+    public static partial class LiteralBuilderExtensions
+    {
+        public static T WithValue<T>(this T instance, System.Func<string> value)
+            where T : Test.Domain.Builders.ILiteralBuilder
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            instance.Value = value;
+            return instance;
+        }
+
+        public static T WithValue<T>(this T instance, string value)
+            where T : Test.Domain.Builders.ILiteralBuilder
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            instance.Value = new System.Func<System.String>(() => value);
+            return instance;
+        }
+
+        public static T WithOriginalValue<T>(this T instance, System.Func<object>? originalValue)
+            where T : Test.Domain.Builders.ILiteralBuilder
+        {
+            instance.OriginalValue = originalValue;
+            return instance;
+        }
+
+        public static T WithOriginalValue<T>(this T instance, object? originalValue)
+            where T : Test.Domain.Builders.ILiteralBuilder
+        {
+            instance.OriginalValue = new System.Func<System.Object>(() => originalValue);
             return instance;
         }
     }
