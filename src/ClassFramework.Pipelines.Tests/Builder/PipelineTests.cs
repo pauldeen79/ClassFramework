@@ -216,7 +216,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
             method.ReturnTypeName.ShouldBe("MyNamespace.MyClass");
             method.ReturnTypeGenericTypeArguments.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "T" });
             method.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
-            method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "return new MyNamespace.MyClass<T> { Property2 = Property2() };" });
+            method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "return new MyNamespace.MyClass<T> { Property2 = Property2.Select(x => x()) };" });
         }
 
         [Fact]

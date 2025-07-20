@@ -111,7 +111,9 @@ public static class PipelineContextExtensions
         }
 
         var lazySuffix = useBuilderLazyValues
-            ? "()"
+            ? sourceProperty.TypeName.FixTypeName().IsCollectionTypeName()
+                ? ".Select(x => x())"
+                : "()"
             : string.Empty;
 
         if (value == PlaceholderNames.NamePlaceholder)
