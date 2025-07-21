@@ -4985,6 +4985,24 @@ namespace Test.Domain.Builders
         result.CollectionProperty.ToArray().ShouldBeEquivalentTo(new[] { "A", "B", "C" });
     }
 
+    [Fact]
+    public void Can_Use_Lazy_Values_On_Lazy_Builder()
+    {
+        // Arrange
+        var sut = new TestEntityBuilder();
+
+        // Act
+        string value = "";
+        sut.WithSingleProperty(() => value);
+        sut.AddCollectionProperty(() => value);
+        value = "lazy";
+        var result = sut.Build();
+
+        // Assert
+        result.SingleProperty.ShouldBe("lazy");
+        result.CollectionProperty.ToArray().ShouldBeEquivalentTo(new[] { "lazy" });
+    }
+
     public void Dispose()
     {
         _scope.Dispose();
