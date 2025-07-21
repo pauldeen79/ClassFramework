@@ -25,6 +25,7 @@ internal interface IPipelineSettings
     [Required(AllowEmptyStrings = true)] string BuildMethodName { get; }
     [Required(AllowEmptyStrings = true)] string BuildTypedMethodName { get; }
     [Required(AllowEmptyStrings = true)] string CollectionCopyStatementFormatString { get; }
+    [Required(AllowEmptyStrings = true)] string NonLazyCollectionCopyStatementFormatString { get; }
     [Required(AllowEmptyStrings = true)] string CollectionInitializationStatementFormatString { get; }
     [Required(AllowEmptyStrings = true)] string CollectionTypeName { get; }
     Predicate<IAttribute>? CopyAttributePredicate { get; }

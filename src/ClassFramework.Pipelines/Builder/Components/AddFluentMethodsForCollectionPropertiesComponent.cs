@@ -21,6 +21,8 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
             var results = await context.Request.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext, _evaluator)
                 .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, false, token).ConfigureAwait(false))
                 .AddRange("ArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, false, token).ConfigureAwait(false))
+                .AddRange("NonLazyArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, true, token).ConfigureAwait(false))
+                .AddRange("NonLazyEnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, true, token).ConfigureAwait(false))
                 .Build()
                 .ConfigureAwait(false);
 
@@ -50,7 +52,20 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
             //TODO: Add functionality to GenericFormattableString, so we can compare them by value (just like string)
             if (results.GetValue(ResultNames.TypeName).ToString() != results.GetValue(ResultNames.NonLazyTypeName).ToString())
             {
-                //TODO: Add overloads for non-func type with array and enumerable type
+                //Add overloads for non-func type
+                context.Request.Builder.AddMethods(new MethodBuilder()
+                    .WithName(results.GetValue(ResultNames.AddMethodName))
+                    .WithReturnTypeName(returnType)
+                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
+                    .AddCodeStatements(results.Where(x => x.Key.StartsWith("NonLazyEnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
+                );
+
+                context.Request.Builder.AddMethods(new MethodBuilder()
+                    .WithName(results.GetValue(ResultNames.AddMethodName))
+                    .WithReturnTypeName(returnType)
+                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
+                    .AddCodeStatements(results.Where(x => x.Key.StartsWith("NonLazyArrayOverload.")).Select(x => x.Value.Value!.ToString()))
+                );
             }
         }
 
@@ -101,7 +116,11 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
 
         var builderAddExpressionResult = await _evaluator.EvaluateInterpolatedStringAsync
         (
-            context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Request.Settings.CollectionCopyStatementFormatString),
+            context.Request
+                .GetMappingMetadata(property.TypeName)
+                .GetStringValue(MetadataNames.CustomBuilderAddExpression, useBuilderLazyValues
+                    ? context.Request.Settings.NonLazyCollectionCopyStatementFormatString
+                    : context.Request.Settings.CollectionCopyStatementFormatString),
             context.Request.FormatProvider,
             new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
             token

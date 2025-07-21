@@ -101,7 +101,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
         (
             context.Request
                 .GetMappingMetadata(property.TypeName)
-                .GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Request.Settings.CollectionCopyStatementFormatString),
+                .GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Request.Settings.BuilderExtensionsCollectionCopyStatementFormatString),
             context.Request.FormatProvider,
             new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings),
             token
