@@ -47,46 +47,6 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         }
     }
 
-    protected TypenameMapping[] GetTypenameMappings(string typeName)
-    {
-        var typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName).ToArray();
-        if (typeNameMappings.Length == 0 && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
-        {
-            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetTypeGenericArguments()))
-            {
-                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutGenerics()).ToArray();
-            }
-            else
-            {
-                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType()).ToArray();
-            }
-        }
-
-        if (typeNameMappings.Length == 0 && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetGenericArguments()))
-        {
-            typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.WithoutGenerics()).ToArray();
-        }
-
-        return typeNameMappings;
-    }
-
-    protected static string GetNamespace(string typeName)
-    {
-        if (typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
-        {
-            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetTypeGenericArguments()))
-            {
-                return typeName.GetCollectionItemType().WithoutGenerics().GetNamespaceWithDefault();
-            }
-            else
-            {
-                return typeName.GetCollectionItemType().GetNamespaceWithDefault();
-            }
-        }
-
-        return typeName.GetNamespaceWithDefault();
-    }
-
     public Domain.Attribute InitializeDelegate(System.Attribute sourceAttribute)
         => Settings.AttributeInitializers
             .Select(x => x(sourceAttribute))
@@ -126,6 +86,50 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         }
 
         return [];
+    }
+
+    public bool NeedNonLazyOverloads(IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
+        //TODO: Add functionality to GenericFormattableString, so we can compare them by value (just like string)
+        => results.GetValue(ResultNames.TypeName).ToString() != results.GetValue(ResultNames.NonLazyTypeName).ToString();
+
+    protected TypenameMapping[] GetTypenameMappings(string typeName)
+    {
+        var typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName).ToArray();
+        if (typeNameMappings.Length == 0 && typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
+        {
+            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetTypeGenericArguments()))
+            {
+                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType().WithoutGenerics()).ToArray();
+            }
+            else
+            {
+                typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.GetCollectionItemType()).ToArray();
+            }
+        }
+
+        if (typeNameMappings.Length == 0 && !typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetGenericArguments()))
+        {
+            typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName.WithoutGenerics()).ToArray();
+        }
+
+        return typeNameMappings;
+    }
+
+    protected static string GetNamespace(string typeName)
+    {
+        if (typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
+        {
+            if (!string.IsNullOrEmpty(typeName.GetCollectionItemType().GetTypeGenericArguments()))
+            {
+                return typeName.GetCollectionItemType().WithoutGenerics().GetNamespaceWithDefault();
+            }
+            else
+            {
+                return typeName.GetCollectionItemType().GetNamespaceWithDefault();
+            }
+        }
+
+        return typeName.GetNamespaceWithDefault();
     }
 }
 

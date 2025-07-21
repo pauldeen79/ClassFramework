@@ -41,8 +41,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
                 )
             );
 
-            //TODO: Add functionality to GenericFormattableString, so we can compare them by value (just like string)
-            if (results.GetValue(ResultNames.TypeName).ToString() != results.GetValue(ResultNames.NonLazyTypeName).ToString())
+            if (context.Request.NeedNonLazyOverloads(results))
             {
                 //Add overload for non-func type
                 context.Request.Builder.AddMethods(new MethodBuilder()

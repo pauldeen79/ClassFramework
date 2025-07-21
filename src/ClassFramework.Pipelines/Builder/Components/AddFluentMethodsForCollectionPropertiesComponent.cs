@@ -49,8 +49,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
                 .AddCodeStatements(results.Where(x => x.Key.StartsWith("ArrayOverload.")).Select(x => x.Value.Value!.ToString()))
             );
 
-            //TODO: Add functionality to GenericFormattableString, so we can compare them by value (just like string)
-            if (results.GetValue(ResultNames.TypeName).ToString() != results.GetValue(ResultNames.NonLazyTypeName).ToString())
+            if (context.Request.NeedNonLazyOverloads(results))
             {
                 //Add overloads for non-func type
                 context.Request.Builder.AddMethods(new MethodBuilder()
