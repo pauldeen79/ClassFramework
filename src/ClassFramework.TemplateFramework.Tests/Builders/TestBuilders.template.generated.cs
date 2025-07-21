@@ -82,6 +82,21 @@ namespace ClassFramework.TemplateFramework.Tests.Builders
             return this;
         }
 
+        //*** BEGIN change pipeline so it gets generated correctly
+        public ClassFramework.TemplateFramework.Tests.Builders.TestEntityBuilder AddCollectionProperty(System.Collections.Generic.IEnumerable<string> collectionProperty)
+        {
+            if (collectionProperty is null) throw new System.ArgumentNullException(nameof(collectionProperty));
+            return AddCollectionProperty(collectionProperty.ToArray());
+        }
+
+        public ClassFramework.TemplateFramework.Tests.Builders.TestEntityBuilder AddCollectionProperty(params string[] collectionProperty)
+        {
+            if (collectionProperty is null) throw new System.ArgumentNullException(nameof(collectionProperty));
+            foreach (var item in collectionProperty) CollectionProperty.Add(() => item);
+            return this;
+        }
+        //*** END change pipeline so it gets generated correctly
+
         public ClassFramework.TemplateFramework.Tests.Builders.TestEntityBuilder WithSingleProperty(System.Func<string> singleProperty)
         {
             if (singleProperty is null) throw new System.ArgumentNullException(nameof(singleProperty));

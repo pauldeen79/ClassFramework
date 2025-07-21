@@ -4968,6 +4968,23 @@ namespace Test.Domain.Builders
 ");
     }
 
+    [Fact]
+    public void Can_Use_Non_Lazy_Values_On_Lazy_Builder()
+    {
+        // Arrange
+        var sut = new TestEntityBuilder();
+
+        // Act
+        var result = sut
+            .WithSingleProperty("single value")
+            .AddCollectionProperty("A", "B", "C")
+            .Build();
+
+        // Assert
+        result.SingleProperty.ShouldBe("single value");
+        result.CollectionProperty.ToArray().ShouldBeEquivalentTo(new[] { "A", "B", "C" });
+    }
+
     public void Dispose()
     {
         _scope.Dispose();
