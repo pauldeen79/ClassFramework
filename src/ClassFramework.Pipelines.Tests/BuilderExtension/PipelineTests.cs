@@ -138,9 +138,9 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderExtensionConte
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             var methods = context.Builder.Methods.Where(x => x.Name == "AddProperty2").ToArray();
-            methods.Length.ShouldBe(2);
+            methods.Length.ShouldBe(4);
             methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "T");
-            methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).ToArray().ShouldBeEquivalentTo(new[] { "T", "System.Collections.Generic.IEnumerable<System.Func<System.String>>", "T", "System.Func<System.String>[]" });
+            methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).ToArray().ShouldBeEquivalentTo(new[] { "T", "System.Collections.Generic.IEnumerable<System.Func<System.String>>", "T", "System.Func<System.String>[]", "T", "System.Collections.Generic.IEnumerable<System.String>", "T", "System.String[]" });
             methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
             methods.SelectMany(x => x.CodeStatements)
                 .OfType<StringCodeStatementBuilder>()
@@ -152,6 +152,9 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderExtensionConte
                     {
                         "return instance.AddProperty2<T>(property2.ToArray());",
                         "foreach (var item in property2) instance.Property2.Add(item);",
+                        "return instance;",
+                        "return instance.AddProperty2<T>(property2.ToArray());",
+                        "foreach (var item in property2) instance.Property2.Add(() => item);",
                         "return instance;"
                     }
                 );

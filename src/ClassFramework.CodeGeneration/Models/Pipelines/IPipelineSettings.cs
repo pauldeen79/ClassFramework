@@ -17,6 +17,7 @@ internal interface IPipelineSettings
     [Required(AllowEmptyStrings = true)] string BuilderAbstractionsTypeConversionMetadataName { get; }
     [Required] IReadOnlyCollection<string> BuilderAbstractionsTypeConversionNamespaces { get; }
     [Required(AllowEmptyStrings = true)] string BuilderExtensionsCollectionCopyStatementFormatString { get; }
+    [Required(AllowEmptyStrings = true)] string NonLazyBuilderExtensionsCollectionCopyStatementFormatString { get; }
     [Required(AllowEmptyStrings = true)] string BuilderExtensionsNameFormatString { get; }
     [Required(AllowEmptyStrings = true)] string BuilderExtensionsNamespaceFormatString { get; }
     [Required(AllowEmptyStrings = true)] string BuilderNameFormatString { get; }

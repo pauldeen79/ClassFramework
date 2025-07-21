@@ -237,6 +237,8 @@ namespace ClassFramework.Pipelines.Builders
 
         private string _builderExtensionsCollectionCopyStatementFormatString;
 
+        private string _nonLazyBuilderExtensionsCollectionCopyStatementFormatString;
+
         private string _builderExtensionsNameFormatString;
 
         private string _builderExtensionsNamespaceFormatString;
@@ -562,6 +564,21 @@ namespace ClassFramework.Pipelines.Builders
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_builderExtensionsCollectionCopyStatementFormatString!, value!);
                 _builderExtensionsCollectionCopyStatementFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
                 if (hasChanged) HandlePropertyChanged(nameof(BuilderExtensionsCollectionCopyStatementFormatString));
+            }
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public string NonLazyBuilderExtensionsCollectionCopyStatementFormatString
+        {
+            get
+            {
+                return _nonLazyBuilderExtensionsCollectionCopyStatementFormatString;
+            }
+            set
+            {
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_nonLazyBuilderExtensionsCollectionCopyStatementFormatString!, value!);
+                _nonLazyBuilderExtensionsCollectionCopyStatementFormatString = value ?? throw new System.ArgumentNullException(nameof(value));
+                if (hasChanged) HandlePropertyChanged(nameof(NonLazyBuilderExtensionsCollectionCopyStatementFormatString));
             }
         }
 
@@ -1370,6 +1387,7 @@ namespace ClassFramework.Pipelines.Builders
             _builderAbstractionsTypeConversionMetadataName = source.BuilderAbstractionsTypeConversionMetadataName;
             if (source.BuilderAbstractionsTypeConversionNamespaces is not null) foreach (var item in source.BuilderAbstractionsTypeConversionNamespaces) _builderAbstractionsTypeConversionNamespaces.Add(item);
             _builderExtensionsCollectionCopyStatementFormatString = source.BuilderExtensionsCollectionCopyStatementFormatString;
+            _nonLazyBuilderExtensionsCollectionCopyStatementFormatString = source.NonLazyBuilderExtensionsCollectionCopyStatementFormatString;
             _builderExtensionsNameFormatString = source.BuilderExtensionsNameFormatString;
             _builderExtensionsNamespaceFormatString = source.BuilderExtensionsNamespaceFormatString;
             _builderNameFormatString = source.BuilderNameFormatString;
@@ -1438,6 +1456,7 @@ namespace ClassFramework.Pipelines.Builders
             _baseClassBuilderNameSpace = string.Empty;
             _builderAbstractionsTypeConversionMetadataName = string.Empty;
             _builderExtensionsCollectionCopyStatementFormatString = string.Empty;
+            _nonLazyBuilderExtensionsCollectionCopyStatementFormatString = string.Empty;
             _builderExtensionsNameFormatString = string.Empty;
             _builderExtensionsNamespaceFormatString = string.Empty;
             _builderNameFormatString = string.Empty;
@@ -1466,7 +1485,7 @@ namespace ClassFramework.Pipelines.Builders
 
         public ClassFramework.Pipelines.PipelineSettings Build()
         {
-            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddImplicitOperatorOnBuilder, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderAbstractionsTypeConversionMetadataName, BuilderAbstractionsTypeConversionNamespaces, BuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuilderNewCollectionTypeName, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, NonLazyCollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, CreateAsObservable, CreateAsPartial, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, EntityNewCollectionTypeName, IEquatableItemType, ImplementIEquatable, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, InheritFromInterfaces, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), NonCollectionInitializationStatementFormatString, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, SkipNamespacesOnFluentBuilderMethods, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseBuilderAbstractionsTypeConversion, UseBuilderLazyValues, UseCrossCuttingInterfaces, UseDefaultValueAttributeValuesForBuilderInitialization, UseExceptionThrowIfNull, UsePatternMatchingForNullChecks, ValidateArguments);
+            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddImplicitOperatorOnBuilder, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderAbstractionsTypeConversionMetadataName, BuilderAbstractionsTypeConversionNamespaces, BuilderExtensionsCollectionCopyStatementFormatString, NonLazyBuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuilderNewCollectionTypeName, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, NonLazyCollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, CreateAsObservable, CreateAsPartial, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, EntityNewCollectionTypeName, IEquatableItemType, ImplementIEquatable, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, InheritFromInterfaces, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), NonCollectionInitializationStatementFormatString, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, SkipNamespacesOnFluentBuilderMethods, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseBuilderAbstractionsTypeConversion, UseBuilderLazyValues, UseCrossCuttingInterfaces, UseDefaultValueAttributeValuesForBuilderInitialization, UseExceptionThrowIfNull, UsePatternMatchingForNullChecks, ValidateArguments);
         }
 
         partial void SetDefaultValues();
@@ -1615,6 +1634,13 @@ namespace ClassFramework.Pipelines.Builders
         {
             if (builderExtensionsCollectionCopyStatementFormatString is null) throw new System.ArgumentNullException(nameof(builderExtensionsCollectionCopyStatementFormatString));
             BuilderExtensionsCollectionCopyStatementFormatString = builderExtensionsCollectionCopyStatementFormatString;
+            return this;
+        }
+
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithNonLazyBuilderExtensionsCollectionCopyStatementFormatString(string nonLazyBuilderExtensionsCollectionCopyStatementFormatString)
+        {
+            if (nonLazyBuilderExtensionsCollectionCopyStatementFormatString is null) throw new System.ArgumentNullException(nameof(nonLazyBuilderExtensionsCollectionCopyStatementFormatString));
+            NonLazyBuilderExtensionsCollectionCopyStatementFormatString = nonLazyBuilderExtensionsCollectionCopyStatementFormatString;
             return this;
         }
 

@@ -19,8 +19,9 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
             var parentChildContext = CreateParentChildContext(context, property);
 
             var results = await context.Request.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext,_evaluator)
-                .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, false, token).ConfigureAwait(false))
+                .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, token).ConfigureAwait(false))
                 .AddRange("ArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, false, token).ConfigureAwait(false))
+                .AddRange("NonLazyArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, true, token).ConfigureAwait(false))
                 .Build()
                 .ConfigureAwait(false);
 
@@ -60,14 +61,37 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
             //TODO: Add functionality to GenericFormattableString, so we can compare them by value (just like string)
             if (results.GetValue(ResultNames.TypeName).ToString() != results.GetValue(ResultNames.NonLazyTypeName).ToString())
             {
-                //TODO: Add overloads for non-func type with array and enumerable type
+                //Add overloads for non-func type
+                context.Request.Builder.AddMethods(new MethodBuilder()
+                    .WithName(results.GetValue(ResultNames.AddMethodName))
+                    .WithReturnTypeName("T")
+                    .WithStatic()
+                    .WithExtensionMethod()
+                    .AddGenericTypeArguments("T")
+                    .AddGenericTypeArgumentConstraints($"where T : {returnType}")
+                    .AddParameter("instance", "T")
+                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
+                    .AddCodeStatements(results.Where(x => x.Key.StartsWith("EnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
+                );
+
+                context.Request.Builder.AddMethods(new MethodBuilder()
+                    .WithName(results.GetValue(ResultNames.AddMethodName))
+                    .WithReturnTypeName("T")
+                    .WithStatic()
+                    .WithExtensionMethod()
+                    .AddGenericTypeArguments("T")
+                    .AddGenericTypeArgumentConstraints($"where T : {returnType}")
+                    .AddParameter("instance", "T")
+                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
+                    .AddCodeStatements(results.Where(x => x.Key.StartsWith("NonLazyArrayOverload.")).Select(x => x.Value.Value!.ToString()))
+                );
             }
         }
 
         return Result.Success();
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderExtensionContext> context, Property property, ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContext, bool useBuilderLazyValues, CancellationToken token)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderExtensionContext> context, Property property, ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContext, CancellationToken token)
     {
         var results = new List<Result<GenericFormattableString>>();
 
@@ -101,7 +125,9 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
         (
             context.Request
                 .GetMappingMetadata(property.TypeName)
-                .GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Request.Settings.BuilderExtensionsCollectionCopyStatementFormatString),
+                .GetStringValue(MetadataNames.CustomBuilderAddExpression, useBuilderLazyValues
+                    ? context.Request.Settings.NonLazyBuilderExtensionsCollectionCopyStatementFormatString
+                    : context.Request.Settings.BuilderExtensionsCollectionCopyStatementFormatString),
             context.Request.FormatProvider,
             new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings),
             token

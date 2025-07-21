@@ -21,6 +21,7 @@ public partial class PipelineSettingsBuilder
         BuilderExtensionsNamespaceFormatString = "{class.Namespace}.Builders.Extensions";
         BuilderExtensionsNameFormatString = "{NoInterfacePrefix(class.Name)}BuilderExtensions";
         BuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(property.Name.ToCamelCase())}) {InstancePrefix()}{property.Name}.Add(item);";
+        NonLazyBuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(property.Name.ToCamelCase())}) {InstancePrefix()}{property.Name}.Add(() => item);";
         EntityNamespaceFormatString = "{class.Namespace}";
         EntityNameFormatString = "{class.Name}";
         ToBuilderFormatString = "ToBuilder";
