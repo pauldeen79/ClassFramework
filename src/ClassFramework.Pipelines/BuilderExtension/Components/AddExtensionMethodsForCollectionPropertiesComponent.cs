@@ -4,6 +4,8 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
+    private const string Instance = "instance";
+
     public async Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
@@ -41,7 +43,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                 .WithExtensionMethod()
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
-                .AddParameter("instance", "T")
+                .AddParameter(Instance, "T")
                 .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
                 .AddCodeStatements(results.Where(x => x.Key.StartsWith("EnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
             );
@@ -53,12 +55,12 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                 .WithExtensionMethod()
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
-                .AddParameter("instance", "T")
+                .AddParameter(Instance, "T")
                 .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
                 .AddCodeStatements(results.Where(x => x.Key.StartsWith("ArrayOverload.")).Select(x => x.Value.Value!.ToString()))
             );
 
-            if (context.Request.NeedNonLazyOverloads(results))
+            if (results.NeedNonLazyOverloads())
             {
                 //Add overloads for non-func type
                 context.Request.Builder.AddMethods(new MethodBuilder()
@@ -68,7 +70,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                     .WithExtensionMethod()
                     .AddGenericTypeArguments("T")
                     .AddGenericTypeArgumentConstraints($"where T : {returnType}")
-                    .AddParameter("instance", "T")
+                    .AddParameter(Instance, "T")
                     .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
                     .AddCodeStatements(results.Where(x => x.Key.StartsWith("EnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
                 );
@@ -80,7 +82,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                     .WithExtensionMethod()
                     .AddGenericTypeArguments("T")
                     .AddGenericTypeArgumentConstraints($"where T : {returnType}")
-                    .AddParameter("instance", "T")
+                    .AddParameter(Instance, "T")
                     .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
                     .AddCodeStatements(results.Where(x => x.Key.StartsWith("NonLazyArrayOverload.")).Select(x => x.Value.Value!.ToString()))
                 );

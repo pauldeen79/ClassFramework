@@ -46,7 +46,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
                 )
             );
 
-            if (context.Request.NeedNonLazyOverloads(results))
+            if (results.NeedNonLazyOverloads())
             {
                 //Add overload for non-func type
                 context.Request.Builder.AddMethods(new MethodBuilder()

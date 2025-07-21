@@ -49,7 +49,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
                 .AddCodeStatements(results.Where(x => x.Key.StartsWith("ArrayOverload.")).Select(x => x.Value.Value!.ToString()))
             );
 
-            if (context.Request.NeedNonLazyOverloads(results))
+            if (results.NeedNonLazyOverloads())
             {
                 //Add overloads for non-func type
                 context.Request.Builder.AddMethods(new MethodBuilder()

@@ -88,10 +88,6 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         return [];
     }
 
-    public bool NeedNonLazyOverloads(IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
-        //TODO: Add functionality to GenericFormattableString, so we can compare them by value (just like string)
-        => results.GetValue(ResultNames.TypeName).ToString() != results.GetValue(ResultNames.NonLazyTypeName).ToString();
-
     protected TypenameMapping[] GetTypenameMappings(string typeName)
     {
         var typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName).ToArray();
