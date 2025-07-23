@@ -88,6 +88,13 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         return [];
     }
 
+    public bool UseBuilderLazyValues(string typeName)
+        => UseBuilderLazyValues(GetMappingMetadata(typeName));
+
+    public bool UseBuilderLazyValues(IEnumerable<Metadata> metadata)
+        => settings.UseBuilderLazyValues
+        && metadata.GetStringValue(MetadataNames.CustomBuilderName, DefaultBuilderName) == DefaultBuilderName;
+
     protected TypenameMapping[] GetTypenameMappings(string typeName)
     {
         var typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName).ToArray();

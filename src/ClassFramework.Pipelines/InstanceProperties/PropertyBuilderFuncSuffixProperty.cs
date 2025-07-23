@@ -10,13 +10,7 @@ public class PropertyBuilderFuncSuffixProperty : IProperty
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return await context.EvaluateForProperty(
-            (property, settings, mappedContextBase) =>
-            {
-                var metadata = mappedContextBase.GetMappingMetadata(property.TypeName).ToArray();
-                var builderName = metadata.GetStringValue(MetadataNames.CustomBuilderName, ContextBase.DefaultBuilderName);
-                var useBuilderLazyValues = settings.UseBuilderLazyValues && builderName == ContextBase.DefaultBuilderName;
-
-                return useBuilderLazyValues.GetLazySuffix();
-            }).ConfigureAwait(false);
+            (property, settings, mappedContextBase)
+                => mappedContextBase.UseBuilderLazyValues(property.TypeName).GetLazySuffix()).ConfigureAwait(false);
     }
 }

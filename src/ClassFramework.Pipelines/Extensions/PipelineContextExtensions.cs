@@ -57,9 +57,7 @@ public static class PipelineContextExtensions
         var results = new List<ConstructionMethodParameterInfo>();
         foreach (var property in properties)
         {
-            var metadata = context.Request.GetMappingMetadata(property.TypeName).ToArray();
-            var builderName = metadata.GetStringValue(MetadataNames.CustomBuilderName, ContextBase.DefaultBuilderName);
-            var useBuilderLazyValues = context.Request.Settings.UseBuilderLazyValues && builderName == ContextBase.DefaultBuilderName;
+            var useBuilderLazyValues = context.Request.UseBuilderLazyValues(property.TypeName);
             var info =
                 new ConstructionMethodParameterInfo(
                     property.Name,
