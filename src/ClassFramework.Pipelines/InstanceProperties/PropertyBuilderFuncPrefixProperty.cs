@@ -18,9 +18,8 @@ public class PropertyBuilderFuncPrefixProperty : IProperty
                 var typeName = property.TypeName.FixTypeName().IsCollectionTypeName()
                     ? property.TypeName.FixTypeName().GetCollectionItemType()
                     : property.TypeName.FixTypeName();
-                return useBuilderLazyValues
-                    ? $"new {typeName.ToLazy()}(() => "
-                    : string.Empty;
+                
+                return useBuilderLazyValues.GetLazyPrefix(typeName);
             }).ConfigureAwait(false);
     }
 }

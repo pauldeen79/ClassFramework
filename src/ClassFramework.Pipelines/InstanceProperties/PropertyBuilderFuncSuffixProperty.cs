@@ -15,9 +15,8 @@ public class PropertyBuilderFuncSuffixProperty : IProperty
                 var metadata = mappedContextBase.GetMappingMetadata(property.TypeName).ToArray();
                 var builderName = metadata.GetStringValue(MetadataNames.CustomBuilderName, ContextBase.DefaultBuilderName);
                 var useBuilderLazyValues = settings.UseBuilderLazyValues && builderName == ContextBase.DefaultBuilderName;
-                return useBuilderLazyValues
-                    ? ")"
-                    : string.Empty;
+
+                return useBuilderLazyValues.GetLazySuffix();
             }).ConfigureAwait(false);
     }
 }

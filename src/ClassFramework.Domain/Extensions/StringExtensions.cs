@@ -327,8 +327,8 @@ public static class StringExtensions
 
     public static string GetDefaultValue(this string typeName, bool isNullable, bool isValueType, bool enableNullableReferenceTypes, bool useBuilderLazyValues)
     {
-        var lazyPrefix = GetLazyPrefix(typeName, useBuilderLazyValues);
-        var lazySuffix = GetLazySuffix(useBuilderLazyValues);
+        var lazyPrefix = useBuilderLazyValues.GetLazyPrefix(typeName);
+        var lazySuffix = useBuilderLazyValues.GetLazySuffix();
 
         if ((typeName.IsStringTypeName() || typeName == WellKnownTypes.String) && !isNullable)
         {
@@ -363,16 +363,6 @@ public static class StringExtensions
 
     public static string ToLazy(this string typeName)
         => typeof(Func<object>).ReplaceGenericTypeName(typeName);
-
-    private static string GetLazyPrefix(string typeName, bool useBuilderLazyValues)
-        => useBuilderLazyValues
-            ? $"new {typeName.ToLazy()}(() => "
-            : string.Empty;
-
-    private static string GetLazySuffix(bool useBuilderLazyValues)
-        => useBuilderLazyValues
-            ? ")"
-            : string.Empty;
 
     public static string AppendNullableAnnotation(this string instance,
                                                   bool isNullable,
