@@ -5000,7 +5000,26 @@ namespace Test.Domain.Builders
 
         // Assert
         result.SingleProperty.ShouldBe("lazy");
-        result.CollectionProperty.ToArray().ShouldBeEquivalentTo(new[] { "lazy" });
+        result.CollectionProperty.ToArray().ShouldBeEquivalentTo(new[] { value });
+    }
+
+    [Fact]
+    public void Can_Use_Async_Lazy_Values_On_Lazy_Builder()
+    {
+        // Arrange
+        var sut = new TestEntityBuilder();
+
+        // Act
+        string value = "";
+        Func<Task<string>> asyncTask = () => Task.Run(() => value);
+        sut.WithSingleProperty(() => asyncTask().GetAwaiter().GetResult());
+        sut.AddCollectionProperty(() => asyncTask().GetAwaiter().GetResult());
+        value = "lazy";
+        var result = sut.Build();
+
+        // Assert
+        result.SingleProperty.ShouldBe("lazy");
+        result.CollectionProperty.ToArray().ShouldBeEquivalentTo(new[] { value });
     }
 
     public void Dispose()
