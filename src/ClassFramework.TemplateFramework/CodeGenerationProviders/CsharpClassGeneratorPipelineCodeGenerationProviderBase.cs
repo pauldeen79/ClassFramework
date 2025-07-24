@@ -32,28 +32,20 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected abstract Type EntityConcreteCollectionType { get; }
     protected abstract Type BuilderCollectionType { get; }
 
-    protected virtual string RootNamespace => InheritFromInterfaces
-        ? $"{ProjectName}.Abstractions"
-        : CoreNamespace;
+    protected virtual string RootNamespace => CoreNamespace;
     protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
     protected virtual string CoreNamespace => $"{ProjectName}.Core";
     protected virtual string BuilderAbstractionsNamespace => $"{RootNamespace}.Builders.Abstractions";
-    protected virtual string AbstractionsNamespace => InheritFromInterfaces
-        ? $"{ProjectName}.Abstractions"
-        : $"{CoreNamespace}.Abstractions";
-    protected virtual string ValidationNamespace => InheritFromInterfaces
-        ? $"{AbstractionsNamespace}.Validation"
-        : $"{RootNamespace}.Validation";
-    protected virtual string DomainsNamespace => InheritFromInterfaces
-        ? $"{AbstractionsNamespace}.Domains"
-        : $"{RootNamespace}.Domains";
+    protected virtual string AbstractionsNamespace => $"{CoreNamespace}.Abstractions";
+    protected virtual string ValidationNamespace => $"{RootNamespace}.Validation";
+    protected virtual string DomainsNamespace => $"{RootNamespace}.Domains";
 
     protected virtual string EnvironmentVersion => string.Empty;
     protected virtual bool CopyAttributes => false;
     protected virtual bool CopyInterfaces => false;
     protected virtual bool CopyMethods => false;
-    protected virtual bool InheritFromInterfaces => false;
     protected virtual bool UseBuilderAbstractionsTypeConversion => true;
+    protected virtual bool UseBuilderLazyValues => false;
     protected virtual bool AddNullChecks => true;
     protected virtual bool UseExceptionThrowIfNull => false;
     protected virtual bool CreateRecord => false;
@@ -137,7 +129,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return await ProcessModelsResultAsync(modelsResultTask, async x => await CreateInterfaceAsync(await CreateEntityAsync(x, entitiesNamespace, false).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{class.Name}", string.Empty, (t, m) => m.Name == ToBuilderFormatString && ((InheritFromInterfaces && t.Interfaces.Count == 0) || (UseBuilderAbstractionsTypeConversion && !UseCrossCuttingInterfaces))).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
+        return await ProcessModelsResultAsync(modelsResultTask, async x => await CreateInterfaceAsync(await CreateEntityAsync(x, entitiesNamespace, false).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{class.Name}", string.Empty, (t, m) => m.Name == ToBuilderFormatString && (UseBuilderAbstractionsTypeConversion && !UseCrossCuttingInterfaces)).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
     }
 
     protected Task<Result<IEnumerable<TypeBase>>> GetBuildersAsync(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
@@ -196,7 +188,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return await ProcessModelsResultAsync
         (
             GetBuildersAsync(modelsResultTask, buildersNamespace, entitiesNamespace, false),
-            async x => await CreateInterfaceAsync(Result.Success(x.ToBuilder().Chain(y => { var itemsToDelete = y.GenericTypeArguments.Where(z => z == "TEntity" || z == "TBuilder").ToList(); itemsToDelete.ForEach(z => y.GenericTypeArguments.Remove(z)); y.GenericTypeArgumentConstraints.Clear(); }).Build()), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{class.Name}", MetadataNames.CustomBuilderInterfaceTypeName, (t, m) => m.Name == BuildMethodName && ((InheritFromInterfaces && t.Interfaces.Count == 0) || (UseBuilderAbstractionsTypeConversion && !UseCrossCuttingInterfaces))).ConfigureAwait(false),
+            async x => await CreateInterfaceAsync(Result.Success(x.ToBuilder().Chain(y => { var itemsToDelete = y.GenericTypeArguments.Where(z => z == "TEntity" || z == "TBuilder").ToList(); itemsToDelete.ForEach(z => y.GenericTypeArguments.Remove(z)); y.GenericTypeArgumentConstraints.Clear(); }).Build()), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{class.Name}", MetadataNames.CustomBuilderInterfaceTypeName, (t, m) => m.Name == BuildMethodName && (UseBuilderAbstractionsTypeConversion && !UseCrossCuttingInterfaces)).ConfigureAwait(false),
             "builder interfaces"
         ).ConfigureAwait(false);
     }
@@ -275,7 +267,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithCopyAttributes(CopyAttributes)
                 .WithCopyInterfaces(CopyInterfaces)
                 .WithCopyMethods(CopyMethods)
-                .WithInheritFromInterfaces(InheritFromInterfaces)
                 .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
                 .WithCopyInterfacePredicate(CopyInterfacePredicate)
                 .WithCopyMethodPredicate(CopyMethodPredicate)
@@ -311,7 +302,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyAttributes(CopyAttributes)
             .WithCopyInterfaces(CopyInterfaces)
             .WithCopyMethods(CopyMethods)
-            .WithInheritFromInterfaces(InheritFromInterfaces)
             .WithCopyAttributePredicate(CopyAttributePredicate)
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
             .WithCopyMethodPredicate(CopyMethodPredicate)
@@ -333,16 +323,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         yield return new NamespaceMappingBuilder(AbstractionsNamespace)
             .AddMetadata
             (
-                new MetadataBuilder(MetadataNames.CustomBuilderInterfaceNamespace, InheritFromInterfaces
-                    ? $"{RootNamespace}.Builders"
-                    : BuilderAbstractionsNamespace),
+                new MetadataBuilder(MetadataNames.CustomBuilderInterfaceNamespace, BuilderAbstractionsNamespace),
                 new MetadataBuilder(MetadataNames.CustomBuilderInterfaceName, "{NoGenerics(ClassName(property.TypeName))}Builder{GenericArguments(property.TypeName, true)}"),
-                new MetadataBuilder(MetadataNames.CustomBuilderInterfaceTypeName, InheritFromInterfaces
-                    ? $"{RootNamespace}.Builders.I{{NoGenerics(ClassName(property.TypeName))}}Builder{{GenericArguments(property.TypeName, true)}}"
-                    : $"{BuilderAbstractionsNamespace}.I{{NoGenerics(ClassName(property.TypeName))}}Builder{{GenericArguments(property.TypeName, true)}}"),
-                new MetadataBuilder(MetadataNames.CustomBuilderParentTypeNamespace, InheritFromInterfaces
-                    ? $"{RootNamespace}.Builders"
-                    : BuilderAbstractionsNamespace),
+                new MetadataBuilder(MetadataNames.CustomBuilderInterfaceTypeName, $"{BuilderAbstractionsNamespace}.I{{NoGenerics(ClassName(property.TypeName))}}Builder{{GenericArguments(property.TypeName, true)}}"),
+                new MetadataBuilder(MetadataNames.CustomBuilderParentTypeNamespace, BuilderAbstractionsNamespace),
                 new MetadataBuilder(MetadataNames.CustomBuilderParentTypeName, "{NoGenerics(ClassName(property.ParentTypeFullName))}Builder{GenericArguments(property.ParentTypeFullName, true)}")
             );
 
@@ -408,7 +392,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     private IEnumerable<TypenameMappingBuilder> CreateBuilderAbstractionsTypeConversionTypenameMapping(bool? useBuilderAbstractionsTypeConversion)
         => GetType().Assembly.GetTypes()
-            .Where(x => !InheritFromInterfaces && (useBuilderAbstractionsTypeConversion ?? UseBuilderAbstractionsTypeConversion)
+            .Where(x => (useBuilderAbstractionsTypeConversion ?? UseBuilderAbstractionsTypeConversion)
                 && x.IsInterface
                 && !string.IsNullOrEmpty(x.Namespace)
                 && GetCodeGenerationBuilderAbstractionsTypeConversionNamespaces().Contains(x.Namespace)
@@ -501,7 +485,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyAttributes(CopyAttributes)
             .WithCopyInterfaces(CopyInterfaces)
             .WithCopyMethods(CopyMethods)
-            .WithInheritFromInterfaces(InheritFromInterfaces || useBuilderAbstractionsTypeConversion == false)
+            .WithInheritFromInterfaces(useBuilderAbstractionsTypeConversion == false)
             .WithCopyAttributePredicate(CopyAttributePredicate ?? DefaultCopyAttributePredicate)
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
             .WithCopyMethodPredicate(CopyMethodPredicate)
@@ -575,6 +559,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithAddCopyConstructor(AddCopyConstructor)
                 .WithAddImplicitOperatorOnBuilder(AddImplicitOperatorOnBuilder)
                 .WithSetDefaultValuesInEntityConstructor(SetDefaultValues)
+                .WithUseBuilderLazyValues(UseBuilderLazyValues)
                 .AddSkipNamespacesOnFluentBuilderMethods(GetSkipNamespacesOnFluentBuilderMethods())
                 .Build())
             ));
@@ -588,6 +573,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithSetMethodNameFormatString(SetMethodNameFormatString)
                 .WithAddMethodNameFormatString(AddMethodNameFormatString)
                 .WithEnableBuilderInheritance(EnableBuilderInhericance)
+                .WithUseBuilderLazyValues(UseBuilderLazyValues)
                 .Build())
             ));
 

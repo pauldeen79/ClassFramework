@@ -16,7 +16,7 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
                 context.Request.Builder.AddMethods(new MethodBuilder()
                     .WithName(context.Request.Settings.BuildMethodName)
                     .WithAbstract()
-                    .WithReturnTypeName(context.Request.ReturnType)
+                    .WithReturnTypeName(context.Request.BuildReturnTypeName)
                     .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x))));
             }
             else
@@ -24,7 +24,7 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
                 context.Request.Builder.AddMethods(new MethodBuilder()
                     .WithName(context.Request.Settings.BuildMethodName)
                     .WithOverride()
-                    .WithReturnTypeName(context.Request.ReturnType)
+                    .WithReturnTypeName(context.Request.BuildReturnTypeName)
                     .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
                     .AddCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
 
@@ -47,7 +47,7 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
             .WithName(GetName(context))
             .WithAbstract(context.Request.IsBuilderForAbstractEntity)
             .WithOverride(context.Request.IsBuilderForOverrideEntity)
-            .WithReturnTypeName(GetBuilderBuildMethodReturnType(context.Request, context.Request.ReturnType))
+            .WithReturnTypeName(GetBuilderBuildMethodReturnType(context.Request, context.Request.BuildReturnTypeName))
             .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
             .AddCodeStatements(context.Request.CreatePragmaWarningDisableStatementsForBuildMethod())
             .AddCodeStatements
@@ -76,7 +76,7 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
         {
             if (context.Request.Settings.UseCrossCuttingInterfaces)
             {
-                context.Request.Builder.AddInterfaces(typeof(IBuilder<object>).ReplaceGenericTypeName(context.Request.ReturnType));
+                context.Request.Builder.AddInterfaces(typeof(IBuilder<object>).ReplaceGenericTypeName(context.Request.BuildReturnTypeName));
             }
         }
 

@@ -103,6 +103,9 @@ public static class StringExtensions
         return string.Concat(instance!, valueToAppend);
     }
 
+    public static string WrapDelegate(this string typeName)
+        => typeof(Func<object>).ReplaceGenericTypeName(typeName);
+
     private static string MapTypeUsingGenerics(string typeName, PipelineSettings settings, string newCollectionTypeName, string alternateTypeMetadataName, string genericArguments)
     {
         var mappedGenericArgumentsBuilder = new StringBuilder();

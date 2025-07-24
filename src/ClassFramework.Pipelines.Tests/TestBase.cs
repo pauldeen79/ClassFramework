@@ -194,6 +194,7 @@ public abstract class TestBase : IDisposable
         string? baseClassBuilderNameSpace = null,
         bool allowGenerationWithoutProperties = false,
         bool useCrossCuttingInterfaces = false,
+        bool useBuilderLazyValues = false,
         Class? baseClass = null,
         InheritanceComparisonDelegate? inheritanceComparisonDelegate = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
@@ -231,7 +232,8 @@ public abstract class TestBase : IDisposable
             .WithBuildMethodName(buildMethodName)
             .WithBuildTypedMethodName(buildTypedMethodName)
             .WithSetDefaultValuesMethodName(setDefaultValuesMethodName)
-            .WithUseCrossCuttingInterfaces(useCrossCuttingInterfaces);
+            .WithUseCrossCuttingInterfaces(useCrossCuttingInterfaces)
+            .WithUseBuilderLazyValues(useBuilderLazyValues);
 
     protected static PipelineSettingsBuilder CreateSettingsForEntity(
         bool enableEntityInheritance = false,

@@ -6,6 +6,8 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
     public IFormatProvider FormatProvider { get; } = formatProvider.IsNotNull(nameof(formatProvider));
     public CancellationToken CancellationToken { get; } = cancellationToken.IsNotNull(nameof(cancellationToken));
 
+    public const string DefaultBuilderName = "{NoGenerics(ClassName(property.TypeName))}Builder";
+
     public string NullCheck => Settings.UsePatternMatchingForNullChecks
         ? "is null"
         : "== null";
@@ -45,6 +47,54 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         }
     }
 
+    public Domain.Attribute InitializeDelegate(System.Attribute sourceAttribute)
+        => Settings.AttributeInitializers
+            .Select(x => x(sourceAttribute))
+            .FirstOrDefault(x => x is not null)
+                ?? throw new NotSupportedException($"Attribute not supported by initializer:");
+
+    public IEnumerable<string> CreateEntityValidationCode()
+    {
+        var argumentValidationType = Settings.AddValidationCode();
+
+        if (argumentValidationType == ArgumentValidationType.IValidatableObject)
+        {
+            yield return $"{typeof(Validator).FullName}.{nameof(Validator.ValidateObject)}(this, new {typeof(ValidationContext).FullName}(this, null, null), true);";
+        }
+        else if (argumentValidationType == ArgumentValidationType.CustomValidationCode)
+        {
+            yield return "Validate();";
+        }
+    }
+
+    public IEnumerable<Metadata> GetMappingMetadata(string typeName)
+    {
+        typeName = typeName.IsNotNull(nameof(typeName)).FixTypeName();
+
+        var typeNameMappings = GetTypenameMappings(typeName);
+        if (typeNameMappings.Length > 0)
+        {
+            return typeNameMappings.SelectMany(x => x.Metadata);
+        }
+
+        var ns = GetNamespace(typeName);
+        if (!string.IsNullOrEmpty(ns))
+        {
+            return Settings.NamespaceMappings
+                .Where(x => x.SourceNamespace == ns)
+                .SelectMany(x => x.Metadata);
+        }
+
+        return [];
+    }
+
+    public bool UseBuilderLazyValues(string typeName)
+        => UseBuilderLazyValues(GetMappingMetadata(typeName));
+
+    public bool UseBuilderLazyValues(IEnumerable<Metadata> metadata)
+        => settings.UseBuilderLazyValues
+        && metadata.GetStringValue(MetadataNames.CustomBuilderName, DefaultBuilderName) == DefaultBuilderName;
+
     protected TypenameMapping[] GetTypenameMappings(string typeName)
     {
         var typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName).ToArray();
@@ -83,48 +133,6 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         }
 
         return typeName.GetNamespaceWithDefault();
-    }
-
-    public Domain.Attribute InitializeDelegate(System.Attribute sourceAttribute)
-        => Settings.AttributeInitializers
-            .Select(x => x(sourceAttribute))
-            .FirstOrDefault(x => x is not null)
-                ?? throw new NotSupportedException($"Attribute not supported by initializer:");
-
-    public IEnumerable<string> CreateEntityValidationCode()
-    {
-        var argumentValidationType = Settings.AddValidationCode();
-
-        if (argumentValidationType == ArgumentValidationType.IValidatableObject)
-        {
-            yield return $"{typeof(Validator).FullName}.{nameof(Validator.ValidateObject)}(this, new {typeof(ValidationContext).FullName}(this, null, null), true);";
-        }
-        else if (argumentValidationType == ArgumentValidationType.CustomValidationCode)
-        {
-            yield return "Validate();";
-        }
-    }
-
-    public IEnumerable<Metadata> GetMappingMetadata(string typeName)
-    {
-        typeName = typeName.IsNotNull(nameof(typeName)).FixTypeName();
-
-        var typeNameMappings = GetTypenameMappings(typeName);
-        if (typeNameMappings.Length > 0)
-        {
-            return typeNameMappings.SelectMany(x => x.Metadata);
-        }
-
-        var ns = GetNamespace(typeName);
-
-        if (!string.IsNullOrEmpty(ns))
-        {
-            return Settings.NamespaceMappings
-                .Where(x => x.SourceNamespace == ns)
-                .SelectMany(x => x.Metadata);
-        }
-
-        return [];
     }
 }
 
@@ -188,28 +196,21 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .WithParentTypeFullName(property.ParentTypeFullName);
     }
 
-    public async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsForBuilderCollectionProperties(
+    public AsyncResultDictionaryBuilder<GenericFormattableString> GetResultDictionaryForBuilderCollectionProperties(
         Property property,
         object parentChildContext,
-        IExpressionEvaluator evaluator,
-        IEnumerable<Result<GenericFormattableString>> enumerableOverloadCode,
-        IEnumerable<Result<GenericFormattableString>> arrayOverloadCode)
+        IExpressionEvaluator evaluator)
     {
         property = property.IsNotNull(nameof(property));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
-        enumerableOverloadCode = enumerableOverloadCode.IsNotNull(nameof(enumerableOverloadCode));
-        arrayOverloadCode = arrayOverloadCode.IsNotNull(nameof(arrayOverloadCode));
 
-        return await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add(NamedResults.TypeName, property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, CancellationToken))
-            .Add(NamedResults.Namespace, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, CancellationToken))
-            .Add(NamedResults.BuilderName, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, CancellationToken))
-            .Add("AddMethodName", evaluator.EvaluateInterpolatedStringAsync(Settings.AddMethodNameFormatString, FormatProvider, parentChildContext, CancellationToken))
-            .AddRange("EnumerableOverload.{0}", enumerableOverloadCode)
-            .AddRange("ArrayOverload.{0}", arrayOverloadCode)
-            .Build()
-            .ConfigureAwait(false);
+        return new AsyncResultDictionaryBuilder<GenericFormattableString>()
+            .Add(ResultNames.TypeName, property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, CancellationToken))
+            .Add(ResultNames.Namespace, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, CancellationToken))
+            .Add(ResultNames.BuilderName, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, CancellationToken))
+            .Add(ResultNames.AddMethodName, evaluator.EvaluateInterpolatedStringAsync(Settings.AddMethodNameFormatString, FormatProvider, parentChildContext, CancellationToken))
+            .Add(ResultNames.NonLazyTypeName, property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, true, CancellationToken));
     }
 
     public async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsForBuilderNonCollectionProperties(
@@ -222,12 +223,14 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
         return await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add(NamedResults.TypeName, property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, CancellationToken))
-            .Add(NamedResults.Namespace, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, CancellationToken))
+            .Add(ResultNames.TypeName, property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, CancellationToken))
+            .Add(ResultNames.NonLazyTypeName, property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, true, CancellationToken))
+            .Add(ResultNames.Namespace, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNamespaceFormatString, FormatProvider, parentChildContext, CancellationToken))
             .Add("MethodName", evaluator.EvaluateInterpolatedStringAsync(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext, CancellationToken))
-            .Add(NamedResults.BuilderName, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, CancellationToken))
+            .Add(ResultNames.BuilderName, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, CancellationToken))
             .Add("ArgumentNullCheck", evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{ArgumentNullCheck()}"), FormatProvider, parentChildContext, CancellationToken))
-            .Add("BuilderWithExpression", evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{property.Name} = {CsharpFriendlyName(property.Name.ToCamelCase())};"), FormatProvider, parentChildContext, CancellationToken))
+            .Add(ResultNames.BuilderWithExpression, evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{property.Name} = {CsharpFriendlyName(property.Name.ToCamelCase())};"), FormatProvider, parentChildContext, CancellationToken))
+            .Add(ResultNames.BuilderNonLazyWithExpression, evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{property.Name} = {property.BuilderFuncPrefix}{CsharpFriendlyName(property.Name.ToCamelCase())}{property.BuilderFuncSuffix};"), FormatProvider, parentChildContext, CancellationToken))
             .Build()
             .ConfigureAwait(false);
     }

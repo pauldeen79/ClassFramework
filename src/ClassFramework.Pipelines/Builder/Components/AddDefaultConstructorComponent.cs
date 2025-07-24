@@ -79,12 +79,10 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
     {
         var defaultValueResults = new List<Result<GenericFormattableString>>();
 
-        foreach (var property in context.Request.SourceModel.Properties
+        foreach (var property in context.Request.GetSourceProperties()
             .Where
-            (x =>
-                context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)
-                && !x.TypeName.FixTypeName().IsCollectionTypeName()
-                && ((!x.IsValueType && !x.IsNullable) || (x.Attributes.Any(y => y.Name == typeof(DefaultValueAttribute).FullName) && context.Request.Settings.UseDefaultValueAttributeValuesForBuilderInitialization))
+            (x => !x.TypeName.FixTypeName().IsCollectionTypeName()
+               && ((!x.IsValueType && !x.IsNullable) || (x.Attributes.Any(y => y.Name == typeof(DefaultValueAttribute).FullName) && context.Request.Settings.UseDefaultValueAttributeValuesForBuilderInitialization))
             ))
         {
             var result = await GenerateDefaultValueStatementAsync(property, context, token).ConfigureAwait(false);
@@ -102,9 +100,8 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
     {
         var constructorInitializerResults = new List<Tuple<string, Result<GenericFormattableString>>>();
 
-        foreach (var property in context.Request.SourceModel.Properties
-            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)
-                && x.TypeName.FixTypeName().IsCollectionTypeName()))
+        foreach (var property in context.Request.GetSourceProperties()
+            .Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var name = property.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo());
             var result = await property.GetBuilderConstructorInitializerAsync(

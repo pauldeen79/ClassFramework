@@ -36,6 +36,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableCoreErrorBuilders>()
             .AddScoped<ImmutableCoreModelErrorBuilders>()
             .AddScoped<ImmutableCoreBaseClassErrorBuilders>()
+            .AddScoped<ImmutableCoreUseBuilderLazyValuesBuilders>()
+            .AddScoped<ImmutableCoreUseBuilderLazyValuesBuilderExtensions>()
             .AddScoped<ImmutablePrivateSettersCoreBuilders>()
             .AddScoped<ImmutablePrivateSettersCoreEntities>()
             .AddScoped<ImmutableInheritFromInterfacesCoreBuilders>()
@@ -47,6 +49,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<ImmutableNoToBuilderMethodCoreEntities>()
             .AddScoped<ImmutableCoreCrossCuttingInterfacesBuilders>()
             .AddScoped<ImmutableCoreCrossCuttingInterfacesEntities>()
+            .AddScoped<LazyAbstractionsBuildersExtensions>()
             .AddScoped<MappedTypeBuilders>()
             .AddScoped<MappedTypeEntities>()
             .AddScoped<ObservableCoreBuilders>()
@@ -284,6 +287,52 @@ namespace Test.Domain.Builders.Extensions
         {
             if (myProperty is null) throw new System.ArgumentNullException(nameof(myProperty));
             instance.MyProperty = myProperty;
+            return instance;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_Lazy_Abstractions_BuilderExtensions()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<LazyAbstractionsBuildersExtensions>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders.Extensions
+{
+#nullable enable
+    public static partial class MyAbstractionBuilderExtensions
+    {
+        public static T WithMyProperty<T>(this T instance, System.Func<string> myProperty)
+            where T : Test.Domain.Builders.Abstractions.IMyAbstractionBuilder
+        {
+            if (myProperty is null) throw new System.ArgumentNullException(nameof(myProperty));
+            instance.MyProperty = myProperty;
+            return instance;
+        }
+
+        public static T WithMyProperty<T>(this T instance, string myProperty)
+            where T : Test.Domain.Builders.Abstractions.IMyAbstractionBuilder
+        {
+            if (myProperty is null) throw new System.ArgumentNullException(nameof(myProperty));
+            instance.MyProperty = new System.Func<System.String>(() => myProperty);
             return instance;
         }
     }
@@ -764,6 +813,161 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
+    public async Task Can_Generate_Code_For_Builder_With_Lazy_Values()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreUseBuilderLazyValuesBuilders>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(2);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class GenericBuilder<T>
+    {
+        private System.Func<T> _myProperty;
+
+        public System.Func<T> MyProperty
+        {
+            get
+            {
+                return _myProperty;
+            }
+            set
+            {
+                _myProperty = value;
+            }
+        }
+
+        public GenericBuilder(Test.Domain.Generic<T> source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _myProperty = new System.Func<T>(() => source.MyProperty);
+        }
+
+        public GenericBuilder()
+        {
+            _myProperty = new System.Func<T>(() => default(T)!);
+            SetDefaultValues();
+        }
+
+        public Test.Domain.Generic<T> Build()
+        {
+            return new Test.Domain.Generic<T>(MyProperty());
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.GenericBuilder<T> WithMyProperty(System.Func<T> myProperty)
+        {
+            MyProperty = myProperty;
+            return this;
+        }
+
+        public Test.Domain.Builders.GenericBuilder<T> WithMyProperty(T myProperty)
+        {
+            MyProperty = new System.Func<T>(() => myProperty);
+            return this;
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Builders
+{
+#nullable enable
+    public partial class LiteralBuilder
+    {
+        private System.Func<string> _value;
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
+        public System.Func<string> Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value ?? throw new System.ArgumentNullException(nameof(value));
+            }
+        }
+
+        public System.Func<object>? OriginalValue
+        {
+            get;
+            set;
+        }
+
+        public LiteralBuilder(Test.Domain.Literal source)
+        {
+            if (source is null) throw new System.ArgumentNullException(nameof(source));
+            _value = new System.Func<System.String>(() => source.Value);
+            OriginalValue = new System.Func<System.Object>(() => source.OriginalValue);
+        }
+
+        public LiteralBuilder()
+        {
+            _value = new System.Func<System.String>(() => string.Empty);
+            SetDefaultValues();
+        }
+
+        public Test.Domain.Literal Build()
+        {
+            return new Test.Domain.Literal(Value(), OriginalValue());
+        }
+
+        partial void SetDefaultValues();
+
+        public Test.Domain.Builders.LiteralBuilder WithValue(System.Func<string> value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
+
+        public Test.Domain.Builders.LiteralBuilder WithValue(string value)
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            Value = new System.Func<System.String>(() => value);
+            return this;
+        }
+
+        public Test.Domain.Builders.LiteralBuilder WithOriginalValue(System.Func<object>? originalValue)
+        {
+            OriginalValue = originalValue;
+            return this;
+        }
+
+        public Test.Domain.Builders.LiteralBuilder WithOriginalValue(object? originalValue)
+        {
+            OriginalValue = new System.Func<System.Object>(() => originalValue);
+            return this;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
     public async Task Can_Get_Useful_ErrorMessage_When_Generating_Code_For_Builder_Goes_Wrong()
     {
         // Arrange
@@ -883,6 +1087,93 @@ namespace Test.Domain.Extensions
             where T : Test.Domain.Builders.ILiteralBuilder
         {
             instance.OriginalValue = originalValue;
+            return instance;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public async Task Can_Generate_Code_For_Builder_Extensions_With_Lazy_Values()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ImmutableCoreUseBuilderLazyValuesBuilderExtensions>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(2);
+        generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Extensions
+{
+#nullable enable
+    public static partial class GenericBuilderExtensions
+    {
+        public static T WithMyProperty<T>(this T instance, System.Func<T> myProperty)
+            where T : Test.Domain.Builders.IGenericBuilder<T>
+        {
+            instance.MyProperty = myProperty;
+            return instance;
+        }
+
+        public static T WithMyProperty<T>(this T instance, T myProperty)
+            where T : Test.Domain.Builders.IGenericBuilder<T>
+        {
+            instance.MyProperty = new System.Func<T>(() => myProperty);
+            return instance;
+        }
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Domain.Extensions
+{
+#nullable enable
+    public static partial class LiteralBuilderExtensions
+    {
+        public static T WithValue<T>(this T instance, System.Func<string> value)
+            where T : Test.Domain.Builders.ILiteralBuilder
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            instance.Value = value;
+            return instance;
+        }
+
+        public static T WithValue<T>(this T instance, string value)
+            where T : Test.Domain.Builders.ILiteralBuilder
+        {
+            if (value is null) throw new System.ArgumentNullException(nameof(value));
+            instance.Value = new System.Func<System.String>(() => value);
+            return instance;
+        }
+
+        public static T WithOriginalValue<T>(this T instance, System.Func<object>? originalValue)
+            where T : Test.Domain.Builders.ILiteralBuilder
+        {
+            instance.OriginalValue = originalValue;
+            return instance;
+        }
+
+        public static T WithOriginalValue<T>(this T instance, object? originalValue)
+            where T : Test.Domain.Builders.ILiteralBuilder
+        {
+            instance.OriginalValue = new System.Func<System.Object>(() => originalValue);
             return instance;
         }
     }
@@ -1126,7 +1417,7 @@ namespace Test.Domain.Builders
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count().ShouldBe(2);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
         generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1135,58 +1426,27 @@ using System.Text;
 namespace Test.Domain
 {
 #nullable enable
-    public partial class Generic<T> : Test.Domain.Abstractions.IGeneric
+    public partial class MyAbstraction : Test.Abstractions.IMyAbstraction
     {
-        public T MyProperty
+        public string MyProperty
         {
             get;
         }
 
-        public Generic(T myProperty)
+        public MyAbstraction(string myProperty)
         {
             this.MyProperty = myProperty;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
-        public Test.Abstractions.Builders.IGenericBuilder<T> ToBuilder()
+        public Test.Domain.Builders.MyAbstractionBuilder ToBuilder()
         {
-            return new Test.Domain.Builders.GenericBuilder<T>(this);
-        }
-    }
-#nullable restore
-}
-");
-        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Test.Domain
-{
-#nullable enable
-    public partial class Literal : Test.Domain.Abstractions.ILiteral
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string Value
-        {
-            get;
+            return new Test.Domain.Builders.MyAbstractionBuilder(this);
         }
 
-        public object? OriginalValue
+        Test.Abstractions.Builders.IMyAbstractionBuilder Test.Abstractions.IMyAbstraction.ToBuilder()
         {
-            get;
-        }
-
-        public Literal(string value, object? originalValue)
-        {
-            this.Value = value;
-            this.OriginalValue = originalValue;
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-        }
-
-        public Test.Abstractions.Builders.ILiteralBuilder ToBuilder()
-        {
-            return new Test.Domain.Builders.LiteralBuilder(this);
+            return ToBuilder();
         }
     }
 #nullable restore
@@ -1208,7 +1468,7 @@ namespace Test.Domain
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count().ShouldBe(2);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
         generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1217,11 +1477,11 @@ using System.Text;
 namespace Test.Domain.Builders
 {
 #nullable enable
-    public partial class GenericBuilder<T> : Test.Abstractions.Builders.IGenericBuilder
+    public partial class MyAbstractionBuilder : Test.Abstractions.Builders.IMyAbstractionBuilder
     {
-        private T _myProperty;
+        private string _myProperty;
 
-        public T MyProperty
+        public string MyProperty
         {
             get
             {
@@ -1229,101 +1489,33 @@ namespace Test.Domain.Builders
             }
             set
             {
-                _myProperty = value;
+                _myProperty = value ?? throw new System.ArgumentNullException(nameof(value));
             }
         }
 
-        public GenericBuilder(Test.Abstractions.IGeneric<T> source)
+        public MyAbstractionBuilder(Test.Domain.MyAbstraction source)
         {
             if (source is null) throw new System.ArgumentNullException(nameof(source));
             _myProperty = source.MyProperty;
         }
 
-        public GenericBuilder()
+        public MyAbstractionBuilder()
         {
-            _myProperty = default(T)!;
+            _myProperty = string.Empty;
             SetDefaultValues();
         }
 
-        public Test.Abstractions.IGeneric<T> Build()
+        public Test.Abstractions.IMyAbstraction Build()
         {
-            return new Test.Domain.Generic<T>(MyProperty);
+            return new Test.Domain.MyAbstraction(MyProperty);
+        }
+
+        Test.Abstractions.IMyAbstraction Test.Abstractions.Builders.IMyAbstractionBuilder.Build()
+        {
+            return Build();
         }
 
         partial void SetDefaultValues();
-
-        public Test.Domain.Builders.GenericBuilder<T> WithMyProperty(T myProperty)
-        {
-            MyProperty = myProperty;
-            return this;
-        }
-    }
-#nullable restore
-}
-");
-        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Test.Domain.Builders
-{
-#nullable enable
-    public partial class LiteralBuilder : Test.Abstractions.Builders.ILiteralBuilder
-    {
-        private string _value;
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        public string Value
-        {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                _value = value ?? throw new System.ArgumentNullException(nameof(value));
-            }
-        }
-
-        public object? OriginalValue
-        {
-            get;
-            set;
-        }
-
-        public LiteralBuilder(Test.Abstractions.ILiteral source)
-        {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _value = source.Value;
-            OriginalValue = source.OriginalValue;
-        }
-
-        public LiteralBuilder()
-        {
-            _value = string.Empty;
-            SetDefaultValues();
-        }
-
-        public Test.Abstractions.ILiteral Build()
-        {
-            return new Test.Domain.Literal(Value, OriginalValue);
-        }
-
-        partial void SetDefaultValues();
-
-        public Test.Domain.Builders.LiteralBuilder WithValue(string value)
-        {
-            if (value is null) throw new System.ArgumentNullException(nameof(value));
-            Value = value;
-            return this;
-        }
-
-        public Test.Domain.Builders.LiteralBuilder WithOriginalValue(object? originalValue)
-        {
-            OriginalValue = originalValue;
-            return this;
-        }
     }
 #nullable restore
 }
@@ -1407,52 +1599,24 @@ namespace Test.Abstractions
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
-        generationEnvironment.Builder.Contents.Count().ShouldBe(2);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(1);
         generationEnvironment.Builder.Contents.First().Builder.ToString().ShouldBe(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Test.Abstractions
+namespace Test.Abstractions.Builders
 {
 #nullable enable
-    public partial interface IGenericBuilder<T>
+    public partial interface IMyAbstractionBuilder
     {
-        T MyProperty
+        string MyProperty
         {
             get;
             set;
         }
 
-        Test.Abstractions.IGeneric<T> Build();
-    }
-#nullable restore
-}
-");
-        generationEnvironment.Builder.Contents.Last().Builder.ToString().ShouldBe(@"using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Test.Abstractions
-{
-#nullable enable
-    public partial interface ILiteralBuilder
-    {
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
-        string Value
-        {
-            get;
-            set;
-        }
-
-        object? OriginalValue
-        {
-            get;
-            set;
-        }
-
-        Test.Abstractions.ILiteral Build();
+        Test.Abstractions.IMyAbstraction Build();
     }
 #nullable restore
 }
@@ -4802,6 +4966,60 @@ namespace Test.Domain.Builders
 #nullable restore
 }
 ");
+    }
+
+    [Fact]
+    public void Can_Use_Non_Lazy_Values_On_Lazy_Builder()
+    {
+        // Arrange
+        var sut = new TestEntityBuilder();
+
+        // Act
+        var result = sut
+            .WithSingleProperty("single value")
+            .AddCollectionProperty("A", "B", "C")
+            .Build();
+
+        // Assert
+        result.SingleProperty.ShouldBe("single value");
+        result.CollectionProperty.ToArray().ShouldBeEquivalentTo(new[] { "A", "B", "C" });
+    }
+
+    [Fact]
+    public void Can_Use_Lazy_Values_On_Lazy_Builder()
+    {
+        // Arrange
+        var sut = new TestEntityBuilder();
+
+        // Act
+        string value = "";
+        sut.WithSingleProperty(() => value);
+        sut.AddCollectionProperty(() => value);
+        value = "lazy";
+        var result = sut.Build();
+
+        // Assert
+        result.SingleProperty.ShouldBe("lazy");
+        result.CollectionProperty.ToArray().ShouldBeEquivalentTo(new[] { value });
+    }
+
+    [Fact]
+    public void Can_Use_Async_Lazy_Values_On_Lazy_Builder()
+    {
+        // Arrange
+        var sut = new TestEntityBuilder();
+
+        // Act
+        string value = "";
+        Func<Task<string>> asyncTask = () => Task.Run(() => value);
+        sut.WithSingleProperty(() => asyncTask().GetAwaiter().GetResult());
+        sut.AddCollectionProperty(() => asyncTask().GetAwaiter().GetResult());
+        value = "lazy";
+        var result = sut.Build();
+
+        // Assert
+        result.SingleProperty.ShouldBe("lazy");
+        result.CollectionProperty.ToArray().ShouldBeEquivalentTo(new[] { value });
     }
 
     public void Dispose()

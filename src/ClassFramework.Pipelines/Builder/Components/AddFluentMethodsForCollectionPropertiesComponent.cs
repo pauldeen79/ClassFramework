@@ -18,14 +18,13 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
         {
             var parentChildContext = CreateParentChildContext(context, property);
 
-            var results = await context.Request.GetResultsForBuilderCollectionProperties
-            (
-                property,
-                parentChildContext,
-                _evaluator,
-                await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, token).ConfigureAwait(false),
-                await GetCodeStatementsForArrayOverload(context, property, token).ConfigureAwait(false)
-            ).ConfigureAwait(false);
+            var results = await context.Request.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext, _evaluator)
+                .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, false, token).ConfigureAwait(false))
+                .AddRange("ArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, false, token).ConfigureAwait(false))
+                .AddRange("NonLazyArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, true, token).ConfigureAwait(false))
+                .AddRange("NonLazyEnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, true, token).ConfigureAwait(false))
+                .Build()
+                .ConfigureAwait(false);
 
             var error = results.GetError();
             if (error is not null)
@@ -34,34 +33,50 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
                 return error;
             }
 
-            var returnType = context.Request.IsBuilderForAbstractEntity
-                ? $"TBuilder{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
-                : $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(NamedResults.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
+            var returnType = context.Request.GetReturnTypeForFluentMethod(results.GetValue(ResultNames.Namespace), results.GetValue(ResultNames.BuilderName));
 
             context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithName(results.GetValue("AddMethodName"))
+                .WithName(results.GetValue(ResultNames.AddMethodName))
                 .WithReturnTypeName(returnType)
                 .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
                 .AddCodeStatements(results.Where(x => x.Key.StartsWith("EnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
             );
 
             context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithName(results.GetValue("AddMethodName"))
+                .WithName(results.GetValue(ResultNames.AddMethodName))
                 .WithReturnTypeName(returnType)
                 .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
                 .AddCodeStatements(results.Where(x => x.Key.StartsWith("ArrayOverload.")).Select(x => x.Value.Value!.ToString()))
             );
+
+            if (results.NeedNonLazyOverloads())
+            {
+                //Add overloads for non-func type
+                context.Request.Builder.AddMethods(new MethodBuilder()
+                    .WithName(results.GetValue(ResultNames.AddMethodName))
+                    .WithReturnTypeName(returnType)
+                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
+                    .AddCodeStatements(results.Where(x => x.Key.StartsWith("NonLazyEnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
+                );
+
+                context.Request.Builder.AddMethods(new MethodBuilder()
+                    .WithName(results.GetValue(ResultNames.AddMethodName))
+                    .WithReturnTypeName(returnType)
+                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
+                    .AddCodeStatements(results.Where(x => x.Key.StartsWith("NonLazyArrayOverload.")).Select(x => x.Value.Value!.ToString()))
+                );
+            }
         }
 
         return Result.Success();
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderContext> context, Property property, ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContext, CancellationToken token)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderContext> context, Property property, ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContext, bool useBuilderLazyValues, CancellationToken token)
     {
         if (context.Request.Settings.BuilderNewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
             // When using IEnumerable<>, do not call ToArray because we want lazy evaluation
-            return await GetCodeStatementsForArrayOverload(context, property, token).ConfigureAwait(false);
+            return await GetCodeStatementsForArrayOverload(context, property, useBuilderLazyValues, token).ConfigureAwait(false);
         }
 
         var results = new List<Result<GenericFormattableString>>();
@@ -78,7 +93,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
         return results;
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderContext> context, Property property, CancellationToken token)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderContext> context, Property property, bool useBuilderLazyValues, CancellationToken token)
     {
         var results = new List<Result<GenericFormattableString>>();
 
@@ -100,7 +115,11 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
 
         var builderAddExpressionResult = await _evaluator.EvaluateInterpolatedStringAsync
         (
-            context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Request.Settings.CollectionCopyStatementFormatString),
+            context.Request
+                .GetMappingMetadata(property.TypeName)
+                .GetStringValue(MetadataNames.CustomBuilderAddExpression, useBuilderLazyValues
+                    ? context.Request.Settings.NonLazyCollectionCopyStatementFormatString
+                    : context.Request.Settings.CollectionCopyStatementFormatString),
             context.Request.FormatProvider,
             new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
             token

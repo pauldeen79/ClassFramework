@@ -313,6 +313,38 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
+            result.Value!.ToString().ShouldBe("IReadOnlyCollection<Builders.{NoGenerics(ClassName(GenericArguments(property.TypeName)))}Builder{GenericArguments(CollectionItemType(property.TypeName), true)}>");
+        }
+
+        [Fact]
+        public async Task Returns_Correct_Result_On_Collection_With_GenericArgument_Using_Lazy_Properties()
+        {
+            // Arrange
+            var sut = CreateSut().WithName("MyProperty").WithTypeName("IReadOnlyCollection<ITypedExpression<ValidationError>>").Build();
+            var settings = new PipelineSettingsBuilder()
+                .AddTypenameMappings(new TypenameMappingBuilder()
+                    .WithSourceTypeName("ITypedExpression")
+                    .WithTargetTypeName("ITypedExpression")
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderNamespace).WithValue("Builders"))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderName).WithValue("{NoGenerics(ClassName(property.TypeName))}Builder{GenericArguments(property.TypeName, true)}"))
+                )
+                .WithUseBuilderLazyValues()
+                .Build();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
+            var context = new TestContext(settings, formatProvider);
+            var parentChildContext = new ParentChildContext<TestContext, PropertyContext>(context, new PropertyContext(sut, settings, formatProvider, sut.TypeName, string.Empty, CancellationToken.None), settings);
+            var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
+            expressionEvaluator
+                .EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
+                .Returns(x => Result.Success<GenericFormattableString>(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.Substring(2, x.ArgAt<ExpressionEvaluatorContext>(0).Expression.Length - 3)));
+
+            // Act
+            var result = await sut.GetBuilderArgumentTypeNameAsync(context, parentChildContext, sut.TypeName, expressionEvaluator, CancellationToken.None);
+
+            // Assert
+            result.IsSuccessful().ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
             result.Value!.ToString().ShouldBe("IReadOnlyCollection<Builders.{NoGenerics(ClassName(GenericArguments(property.TypeName)))}Builder{GenericArguments(CollectionItemType(property.TypeName), true)}>");
         }
 

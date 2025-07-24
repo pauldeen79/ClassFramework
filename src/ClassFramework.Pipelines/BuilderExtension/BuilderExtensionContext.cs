@@ -9,5 +9,8 @@ public class BuilderExtensionContext(TypeBase sourceModel, PipelineSettings sett
 
     public ClassBuilder Builder => _wrappedBuilder.Builder;
 
+    public string GetReturnTypeForFluentMethod(string builderNamespace, string builderName)
+        => $"{builderNamespace.AppendWhenNotNullOrEmpty(".")}{builderName}{SourceModel.GetGenericTypeArgumentsString()}";
+
     private readonly ClassBuilderWrapper _wrappedBuilder = new();
 }

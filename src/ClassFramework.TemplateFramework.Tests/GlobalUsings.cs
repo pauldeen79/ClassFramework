@@ -1,5 +1,5 @@
-﻿global using System.ComponentModel;
-global using System.Collections.ObjectModel;
+﻿global using System.Collections.ObjectModel;
+global using System.ComponentModel;
 global using System.ComponentModel.DataAnnotations;
 global using System.Globalization;
 global using System.Text;
@@ -26,6 +26,7 @@ global using ClassFramework.TemplateFramework.CodeGenerationProviders;
 global using ClassFramework.TemplateFramework.Extensions;
 global using ClassFramework.TemplateFramework.Models;
 global using ClassFramework.TemplateFramework.Templates;
+global using ClassFramework.TemplateFramework.Tests.Builders;
 global using ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 global using ClassFramework.TemplateFramework.Tests.Models;
 global using ClassFramework.TemplateFramework.Tests.SomeNamespace;

@@ -16,6 +16,8 @@ public static class ServiceCollectionExtensions
         => services
             .AddSingleton<IMember, ClassNameProperty>()
             .AddSingleton<IMember, ClassNamespaceProperty>()
+            .AddSingleton<IMember, PropertyBuilderFuncPrefixProperty>()
+            .AddSingleton<IMember, PropertyBuilderFuncSuffixProperty>()
             .AddSingleton<IMember, PropertyBuilderMemberNameProperty>()
             .AddSingleton<IMember, PropertyDefaultValueProperty>()
             .AddSingleton<IMember, PropertyEntityMemberNameProperty>()

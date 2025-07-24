@@ -19,8 +19,11 @@ public abstract class ImmutableCSharpClassBase(IPipelineService pipelineService)
     protected override bool AddImplicitOperatorOnBuilder => false;
     protected override bool UseBuilderAbstractionsTypeConversion => false;
 
-    protected async Task<Result<IEnumerable<TypeBase>>> GetTemplateFrameworkModels()
+    protected async Task<Result<IEnumerable<TypeBase>>> GetTemplateFrameworkModelsAsync()
         => await GetNonCoreModelsAsync($"{CodeGenerationRootNamespace}.Models.TemplateFramework").ConfigureAwait(false);
+
+    protected async Task<Result<IEnumerable<TypeBase>>> GetInheritFromInterfacesModelsAsync()
+        => await GetNonCoreModelsAsync($"{CodeGenerationRootNamespace}.Models.InheritFromInterfaces").ConfigureAwait(false);
 
     protected override string[] GetAdditionalSkippedNamespacesOnTypenameMappings() =>
     [

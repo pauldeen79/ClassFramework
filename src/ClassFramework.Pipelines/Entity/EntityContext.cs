@@ -2,6 +2,9 @@
 
 public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
 {
+    public IEnumerable<Property> GetSourceProperties()
+        => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
+
     public bool IsAbstract
         => Settings.EnableInheritance
         && Settings.IsAbstract;

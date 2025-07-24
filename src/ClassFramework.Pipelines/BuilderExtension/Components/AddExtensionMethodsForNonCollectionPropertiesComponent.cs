@@ -27,9 +27,9 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
                 return error;
             }
 
-            var returnType = $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(NamedResults.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}";
+            var returnType = context.Request.GetReturnTypeForFluentMethod(results.GetValue(ResultNames.Namespace), results.GetValue(ResultNames.BuilderName));
 
-            var builder = new MethodBuilder()
+            context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithName(results.GetValue("MethodName"))
                 .WithReturnTypeName("T")
                 .WithStatic()
@@ -37,17 +37,35 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", "T")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName)));
-
-            context.Request.AddNullChecks(builder, results);
-
-            builder.AddCodeStatements
-            (
-                results.GetValue("BuilderWithExpression"),
-                "return instance;"
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName)))
+                .Chain(method => context.Request.AddNullChecks(method, results))
+                .AddCodeStatements
+                (
+                    results.GetValue(ResultNames.BuilderWithExpression),
+                    "return instance;"
+                )
             );
 
-            context.Request.Builder.AddMethods(builder);
+            if (results.NeedNonLazyOverloads())
+            {
+                //Add overload for non-func type
+                context.Request.Builder.AddMethods(new MethodBuilder()
+                    .WithName(results.GetValue("MethodName"))
+                    .WithReturnTypeName("T")
+                    .WithStatic()
+                    .WithExtensionMethod()
+                    .AddGenericTypeArguments("T")
+                    .AddGenericTypeArgumentConstraints($"where T : {returnType}")
+                    .AddParameter("instance", "T")
+                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName)))
+                    .Chain(method => context.Request.AddNullChecks(method, results))
+                    .AddCodeStatements
+                    (
+                        results.GetValue(ResultNames.BuilderNonLazyWithExpression),
+                        "return instance;"
+                    )
+                );
+            }
         }
 
         return Result.Success();

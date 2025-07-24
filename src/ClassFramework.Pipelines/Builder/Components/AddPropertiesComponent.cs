@@ -13,12 +13,11 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
             return Result.Success();
         }
 
-        foreach (var property in context.Request.SourceModel.Properties
-            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)))
+        foreach (var property in context.Request.GetSourceProperties())
         {
             var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-                .Add(NamedResults.TypeName, property.GetBuilderArgumentTypeNameAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token))
-                .Add(NamedResults.ParentTypeName, property.GetBuilderParentTypeNameAsync(context, _evaluator, token))
+                .Add(ResultNames.TypeName, property.GetBuilderArgumentTypeNameAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token))
+                .Add(ResultNames.ParentTypeName, property.GetBuilderParentTypeNameAsync(context, _evaluator, token))
                 .Build()
                 .ConfigureAwait(false);
 
@@ -31,13 +30,13 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
 
             context.Request.Builder.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
-                .WithTypeName(results.GetValue(NamedResults.TypeName).ToString()
+                .WithTypeName(results.GetValue(ResultNames.TypeName).ToString()
                     .FixCollectionTypeName(context.Request.Settings.BuilderNewCollectionTypeName)
                     .FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
                 .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder().WithTypeName(context.Request.MapTypeName(x.TypeName))))
-                .WithParentTypeFullName(results.GetValue(NamedResults.ParentTypeName))
+                .WithParentTypeFullName(results.GetValue(ResultNames.ParentTypeName))
                 .AddAttributes(property.Attributes
                     .Where(_ => context.Request.Settings.CopyAttributes)
                     .Select(x => context.Request.MapAttribute(x).ToBuilder()))

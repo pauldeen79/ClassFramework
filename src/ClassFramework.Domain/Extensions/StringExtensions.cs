@@ -325,26 +325,26 @@ public static class StringExtensions
             : instance.Substring(0, index);
     }
 
-    public static string GetDefaultValue(this string typeName, bool isNullable, bool isValueType, bool enableNullableReferenceTypes)
+    public static string GetDefaultValue(this string typeName, bool isNullable, bool isValueType, bool enableNullableReferenceTypes, string wrapPrefix, string wrapSuffix)
     {
         if ((typeName.IsStringTypeName() || typeName == WellKnownTypes.String) && !isNullable)
         {
-            return "string.Empty";
+            return $"{wrapPrefix}string.Empty{wrapSuffix}";
         }
 
         if ((typeName.IsObjectTypeName() || typeName == WellKnownTypes.Object) && !isNullable)
         {
-            return $"new {typeof(object).FullName}()";
+            return $"{wrapPrefix}new {typeof(object).FullName}(){wrapSuffix}";
         }
 
         if (typeName == typeof(IEnumerable).FullName && !isNullable)
         {
-            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{typeof(object).FullName}>()";
+            return $"{wrapPrefix}{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{typeof(object).FullName}>(){wrapSuffix}";
         }
 
         if (typeName.WithoutGenerics() == typeof(IEnumerable<>).WithoutGenerics() && !isNullable)
         {
-            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{typeName.GetGenericArguments(addBrackets: true)}()";
+            return $"{wrapPrefix}{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{typeName.GetGenericArguments(addBrackets: true)}(){wrapSuffix}";
         }
 
         var preNullableSuffix = isNullable && (enableNullableReferenceTypes || isValueType) && !typeName.EndsWith("?") && !typeName.StartsWith(typeof(Nullable<>).WithoutGenerics())
@@ -355,7 +355,7 @@ public static class StringExtensions
             ? "!"
             : string.Empty;
 
-        return $"default({typeName}{preNullableSuffix}){postNullableSuffix}";
+        return $"{wrapPrefix}default({typeName}{preNullableSuffix}){postNullableSuffix}{wrapSuffix}";
     }
 
     public static string AppendNullableAnnotation(this string instance,
@@ -372,15 +372,13 @@ public static class StringExtensions
 
     public static string AbbreviateNamespaces(this string instance, IEnumerable<string> namespacesToAbbreviate)
     {
-        foreach (var ns in namespacesToAbbreviate.IsNotNull(nameof(namespacesToAbbreviate)))
-        {
-            if (instance.GetNamespaceWithDefault() == ns)
-            {
-                return instance.GetClassName();
-            }
-        }
+        namespacesToAbbreviate = ArgumentGuard.IsNotNull(namespacesToAbbreviate, nameof(namespacesToAbbreviate));
 
-        return instance;
+        var namespaceWithDefault = instance.GetNamespaceWithDefault();
+        var canAbbreviate = !string.IsNullOrEmpty(namespaceWithDefault) && namespacesToAbbreviate.Contains(namespaceWithDefault);
+        return canAbbreviate
+            ? instance.GetClassName()
+            : instance;
     }
 
     public static string ReplaceGenericTypeName(this string instance, string genericArguments)

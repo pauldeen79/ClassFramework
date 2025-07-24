@@ -27,22 +27,35 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
                 return error;
             }
 
-            var builder = new MethodBuilder()
+            var returnType = context.Request.GetReturnTypeForFluentMethod(results.GetValue(ResultNames.Namespace), results.GetValue(ResultNames.BuilderName));
+
+            context.Request.Builder.AddMethods(new MethodBuilder()
                 .WithName(results.GetValue("MethodName"))
-                .WithReturnTypeName(context.Request.IsBuilderForAbstractEntity
-                      ? $"TBuilder{context.Request.SourceModel.GetGenericTypeArgumentsString()}"
-                      : $"{results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".")}{results.GetValue(NamedResults.BuilderName)}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName)));
-
-            context.Request.AddNullChecks(builder, results);
-
-            builder.AddCodeStatements
-            (
-                results.GetValue("BuilderWithExpression"),
-                context.Request.ReturnValueStatementForFluentMethod
+                .WithReturnTypeName(returnType)
+                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName)))
+                .Chain(method => context.Request.AddNullChecks(method, results))
+                .AddCodeStatements
+                (
+                    results.GetValue(ResultNames.BuilderWithExpression),
+                    context.Request.ReturnValueStatementForFluentMethod
+                )
             );
 
-            context.Request.Builder.AddMethods(builder);
+            if (results.NeedNonLazyOverloads())
+            {
+                //Add overload for non-func type
+                context.Request.Builder.AddMethods(new MethodBuilder()
+                    .WithName(results.GetValue("MethodName"))
+                    .WithReturnTypeName(returnType)
+                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName)))
+                    .Chain(method => context.Request.AddNullChecks(method, results))
+                    .AddCodeStatements
+                    (
+                        results.GetValue(ResultNames.BuilderNonLazyWithExpression),
+                        context.Request.ReturnValueStatementForFluentMethod
+                    )
+                );
+            }
         }
 
         return Result.Success();

@@ -17,6 +17,7 @@ internal interface IPipelineSettings
     [Required(AllowEmptyStrings = true)] string BuilderAbstractionsTypeConversionMetadataName { get; }
     [Required] IReadOnlyCollection<string> BuilderAbstractionsTypeConversionNamespaces { get; }
     [Required(AllowEmptyStrings = true)] string BuilderExtensionsCollectionCopyStatementFormatString { get; }
+    [Required(AllowEmptyStrings = true)] string NonLazyBuilderExtensionsCollectionCopyStatementFormatString { get; }
     [Required(AllowEmptyStrings = true)] string BuilderExtensionsNameFormatString { get; }
     [Required(AllowEmptyStrings = true)] string BuilderExtensionsNamespaceFormatString { get; }
     [Required(AllowEmptyStrings = true)] string BuilderNameFormatString { get; }
@@ -25,6 +26,7 @@ internal interface IPipelineSettings
     [Required(AllowEmptyStrings = true)] string BuildMethodName { get; }
     [Required(AllowEmptyStrings = true)] string BuildTypedMethodName { get; }
     [Required(AllowEmptyStrings = true)] string CollectionCopyStatementFormatString { get; }
+    [Required(AllowEmptyStrings = true)] string NonLazyCollectionCopyStatementFormatString { get; }
     [Required(AllowEmptyStrings = true)] string CollectionInitializationStatementFormatString { get; }
     [Required(AllowEmptyStrings = true)] string CollectionTypeName { get; }
     Predicate<IAttribute>? CopyAttributePredicate { get; }
@@ -64,6 +66,7 @@ internal interface IPipelineSettings
     [Required] IReadOnlyCollection<ITypenameMapping> TypenameMappings { get; }
     bool UseBaseClassFromSourceModel { get; }
     [DefaultValue(true)] bool UseBuilderAbstractionsTypeConversion { get; }
+    bool UseBuilderLazyValues { get; }
     bool UseCrossCuttingInterfaces { get; }
     bool UseDefaultValueAttributeValuesForBuilderInitialization { get; }
     bool UseExceptionThrowIfNull { get; }

@@ -28,8 +28,7 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
     {
         var initializationStatements = new List<Result<string>>();
 
-        foreach (var property in context.Request.SourceModel.Properties
-            .Where(x => context.Request.SourceModel.IsMemberValidForBuilderClass(x, context.Request.Settings)))
+        foreach (var property in context.Request.GetSourceProperties())
         {
             var result = await GenerateDefaultValueStatement(property, context, token).ConfigureAwait(false);
             initializationStatements.Add(result);

@@ -4,7 +4,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
 {
     public class ProcessAsync : PipelineTests
     {
-        private static BuilderContext CreateContext(bool addProperties = true, bool createAsObservable = false)
+        private static BuilderContext CreateContext(bool addProperties = true, bool createAsObservable = false, bool useBuilderLazyValues = false)
             => new(
                 CreateGenericClass(addProperties),
                 CreateSettingsForBuilder
@@ -12,7 +12,8 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
                     builderNamespaceFormatString: "{class.Namespace}.Builders",
                     allowGenerationWithoutProperties: false,
                     copyAttributes: true,
-                    createAsObservable: createAsObservable
+                    createAsObservable: createAsObservable,
+                    useBuilderLazyValues: useBuilderLazyValues
                 ),
                 CultureInfo.InvariantCulture,
                 CancellationToken.None
@@ -50,7 +51,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
         }
 
         [Fact]
-        public async Task Adds_Properties()
+        public async Task Adds_Non_Lazy_Properties()
         {
             // Arrange
             var sut = CreateSut();
@@ -67,6 +68,23 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
         }
 
         [Fact]
+        public async Task Adds_Lazy_Properties()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var context = CreateContext(useBuilderLazyValues: true);
+
+            // Act
+            var result = await sut.ProcessAsync(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Builder.Properties.Select(x => x.HasSetter).ShouldAllBe(x => x == true);
+            context.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
+            context.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Func<System.String>", "System.Collections.Generic.List<System.Func<System.String>>" });
+        }
+
+        [Fact]
         public async Task Adds_Constructors()
         {
             // Arrange
@@ -78,7 +96,42 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Constructors.ShouldNotBeEmpty();
+            context.Builder.Constructors.ShouldHaveSingleItem();
+            context.Builder.Constructors.Single().CodeStatements
+                .OfType<StringCodeStatementBuilder>()
+                .Select(x => x.Statement)
+                .ToArray()
+                .ShouldBeEquivalentTo(new[]
+                {
+                    "Property2 = new System.Collections.Generic.List<string>();",
+                    "Property1 = string.Empty;",
+                    "SetDefaultValues();"
+                });
+        }
+
+        [Fact]
+        public async Task Adds_Constructors_Lazy()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var context = CreateContext(useBuilderLazyValues: true);
+
+            // Act
+            var result = await sut.ProcessAsync(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Builder.Constructors.ShouldHaveSingleItem();
+            context.Builder.Constructors.Single().CodeStatements
+                .OfType<StringCodeStatementBuilder>()
+                .Select(x => x.Statement)
+                .ToArray()
+                .ShouldBeEquivalentTo(new[]
+                {
+                    "Property2 = new System.Collections.Generic.List<System.Func<string>>();",
+                    "Property1 = new System.Func<System.String>(() => string.Empty);",
+                    "SetDefaultValues();"
+                });
         }
 
         [Fact]
@@ -147,6 +200,26 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
         }
 
         [Fact]
+        public async Task Adds_Build_Method_With_Lazy_Properties()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var context = CreateContext(useBuilderLazyValues: true);
+
+            // Act
+            var result = await sut.ProcessAsync(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Builder.Methods.Count(x => x.Name == "Build").ShouldBe(1);
+            var method = context.Builder.Methods.Single(x => x.Name == "Build");
+            method.ReturnTypeName.ShouldBe("MyNamespace.MyClass");
+            method.ReturnTypeGenericTypeArguments.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "T" });
+            method.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "return new MyNamespace.MyClass<T> { Property2 = Property2.Select(x => x()) };" });
+        }
+
+        [Fact]
         public async Task Adds_Fluent_Method_For_NonCollection_Property()
         {
             // Arrange
@@ -163,6 +236,49 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
             method.ReturnTypeName.ShouldBe("MyNamespace.Builders.MyClassBuilder<T>");
             method.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "Property1 = property1;", "return this;" });
+
+            context.Builder.Methods.Where(x => x.Name == "WithProperty2").ShouldBeEmpty(); //only for the non-collection property
+        }
+
+        [Fact]
+        public async Task Adds_Fluent_Method_For_Lazy_NonCollection_Property()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var context = CreateContext(useBuilderLazyValues: true);
+
+            // Act
+            var result = await sut.ProcessAsync(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            context.Builder.Methods.Count(x => x.Name == "WithProperty1").ShouldBe(2);
+            var lazyMethod = context.Builder.Methods.First(x => x.Name == "WithProperty1");
+            lazyMethod.ReturnTypeName.ShouldBe("MyNamespace.Builders.MyClassBuilder<T>");
+            lazyMethod.Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Func<System.String>" });
+            lazyMethod.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            lazyMethod.CodeStatements
+                .OfType<StringCodeStatementBuilder>()
+                .Select(x => x.Statement)
+                .ToArray()
+                .ShouldBeEquivalentTo(new[]
+                {
+                    "Property1 = property1;",
+                    "return this;"
+                });
+            var nonLazyMethod = context.Builder.Methods.Last(x => x.Name == "WithProperty1");
+            nonLazyMethod.ReturnTypeName.ShouldBe("MyNamespace.Builders.MyClassBuilder<T>");
+            nonLazyMethod.Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.String" });
+            nonLazyMethod.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            nonLazyMethod.CodeStatements
+                .OfType<StringCodeStatementBuilder>()
+                .Select(x => x.Statement)
+                .ToArray()
+                .ShouldBeEquivalentTo(new[]
+                {
+                    "Property1 = new System.Func<System.String>(() => property1);",
+                    "return this;"
+                });
 
             context.Builder.Methods.Where(x => x.Name == "WithProperty2").ShouldBeEmpty(); //only for the non-collection property
         }
@@ -190,6 +306,37 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderContext>>
                 {
                     "return AddProperty2(property2.ToArray());",
                     "foreach (var item in property2) Property2.Add(item);",
+                    "return this;"
+                }
+            );
+        }
+
+        [Fact]
+        public async Task Adds_Fluent_Method_For_Lazy_Collection_Property()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var context = CreateContext(useBuilderLazyValues: true);
+
+            // Act
+            var result = await sut.ProcessAsync(context);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            var methods = context.Builder.Methods.Where(x => x.Name == "AddProperty2").ToArray();
+            methods.Count(x => x.Name == "AddProperty2").ShouldBe(4);
+            methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "MyNamespace.Builders.MyClassBuilder<T>");
+            methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).ToArray().ShouldBeEquivalentTo(new[] { "System.Collections.Generic.IEnumerable<System.Func<System.String>>", "System.Func<System.String>[]", "System.Collections.Generic.IEnumerable<System.String>", "System.String[]" });
+            methods.SelectMany(x => x.CodeStatements).ShouldAllBe(x => x is StringCodeStatementBuilder);
+            methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
+            (
+                new[]
+                {
+                    "return AddProperty2(property2.ToArray());",
+                    "foreach (var item in property2) Property2.Add(item);",
+                    "return this;",
+                    "return AddProperty2(property2.ToArray());",
+                    "foreach (var item in property2) Property2.Add(() => item);",
                     "return this;"
                 }
             );
