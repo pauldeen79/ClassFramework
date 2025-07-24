@@ -1,3 +1,2 @@
 - Use deferred interpolation instead of [ ]
 - Replace lambda's (Func) in PipelineSettings with conditions from CrossCutting.Utilities.QueryFramework (or how it is going to be called)
-- Add support for lazy builders, i.e. fields and properties of type Func<T> instead of T. Add overloads for With and Set methods so you can use either T or Func<T>.
