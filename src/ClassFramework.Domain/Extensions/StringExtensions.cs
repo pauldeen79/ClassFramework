@@ -325,29 +325,26 @@ public static class StringExtensions
             : instance.Substring(0, index);
     }
 
-    public static string GetDefaultValue(this string typeName, bool isNullable, bool isValueType, bool enableNullableReferenceTypes, bool useBuilderLazyValues)
+    public static string GetDefaultValue(this string typeName, bool isNullable, bool isValueType, bool enableNullableReferenceTypes, string wrapPrefix, string wrapSuffix)
     {
-        var lazyPrefix = useBuilderLazyValues.GetLazyPrefix(typeName);
-        var lazySuffix = useBuilderLazyValues.GetLazySuffix();
-
         if ((typeName.IsStringTypeName() || typeName == WellKnownTypes.String) && !isNullable)
         {
-            return $"{lazyPrefix}string.Empty{lazySuffix}";
+            return $"{wrapPrefix}string.Empty{wrapSuffix}";
         }
 
         if ((typeName.IsObjectTypeName() || typeName == WellKnownTypes.Object) && !isNullable)
         {
-            return $"{lazyPrefix}new {typeof(object).FullName}(){lazySuffix}";
+            return $"{wrapPrefix}new {typeof(object).FullName}(){wrapSuffix}";
         }
 
         if (typeName == typeof(IEnumerable).FullName && !isNullable)
         {
-            return $"{lazyPrefix}{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{typeof(object).FullName}>(){lazySuffix}";
+            return $"{wrapPrefix}{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{typeof(object).FullName}>(){wrapSuffix}";
         }
 
         if (typeName.WithoutGenerics() == typeof(IEnumerable<>).WithoutGenerics() && !isNullable)
         {
-            return $"{lazyPrefix}{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{typeName.GetGenericArguments(addBrackets: true)}(){lazySuffix}";
+            return $"{wrapPrefix}{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}{typeName.GetGenericArguments(addBrackets: true)}(){wrapSuffix}";
         }
 
         var preNullableSuffix = isNullable && (enableNullableReferenceTypes || isValueType) && !typeName.EndsWith("?") && !typeName.StartsWith(typeof(Nullable<>).WithoutGenerics())
@@ -358,11 +355,8 @@ public static class StringExtensions
             ? "!"
             : string.Empty;
 
-        return $"{lazyPrefix}default({typeName}{preNullableSuffix}){postNullableSuffix}{lazySuffix}";
+        return $"{wrapPrefix}default({typeName}{preNullableSuffix}){postNullableSuffix}{wrapSuffix}";
     }
-
-    public static string ToLazy(this string typeName)
-        => typeof(Func<object>).ReplaceGenericTypeName(typeName);
 
     public static string AppendNullableAnnotation(this string instance,
                                                   bool isNullable,

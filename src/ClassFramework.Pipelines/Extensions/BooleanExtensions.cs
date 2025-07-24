@@ -6,4 +6,14 @@ public static class BooleanExtensions
         => isPublic
             ? Visibility.Public
             : Visibility.Private;
+
+    public static string GetLazyPrefix(this bool useBuilderLazyValues, string typeName)
+        => useBuilderLazyValues
+            ? $"new {typeName.WrapDelegate()}(() => "
+            : string.Empty;
+
+    public static string GetLazySuffix(this bool useBuilderLazyValues)
+        => useBuilderLazyValues
+            ? ")"
+            : string.Empty;
 }

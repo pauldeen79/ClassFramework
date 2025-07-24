@@ -549,8 +549,12 @@ public class StringExtensionsTests
         InlineData("SomeType", false, true, true, false, "default(SomeType)")]
     public void GetDefaultValue_Returns_Correct_Result(string input, bool isNullable, bool isValueType, bool enableNullableReferenceTypes, bool useBuilderLazyValues, string expected)
     {
+        // Arrange
+        var wrapperPrefix = useBuilderLazyValues ? $"new {typeof(Func<object>).ReplaceGenericTypeName(input)}(() => " : string.Empty;
+        var wrapperSuffix = useBuilderLazyValues ? ")" : string.Empty;
+
         // Act
-        var actual = input.GetDefaultValue(isNullable, isValueType, enableNullableReferenceTypes, useBuilderLazyValues);
+        var actual = input.GetDefaultValue(isNullable, isValueType, enableNullableReferenceTypes, wrapperPrefix, wrapperSuffix);
 
         // Assert
         actual.ShouldBe(expected);

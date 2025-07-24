@@ -93,10 +93,13 @@ public static class PipelineContextExtensions
             return error.Result;
         }
 
-        return Result.Success<GenericFormattableString>(string.Join(", ", results.Select(x => hasPublicParameterlessConstructor
-            ? $"{x.Name} = {GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix, x.UseBuilderLazyValues)}"
-            : GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix, x.UseBuilderLazyValues))));
+        return Result.Success<GenericFormattableString>(string.Join(", ", results.Select(x => $"{GetPrefix(hasPublicParameterlessConstructor, x.Name)}{GetBuilderPropertyExpression(x.Result.Value!, x.Source, x.CollectionInitializer, x.Suffix, x.UseBuilderLazyValues)}")));
     }
+
+    private static string GetPrefix(bool hasPublicParameterlessConstructor, string propertyName)
+        => hasPublicParameterlessConstructor
+            ? $"{propertyName} = "
+            : string.Empty;
 
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName()));
