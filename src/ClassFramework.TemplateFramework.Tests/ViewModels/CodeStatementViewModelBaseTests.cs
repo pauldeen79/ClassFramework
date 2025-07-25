@@ -5,19 +5,6 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
     public class AdditionalIndents : CodeStatementViewModelBaseTests
     {
         [Fact]
-        public void Throws_When_Context_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Context = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.AdditionalIndents;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Context");
-        }
-
-        [Fact]
         public void Returns_3_When_ParentContext_Model_Is_PropertyCodeBodyModel()
         {
             // Arrange

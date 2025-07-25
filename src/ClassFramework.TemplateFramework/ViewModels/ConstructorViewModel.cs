@@ -6,7 +6,7 @@ public class ConstructorViewModel : MethodViewModelBase<Constructor>
     {
         get
         {
-            var parentModel = GetParentModel();
+            var parentModel = ParentModel;
 
             if (parentModel is not IType nameContainer)
             {
@@ -18,10 +18,10 @@ public class ConstructorViewModel : MethodViewModelBase<Constructor>
     }
 
     public string ChainCall
-        => string.IsNullOrEmpty(GetModel().ChainCall)
+        => string.IsNullOrEmpty(Model.ChainCall)
             ? string.Empty
             : $" : {Model!.ChainCall}";
 
     public bool OmitCode
-        => GetParentModel() is Interface || GetModel().Abstract;
+        => ParentModel is Interface || Model.Abstract;
 }

@@ -14,14 +14,14 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     public async Task<Result<object?>> CreateModelAsync(CancellationToken cancellationToken)
     {
         var modelResult = await GetModelAsync(cancellationToken).ConfigureAwait(false);
-        if (!modelResult.IsSuccessful())
+        if (!modelResult.EnsureValue().IsSuccessful())
         {
             return modelResult;
         }
 
         return Result.Success<object?>(new CsharpClassGeneratorViewModel
         {
-            Model = modelResult.Value,
+            Model = modelResult.Value!,
             Settings = Settings
             //Context is filled in base class, on the property setter of Context (propagated to Model)
         });

@@ -4,36 +4,6 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
 {
     public class ShouldRenderModifiers : MethodViewModelTests
     {
-        [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-            var context = Fixture.Freeze<ITemplateContext>();
-            context.ParentContext.Returns(context); // note that we're using short-circuit here 8-) but who cares, we're just calling ParentContext.Model so it works.
-            sut.Context = context;
-
-            // Act & Assert
-            Action a = () => _ = sut.ShouldRenderModifiers;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
-        public void Throws_When_Context_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = new MethodBuilder().WithName("MyMethod").Build();
-            sut.Context = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.ShouldRenderModifiers;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Context");
-        }
-
         [Theory]
         [InlineData("", "class", true)]
         [InlineData("", "interface", false)]
@@ -65,19 +35,6 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
 
     public class ReturnTypeName : MethodViewModelTests
     {
-        [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.ReturnTypeName;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
         [Fact]
         public void Gets_Csharp_Friendly_TypeName()
         {
@@ -170,36 +127,6 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
 
     public class ExplicitInterfaceName : MethodViewModelTests
     {
-        [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-            var context = Fixture.Freeze<ITemplateContext>();
-            context.ParentContext.Returns(context); // note that we're using short-circuit here 8-) but who cares, we're just calling ParentContext.Model so it works.
-            sut.Context = context;
-
-            // Act & Assert
-            Action a = () => _ = sut.ExplicitInterfaceName;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
-        public void Throws_When_Context_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = new MethodBuilder().WithName("MyMethod").WithExplicitInterfaceName("IMyInterface").Build();
-            sut.Context = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.ExplicitInterfaceName;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Context");
-        }
-
         [Theory]
         [InlineData("", "class", "")]
         [InlineData("", "interface", "")]
@@ -231,19 +158,6 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
 
     public class Name : MethodViewModelTests
     {
-        [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.Name;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
         [Fact]
         public void Returns_Correct_Value_For_Operator()
         {
@@ -289,36 +203,6 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
 
     public class OmitCode : MethodViewModelTests
     {
-        [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-            var context = Fixture.Freeze<ITemplateContext>();
-            context.ParentContext.Returns(context); // note that we're using short-circuit here 8-) but who cares, we're just calling ParentContext.Model so it works.
-            sut.Context = context;
-
-            // Act & Assert
-            Action a = () => _ = sut.OmitCode;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
-        public void Throws_When_Context_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = new MethodBuilder().WithName("MyMethod").Build();
-            sut.Context = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.OmitCode;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Context");
-        }
-
         [Fact]
         public void Returns_True_When_ParentModel_Is_Interface()
         {

@@ -7,7 +7,7 @@ public abstract class CodeStatementViewModelBase<T> : CsharpClassGeneratorViewMo
     {
         get
         {
-            var parentModel = GetParentModel();
+            var parentModel = ParentModel;
             return parentModel switch
             {
                 PropertyCodeBodyModel => 3,

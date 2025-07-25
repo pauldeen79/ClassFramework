@@ -3,37 +3,37 @@
 public class PropertyViewModel(ICsharpExpressionDumper csharpExpressionDumper) : AttributeContainerViewModelBase<Property>
 {
     public bool ShouldRenderModifiers
-        => GetParentModel() is not Interface;
+        => ParentModel is not Interface;
 
     public string TypeName
-        => GetModel().TypeName
+        => Model.TypeName
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(Model!.IsNullable, Settings.EnableNullableContext, Model.IsValueType)
-            .AbbreviateNamespaces(GetContext().GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate);
+            .AbbreviateNamespaces(Context.GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate);
 
     public string Name
-        => GetModel().Name.Sanitize().GetCsharpFriendlyName();
+        => Model.Name.Sanitize().GetCsharpFriendlyName();
 
     public string Modifiers
-        => GetModel().GetModifiers(Settings.CultureInfo);
+        => Model.GetModifiers(Settings.CultureInfo);
 
     public string ExplicitInterfaceName
-        => !string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface
+        => !string.IsNullOrEmpty(Model.ExplicitInterfaceName) && ParentModel is not Interface
             ? $"{Model!.ExplicitInterfaceName}."
             : string.Empty;
 
     public bool ShouldRenderDefaultValue
-        => GetModel().DefaultValue is not null;
+        => Model.DefaultValue is not null;
 
     public string DefaultValueExpression
-        => csharpExpressionDumper.Dump(GetModel().DefaultValue);
+        => csharpExpressionDumper.Dump(Model.DefaultValue);
 
     public IEnumerable<PropertyCodeBodyModel> CodeBodyItems
     {
         get
         {
-            var model = GetModel();
-            var parentModel = GetParentModel();
+            var model = Model;
+            var parentModel = ParentModel;
 
             if (model.HasGetter)
             {

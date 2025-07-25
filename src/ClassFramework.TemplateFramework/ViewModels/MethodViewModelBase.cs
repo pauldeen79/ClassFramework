@@ -7,22 +7,22 @@ public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T
     {
         get
         {
-            if (GetParentModel() is Interface && GetModel() is IModifiersContainer modifiersContainer && modifiersContainer.New)
+            if (ParentModel is Interface && Model is IModifiersContainer modifiersContainer && modifiersContainer.New)
             {
                 return "new ";
             }
 
-            return GetModel().GetModifiers(Settings.CultureInfo);
+            return Model.GetModifiers(Settings.CultureInfo);
         }
     }
 
     public IReadOnlyCollection<string> SuppressWarningCodes
-        => GetModel().SuppressWarningCodes;
+        => Model.SuppressWarningCodes;
 
     public IEnumerable<CodeStatementBase> CodeStatements
-        => GetModel().CodeStatements;
+        => Model.CodeStatements;
 
     public IEnumerable<object> Parameters
-        => GetModel().Parameters
+        => Model.Parameters
             .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new SpaceAndCommaModel()] : new object[] { item });
 }

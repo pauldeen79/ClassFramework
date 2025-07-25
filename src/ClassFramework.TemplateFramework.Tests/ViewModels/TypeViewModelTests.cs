@@ -13,32 +13,6 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
     public class ShouldRenderNullablePragmas : TypeViewModelTests
     {
         [Fact]
-        public void Throws_When_Settings_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Settings = null!;
-            sut.Context = CreateTemplateContext();
-
-            // Act & Assert
-            Action a = () => _ = sut.ShouldRenderNullablePragmas;
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Settings");
-        }
-
-        [Fact]
-        public void Throws_When_Context_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Settings = CreateCsharpClassGeneratorSettings();
-            sut.Context = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.ShouldRenderNullablePragmas;
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Context");
-        }
-
-        [Fact]
         public void Returns_False_When_EnableNullableContext_Is_Set_To_False()
         {
             // Arrange
@@ -118,32 +92,6 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
     public class ShouldRenderNamespaceScope : TypeViewModelTests
     {
         [Fact]
-        public void Throws_When_Settings_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Settings = null!;
-            sut.Model = new ClassBuilder().WithName("MyClass").Build();
-
-            // Act & Assert
-            Action a = () => _ = sut.ShouldRenderNamespaceScope;
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Settings");
-        }
-
-        [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Settings = CreateCsharpClassGeneratorSettings();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.ShouldRenderNamespaceScope;
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
         public void Returns_False_When_GenerateMultipleFiles_Is_Set_To_False()
         {
             // Arrange
@@ -192,19 +140,6 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
     public class Name : TypeViewModelTests
     {
         [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.Name;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
         public void Gets_Name_With_Prefix_When_Name_Is_A_Reserved_Language_Keyword()
         {
             // Arrange
@@ -235,19 +170,6 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
     public class GetMemberModels : TypeViewModelTests
     {
-        [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.Members;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
         [Fact]
         public void Includes_Fields_When_Present()
         {
@@ -360,19 +282,6 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
     public class GetSubClassModels : TypeViewModelTests
     {
         [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.SubClasses.ToArray();
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
         public void Returns_Empty_Sequence_When_Model_Is_Not_Class()
         {
             // Arrange
@@ -417,19 +326,6 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
     public class ContainerType : TypeViewModelTests
     {
-        [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.ContainerType;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
         [Theory]
         [InlineData("class", false, "class")]
         [InlineData("class", true, "record")]
@@ -471,19 +367,6 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
     public class InheritedClasses : TypeViewModelTests
     {
-        [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.InheritedClasses;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
         [Fact]
         public void Returns_Empty_String_On_Model_Of_Type_Interface_Without_Interfaces()
         {
@@ -557,19 +440,6 @@ public class TypeViewModelTests : TestBase<TypeViewModel>
 
     public class FilenamePrefix : TypeViewModelTests
     {
-        [Fact]
-        public void Throws_When_Settings_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Settings = null!;
-            sut.Model = new ClassBuilder().WithName("MyClass").Build();
-
-            // Act & Assert
-            Action a = () => _ = sut.FilenamePrefix;
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("Settings");
-        }
-
         [Fact]
         public void Returns_Empty_String_When_Path_Is_Empty()
         {

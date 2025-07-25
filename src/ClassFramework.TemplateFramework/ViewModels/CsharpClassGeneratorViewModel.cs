@@ -3,13 +3,13 @@
 public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<IEnumerable<TypeBase>>
 {
     public IOrderedEnumerable<IGrouping<string, TypeBase>> Namespaces
-        => GetModel().GroupBy(x => x.Namespace).OrderBy(x => x.Key);
+        => Model.GroupBy(x => x.Namespace).OrderBy(x => x.Key);
 
     public CodeGenerationHeaderModel CodeGenerationHeaderModel
         => new(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion);
 
     public UsingsModel Usings
-        => new(GetModel());
+        => new(Model);
 
 #pragma warning disable S2325 // Methods and properties that don't access instance data should be static
     public IEnumerable<TypeBase> GetTypes(IEnumerable<TypeBase> @namespace)
@@ -20,7 +20,7 @@ public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<I
     {
         get
         {
-            var settings = GetSettings();
+            var settings = Settings;
 
             return settings.EnableNullableContext
                 && settings.EnableNullablePragmas

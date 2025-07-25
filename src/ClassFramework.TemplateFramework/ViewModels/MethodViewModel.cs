@@ -3,38 +3,38 @@
 public class MethodViewModel : MethodViewModelBase<Method>
 {
     public bool ShouldRenderModifiers
-        => (string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface)
-        || (GetParentModel() is Interface && GetModel().New);
+        => (string.IsNullOrEmpty(Model.ExplicitInterfaceName) && ParentModel is not Interface)
+        || (ParentModel is Interface && Model.New);
 
     public string ReturnTypeName
-        => GetModel().ReturnTypeName
+        => Model.ReturnTypeName
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(Model!.ReturnTypeIsNullable, Settings.EnableNullableContext, Model.ReturnTypeIsValueType)
-            .AbbreviateNamespaces(GetContext().GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate)
+            .AbbreviateNamespaces(Context.GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate)
             .WhenNullOrEmpty("void");
 
     public string ReturnTypeGenericTypeArguments
-        => GetModel().ReturnTypeGenericTypeArguments.Select(x => x.TypeName).GetGenericTypeArgumentsString();
+        => Model.ReturnTypeGenericTypeArguments.Select(x => x.TypeName).GetGenericTypeArgumentsString();
 
     public string ExplicitInterfaceName
-        => !string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface
+        => !string.IsNullOrEmpty(Model.ExplicitInterfaceName) && ParentModel is not Interface
             ? $"{Model!.ExplicitInterfaceName}."
             : string.Empty;
 
     public string GenericTypeArguments
-        => GetModel().GetGenericTypeArgumentsString();
+        => Model.GetGenericTypeArgumentsString();
 
     public string GenericTypeArgumentConstraints
-        => GetModel().GetGenericTypeArgumentConstraintsString(12 + ((GetContext().GetIndentCount() - 1) * 4));
+        => Model.GetGenericTypeArgumentConstraintsString(12 + ((Context.GetIndentCount() - 1) * 4));
 
     public bool ExtensionMethod
-        => GetModel().ExtensionMethod;
+        => Model.ExtensionMethod;
 
     public string Name
     {
         get
         {
-            var model = GetModel();
+            var model = Model;
             if (model.Operator)
             {
                 return "operator " + model.Name;
@@ -53,9 +53,9 @@ public class MethodViewModel : MethodViewModelBase<Method>
     {
         get
         {
-            var model = GetModel();
+            var model = Model;
 
-            return GetParentModel() is Interface || model.Abstract || model.Partial;
+            return ParentModel is Interface || model.Abstract || model.Partial;
         }
     }
 }
