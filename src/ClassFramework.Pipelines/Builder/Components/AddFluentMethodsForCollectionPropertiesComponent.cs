@@ -16,7 +16,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
         foreach (var property in context.Request.GetSourceProperties()
             .Where(x => context.Request.IsValidForFluentMethod(x) && x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var parentChildContext = CreateParentChildContext(context, property);
+            var parentChildContext = new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings);
 
             var results = await context.Request.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext, _evaluator)
                 .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, false, token).ConfigureAwait(false))
@@ -83,10 +83,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
                 token
             ).ConfigureAwait(false);
 
-            if (!argumentNullCheckResult.IsSuccessful() || !string.IsNullOrEmpty(argumentNullCheckResult.Value!.ToString()))
-            {
-                results.Add(argumentNullCheckResult);
-            }
+            results.Add(argumentNullCheckResult);
         }
 
         var builderAddExpressionResult = await _evaluator.EvaluateInterpolatedStringAsync
@@ -101,13 +98,9 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
             token
         ).ConfigureAwait(false);
 
-
         results.Add(builderAddExpressionResult);
         results.Add(Result.Success<GenericFormattableString>(context.Request.ReturnValueStatementForFluentMethod));
 
         return results;
     }
-
-    private static ParentChildContext<PipelineContext<BuilderContext>, Property> CreateParentChildContext(PipelineContext<BuilderContext> context, Property property)
-        => new(context, property, context.Request.Settings);
 }

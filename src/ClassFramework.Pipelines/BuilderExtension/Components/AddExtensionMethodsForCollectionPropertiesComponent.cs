@@ -16,7 +16,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
         foreach (var property in context.Request.GetSourceProperties()
             .Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var parentChildContext = CreateParentChildContext(context, property);
+            var parentChildContext = new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings);
 
             var results = await context.Request.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext,_evaluator)
                 .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, token).ConfigureAwait(false))
@@ -73,6 +73,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                 new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings),
                 token
             ).ConfigureAwait(false);
+
             results.Add(argumentNullCheckResult);
         }
 
@@ -93,7 +94,4 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
 
         return results;
     }
-
-    private static ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> CreateParentChildContext(PipelineContext<BuilderExtensionContext> context, Property property)
-        => new(context, property, context.Request.Settings);
 }
