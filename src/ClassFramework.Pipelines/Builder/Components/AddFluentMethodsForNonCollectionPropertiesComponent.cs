@@ -29,32 +29,12 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
 
             var returnType = context.Request.GetReturnTypeForFluentMethod(results.GetValue(ResultNames.Namespace), results.GetValue(ResultNames.BuilderName));
 
-            context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithName(results.GetValue("MethodName"))
-                .WithReturnTypeName(returnType)
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName)))
-                .Chain(method => context.Request.AddNullChecks(method, results))
-                .AddCodeStatements
-                (
-                    results.GetValue(ResultNames.BuilderWithExpression),
-                    context.Request.ReturnValueStatementForFluentMethod
-                )
-            );
+            context.Request.Builder.AddMethods(context.Request.GetFluentMethodsForNonCollectionProperty(property, results, returnType, ResultNames.TypeName, ResultNames.BuilderWithExpression));
 
             if (results.NeedNonLazyOverloads())
             {
                 //Add overload for non-func type
-                context.Request.Builder.AddMethods(new MethodBuilder()
-                    .WithName(results.GetValue("MethodName"))
-                    .WithReturnTypeName(returnType)
-                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName)))
-                    .Chain(method => context.Request.AddNullChecks(method, results))
-                    .AddCodeStatements
-                    (
-                        results.GetValue(ResultNames.BuilderNonLazyWithExpression),
-                        context.Request.ReturnValueStatementForFluentMethod
-                    )
-                );
+                context.Request.Builder.AddMethods(context.Request.GetFluentMethodsForNonCollectionProperty(property, results, returnType, ResultNames.NonLazyTypeName, ResultNames.BuilderNonLazyWithExpression));
             }
         }
 

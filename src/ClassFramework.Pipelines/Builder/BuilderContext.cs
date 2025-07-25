@@ -123,6 +123,35 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
         return results.ToArray();
     }
 
+    public IEnumerable<MethodBuilder> GetFluentMethodsForCollectionProperty(Property property, IReadOnlyDictionary<string, Result<GenericFormattableString>> results, string returnType, string typeNameKey, string enumerableOverloadKeyPrefix, string arrayOverloadKeyPrefix)
+    {
+        yield return new MethodBuilder()
+            .WithName(results.GetValue(ResultNames.AddMethodName))
+            .WithReturnTypeName(returnType)
+            .AddParameters(CreateParameterForBuilder(property, results.GetValue(typeNameKey).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
+            .AddCodeStatements(results.Where(x => x.Key.StartsWith(enumerableOverloadKeyPrefix)).Select(x => x.Value.Value!.ToString()));
+
+        yield return new MethodBuilder()
+            .WithName(results.GetValue(ResultNames.AddMethodName))
+            .WithReturnTypeName(returnType)
+            .AddParameters(CreateParameterForBuilder(property, results.GetValue(typeNameKey).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
+            .AddCodeStatements(results.Where(x => x.Key.StartsWith(arrayOverloadKeyPrefix)).Select(x => x.Value.Value!.ToString()));
+    }
+
+    public IEnumerable<MethodBuilder> GetFluentMethodsForNonCollectionProperty(Property property, IReadOnlyDictionary<string, Result<GenericFormattableString>> results, string returnType, string typeNameKey, string expressionKey)
+    {
+        yield return new MethodBuilder()
+            .WithName(results.GetValue("MethodName"))
+            .WithReturnTypeName(returnType)
+            .AddParameters(CreateParameterForBuilder(property, results.GetValue(typeNameKey)))
+            .Chain(method => AddNullChecks(method, results))
+            .AddCodeStatements
+            (
+                results.GetValue(expressionKey),
+                ReturnValueStatementForFluentMethod
+            );
+    }
+
     private string ReturnValue
     {
         get

@@ -35,36 +35,12 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
 
             var returnType = context.Request.GetReturnTypeForFluentMethod(results.GetValue(ResultNames.Namespace), results.GetValue(ResultNames.BuilderName));
 
-            context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithName(results.GetValue(ResultNames.AddMethodName))
-                .WithReturnTypeName(returnType)
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
-                .AddCodeStatements(results.Where(x => x.Key.StartsWith("EnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
-            );
-
-            context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithName(results.GetValue(ResultNames.AddMethodName))
-                .WithReturnTypeName(returnType)
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
-                .AddCodeStatements(results.Where(x => x.Key.StartsWith("ArrayOverload.")).Select(x => x.Value.Value!.ToString()))
-            );
+            context.Request.Builder.AddMethods(context.Request.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.TypeName, "EnumerableOverload.", "ArrayOverload."));
 
             if (results.NeedNonLazyOverloads())
             {
                 //Add overloads for non-func type
-                context.Request.Builder.AddMethods(new MethodBuilder()
-                    .WithName(results.GetValue(ResultNames.AddMethodName))
-                    .WithReturnTypeName(returnType)
-                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
-                    .AddCodeStatements(results.Where(x => x.Key.StartsWith("NonLazyEnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
-                );
-
-                context.Request.Builder.AddMethods(new MethodBuilder()
-                    .WithName(results.GetValue(ResultNames.AddMethodName))
-                    .WithReturnTypeName(returnType)
-                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
-                    .AddCodeStatements(results.Where(x => x.Key.StartsWith("NonLazyArrayOverload.")).Select(x => x.Value.Value!.ToString()))
-                );
+                context.Request.Builder.AddMethods(context.Request.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.NonLazyTypeName, "NonLazyEnumerableOverload.", "NonLazyArrayOverload."));
             }
         }
 

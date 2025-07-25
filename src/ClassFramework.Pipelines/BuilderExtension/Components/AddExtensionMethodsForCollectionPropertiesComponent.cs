@@ -4,8 +4,6 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    private const string Instance = "instance";
-
     public async Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
@@ -36,56 +34,12 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
 
             var returnType = context.Request.GetReturnTypeForFluentMethod(results.GetValue(ResultNames.Namespace), results.GetValue(ResultNames.BuilderName));
 
-            context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithName(results.GetValue(ResultNames.AddMethodName))
-                .WithReturnTypeName("T")
-                .WithStatic()
-                .WithExtensionMethod()
-                .AddGenericTypeArguments("T")
-                .AddGenericTypeArgumentConstraints($"where T : {returnType}")
-                .AddParameter(Instance, "T")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
-                .AddCodeStatements(results.Where(x => x.Key.StartsWith("EnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
-            );
-
-            context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithName(results.GetValue(ResultNames.AddMethodName))
-                .WithReturnTypeName("T")
-                .WithStatic()
-                .WithExtensionMethod()
-                .AddGenericTypeArguments("T")
-                .AddGenericTypeArgumentConstraints($"where T : {returnType}")
-                .AddParameter(Instance, "T")
-                .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.TypeName).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
-                .AddCodeStatements(results.Where(x => x.Key.StartsWith("ArrayOverload.")).Select(x => x.Value.Value!.ToString()))
-            );
+            context.Request.Builder.AddMethods(context.Request.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.TypeName, "EnumerableOverload.", "ArrayOverload."));
 
             if (results.NeedNonLazyOverloads())
             {
                 //Add overloads for non-func type
-                context.Request.Builder.AddMethods(new MethodBuilder()
-                    .WithName(results.GetValue(ResultNames.AddMethodName))
-                    .WithReturnTypeName("T")
-                    .WithStatic()
-                    .WithExtensionMethod()
-                    .AddGenericTypeArguments("T")
-                    .AddGenericTypeArgumentConstraints($"where T : {returnType}")
-                    .AddParameter(Instance, "T")
-                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
-                    .AddCodeStatements(results.Where(x => x.Key.StartsWith("NonLazyEnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
-                );
-
-                context.Request.Builder.AddMethods(new MethodBuilder()
-                    .WithName(results.GetValue(ResultNames.AddMethodName))
-                    .WithReturnTypeName("T")
-                    .WithStatic()
-                    .WithExtensionMethod()
-                    .AddGenericTypeArguments("T")
-                    .AddGenericTypeArgumentConstraints($"where T : {returnType}")
-                    .AddParameter(Instance, "T")
-                    .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName).ToString().FixTypeName().ConvertTypeNameToArray()).WithIsParamArray())
-                    .AddCodeStatements(results.Where(x => x.Key.StartsWith("NonLazyArrayOverload.")).Select(x => x.Value.Value!.ToString()))
-                );
+                context.Request.Builder.AddMethods(context.Request.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.NonLazyTypeName, "NonLazyEnumerableOverload.", "NonLazyArrayOverload."));
             }
         }
 
