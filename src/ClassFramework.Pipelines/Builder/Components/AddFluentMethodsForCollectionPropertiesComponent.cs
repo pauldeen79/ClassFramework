@@ -8,8 +8,8 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
     {
         context = context.IsNotNull(nameof(context));
 
-        return await context.Request.ProcessPropertiesAsync(
-            context,
+        return await context.ProcessPropertiesAsync(
+            context.Request.Settings.AddMethodNameFormatString,
             context.Request.GetSourceProperties().Where(x => context.Request.IsValidForFluentMethod(x) && x.TypeName.FixTypeName().IsCollectionTypeName()),
             GetResultsAsync,
             context.Request.GetReturnTypeForFluentMethod,
