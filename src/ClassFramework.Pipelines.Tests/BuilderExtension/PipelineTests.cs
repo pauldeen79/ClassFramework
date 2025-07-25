@@ -153,7 +153,6 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderExtensionConte
                         "return instance.AddProperty2<T>(property2.ToArray());",
                         "foreach (var item in property2) instance.Property2.Add(item);",
                         "return instance;",
-                        "return instance.AddProperty2<T>(property2.ToArray());",
                         "foreach (var item in property2) instance.Property2.Add(() => item);",
                         "return instance;"
                     }

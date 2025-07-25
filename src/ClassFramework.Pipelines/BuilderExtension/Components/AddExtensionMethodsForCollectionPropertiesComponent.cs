@@ -72,7 +72,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                     .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                     .AddParameter(Instance, "T")
                     .AddParameters(context.Request.CreateParameterForBuilder(property, results.GetValue(ResultNames.NonLazyTypeName).ToString().FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())))
-                    .AddCodeStatements(results.Where(x => x.Key.StartsWith("EnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
+                    .AddCodeStatements(results.Where(x => x.Key.StartsWith("NonLazyEnumerableOverload.")).Select(x => x.Value.Value!.ToString()))
                 );
 
                 context.Request.Builder.AddMethods(new MethodBuilder()
