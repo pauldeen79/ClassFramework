@@ -3,23 +3,23 @@
 public class FieldViewModel(ICsharpExpressionDumper csharpExpressionDumper) : AttributeContainerViewModelBase<Field>
 {
     public string Modifiers
-        => GetModel().GetModifiers(Settings.CultureInfo);
+        => Model.GetModifiers(Settings.CultureInfo);
 
     public bool Event
-        => GetModel().Event;
+        => Model.Event;
 
     public string TypeName
-        => GetModel().TypeName
+        => Model.TypeName
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(Model!.IsNullable, Settings.EnableNullableContext, Model.IsValueType)
-            .AbbreviateNamespaces(GetContext().GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate);
+            .AbbreviateNamespaces(Context.GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate);
 
     public string Name
-        => GetModel().Name.Sanitize().GetCsharpFriendlyName();
+        => Model.Name.Sanitize().GetCsharpFriendlyName();
 
     public bool ShouldRenderDefaultValue
-        => GetModel().DefaultValue is not null;
+        => Model.DefaultValue is not null;
 
     public string DefaultValueExpression
-        => csharpExpressionDumper.Dump(GetModel().DefaultValue);
+        => csharpExpressionDumper.Dump(Model.DefaultValue);
 }

@@ -3,10 +3,10 @@
 public class EnumerationMemberViewModel(ICsharpExpressionDumper csharpExpressionDumper) : CsharpClassGeneratorViewModelBase<EnumerationMember>
 {
     public string ValueExpression
-        => GetModel().Value is null
+        => Model.Value is null
             ? string.Empty
             : $" = {csharpExpressionDumper.Dump(Model!.Value)}";
 
     public string Name
-        => GetModel().Name.Sanitize().GetCsharpFriendlyName();
+        => Model.Name.Sanitize().GetCsharpFriendlyName();
 }

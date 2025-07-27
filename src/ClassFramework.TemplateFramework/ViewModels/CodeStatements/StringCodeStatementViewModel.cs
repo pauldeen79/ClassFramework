@@ -2,5 +2,5 @@
 
 public class StringCodeStatementViewModel : CodeStatementViewModelBase<StringCodeStatement>
 {
-    public string? Statement => GetModel().Statement;
+    public string? Statement => Model.Statement;
 }

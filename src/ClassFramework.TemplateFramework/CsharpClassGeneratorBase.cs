@@ -21,7 +21,7 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
         }
     }
 
-    public TModel? Model { get; set; }
+    public TModel Model { get; set; } = default!;
 
     protected async Task<Result> RenderChildTemplateByModelAsync(object model, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {

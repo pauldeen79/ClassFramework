@@ -2,7 +2,12 @@
 
 public static class PipelineContextExtensions
 {
-    public static async Task<Result<GenericFormattableString>> CreateEntityInstanciationAsync(this PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper, string classNameSuffix, CancellationToken token)
+    public static async Task<Result<GenericFormattableString>> CreateEntityInstanciationAsync(
+        this PipelineContext<BuilderContext> context,
+        IExpressionEvaluator evaluator,
+        ICsharpExpressionDumper csharpExpressionDumper,
+        string classNameSuffix,
+        CancellationToken token)
     {
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
@@ -48,6 +53,45 @@ public static class PipelineContextExtensions
             ? $"base({GetPropertyNamesConcatenated(context.Request.Settings.BaseClass.Properties, context.Request.FormatProvider.ToCultureInfo())})"
             : (await context.Request.SourceModel.GetCustomValueForInheritedClassAsync(context.Request.Settings.EnableInheritance,
                 cls => Task.FromResult(Result.Success<GenericFormattableString>($"base({GetPropertyNamesConcatenated(context.Request.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Request.FormatProvider.ToCultureInfo())})"))).ConfigureAwait(false)).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
+    }
+
+    public static async Task<Result> ProcessPropertiesAsync<TContext>(
+        this PipelineContext<TContext> context,
+        string methodName,
+        IEnumerable<Property> properties,
+        Func<PipelineContext<TContext>, Property, CancellationToken, Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>>> getResultsDelegate,
+        Func<string, string, string> getReturnTypeDelegate,
+        Action<Property, string, IReadOnlyDictionary<string, Result<GenericFormattableString>>, string> processDelegate,
+        CancellationToken token)
+    {
+        context = ArgumentGuard.IsNotNull(context, nameof(context));
+        properties = ArgumentGuard.IsNotNull(properties, nameof(properties));
+        getResultsDelegate = ArgumentGuard.IsNotNull(getResultsDelegate, nameof(getResultsDelegate));
+        getReturnTypeDelegate = ArgumentGuard.IsNotNull(getReturnTypeDelegate, nameof(getReturnTypeDelegate));
+        processDelegate = ArgumentGuard.IsNotNull(processDelegate, nameof(processDelegate));
+
+        if (string.IsNullOrEmpty(methodName))
+        {
+            return Result.Success();
+        }
+
+        foreach (var property in properties)
+        {
+            var results = await getResultsDelegate(context, property, token).ConfigureAwait(false);
+
+            var error = results.GetError();
+            if (error is not null)
+            {
+                // Error in formattable string parsing
+                return error;
+            }
+
+            var returnType = getReturnTypeDelegate(results.GetValue(ResultNames.Namespace), results.GetValue(ResultNames.BuilderName));
+
+            processDelegate(property, returnType, results, returnType);
+        }
+
+        return Result.Success();
     }
 
     private static async Task<Result<GenericFormattableString>> GetConstructionMethodParametersAsync(PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor, CancellationToken token)

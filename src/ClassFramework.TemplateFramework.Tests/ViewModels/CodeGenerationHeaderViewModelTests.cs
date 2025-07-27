@@ -5,19 +5,6 @@ public class CodeGenerationHeaderViewModelTests : TestBase<CodeGenerationHeaderV
     public class Version : CodeGenerationHeaderViewModelTests
     {
         [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null;
-
-            // Act
-            Action a = () => _ = sut.Version;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
         public void Returns_Model_EnvironmentVersion_When_Filled()
         {
             // Arrange

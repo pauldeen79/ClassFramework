@@ -6,43 +6,43 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
     {
         get
         {
-            var settings = GetSettings();
+            var settings = Settings;
 
             return settings.EnableNullableContext
                 && settings.EnableNullablePragmas
                 && settings.GenerateMultipleFiles // only needed when generating multiple files, because else it will be done only in the header and footer of the generated file
-                && GetContext().GetIndentCount() == 1; // note: only for root level, because it gets rendered in the same file
+                && Context.GetIndentCount() == 1; // note: only for root level, because it gets rendered in the same file
         }
     }
 
     public bool ShouldRenderNamespaceScope
-        => GetSettings().GenerateMultipleFiles
-        && !string.IsNullOrEmpty(GetModel().Namespace);
+        => Settings.GenerateMultipleFiles
+        && !string.IsNullOrEmpty(Model.Namespace);
 
     public string Name
-        => GetModel().Name.Sanitize().GetCsharpFriendlyName();
+        => Model.Name.Sanitize().GetCsharpFriendlyName();
 
     public string Namespace
-        => GetModel().Namespace;
+        => Model.Namespace;
 
     public string Modifiers
-        => GetModel().GetModifiers(GetSettings().CultureInfo);
+        => Model.GetModifiers(Settings.CultureInfo);
 
     public IReadOnlyCollection<string> SuppressWarningCodes
-        => GetModel().SuppressWarningCodes;
+        => Model.SuppressWarningCodes;
 
     public CodeGenerationHeaderModel CodeGenerationHeaders
         => new(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion);
 
     public UsingsModel Usings()
-        => new([GetModel()]);
+        => new([Model]);
 
     public IEnumerable<object> Members
     {
         get
         {
             var items = new List<object?>();
-            var model = GetModel();
+            var model = Model;
 
             items.AddRange(model.Fields);
             items.AddRange(model.Properties);
@@ -69,7 +69,7 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
     {
         get
         {
-            if (GetModel() is not ISubClassesContainer subClassesContainer)
+            if (Model is not ISubClassesContainer subClassesContainer)
             {
                 return [];
             }
@@ -79,7 +79,7 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
     }
 
     public string ContainerType
-        => GetModel() switch
+        => Model switch
         {
             Class cls when cls.Record => "record",
             Class cls when !cls.Record => "class",
@@ -93,7 +93,7 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
     {
         get
         {
-            var baseClassContainer = GetModel() as IBaseClassContainer;
+            var baseClassContainer = Model as IBaseClassContainer;
 
             var lst = new List<string>();
 
@@ -110,13 +110,13 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
     }
 
     public string GenericTypeArguments
-        => GetModel().GetGenericTypeArgumentsString();
+        => Model.GetGenericTypeArgumentsString();
 
     public string GenericTypeArgumentConstraints
-        => GetModel().GetGenericTypeArgumentConstraintsString(8 + ((GetContext().GetIndentCount() - 1) * 4));
+        => Model.GetGenericTypeArgumentConstraintsString(8 + ((Context.GetIndentCount() - 1) * 4));
 
     public string FilenamePrefix
-        => string.IsNullOrEmpty(GetSettings().Path)
+        => string.IsNullOrEmpty(Settings.Path)
             ? string.Empty
             : $"{Settings.Path}{Path.DirectorySeparatorChar}";
 }

@@ -5,19 +5,6 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
     public class TypeName : PropertyViewModelTests
     {
         [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.TypeName;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
         public void Gets_Csharp_Friendly_TypeName()
         {
             // Arrange
@@ -88,33 +75,6 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
     public class ExplicitInterfaceName : PropertyViewModelTests
     {
         [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.ExplicitInterfaceName;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
-        public void Throws_When_Context_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithExplicitInterfaceName("ISomething").Build();
-            sut.Context = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.ExplicitInterfaceName;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Context");
-        }
-
-        [Fact]
         public void Returns_Empty_String_When_ExplicitInterfaceName_Is_Empty()
         {
             // Arrange
@@ -172,19 +132,6 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
     public class ShouldRenderDefaultValue : PropertyViewModelTests
     {
         [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.ShouldRenderDefaultValue;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
         public void Returns_True_When_Model_DefaultValue_Is_Filled()
         {
             // Arrange
@@ -224,19 +171,6 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
     public class DefaultValueExpression : PropertyViewModelTests
     {
         [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.DefaultValueExpression;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
         public void Returns_True_When_Model_DefaultValue_Is_Filled()
         {
             // Arrange
@@ -258,36 +192,6 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
 
     public class GetCodeBodyModels : PropertyViewModelTests
     {
-        [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-            var context = Fixture.Freeze<ITemplateContext>();
-            context.ParentContext.Returns(context); // note that we're using short-circuit here 8-) but who cares, we're just calling ParentContext.Model so it works.
-            sut.Context = context;
-
-            // Act & Assert
-            Action a = () => _ = sut.CodeBodyItems.ToArray();
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
-        public void Throws_When_Context_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
-            sut.Context = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.CodeBodyItems.ToArray();
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Context");
-        }
-
         [Fact]
         public void Returns_Model_For_Getter_When_HasGetter_Is_True()
         {

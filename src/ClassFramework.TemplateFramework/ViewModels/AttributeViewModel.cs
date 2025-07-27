@@ -2,13 +2,13 @@
 
 public class AttributeViewModel(ICsharpExpressionDumper csharpExpressionDumper) : CsharpClassGeneratorViewModelBase<Domain.Attribute>
 {
-    public bool IsSingleLineAttributeContainer => GetParentModel() is Parameter;
+    public bool IsSingleLineAttributeContainer => ParentModel is Parameter;
 
     public string Name
-        => GetModel().Name.GetCsharpFriendlyName(); // do not sanitize, as the name may contain dots (.) for namesapce separators
+        => Model.Name.GetCsharpFriendlyName(); // do not sanitize, as the name may contain dots (.) for namesapce separators
 
     public string Parameters
-        => GetModel().Parameters.Count == 0
+        => Model.Parameters.Count == 0
             ? string.Empty
             : string.Concat("(", string.Join(", ", Model!.Parameters.Select(p =>
                 string.IsNullOrEmpty(p.Name)
@@ -20,7 +20,7 @@ public class AttributeViewModel(ICsharpExpressionDumper csharpExpressionDumper) 
     {
         get
         {
-            if (IsSingleLineAttributeContainer || GetParentModel() is IType)
+            if (IsSingleLineAttributeContainer || ParentModel is IType)
             {
                 return 0;
             }

@@ -5,19 +5,6 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
     public class Name : ConstructorViewModelTests
     {
         [Fact]
-        public void Throws_When_Context_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Context = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.Name;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Context");
-        }
-
-        [Fact]
         public void Throws_When_ParentContext_Model_Is_Not_IType()
         {
             // Arrange
@@ -68,19 +55,6 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
     public class ChainCall : ConstructorViewModelTests
     {
         [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.ChainCall;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
         public void Returns_Empty_String_When_ChainCall_On_Model_Is_Empty()
         {
             // Arrange
@@ -111,19 +85,6 @@ public class ConstructorViewModelTests : TestBase<ConstructorViewModel>
 
     public class OmitCode : ConstructorViewModelTests
     {
-        [Fact]
-        public void Throws_When_Context_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Context = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.OmitCode;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Context");
-        }
-
         [Fact]
         public void Returns_True_When_ParentContext_Model_Is_Interface()
         {

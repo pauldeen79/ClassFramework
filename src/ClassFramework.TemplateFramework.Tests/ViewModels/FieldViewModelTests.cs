@@ -5,19 +5,6 @@ public class FieldViewModelTests : TestBase<FieldViewModel>
     public class TypeName : FieldViewModelTests
     {
         [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.TypeName;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
         public void Gets_Csharp_Friendly_TypeName()
         {
             // Arrange
@@ -88,19 +75,6 @@ public class FieldViewModelTests : TestBase<FieldViewModel>
     public class ShouldRenderDefaultValue : FieldViewModelTests
     {
         [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.ShouldRenderDefaultValue;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
         public void Returns_True_When_Model_DefaultValue_Is_Filled()
         {
             // Arrange
@@ -139,19 +113,6 @@ public class FieldViewModelTests : TestBase<FieldViewModel>
 
     public class DefaultValueExpression : FieldViewModelTests
     {
-        [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null!;
-
-            // Act & Assert
-            Action a = () => _ = sut.DefaultValueExpression;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
         [Fact]
         public void Returns_True_When_Model_DefaultValue_Is_Filled()
         {

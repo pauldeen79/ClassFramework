@@ -6,7 +6,7 @@ public class ParameterViewModel(ICsharpExpressionDumper csharpExpressionDumper) 
     {
         get
         {
-            var model = GetModel();
+            var model = Model;
 
             if (model.IsParamArray)
             {
@@ -26,17 +26,17 @@ public class ParameterViewModel(ICsharpExpressionDumper csharpExpressionDumper) 
     }
 
     public string TypeName
-        => GetModel().TypeName
+        => Model.TypeName
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(Model!.IsNullable, Settings.EnableNullableContext, Model.IsValueType)
-            .AbbreviateNamespaces(GetContext().GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate);
+            .AbbreviateNamespaces(Context.GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate);
 
     public string Name
-        => GetModel().Name.Sanitize().GetCsharpFriendlyName();
+        => Model.Name.Sanitize().GetCsharpFriendlyName();
 
     public bool ShouldRenderDefaultValue
-        => GetModel().DefaultValue is not null;
+        => Model.DefaultValue is not null;
 
     public string DefaultValueExpression
-        => csharpExpressionDumper.Dump(GetModel().DefaultValue);
+        => csharpExpressionDumper.Dump(Model.DefaultValue);
 }

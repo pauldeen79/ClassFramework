@@ -3,14 +3,14 @@
 public class PropertyCodeBodyViewModel : CsharpClassGeneratorViewModelBase<PropertyCodeBodyModel>
 {
     public string Modifiers
-        => GetModel().Modifiers;
+        => Model.Modifiers;
 
     public string Verb
-        => GetModel().Verb;
+        => Model.Verb;
 
     public bool OmitCode
-        => GetModel().OmitCode;
+        => Model.OmitCode;
 
     public IEnumerable<CodeStatementBase> CodeStatements
-        => GetModel().CodeStatementModels;
+        => Model.CodeStatementModels;
 }

@@ -118,7 +118,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         return typeNameMappings;
     }
 
-    protected static string GetNamespace(string typeName)
+    private static string GetNamespace(string typeName)
     {
         if (typeName.IsCollectionTypeName() && !string.IsNullOrEmpty(typeName.GetCollectionItemType()))
         {

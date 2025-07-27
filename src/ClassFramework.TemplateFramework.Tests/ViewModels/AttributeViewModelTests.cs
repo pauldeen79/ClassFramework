@@ -5,19 +5,6 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
     public class Parameters : AttributeViewModelTests
     {
         [Fact]
-        public void Throws_When_Model_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Model = null;
-
-            // Act
-            Action a = () => _ = sut.Parameters;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Model");
-        }
-
-        [Fact]
         public void Returns_String_With_Named_Parameter_Name()
         {
             // Arrange
@@ -77,19 +64,6 @@ public class AttributeViewModelTests : TestBase<AttributeViewModel>
 
     public class AdditionalIndents : AttributeViewModelTests
     {
-        [Fact]
-        public void Throws_When_Context_Is_Null()
-        {
-            // Arrange
-            var sut = CreateSut();
-            sut.Context = null!;
-
-            // Act
-            Action a = () => _ = sut.AdditionalIndents;
-            a.ShouldThrow<ArgumentNullException>()
-             .ParamName.ShouldBe("Context");
-        }
-
         [Fact]
         public void Returns_Zero_When_ParentModel_Is_Parameter()
         {

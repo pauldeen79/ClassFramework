@@ -3,11 +3,11 @@
 public class EnumerationViewModel : AttributeContainerViewModelBase<Enumeration>
 {
     public string Modifiers
-        => GetModel().GetModifiers(Settings.CultureInfo);
+        => Model.GetModifiers(Settings.CultureInfo);
 
     public string Name
-        => GetModel().Name.Sanitize().GetCsharpFriendlyName();
+        => Model.Name.Sanitize().GetCsharpFriendlyName();
 
     public IEnumerable<EnumerationMember> Members
-        => GetModel().Members;
+        => Model.Members;
 }
