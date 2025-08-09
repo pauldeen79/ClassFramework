@@ -3384,9 +3384,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument(ConstantArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument(ConstantArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3448,9 +3448,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument<T>(ConstantArgumentBuilder<T> entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument<T>(ConstantArgumentBuilder<T> builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3508,9 +3508,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument(ConstantResultArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument(ConstantResultArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3573,9 +3573,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument<T>(ConstantResultArgumentBuilder<T> entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument<T>(ConstantResultArgumentBuilder<T> builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3656,9 +3656,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument(DelegateArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument(DelegateArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3744,9 +3744,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument<T>(DelegateArgumentBuilder<T> entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument<T>(DelegateArgumentBuilder<T> builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3827,9 +3827,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument(DelegateResultArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument(DelegateResultArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3915,9 +3915,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument<T>(DelegateResultArgumentBuilder<T> entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument<T>(DelegateResultArgumentBuilder<T> builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3950,9 +3950,9 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument(EmptyArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument(EmptyArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3990,9 +3990,9 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument<T>(EmptyArgumentBuilder<T> entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument<T>(EmptyArgumentBuilder<T> builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -4050,9 +4050,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(ExpressionArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(ExpressionArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -4110,9 +4110,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument(FunctionArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument(FunctionArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -4634,9 +4634,9 @@ namespace Test.Domain.Builders
             return BuildTyped();
         }
 
-        public static implicit operator ClassFramework.Domain.TypeBase(TypeBaseBuilder<TBuilder, TEntity> entity)
+        public static implicit operator ClassFramework.Domain.TypeBase(TypeBaseBuilder<TBuilder, TEntity> builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -4918,9 +4918,9 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public static implicit operator ClassFramework.Domain.Types.Class(ClassBuilder entity)
+        public static implicit operator ClassFramework.Domain.Types.Class(ClassBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore

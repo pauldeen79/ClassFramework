@@ -34,15 +34,15 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
                 .WithStatic()
                 .WithName($"{context.Request.BuildReturnTypeName}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
                 .WithReturnTypeName("implicit")
-                .AddParameter("entity", $"{nameResult.Value}{genericArguments}")
+                .AddParameter("builder", $"{nameResult.Value}{genericArguments}")
                 .AddCodeStatements(!context.Request.Settings.IsForAbstractBuilder
-                    ? "return entity.BuildTyped();"
-                    : "return entity.Build();"));
+                    ? "return builder.BuildTyped();"
+                    : "return builder.Build();"));
 
             return Result.Success();
         }
 
-        var genericArgumentsFlat = context.Request.SourceModel.GenericTypeArguments.Count > 0
+        var genericArgumentsString = context.Request.SourceModel.GenericTypeArguments.Count > 0
             ? context.Request.SourceModel.GetGenericTypeArgumentsString()
             : string.Empty;
 
@@ -51,8 +51,8 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
             .WithStatic()
             .WithName($"{context.Request.BuildReturnTypeName}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
             .WithReturnTypeName("implicit")
-            .AddParameter("entity", $"{nameResult.Value}{genericArgumentsFlat}")
-            .AddCodeStatements($"return entity.{GetName(context)}();"));
+            .AddParameter("builder", $"{nameResult.Value}{genericArgumentsString}")
+            .AddCodeStatements($"return builder.{GetName(context)}();"));
 
         return Result.Success();
     }

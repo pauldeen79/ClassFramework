@@ -67,7 +67,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             context.Request.Builder.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
             context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
             context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
             context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder");
             context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
@@ -90,7 +90,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             context.Request.Builder.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
             context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
             context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
             context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder<T>");
             context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
@@ -116,7 +116,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             context.Request.Builder.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
             context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
             context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
             context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder<TBuilder, TEntity>");
             context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
@@ -142,7 +142,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             context.Request.Builder.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
             context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
             context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
             context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder<TBuilder, TEntity, T>");
             context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
@@ -169,7 +169,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             context.Request.Builder.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
             context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
             context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
             context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder");
             context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
@@ -196,7 +196,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             context.Request.Builder.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
             context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
             context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
             context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder");
             context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
@@ -222,7 +222,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             context.Request.Builder.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
             context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
             context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
             context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder");
             context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
@@ -248,7 +248,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             context.Request.Builder.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
             context.Request.Builder.Methods.Single().Operator.ShouldBeTrue();
             context.Request.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("entity");
+            context.Request.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
             context.Request.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder<T>");
             context.Request.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
