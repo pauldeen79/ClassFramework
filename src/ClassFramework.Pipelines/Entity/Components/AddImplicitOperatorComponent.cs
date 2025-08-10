@@ -30,8 +30,8 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
 
         var typedMethodName = results.GetValue("ToTypedBuilderMethodName");
 
-        var ns = results.GetValue(ResultNames.Namespace).ToString();
         var name = results.GetValue(ResultNames.Name).ToString();
+        var ns = results.GetValue(ResultNames.Namespace).ToString();
         var entityFullName = context.Request.GetEntityFullName(ns, name);
         var entityConcreteFullName = context.Request.GetEntityConcreteFullName(ns, name);
         var metadata = context.Request.GetMappingMetadata(entityFullName).ToArray();
@@ -53,8 +53,8 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
                 ? name
                 : name.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
 
-        var generics = context.Request.SourceModel.GetGenericTypeArgumentsString();
         var builderName = results.GetValue(ResultNames.BuilderName).ToString().Replace(context.Request.SourceModel.Name, builderConcreteName);
+        var generics = context.Request.SourceModel.GetGenericTypeArgumentsString();
         var builderConcreteTypeName = $"{customNamespaceResults.GetValue("CustomBuilderNamespace")}.{builderName}";
         var builderTypeName = context.Request.GetBuilderTypeName(customNamespaceResults.GetValue("CustomBuilderInterfaceNamespace"), customNamespaceResults.GetValue("CustomConcreteBuilderNamespace"), builderConcreteName, builderConcreteTypeName, results.GetValue(ResultNames.BuilderName));
 
