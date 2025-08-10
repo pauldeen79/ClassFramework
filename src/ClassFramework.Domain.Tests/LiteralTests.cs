@@ -1,4 +1,4 @@
-namespace ClassFramework.Domain.Tests;
+﻿namespace ClassFramework.Domain.Tests;
 
 // note that this class is now actually generated code.
 // but let's keep these tests, as a kind of integration test of the code generation process
@@ -24,5 +24,18 @@ public class LiteralTests
         // Assert
         sut.Value.ShouldBe("value");
         sut.OriginalValue.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Can_Cast_Entity_To_Builder()
+    {
+        // Arrange
+        LiteralBuilder builder = new Literal("value");
+
+        // Act
+        Literal entity = builder.Build();
+
+        // Assert
+        entity.Value.ShouldBe(builder.Value);
     }
 }

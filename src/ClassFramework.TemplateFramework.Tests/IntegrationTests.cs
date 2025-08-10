@@ -412,6 +412,11 @@ namespace Test.Domain
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator Test.Domain.Builders.GenericBuilder<T>(Test.Domain.Generic<T> entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public Test.Domain.Builders.GenericBuilder<T> ToBuilder()
         {
             return new Test.Domain.Builders.GenericBuilder<T>(this);
@@ -446,6 +451,11 @@ namespace Test.Domain
             this.Value = value;
             this.OriginalValue = originalValue;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator Test.Domain.Builders.LiteralBuilder(Test.Domain.Literal entity)
+        {
+            return entity.ToBuilder();
         }
 
         public Test.Domain.Builders.LiteralBuilder ToBuilder()
@@ -494,6 +504,11 @@ namespace Test.Domain
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator Test.Domain.Builders.GenericBuilder<T>(Test.Domain.Generic<T> entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public Test.Domain.Builders.GenericBuilder<T> ToBuilder()
         {
             return new Test.Domain.Builders.GenericBuilder<T>(this);
@@ -528,6 +543,11 @@ namespace Test.Domain
             this.Value = value;
             this.OriginalValue = originalValue;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator Test.Domain.Builders.LiteralBuilder(Test.Domain.Literal entity)
+        {
+            return entity.ToBuilder();
         }
 
         public Test.Domain.Builders.LiteralBuilder ToBuilder()
@@ -1219,6 +1239,11 @@ namespace Test.Domain
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator Test.Domain.Builders.GenericBuilder<T>(Test.Domain.Generic<T> entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public Test.Domain.Builders.GenericBuilder<T> ToBuilder()
         {
             return new Test.Domain.Builders.GenericBuilder<T>(this);
@@ -1255,6 +1280,11 @@ namespace Test.Domain
             this.Value = value;
             this.OriginalValue = originalValue;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator Test.Domain.Builders.LiteralBuilder(Test.Domain.Literal entity)
+        {
+            return entity.ToBuilder();
         }
 
         public Test.Domain.Builders.LiteralBuilder ToBuilder()
@@ -1437,6 +1467,11 @@ namespace Test.Domain
         {
             this.MyProperty = myProperty;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator Test.Domain.Builders.MyAbstractionBuilder(Test.Domain.MyAbstraction entity)
+        {
+            return entity.ToBuilder();
         }
 
         public Test.Domain.Builders.MyAbstractionBuilder ToBuilder()
@@ -1872,6 +1907,11 @@ namespace Test.Domain
             _myProperty = default(T)!;
         }
 
+        public static implicit operator Test.Domain.Builders.GenericBuilder<T>(Test.Domain.Generic<T> entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public Test.Domain.Builders.GenericBuilder<T> ToBuilder()
         {
             return new Test.Domain.Builders.GenericBuilder<T>(this);
@@ -1934,6 +1974,11 @@ namespace Test.Domain
         {
             _value = string.Empty;
             _originalValue = default(System.Object?);
+        }
+
+        public static implicit operator Test.Domain.Builders.LiteralBuilder(Test.Domain.Literal entity)
+        {
+            return entity.ToBuilder();
         }
 
         public Test.Domain.Builders.LiteralBuilder ToBuilder()
@@ -2222,6 +2267,11 @@ namespace ClassFramework.TemplateFramework
             this.EnableNullableContext = enableNullableContext;
             this.EnableGlobalUsings = enableGlobalUsings;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder(ClassFramework.TemplateFramework.CsharpClassGeneratorSettings entity)
+        {
+            return entity.ToBuilder();
         }
 
         public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder ToBuilder()
@@ -2617,6 +2667,11 @@ namespace Test.Domain
             this.MyBaseProperty = myBaseProperty!;
         }
 
+        public static implicit operator Test.Domain.Builders.AbstractBaseBuilder(Test.Domain.AbstractBase entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public abstract Test.Domain.Builders.AbstractBaseBuilder ToBuilder();
     }
 #nullable restore
@@ -2634,6 +2689,11 @@ namespace Test.Domain
     {
         protected AbstractBase()
         {
+        }
+
+        public static implicit operator Test.Domain.Builders.AbstractBaseBuilder<T>(Test.Domain.AbstractBase<T> entity)
+        {
+            return entity.ToBuilder();
         }
 
         public abstract Test.Domain.Builders.AbstractBaseBuilder<T> ToBuilder();
@@ -2906,6 +2966,11 @@ namespace Test.Domain.Types
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator Test.Domain.Types.Builders.MyAbstractOverrideBuilder(Test.Domain.Types.MyAbstractOverride entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
         public override Test.Domain.Builders.AbstractBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
@@ -2938,6 +3003,11 @@ namespace Test.Domain.Types
         {
             this.MyOverrideProperty = myOverrideProperty;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator Test.Domain.Types.Builders.MyGenericOverrideBuilder<T>(Test.Domain.Types.MyGenericOverride<T> entity)
+        {
+            return entity.ToTypedBuilder();
         }
 
         public override Test.Domain.Builders.AbstractBaseBuilder ToBuilder()
@@ -2989,6 +3059,11 @@ namespace Test.Domain
         {
             this.MyProperty = myProperty;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator Test.Domain.Builders.MyClassBuilder(Test.Domain.MyClass entity)
+        {
+            return entity.ToBuilder();
         }
 
         public Test.Domain.Builders.MyClassBuilder ToBuilder()
@@ -3140,6 +3215,11 @@ namespace Test.Domain.Builders
     {
         protected FunctionCallArgumentBase()
         {
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBaseBuilder(CrossCutting.Utilities.Parsers.FunctionCallArgumentBase entity)
+        {
+            return entity.ToBuilder();
         }
 
         public abstract CrossCutting.Utilities.Parsers.Builders.FunctionCallArgumentBaseBuilder ToBuilder();
@@ -3384,9 +3464,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument(ConstantArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument(ConstantArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3448,9 +3528,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument<T>(ConstantArgumentBuilder<T> entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument<T>(ConstantArgumentBuilder<T> builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3508,9 +3588,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument(ConstantResultArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument(ConstantResultArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3573,9 +3653,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument<T>(ConstantResultArgumentBuilder<T> entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument<T>(ConstantResultArgumentBuilder<T> builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3656,9 +3736,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument(DelegateArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument(DelegateArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3744,9 +3824,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument<T>(DelegateArgumentBuilder<T> entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument<T>(DelegateArgumentBuilder<T> builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3827,9 +3907,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument(DelegateResultArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument(DelegateResultArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3915,9 +3995,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument<T>(DelegateResultArgumentBuilder<T> entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument<T>(DelegateResultArgumentBuilder<T> builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3950,9 +4030,9 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument(EmptyArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument(EmptyArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -3990,9 +4070,9 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument<T>(EmptyArgumentBuilder<T> entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument<T>(EmptyArgumentBuilder<T> builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -4050,9 +4130,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(ExpressionArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(ExpressionArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -4110,9 +4190,9 @@ namespace Test.Domain.Builders
             return this;
         }
 
-        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument(FunctionArgumentBuilder entity)
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument(FunctionArgumentBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -4151,6 +4231,11 @@ namespace Test.Domain.Builders
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ConstantArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
@@ -4183,6 +4268,11 @@ namespace Test.Domain.Builders
         {
             this.Value = value;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ConstantArgumentBuilder<T>(CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument<T> entity)
+        {
+            return entity.ToTypedBuilder();
         }
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
@@ -4224,6 +4314,11 @@ namespace Test.Domain.Builders
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ConstantResultArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
@@ -4256,6 +4351,11 @@ namespace Test.Domain.Builders
         {
             this.Result = result;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ConstantResultArgumentBuilder<T>(CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument<T> entity)
+        {
+            return entity.ToTypedBuilder();
         }
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
@@ -4303,6 +4403,11 @@ namespace Test.Domain.Builders
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.DelegateArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
@@ -4341,6 +4446,11 @@ namespace Test.Domain.Builders
             this.Delegate = @delegate;
             this.ValidationDelegate = validationDelegate;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.DelegateArgumentBuilder<T>(CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument<T> entity)
+        {
+            return entity.ToTypedBuilder();
         }
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
@@ -4388,6 +4498,11 @@ namespace Test.Domain.Builders
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.DelegateResultArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
@@ -4428,6 +4543,11 @@ namespace Test.Domain.Builders
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.DelegateResultArgumentBuilder<T>(CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument<T> entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
@@ -4461,6 +4581,11 @@ namespace Test.Domain.Builders
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.EmptyArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
@@ -4487,6 +4612,11 @@ namespace Test.Domain.Builders
         public EmptyArgument() : base()
         {
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.EmptyArgumentBuilder<T>(CrossCutting.Utilities.Parsers.FunctionCallArguments.EmptyArgument<T> entity)
+        {
+            return entity.ToTypedBuilder();
         }
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
@@ -4528,6 +4658,11 @@ namespace Test.Domain.Builders
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.ExpressionArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
@@ -4560,6 +4695,11 @@ namespace Test.Domain.Builders
         {
             this.Function = function;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionArgumentBuilder(CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument entity)
+        {
+            return entity.ToTypedBuilder();
         }
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.Builders.FunctionCallArgumentBaseBuilder ToBuilder()
@@ -4634,9 +4774,9 @@ namespace Test.Domain.Builders
             return BuildTyped();
         }
 
-        public static implicit operator ClassFramework.Domain.TypeBase(TypeBaseBuilder<TBuilder, TEntity> entity)
+        public static implicit operator ClassFramework.Domain.TypeBase(TypeBaseBuilder<TBuilder, TEntity> builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -4666,6 +4806,11 @@ namespace Test.Domain.Builders
     {
         protected TypeBase()
         {
+        }
+
+        public static implicit operator ClassFramework.Domain.Builders.TypeBaseBuilder(ClassFramework.Domain.TypeBase entity)
+        {
+            return entity.ToBuilder();
         }
 
         public abstract ClassFramework.Domain.Builders.TypeBaseBuilder ToBuilder();
@@ -4918,9 +5063,9 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public static implicit operator ClassFramework.Domain.Types.Class(ClassBuilder entity)
+        public static implicit operator ClassFramework.Domain.Types.Class(ClassBuilder builder)
         {
-            return entity.BuildTyped();
+            return builder.BuildTyped();
         }
     }
 #nullable restore
@@ -4951,6 +5096,11 @@ namespace Test.Domain.Builders
         public Class() : base()
         {
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator ClassFramework.Domain.Types.Builders.ClassBuilder(ClassFramework.Domain.Types.Class entity)
+        {
+            return entity.ToTypedBuilder();
         }
 
         public override ClassFramework.Domain.Types.Builders.TypeBaseBuilder ToBuilder()

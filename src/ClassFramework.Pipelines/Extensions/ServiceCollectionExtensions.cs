@@ -79,6 +79,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddEquatableMembersComponent>()
             .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddFullConstructorComponent>()
             .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddGenericsComponent>()
+            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddImplicitOperatorComponent>()
             .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddInterfacesComponent>()
             .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddPropertiesComponent>()
             .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddPublicParameterlessConstructorComponent>()
