@@ -58,12 +58,6 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
         var builderConcreteTypeName = $"{customNamespaceResults.GetValue("CustomBuilderNamespace")}.{builderName}";
         var builderTypeName = context.Request.GetBuilderTypeName(customNamespaceResults.GetValue("CustomBuilderInterfaceNamespace"), customNamespaceResults.GetValue("CustomConcreteBuilderNamespace"), builderConcreteName, builderConcreteTypeName, results.GetValue(ResultNames.BuilderName));
 
-        var returnStatement = context.Request.Settings.EnableInheritance
-            && context.Request.Settings.BaseClass is not null
-            && !string.IsNullOrEmpty(typedMethodName)
-                ? $"return {typedMethodName}();"
-                : $"return new {builderConcreteTypeName}{generics}(this);";
-
         if (context.Request.Settings.EnableInheritance
             && context.Request.Settings.BaseClass is not null
             && !string.IsNullOrEmpty(typedMethodName))
