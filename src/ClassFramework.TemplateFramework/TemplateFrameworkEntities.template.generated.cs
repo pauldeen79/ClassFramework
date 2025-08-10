@@ -116,6 +116,11 @@ namespace ClassFramework.TemplateFramework
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder(ClassFramework.TemplateFramework.CsharpClassGeneratorSettings entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder ToBuilder()
         {
             return new ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder(this);

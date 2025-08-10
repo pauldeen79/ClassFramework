@@ -30,6 +30,11 @@ namespace ClassFramework.TemplateFramework.Tests
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator ClassFramework.TemplateFramework.Tests.Builders.TestEntityBuilder(ClassFramework.TemplateFramework.Tests.TestEntity entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public ClassFramework.TemplateFramework.Tests.Builders.TestEntityBuilder ToBuilder()
         {
             return new ClassFramework.TemplateFramework.Tests.Builders.TestEntityBuilder(this);

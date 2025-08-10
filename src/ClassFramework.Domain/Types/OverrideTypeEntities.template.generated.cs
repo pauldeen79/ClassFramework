@@ -72,6 +72,11 @@ namespace ClassFramework.Domain.Types
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator ClassFramework.Domain.Builders.Types.ClassBuilder(ClassFramework.Domain.Types.Class entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
         public override ClassFramework.Domain.Builders.TypeBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
@@ -154,6 +159,11 @@ namespace ClassFramework.Domain.Types
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator ClassFramework.Domain.Builders.Types.InterfaceBuilder(ClassFramework.Domain.Types.Interface entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
         public override ClassFramework.Domain.Builders.TypeBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
@@ -220,6 +230,11 @@ namespace ClassFramework.Domain.Types
             this.Record = record;
             this.BaseClass = baseClass;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator ClassFramework.Domain.Builders.Types.StructBuilder(ClassFramework.Domain.Types.Struct entity)
+        {
+            return entity.ToTypedBuilder();
         }
 
         public override ClassFramework.Domain.Builders.TypeBaseBuilder ToBuilder()

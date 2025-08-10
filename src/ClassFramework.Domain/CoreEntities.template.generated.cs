@@ -32,6 +32,11 @@ namespace ClassFramework.Domain
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator ClassFramework.Domain.Builders.AttributeBuilder(ClassFramework.Domain.Attribute entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public ClassFramework.Domain.Builders.AttributeBuilder ToBuilder()
         {
             return new ClassFramework.Domain.Builders.AttributeBuilder(this);
@@ -60,6 +65,11 @@ namespace ClassFramework.Domain
             this.Name = name;
             this.Value = value;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator ClassFramework.Domain.Builders.AttributeParameterBuilder(ClassFramework.Domain.AttributeParameter entity)
+        {
+            return entity.ToBuilder();
         }
 
         public ClassFramework.Domain.Builders.AttributeParameterBuilder ToBuilder()
@@ -154,6 +164,11 @@ namespace ClassFramework.Domain
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator ClassFramework.Domain.Builders.ConstructorBuilder(ClassFramework.Domain.Constructor entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public ClassFramework.Domain.Builders.ConstructorBuilder ToBuilder()
         {
             return new ClassFramework.Domain.Builders.ConstructorBuilder(this);
@@ -225,6 +240,11 @@ namespace ClassFramework.Domain
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator ClassFramework.Domain.Builders.EnumerationBuilder(ClassFramework.Domain.Enumeration entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public ClassFramework.Domain.Builders.EnumerationBuilder ToBuilder()
         {
             return new ClassFramework.Domain.Builders.EnumerationBuilder(this);
@@ -271,6 +291,11 @@ namespace ClassFramework.Domain
             this.Attributes = attributes is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Domain.Attribute>(attributes);
             this.Name = name;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator ClassFramework.Domain.Builders.EnumerationMemberBuilder(ClassFramework.Domain.EnumerationMember entity)
+        {
+            return entity.ToBuilder();
         }
 
         public ClassFramework.Domain.Builders.EnumerationMemberBuilder ToBuilder()
@@ -410,6 +435,11 @@ namespace ClassFramework.Domain
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator ClassFramework.Domain.Builders.FieldBuilder(ClassFramework.Domain.Field entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public ClassFramework.Domain.Builders.FieldBuilder ToBuilder()
         {
             return new ClassFramework.Domain.Builders.FieldBuilder(this);
@@ -468,6 +498,11 @@ namespace ClassFramework.Domain
             this.Value = value;
             this.OriginalValue = originalValue;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator ClassFramework.Domain.Builders.LiteralBuilder(ClassFramework.Domain.Literal entity)
+        {
+            return entity.ToBuilder();
         }
 
         public ClassFramework.Domain.Builders.LiteralBuilder ToBuilder()
@@ -643,6 +678,11 @@ namespace ClassFramework.Domain
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator ClassFramework.Domain.Builders.MethodBuilder(ClassFramework.Domain.Method entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public ClassFramework.Domain.Builders.MethodBuilder ToBuilder()
         {
             return new ClassFramework.Domain.Builders.MethodBuilder(this);
@@ -769,6 +809,11 @@ namespace ClassFramework.Domain
             this.Name = name;
             this.DefaultValue = defaultValue;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator ClassFramework.Domain.Builders.ParameterBuilder(ClassFramework.Domain.Parameter entity)
+        {
+            return entity.ToBuilder();
         }
 
         public ClassFramework.Domain.Builders.ParameterBuilder ToBuilder()
@@ -967,6 +1012,11 @@ namespace ClassFramework.Domain
             this.ExplicitInterfaceName = explicitInterfaceName;
             this.ParentTypeFullName = parentTypeFullName;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator ClassFramework.Domain.Builders.PropertyBuilder(ClassFramework.Domain.Property entity)
+        {
+            return entity.ToBuilder();
         }
 
         public ClassFramework.Domain.Builders.PropertyBuilder ToBuilder()

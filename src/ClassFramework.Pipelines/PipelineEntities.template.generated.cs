@@ -30,6 +30,11 @@ namespace ClassFramework.Pipelines
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator ClassFramework.Pipelines.Builders.MetadataBuilder(ClassFramework.Pipelines.Metadata entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public ClassFramework.Pipelines.Builders.MetadataBuilder ToBuilder()
         {
             return new ClassFramework.Pipelines.Builders.MetadataBuilder(this);
@@ -67,6 +72,11 @@ namespace ClassFramework.Pipelines
             this.TargetNamespace = targetNamespace;
             this.Metadata = metadata is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Pipelines.Metadata>(metadata);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator ClassFramework.Pipelines.Builders.NamespaceMappingBuilder(ClassFramework.Pipelines.NamespaceMapping entity)
+        {
+            return entity.ToBuilder();
         }
 
         public ClassFramework.Pipelines.Builders.NamespaceMappingBuilder ToBuilder()
@@ -543,6 +553,11 @@ namespace ClassFramework.Pipelines
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator ClassFramework.Pipelines.Builders.PipelineSettingsBuilder(ClassFramework.Pipelines.PipelineSettings entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder ToBuilder()
         {
             return new ClassFramework.Pipelines.Builders.PipelineSettingsBuilder(this);
@@ -575,6 +590,11 @@ namespace ClassFramework.Pipelines
             this.TargetTypeName = targetTypeName;
             this.Metadata = metadata is null ? null! : new CrossCutting.Common.ReadOnlyValueCollection<ClassFramework.Pipelines.Metadata>(metadata);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator ClassFramework.Pipelines.Builders.TypenameMappingBuilder(ClassFramework.Pipelines.TypenameMapping entity)
+        {
+            return entity.ToBuilder();
         }
 
         public ClassFramework.Pipelines.Builders.TypenameMappingBuilder ToBuilder()

@@ -16,6 +16,11 @@ namespace ClassFramework.Domain
         {
         }
 
+        public static implicit operator ClassFramework.Domain.Builders.CodeStatementBaseBuilder(ClassFramework.Domain.CodeStatementBase entity)
+        {
+            return entity.ToBuilder();
+        }
+
         public abstract ClassFramework.Domain.Builders.CodeStatementBaseBuilder ToBuilder();
     }
     public abstract partial record TypeBase : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
@@ -111,6 +116,11 @@ namespace ClassFramework.Domain
             this.GenericTypeArguments = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(genericTypeArguments);
             this.GenericTypeArgumentConstraints = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(genericTypeArgumentConstraints);
             this.SuppressWarningCodes = new CrossCutting.Common.ReadOnlyValueCollection<System.String>(suppressWarningCodes);
+        }
+
+        public static implicit operator ClassFramework.Domain.Builders.TypeBaseBuilder(ClassFramework.Domain.TypeBase entity)
+        {
+            return entity.ToBuilder();
         }
 
         public abstract ClassFramework.Domain.Builders.TypeBaseBuilder ToBuilder();

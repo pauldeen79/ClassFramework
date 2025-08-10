@@ -24,6 +24,11 @@ namespace ClassFramework.Domain.CodeStatements
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
 
+        public static implicit operator ClassFramework.Domain.Builders.CodeStatements.StringCodeStatementBuilder(ClassFramework.Domain.CodeStatements.StringCodeStatement entity)
+        {
+            return entity.ToTypedBuilder();
+        }
+
         public override ClassFramework.Domain.Builders.CodeStatementBaseBuilder ToBuilder()
         {
             return ToTypedBuilder();
