@@ -446,6 +446,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<EntityContext>>
                     "GetHashCode",
                     "==",
                     "!=",
+                    "MySourceNamespace.Builders.MyClassBuilder",
                     "ToBuilder"
                 });
         }

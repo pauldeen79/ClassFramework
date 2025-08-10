@@ -68,4 +68,15 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
         => Settings.InheritFromInterfaces
             ? builderInterfaceNamespace
             : $"{@namespace.AppendWhenNotNullOrEmpty(".")}Builders";
+
+    public async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetToBuilderResultsAsync(IExpressionEvaluator evaluator, CancellationToken token)
+        => await new AsyncResultDictionaryBuilder<GenericFormattableString>()
+            .Add(ResultNames.Name, evaluator.EvaluateInterpolatedStringAsync(Settings.EntityNameFormatString, FormatProvider, this, token))
+            .Add(ResultNames.Namespace, GetMappingMetadata(SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, evaluator.EvaluateInterpolatedStringAsync(Settings.EntityNamespaceFormatString, FormatProvider, this, token)))
+            .Add("BuilderInterfaceNamespace", GetMappingMetadata(SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomBuilderInterfaceNamespace, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNamespaceFormatString, FormatProvider, this, token)))
+            .Add("ToBuilderMethodName", evaluator.EvaluateInterpolatedStringAsync(Settings.ToBuilderFormatString, FormatProvider, this, token))
+            .Add("ToTypedBuilderMethodName", evaluator.EvaluateInterpolatedStringAsync(Settings.ToTypedBuilderFormatString, FormatProvider, this, token))
+            .Add(ResultNames.BuilderName, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNameFormatString, FormatProvider, this, token))
+            .Build()
+            .ConfigureAwait(false);
 }
