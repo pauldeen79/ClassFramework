@@ -39,26 +39,24 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
                 var entityFullName = context.Request.GetEntityFullName(results.GetValue(ResultNames.Namespace).ToString(), results.GetValue(ResultNames.Name).ToString());
                 var typedMethodName = results.GetValue("ToTypedBuilderMethodName");
 
+                var operatorMethod = new MethodBuilder()
+                        .WithOperator()
+                        .WithStatic()
+                        .WithReturnTypeName("implicit")
+                        .AddParameter("entity", $"{entityFullName}{generics}");
+
                 if (context.Request.Settings.EnableInheritance
                     && context.Request.Settings.BaseClass is not null
                     && !string.IsNullOrEmpty(typedMethodName))
                 {
-                    context.Request.Builder.AddMethods(new MethodBuilder()
-                        .WithOperator()
-                        .WithStatic()
+                    context.Request.Builder.AddMethods(operatorMethod
                         .WithName($"{builderConcreteTypeName}{generics}")
-                        .WithReturnTypeName("implicit")
-                        .AddParameter("entity", $"{entityFullName}{generics}")
                         .AddCodeStatements($"return entity.{typedMethodName}();"));
                 }
                 else
                 {
-                    context.Request.Builder.AddMethods(new MethodBuilder()
-                        .WithOperator()
-                        .WithStatic()
+                    context.Request.Builder.AddMethods(operatorMethod
                         .WithName($"{builderTypeName}{generics}")
-                        .WithReturnTypeName("implicit")
-                        .AddParameter("entity", $"{entityFullName}{generics}")
                         .AddCodeStatements($"return entity.{methodName}();"));
                 }
 
