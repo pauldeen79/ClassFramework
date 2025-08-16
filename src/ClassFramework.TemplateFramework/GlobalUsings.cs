@@ -5,7 +5,6 @@ global using System.Text;
 global using ClassFramework.Domain;
 global using ClassFramework.Domain.Abstractions;
 global using ClassFramework.Domain.Builders;
-global using ClassFramework.Domain.Builders.Extensions;
 global using ClassFramework.Domain.CodeStatements;
 global using ClassFramework.Domain.Domains;
 global using ClassFramework.Domain.Extensions;
