@@ -105,6 +105,7 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
         var ns = results.GetValue(ResultNames.Namespace).ToString();
         var entityConcreteFullName = GetEntityConcreteFullName(ns, name);
         var entityFullName = GetEntityFullName(ns, name);
+        var typedMethodName = results.GetValue("ToTypedBuilderMethodName");
         var metadata = GetMappingMetadata(entityFullName).ToArray();
 
         return new ResultDictionaryBuilder<string>()
@@ -114,6 +115,11 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
             .Add("BuilderConcreteName", () => Result.Success(Settings.EnableInheritance && Settings.BaseClass is null
                 ? name
                 : name.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)))
+            .Add("ReturnStatement", customNamespaceResults => Result.Success(Settings.EnableInheritance
+                && Settings.BaseClass is not null
+                && !string.IsNullOrEmpty(typedMethodName)
+                    ? $"return {typedMethodName}();"
+                    : $"return new {customNamespaceResults.GetValue("CustomBuilderNamespace")}.{results.GetValue(ResultNames.BuilderName).ToString().Replace(SourceModel.Name, customNamespaceResults.GetValue("BuilderConcreteName"))}{SourceModel.GetGenericTypeArgumentsString()}(this);"))
             .Build();
     }
 }

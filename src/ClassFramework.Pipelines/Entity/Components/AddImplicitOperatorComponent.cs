@@ -28,47 +28,41 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
             return Result.Success();
         }
 
-        var customNamespaceResults = context.Request.GetCustomNamespaceResults(results);
-        var customNamespaceError = customNamespaceResults.GetError();
-        if (customNamespaceError is not null)
-        {
-            // Error in formattable string parsing
-            return customNamespaceError;
-        }
+        return context.Request.GetCustomNamespaceResults(results)
+            .OnSuccess(customNamespaceResults =>
+            {
+                var builderConcreteName = customNamespaceResults.GetValue("BuilderConcreteName");
+                var generics = context.Request.SourceModel.GetGenericTypeArgumentsString();
+                var builderName = results.GetValue(ResultNames.BuilderName).ToString().Replace(context.Request.SourceModel.Name, builderConcreteName);
+                var builderConcreteTypeName = $"{customNamespaceResults.GetValue("CustomBuilderNamespace")}.{builderName}";
+                var builderTypeName = context.Request.GetBuilderTypeName(customNamespaceResults.GetValue("CustomBuilderInterfaceNamespace"), customNamespaceResults.GetValue("CustomConcreteBuilderNamespace"), builderConcreteName, builderConcreteTypeName, results.GetValue(ResultNames.BuilderName));
+                var entityFullName = context.Request.GetEntityFullName(results.GetValue(ResultNames.Namespace).ToString(), results.GetValue(ResultNames.Name).ToString());
+                var typedMethodName = results.GetValue("ToTypedBuilderMethodName");
 
-        var typedMethodName = results.GetValue("ToTypedBuilderMethodName");
-        var builderConcreteName = customNamespaceResults.GetValue("BuilderConcreteName");
-        var generics = context.Request.SourceModel.GetGenericTypeArgumentsString();
-        var builderName = results.GetValue(ResultNames.BuilderName).ToString().Replace(context.Request.SourceModel.Name, builderConcreteName);
-        var builderConcreteTypeName = $"{customNamespaceResults.GetValue("CustomBuilderNamespace")}.{builderName}";
-        var builderTypeName = context.Request.GetBuilderTypeName(customNamespaceResults.GetValue("CustomBuilderInterfaceNamespace"), customNamespaceResults.GetValue("CustomConcreteBuilderNamespace"), builderConcreteName, builderConcreteTypeName, results.GetValue(ResultNames.BuilderName));
-        var name = results.GetValue(ResultNames.Name).ToString();
-        var ns = results.GetValue(ResultNames.Namespace).ToString();
-        var entityFullName = context.Request.GetEntityFullName(ns, name);
+                if (context.Request.Settings.EnableInheritance
+                    && context.Request.Settings.BaseClass is not null
+                    && !string.IsNullOrEmpty(typedMethodName))
+                {
+                    context.Request.Builder.AddMethods(new MethodBuilder()
+                        .WithOperator()
+                        .WithStatic()
+                        .WithName($"{builderConcreteTypeName}{generics}")
+                        .WithReturnTypeName("implicit")
+                        .AddParameter("entity", $"{entityFullName}{generics}")
+                        .AddCodeStatements($"return entity.{typedMethodName}();"));
+                }
+                else
+                {
+                    context.Request.Builder.AddMethods(new MethodBuilder()
+                        .WithOperator()
+                        .WithStatic()
+                        .WithName($"{builderTypeName}{generics}")
+                        .WithReturnTypeName("implicit")
+                        .AddParameter("entity", $"{entityFullName}{generics}")
+                        .AddCodeStatements($"return entity.{methodName}();"));
+                }
 
-        if (context.Request.Settings.EnableInheritance
-            && context.Request.Settings.BaseClass is not null
-            && !string.IsNullOrEmpty(typedMethodName))
-        {
-            context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithOperator()
-                .WithStatic()
-                .WithName($"{builderConcreteTypeName}{generics}")
-                .WithReturnTypeName("implicit")
-                .AddParameter("entity", $"{entityFullName}{generics}")
-                .AddCodeStatements($"return entity.{typedMethodName}();"));
-        }
-        else
-        {
-            context.Request.Builder.AddMethods(new MethodBuilder()
-                .WithOperator()
-                .WithStatic()
-                .WithName($"{builderTypeName}{generics}")
-                .WithReturnTypeName("implicit")
-                .AddParameter("entity", $"{entityFullName}{generics}")
-                .AddCodeStatements($"return entity.{methodName}();"));
-        }
-
-        return Result.Success();
+                return Result.Success();
+            });
     }
 }
