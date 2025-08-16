@@ -50,6 +50,9 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
 
     public string GetEntityFullName(string @namespace, string name)
     {
+        ArgumentGuard.IsNotNull(@namespace, nameof(@namespace));
+        ArgumentGuard.IsNotNull(name, nameof(name));
+
         var entityFullName = $"{@namespace.AppendWhenNotNullOrEmpty(".")}{name}";
         if (Settings.EnableInheritance && Settings.BaseClass is not null)
         {
@@ -60,17 +63,30 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
     }
 
     public string GetEntityConcreteFullName(string @namespace, string name)
-        => Settings.EnableInheritance && Settings.BaseClass is not null
+    {
+        ArgumentGuard.IsNotNull(@namespace, nameof(@namespace));
+        ArgumentGuard.IsNotNull(name, nameof(name));
+
+        return Settings.EnableInheritance && Settings.BaseClass is not null
             ? Settings.BaseClass.GetFullName()
             : GetEntityFullName(@namespace, name);
+    }
 
     public string GetBuilderInterfaceNamespace(string builderInterfaceNamespace, string @namespace)
-        => Settings.InheritFromInterfaces
+    {
+        ArgumentGuard.IsNotNull(builderInterfaceNamespace, nameof(builderInterfaceNamespace));
+        ArgumentGuard.IsNotNull(@namespace, nameof(@namespace));
+
+        return Settings.InheritFromInterfaces
             ? builderInterfaceNamespace
             : $"{@namespace.AppendWhenNotNullOrEmpty(".")}Builders";
+    }
 
     public async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetToBuilderResultsAsync(IExpressionEvaluator evaluator, CancellationToken token)
-        => await new AsyncResultDictionaryBuilder<GenericFormattableString>()
+    {
+        ArgumentGuard.IsNotNull(evaluator, nameof(evaluator));
+
+        return await new AsyncResultDictionaryBuilder<GenericFormattableString>()
             .Add(ResultNames.Name, evaluator.EvaluateInterpolatedStringAsync(Settings.EntityNameFormatString, FormatProvider, this, token))
             .Add(ResultNames.Namespace, GetMappingMetadata(SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, evaluator.EvaluateInterpolatedStringAsync(Settings.EntityNamespaceFormatString, FormatProvider, this, token)))
             .Add("BuilderInterfaceNamespace", GetMappingMetadata(SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomBuilderInterfaceNamespace, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNamespaceFormatString, FormatProvider, this, token)))
@@ -79,4 +95,31 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
             .Add(ResultNames.BuilderName, evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNameFormatString, FormatProvider, this, token))
             .Build()
             .ConfigureAwait(false);
+    }
+
+    public IReadOnlyDictionary<string, Result<string>> GetCustomNamespaceResults(IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
+    {
+        ArgumentGuard.IsNotNull(results, nameof(results));
+
+        var name = results.GetValue(ResultNames.Name).ToString();
+        var ns = results.GetValue(ResultNames.Namespace).ToString();
+        var entityConcreteFullName = GetEntityConcreteFullName(ns, name);
+        var entityFullName = GetEntityFullName(ns, name);
+        var typedMethodName = results.GetValue("ToTypedBuilderMethodName");
+        var metadata = GetMappingMetadata(entityFullName).ToArray();
+
+        return new ResultDictionaryBuilder<string>()
+            .Add("CustomBuilderNamespace", () => metadata.GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders")))
+            .Add("CustomBuilderInterfaceNamespace", () => metadata.GetStringResult(MetadataNames.CustomBuilderInterfaceNamespace, () => Result.Success(GetBuilderInterfaceNamespace(results.GetValue("BuilderInterfaceNamespace").ToString(), ns))))
+            .Add("CustomConcreteBuilderNamespace", () => GetMappingMetadata(entityConcreteFullName).GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders")))
+            .Add("BuilderConcreteName", () => Result.Success(Settings.EnableInheritance && Settings.BaseClass is null
+                ? name
+                : name.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)))
+            .Add("ReturnStatement", customNamespaceResults => Result.Success(Settings.EnableInheritance
+                && Settings.BaseClass is not null
+                && !string.IsNullOrEmpty(typedMethodName)
+                    ? $"return {typedMethodName}();"
+                    : $"return new {customNamespaceResults.GetValue("CustomBuilderNamespace")}.{results.GetValue(ResultNames.BuilderName).ToString().Replace(SourceModel.Name, customNamespaceResults.GetValue("BuilderConcreteName"))}{SourceModel.GetGenericTypeArgumentsString()}(this);"))
+            .Build();
+    }
 }

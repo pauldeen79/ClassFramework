@@ -1,6 +1,4 @@
-﻿using Shouldly;
-
-namespace ClassFramework.Pipelines.Tests.Functions;
+﻿namespace ClassFramework.Pipelines.Tests.Functions;
 
 public class ClassNameFunctionTests : TestBase<ClassNameFunction>
 {

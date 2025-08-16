@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Results;
-
-namespace ClassFramework.Pipelines.Builder;
+﻿namespace ClassFramework.Pipelines.Builder;
 
 public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
 {

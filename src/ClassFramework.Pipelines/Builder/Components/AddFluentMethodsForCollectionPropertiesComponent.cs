@@ -32,14 +32,13 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
     {
         var parentChildContext = new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings);
 
-        var results = await context.Request.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext, _evaluator)
+        return await context.Request.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext, _evaluator)
             .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, false, token).ConfigureAwait(false))
             .AddRange("ArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, false, token).ConfigureAwait(false))
             .AddRange("NonLazyArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, true, token).ConfigureAwait(false))
             .AddRange("NonLazyEnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, true, token).ConfigureAwait(false))
             .Build()
             .ConfigureAwait(false);
-        return results;
     }
 
     private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderContext> context, Property property, ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContext, bool useBuilderLazyValues, CancellationToken token)

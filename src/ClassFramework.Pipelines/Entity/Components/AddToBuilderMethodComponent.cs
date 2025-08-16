@@ -25,17 +25,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
 
         var typedMethodName = results.GetValue("ToTypedBuilderMethodName");
 
-        var ns = results.GetValue(ResultNames.Namespace).ToString();
-        var name = results.GetValue(ResultNames.Name).ToString();
-        var entityFullName = context.Request.GetEntityFullName(ns, name);
-        var entityConcreteFullName = context.Request.GetEntityConcreteFullName(ns, name);
-        var metadata = context.Request.GetMappingMetadata(entityFullName).ToArray();
-        var customNamespaceResults = new ResultDictionaryBuilder<string>()
-            .Add("CustomBuilderNamespace", () => metadata.GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders")))
-            .Add("CustomBuilderInterfaceNamespace", () => metadata.GetStringResult(MetadataNames.CustomBuilderInterfaceNamespace, () => Result.Success(context.Request.GetBuilderInterfaceNamespace(results.GetValue("BuilderInterfaceNamespace").ToString(), ns))))
-            .Add("CustomConcreteBuilderNamespace", () => context.Request.GetMappingMetadata(entityConcreteFullName).GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders")))
-            .Build();
-
+        var customNamespaceResults = context.Request.GetCustomNamespaceResults(results);
         var customNamespaceError = customNamespaceResults.GetError();
         if (customNamespaceError is not null)
         {
@@ -43,21 +33,12 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
             return customNamespaceError;
         }
 
-        var builderConcreteName = context.Request.Settings.EnableInheritance
-            && context.Request.Settings.BaseClass is null
-                ? name
-                : name.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
-
+        var builderConcreteName = customNamespaceResults.GetValue("BuilderConcreteName");
         var generics = context.Request.SourceModel.GetGenericTypeArgumentsString();
         var builderName = results.GetValue(ResultNames.BuilderName).ToString().Replace(context.Request.SourceModel.Name, builderConcreteName);
         var builderConcreteTypeName = $"{customNamespaceResults.GetValue("CustomBuilderNamespace")}.{builderName}";
         var builderTypeName = context.Request.GetBuilderTypeName(customNamespaceResults.GetValue("CustomBuilderInterfaceNamespace"), customNamespaceResults.GetValue("CustomConcreteBuilderNamespace"), builderConcreteName, builderConcreteTypeName, results.GetValue(ResultNames.BuilderName));
-
-        var returnStatement = context.Request.Settings.EnableInheritance
-            && context.Request.Settings.BaseClass is not null
-            && !string.IsNullOrEmpty(typedMethodName)
-                ? $"return {typedMethodName}();"
-                : $"return new {builderConcreteTypeName}{generics}(this);";
+        var returnStatement = customNamespaceResults.GetValue("ReturnStatement");
 
         context.Request.Builder
             .AddMethods(new MethodBuilder()
