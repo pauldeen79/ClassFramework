@@ -396,9 +396,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 && x.IsInterface
                 && !string.IsNullOrEmpty(x.Namespace)
                 && GetCodeGenerationBuilderAbstractionsTypeConversionNamespaces().Contains(x.Namespace)
-                && x.FullName is not null).SelectMany(x => CreateBuilderAbstractionTypeConversionTypenameMapping(x.GetEntityClassName(), x.GetGenericTypeArgumentsString()));
+                && x.FullName is not null)
+            .SelectMany(x => CreateBuilderAbstractionTypeConversionTypenameMappings(x.GetEntityClassName(), x.GetGenericTypeArgumentsString()));
 
-    protected TypenameMappingBuilder[] CreateBuilderAbstractionTypeConversionTypenameMapping(string entityClassName, string genericTypeArgumentsString)
+    protected TypenameMappingBuilder[] CreateBuilderAbstractionTypeConversionTypenameMappings(string entityClassName, string genericTypeArgumentsString)
         =>
         [
             new TypenameMappingBuilder($"{AbstractionsNamespace}.I{entityClassName}{genericTypeArgumentsString}", $"{AbstractionsNamespace}.I{entityClassName}")
