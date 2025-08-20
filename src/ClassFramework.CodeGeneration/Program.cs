@@ -10,6 +10,7 @@ internal static class Program
         var basePath = currentDirectory.EndsWith("ClassFramework")
             ? Path.Combine(currentDirectory, @"src/")
             : Path.Combine(currentDirectory, @"../../../../");
+        var generators = typeof(Program).GetAssemblyGeneratorTypes<ClassFrameworkCSharpClassBase>();
         var services = new ServiceCollection()
             .AddExpressionEvaluator()
             .AddClassFrameworkPipelines()
@@ -19,16 +20,8 @@ internal static class Program
             .AddTemplateFrameworkRuntime()
             .AddCsharpExpressionDumper()
             .AddClassFrameworkTemplates()
+            .AddClassFrameworkCodeGenerators(generators)
             .AddScoped<IAssemblyInfoContextService, MyAssemblyInfoContextService>();
-
-        var generators = typeof(Program).Assembly.GetExportedTypes()
-            .Where(x => !x.IsAbstract && x.BaseType == typeof(ClassFrameworkCSharpClassBase))
-            .ToArray();
-
-        foreach (var type in generators)
-        {
-            services.AddScoped(type);
-        }
 
         using var serviceProvider = services.BuildServiceProvider();
         using var scope = serviceProvider.CreateScope();
