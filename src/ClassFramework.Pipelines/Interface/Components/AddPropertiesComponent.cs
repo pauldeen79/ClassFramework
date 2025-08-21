@@ -3,22 +3,21 @@
 public class AddPropertiesComponent : IPipelineComponent<InterfaceContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<InterfaceContext> context, CancellationToken token)
-    {
-        context = context.IsNotNull(nameof(context));
+        => Task.Run(() =>
+        {
+            context = context.IsNotNull(nameof(context));
 
-        var properties = context.Request.GetSourceProperties().ToArray();
-
-        context.Request.Builder.AddProperties
-        (
-            properties.Select
+            context.Request.Builder.AddProperties
             (
-                property => context.Request.CreatePropertyForEntity(property, context.Request.Settings.BuilderAbstractionsTypeConversionMetadataName)
-                    .WithHasGetter(property.HasGetter)
-                    .WithHasInitializer(false)
-                    .WithHasSetter(property.HasSetter && context.Request.Settings.AddSetters)
-            )
-        );
+                context.Request.GetSourceProperties().Select
+                (
+                    property => context.Request.CreatePropertyForEntity(property, context.Request.Settings.BuilderAbstractionsTypeConversionMetadataName)
+                        .WithHasGetter(property.HasGetter)
+                        .WithHasInitializer(false)
+                        .WithHasSetter(property.HasSetter && context.Request.Settings.AddSetters)
+                )
+            );
 
-        return Task.FromResult(Result.Success());
-    }
+            return Result.Success();
+        }, token);
 }

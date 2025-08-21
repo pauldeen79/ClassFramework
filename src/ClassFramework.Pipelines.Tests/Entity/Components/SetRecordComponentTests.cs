@@ -5,14 +5,15 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetR
     public class ProcessAsync : SetRecordComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
+            Task a = sut.ProcessAsync(context: null!);
+            (await a.ShouldThrowAsync<ArgumentNullException>())
+                .ParamName.ShouldBe("context");
         }
 
         [Theory]

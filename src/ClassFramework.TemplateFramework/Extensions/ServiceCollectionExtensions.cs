@@ -35,4 +35,16 @@ public static class ServiceCollectionExtensions
             .AddChildTemplate<TypeTemplate>(typeof(IType))
             .AddChildTemplate<UsingsTemplate>(typeof(UsingsModel))
             .AddChildTemplate<StringCodeStatementTemplate>(typeof(StringCodeStatement));
+
+    public static IServiceCollection AddClassFrameworkCodeGenerators(this IServiceCollection services, IEnumerable<Type> generators)
+    {
+        Guard.IsNotNull(generators);
+
+        foreach (var type in generators)
+        {
+            services.AddScoped(type);
+        }
+
+        return services;
+    }
 }

@@ -66,18 +66,6 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
                 .WithOverride()
                 .WithReturnTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}")
                 .AddCodeStatements($"return {context.Request.Settings.BuildTypedMethodName}();"));
-
-            if (context.Request.Settings.UseCrossCuttingInterfaces)
-            {
-                context.Request.Builder.AddInterfaces(typeof(IBuilder<object>).ReplaceGenericTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}"));
-            }
-        }
-        else
-        {
-            if (context.Request.Settings.UseCrossCuttingInterfaces)
-            {
-                context.Request.Builder.AddInterfaces(typeof(IBuilder<object>).ReplaceGenericTypeName(context.Request.BuildReturnTypeName));
-            }
         }
 
         return await AddExplicitInterfaceImplementations(context, token).ConfigureAwait(false);

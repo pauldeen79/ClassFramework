@@ -9,4 +9,8 @@ public static class TypeExtensions
             && instance.Name.Substring(1, 1).Equals(instance.Name.Substring(1, 1).ToUpperInvariant(), StringComparison.Ordinal)
             ? instance.Name[1..]
             : instance.Name).WithoutTypeGenerics();
+
+    public static IEnumerable<Type> GetAssemblyGeneratorTypes<TBaseType>(this Type instance)
+        => instance.Assembly.GetTypes()
+            .Where(x => !x.IsAbstract && x.BaseType == typeof(TBaseType));
 }

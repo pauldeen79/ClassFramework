@@ -10,7 +10,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
 
         if (context.Request.IsAbstractBuilder)
         {
-            return Result.Success();
+            return Result.Continue();
         }
 
         foreach (var property in context.Request.GetSourceProperties())

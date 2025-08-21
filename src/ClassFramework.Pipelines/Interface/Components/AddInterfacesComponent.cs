@@ -3,19 +3,20 @@
 public class AddInterfacesComponent : IPipelineComponent<InterfaceContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<InterfaceContext> context, CancellationToken token)
-    {
-        context = context.IsNotNull(nameof(context));
-
-        if (!context.Request.Settings.CopyInterfaces)
+        => Task.Run(() =>
         {
-            return Task.FromResult(Result.Success());
-        }
+            context = context.IsNotNull(nameof(context));
 
-        context.Request.Builder.AddInterfaces(context.Request.SourceModel.Interfaces
-            .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-            .Select(x => context.Request.MapTypeName(x.FixTypeName()))
-            .Where(x => !string.IsNullOrEmpty(x)));
+            if (!context.Request.Settings.CopyInterfaces)
+            {
+                return Result.Continue();
+            }
 
-        return Task.FromResult(Result.Success());
-    }
+            context.Request.Builder.AddInterfaces(context.Request.SourceModel.Interfaces
+                .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+                .Select(x => context.Request.MapTypeName(x.FixTypeName()))
+                .Where(x => !string.IsNullOrEmpty(x)));
+
+            return Result.Success();
+        }, token);
 }

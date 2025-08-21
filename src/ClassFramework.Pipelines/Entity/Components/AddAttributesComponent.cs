@@ -3,11 +3,12 @@
 public class AddAttributesComponent : IPipelineComponent<EntityContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
-    {
-        context = context.IsNotNull(nameof(context));
+        => Task.Run(() =>
+        {
+            context = context.IsNotNull(nameof(context));
 
-        context.Request.Builder.AddAttributes(context.Request.GetAtributes(context.Request.SourceModel.Attributes));
+            context.Request.Builder.AddAttributes(context.Request.GetAtributes(context.Request.SourceModel.Attributes));
 
-        return Task.FromResult(Result.Success());
-    }
+            return Result.Success();
+        }, token);
 }

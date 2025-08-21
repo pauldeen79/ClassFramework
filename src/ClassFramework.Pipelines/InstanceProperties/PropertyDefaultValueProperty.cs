@@ -24,7 +24,7 @@ public class PropertyDefaultValueProperty : IProperty
             .Add(ResultNames.Context, context.GetMappedContextBaseAsync())
             .Build()
             .ConfigureAwait(false))
-            .OnSuccess(async results =>
+            .OnSuccessAsync(async results =>
             {
                 var defaultValue = results
                     .GetValue<Property>(Constants.Instance)

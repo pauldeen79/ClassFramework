@@ -3,16 +3,17 @@
 public class ValidationComponent : IPipelineComponent<BuilderContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
-    {
-        context = context.IsNotNull(nameof(context));
-
-        if (!context.Request.Settings.AllowGenerationWithoutProperties
-            && context.Request.SourceModel.Properties.Count == 0
-            && !context.Request.Settings.EnableInheritance)
+        => Task.Run(() =>
         {
-            return Task.FromResult(Result.Invalid("To create a builder class, there must be at least one property"));
-        }
+            context = context.IsNotNull(nameof(context));
 
-        return Task.FromResult(Result.Success());
-    }
+            if (!context.Request.Settings.AllowGenerationWithoutProperties
+                && context.Request.SourceModel.Properties.Count == 0
+                && !context.Request.Settings.EnableInheritance)
+            {
+                return Result.Invalid("To create a builder class, there must be at least one property");
+            }
+
+            return Result.Success();
+        }, token);
 }

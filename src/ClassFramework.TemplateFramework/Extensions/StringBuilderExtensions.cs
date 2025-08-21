@@ -29,7 +29,7 @@ public static class StringBuilderExtensions
 
     public static void RenderSuppressions(this StringBuilder builder, IReadOnlyCollection<string> suppressWarningCodes, string verb, string indentation)
     {
-        suppressWarningCodes = suppressWarningCodes.IsNotNull(nameof(suppressWarningCodes));
+        Guard.IsNotNull(suppressWarningCodes);
 
         foreach (var suppression in suppressWarningCodes)
         {

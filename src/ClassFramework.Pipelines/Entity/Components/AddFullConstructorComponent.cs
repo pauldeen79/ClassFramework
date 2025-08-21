@@ -13,20 +13,20 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
             return Result.Success();
         }
 
-        var ctorResult = await CreateEntityConstructor(context, token).ConfigureAwait(false);
-        if (!ctorResult.IsSuccessful())
-        {
-            return ctorResult;
-        }
+        return (await CreateEntityConstructor(context, token)
+            .ConfigureAwait(false))
+            .OnSuccess(ctorResult =>
+            {
+                context.Request.Builder.AddConstructors(ctorResult.Value!);
 
-        context.Request.Builder.AddConstructors(ctorResult.Value!);
-
-        if (context.Request.Settings.AddValidationCode() == ArgumentValidationType.CustomValidationCode)
-        {
-            context.Request.Builder.AddMethods(new MethodBuilder().WithName("Validate").WithPartial().WithVisibility(Visibility.Private));
-        }
-
-        return Result.Success();
+                if (context.Request.Settings.AddValidationCode() == ArgumentValidationType.CustomValidationCode)
+                {
+                    context.Request.Builder.AddMethods(new MethodBuilder()
+                        .WithName("Validate")
+                        .WithPartial()
+                        .WithVisibility(Visibility.Private));
+                }
+            });
     }
 
     private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(PipelineContext<EntityContext> context, CancellationToken token)

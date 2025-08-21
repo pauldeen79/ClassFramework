@@ -28,7 +28,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
             var result = await sut.ProcessAsync(context);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Status.ShouldBe(ResultStatus.Continue);
             context.Request.Builder.Methods.ShouldBeEmpty();
         }
 

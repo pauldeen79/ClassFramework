@@ -3,28 +3,29 @@
 public class AddPropertiesComponent : IPipelineComponent<ReflectionContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
-    {
-        context = context.IsNotNull(nameof(context));
+        => Task.Run(() =>
+        {
+            context = context.IsNotNull(nameof(context));
 
-        context.Request.Builder.AddProperties(GetProperties(context));
+            context.Request.Builder.AddProperties(GetProperties(context));
 
-        return Task.FromResult(Result.Success());
-    }
+            return Result.Success();
+        }, token);
 
     private static IEnumerable<PropertyBuilder> GetProperties(PipelineContext<ReflectionContext> context)
         => context.Request.SourceModel.GetPropertiesRecursively().Select
         (
-            p => new PropertyBuilder()
-                .WithName(p.Name)
-                .WithTypeName(context.Request.GetMappedTypeName(p.PropertyType, p))
-                .WithHasGetter(p.GetGetMethod() is not null)
-                .WithHasSetter(p.GetSetMethod() is not null)
-                .WithHasInitializer(p.IsInitOnly())
-                .WithParentTypeFullName(context.Request.MapTypeName(p.DeclaringType.GetParentTypeFullName()))
-                .SetTypeContainerPropertiesFrom(p.IsNullable(), p.PropertyType, context.Request.GetMappedTypeName)
-                .WithVisibility(Array.Exists(p.GetAccessors(), m => m.IsPublic).ToVisibility())
-                .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
-                    x => x.ConvertToDomainAttribute(context.Request.InitializeDelegate),
+            property => new PropertyBuilder()
+                .WithName(property.Name)
+                .WithTypeName(context.Request.GetMappedTypeName(property.PropertyType, property))
+                .WithHasGetter(property.GetGetMethod() is not null)
+                .WithHasSetter(property.GetSetMethod() is not null)
+                .WithHasInitializer(property.IsInitOnly())
+                .WithParentTypeFullName(context.Request.MapTypeName(property.DeclaringType.GetParentTypeFullName()))
+                .SetTypeContainerPropertiesFrom(property.IsNullable(), property.PropertyType, context.Request.GetMappedTypeName)
+                .WithVisibility(Array.Exists(property.GetAccessors(), methodInfo => methodInfo.IsPublic).ToVisibility())
+                .AddAttributes(property.GetCustomAttributes(true).ToAttributes(
+                    attribute => attribute.ConvertToDomainAttribute(context.Request.InitializeDelegate),
                     context.Request.Settings.CopyAttributes,
                     context.Request.Settings.CopyAttributePredicate))
         );

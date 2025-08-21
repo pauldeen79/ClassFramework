@@ -118,6 +118,11 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
             }
         }
 
+        if (Settings.UseCrossCuttingInterfaces)
+        {
+            Builder.AddInterfaces(GetBuilderInterface());
+        }
+
         return results.ToArray();
     }
 
@@ -150,6 +155,8 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
             );
     }
 
+    public ClassBuilder Builder => _wrappedBuilder.Builder;
+
     private string ReturnValue
     {
         get
@@ -168,7 +175,18 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
         && !IsBuilderForAbstractEntity
         && !Settings.AddNullChecks;
 
-    public ClassBuilder Builder => _wrappedBuilder.Builder;
+    private string GetBuilderInterface()
+    {
+        if (IsBuilderForAbstractEntity)
+        {
+            var baseClass = Settings.BaseClass ?? SourceModel;
+            return typeof(IBuilder<object>).ReplaceGenericTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}");
+        }
+        else
+        {
+            return typeof(IBuilder<object>).ReplaceGenericTypeName(BuildReturnTypeName);
+        }
+    }
 
     private readonly ClassBuilderWrapper _wrappedBuilder = new();
 }

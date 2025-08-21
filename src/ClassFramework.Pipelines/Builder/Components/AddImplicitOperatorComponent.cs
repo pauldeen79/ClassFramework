@@ -10,13 +10,13 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
 
         if (!context.Request.Settings.AddImplicitOperatorOnBuilder)
         {
-            return Result.Success();
+            return Result.Continue();
         }
 
         if (context.Request.BuildReturnTypeName.GetNamespaceWithDefault().EndsWithAny(".Contracts", ".Abstractions"))
         {
             // Implicit operators are not supported on interfaces (until maybe some future version of C#)
-            return Result.Success();
+            return Result.Continue();
         }
 
         var nameResult = await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);

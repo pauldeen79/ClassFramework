@@ -8,15 +8,12 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
     {
         context = context.IsNotNull(nameof(context));
 
-        var baseClassResult = await GetBuilderBaseClassAsync(context.Request.SourceModel, context, token).ConfigureAwait(false);
-        if (!baseClassResult.IsSuccessful())
-        {
-            return baseClassResult;
-        }
-
-        context.Request.Builder.WithBaseClass(baseClassResult.Value!);
-
-        return Result.Success();
+        return (await GetBuilderBaseClassAsync(context.Request.SourceModel, context, token)
+            .ConfigureAwait(false))
+            .OnSuccess(baseClassResult =>
+            {
+                context.Request.Builder.WithBaseClass(baseClassResult.Value!);
+            });
     }
 
     private async Task<Result<GenericFormattableString>> GetBuilderBaseClassAsync(IType instance, PipelineContext<BuilderContext> context, CancellationToken token)

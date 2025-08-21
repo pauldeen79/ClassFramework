@@ -3,19 +3,20 @@
 public class AddConstructorsComponent : IPipelineComponent<ReflectionContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
-    {
-        context = context.IsNotNull(nameof(context));
-
-        if (!context.Request.Settings.CreateConstructors
-            || context.Request.Builder is not IConstructorsContainerBuilder constructorsContainerBuilder)
+        => Task.Run(() =>
         {
-            return Task.FromResult(Result.Success());
-        }
+            context = context.IsNotNull(nameof(context));
 
-        constructorsContainerBuilder.AddConstructors(GetConstructors(context));
+            if (!context.Request.Settings.CreateConstructors
+                || context.Request.Builder is not IConstructorsContainerBuilder constructorsContainerBuilder)
+            {
+                return Result.Continue();
+            }
 
-        return Task.FromResult(Result.Success());
-    }
+            constructorsContainerBuilder.AddConstructors(GetConstructors(context));
+
+            return Result.Success();
+        }, token);
 
     private static IEnumerable<ConstructorBuilder> GetConstructors(PipelineContext<ReflectionContext> context)
         => context.Request.SourceModel.GetConstructors()

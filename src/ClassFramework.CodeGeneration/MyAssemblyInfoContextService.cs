@@ -24,7 +24,6 @@ public class MyAssemblyInfoContextService : IAssemblyInfoContextService
         "Microsoft.Extensions.DependencyInjection",
         "Microsoft.Extensions.DependencyInjection.Abstractions",
         "ClassFramework.CodeGeneration",
-        "ClassFramework.CsharpExpressionCreator",
         "ClassFramework.Domain",
         "ClassFramework.Pipelines",
         "ClassFramework.TemplateFramework",
