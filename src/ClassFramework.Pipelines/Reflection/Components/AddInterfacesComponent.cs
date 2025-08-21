@@ -9,7 +9,7 @@ public class AddInterfacesComponent : IPipelineComponent<ReflectionContext>
 
             if (!context.Request.Settings.CopyInterfaces)
             {
-                return Result.Success();
+                return Result.Continue();
             }
 
             context.Request.Builder.AddInterfaces(

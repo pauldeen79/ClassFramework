@@ -13,15 +13,9 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
             return Result.Success();
         }
 
-        var ctorResult = await CreateEntityConstructor(context, token).ConfigureAwait(false);
-        if (!ctorResult.IsSuccessful())
-        {
-            return ctorResult;
-        }
-
-        context.Request.Builder.AddConstructors(ctorResult.Value!);
-
-        return Result.Success();
+        return (await CreateEntityConstructor(context, token)
+            .ConfigureAwait(false))
+            .OnSuccess(ctorResult => context.Request.Builder.AddConstructors(ctorResult.Value!));
     }
 
     private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(PipelineContext<EntityContext> context, CancellationToken token)

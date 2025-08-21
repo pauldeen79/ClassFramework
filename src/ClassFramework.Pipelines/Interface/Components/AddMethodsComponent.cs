@@ -9,7 +9,7 @@ public class AddMethodsComponent : IPipelineComponent<InterfaceContext>
 
             if (!context.Request.Settings.CopyMethods)
             {
-                return Result.Success();
+                return Result.Continue();
             }
 
             context.Request.Builder.AddMethods(context.Request.SourceModel.Methods

@@ -7,17 +7,20 @@ public class SetVisibilityComponent : IPipelineComponent<ReflectionContext>
         {
             context = context.IsNotNull(nameof(context));
 
-            if (context.Request.SourceModel.IsPublic)
-            {
-                context.Request.Builder.WithVisibility(Visibility.Public);
-            }
-            else
-            {
-                context.Request.Builder.WithVisibility(context.Request.SourceModel.IsNotPublic
-                    ? Visibility.Internal
-                    : Visibility.Private);
-            }
+            context.Request.Builder.WithVisibility(GetVisibility(context));
 
             return Result.Success();
         }, token);
+
+    private static Visibility GetVisibility(PipelineContext<ReflectionContext> context)
+    {
+        if (context.Request.SourceModel.IsPublic)
+        {
+            return Visibility.Public;
+        }
+
+        return context.Request.SourceModel.IsNotPublic
+            ? Visibility.Internal
+            : Visibility.Private;
+    }
 }

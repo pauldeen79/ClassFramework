@@ -32,8 +32,6 @@ public class AbstractBuilderComponent(IExpressionEvaluator evaluator) : IPipelin
                         .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity{genericsSuffix}>")
                         .WithAbstract();
                 }
-
-                return Result.NoContent<GenericFormattableString>();
             });
     }
 }

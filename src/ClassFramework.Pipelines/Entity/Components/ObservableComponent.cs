@@ -10,14 +10,14 @@ public class ObservableComponent : IPipelineComponent<EntityContext>
             if (!context.Request.Settings.CreateAsObservable
                 && !context.Request.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
             {
-                return Result.Success();
+                return Result.Continue();
             }
 
             if (context.Request.Settings.EnableInheritance
                 && context.Request.Settings.BaseClass is not null)
             {
                 // Already present in base class
-                return Result.Success();
+                return Result.Continue();
             }
 
             if (!context.Request.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))

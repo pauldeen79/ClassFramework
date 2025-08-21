@@ -9,7 +9,7 @@ public class AddAttributesComponent : IPipelineComponent<InterfaceContext>
 
             if (!context.Request.Settings.CopyAttributes)
             {
-                return Result.Success();
+                return Result.Continue();
             }
 
             context.Request.Builder.AddAttributes(context.Request.SourceModel.Attributes

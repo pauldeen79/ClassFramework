@@ -10,7 +10,7 @@ public class AddConstructorsComponent : IPipelineComponent<ReflectionContext>
             if (!context.Request.Settings.CreateConstructors
                 || context.Request.Builder is not IConstructorsContainerBuilder constructorsContainerBuilder)
             {
-                return Result.Success();
+                return Result.Continue();
             }
 
             constructorsContainerBuilder.AddConstructors(GetConstructors(context));

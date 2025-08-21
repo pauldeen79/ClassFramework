@@ -7,11 +7,9 @@ public class AddPropertiesComponent : IPipelineComponent<InterfaceContext>
         {
             context = context.IsNotNull(nameof(context));
 
-            var properties = context.Request.GetSourceProperties().ToArray();
-
             context.Request.Builder.AddProperties
             (
-                properties.Select
+                context.Request.GetSourceProperties().Select
                 (
                     property => context.Request.CreatePropertyForEntity(property, context.Request.Settings.BuilderAbstractionsTypeConversionMetadataName)
                         .WithHasGetter(property.HasGetter)

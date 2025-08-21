@@ -53,8 +53,6 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
                                 .WithName($"{builderTypeName}{generics}")
                                 .AddCodeStatements($"return entity.{methodName}();"));
                         }
-
-                        return Result.Success();
                     });
             });
     }
