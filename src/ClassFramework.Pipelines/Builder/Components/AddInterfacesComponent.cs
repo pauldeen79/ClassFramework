@@ -10,7 +10,7 @@ public class AddInterfacesComponent(IExpressionEvaluator evaluator) : IPipelineC
 
         if (!context.Request.Settings.CopyInterfaces)
         {
-            return Result.Success();
+            return Result.Continue();
         }
 
         var interfaces = await context.Request.GetInterfaceResultsAsync(

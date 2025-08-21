@@ -11,7 +11,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
 
         if (!context.Request.Settings.AddCopyConstructor)
         {
-            return Result.Success();
+            return Result.Continue();
         }
 
         if (context.Request.Settings.EnableBuilderInheritance
