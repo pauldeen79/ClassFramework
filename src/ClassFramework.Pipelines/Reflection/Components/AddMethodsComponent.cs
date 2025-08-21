@@ -3,13 +3,14 @@
 public class AddMethodsComponent : IPipelineComponent<ReflectionContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
-    {
-        context = context.IsNotNull(nameof(context));
+        => Task.Run(() =>
+        {
+            context = context.IsNotNull(nameof(context));
 
-        context.Request.Builder.AddMethods(GetMethods(context));
+            context.Request.Builder.AddMethods(GetMethods(context));
 
-        return Task.FromResult(Result.Success());
-    }
+            return Result.Success();
+        }, token);
 
     private static IEnumerable<MethodBuilder> GetMethods(PipelineContext<ReflectionContext> context)
         => context.Request.SourceModel.GetMethodsRecursively()

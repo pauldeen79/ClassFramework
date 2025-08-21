@@ -3,38 +3,39 @@
 public class AddPropertiesComponent : IPipelineComponent<EntityContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
-    {
-        context = context.IsNotNull(nameof(context));
-
-        var properties = context.Request.GetSourceProperties().ToArray();
-
-        context.Request.Builder.AddProperties(
-            properties.Select
-            (
-                property => context.Request.CreatePropertyForEntity(property)
-                    .WithVirtual(property.Virtual)
-                    .WithAbstract(property.Abstract)
-                    .WithProtected(property.Protected)
-                    .WithOverride(property.Override)
-                    .WithHasInitializer(property.HasInitializer && !(context.Request.Settings.AddSetters || context.Request.Settings.AddBackingFields || context.Request.Settings.CreateAsObservable))
-                    .WithHasSetter(((context.Request.Settings.AddSetters || context.Request.Settings.AddBackingFields) && !property.TypeName.IsCollectionTypeName()) || context.Request.Settings.CreateAsObservable)
-                    .WithGetterVisibility(property.GetterVisibility)
-                    .WithSetterVisibility(context.Request.Settings.SetterVisibility)
-                    .WithInitializerVisibility(property.InitializerVisibility)
-                    .WithExplicitInterfaceName(property.ExplicitInterfaceName)
-                    .WithParentTypeFullName(property.ParentTypeFullName)
-                    .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Request))
-                    .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Request))
-            )
-        );
-
-        if (context.Request.Settings.AddBackingFields || context.Request.Settings.CreateAsObservable)
+        => Task.Run(() =>
         {
-            AddBackingFields(context, properties);
-        }
+            context = context.IsNotNull(nameof(context));
 
-        return Task.FromResult(Result.Success());
-    }
+            var properties = context.Request.GetSourceProperties().ToArray();
+
+            context.Request.Builder.AddProperties(
+                properties.Select
+                (
+                    property => context.Request.CreatePropertyForEntity(property)
+                        .WithVirtual(property.Virtual)
+                        .WithAbstract(property.Abstract)
+                        .WithProtected(property.Protected)
+                        .WithOverride(property.Override)
+                        .WithHasInitializer(property.HasInitializer && !(context.Request.Settings.AddSetters || context.Request.Settings.AddBackingFields || context.Request.Settings.CreateAsObservable))
+                        .WithHasSetter(((context.Request.Settings.AddSetters || context.Request.Settings.AddBackingFields) && !property.TypeName.IsCollectionTypeName()) || context.Request.Settings.CreateAsObservable)
+                        .WithGetterVisibility(property.GetterVisibility)
+                        .WithSetterVisibility(context.Request.Settings.SetterVisibility)
+                        .WithInitializerVisibility(property.InitializerVisibility)
+                        .WithExplicitInterfaceName(property.ExplicitInterfaceName)
+                        .WithParentTypeFullName(property.ParentTypeFullName)
+                        .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Request))
+                        .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Request))
+                )
+            );
+
+            if (context.Request.Settings.AddBackingFields || context.Request.Settings.CreateAsObservable)
+            {
+                AddBackingFields(context, properties);
+            }
+
+            return Result.Success();
+        }, token);
 
     private static void AddBackingFields(PipelineContext<EntityContext> context, Property[] properties)
         => context.Request.Builder.AddFields

@@ -3,13 +3,14 @@
 public class AddPropertiesComponent : IPipelineComponent<ReflectionContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
-    {
-        context = context.IsNotNull(nameof(context));
+        => Task.Run(() =>
+        {
+            context = context.IsNotNull(nameof(context));
 
-        context.Request.Builder.AddProperties(GetProperties(context));
+            context.Request.Builder.AddProperties(GetProperties(context));
 
-        return Task.FromResult(Result.Success());
-    }
+            return Result.Success();
+        }, token);
 
     private static IEnumerable<PropertyBuilder> GetProperties(PipelineContext<ReflectionContext> context)
         => context.Request.SourceModel.GetPropertiesRecursively().Select

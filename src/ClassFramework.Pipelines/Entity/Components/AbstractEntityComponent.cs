@@ -3,11 +3,12 @@
 public class AbstractEntityComponent : IPipelineComponent<EntityContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
-    {
-        context = context.IsNotNull(nameof(context));
+        => Task.Run(() =>
+        {
+            context = context.IsNotNull(nameof(context));
 
-        context.Request.Builder.WithAbstract(context.Request.IsAbstract);
+            context.Request.Builder.WithAbstract(context.Request.IsAbstract);
 
-        return Task.FromResult(Result.Success());
-    }
+            return Result.Success();
+        }, token);
 }

@@ -3,20 +3,21 @@
 public class SetVisibilityComponent : IPipelineComponent<ReflectionContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
-    {
-        context = context.IsNotNull(nameof(context));
-
-        if (context.Request.SourceModel.IsPublic)
+        => Task.Run(() =>
         {
-            context.Request.Builder.WithVisibility(Visibility.Public);
-        }
-        else
-        {
-            context.Request.Builder.WithVisibility(context.Request.SourceModel.IsNotPublic
-                ? Visibility.Internal
-                : Visibility.Private);
-        }
+            context = context.IsNotNull(nameof(context));
 
-        return Task.FromResult(Result.Success());
-    }
+            if (context.Request.SourceModel.IsPublic)
+            {
+                context.Request.Builder.WithVisibility(Visibility.Public);
+            }
+            else
+            {
+                context.Request.Builder.WithVisibility(context.Request.SourceModel.IsNotPublic
+                    ? Visibility.Internal
+                    : Visibility.Private);
+            }
+
+            return Result.Success();
+        }, token);
 }

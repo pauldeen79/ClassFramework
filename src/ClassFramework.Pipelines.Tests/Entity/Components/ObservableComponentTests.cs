@@ -5,14 +5,15 @@ public class ObservableComponentTests : TestBase<Pipelines.Entity.Components.Obs
     public class ProcessAsync : ObservableComponentTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public async Task Throws_On_Null_Context()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            Action a = () => sut.ProcessAsync(context: null!);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
+            Task a = sut.ProcessAsync(context: null!);
+            (await a.ShouldThrowAsync<ArgumentNullException>())
+                .ParamName.ShouldBe("context");
         }
 
         [Fact]

@@ -3,13 +3,14 @@
 public class AddFieldsComponent : IPipelineComponent<ReflectionContext>
 {
     public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
-    {
-        context = context.IsNotNull(nameof(context));
+        => Task.Run(() =>
+        {
+            context = context.IsNotNull(nameof(context));
 
-        context.Request.Builder.AddFields(GetFields(context));
+            context.Request.Builder.AddFields(GetFields(context));
 
-        return Task.FromResult(Result.Success());
-    }
+            return Result.Success();
+        }, token);
 
     private static IEnumerable<FieldBuilder> GetFields(PipelineContext<ReflectionContext> context)
         => context.Request.SourceModel.GetFieldsRecursively().Select
