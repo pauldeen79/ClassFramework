@@ -51,17 +51,17 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         }
 
         var initializationCodeResults = await GetInitializationCodeResultsAsync(context, token).ConfigureAwait(false);
-        var initializationCodeErrorResult = Array.Find(initializationCodeResults, x => !x.Item2.IsSuccessful());
+        var initializationCodeErrorResult = Array.Find(initializationCodeResults, x => !x.Result.IsSuccessful());
         if (initializationCodeErrorResult is not null)
         {
-            return Result.FromExistingResult<ConstructorBuilder>(initializationCodeErrorResult.Item2);
+            return Result.FromExistingResult<ConstructorBuilder>(initializationCodeErrorResult.Result);
         }
 
         var constructorInitializerResults = await GetConstructorInitializerResultsAsync(context).ConfigureAwait(false);
-        var initializerErrorResult = Array.Find(constructorInitializerResults, x => !x.Item2.IsSuccessful());
+        var initializerErrorResult = Array.Find(constructorInitializerResults, x => !x.Result.IsSuccessful());
         if (initializerErrorResult is not null)
         {
-            return Result.FromExistingResult<ConstructorBuilder>(initializerErrorResult.Item2);
+            return Result.FromExistingResult<ConstructorBuilder>(initializerErrorResult.Result);
         }
 
         var name = results.GetValue(ResultNames.Name).ToString();
@@ -86,14 +86,14 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
                     .GetValues<Parameter>(MetadataNames.CustomBuilderCopyConstructorParameter)
                     .Select(x => x.ToBuilder())
             )
-            .AddCodeStatements(constructorInitializerResults.Select(x => $"{x.Item1} = {x.Item2.Value};"))
-            .AddCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Item2.Value!, x.Item1, context)};"))
+            .AddCodeStatements(constructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"))
+            .AddCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Result.Value!, x.Property, context)};"))
         );
     }
 
-    private async Task<Tuple<Property, Result<GenericFormattableString>>[]> GetInitializationCodeResultsAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    private async Task<ConstructorPropertyInitializerItem[]> GetInitializationCodeResultsAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
-        var results = new List<Tuple<Property, Result<GenericFormattableString>>>();
+        var results = new List<ConstructorPropertyInitializerItem>();
 
         foreach (var property in context.Request.GetSourceProperties()
             .Where(x => !(x.TypeName.FixTypeName().IsCollectionTypeName()
@@ -101,7 +101,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         {
             var result = await CreateBuilderInitializationCodeAsync(property, context, token).ConfigureAwait(false);
 
-            results.Add(new Tuple<Property, Result<GenericFormattableString>>(property, result));
+            results.Add(new ConstructorPropertyInitializerItem(property, result));
 
             if (!result.IsSuccessful())
             {
@@ -112,9 +112,9 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         return results.ToArray();
     }
 
-    private async Task<Tuple<string, Result<GenericFormattableString>>[]> GetConstructorInitializerResultsAsync(PipelineContext<BuilderContext> context)
+    private async Task<ConstructorPropertyNameInitializerItem[]> GetConstructorInitializerResultsAsync(PipelineContext<BuilderContext> context)
     {
-        var results = new List<Tuple<string, Result<GenericFormattableString>>>();
+        var results = new List<ConstructorPropertyNameInitializerItem>();
 
         foreach (var property in context.Request.GetSourceProperties()
             .Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
@@ -128,7 +128,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
                 MetadataNames.CustomBuilderConstructorInitializeExpression,
                 _evaluator).ConfigureAwait(false);
 
-            results.Add(new Tuple<string, Result<GenericFormattableString>>(name, result));
+            results.Add(new ConstructorPropertyNameInitializerItem(name, result));
             
             if (!result.IsSuccessful())
             {
@@ -219,5 +219,29 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
                     .GetValues<Parameter>(MetadataNames.CustomBuilderCopyConstructorParameter)
                     .Select(x => x.ToBuilder())
             );
+    }
+
+    private sealed class ConstructorPropertyInitializerItem
+    {
+        public ConstructorPropertyInitializerItem(Property property, Result<GenericFormattableString> result)
+        {
+            Property = property;
+            Result = result;
+        }
+
+        public Property Property { get; }
+        public Result<GenericFormattableString> Result { get; }
+    }
+
+    private sealed class ConstructorPropertyNameInitializerItem
+    {
+        public ConstructorPropertyNameInitializerItem(string name, Result<GenericFormattableString> result)
+        {
+            Name = name;
+            Result = result;
+        }
+
+        public string Name { get; }
+        public Result<GenericFormattableString> Result { get; }
     }
 }

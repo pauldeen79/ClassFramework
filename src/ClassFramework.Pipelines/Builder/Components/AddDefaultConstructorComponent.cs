@@ -32,16 +32,16 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
     {
         var constructorInitializerResults = await GetConstructorInitializerResultsAsync(context).ConfigureAwait(false);
 
-        var errorResult = constructorInitializerResults.Find(x => !x.Item2.IsSuccessful());
+        var errorResult = constructorInitializerResults.Find(x => !x.Result.IsSuccessful());
         if (errorResult is not null)
         {
-            return Result.FromExistingResult<ConstructorBuilder>(errorResult.Item2);
+            return Result.FromExistingResult<ConstructorBuilder>(errorResult.Result);
         }
 
         var ctor = new ConstructorBuilder()
             .WithChainCall(await CreateBuilderClassConstructorChainCallAsync(context.Request.SourceModel, context.Request.Settings).ConfigureAwait(false))
             .WithProtected(context.Request.IsBuilderForAbstractEntity)
-            .AddCodeStatements(constructorInitializerResults.Select(x => $"{x.Item1} = {x.Item2.Value};"));
+            .AddCodeStatements(constructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"));
 
         if (context.Request.Settings.SetDefaultValuesInEntityConstructor)
         {
@@ -96,9 +96,9 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         return defaultValueResults;
     }
 
-    private async Task<List<Tuple<string, Result<GenericFormattableString>>>> GetConstructorInitializerResultsAsync(PipelineContext<BuilderContext> context)
+    private async Task<List<ConstructorInitializerItem>> GetConstructorInitializerResultsAsync(PipelineContext<BuilderContext> context)
     {
-        var constructorInitializerResults = new List<Tuple<string, Result<GenericFormattableString>>>();
+        var constructorInitializerResults = new List<ConstructorInitializerItem>();
 
         foreach (var property in context.Request.GetSourceProperties()
             .Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
@@ -112,7 +112,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
                 string.Empty,
                 _evaluator).ConfigureAwait(false);
 
-            constructorInitializerResults.Add(new Tuple<string, Result<GenericFormattableString>>(name, result));
+            constructorInitializerResults.Add(new ConstructorInitializerItem(name, result));
 
             if (!result.IsSuccessful())
             {
@@ -140,4 +140,16 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         => new ConstructorBuilder()
             .WithChainCall("base()")
             .WithProtected(context.Request.IsBuilderForAbstractEntity);
+
+    private sealed class ConstructorInitializerItem
+    {
+        public ConstructorInitializerItem(string name, Result<GenericFormattableString> result)
+        {
+            Name = name;
+            Result = result;
+        }
+
+        public string Name { get; }
+        public Result<GenericFormattableString> Result { get; }
+    }
 }
