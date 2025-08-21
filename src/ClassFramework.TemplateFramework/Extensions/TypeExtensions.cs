@@ -11,6 +11,6 @@ public static class TypeExtensions
             : instance.Name).WithoutTypeGenerics();
 
     public static IEnumerable<Type> GetAssemblyGeneratorTypes<TBaseType>(this Type instance)
-        => instance.Assembly.GetExportedTypes()
+        => instance.Assembly.GetTypes()
             .Where(x => !x.IsAbstract && x.BaseType == typeof(TBaseType));
 }
