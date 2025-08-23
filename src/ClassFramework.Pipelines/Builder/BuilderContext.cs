@@ -155,7 +155,7 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
             );
     }
 
-    public ClassBuilder Builder => _wrappedBuilder.Builder;
+    public ClassBuilder Builder { get; } = new();
 
     private string ReturnValue
     {
@@ -187,6 +187,4 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
             return typeof(IBuilder<object>).ReplaceGenericTypeName(BuildReturnTypeName);
         }
     }
-
-    private readonly ClassBuilderWrapper _wrappedBuilder = new();
 }

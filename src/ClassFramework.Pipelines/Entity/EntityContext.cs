@@ -11,9 +11,7 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
 
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
 
-    public ClassBuilder Builder => _wrappedBuilder.Builder;
-
-    private readonly ClassBuilderWrapper _wrappedBuilder = new();
+    public ClassBuilder Builder { get; } = new();
 
     public string GetBuilderTypeName(
         string builderInterfaceNamespace,

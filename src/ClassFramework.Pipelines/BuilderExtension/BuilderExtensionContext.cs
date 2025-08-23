@@ -9,7 +9,7 @@ public class BuilderExtensionContext(TypeBase sourceModel, PipelineSettings sett
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
 
-    public ClassBuilder Builder => _wrappedBuilder.Builder;
+    public ClassBuilder Builder { get; } = new();
 
     public string GetReturnTypeForFluentMethod(string builderNamespace, string builderName)
         => $"{builderNamespace.AppendWhenNotNullOrEmpty(".")}{builderName}{SourceModel.GetGenericTypeArgumentsString()}";
@@ -57,6 +57,4 @@ public class BuilderExtensionContext(TypeBase sourceModel, PipelineSettings sett
                 "return instance;"
             );
     }
-
-    private readonly ClassBuilderWrapper _wrappedBuilder = new();
 }
