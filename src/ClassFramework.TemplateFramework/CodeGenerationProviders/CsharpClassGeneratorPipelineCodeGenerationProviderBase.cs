@@ -584,21 +584,21 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             settings => PipelineService.ProcessAsync(new EntityContext(typeBase, settings, Settings.CultureInfo, CancellationToken.None)));
 
     private Task<Result<TypeBase>> CreateBuilderClassAsync(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion = null)
-        => typeBaseResult.OnSuccess(
+        => typeBaseResult.OnSuccessAsync(
             () => ProcessSettingsResultAsync(
                 CreateBuilderPipelineSettingsAsync(buildersNamespace, entitiesNamespace, useBuilderAbstractionsTypeConversion),
                 settings => PipelineService.ProcessAsync(new BuilderContext(typeBaseResult.Value!, settings, Settings.CultureInfo, CancellationToken.None)))
             );
 
     private Task<Result<TypeBase>> CreateBuilderExtensionsClassAsync(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
-        => typeBaseResult.OnSuccess(
+        => typeBaseResult.OnSuccessAsync(
             () => ProcessSettingsResultAsync(
                 CreateBuilderInterfacePipelineSettingsAsync(buildersNamespace, entitiesNamespace, buildersExtensionsNamespace),
                 settings => PipelineService.ProcessAsync(new BuilderExtensionContext(typeBaseResult.Value!, settings, Settings.CultureInfo, CancellationToken.None)))
             );
 
     private Task<Result<TypeBase>> CreateNonGenericBuilderClassAsync(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace)
-        => typeBaseResult.OnSuccess(
+        => typeBaseResult.OnSuccessAsync(
             () => ProcessSettingsResultAsync(
                 CreateBuilderPipelineSettingsAsync(buildersNamespace, entitiesNamespace),
                 settings => PipelineService.ProcessAsync(new BuilderContext(typeBaseResult.Value!, settings.ToBuilder().WithIsForAbstractBuilder().Build(), Settings.CultureInfo, CancellationToken.None)))
@@ -625,7 +625,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         string nameFormatString = "{class.Name}",
         string builderAbstractionsTypeConversionMetadataName = "",
         CopyMethodPredicate? copyMethodPredicate = null)
-            => typeBaseResult.OnSuccess(
+            => typeBaseResult.OnSuccessAsync(
                 () => ProcessBaseClassResultAsync(
                     baseClass => ProcessSettingsResultAsync(CreateInterfacePipelineSettingsAsync(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(baseClass), copyMethodPredicate, addSetters, nameFormatString, builderAbstractionsTypeConversionMetadataName), async settings =>
                         (await PipelineService.ProcessAsync(new InterfaceContext(typeBaseResult.Value!, settings, Settings.CultureInfo, CancellationToken.None)).ConfigureAwait(false)).TryCast<TypeBase>()
@@ -695,7 +695,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(settingsTask);
         Guard.IsNotNull(successTask);
 
-        return modelsResult.OnSuccess(
+        return modelsResult.OnSuccessAsync(
             () => ProcessSettingsResultAsync(settingsTask, async settings =>
             {
                 var results = await successTask(settings).ConfigureAwait(false);

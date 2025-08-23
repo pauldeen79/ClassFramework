@@ -8,7 +8,7 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
         Guard.IsNotNull(Model);
 
         return await (await RenderChildTemplatesByModelAsync(Model.Attributes, builder, cancellationToken).ConfigureAwait(false))
-            .OnSuccess(async () =>
+            .OnSuccessAsync(async () =>
             {
                 builder.Append(Model.CreateIndentation(1));
                 builder.Append(Model.Modifiers);

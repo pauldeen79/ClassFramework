@@ -40,7 +40,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
         var generationEnvironment = new StringBuilderEnvironment(builder);
         return await (await RenderHeaderAsync(generationEnvironment, cancellationToken).ConfigureAwait(false))
-            .OnSuccess(async () =>
+            .OnSuccessAsync(async () =>
             {
                 generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
                 return (await RenderNamespaceHierarchyAsync(generationEnvironment, builder, cancellationToken).ConfigureAwait(false))
@@ -51,7 +51,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
     private async Task<Result> RenderHeaderAsync(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         return await (await RenderChildTemplateByModelAsync(Model!.CodeGenerationHeaderModel, generationEnvironment, cancellationToken).ConfigureAwait(false))
-            .OnSuccess(async () =>
+            .OnSuccessAsync(async () =>
             {
                 if (!Model.Settings.EnableGlobalUsings)
                 {
