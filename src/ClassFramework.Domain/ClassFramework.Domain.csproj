@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="pauldeen79.CrossCutting.Common" Version="3.32.0" />
+    <PackageReference Include="pauldeen79.CrossCutting.Common" Version="3.33.0" />
   </ItemGroup>
 
   <ItemGroup>
