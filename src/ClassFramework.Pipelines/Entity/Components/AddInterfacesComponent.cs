@@ -8,7 +8,7 @@ public class AddInterfacesComponent : IPipelineComponent<EntityContext>
 
         if (!context.Request.Settings.CopyInterfaces)
         {
-            return Result.Success();
+            return Result.Continue();
         }
 
         var baseClass = await context.Request.SourceModel.GetEntityBaseClassAsync(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass).ConfigureAwait(false);

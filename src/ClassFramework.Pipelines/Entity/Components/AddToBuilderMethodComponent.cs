@@ -14,49 +14,50 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                 var methodName = results.GetValue("ToBuilderMethodName");
                 if (string.IsNullOrEmpty(methodName))
                 {
-                    return Result.Success();
+                    return Result.Continue();
                 }
 
                 var typedMethodName = results.GetValue("ToTypedBuilderMethodName");
 
-                return await context.Request.GetCustomNamespaceResults(results).OnSuccessAsync(async customNamespaceResults =>
-                {
-                    var builderConcreteName = customNamespaceResults.GetValue("BuilderConcreteName");
-                    var generics = context.Request.SourceModel.GetGenericTypeArgumentsString();
-                    var builderName = results.GetValue(ResultNames.BuilderName).ToString().Replace(context.Request.SourceModel.Name, builderConcreteName);
-                    var builderConcreteTypeName = $"{customNamespaceResults.GetValue("CustomBuilderNamespace")}.{builderName}";
-                    var builderTypeName = context.Request.GetBuilderTypeName(customNamespaceResults.GetValue("CustomBuilderInterfaceNamespace"), customNamespaceResults.GetValue("CustomConcreteBuilderNamespace"), builderConcreteName, builderConcreteTypeName, results.GetValue(ResultNames.BuilderName));
-                    var returnStatement = customNamespaceResults.GetValue("ReturnStatement");
-
-                    context.Request.Builder
-                        .AddMethods(new MethodBuilder()
-                            .WithName(methodName)
-                            .WithAbstract(context.Request.IsAbstract)
-                            .WithOverride(context.Request.Settings.BaseClass is not null)
-                            .WithReturnTypeName(builderTypeName)
-                            .AddReturnTypeGenericTypeArguments(context.Request.Settings.BaseClass is not null
-                                ? Enumerable.Empty<ITypeContainerBuilder>()
-                                : context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
-                            .AddCodeStatements(returnStatement));
-
-                    if (context.Request.Settings.EnableInheritance
-                        && context.Request.Settings.BaseClass is not null
-                        && !string.IsNullOrEmpty(typedMethodName))
+                return await context.Request.GetCustomNamespaceResults(results)
+                    .OnSuccessAsync(async customNamespaceResults =>
                     {
+                        var builderConcreteName = customNamespaceResults.GetValue("BuilderConcreteName");
+                        var generics = context.Request.SourceModel.GetGenericTypeArgumentsString();
+                        var builderName = results.GetValue(ResultNames.BuilderName).ToString().Replace(context.Request.SourceModel.Name, builderConcreteName);
+                        var builderConcreteTypeName = $"{customNamespaceResults.GetValue("CustomBuilderNamespace")}.{builderName}";
+                        var builderTypeName = context.Request.GetBuilderTypeName(customNamespaceResults.GetValue("CustomBuilderInterfaceNamespace"), customNamespaceResults.GetValue("CustomConcreteBuilderNamespace"), builderConcreteName, builderConcreteTypeName, results.GetValue(ResultNames.BuilderName));
+                        var returnStatement = customNamespaceResults.GetValue("ReturnStatement");
+
                         context.Request.Builder
                             .AddMethods(new MethodBuilder()
-                                .WithName(typedMethodName)
-                                .WithReturnTypeName(builderConcreteTypeName)
-                                .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
-                                .AddCodeStatements($"return new {builderConcreteTypeName}{generics}(this);"));
-                    }
-                    else if (context.Request.Settings.UseCrossCuttingInterfaces)
-                    {
-                        context.Request.Builder.AddInterfaces(typeof(IBuildableEntity<object>).ReplaceGenericTypeName(builderTypeName));
-                    }
+                                .WithName(methodName)
+                                .WithAbstract(context.Request.IsAbstract)
+                                .WithOverride(context.Request.Settings.BaseClass is not null)
+                                .WithReturnTypeName(builderTypeName)
+                                .AddReturnTypeGenericTypeArguments(context.Request.Settings.BaseClass is not null
+                                    ? Enumerable.Empty<ITypeContainerBuilder>()
+                                    : context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
+                                .AddCodeStatements(returnStatement));
 
-                    return await AddExplicitInterfaceImplementations(context, methodName, typedMethodName, token).ConfigureAwait(false);
-                }).ConfigureAwait(false);
+                        if (context.Request.Settings.EnableInheritance
+                            && context.Request.Settings.BaseClass is not null
+                            && !string.IsNullOrEmpty(typedMethodName))
+                        {
+                            context.Request.Builder
+                                .AddMethods(new MethodBuilder()
+                                    .WithName(typedMethodName)
+                                    .WithReturnTypeName(builderConcreteTypeName)
+                                    .AddReturnTypeGenericTypeArguments(context.Request.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
+                                    .AddCodeStatements($"return new {builderConcreteTypeName}{generics}(this);"));
+                        }
+                        else if (context.Request.Settings.UseCrossCuttingInterfaces)
+                        {
+                            context.Request.Builder.AddInterfaces(typeof(IBuildableEntity<object>).ReplaceGenericTypeName(builderTypeName));
+                        }
+
+                        return await AddExplicitInterfaceImplementations(context, methodName, typedMethodName, token).ConfigureAwait(false);
+                    }).ConfigureAwait(false);
             }).ConfigureAwait(false);
     }
 
@@ -64,7 +65,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
     {
         if (!context.Request.Settings.UseBuilderAbstractionsTypeConversion)
         {
-            return Result.Continue();
+            return Result.Success();
         }
 
         var interfaces = new List<Result<NameInfo>>();

@@ -10,7 +10,7 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
 
         if (!context.Request.Settings.AddPublicParameterlessConstructor)
         {
-            return Result.Success();
+            return Result.Continue();
         }
 
         return (await CreateEntityConstructor(context, token)

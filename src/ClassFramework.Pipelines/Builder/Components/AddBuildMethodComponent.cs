@@ -75,7 +75,7 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
     {
         if (!context.Request.Settings.UseBuilderAbstractionsTypeConversion)
         {
-            return Result.Continue();
+            return Result.Success();
         }
 
         var interfaces = await context.Request.GetInterfaceResultsAsync(

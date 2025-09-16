@@ -10,7 +10,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
 
         if (!context.Request.Settings.AddImplicitOperatorOnEntity)
         {
-            return Result.Success();
+            return Result.Continue();
         }
 
         return (await context.Request.GetToBuilderResultsAsync(_evaluator, token).ConfigureAwait(false))
@@ -19,7 +19,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
                 var methodName = results.GetValue("ToBuilderMethodName");
                 if (string.IsNullOrEmpty(methodName))
                 {
-                    return Result.Success();
+                    return Result.Continue();
                 }
 
                 return context.Request.GetCustomNamespaceResults(results)

@@ -10,7 +10,7 @@ public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPip
 
         if (!context.Request.Settings.ImplementIEquatable)
         {
-            return Result.Success();
+            return Result.Continue();
         }
 
         return (await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token)

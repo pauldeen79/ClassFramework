@@ -10,7 +10,7 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
 
         if (!context.Request.Settings.AddFullConstructor)
         {
-            return Result.Success();
+            return Result.Continue();
         }
 
         return (await CreateEntityConstructor(context, token)
