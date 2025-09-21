@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.Domain.Builders
 {
-    public abstract partial class CodeStatementBaseBuilder<TBuilder, TEntity> : CodeStatementBaseBuilder
+    public abstract partial class CodeStatementBaseBuilder<TBuilder, TEntity> : CodeStatementBaseBuilder, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.CodeStatementBase>
         where TEntity : ClassFramework.Domain.CodeStatementBase
         where TBuilder : CodeStatementBaseBuilder<TBuilder, TEntity>
     {
@@ -34,7 +34,7 @@ namespace ClassFramework.Domain.Builders
             return builder.BuildTyped();
         }
     }
-    public abstract partial class TypeBaseBuilder<TBuilder, TEntity> : TypeBaseBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder
+    public abstract partial class TypeBaseBuilder<TBuilder, TEntity> : TypeBaseBuilder, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.TypeBase>, ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder
         where TEntity : ClassFramework.Domain.TypeBase
         where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
     {
@@ -53,32 +53,32 @@ namespace ClassFramework.Domain.Builders
 
         public abstract TEntity BuildTyped();
 
-        ClassFramework.Domain.Abstractions.IType ClassFramework.Domain.Builders.Abstractions.ITypeBuilder.Build()
+        ClassFramework.Domain.Abstractions.IType CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IType>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IVisibilityContainer ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IVisibilityContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IVisibilityContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.INameContainer ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.INameContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.INameContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IAttributesContainer ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IAttributesContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IAttributesContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer>.Build()
         {
             return BuildTyped();
         }

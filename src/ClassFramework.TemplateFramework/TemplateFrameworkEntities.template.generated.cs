@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.TemplateFramework
 {
-    public partial record CsharpClassGeneratorSettings
+    public partial record CsharpClassGeneratorSettings : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.TemplateFramework.Builders.CsharpClassGeneratorSettingsBuilder>
     {
         public bool RecurseOnDeleteGeneratedFiles
         {

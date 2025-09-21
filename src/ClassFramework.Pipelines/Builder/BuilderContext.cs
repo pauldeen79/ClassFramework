@@ -120,7 +120,11 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
 
         if (Settings.UseCrossCuttingInterfaces)
         {
-            Builder.AddInterfaces(GetBuilderInterface());
+            var builderInterface = GetBuilderInterface();
+            if (!Builder.Interfaces.Contains(builderInterface))
+            {
+                Builder.AddInterfaces(builderInterface);
+            }
         }
 
         return results.ToArray();

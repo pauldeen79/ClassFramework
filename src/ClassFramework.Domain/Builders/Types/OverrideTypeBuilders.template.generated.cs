@@ -177,67 +177,67 @@ namespace ClassFramework.Domain.Builders.Types
             return new ClassFramework.Domain.Types.Class(Namespace, Partial, Interfaces, Fields.Select(x => x.Build()!).ToList().AsReadOnly(), Properties.Select(x => x.Build()!).ToList().AsReadOnly(), Methods.Select(x => x.Build()!).ToList().AsReadOnly(), Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes, Static, Sealed, Abstract, Constructors.Select(x => x.Build()!).ToList().AsReadOnly(), Record, BaseClass, Enums.Select(x => x.Build()!).ToList().AsReadOnly(), SubClasses.Select(x => x.Build()!).ToList().AsReadOnly());
         }
 
-        ClassFramework.Domain.Abstractions.IType ClassFramework.Domain.Builders.Abstractions.ITypeBuilder.Build()
+        ClassFramework.Domain.Abstractions.IType CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IType>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IVisibilityContainer ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IVisibilityContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IVisibilityContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.INameContainer ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.INameContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.INameContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IAttributesContainer ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IAttributesContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IAttributesContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IReferenceType ClassFramework.Domain.Builders.Abstractions.IReferenceTypeBuilder.Build()
+        ClassFramework.Domain.Abstractions.IReferenceType CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IReferenceType>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IConcreteType ClassFramework.Domain.Builders.Abstractions.IConcreteTypeBuilder.Build()
+        ClassFramework.Domain.Abstractions.IConcreteType CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IConcreteType>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IConstructorsContainer ClassFramework.Domain.Builders.Abstractions.IConstructorsContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IConstructorsContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IConstructorsContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IRecordContainer ClassFramework.Domain.Builders.Abstractions.IRecordContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IRecordContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IRecordContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IBaseClassContainer ClassFramework.Domain.Builders.Abstractions.IBaseClassContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IBaseClassContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IBaseClassContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IEnumsContainer ClassFramework.Domain.Builders.Abstractions.IEnumsContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IEnumsContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IEnumsContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.ISubClassesContainer ClassFramework.Domain.Builders.Abstractions.ISubClassesContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.ISubClassesContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.ISubClassesContainer>.Build()
         {
             return BuildTyped();
         }
@@ -266,32 +266,32 @@ namespace ClassFramework.Domain.Builders.Types
             return new ClassFramework.Domain.Types.Interface(Namespace, Partial, Interfaces, Fields.Select(x => x.Build()!).ToList().AsReadOnly(), Properties.Select(x => x.Build()!).ToList().AsReadOnly(), Methods.Select(x => x.Build()!).ToList().AsReadOnly(), Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes);
         }
 
-        ClassFramework.Domain.Abstractions.IType ClassFramework.Domain.Builders.Abstractions.ITypeBuilder.Build()
+        ClassFramework.Domain.Abstractions.IType CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IType>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IVisibilityContainer ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IVisibilityContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IVisibilityContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.INameContainer ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.INameContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.INameContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IAttributesContainer ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IAttributesContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IAttributesContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer>.Build()
         {
             return BuildTyped();
         }
@@ -377,57 +377,57 @@ namespace ClassFramework.Domain.Builders.Types
             return new ClassFramework.Domain.Types.Struct(Namespace, Partial, Interfaces, Fields.Select(x => x.Build()!).ToList().AsReadOnly(), Properties.Select(x => x.Build()!).ToList().AsReadOnly(), Methods.Select(x => x.Build()!).ToList().AsReadOnly(), Visibility, Name, Attributes.Select(x => x.Build()!).ToList().AsReadOnly(), GenericTypeArguments, GenericTypeArgumentConstraints, SuppressWarningCodes, Constructors.Select(x => x.Build()!).ToList().AsReadOnly(), Record, BaseClass);
         }
 
-        ClassFramework.Domain.Abstractions.IType ClassFramework.Domain.Builders.Abstractions.ITypeBuilder.Build()
+        ClassFramework.Domain.Abstractions.IType CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IType>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IVisibilityContainer ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IVisibilityContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IVisibilityContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.INameContainer ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.INameContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.INameContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IAttributesContainer ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IAttributesContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IAttributesContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IValueType ClassFramework.Domain.Builders.Abstractions.IValueTypeBuilder.Build()
+        ClassFramework.Domain.Abstractions.IValueType CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IValueType>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IConcreteType ClassFramework.Domain.Builders.Abstractions.IConcreteTypeBuilder.Build()
+        ClassFramework.Domain.Abstractions.IConcreteType CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IConcreteType>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IConstructorsContainer ClassFramework.Domain.Builders.Abstractions.IConstructorsContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IConstructorsContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IConstructorsContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IRecordContainer ClassFramework.Domain.Builders.Abstractions.IRecordContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IRecordContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IRecordContainer>.Build()
         {
             return BuildTyped();
         }
 
-        ClassFramework.Domain.Abstractions.IBaseClassContainer ClassFramework.Domain.Builders.Abstractions.IBaseClassContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IBaseClassContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IBaseClassContainer>.Build()
         {
             return BuildTyped();
         }

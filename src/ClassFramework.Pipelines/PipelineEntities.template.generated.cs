@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.Pipelines
 {
-    public partial record Metadata : ClassFramework.Domain.Abstractions.INameContainer
+    public partial record Metadata : ClassFramework.Domain.Abstractions.INameContainer, CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Pipelines.Builders.MetadataBuilder>
     {
         public object? Value
         {
@@ -40,12 +40,12 @@ namespace ClassFramework.Pipelines
             return new ClassFramework.Pipelines.Builders.MetadataBuilder(this);
         }
 
-        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder>.ToBuilder()
         {
             return ToBuilder();
         }
     }
-    public partial record NamespaceMapping
+    public partial record NamespaceMapping : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Pipelines.Builders.NamespaceMappingBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string SourceNamespace
@@ -84,7 +84,7 @@ namespace ClassFramework.Pipelines
             return new ClassFramework.Pipelines.Builders.NamespaceMappingBuilder(this);
         }
     }
-    public partial record PipelineSettings
+    public partial record PipelineSettings : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Pipelines.Builders.PipelineSettingsBuilder>
     {
         public bool AddBackingFields
         {
@@ -563,7 +563,7 @@ namespace ClassFramework.Pipelines
             return new ClassFramework.Pipelines.Builders.PipelineSettingsBuilder(this);
         }
     }
-    public partial record TypenameMapping
+    public partial record TypenameMapping : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Pipelines.Builders.TypenameMappingBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public string SourceTypeName

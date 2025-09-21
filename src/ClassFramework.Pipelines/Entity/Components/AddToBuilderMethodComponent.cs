@@ -53,7 +53,11 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                         }
                         else if (context.Request.Settings.UseCrossCuttingInterfaces)
                         {
-                            context.Request.Builder.AddInterfaces(typeof(IBuildableEntity<object>).ReplaceGenericTypeName(builderTypeName));
+                            var entityInterface = typeof(IBuildableEntity<object>).ReplaceGenericTypeName(builderTypeName);
+                            if (!context.Request.Builder.Interfaces.Contains(entityInterface))
+                            {
+                                context.Request.Builder.AddInterfaces(entityInterface);
+                            }
                         }
 
                         return await AddExplicitInterfaceImplementations(context, methodName, typedMethodName, token).ConfigureAwait(false);
