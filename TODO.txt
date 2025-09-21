@@ -1,8 +1,2 @@
 - Use deferred interpolation instead of [ ]
 - Replace lambda's (Func) in PipelineSettings with conditions from CrossCutting.Utilities.QueryEvaluator
-- Fix bug in CrossCutting code generation on CrossCutting.Utilities.ExpressionEvaluator.Builders.Abstractions: public partial interface IExpressionBuilder : CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.Expression>
-- Fix bug in CrossCutting code generation on CrossCutting.Utilities.ExpressionEvaluator.Builders (non abstract builder): this method is not being generated
-        CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression CrossCutting.Common.Abstractions.IBuilder<CrossCutting.Utilities.ExpressionEvaluator.Abstractions.IExpression>.Build()
-        {
-            return Build();
-        }
