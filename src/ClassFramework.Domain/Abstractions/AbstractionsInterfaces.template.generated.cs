@@ -10,9 +10,6 @@
 #nullable enable
 namespace ClassFramework.Domain.Abstractions
 {
-    public partial interface IAbstractTest : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IAbstractTestBuilder>
-    {
-    }
     public partial interface IAttributesContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]

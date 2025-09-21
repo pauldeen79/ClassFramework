@@ -10,62 +10,6 @@
 #nullable enable
 namespace ClassFramework.Domain.Builders
 {
-    public partial class AbstractionTestEntityBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.AbstractionTestEntity>, System.ComponentModel.INotifyPropertyChanged
-    {
-        private ClassFramework.Domain.Builders.Abstractions.IAbstractTestBuilder _type;
-
-        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
-
-        public ClassFramework.Domain.Builders.Abstractions.IAbstractTestBuilder Type
-        {
-            get
-            {
-                return _type;
-            }
-            set
-            {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<ClassFramework.Domain.Builders.Abstractions.IAbstractTestBuilder>.Default.Equals(_type!, value!);
-                _type = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Type));
-            }
-        }
-
-        public AbstractionTestEntityBuilder(ClassFramework.Domain.AbstractionTestEntity source)
-        {
-            if (source is null) throw new System.ArgumentNullException(nameof(source));
-            _type = source.Type?.ToBuilder()!;
-        }
-
-        public AbstractionTestEntityBuilder()
-        {
-            _type = default(ClassFramework.Domain.Builders.Abstractions.IAbstractTestBuilder)!;
-            SetDefaultValues();
-        }
-
-        public ClassFramework.Domain.AbstractionTestEntity Build()
-        {
-            return new ClassFramework.Domain.AbstractionTestEntity(Type?.Build()!);
-        }
-
-        partial void SetDefaultValues();
-
-        public ClassFramework.Domain.Builders.AbstractionTestEntityBuilder WithType(ClassFramework.Domain.Builders.Abstractions.IAbstractTestBuilder type)
-        {
-            if (type is null) throw new System.ArgumentNullException(nameof(type));
-            Type = type;
-            return this;
-        }
-
-        public static implicit operator ClassFramework.Domain.AbstractionTestEntity(AbstractionTestEntityBuilder builder)
-        {
-            return builder.Build();
-        }
-
-        protected void HandlePropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    }
     public partial class AttributeBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Attribute>, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         private System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.AttributeParameterBuilder> _parameters;

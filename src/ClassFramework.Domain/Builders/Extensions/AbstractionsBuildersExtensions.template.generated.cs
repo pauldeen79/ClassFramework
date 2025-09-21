@@ -10,9 +10,6 @@
 #nullable enable
 namespace ClassFramework.Domain.Builders.Extensions
 {
-    public static partial class AbstractTestBuilderExtensions
-    {
-    }
     public static partial class AttributesContainerBuilderExtensions
     {
         public static T AddAttributes<T>(this T instance, System.Collections.Generic.IEnumerable<ClassFramework.Domain.Builders.AttributeBuilder> attributes)
