@@ -1,2 +1,2 @@
 - Use deferred interpolation instead of [ ]
-- Replace lambda's (Func) in PipelineSettings with conditions from CrossCutting.Utilities.QueryFramework (or how it is going to be called)
+- Replace lambda's (Func) in PipelineSettings with conditions from CrossCutting.Utilities.QueryEvaluator

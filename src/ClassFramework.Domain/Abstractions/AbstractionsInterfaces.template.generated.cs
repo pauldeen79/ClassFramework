@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.Domain.Abstractions
 {
-    public partial interface IAttributesContainer
+    public partial interface IAttributesContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -18,20 +18,16 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ToBuilder();
     }
-    public partial interface IBaseClassContainer
+    public partial interface IBaseClassContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IBaseClassContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         string BaseClass
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.IBaseClassContainerBuilder ToBuilder();
     }
-    public partial interface ICodeStatementsContainer
+    public partial interface ICodeStatementsContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.ICodeStatementsContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -39,14 +35,11 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.ICodeStatementsContainerBuilder ToBuilder();
     }
-    public partial interface IConcreteType : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer, ClassFramework.Domain.Abstractions.IConstructorsContainer, ClassFramework.Domain.Abstractions.IRecordContainer, ClassFramework.Domain.Abstractions.IBaseClassContainer
+    public partial interface IConcreteType : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer, ClassFramework.Domain.Abstractions.IConstructorsContainer, ClassFramework.Domain.Abstractions.IRecordContainer, ClassFramework.Domain.Abstractions.IBaseClassContainer, CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IConcreteTypeBuilder>
     {
-        new ClassFramework.Domain.Builders.Abstractions.IConcreteTypeBuilder ToBuilder();
     }
-    public partial interface IConstructorsContainer
+    public partial interface IConstructorsContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IConstructorsContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -54,19 +47,15 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.IConstructorsContainerBuilder ToBuilder();
     }
-    public partial interface IDefaultValueContainer
+    public partial interface IDefaultValueContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder>
     {
         object? DefaultValue
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder ToBuilder();
     }
-    public partial interface IEnumsContainer
+    public partial interface IEnumsContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IEnumsContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -74,20 +63,16 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.IEnumsContainerBuilder ToBuilder();
     }
-    public partial interface IExplicitInterfaceNameContainer
+    public partial interface IExplicitInterfaceNameContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         string ExplicitInterfaceName
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder ToBuilder();
     }
-    public partial interface IGenericTypeArgumentsContainer
+    public partial interface IGenericTypeArgumentsContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -102,10 +87,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder ToBuilder();
     }
-    public partial interface IModifiersContainer : ClassFramework.Domain.Abstractions.IVisibilityContainer
+    public partial interface IModifiersContainer : ClassFramework.Domain.Abstractions.IVisibilityContainer, CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder>
     {
         bool Static
         {
@@ -136,20 +119,16 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
-
-        new ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder ToBuilder();
     }
-    public partial interface INameContainer
+    public partial interface INameContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         string Name
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ToBuilder();
     }
-    public partial interface IParametersContainer
+    public partial interface IParametersContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IParametersContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -157,29 +136,23 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.IParametersContainerBuilder ToBuilder();
     }
-    public partial interface IParentTypeContainer
+    public partial interface IParentTypeContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         string ParentTypeFullName
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder ToBuilder();
     }
-    public partial interface IRecordContainer
+    public partial interface IRecordContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IRecordContainerBuilder>
     {
         bool Record
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.IRecordContainerBuilder ToBuilder();
     }
-    public partial interface IReferenceType : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
+    public partial interface IReferenceType : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer, CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IReferenceTypeBuilder>
     {
         bool Static
         {
@@ -195,10 +168,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
-
-        new ClassFramework.Domain.Builders.Abstractions.IReferenceTypeBuilder ToBuilder();
     }
-    public partial interface ISubClassesContainer
+    public partial interface ISubClassesContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.ISubClassesContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         [CrossCutting.Common.DataAnnotations.ValidateObjectAttribute]
@@ -206,20 +177,16 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.ISubClassesContainerBuilder ToBuilder();
     }
-    public partial interface ISuppressWarningCodesContainer
+    public partial interface ISuppressWarningCodesContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         System.Collections.Generic.IReadOnlyCollection<string> SuppressWarningCodes
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder ToBuilder();
     }
-    public partial interface IType : ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
+    public partial interface IType : ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer, CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.ITypeBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         string Namespace
@@ -259,10 +226,8 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
-
-        new ClassFramework.Domain.Builders.Abstractions.ITypeBuilder ToBuilder();
     }
-    public partial interface ITypeContainer
+    public partial interface ITypeContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         string TypeName
@@ -286,21 +251,16 @@ namespace ClassFramework.Domain.Abstractions
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder ToBuilder();
     }
-    public partial interface IValueType : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
+    public partial interface IValueType : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer, CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IValueTypeBuilder>
     {
-        new ClassFramework.Domain.Builders.Abstractions.IValueTypeBuilder ToBuilder();
     }
-    public partial interface IVisibilityContainer
+    public partial interface IVisibilityContainer : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder>
     {
         ClassFramework.Domain.Domains.Visibility Visibility
         {
             get;
         }
-
-        ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder ToBuilder();
     }
 }
 #nullable disable

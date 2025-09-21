@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.TemplateFramework.Tests
 {
-    public partial record TestEntity
+    public partial record TestEntity : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.TemplateFramework.Tests.Builders.TestEntityBuilder>
     {
         public string SingleProperty
         {

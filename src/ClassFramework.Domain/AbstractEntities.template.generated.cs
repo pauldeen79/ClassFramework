@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.Domain
 {
-    public abstract partial record CodeStatementBase
+    public abstract partial record CodeStatementBase : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.CodeStatementBaseBuilder>
     {
         protected CodeStatementBase()
         {
@@ -23,7 +23,7 @@ namespace ClassFramework.Domain
 
         public abstract ClassFramework.Domain.Builders.CodeStatementBaseBuilder ToBuilder();
     }
-    public abstract partial record TypeBase : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer
+    public abstract partial record TypeBase : ClassFramework.Domain.Abstractions.IType, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer, ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer, CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.TypeBaseBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings = true)]
         public string Namespace
@@ -125,32 +125,32 @@ namespace ClassFramework.Domain
 
         public abstract ClassFramework.Domain.Builders.TypeBaseBuilder ToBuilder();
 
-        ClassFramework.Domain.Builders.Abstractions.ITypeBuilder ClassFramework.Domain.Abstractions.IType.ToBuilder()
+        ClassFramework.Domain.Builders.Abstractions.ITypeBuilder CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.ITypeBuilder>.ToBuilder()
         {
             return ToBuilder();
         }
 
-        ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder ClassFramework.Domain.Abstractions.IVisibilityContainer.ToBuilder()
+        ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder>.ToBuilder()
         {
             return ToBuilder();
         }
 
-        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder ClassFramework.Domain.Abstractions.INameContainer.ToBuilder()
+        ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder>.ToBuilder()
         {
             return ToBuilder();
         }
 
-        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder ClassFramework.Domain.Abstractions.IAttributesContainer.ToBuilder()
+        ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder>.ToBuilder()
         {
             return ToBuilder();
         }
 
-        ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer.ToBuilder()
+        ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder>.ToBuilder()
         {
             return ToBuilder();
         }
 
-        ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer.ToBuilder()
+        ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder>.ToBuilder()
         {
             return ToBuilder();
         }

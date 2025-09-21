@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.Domain.Builders
 {
-    public abstract partial class CodeStatementBaseBuilder : System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class CodeStatementBaseBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.CodeStatementBase>, System.ComponentModel.INotifyPropertyChanged
     {
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -37,7 +37,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public abstract partial class TypeBaseBuilder : ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class TypeBaseBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.TypeBase>, ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, System.ComponentModel.INotifyPropertyChanged
     {
         private string _namespace;
 
@@ -291,32 +291,32 @@ namespace ClassFramework.Domain.Builders
 
         public abstract ClassFramework.Domain.TypeBase Build();
 
-        ClassFramework.Domain.Abstractions.IType ClassFramework.Domain.Builders.Abstractions.ITypeBuilder.Build()
+        ClassFramework.Domain.Abstractions.IType CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IType>.Build()
         {
             return Build();
         }
 
-        ClassFramework.Domain.Abstractions.IVisibilityContainer ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IVisibilityContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IVisibilityContainer>.Build()
         {
             return Build();
         }
 
-        ClassFramework.Domain.Abstractions.INameContainer ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.INameContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.INameContainer>.Build()
         {
             return Build();
         }
 
-        ClassFramework.Domain.Abstractions.IAttributesContainer ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IAttributesContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IAttributesContainer>.Build()
         {
             return Build();
         }
 
-        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.IGenericTypeArgumentsContainer>.Build()
         {
             return Build();
         }
 
-        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder.Build()
+        ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Abstractions.ISuppressWarningCodesContainer>.Build()
         {
             return Build();
         }
