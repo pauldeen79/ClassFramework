@@ -10,6 +10,29 @@
 #nullable enable
 namespace ClassFramework.Domain
 {
+    public partial record AbstractionTestEntity : CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.AbstractionTestEntityBuilder>
+    {
+        public ClassFramework.Domain.Abstractions.IAbstractTest Type
+        {
+            get;
+        }
+
+        public AbstractionTestEntity(ClassFramework.Domain.Abstractions.IAbstractTest type)
+        {
+            this.Type = type;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+
+        public static implicit operator ClassFramework.Domain.Builders.AbstractionTestEntityBuilder(ClassFramework.Domain.AbstractionTestEntity entity)
+        {
+            return entity.ToBuilder();
+        }
+
+        public ClassFramework.Domain.Builders.AbstractionTestEntityBuilder ToBuilder()
+        {
+            return new ClassFramework.Domain.Builders.AbstractionTestEntityBuilder(this);
+        }
+    }
     public partial record Attribute : ClassFramework.Domain.Abstractions.INameContainer, CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.AttributeBuilder>
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
