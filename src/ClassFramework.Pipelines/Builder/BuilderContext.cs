@@ -120,11 +120,7 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
 
         if (Settings.UseCrossCuttingInterfaces)
         {
-            var builderInterface = GetBuilderInterface();
-            if (!Builder.Interfaces.Contains(builderInterface))
-            {
-                Builder.AddInterfaces(builderInterface);
-            }
+            results.Add(Result.FromExistingResult<T>(Result.Success(GetBuilderInterface())));
         }
 
         return results.ToArray();
@@ -184,7 +180,7 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
         if (IsBuilderForAbstractEntity)
         {
             var baseClass = Settings.BaseClass ?? SourceModel;
-            return typeof(IBuilder<object>).ReplaceGenericTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}");
+            return typeof(IBuilder<object>).ReplaceGenericTypeName($"{MapTypeName(baseClass.GetFullName())}{baseClass.GetGenericTypeArgumentsString()}");
         }
         else
         {
