@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.Domain.Builders
 {
-    public partial class AttributeBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Attribute>, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class AttributeBuilder : ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Attribute>
     {
         private System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.AttributeParameterBuilder> _parameters;
 
@@ -99,7 +99,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class AttributeParameterBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.AttributeParameter>, System.ComponentModel.INotifyPropertyChanged
+    public partial class AttributeParameterBuilder : System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.AttributeParameter>
     {
         private string _name;
 
@@ -179,7 +179,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class ConstructorBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Constructor>, ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ICodeStatementsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParametersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class ConstructorBuilder : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ICodeStatementsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParametersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Constructor>
     {
         private string _chainCall;
 
@@ -468,7 +468,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class EnumerationBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Enumeration>, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class EnumerationBuilder : ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Enumeration>
     {
         private System.Collections.ObjectModel.ObservableCollection<ClassFramework.Domain.Builders.EnumerationMemberBuilder> _members;
 
@@ -605,7 +605,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class EnumerationMemberBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.EnumerationMember>, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class EnumerationMemberBuilder : ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.EnumerationMember>
     {
         private object? _value;
 
@@ -709,7 +709,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class FieldBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Field>, ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class FieldBuilder : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder, System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Field>
     {
         private bool _readOnly;
 
@@ -1113,7 +1113,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class LiteralBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Literal>, System.ComponentModel.INotifyPropertyChanged
+    public partial class LiteralBuilder : System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Literal>
     {
         private string _value;
 
@@ -1193,7 +1193,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class MethodBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Method>, ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ICodeStatementsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParametersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class MethodBuilder : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ICodeStatementsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParametersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Method>
     {
         private string _returnTypeName;
 
@@ -1773,7 +1773,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class ParameterBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Parameter>, ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class ParameterBuilder : ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder, System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Parameter>
     {
         private bool _isParamArray;
 
@@ -2024,7 +2024,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class PropertyBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Property>, ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class PropertyBuilder : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder, System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Property>
     {
         private bool _hasGetter;
 

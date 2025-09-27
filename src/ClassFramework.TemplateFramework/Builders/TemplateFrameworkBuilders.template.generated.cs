@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.TemplateFramework.Builders
 {
-    public partial class CsharpClassGeneratorSettingsBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.TemplateFramework.CsharpClassGeneratorSettings>, System.ComponentModel.INotifyPropertyChanged
+    public partial class CsharpClassGeneratorSettingsBuilder : System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.TemplateFramework.CsharpClassGeneratorSettings>
     {
         private bool _recurseOnDeleteGeneratedFiles;
 
