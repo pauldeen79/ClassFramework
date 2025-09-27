@@ -118,7 +118,7 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
             }
         }
 
-        if (Settings.UseCrossCuttingInterfaces)
+        if (Settings.UseCrossCuttingInterfaces && (typeof(T) == typeof(FormattableString) || typeof(T) == typeof(string)))
         {
             results.Add(Result.FromExistingResult<T>(Result.Success(GetBuilderInterface())));
         }
