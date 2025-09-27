@@ -400,25 +400,28 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .SelectMany(x => CreateBuilderAbstractionTypeConversionTypenameMappings(x.GetEntityClassName(), x.GetGenericTypeArgumentsString()));
 
     protected TypenameMappingBuilder[] CreateBuilderAbstractionTypeConversionTypenameMappings(string entityClassName, string genericTypeArgumentsString)
+        => CreateBuilderAbstractionTypeConversionTypenameMappings(entityClassName, genericTypeArgumentsString, AbstractionsNamespace, BuilderAbstractionsNamespace, CoreNamespace);
+
+    protected static TypenameMappingBuilder[] CreateBuilderAbstractionTypeConversionTypenameMappings(string entityClassName, string genericTypeArgumentsString, string abstractionsNamespace, string builderAbstractionsNamespace, string coreNamespace)
         =>
         [
-            new TypenameMappingBuilder($"{AbstractionsNamespace}.I{entityClassName}{genericTypeArgumentsString}", $"{AbstractionsNamespace}.I{entityClassName}")
+            new TypenameMappingBuilder($"{abstractionsNamespace}.I{entityClassName}{genericTypeArgumentsString}", $"{abstractionsNamespace}.I{entityClassName}")
                 .AddMetadata
                 (
-                    new MetadataBuilder(MetadataNames.CustomBuilderNamespace, BuilderAbstractionsNamespace),
+                    new MetadataBuilder(MetadataNames.CustomBuilderNamespace, builderAbstractionsNamespace),
                     new MetadataBuilder(MetadataNames.CustomBuilderName, $"I{entityClassName.WithoutGenerics()}Builder"),
-                    new MetadataBuilder(MetadataNames.CustomBuilderInterfaceNamespace, BuilderAbstractionsNamespace),
+                    new MetadataBuilder(MetadataNames.CustomBuilderInterfaceNamespace, builderAbstractionsNamespace),
                     new MetadataBuilder(MetadataNames.CustomBuilderInterfaceName, $"I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString}"),
-                    new MetadataBuilder(MetadataNames.CustomBuilderInterfaceTypeName, $"{BuilderAbstractionsNamespace}.I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString}"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderInterfaceTypeName, $"{builderAbstractionsNamespace}.I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString}"),
                     new MetadataBuilder(MetadataNames.CustomBuilderSourceExpression, "[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]"),
-                    new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal($"default({BuilderAbstractionsNamespace}.I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString})")),
+                    new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal($"default({builderAbstractionsNamespace}.I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString})")),
                     new MetadataBuilder(MetadataNames.CustomBuilderMethodParameterExpression, "[Name][NullableSuffix].Build()[ForcedNullableSuffix]"),
-                    new MetadataBuilder(MetadataNames.CustomEntityInterfaceTypeName, $"{AbstractionsNamespace}.I{entityClassName}")
+                    new MetadataBuilder(MetadataNames.CustomEntityInterfaceTypeName, $"{abstractionsNamespace}.I{entityClassName}")
                 ),
             //Temporary fix for flaw in abstractions typename mapping
-            new TypenameMappingBuilder($"{CoreNamespace}.Builders.I{entityClassName}Builder", $"{BuilderAbstractionsNamespace}.I{entityClassName}Builder"),
-            new TypenameMappingBuilder($"{CoreNamespace}.Abstractions.{entityClassName}", $"{AbstractionsNamespace}.I{entityClassName}"),
-            new TypenameMappingBuilder($"{AbstractionsNamespace}.{entityClassName}", $"{AbstractionsNamespace}.I{entityClassName}")
+            new TypenameMappingBuilder($"{coreNamespace}.Builders.I{entityClassName}Builder", $"{builderAbstractionsNamespace}.I{entityClassName}Builder"),
+            new TypenameMappingBuilder($"{coreNamespace}.Abstractions.{entityClassName}", $"{abstractionsNamespace}.I{entityClassName}"),
+            new TypenameMappingBuilder($"{abstractionsNamespace}.{entityClassName}", $"{abstractionsNamespace}.I{entityClassName}")
         ];
 
     protected virtual bool IsAbstractType(Type type)
