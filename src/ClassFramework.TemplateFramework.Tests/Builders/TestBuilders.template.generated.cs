@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.TemplateFramework.Tests.Builders
 {
-    public partial class TestEntityBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.TemplateFramework.Tests.TestEntity>, System.ComponentModel.INotifyPropertyChanged
+    public partial class TestEntityBuilder : System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.TemplateFramework.Tests.TestEntity>
     {
         private System.Func<string> _singleProperty;
 

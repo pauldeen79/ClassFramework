@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.Domain.Builders
 {
-    public abstract partial class CodeStatementBaseBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.CodeStatementBase>, System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class CodeStatementBaseBuilder : System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.CodeStatementBase>
     {
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -37,7 +37,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public abstract partial class TypeBaseBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.TypeBase>, ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class TypeBaseBuilder : ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.TypeBase>
     {
         private string _namespace;
 

@@ -10,7 +10,7 @@
 #nullable enable
 namespace ClassFramework.Pipelines.Builders
 {
-    public partial class MetadataBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Pipelines.Metadata>, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, System.ComponentModel.INotifyPropertyChanged
+    public partial class MetadataBuilder : ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Pipelines.Metadata>
     {
         private object? _value;
 
@@ -88,7 +88,7 @@ namespace ClassFramework.Pipelines.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class NamespaceMappingBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Pipelines.NamespaceMapping>, System.ComponentModel.INotifyPropertyChanged
+    public partial class NamespaceMappingBuilder : System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Pipelines.NamespaceMapping>
     {
         private string _sourceNamespace;
 
@@ -205,7 +205,7 @@ namespace ClassFramework.Pipelines.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class PipelineSettingsBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Pipelines.PipelineSettings>, System.ComponentModel.INotifyPropertyChanged
+    public partial class PipelineSettingsBuilder : System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Pipelines.PipelineSettings>
     {
         private bool _addBackingFields;
 
@@ -2006,7 +2006,7 @@ namespace ClassFramework.Pipelines.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
-    public partial class TypenameMappingBuilder : CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Pipelines.TypenameMapping>, System.ComponentModel.INotifyPropertyChanged
+    public partial class TypenameMappingBuilder : System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Pipelines.TypenameMapping>
     {
         private string _sourceTypeName;
 

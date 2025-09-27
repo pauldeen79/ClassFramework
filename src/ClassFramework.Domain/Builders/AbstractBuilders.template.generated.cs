@@ -34,7 +34,7 @@ namespace ClassFramework.Domain.Builders
             return builder.BuildTyped();
         }
     }
-    public abstract partial class TypeBaseBuilder<TBuilder, TEntity> : TypeBaseBuilder, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.TypeBase>, ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder
+    public abstract partial class TypeBaseBuilder<TBuilder, TEntity> : TypeBaseBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IGenericTypeArgumentsContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ISuppressWarningCodesContainerBuilder, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.TypeBase>
         where TEntity : ClassFramework.Domain.TypeBase
         where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
     {
