@@ -116,4 +116,9 @@ public static class MetadataNames
     /// Metadata name for fixing typename when code generation fails.
     /// </summary>
     public const string CustomTypeName = "ClassFramework.CodeGeneration.Quirk.TypeName.Custom";
+
+    /// <summary>
+    /// Metadata name for fixing baseclass typename.
+    /// </summary>
+    public const string CustomBuilderBaseClassTypeName = "ClassFramework.CodeGeneration.Builder.BuilderBaseClassTypeName.Custom";
 }

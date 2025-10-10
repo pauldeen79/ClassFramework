@@ -17,11 +17,10 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                     return Result.Continue();
                 }
 
-                var typedMethodName = results.GetValue("ToTypedBuilderMethodName");
-
                 return await context.Request.GetCustomNamespaceResults(results)
                     .OnSuccessAsync(async customNamespaceResults =>
                     {
+                        var typedMethodName = results.GetValue("ToTypedBuilderMethodName");
                         var builderConcreteName = customNamespaceResults.GetValue("BuilderConcreteName");
                         var generics = context.Request.SourceModel.GetGenericTypeArgumentsString();
                         var builderName = results.GetValue(ResultNames.BuilderName).ToString().Replace(context.Request.SourceModel.Name, builderConcreteName);
