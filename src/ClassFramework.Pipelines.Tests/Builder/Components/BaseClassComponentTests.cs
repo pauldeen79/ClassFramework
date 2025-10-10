@@ -145,6 +145,29 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
         }
 
         [Fact]
+        public async Task Sets_BaseClass_With_Custom_Value_When_Metadata_Is_Available()
+        {
+            // Arrange
+            var sourceModel = CreateClass("MyBaseClass");
+            await InitializeExpressionEvaluatorAsync();
+            var sut = CreateSut();
+            var settings = CreateSettingsForBuilder(
+                enableBuilderInheritance: false,
+                enableEntityInheritance: true)
+                .WithIsForAbstractBuilder()
+                .AddTypenameMappings(new TypenameMappingBuilder("MyBaseClass")
+                    .AddMetadata(MetadataNames.CustomBuilderBaseClassTypeName, "xyz.CustomBaseClassBuilder"));
+            var context = CreateContext(sourceModel, settings);
+
+            // Act
+            var result = await sut.ProcessAsync(context);
+
+            // Assert
+            result.IsSuccessful().ShouldBeTrue();
+            context.Request.Builder.BaseClass.ShouldBe("xyz.CustomBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+        }
+
+        [Fact]
         public async Task Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
         {
             // Arrange
