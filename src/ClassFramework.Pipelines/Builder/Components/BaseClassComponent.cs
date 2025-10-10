@@ -18,6 +18,12 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
 
     private async Task<Result<GenericFormattableString>> GetBuilderBaseClassAsync(IType instance, PipelineContext<BuilderContext> context, CancellationToken token)
     {
+        var nameResult = await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
+        if (!nameResult.IsSuccessful())
+        {
+            return nameResult;
+        }
+
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
         var isNotForAbstractBuilder = context.Request.Settings.EnableInheritance
@@ -30,13 +36,6 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
             && context.Request.Settings.BaseClass is not null
             && !context.Request.Settings.IsForAbstractBuilder
             && context.Request.Settings.IsAbstract;
-
-        var nameResult = await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
-
-        if (!nameResult.IsSuccessful())
-        {
-            return nameResult;
-        }
 
         if (isNotForAbstractBuilder || isAbstract)
         {
