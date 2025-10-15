@@ -1,7 +1,9 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class PartialComponent : IPipelineComponent<BuilderExtensionContext>
+public class PartialComponent : IPipelineComponent<BuilderExtensionContext>, IOrderContainer
 {
+    public int Order => PipelineStage.Process;
+
     public Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
         => Task.Run(() =>
         {

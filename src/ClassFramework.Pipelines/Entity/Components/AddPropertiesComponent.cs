@@ -1,7 +1,9 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddPropertiesComponent : IPipelineComponent<EntityContext>
+public class AddPropertiesComponent : IPipelineComponent<EntityContext>, IOrderContainer
 {
+    public int Order => PipelineStage.Process;
+
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
         => Task.Run(() =>
         {

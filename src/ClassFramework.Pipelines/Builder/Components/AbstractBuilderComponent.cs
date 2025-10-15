@@ -1,8 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AbstractBuilderComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
+public class AbstractBuilderComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>, IOrderContainer
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
+
+    public int Order => PipelineStage.Process;
 
     public async Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {

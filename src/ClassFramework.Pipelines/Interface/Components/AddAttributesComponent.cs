@@ -1,7 +1,9 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class AddAttributesComponent : IPipelineComponent<InterfaceContext>
+public class AddAttributesComponent : IPipelineComponent<InterfaceContext>, IOrderContainer
 {
+    public int Order => PipelineStage.Process;
+
     public Task<Result> ProcessAsync(PipelineContext<InterfaceContext> context, CancellationToken token)
         => Task.Run(() =>
         {

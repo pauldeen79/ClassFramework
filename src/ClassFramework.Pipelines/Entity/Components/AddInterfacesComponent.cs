@@ -1,7 +1,9 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddInterfacesComponent : IPipelineComponent<EntityContext>
+public class AddInterfacesComponent : IPipelineComponent<EntityContext>, IOrderContainer
 {
+    public int Order => PipelineStage.Process;
+
     public async Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));

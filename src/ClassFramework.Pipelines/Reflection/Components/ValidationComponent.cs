@@ -1,7 +1,9 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class ValidationComponent : IPipelineComponent<ReflectionContext>
+public class ValidationComponent : IPipelineComponent<ReflectionContext>, IOrderContainer
 {
+    public int Order => PipelineStage.PreProcess;
+
     public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
         => Task.Run(() =>
         {

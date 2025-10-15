@@ -1,7 +1,9 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class ValidationComponent : IPipelineComponent<EntityContext>
+public class ValidationComponent : IPipelineComponent<EntityContext>, IOrderContainer
 {
+    public int Order => PipelineStage.PreProcess;
+
     public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
         => Task.Run(() =>
         {

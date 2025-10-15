@@ -1,7 +1,9 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class SetBaseClassComponent : IPipelineComponent<EntityContext>
+public class SetBaseClassComponent : IPipelineComponent<EntityContext>, IOrderContainer
 {
+    public int Order => PipelineStage.Process;
+
     public async Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));

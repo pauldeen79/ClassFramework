@@ -1,7 +1,9 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class ValidationComponent : IPipelineComponent<BuilderExtensionContext>
+public class ValidationComponent : IPipelineComponent<BuilderExtensionContext>, IOrderContainer
 {
+    public int Order => PipelineStage.PreProcess;
+
     public Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
         => Task.Run(() =>
         {

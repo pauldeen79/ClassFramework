@@ -1,7 +1,9 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class AddPropertiesComponent : IPipelineComponent<ReflectionContext>
+public class AddPropertiesComponent : IPipelineComponent<ReflectionContext>, IOrderContainer
 {
+    public int Order => PipelineStage.Process;
+
     public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
         => Task.Run(() =>
         {

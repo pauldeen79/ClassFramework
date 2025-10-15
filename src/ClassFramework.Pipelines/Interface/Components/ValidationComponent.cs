@@ -1,7 +1,9 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class ValidationComponent : IPipelineComponent<InterfaceContext>
+public class ValidationComponent : IPipelineComponent<InterfaceContext>, IOrderContainer
 {
+    public int Order => PipelineStage.PreProcess;
+
     public Task<Result> ProcessAsync(PipelineContext<InterfaceContext> context, CancellationToken token)
         => Task.Run(() =>
         {

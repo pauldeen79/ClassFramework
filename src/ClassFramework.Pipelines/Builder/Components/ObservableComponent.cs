@@ -1,7 +1,9 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class ObservableComponent : IPipelineComponent<BuilderContext>
+public class ObservableComponent : IPipelineComponent<BuilderContext>, IOrderContainer
 {
+    public int Order => PipelineStage.Process;
+
     public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
         => Task.Run(() =>
         {
