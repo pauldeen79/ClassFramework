@@ -4,7 +4,7 @@ public class CodeGenerationHeaderViewModel : CsharpClassGeneratorViewModelBase<C
 {
     public string Version
         => !string.IsNullOrEmpty(Model.EnvironmentVersion)
-            ? Model!.EnvironmentVersion!
+            ? Model.EnvironmentVersion!
             : Environment.Version.ToString();
 
     public bool CreateCodeGenerationHeader

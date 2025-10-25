@@ -28,7 +28,7 @@ public class ParameterViewModel(ICsharpExpressionDumper csharpExpressionDumper) 
     public string TypeName
         => Model.TypeName
             .GetCsharpFriendlyTypeName()
-            .AppendNullableAnnotation(Model!.IsNullable, Settings.EnableNullableContext, Model.IsValueType)
+            .AppendNullableAnnotation(Model.IsNullable, Settings.EnableNullableContext, Model.IsValueType)
             .AbbreviateNamespaces(Context.GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate);
 
     public string Name

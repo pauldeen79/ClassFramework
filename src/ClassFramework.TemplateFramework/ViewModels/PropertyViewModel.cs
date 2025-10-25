@@ -8,7 +8,7 @@ public class PropertyViewModel(ICsharpExpressionDumper csharpExpressionDumper) :
     public string TypeName
         => Model.TypeName
             .GetCsharpFriendlyTypeName()
-            .AppendNullableAnnotation(Model!.IsNullable, Settings.EnableNullableContext, Model.IsValueType)
+            .AppendNullableAnnotation(Model.IsNullable, Settings.EnableNullableContext, Model.IsValueType)
             .AbbreviateNamespaces(Context.GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate);
 
     public string Name
@@ -19,7 +19,7 @@ public class PropertyViewModel(ICsharpExpressionDumper csharpExpressionDumper) :
 
     public string ExplicitInterfaceName
         => !string.IsNullOrEmpty(Model.ExplicitInterfaceName) && ParentModel is not Interface
-            ? $"{Model!.ExplicitInterfaceName}."
+            ? $"{Model.ExplicitInterfaceName}."
             : string.Empty;
 
     public bool ShouldRenderDefaultValue

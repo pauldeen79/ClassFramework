@@ -5,7 +5,7 @@ public class EnumerationMemberViewModel(ICsharpExpressionDumper csharpExpression
     public string ValueExpression
         => Model.Value is null
             ? string.Empty
-            : $" = {csharpExpressionDumper.Dump(Model!.Value)}";
+            : $" = {csharpExpressionDumper.Dump(Model.Value)}";
 
     public string Name
         => Model.Name.Sanitize().GetCsharpFriendlyName();

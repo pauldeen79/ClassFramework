@@ -24,5 +24,5 @@ public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T
 
     public IEnumerable<object> Parameters
         => Model.Parameters
-            .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new SpaceAndCommaModel()] : new object[] { item });
+            .SelectMany((item, index) => index + 1 < Model.Parameters.Count ? [item, new SpaceAndCommaModel()] : new object[] { item });
 }

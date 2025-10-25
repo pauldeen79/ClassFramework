@@ -20,7 +20,7 @@ public class ConstructorViewModel : MethodViewModelBase<Constructor>
     public string ChainCall
         => string.IsNullOrEmpty(Model.ChainCall)
             ? string.Empty
-            : $" : {Model!.ChainCall}";
+            : $" : {Model.ChainCall}";
 
     public bool OmitCode
         => ParentModel is Interface || Model.Abstract;

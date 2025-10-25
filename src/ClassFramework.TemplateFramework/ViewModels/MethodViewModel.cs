@@ -9,7 +9,7 @@ public class MethodViewModel : MethodViewModelBase<Method>
     public string ReturnTypeName
         => Model.ReturnTypeName
             .GetCsharpFriendlyTypeName()
-            .AppendNullableAnnotation(Model!.ReturnTypeIsNullable, Settings.EnableNullableContext, Model.ReturnTypeIsValueType)
+            .AppendNullableAnnotation(Model.ReturnTypeIsNullable, Settings.EnableNullableContext, Model.ReturnTypeIsValueType)
             .AbbreviateNamespaces(Context.GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate)
             .WhenNullOrEmpty("void");
 
@@ -18,7 +18,7 @@ public class MethodViewModel : MethodViewModelBase<Method>
 
     public string ExplicitInterfaceName
         => !string.IsNullOrEmpty(Model.ExplicitInterfaceName) && ParentModel is not Interface
-            ? $"{Model!.ExplicitInterfaceName}."
+            ? $"{Model.ExplicitInterfaceName}."
             : string.Empty;
 
     public string GenericTypeArguments

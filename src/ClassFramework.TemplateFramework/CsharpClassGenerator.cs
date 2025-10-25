@@ -50,7 +50,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
     private async Task<Result> RenderHeaderAsync(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
-        return await (await RenderChildTemplateByModelAsync(Model!.CodeGenerationHeaderModel, generationEnvironment, cancellationToken).ConfigureAwait(false))
+        return await (await RenderChildTemplateByModelAsync(Model.CodeGenerationHeaderModel, generationEnvironment, cancellationToken).ConfigureAwait(false))
             .OnSuccessAsync(async () =>
             {
                 if (!Model.Settings.EnableGlobalUsings)
@@ -63,7 +63,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
     private async Task<Result> RenderNamespaceHierarchyAsync(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder, CancellationToken cancellationToken)
     {
-        foreach (var @namespace in Model!.Namespaces)
+        foreach (var @namespace in Model.Namespaces)
         {
             if (singleStringBuilder is not null && !string.IsNullOrEmpty(@namespace.Key))
             {

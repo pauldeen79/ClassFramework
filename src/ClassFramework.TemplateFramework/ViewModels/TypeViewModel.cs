@@ -86,7 +86,7 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
             Struct str when str.Record => "record struct",
             Struct str when !str.Record => "struct",
             Interface => "interface",
-            _ => throw new NotSupportedException($"Unknown container type: [{Model!.GetType().FullName}]")
+            _ => throw new NotSupportedException($"Unknown container type: [{Model.GetType().FullName}]")
         };
 
     public string InheritedClasses
@@ -102,7 +102,7 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
                 lst.Add(baseClassContainer.BaseClass);
             }
 
-            lst.AddRange(Model!.Interfaces);
+            lst.AddRange(Model.Interfaces);
             return lst.Count == 0
                 ? string.Empty
                 : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";

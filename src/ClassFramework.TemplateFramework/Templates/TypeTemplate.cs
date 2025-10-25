@@ -62,7 +62,7 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
 
     private async Task<Result> RenderTypeBase(StringBuilderEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
-        generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model!.ShouldRenderNullablePragmas);
+        generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
 
         foreach (var suppression in Model.SuppressWarningCodes)
         {

@@ -10,7 +10,7 @@ public class AttributeViewModel(ICsharpExpressionDumper csharpExpressionDumper) 
     public string Parameters
         => Model.Parameters.Count == 0
             ? string.Empty
-            : string.Concat("(", string.Join(", ", Model!.Parameters.Select(p =>
+            : string.Concat("(", string.Join(", ", Model.Parameters.Select(p =>
                 string.IsNullOrEmpty(p.Name)
                     ? csharpExpressionDumper.Dump(p.Value)
                     : $"{p.Name} = {csharpExpressionDumper.Dump(p.Value)}"
