@@ -16,7 +16,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             object? context = default;
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success(context)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
@@ -37,7 +37,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
             object? context = default;
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success(context)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
@@ -63,7 +63,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
                 .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Error<object?>("Kaboom"));
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success(context)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
@@ -91,7 +91,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
                     ? Result.Success<object?>("Success")
                     : Result.Error<object?>("Kaboom"));
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success(context)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
@@ -117,7 +117,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
                 .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success<object?>(12345));
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success(context)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
@@ -143,7 +143,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
                 .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success<object?>(null));
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success(context)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
@@ -174,7 +174,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
                     _ => Result.NotSupported<object?>()
                 });
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success(context)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
@@ -200,7 +200,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
                 .EvaluateAsync(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(Result.Success<object?>("MyGenericType<System.String>"));
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success(context)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
@@ -231,7 +231,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
                     _ => Result.NotSupported<object?>()
                 });
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success(context)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
@@ -262,7 +262,7 @@ public class GenericArgumentsFunctionTests : TestBase<GenericArgumentsFunction>
                     _ => Result.NotSupported<object?>()
                 });
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Task<Result<object?>>> { { "context", Task.FromResult(Result.Success(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success(context)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);

@@ -39,9 +39,9 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
     private async Task<Result<ConstructorBuilder>> CreateCopyConstructorAsync(PipelineContext<BuilderContext> context, CancellationToken token)
     {
         var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add("NullCheck.Source", _evaluator.EvaluateInterpolatedStringAsync("{SourceNullCheck()}", context.Request.FormatProvider, context.Request, token))
-            .Add(ResultNames.Name, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token))
-            .Add(ResultNames.Namespace, context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
+            .Add("NullCheck.Source", () => _evaluator.EvaluateInterpolatedStringAsync("{SourceNullCheck()}", context.Request.FormatProvider, context.Request, token))
+            .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add(ResultNames.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
             .Build()
             .ConfigureAwait(false);
 

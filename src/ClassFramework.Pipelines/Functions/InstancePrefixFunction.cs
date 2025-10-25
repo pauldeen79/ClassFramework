@@ -9,7 +9,7 @@ public class InstancePrefixFunction : IFunction<string>
     {
         context = context.IsNotNull(nameof(context));
 
-        var contextValue = (await context.Context.State[ResultNames.Context].ConfigureAwait(false)).Value;
+        var contextValue = (await context.Context.State[ResultNames.Context]().ConfigureAwait(false)).Value;
         var value = contextValue is BuilderExtensionContext
             ? "instance."
             : string.Empty;

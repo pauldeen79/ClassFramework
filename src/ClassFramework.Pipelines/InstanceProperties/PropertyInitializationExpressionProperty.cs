@@ -11,9 +11,9 @@ public class PropertyInitializationExpressionProperty : IProperty
 
         return (await new AsyncResultDictionaryBuilder()
             .Add(Constants.Instance, context.GetInstanceValueResult<Property>())
-            .Add(ResultNames.TypeName, context.GetTypeNameAsync())
-            .Add(ResultNames.Settings, context.GetSettingsAsync())
-            .Add(ResultNames.Context, context.GetMappedContextBaseAsync())
+            .Add(ResultNames.TypeName, () => context.GetTypeNameAsync())
+            .Add(ResultNames.Settings, () => context.GetSettingsAsync())
+            .Add(ResultNames.Context, () => context.GetMappedContextBaseAsync())
             .Build()
             .ConfigureAwait(false))
             .OnSuccess<object?>(results => GetInitializationExpression(results.GetValue<Property>(Constants.Instance), results.GetValue<string>(ResultNames.TypeName), results.GetValue<PipelineSettings>(ResultNames.Settings)));

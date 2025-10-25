@@ -11,7 +11,7 @@ public class PropertyNullableRequiredSuffixProperty : IProperty
 
         return (await new AsyncResultDictionaryBuilder()
             .Add(Constants.Instance, context.GetInstanceValueResult<Property>())
-            .Add(ResultNames.Settings, context.GetSettingsAsync())
+            .Add(ResultNames.Settings, () => context.GetSettingsAsync())
             .Build()
             .ConfigureAwait(false))
             .OnSuccess<object?>(results => GetNullableRequiredSuffix(results.GetValue<PipelineSettings>(ResultNames.Settings), results.GetValue<Property>(Constants.Instance)));

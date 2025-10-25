@@ -14,7 +14,7 @@ public static class FunctionCallContextExtensions
     public static async Task<Result<object?>> EvaluateForProperty(this FunctionCallContext instance, Func<Property, PipelineSettings, string> evaluationDelegate)
         => (await new AsyncResultDictionaryBuilder()
             .Add(Constants.Instance, instance.GetInstanceValueResult<Property>())
-            .Add(ResultNames.Settings, instance.GetSettingsAsync())
+            .Add(ResultNames.Settings, () => instance.GetSettingsAsync())
             .Build()
             .ConfigureAwait(false))
             .OnSuccess<object?>(results => evaluationDelegate(
@@ -24,8 +24,8 @@ public static class FunctionCallContextExtensions
     public static async Task<Result<object?>> EvaluateForProperty(this FunctionCallContext instance, Func<Property, PipelineSettings, MappedContextBase, string> evaluationDelegate)
         => (await new AsyncResultDictionaryBuilder()
             .Add(Constants.Instance, instance.GetInstanceValueResult<Property>())
-            .Add(ResultNames.Settings, instance.GetSettingsAsync())
-            .Add(ResultNames.Context, instance.GetMappedContextBaseAsync())
+            .Add(ResultNames.Settings, () => instance.GetSettingsAsync())
+            .Add(ResultNames.Context, () => instance.GetMappedContextBaseAsync())
             .Build()
             .ConfigureAwait(false))
             .OnSuccess<object?>(results => evaluationDelegate(

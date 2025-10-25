@@ -15,7 +15,7 @@ public static class ExpressionEvaluatorExtensions
             token
         );
 
-    private static IReadOnlyDictionary<string, Task<Result<object?>>> CreateState(object context)
+    private static IReadOnlyDictionary<string, Func<Task<Result<object?>>>> CreateState(object context)
     {
         var builder = new AsyncResultDictionaryBuilder<object?>();
 

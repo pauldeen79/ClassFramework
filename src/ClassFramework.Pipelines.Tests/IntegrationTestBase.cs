@@ -20,7 +20,7 @@ public abstract class IntegrationTestBase<T> : TestBase
     {
         public async Task<Result<object?>> EvaluateAsync(FunctionCallContext context, CancellationToken token)
         {
-            var ctx = await context.Context.State["context"].ConfigureAwait(false);
+            var ctx = await context.Context.State["context"]().ConfigureAwait(false);
             if (ctx.GetValueOrThrow() is PropertyContext propertyContext)
             {
                 return Result.Success<object?>(propertyContext.SourceModel.Name);

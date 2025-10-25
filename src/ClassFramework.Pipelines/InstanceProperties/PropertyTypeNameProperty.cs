@@ -11,7 +11,7 @@ public class PropertyTypeNameProperty : IProperty
 
         return (await new AsyncResultDictionaryBuilder()
             .Add(Constants.Instance, context.GetInstanceValueResult<Property>())
-            .Add(ResultNames.Context, context.GetMappedContextBaseAsync())
+            .Add(ResultNames.Context, () => context.GetMappedContextBaseAsync())
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(results => results.GetValue<MappedContextBase>(ResultNames.Context).MapTypeName(results.GetValue<Property>(Constants.Instance).TypeName));

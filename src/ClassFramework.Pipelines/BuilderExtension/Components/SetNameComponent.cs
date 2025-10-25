@@ -11,8 +11,8 @@ public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineCompone
         context = context.IsNotNull(nameof(context));
 
         return (await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add(ResultNames.Name, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderExtensionsNameFormatString, context.Request.FormatProvider, context.Request, token))
-            .Add(ResultNames.Namespace, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderExtensionsNamespaceFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderExtensionsNameFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add(ResultNames.Namespace, () => _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderExtensionsNamespaceFormatString, context.Request.FormatProvider, context.Request, token))
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(results =>

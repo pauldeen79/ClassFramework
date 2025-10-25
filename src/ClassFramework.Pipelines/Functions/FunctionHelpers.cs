@@ -4,7 +4,7 @@ internal static class FunctionHelpers
 {
     internal static async Task<Result<T>> ParseFromStringArgumentAsync<T>(FunctionCallContext context, string functionName, Func<string, Result<T>> functionDelegate, CancellationToken token)
         => (await new AsyncResultDictionaryBuilder()
-                .Add(Constants.Expression, (await context.GetArgumentValueResultAsync(0, Constants.Expression, token).ConfigureAwait(false)).TryCast<string>())
+                .Add(Constants.Expression, async () => (await context.GetArgumentValueResultAsync(0, Constants.Expression, token).ConfigureAwait(false)).TryCast<string>())
                 .Build()
                 .ConfigureAwait(false))
                 .OnFailure(result => result.Wrap($"{functionName} function failed, see inner results for details"))
@@ -12,10 +12,10 @@ internal static class FunctionHelpers
 
     internal static async Task<Result<string>> ParseFromContextAsync(FunctionCallContext context, Func<ContextBase, PipelineSettings, ClassModel, Property, bool, string> resultDelegate)
         => (await new AsyncResultDictionaryBuilder()
-            .Add(ResultNames.Settings, context.GetSettingsAsync())
-            .Add(ResultNames.Context, context.Context.State.TryCastValueAsync<ContextBase>(ResultNames.Context))
-            .Add(ResultNames.Property, context.Context.State.TryCastValueAsync<Property>(ResultNames.Property))
-            .Add(ResultNames.Class, context.Context.State.TryCastValueAsync<ClassModel>(ResultNames.Class))
+            .Add(ResultNames.Settings, () => context.GetSettingsAsync())
+            .Add(ResultNames.Context, () => context.Context.State.TryCastValueAsync<ContextBase>(ResultNames.Context))
+            .Add(ResultNames.Property, () => context.Context.State.TryCastValueAsync<Property>(ResultNames.Property))
+            .Add(ResultNames.Class, () => context.Context.State.TryCastValueAsync<ClassModel>(ResultNames.Class))
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(results =>
@@ -34,7 +34,7 @@ internal static class FunctionHelpers
 
     internal static async Task<Result<T>> ParseFromContextAsync<T>(FunctionCallContext context, string functionName, Func<ContextBase, Result<T>> functionDelegate)
     {
-        var ctx = await context.Context.State[ResultNames.Context].ConfigureAwait(false);
+        var ctx = await context.Context.State[ResultNames.Context]().ConfigureAwait(false);
 
         return ctx.Value switch
         {

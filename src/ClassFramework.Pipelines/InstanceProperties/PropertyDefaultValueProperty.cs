@@ -20,8 +20,8 @@ public class PropertyDefaultValueProperty : IProperty
 
         return await (await new AsyncResultDictionaryBuilder()
             .Add(Constants.Instance, context.GetInstanceValueResult<Property>())
-            .Add(ResultNames.TypeName, context.GetTypeNameAsync())
-            .Add(ResultNames.Context, context.GetMappedContextBaseAsync())
+            .Add(ResultNames.TypeName, () => context.GetTypeNameAsync())
+            .Add(ResultNames.Context, () => context.GetMappedContextBaseAsync())
             .Build()
             .ConfigureAwait(false))
             .OnSuccessAsync(async results =>
