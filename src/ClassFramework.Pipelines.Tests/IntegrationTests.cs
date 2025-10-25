@@ -3,7 +3,7 @@
 public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
 {
     [Fact]
-    public async Task Can_Use_FormattableStringParser_With_PlaceholderProcessors_To_Get_Formatted_String()
+    public async Task Can_Use_ExpressionEvaluator_With_PlaceholderProcessors_To_Get_Formatted_String()
     {
         // Arrange
         var formatString = "foreach (var item in {CsharpFriendlyName(property.Name.ToCamelCase())}) {property.Name}.Add(item);";
@@ -21,7 +21,7 @@ public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
     }
 
     [Fact]
-    public async Task Can_Use_FormattableStringParser_With_Functions_To_Get_Formatted_String_And_Apply_Processing_Like_Casing()
+    public async Task Can_Use_ExpressionEvaluator_With_Functions_To_Get_Formatted_String_And_Apply_Processing_Like_Casing()
     {
         // Arrange
         var formatString = "foreach (var item in {property.Name.ToCamelCase()}) {property.Name}.Add(item);";
@@ -39,7 +39,7 @@ public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
     }
 
     [Fact]
-    public void Can_Get_Descriptors_For_All_Functions()
+    public void Can_Get_Descriptors_For_All_Members()
     {
         // Arrange
         var descriptorProvider = Scope!.ServiceProvider.GetRequiredService<IMemberDescriptorProvider>();
