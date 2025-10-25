@@ -14,7 +14,7 @@ public class PropertyInitializationExpressionProperty : IProperty
             .Add(ResultNames.TypeName, () => context.GetTypeNameAsync())
             .Add(ResultNames.Settings, () => context.GetSettingsAsync())
             .Add(ResultNames.Context, () => context.GetMappedContextBaseAsync())
-            .Build()
+            .BuildAsync()
             .ConfigureAwait(false))
             .OnSuccess<object?>(results => GetInitializationExpression(results.GetValue<Property>(Constants.Instance), results.GetValue<string>(ResultNames.TypeName), results.GetValue<PipelineSettings>(ResultNames.Settings)));
     }

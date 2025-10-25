@@ -5,7 +5,7 @@ internal static class FunctionHelpers
     internal static async Task<Result<T>> ParseFromStringArgumentAsync<T>(FunctionCallContext context, string functionName, Func<string, Result<T>> functionDelegate, CancellationToken token)
         => (await new AsyncResultDictionaryBuilder()
             .Add(Constants.Expression, async () => (await context.GetArgumentValueResultAsync(0, Constants.Expression, token).ConfigureAwait(false)).TryCast<string>())
-            .Build()
+            .BuildAsync()
             .ConfigureAwait(false))
             .OnFailure(result => result.Wrap($"{functionName} function failed, see inner results for details"))
             .OnSuccess(results => functionDelegate(results.GetValue<string>(Constants.Expression)));
@@ -16,7 +16,7 @@ internal static class FunctionHelpers
             .Add(ResultNames.Context, () => context.Context.State.TryCastValueAsync<ContextBase>(ResultNames.Context))
             .Add(ResultNames.Property, () => context.Context.State.TryCastValueAsync<Property>(ResultNames.Property))
             .Add(ResultNames.Class, () => context.Context.State.TryCastValueAsync<ClassModel>(ResultNames.Class))
-            .Build()
+            .BuildAsync()
             .ConfigureAwait(false))
             .OnSuccess(results =>
             {

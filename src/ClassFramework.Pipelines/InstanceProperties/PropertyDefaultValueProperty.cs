@@ -22,7 +22,7 @@ public class PropertyDefaultValueProperty : IProperty
             .Add(Constants.Instance, context.GetInstanceValueResult<Property>())
             .Add(ResultNames.TypeName, () => context.GetTypeNameAsync())
             .Add(ResultNames.Context, () => context.GetMappedContextBaseAsync())
-            .Build()
+            .BuildAsync()
             .ConfigureAwait(false))
             .OnSuccessAsync(async results =>
             {

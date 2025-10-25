@@ -15,7 +15,7 @@ public static class FunctionCallContextExtensions
         => (await new AsyncResultDictionaryBuilder()
             .Add(Constants.Instance, instance.GetInstanceValueResult<Property>())
             .Add(ResultNames.Settings, instance.GetSettingsAsync)
-            .Build()
+            .BuildAsync()
             .ConfigureAwait(false))
             .OnSuccess<object?>(results => evaluationDelegate(
                 results.GetValue<Property>(Constants.Instance),
@@ -26,7 +26,7 @@ public static class FunctionCallContextExtensions
             .Add(Constants.Instance, instance.GetInstanceValueResult<Property>())
             .Add(ResultNames.Settings, instance.GetSettingsAsync)
             .Add(ResultNames.Context, instance.GetMappedContextBaseAsync)
-            .Build()
+            .BuildAsync()
             .ConfigureAwait(false))
             .OnSuccess<object?>(results => evaluationDelegate(
                 results.GetValue<Property>(Constants.Instance),

@@ -12,7 +12,7 @@ public class SourceNullCheckFunction : IFunction<string>
         return (await new AsyncResultDictionaryBuilder()
             .Add(ResultNames.Settings, () => context.GetSettingsAsync())
             .Add(ResultNames.Context, () => context.Context.State.TryCastValueAsync<ContextBase>(ResultNames.Context))
-            .Build()
+            .BuildAsync()
             .ConfigureAwait(false))
             .OnSuccess(results => results.GetValue<PipelineSettings>(ResultNames.Settings).AddNullChecks
                 ? results.GetValue<ContextBase>(ResultNames.Context).CreateArgumentNullException("source")
