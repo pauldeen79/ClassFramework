@@ -12,7 +12,7 @@ internal static class FunctionHelpers
 
     internal static async Task<Result<string>> ParseFromContextAsync(FunctionCallContext context, Func<ContextBase, PipelineSettings, ClassModel, Property, bool, string> resultDelegate)
         => (await new AsyncResultDictionaryBuilder()
-            .Add(ResultNames.Settings, () => context.GetSettingsAsync())
+            .Add(ResultNames.Settings, context.GetSettingsAsync)
             .Add(ResultNames.Context, () => context.Context.State.TryCastValueAsync<ContextBase>(ResultNames.Context))
             .Add(ResultNames.Property, () => context.Context.State.TryCastValueAsync<Property>(ResultNames.Property))
             .Add(ResultNames.Class, () => context.Context.State.TryCastValueAsync<ClassModel>(ResultNames.Class))
