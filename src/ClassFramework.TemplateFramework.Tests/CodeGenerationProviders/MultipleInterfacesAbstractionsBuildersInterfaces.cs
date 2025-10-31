@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class MultipleInterfacesAbstractionsBuildersInterfaces(IPipelineService pipelineService) : MultipleInterfacesBase(pipelineService)
+public class MultipleInterfacesAbstractionsBuildersInterfaces(ICommandService commandService) : MultipleInterfacesBase(commandService)
 {
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetBuilderInterfacesAsync(GetAbstractionsTypesAsync(), CurrentNamespace, "ClassFramework.Domain.Abstractions", CurrentNamespace);
 

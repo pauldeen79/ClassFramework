@@ -6,18 +6,18 @@ public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineCompone
 
     public int Order => PipelineStage.Process;
 
-    public async Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderExtensionContext context, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         return (await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderExtensionsNameFormatString, context.Request.FormatProvider, context.Request, token))
-            .Add(ResultNames.Namespace, () => _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderExtensionsNamespaceFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(context.Settings.BuilderExtensionsNameFormatString, context.FormatProvider, context, token))
+            .Add(ResultNames.Namespace, () => _evaluator.EvaluateInterpolatedStringAsync(context.Settings.BuilderExtensionsNamespaceFormatString, context.FormatProvider, context, token))
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(results =>
             {
-                context.Request.Builder
+                context.Builder
                     .WithName(results.GetValue(ResultNames.Name))
                     .WithNamespace(results.GetValue(ResultNames.Namespace));
             });

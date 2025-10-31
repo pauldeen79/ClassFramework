@@ -4,23 +4,23 @@ public class SetModifiersComponent : IPipelineComponent<ReflectionContext>, IOrd
 {
     public int Order => PipelineStage.Process;
 
-    public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
+    public Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            if (context.Request.Builder is IReferenceTypeBuilder referenceTypeBuilder)
+            if (context.Builder is IReferenceTypeBuilder referenceTypeBuilder)
             {
                 referenceTypeBuilder
-                    .WithStatic(context.Request.SourceModel.IsAbstract && context.Request.SourceModel.IsSealed)
-                    .WithSealed(context.Request.SourceModel.IsSealed)
-                    .WithPartial(context.Request.Settings.CreateAsPartial)
-                    .WithAbstract(context.Request.SourceModel.IsAbstract);
+                    .WithStatic(context.SourceModel.IsAbstract && context.SourceModel.IsSealed)
+                    .WithSealed(context.SourceModel.IsSealed)
+                    .WithPartial(context.Settings.CreateAsPartial)
+                    .WithAbstract(context.SourceModel.IsAbstract);
             }
 
-            if (context.Request.Builder is IRecordContainerBuilder recordContainerBuilder)
+            if (context.Builder is IRecordContainerBuilder recordContainerBuilder)
             {
-                recordContainerBuilder.WithRecord(context.Request.SourceModel.IsRecord());
+                recordContainerBuilder.WithRecord(context.SourceModel.IsRecord());
             }
 
             return Result.Success();

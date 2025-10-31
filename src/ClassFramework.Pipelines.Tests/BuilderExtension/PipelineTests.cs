@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.BuilderExtension;
 
-public class PipelineTests : IntegrationTestBase<IPipeline<BuilderExtensionContext>>
+public class PipelineTests : IntegrationTestBase<ICommandService>
 {
-    public class ProcessAsync : PipelineTests
+    public class ExecuteAsync : PipelineTests
     {
         private static BuilderExtensionContext CreateContext(bool addProperties = true, bool useBuilderLazyValues = false)
             => new(
@@ -26,7 +26,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderExtensionConte
             var context = CreateContext();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<BuilderExtensionContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -41,7 +41,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderExtensionConte
             var context = CreateContext();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<BuilderExtensionContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -62,7 +62,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderExtensionConte
             var context = CreateContext(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<BuilderExtensionContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -105,7 +105,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderExtensionConte
             var context = CreateContext();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<BuilderExtensionContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -133,7 +133,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderExtensionConte
             var context = CreateContext(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<BuilderExtensionContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -167,13 +167,11 @@ public class PipelineTests : IntegrationTestBase<IPipeline<BuilderExtensionConte
             var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.ProcessAsync(context);
-            var innerResult = result?.InnerResults.FirstOrDefault();
+            var result = await sut.ExecuteAsync<BuilderExtensionContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
-            innerResult.ShouldNotBeNull();
-            innerResult!.Status.ShouldBe(ResultStatus.Invalid);
-            innerResult.ErrorMessage.ShouldBe("To create a builder extensions class, there must be at least one property");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("There must be at least one property");
         }
     }
 }

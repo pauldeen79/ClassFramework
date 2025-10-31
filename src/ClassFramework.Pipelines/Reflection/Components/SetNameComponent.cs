@@ -6,20 +6,20 @@ public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineCompone
 
     public int Order => PipelineStage.Process;
 
-    public async Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
+    public async Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         return (await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.NameFormatString, context.Request.FormatProvider, context.Request, token))
-            .Add(ResultNames.Namespace, () => _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.NamespaceFormatString, context.Request.FormatProvider, context.Request, token))
+            .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(context.Settings.NameFormatString, context.FormatProvider, context, token))
+            .Add(ResultNames.Namespace, () => _evaluator.EvaluateInterpolatedStringAsync(context.Settings.NamespaceFormatString, context.FormatProvider, context, token))
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(results =>
             {
-                context.Request.Builder
+                context.Builder
                     .WithName(results.GetValue(ResultNames.Name))
-                    .WithNamespace(context.Request.MapNamespace(results.GetValue(ResultNames.Namespace)));
+                    .WithNamespace(context.MapNamespace(results.GetValue(ResultNames.Namespace)));
             });
     }
 }

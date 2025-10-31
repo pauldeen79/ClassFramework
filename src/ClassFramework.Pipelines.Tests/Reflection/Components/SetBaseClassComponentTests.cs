@@ -2,7 +2,7 @@
 
 public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Components.SetBaseClassComponent>
 {
-    public class ProcessAsync : SetBaseClassComponentTests
+    public class ExecuteAsync : SetBaseClassComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var sut = CreateSut();
 
             // Act & Assert
-            Task a = sut.ProcessAsync(context: null!);
+            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
                 .ParamName.ShouldBe("context");
         }
@@ -23,14 +23,14 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var sut = CreateSut();
             var sourceModel = typeof(MyBaseClassTestClass);
             var settings = CreateSettingsForReflection();
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            ((ClassBuilder)context.Request.Builder).BaseClass.ShouldBe("ClassFramework.Pipelines.Tests.Reflection.Components.MyBaseClassTestClassBase");
+            ((ClassBuilder)context.Builder).BaseClass.ShouldBe("ClassFramework.Pipelines.Tests.Reflection.Components.MyBaseClassTestClassBase");
         }
 
         [Fact]
@@ -40,15 +40,15 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection();
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
-            ((ClassBuilder)context.Request.Builder).WithBaseClass("Old value");
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            ((ClassBuilder)context.Builder).WithBaseClass("Old value");
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            ((ClassBuilder)context.Request.Builder).BaseClass.ShouldBeEmpty();
+            ((ClassBuilder)context.Builder).BaseClass.ShouldBeEmpty();
         }
 
         [Fact]
@@ -61,14 +61,14 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
                 useBaseClassFromSourceModel: false,
                 enableEntityInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped());
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            ((ClassBuilder)context.Request.Builder).BaseClass.ShouldBe("MyBaseClass");
+            ((ClassBuilder)context.Builder).BaseClass.ShouldBe("MyBaseClass");
         }
 
         [Fact]
@@ -81,14 +81,14 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
                 useBaseClassFromSourceModel: false,
                 enableEntityInheritance: true,
                 baseClass: null);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            ((ClassBuilder)context.Request.Builder).BaseClass.ShouldBeEmpty();
+            ((ClassBuilder)context.Builder).BaseClass.ShouldBeEmpty();
         }
 
         [Fact]
@@ -98,15 +98,15 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var sut = CreateSut();
             var sourceModel = typeof(MyBaseClassTestClass);
             var settings = CreateSettingsForReflection(useBaseClassFromSourceModel: false);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
-            ((ClassBuilder)context.Request.Builder).WithBaseClass("Old value");
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            ((ClassBuilder)context.Builder).WithBaseClass("Old value");
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            ((ClassBuilder)context.Request.Builder).BaseClass.ShouldBeEmpty();
+            ((ClassBuilder)context.Builder).BaseClass.ShouldBeEmpty();
         }
     }
 }

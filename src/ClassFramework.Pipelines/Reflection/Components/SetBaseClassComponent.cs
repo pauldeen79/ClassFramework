@@ -4,14 +4,14 @@ public class SetBaseClassComponent : IPipelineComponent<ReflectionContext>, IOrd
 {
     public int Order => PipelineStage.Process;
 
-    public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
+    public Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            if (context.Request.Builder is IBaseClassContainerBuilder baseClassContainerBuilder)
+            if (context.Builder is IBaseClassContainerBuilder baseClassContainerBuilder)
             {
-                baseClassContainerBuilder.WithBaseClass(context.Request.SourceModel.GetEntityBaseClass(context.Request.Settings));
+                baseClassContainerBuilder.WithBaseClass(context.SourceModel.GetEntityBaseClass(context.Settings));
             }
 
             return Result.Success();

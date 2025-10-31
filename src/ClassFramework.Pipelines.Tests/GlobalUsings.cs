@@ -25,6 +25,7 @@ global using ClassFramework.Pipelines.Functions;
 global using ClassFramework.Pipelines.Interface;
 global using ClassFramework.Pipelines.Reflection;
 global using ClassFramework.Pipelines.Tests.TestFixtures;
+global using CrossCutting.Commands.Abstractions;
 global using CrossCutting.Common;
 global using CrossCutting.Common.DataAnnotations;
 global using CrossCutting.Common.Extensions;

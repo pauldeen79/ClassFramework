@@ -6,18 +6,18 @@ public class AddInterfacesComponent(IExpressionEvaluator evaluator) : IPipelineC
 
     public int Order => PipelineStage.Process;
 
-    public async Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Request.Settings.CopyInterfaces)
+        if (!context.Settings.CopyInterfaces)
         {
             return Result.Continue();
         }
 
-        var interfaces = await context.Request.GetInterfaceResultsAsync(
+        var interfaces = await context.GetInterfaceResultsAsync(
             (_, x) => x.ToString(),
-            x => context.Request.MapTypeName(x.FixTypeName()),
+            x => context.MapTypeName(x.FixTypeName()),
             _evaluator,
             true,
             token).ConfigureAwait(false);
@@ -28,7 +28,7 @@ public class AddInterfacesComponent(IExpressionEvaluator evaluator) : IPipelineC
             return error;
         }
 
-        context.Request.Builder.AddInterfaces(interfaces.Select(x => x.Value!));
+        context.Builder.AddInterfaces(interfaces.Select(x => x.Value!));
 
         return Result.Success();
     }

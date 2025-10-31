@@ -465,6 +465,8 @@ public abstract class TestBase : IDisposable
 public abstract class TestBase<T> : TestBase
 {
     protected T CreateSut() => Fixture.Create<T>();
+
+    protected ICommandService CommandService => Fixture.Create<ICommandService>();
 }
 
 internal sealed class BuilderOmitter : ISpecimenBuilder

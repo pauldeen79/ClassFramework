@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Reflection;
 
-public class PipelineTests : IntegrationTestBase<IPipeline<ReflectionContext>>
+public class PipelineTests : IntegrationTestBase<ICommandService>
 {
     public class IntegrationTests : PipelineTests
     {
@@ -16,7 +16,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<ReflectionContext>>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<ReflectionContext, TypeBaseBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -44,7 +44,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<ReflectionContext>>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<ReflectionContext, TypeBaseBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -70,7 +70,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<ReflectionContext>>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<ReflectionContext, TypeBaseBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -94,13 +94,11 @@ public class PipelineTests : IntegrationTestBase<IPipeline<ReflectionContext>>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ProcessAsync(context);
-            var innerResult = result?.InnerResults.FirstOrDefault();
+            var result = await sut.ExecuteAsync<ReflectionContext, TypeBaseBuilder>(context, CancellationToken.None);
 
             // Assert
-            innerResult.ShouldNotBeNull();
-            innerResult!.Status.ShouldBe(ResultStatus.Invalid);
-            innerResult.ErrorMessage.ShouldBe("To create a class, there must be at least one property");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("There must be at least one property");
         }
     }
 }

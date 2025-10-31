@@ -57,4 +57,6 @@ public class BuilderExtensionContext(TypeBase sourceModel, PipelineSettings sett
                 "return instance;"
             );
     }
+
+    public override object GetResponse() => Builder;
 }

@@ -13,4 +13,6 @@ public class ReflectionContext : ContextBase<Type>
     public TypeBaseBuilder Builder => _wrappedBuilder.Builder;
 
     private readonly TypeBaseBuilderWrapper _wrappedBuilder;
+
+    public override object GetResponse() => Builder;
 }

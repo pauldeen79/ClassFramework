@@ -4,19 +4,19 @@ public class AddAttributesComponent : IPipelineComponent<InterfaceContext>, IOrd
 {
     public int Order => PipelineStage.Process;
 
-    public Task<Result> ProcessAsync(PipelineContext<InterfaceContext> context, CancellationToken token)
+    public Task<Result> ExecuteAsync(InterfaceContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            if (!context.Request.Settings.CopyAttributes)
+            if (!context.Settings.CopyAttributes)
             {
                 return Result.Continue();
             }
 
-            context.Request.Builder.AddAttributes(context.Request.SourceModel.Attributes
-                .Where(x => context.Request.Settings.CopyAttributePredicate?.Invoke(x) ?? true)
-                .Select(x => context.Request.MapAttribute(x).ToBuilder()));
+            context.Builder.AddAttributes(context.SourceModel.Attributes
+                .Where(x => context.Settings.CopyAttributePredicate?.Invoke(x) ?? true)
+                .Select(x => context.MapAttribute(x).ToBuilder()));
 
             return Result.Success();
         }, token);

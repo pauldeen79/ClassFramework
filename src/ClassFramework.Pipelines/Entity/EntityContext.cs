@@ -127,4 +127,6 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
 
         return resultDictionary;
     }
+
+    public override object GetResponse() => Builder;
 }

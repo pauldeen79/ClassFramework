@@ -4,20 +4,20 @@ public class AddAttributesComponent : IPipelineComponent<ReflectionContext>, IOr
 {
     public int Order => PipelineStage.Process;
 
-    public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
+    public Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            if (!context.Request.Settings.CopyAttributes)
+            if (!context.Settings.CopyAttributes)
             {
                 return Result.Continue();
             }
 
-            context.Request.Builder.AddAttributes(context.Request.SourceModel.GetCustomAttributes(true).ToAttributes(
-                x => context.Request.MapAttribute(x.ConvertToDomainAttribute(context.Request.InitializeDelegate)),
-                context.Request.Settings.CopyAttributes,
-                context.Request.Settings.CopyAttributePredicate));
+            context.Builder.AddAttributes(context.SourceModel.GetCustomAttributes(true).ToAttributes(
+                x => context.MapAttribute(x.ConvertToDomainAttribute(context.InitializeDelegate)),
+                context.Settings.CopyAttributes,
+                context.Settings.CopyAttributePredicate));
 
             return Result.Success();
         }, token);

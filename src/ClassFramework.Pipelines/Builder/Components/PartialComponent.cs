@@ -4,12 +4,12 @@ public class PartialComponent : IPipelineComponent<BuilderContext>, IOrderContai
 {
     public int Order => PipelineStage.Process;
 
-    public Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    public Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            context.Request.Builder.WithPartial(context.Request.Settings.CreateAsPartial);
+            context.Builder.WithPartial(context.Settings.CreateAsPartial);
 
             return Result.Success();
         }, token);

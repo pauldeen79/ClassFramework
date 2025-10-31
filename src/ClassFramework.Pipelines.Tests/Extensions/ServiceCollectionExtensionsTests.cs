@@ -33,10 +33,10 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetRequiredService<IPipeline<BuilderContext>>();
+            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<BuilderContext, ClassBuilder>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<Pipeline<BuilderContext>>();
+            builder.ShouldBeOfType<BuilderCommandHandler>();
         }
 
         [Fact]
@@ -45,15 +45,16 @@ public class ServiceCollectionExtensionsTests : TestBase
             // Arrange
             var serviceCollection = new ServiceCollection()
                 .AddScoped(_ => Fixture.Freeze<IExpressionEvaluator>()) // note that normally, you would probably use AddParsers from the CrossCutting.Utilities.Parsers package...
+                .AddScoped(_ => Fixture.Freeze<ICsharpExpressionDumper>())  // note that normally, you would probably use AddCsharpExpressionDumper from the CsharpDumper package...
                 .AddClassFrameworkPipelines();
             using var provider = serviceCollection.BuildServiceProvider();
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetRequiredService<IPipeline<EntityContext>>();
+            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<EntityContext, ClassBuilder>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<Pipeline<EntityContext>>();
+            builder.ShouldBeOfType<EntityCommandHandler>();
         }
 
         [Fact]
@@ -62,15 +63,16 @@ public class ServiceCollectionExtensionsTests : TestBase
             // Arrange
             var serviceCollection = new ServiceCollection()
                 .AddScoped(_ => Fixture.Freeze<IExpressionEvaluator>()) // note that normally, you would probably use AddParsers from the CrossCutting.Utilities.Parsers package...
+                .AddScoped(_ => Fixture.Freeze<ICsharpExpressionDumper>())  // note that normally, you would probably use AddCsharpExpressionDumper from the CsharpDumper package...
                 .AddClassFrameworkPipelines();
             using var provider = serviceCollection.BuildServiceProvider();
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetRequiredService<IPipeline<ReflectionContext>>();
+            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<ReflectionContext, TypeBaseBuilder>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<Pipeline<ReflectionContext>>();
+            builder.ShouldBeOfType<ReflectionCommandHandler>();
         }
     }
 }

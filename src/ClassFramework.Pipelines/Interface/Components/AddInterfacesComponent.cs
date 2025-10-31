@@ -4,19 +4,19 @@ public class AddInterfacesComponent : IPipelineComponent<InterfaceContext>, IOrd
 {
     public int Order => PipelineStage.Process;
 
-    public Task<Result> ProcessAsync(PipelineContext<InterfaceContext> context, CancellationToken token)
+    public Task<Result> ExecuteAsync(InterfaceContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            if (!context.Request.Settings.CopyInterfaces)
+            if (!context.Settings.CopyInterfaces)
             {
                 return Result.Continue();
             }
 
-            context.Request.Builder.AddInterfaces(context.Request.SourceModel.Interfaces
-                .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-                .Select(x => context.Request.MapTypeName(x.FixTypeName()))
+            context.Builder.AddInterfaces(context.SourceModel.Interfaces
+                .Where(x => context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+                .Select(x => context.MapTypeName(x.FixTypeName()))
                 .Where(x => !string.IsNullOrEmpty(x)));
 
             return Result.Success();

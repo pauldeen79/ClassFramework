@@ -2,7 +2,7 @@
 
 public class AddMethodsComponentTests : TestBase<Pipelines.Reflection.Components.AddMethodsComponent>
 {
-    public class ProcessAsync : AddMethodsComponentTests
+    public class ExecuteAsync : AddMethodsComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class AddMethodsComponentTests : TestBase<Pipelines.Reflection.Components
             var sut = CreateSut();
 
             // Act & Assert
-            Task a = sut.ProcessAsync(context: null!);
+            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
@@ -22,14 +22,14 @@ public class AddMethodsComponentTests : TestBase<Pipelines.Reflection.Components
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection();
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Methods.Count.ShouldBe(1);
+            context.Builder.Methods.Count.ShouldBe(1);
         }
     }
 }

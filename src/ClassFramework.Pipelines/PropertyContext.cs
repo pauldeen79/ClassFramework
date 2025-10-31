@@ -5,4 +5,10 @@ public class PropertyContext(Property model, PipelineSettings settings, IFormatP
     public string TypeName { get; } = typeName.IsNotNull(nameof(typeName));
 
     protected override string NewCollectionTypeName { get; } = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
+
+    public override object GetResponse()
+    {
+        //TODO: Find out if this is called
+        throw new NotImplementedException();
+    }
 }

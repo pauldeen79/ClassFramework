@@ -1,9 +1,9 @@
 ﻿namespace ClassFramework.Pipelines.Extensions;
 
-public static class PipelineContextExtensions
+public static class ContextExtensions
 {
     public static async Task<Result<GenericFormattableString>> CreateEntityInstanciationAsync(
-        this PipelineContext<BuilderContext> context,
+        this BuilderContext context,
         IExpressionEvaluator evaluator,
         ICsharpExpressionDumper csharpExpressionDumper,
         string classNameSuffix,
@@ -11,27 +11,27 @@ public static class PipelineContextExtensions
     {
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-        var customEntityInstanciation = context.Request
-            .GetMappingMetadata(context.Request.SourceModel.GetFullName())
+        var customEntityInstanciation = context
+            .GetMappingMetadata(context.SourceModel.GetFullName())
             .GetStringValue(MetadataNames.CustomBuilderEntityInstanciation);
         if (!string.IsNullOrEmpty(customEntityInstanciation))
         {
-            return await evaluator.EvaluateInterpolatedStringAsync(customEntityInstanciation, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
+            return await evaluator.EvaluateInterpolatedStringAsync(customEntityInstanciation, context.FormatProvider, context, token).ConfigureAwait(false);
         }
 
-        if (context.Request.SourceModel is not IConstructorsContainer constructorsContainer)
+        if (context.SourceModel is not IConstructorsContainer constructorsContainer)
         {
             return Result.Invalid<GenericFormattableString>("Cannot create an instance of a type that does not have constructors");
         }
 
-        if (context.Request.SourceModel is Class cls && cls.Abstract)
+        if (context.SourceModel is Class cls && cls.Abstract)
         {
             return Result.Invalid<GenericFormattableString>("Cannot create an instance of an abstract class");
         }
 
         var hasPublicParameterlessConstructor = constructorsContainer.HasPublicParameterlessConstructor();
-        var openSign = GetBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Request.SourceModel.Properties.Count != 0);
-        var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Request.SourceModel.Properties.Count != 0);
+        var openSign = GetBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.SourceModel.Properties.Count != 0);
+        var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.SourceModel.Properties.Count != 0);
 
         var parametersResult = await GetConstructionMethodParametersAsync(context, evaluator, csharpExpressionDumper, hasPublicParameterlessConstructor, token).ConfigureAwait(false);
         if (!parametersResult.IsSuccessful())
@@ -39,27 +39,27 @@ public static class PipelineContextExtensions
             return parametersResult;
         }
 
-        var entityNamespace = context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.Request.SourceModel.Namespace);
-        var ns = context.Request.MapNamespace(entityNamespace).AppendWhenNotNullOrEmpty(".");
+        var entityNamespace = context.GetMappingMetadata(context.SourceModel.GetFullName()).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.SourceModel.Namespace);
+        var ns = context.MapNamespace(entityNamespace).AppendWhenNotNullOrEmpty(".");
 
-        return Result.Success<GenericFormattableString>($"new {ns}{context.Request.SourceModel.Name}{classNameSuffix}{context.Request.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
+        return Result.Success<GenericFormattableString>($"new {ns}{context.SourceModel.Name}{classNameSuffix}{context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
-    public static async Task<string> CreateEntityChainCallAsync(this PipelineContext<EntityContext> context)
+    public static async Task<string> CreateEntityChainCallAsync(this EntityContext context)
     {
         context = context.IsNotNull(nameof(context));
 
-        return context.Request.Settings.EnableInheritance && context.Request.Settings.BaseClass is not null
-            ? $"base({GetPropertyNamesConcatenated(context.Request.Settings.BaseClass.Properties, context.Request.FormatProvider.ToCultureInfo())})"
-            : (await context.Request.SourceModel.GetCustomValueForInheritedClassAsync(context.Request.Settings.EnableInheritance,
-                cls => Task.FromResult(Result.Success<GenericFormattableString>($"base({GetPropertyNamesConcatenated(context.Request.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Request.FormatProvider.ToCultureInfo())})"))).ConfigureAwait(false)).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
+        return context.Settings.EnableInheritance && context.Settings.BaseClass is not null
+            ? $"base({GetPropertyNamesConcatenated(context.Settings.BaseClass.Properties, context.FormatProvider.ToCultureInfo())})"
+            : (await context.SourceModel.GetCustomValueForInheritedClassAsync(context.Settings.EnableInheritance,
+                cls => Task.FromResult(Result.Success<GenericFormattableString>($"base({GetPropertyNamesConcatenated(context.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.FormatProvider.ToCultureInfo())})"))).ConfigureAwait(false)).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
     }
 
     public static async Task<Result> ProcessPropertiesAsync<TContext>(
-        this PipelineContext<TContext> context,
+        this TContext context,
         string methodName,
         IEnumerable<Property> properties,
-        Func<PipelineContext<TContext>, Property, CancellationToken, Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>>> getResultsDelegate,
+        Func<TContext, Property, CancellationToken, Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>>> getResultsDelegate,
         Func<string, string, string> getReturnTypeDelegate,
         Action<Property, string, IReadOnlyDictionary<string, Result<GenericFormattableString>>, string> processDelegate,
         CancellationToken token)
@@ -94,32 +94,32 @@ public static class PipelineContextExtensions
         return Result.Success();
     }
 
-    private static async Task<Result<GenericFormattableString>> GetConstructionMethodParametersAsync(PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor, CancellationToken token)
+    private static async Task<Result<GenericFormattableString>> GetConstructionMethodParametersAsync(BuilderContext context, IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper, bool hasPublicParameterlessConstructor, CancellationToken token)
     {
-        var properties = context.Request.SourceModel.GetBuilderConstructorProperties(context.Request);
+        var properties = context.SourceModel.GetBuilderConstructorProperties(context);
 
         var results = new List<ConstructionMethodParameterInfo>();
         foreach (var property in properties)
         {
-            var useBuilderLazyValues = context.Request.UseBuilderLazyValues(property.TypeName);
+            var useBuilderLazyValues = context.UseBuilderLazyValues(property.TypeName);
             var info =
                 new ConstructionMethodParameterInfo(
                     property.Name,
                     property,
                     await evaluator.EvaluateInterpolatedStringAsync
                     (
-                        context.Request
+                        context
                             .GetMappingMetadata(property.TypeName)
                             .GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, PlaceholderNames.NamePlaceholder),
-                        context.Request.FormatProvider,
-                        new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
+                        context.FormatProvider,
+                        new ParentChildContext<BuilderContext, Property>(context, property, context.Settings),
                         token
                     ).ConfigureAwait(false),
-                    context.Request.GetMappingMetadata
+                    context.GetMappingMetadata
                     (
                         property.TypeName.FixTypeName().WithoutGenerics() // i.e. List<> etc.
                     ).GetStringValue(MetadataNames.CustomCollectionInitialization, () => "[Expression]"),
-                    property.GetSuffix(context.Request.Settings.EnableNullableReferenceTypes, csharpExpressionDumper, context.Request),
+                    property.GetSuffix(context.Settings.EnableNullableReferenceTypes, csharpExpressionDumper, context),
                     useBuilderLazyValues
                 );
 

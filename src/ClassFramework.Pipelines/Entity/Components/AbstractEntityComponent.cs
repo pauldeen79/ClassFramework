@@ -4,12 +4,12 @@ public class AbstractEntityComponent : IPipelineComponent<EntityContext>, IOrder
 {
     public int Order => PipelineStage.Process;
 
-    public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            context.Request.Builder.WithAbstract(context.Request.IsAbstract);
+            context.Builder.WithAbstract(context.IsAbstract);
 
             return Result.Success();
         }, token);

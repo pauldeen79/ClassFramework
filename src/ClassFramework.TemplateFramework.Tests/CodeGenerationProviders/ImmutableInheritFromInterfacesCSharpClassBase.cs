@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public abstract class ImmutableInheritFromInterfacesCSharpClassBase(IPipelineService pipelineService) : ImmutableCSharpClassBase(pipelineService)
+public abstract class ImmutableInheritFromInterfacesCSharpClassBase(ICommandService commandService) : ImmutableCSharpClassBase(commandService)
 {
     protected override string BuilderAbstractionsNamespace => $"{ProjectName}.Abstractions.Builders";
     protected override string AbstractionsNamespace => $"{ProjectName}.Abstractions";

@@ -101,7 +101,7 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
                 (
                     newFullName,
                     FormatProvider,
-                    new ParentChildContext<PipelineContext<BuilderContext>, Property>(new PipelineContext<BuilderContext>(this), property, Settings),
+                    new ParentChildContext<BuilderContext, Property>(this, property, Settings),
                     token
                 ).ConfigureAwait(false)).Transform(y => namespaceTransformation(@interface, y));
 
@@ -187,4 +187,6 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
             return typeof(IBuilder<object>).ReplaceGenericTypeName(BuildReturnTypeName);
         }
     }
+
+    public override object GetResponse() => Builder;
 }

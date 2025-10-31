@@ -4,34 +4,34 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>, IOrderC
 {
     public int Order => PipelineStage.Process;
 
-    public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            var properties = context.Request.GetSourceProperties().ToArray();
+            var properties = context.GetSourceProperties().ToArray();
 
-            context.Request.Builder.AddProperties(
+            context.Builder.AddProperties(
                 properties.Select
                 (
-                    property => context.Request.CreatePropertyForEntity(property)
+                    property => context.CreatePropertyForEntity(property)
                         .WithVirtual(property.Virtual)
                         .WithAbstract(property.Abstract)
                         .WithProtected(property.Protected)
                         .WithOverride(property.Override)
-                        .WithHasInitializer(property.HasInitializer && !(context.Request.Settings.AddSetters || context.Request.Settings.AddBackingFields || context.Request.Settings.CreateAsObservable))
-                        .WithHasSetter(((context.Request.Settings.AddSetters || context.Request.Settings.AddBackingFields) && !property.TypeName.IsCollectionTypeName()) || context.Request.Settings.CreateAsObservable)
+                        .WithHasInitializer(property.HasInitializer && !(context.Settings.AddSetters || context.Settings.AddBackingFields || context.Settings.CreateAsObservable))
+                        .WithHasSetter(((context.Settings.AddSetters || context.Settings.AddBackingFields) && !property.TypeName.IsCollectionTypeName()) || context.Settings.CreateAsObservable)
                         .WithGetterVisibility(property.GetterVisibility)
-                        .WithSetterVisibility(context.Request.Settings.SetterVisibility)
+                        .WithSetterVisibility(context.Settings.SetterVisibility)
                         .WithInitializerVisibility(property.InitializerVisibility)
                         .WithExplicitInterfaceName(property.ExplicitInterfaceName)
                         .WithParentTypeFullName(property.ParentTypeFullName)
-                        .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Request))
-                        .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Request))
+                        .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context))
+                        .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context))
                 )
             );
 
-            if (context.Request.Settings.AddBackingFields || context.Request.Settings.CreateAsObservable)
+            if (context.Settings.AddBackingFields || context.Settings.CreateAsObservable)
             {
                 AddBackingFields(context, properties);
             }
@@ -39,17 +39,17 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>, IOrderC
             return Result.Success();
         }, token);
 
-    private static void AddBackingFields(PipelineContext<EntityContext> context, Property[] properties)
-        => context.Request.Builder.AddFields
+    private static void AddBackingFields(EntityContext context, Property[] properties)
+        => context.Builder.AddFields
         (
             properties
                 .Select
                 (
                     property => new FieldBuilder()
-                        .WithName($"_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())}")
-                        .WithTypeName(context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName)
-                            .FixCollectionTypeName(context.Request.Settings.CollectionTypeName
-                                .WhenNullOrEmpty(context.Request.Settings.EntityNewCollectionTypeName)
+                        .WithName($"_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())}")
+                        .WithTypeName(context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName)
+                            .FixCollectionTypeName(context.Settings.CollectionTypeName
+                                .WhenNullOrEmpty(context.Settings.EntityNewCollectionTypeName)
                                 .WhenNullOrEmpty(typeof(List<>).WithoutGenerics()))
                         .FixNullableTypeName(property))
                         .WithIsNullable(property.IsNullable)

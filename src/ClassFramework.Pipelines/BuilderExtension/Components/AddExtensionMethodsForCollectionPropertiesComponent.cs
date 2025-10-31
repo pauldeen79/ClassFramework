@@ -6,35 +6,35 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
 
     public int Order => PipelineStage.Process;
 
-    public async Task<Result> ProcessAsync(PipelineContext<BuilderExtensionContext> context, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderExtensionContext context, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
         return await context.ProcessPropertiesAsync(
-            context.Request.Settings.AddMethodNameFormatString,
-            context.Request.GetSourceProperties().Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()),
+            context.Settings.AddMethodNameFormatString,
+            context.GetSourceProperties().Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()),
             GetResultsAsync,
-            context.Request.GetReturnTypeForFluentMethod,
+            context.GetReturnTypeForFluentMethod,
             (property, returnType, results, token) => AddMethods(context, property, returnType, results),
             token).ConfigureAwait(false);
     }
 
-    private static void AddMethods(PipelineContext<BuilderExtensionContext> context, Property property, string returnType, IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
+    private static void AddMethods(BuilderExtensionContext context, Property property, string returnType, IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
     {
-        context.Request.Builder.AddMethods(context.Request.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.TypeName, "EnumerableOverload.", "ArrayOverload."));
+        context.Builder.AddMethods(context.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.TypeName, "EnumerableOverload.", "ArrayOverload."));
 
         if (results.NeedNonLazyOverloads())
         {
             //Add overloads for non-func type
-            context.Request.Builder.AddMethods(context.Request.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.NonLazyTypeName, "NonLazyEnumerableOverload.", "NonLazyArrayOverload."));
+            context.Builder.AddMethods(context.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.NonLazyTypeName, "NonLazyEnumerableOverload.", "NonLazyArrayOverload."));
         }
     }
 
-    private async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsAsync(PipelineContext<BuilderExtensionContext> context, Property property, CancellationToken token)
+    private async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsAsync(BuilderExtensionContext context, Property property, CancellationToken token)
     {
-        var parentChildContext = new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings);
+        var parentChildContext = new ParentChildContext<BuilderExtensionContext, Property>(context, property, context.Settings);
 
-        return await context.Request.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext, _evaluator)
+        return await context.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext, _evaluator)
             .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, token).ConfigureAwait(false))
             .AddRange("ArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, false, token).ConfigureAwait(false))
             .AddRange("NonLazyArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, true, token).ConfigureAwait(false))
@@ -42,31 +42,31 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
             .ConfigureAwait(false);
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(PipelineContext<BuilderExtensionContext> context, Property property, ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContext, CancellationToken token)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(BuilderExtensionContext context, Property property, ParentChildContext<BuilderExtensionContext, Property> parentChildContext, CancellationToken token)
     {
         var results = new List<Result<GenericFormattableString>>();
 
-        if (context.Request.Settings.AddNullChecks)
+        if (context.Settings.AddNullChecks)
         {
-            results.Add(Result.Success<GenericFormattableString>(context.Request.CreateArgumentNullException(property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())));
+            results.Add(Result.Success<GenericFormattableString>(context.CreateArgumentNullException(property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName())));
         }
 
-        results.Add(await _evaluator.EvaluateInterpolatedStringAsync("return instance.{addMethodNameFormatString}<T>({CsharpFriendlyName(property.Name.ToCamelCase())}.ToArray());", context.Request.FormatProvider, parentChildContext, token).ConfigureAwait(false));
+        results.Add(await _evaluator.EvaluateInterpolatedStringAsync("return instance.{addMethodNameFormatString}<T>({CsharpFriendlyName(property.Name.ToCamelCase())}.ToArray());", context.FormatProvider, parentChildContext, token).ConfigureAwait(false));
 
         return results;
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(PipelineContext<BuilderExtensionContext> context, Property property, bool useBuilderLazyValues, CancellationToken token)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(BuilderExtensionContext context, Property property, bool useBuilderLazyValues, CancellationToken token)
     {
         var results = new List<Result<GenericFormattableString>>();
 
-        if (context.Request.Settings.AddNullChecks)
+        if (context.Settings.AddNullChecks)
         {
             var argumentNullCheckResult = await _evaluator.EvaluateInterpolatedStringAsync
             (
-                context.Request.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{ArgumentNullCheck()}"),
-                context.Request.FormatProvider,
-                new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings),
+                context.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{ArgumentNullCheck()}"),
+                context.FormatProvider,
+                new ParentChildContext<BuilderExtensionContext, Property>(context, property, context.Settings),
                 token
             ).ConfigureAwait(false);
 
@@ -75,13 +75,13 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
 
         var builderAddExpressionResult = await _evaluator.EvaluateInterpolatedStringAsync
         (
-            context.Request
+            context
                 .GetMappingMetadata(property.TypeName)
                 .GetStringValue(MetadataNames.CustomBuilderAddExpression, useBuilderLazyValues
-                    ? context.Request.Settings.NonLazyBuilderExtensionsCollectionCopyStatementFormatString
-                    : context.Request.Settings.BuilderExtensionsCollectionCopyStatementFormatString),
-            context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<BuilderExtensionContext>, Property>(context, property, context.Request.Settings),
+                    ? context.Settings.NonLazyBuilderExtensionsCollectionCopyStatementFormatString
+                    : context.Settings.BuilderExtensionsCollectionCopyStatementFormatString),
+            context.FormatProvider,
+            new ParentChildContext<BuilderExtensionContext, Property>(context, property, context.Settings),
             token
         ).ConfigureAwait(false);
 

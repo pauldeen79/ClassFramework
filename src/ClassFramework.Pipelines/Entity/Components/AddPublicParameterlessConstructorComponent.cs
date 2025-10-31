@@ -6,25 +6,25 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
 
     public int Order => PipelineStage.Process;
 
-    public async Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public async Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Request.Settings.AddPublicParameterlessConstructor)
+        if (!context.Settings.AddPublicParameterlessConstructor)
         {
             return Result.Continue();
         }
 
         return (await CreateEntityConstructor(context, token)
             .ConfigureAwait(false))
-            .OnSuccess(ctorResult => context.Request.Builder.AddConstructors(ctorResult.Value!));
+            .OnSuccess(ctorResult => context.Builder.AddConstructors(ctorResult.Value!));
     }
 
-    private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(PipelineContext<EntityContext> context, CancellationToken token)
+    private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(EntityContext context, CancellationToken token)
     {
         var initializationStatements = new List<Result<string>>();
 
-        foreach (var property in context.Request.GetSourceProperties())
+        foreach (var property in context.GetSourceProperties())
         {
             var result = await GenerateDefaultValueStatement(property, context, token).ConfigureAwait(false);
             initializationStatements.Add(result);
@@ -44,14 +44,14 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
             .AddCodeStatements(initializationStatements.Select(x => x.Value!)));
     }
 
-    private async Task<Result<string>> GenerateDefaultValueStatement(Property property, PipelineContext<EntityContext> context, CancellationToken token)
+    private async Task<Result<string>> GenerateDefaultValueStatement(Property property, EntityContext context, CancellationToken token)
         => (await _evaluator.EvaluateInterpolatedStringAsync
         (
             property.TypeName.FixTypeName().IsCollectionTypeName()
                 ? "{property.EntityMemberName} = new {collectionTypeName}<{GenericArguments(property.TypeName)}>();"
                 : "{property.EntityMemberName} = {property.DefaultValue};",
-            context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<EntityContext>, Property>(context, property, context.Request.Settings),
+            context.FormatProvider,
+            new ParentChildContext<EntityContext, Property>(context, property, context.Settings),
             token
         ).ConfigureAwait(false)).Transform(x => x.ToString());
 }

@@ -95,6 +95,10 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         => settings.UseBuilderLazyValues
         && metadata.GetStringValue(MetadataNames.CustomBuilderName, DefaultBuilderName) == DefaultBuilderName;
 
+    public abstract object GetResponse();
+
+    public abstract object GetRequestModel();
+
     protected TypenameMapping[] GetTypenameMappings(string typeName)
     {
         var typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName).ToArray();
@@ -264,4 +268,6 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .SetTypeContainerPropertiesFrom(property)
             .WithDefaultValue(GetMappingMetadata(property.TypeName).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null));
     }
+
+    public override object GetRequestModel() => SourceModel!;
 }

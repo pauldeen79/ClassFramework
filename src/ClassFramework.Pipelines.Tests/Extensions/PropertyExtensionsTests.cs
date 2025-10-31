@@ -283,6 +283,11 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
+
+            public override object GetResponse()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 
@@ -351,6 +356,11 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
+
+            public override object GetResponse()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

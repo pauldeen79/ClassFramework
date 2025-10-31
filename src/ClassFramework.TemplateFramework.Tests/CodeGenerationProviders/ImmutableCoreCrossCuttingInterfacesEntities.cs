@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class ImmutableCoreCrossCuttingInterfacesEntities(IPipelineService pipelineService) : ImmutableCSharpClassBase(pipelineService)
+public class ImmutableCoreCrossCuttingInterfacesEntities(ICommandService commandService) : ImmutableCSharpClassBase(commandService)
 {
     protected override bool UseCrossCuttingInterfaces => true;
 

@@ -6,26 +6,26 @@ public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPip
 
     public int Order => PipelineStage.Process;
 
-    public async Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public async Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Request.Settings.ImplementIEquatable)
+        if (!context.Settings.ImplementIEquatable)
         {
             return Result.Continue();
         }
 
-        return (await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token)
+        return (await _evaluator.EvaluateInterpolatedStringAsync(context.Settings.EntityNameFormatString, context.FormatProvider, context, token)
             .ConfigureAwait(false))
             .OnSuccess(nameResult =>
             {
 
                 var getHashCodeStatements =
-                    context.Request.Settings.IEquatableItemType == IEquatableItemType.Fields
-                    ? CreateHashCodeStatements(context.Request.SourceModel.Fields, context.Request.NotNullCheck)
-                    : CreateHashCodeStatements(context.Request.SourceModel.Properties, context.Request.NotNullCheck);
+                    context.Settings.IEquatableItemType == IEquatableItemType.Fields
+                    ? CreateHashCodeStatements(context.SourceModel.Fields, context.NotNullCheck)
+                    : CreateHashCodeStatements(context.SourceModel.Properties, context.NotNullCheck);
 
-                context.Request.Builder
+                context.Builder
                     .AddInterfaces($"IEquatable<{nameResult.Value}>")
                     .AddMethods(
                         new MethodBuilder()
@@ -40,8 +40,8 @@ public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPip
                             .WithName(nameof(IEquatable<object>.Equals))
                             .AddParameter("other", nameResult.Value!)
                             .AddCodeStatements(
-                                $"if (other {context.Request.NullCheck}) return false;",
-                                $"return {CreateEqualsCode(context.Request.Settings.IEquatableItemType == IEquatableItemType.Fields ? context.Request.SourceModel.Fields : context.Request.SourceModel.Properties)};"),
+                                $"if (other {context.NullCheck}) return false;",
+                                $"return {CreateEqualsCode(context.Settings.IEquatableItemType == IEquatableItemType.Fields ? context.SourceModel.Fields : context.SourceModel.Properties)};"),
 
                         new MethodBuilder()
                             .WithReturnType(typeof(int))
@@ -62,17 +62,17 @@ public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPip
                             .WithReturnType(typeof(bool))
                             .WithStatic()
                             .WithOperator()
-                            .AddParameter("left", context.Request.SourceModel.Name)
-                            .AddParameter("right", context.Request.SourceModel.Name)
-                            .AddCodeStatements($"return {typeof(EqualityComparer<>).WithoutGenerics()}<{context.Request.SourceModel.Name}>.Default.Equals(left, right);"),
+                            .AddParameter("left", context.SourceModel.Name)
+                            .AddParameter("right", context.SourceModel.Name)
+                            .AddCodeStatements($"return {typeof(EqualityComparer<>).WithoutGenerics()}<{context.SourceModel.Name}>.Default.Equals(left, right);"),
 
                         new MethodBuilder()
                             .WithName("!=")
                             .WithReturnType(typeof(bool))
                             .WithStatic()
                             .WithOperator()
-                            .AddParameter("left", context.Request.SourceModel.Name)
-                            .AddParameter("right", context.Request.SourceModel.Name)
+                            .AddParameter("left", context.SourceModel.Name)
+                            .AddParameter("right", context.SourceModel.Name)
                             .AddCodeStatements("return !(left == right);"));
 
             });

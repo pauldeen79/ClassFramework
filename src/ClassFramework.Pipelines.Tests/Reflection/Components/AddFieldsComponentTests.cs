@@ -2,7 +2,7 @@
 
 public class AddFieldsComponentTests : TestBase<Pipelines.Reflection.Components.AddFieldsComponent>
 {
-    public class ProcessAsync : AddFieldsComponentTests
+    public class ExecuteAsync : AddFieldsComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class AddFieldsComponentTests : TestBase<Pipelines.Reflection.Components.
             var sut = CreateSut();
 
             // Act & Assert
-            Task a = sut.ProcessAsync(context: null!);
+            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
                 .ParamName.ShouldBe("context");
         }
@@ -23,22 +23,22 @@ public class AddFieldsComponentTests : TestBase<Pipelines.Reflection.Components.
             var sut = CreateSut();
             var sourceModel = typeof(MyFieldTestClass);
             var settings = CreateSettingsForReflection(copyAttributes: true);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Fields.Count.ShouldBe(2);
-            context.Request.Builder.Fields.Select(x => x.Visibility).ShouldAllBe(x => x == Visibility.Public);
-            context.Request.Builder.Fields.Select(x => x.ReadOnly).ToArray().ShouldBeEquivalentTo(new[] { false, true });
-            context.Request.Builder.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "myField", "myReadOnlyField" });
-            context.Request.Builder.Fields.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "System.String" });
-            context.Request.Builder.Fields.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo(new[] { false, true });
-            context.Request.Builder.Fields.Select(x => x.IsValueType).ToArray().ShouldBeEquivalentTo(new[] { true, false });
-            context.Request.Builder.Fields[0].Attributes.Count.ShouldBe(1);
-            context.Request.Builder.Fields[context.Request.Builder.Fields.Count - 1].Attributes.ShouldBeEmpty();
+            context.Builder.Fields.Count.ShouldBe(2);
+            context.Builder.Fields.Select(x => x.Visibility).ShouldAllBe(x => x == Visibility.Public);
+            context.Builder.Fields.Select(x => x.ReadOnly).ToArray().ShouldBeEquivalentTo(new[] { false, true });
+            context.Builder.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "myField", "myReadOnlyField" });
+            context.Builder.Fields.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32", "System.String" });
+            context.Builder.Fields.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo(new[] { false, true });
+            context.Builder.Fields.Select(x => x.IsValueType).ToArray().ShouldBeEquivalentTo(new[] { true, false });
+            context.Builder.Fields[0].Attributes.Count.ShouldBe(1);
+            context.Builder.Fields[context.Builder.Fields.Count - 1].Attributes.ShouldBeEmpty();
         }
     }
 }

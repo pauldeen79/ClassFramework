@@ -4,12 +4,12 @@ public class AddAttributesComponent : IPipelineComponent<EntityContext>, IOrderC
 {
     public int Order => PipelineStage.Process;
 
-    public Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            context.Request.Builder.AddAttributes(context.Request.GetAtributes(context.Request.SourceModel.Attributes));
+            context.Builder.AddAttributes(context.GetAtributes(context.SourceModel.Attributes));
 
             return Result.Success();
         }, token);

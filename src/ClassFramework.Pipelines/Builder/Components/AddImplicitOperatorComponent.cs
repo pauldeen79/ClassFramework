@@ -6,72 +6,72 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
 
     public int Order => PipelineStage.Process;
 
-    public async Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Request.Settings.AddImplicitOperatorOnBuilder)
+        if (!context.Settings.AddImplicitOperatorOnBuilder)
         {
             return Result.Continue();
         }
 
-        if (context.Request.BuildReturnTypeName.GetNamespaceWithDefault().EndsWithAny(".Contracts", ".Abstractions"))
+        if (context.BuildReturnTypeName.GetNamespaceWithDefault().EndsWithAny(".Contracts", ".Abstractions"))
         {
             // Implicit operators are not supported on interfaces (until maybe some future version of C#)
             return Result.Continue();
         }
 
-        return (await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token)
+        return (await _evaluator.EvaluateInterpolatedStringAsync(context.Settings.BuilderNameFormatString, context.FormatProvider, context, token)
             .ConfigureAwait(false))
             .OnSuccess(nameResult =>
             {
-                if (context.Request.Settings.EnableBuilderInheritance && context.Request.Settings.IsAbstract)
+                if (context.Settings.EnableBuilderInheritance && context.Settings.IsAbstract)
                 {
                     var genericArguments = GetGenericArgumentsForInheritance(context);
 
-                    context.Request.Builder.AddMethods(new MethodBuilder()
+                    context.Builder.AddMethods(new MethodBuilder()
                         .WithOperator()
                         .WithStatic()
-                        .WithName($"{context.Request.BuildReturnTypeName}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+                        .WithName($"{context.BuildReturnTypeName}{context.SourceModel.GetGenericTypeArgumentsString()}")
                         .WithReturnTypeName("implicit")
                         .AddParameter("builder", $"{nameResult.Value}{genericArguments}")
-                        .AddCodeStatements(!context.Request.Settings.IsForAbstractBuilder
+                        .AddCodeStatements(!context.Settings.IsForAbstractBuilder
                             ? "return builder.BuildTyped();"
                             : "return builder.Build();"));
 
                     return;
                 }
 
-                var genericArgumentsString = context.Request.SourceModel.GenericTypeArguments.Count > 0
-                    ? context.Request.SourceModel.GetGenericTypeArgumentsString()
+                var genericArgumentsString = context.SourceModel.GenericTypeArguments.Count > 0
+                    ? context.SourceModel.GetGenericTypeArgumentsString()
                     : string.Empty;
 
-                context.Request.Builder.AddMethods(new MethodBuilder()
+                context.Builder.AddMethods(new MethodBuilder()
                     .WithOperator()
                     .WithStatic()
-                    .WithName($"{context.Request.BuildReturnTypeName}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+                    .WithName($"{context.BuildReturnTypeName}{context.SourceModel.GetGenericTypeArgumentsString()}")
                     .WithReturnTypeName("implicit")
                     .AddParameter("builder", $"{nameResult.Value}{genericArgumentsString}")
                     .AddCodeStatements($"return builder.{GetName(context)}();"));
                     });
     }
 
-    private static string GetGenericArgumentsForInheritance(PipelineContext<BuilderContext> context)
+    private static string GetGenericArgumentsForInheritance(BuilderContext context)
     {
-        if (context.Request.Settings.IsForAbstractBuilder)
+        if (context.Settings.IsForAbstractBuilder)
         {
             // This is the non-generic abstract builder
             return string.Empty;
         }
 
         // This is the generic abstract builder
-        return context.Request.SourceModel.GenericTypeArguments.Count > 0
-            ? "<TBuilder, TEntity, " + string.Join(", ", context.Request.SourceModel.GenericTypeArguments) + ">"
+        return context.SourceModel.GenericTypeArguments.Count > 0
+            ? "<TBuilder, TEntity, " + string.Join(", ", context.SourceModel.GenericTypeArguments) + ">"
             : "<TBuilder, TEntity>";
     }
 
-    private static string GetName(PipelineContext<BuilderContext> context)
-        => context.Request.IsBuilderForAbstractEntity || context.Request.IsBuilderForOverrideEntity
-            ? context.Request.Settings.BuildTypedMethodName
-            : context.Request.Settings.BuildMethodName;
+    private static string GetName(BuilderContext context)
+        => context.IsBuilderForAbstractEntity || context.IsBuilderForOverrideEntity
+            ? context.Settings.BuildTypedMethodName
+            : context.Settings.BuildMethodName;
 }

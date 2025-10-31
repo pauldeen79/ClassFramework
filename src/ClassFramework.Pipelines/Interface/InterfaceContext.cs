@@ -7,5 +7,7 @@ public class InterfaceContext(TypeBase sourceModel, PipelineSettings settings, I
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
 
+    public override object GetResponse() => Builder;
+
     public InterfaceBuilder Builder { get; } = new();
 }
