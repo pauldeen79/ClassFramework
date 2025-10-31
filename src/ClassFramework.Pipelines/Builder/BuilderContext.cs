@@ -189,4 +189,6 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
     }
 
     public override object GetResponse() => Builder;
+
+    public override bool HasNoProperties() => SourceModel.Properties.Count == 0;
 }

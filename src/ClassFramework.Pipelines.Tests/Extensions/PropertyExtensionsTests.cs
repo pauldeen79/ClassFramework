@@ -288,6 +288,11 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             {
                 throw new NotImplementedException();
             }
+
+            public override bool HasNoProperties()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 
@@ -358,6 +363,11 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             protected override string NewCollectionTypeName => string.Empty;
 
             public override object GetResponse()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override bool HasNoProperties()
             {
                 throw new NotImplementedException();
             }

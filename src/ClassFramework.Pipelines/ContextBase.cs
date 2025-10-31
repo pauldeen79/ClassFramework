@@ -97,7 +97,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
 
     public abstract object GetResponse();
 
-    public abstract object GetRequestModel();
+    public abstract bool HasNoProperties();
 
     protected TypenameMapping[] GetTypenameMappings(string typeName)
     {
@@ -268,6 +268,4 @@ public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .SetTypeContainerPropertiesFrom(property)
             .WithDefaultValue(GetMappingMetadata(property.TypeName).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null));
     }
-
-    public override object GetRequestModel() => SourceModel!;
 }

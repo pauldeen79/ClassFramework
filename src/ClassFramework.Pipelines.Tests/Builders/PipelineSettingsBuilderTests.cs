@@ -175,6 +175,11 @@ public class PipelineSettingsBuilderTests
             {
                 throw new NotImplementedException();
             }
+
+            public override bool HasNoProperties()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

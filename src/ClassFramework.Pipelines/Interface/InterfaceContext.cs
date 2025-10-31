@@ -10,4 +10,6 @@ public class InterfaceContext(TypeBase sourceModel, PipelineSettings settings, I
     public override object GetResponse() => Builder;
 
     public InterfaceBuilder Builder { get; } = new();
+
+    public override bool HasNoProperties() => SourceModel.Properties.Count == 0;
 }

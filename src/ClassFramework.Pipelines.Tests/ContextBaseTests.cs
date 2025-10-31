@@ -107,5 +107,10 @@ public class ContextBaseTests : TestBase
         {
             throw new NotImplementedException();
         }
+
+        public override bool HasNoProperties()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

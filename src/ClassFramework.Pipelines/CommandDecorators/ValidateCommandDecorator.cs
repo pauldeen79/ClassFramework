@@ -16,7 +16,7 @@ public class ValidateCommandDecorator : ICommandDecorator
         if (command is ContextBase context
             && !context.Settings.AllowGenerationWithoutProperties
             && !context.Settings.EnableInheritance
-            && HasNoProperties(context.GetRequestModel()))
+            && context.HasNoProperties())
         {
             return Result.Invalid("There must be at least one property");
         }
@@ -39,19 +39,4 @@ public class ValidateCommandDecorator : ICommandDecorator
 
     public Task<Result<TResponse>> ExecuteAsync<TCommand, TResponse>(ICommandHandler<TCommand, TResponse> handler, TCommand command, ICommandService commandService, CancellationToken token)
         => _decoratee.ExecuteAsync(handler, command, commandService, token);
-
-    private static bool HasNoProperties(object model)
-    {
-        if (model is TypeBase typeBase)
-        {
-            return typeBase.Properties.Count == 0;
-        }
-
-        if (model is Type t)
-        {
-            return t.GetProperties().Length == 0;
-        }
-
-        throw new NotSupportedException("Only TypeBase and Type are supported");
-    }
 }
