@@ -109,8 +109,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
-            public override object GetResponse() => throw new NotImplementedException();
-            public override bool HasNoProperties() => throw new NotImplementedException();
+            public override object GetResponseBuilder() => throw new NotImplementedException();
+            public override bool SourceModelHasNoProperties() => throw new NotImplementedException();
         }
     }
 
@@ -297,12 +297,12 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             protected override string NewCollectionTypeName => string.Empty;
 
-            public override object GetResponse()
+            public override object GetResponseBuilder()
             {
                 throw new NotImplementedException();
             }
 
-            public override bool HasNoProperties()
+            public override bool SourceModelHasNoProperties()
             {
                 throw new NotImplementedException();
             }
@@ -380,8 +380,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
-            public override object GetResponse() => throw new NotImplementedException();
-            public override bool HasNoProperties() => throw new NotImplementedException();
+            public override object GetResponseBuilder() => throw new NotImplementedException();
+            public override bool SourceModelHasNoProperties() => throw new NotImplementedException();
         }
     }
 }

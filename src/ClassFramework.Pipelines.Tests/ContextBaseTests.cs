@@ -103,12 +103,12 @@ public class ContextBaseTests : TestBase
     {
         protected override string NewCollectionTypeName => string.Empty;
 
-        public override object GetResponse()
+        public override object GetResponseBuilder()
         {
             throw new NotImplementedException();
         }
 
-        public override bool HasNoProperties()
+        public override bool SourceModelHasNoProperties()
         {
             throw new NotImplementedException();
         }

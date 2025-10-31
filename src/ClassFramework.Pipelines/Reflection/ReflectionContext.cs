@@ -14,7 +14,7 @@ public class ReflectionContext : ContextBase<Type>
 
     public TypeBaseBuilder Builder => _wrappedBuilder.Builder;
 
-    public override object GetResponse() => Builder;
+    public override object GetResponseBuilder() => Builder;
 
-    public override bool HasNoProperties() => SourceModel.GetProperties().Length == 0;
+    public override bool SourceModelHasNoProperties() => SourceModel.GetProperties().Length == 0;
 }

@@ -16,7 +16,7 @@ public class ValidateCommandDecorator : ICommandDecorator
         if (command is ContextBase context
             && !context.Settings.AllowGenerationWithoutProperties
             && !context.Settings.EnableInheritance
-            && context.HasNoProperties())
+            && context.SourceModelHasNoProperties())
         {
             return Result.Invalid("There must be at least one property");
         }
@@ -27,7 +27,7 @@ public class ValidateCommandDecorator : ICommandDecorator
                 if (command is ContextBase context)
                 {
                     var validationResults = new List<ValidationResult>();
-                    if (!context.GetResponse().TryValidate(validationResults))
+                    if (!context.GetResponseBuilder().TryValidate(validationResults))
                     {
                         return Result.Invalid(validationResults.Select(x => new ValidationError(x.ErrorMessage, x.MemberNames)));
                     }

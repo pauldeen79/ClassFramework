@@ -128,7 +128,7 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
         return resultDictionary;
     }
 
-    public override object GetResponse() => Builder;
+    public override object GetResponseBuilder() => Builder;
 
-    public override bool HasNoProperties() => SourceModel.Properties.Count == 0;
+    public override bool SourceModelHasNoProperties() => SourceModel.Properties.Count == 0;
 }
