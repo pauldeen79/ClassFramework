@@ -1,9 +1,7 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class PartialComponent : IPipelineComponent<InterfaceContext>, IOrderContainer
+public class PartialComponent : IPipelineComponent<InterfaceContext>
 {
-    public int Order => PipelineStage.Process;
-
     public Task<Result> ExecuteAsync(InterfaceContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {

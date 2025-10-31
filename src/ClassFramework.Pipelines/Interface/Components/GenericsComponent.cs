@@ -1,9 +1,7 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class GenericsComponent : IPipelineComponent<InterfaceContext>, IOrderContainer
+public class GenericsComponent : IPipelineComponent<InterfaceContext>
 {
-    public int Order => PipelineStage.Process;
-
     public Task<Result> ExecuteAsync(InterfaceContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {

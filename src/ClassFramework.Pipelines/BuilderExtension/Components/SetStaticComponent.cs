@@ -1,9 +1,7 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class SetStaticComponent : IPipelineComponent<BuilderExtensionContext>, IOrderContainer
+public class SetStaticComponent : IPipelineComponent<BuilderExtensionContext>
 {
-    public int Order => PipelineStage.Process;
-
     public Task<Result> ExecuteAsync(BuilderExtensionContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {

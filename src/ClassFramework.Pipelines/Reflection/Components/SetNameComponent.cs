@@ -1,10 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineComponent<ReflectionContext>, IOrderContainer
+public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineComponent<ReflectionContext>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
-
-    public int Order => PipelineStage.Process;
 
     public async Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
     {

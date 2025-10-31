@@ -1,9 +1,7 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class SetVisibilityComponent : IPipelineComponent<ReflectionContext>, IOrderContainer
+public class SetVisibilityComponent : IPipelineComponent<ReflectionContext>
 {
-    public int Order => PipelineStage.Process;
-
     public Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
