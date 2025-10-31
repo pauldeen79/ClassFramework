@@ -102,14 +102,6 @@ public static class ExpressionEvaluatorExtensions
                 .Add(ResultNames.TypeName, () => parentChildContextEntity.ParentContext.MapTypeName(parentChildContextEntity.ChildContext.TypeName))
                 .Add(ResultNames.Context, parentChildContextEntity.ParentContext);
         }
-        else if (context is PropertyContext propertyContext)
-        {
-            builder
-                .Add(ResultNames.Property, propertyContext.SourceModel)
-                .Add(ResultNames.Settings, propertyContext.Settings)
-                .Add(ResultNames.TypeName, () => propertyContext.MapTypeName(propertyContext.SourceModel.TypeName))
-                .Add(ResultNames.Context, propertyContext);
-        }
         else
         {
             builder

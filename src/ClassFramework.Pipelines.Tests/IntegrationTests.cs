@@ -10,10 +10,11 @@ public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
         var sut = CreateSut();
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
         var pipelineSettings = new PipelineSettingsBuilder();
-        var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutGenerics(), CancellationToken.None);
+        var formatProvider = Fixture.Freeze<IFormatProvider>();
+        var context = new ParentChildContext<EntityContext, Property>(new EntityContext(new ClassBuilder().WithName("Dummy").Build(), pipelineSettings, formatProvider, CancellationToken.None), property, pipelineSettings);
 
         // Act
-        var result = await sut.EvaluateInterpolatedStringAsync(formatString, CultureInfo.InvariantCulture, propertyContext, CancellationToken.None);
+        var result = await sut.EvaluateInterpolatedStringAsync(formatString, CultureInfo.InvariantCulture, context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -28,10 +29,11 @@ public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
         var sut = CreateSut();
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
         var pipelineSettings = new PipelineSettingsBuilder();
-        var propertyContext = new PropertyContext(property, pipelineSettings, CultureInfo.InvariantCulture, "MyTypeName", typeof(List<string>).FullName!.WithoutGenerics(), CancellationToken.None);
+        var formatProvider = Fixture.Freeze<IFormatProvider>();
+        var context = new ParentChildContext<EntityContext, Property>(new EntityContext(new ClassBuilder().WithName("Dummy").Build(), pipelineSettings, formatProvider, CancellationToken.None), property, pipelineSettings);
 
         // Act
-        var result = await sut.EvaluateInterpolatedStringAsync(formatString, CultureInfo.InvariantCulture, propertyContext, CancellationToken.None);
+        var result = await sut.EvaluateInterpolatedStringAsync(formatString, CultureInfo.InvariantCulture, context, CancellationToken.None);
 
         // Assert
         result.Status.ShouldBe(ResultStatus.Ok);
