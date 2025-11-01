@@ -99,6 +99,31 @@ public class ContextBaseTests : TestBase
         }
     }
 
+    public class InitializeDelegate : ContextBaseTests
+    {
+        [Fact]
+        public void Throws_On_Unsupported_Attribute()
+        {
+            // Arrange
+            var sut = CreateSut(new PipelineSettingsBuilder());
+
+            // Act & Assert
+            Action a = () => sut.InitializeDelegate(AttributeWithoutConstructorsAttribute.New());
+            a.ShouldThrow<NotSupportedException>()
+             .Message.ShouldBe("Attribute not supported by initializer: ClassFramework.Pipelines.Tests.ContextBaseTests+AttributeWithoutConstructorsAttribute");
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    private sealed class AttributeWithoutConstructorsAttribute : System.Attribute
+    {
+        private AttributeWithoutConstructorsAttribute()
+        {
+        }
+
+        public static AttributeWithoutConstructorsAttribute New() => new AttributeWithoutConstructorsAttribute();
+    }
+
     private sealed class TestContext(PipelineSettings settings) : ContextBase<string>(string.Empty, settings, CultureInfo.InvariantCulture, CancellationToken.None)
     {
         protected override string NewCollectionTypeName => string.Empty;
