@@ -269,7 +269,7 @@ public static class PropertyExtensions
         }
     }
 
-    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeNameAsync(this Property property, PipelineContext<BuilderContext> context, IExpressionEvaluator evaluator, CancellationToken token)
+    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeNameAsync(this Property property, BuilderContext context, IExpressionEvaluator evaluator, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
@@ -279,11 +279,11 @@ public static class PropertyExtensions
             return Result.Success<GenericFormattableString>(property.ParentTypeFullName);
         }
 
-        var metadata = context.Request.GetMappingMetadata(property.ParentTypeFullName).ToArray();
+        var metadata = context.GetMappingMetadata(property.ParentTypeFullName).ToArray();
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeNamespace);
         if (string.IsNullOrEmpty(ns))
         {
-            return Result.Success<GenericFormattableString>(context.Request.MapTypeName(property.ParentTypeFullName.FixTypeName()));
+            return Result.Success<GenericFormattableString>(context.MapTypeName(property.ParentTypeFullName.FixTypeName()));
         }
 
         var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ClassName(property.ParentTypeFullName)}");
@@ -297,8 +297,8 @@ public static class PropertyExtensions
         return await evaluator.EvaluateInterpolatedStringAsync
         (
             newFullName,
-            context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
+            context.FormatProvider,
+            new ParentChildContext<BuilderContext, Property>(context, property, context.Settings),
             token
         ).ConfigureAwait(false);
     }

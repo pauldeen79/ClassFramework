@@ -48,10 +48,14 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
     }
 
     public Domain.Attribute InitializeDelegate(System.Attribute sourceAttribute)
-        => Settings.AttributeInitializers
+    {
+        sourceAttribute = ArgumentGuard.IsNotNull(sourceAttribute, nameof(sourceAttribute));
+
+        return Settings.AttributeInitializers
             .Select(x => x(sourceAttribute))
             .FirstOrDefault(x => x is not null)
-                ?? throw new NotSupportedException($"Attribute not supported by initializer:");
+                ?? throw new NotSupportedException($"Attribute not supported by initializer: {sourceAttribute.GetType().FullName}");
+    }
 
     public IEnumerable<string> CreateEntityValidationCode()
     {
@@ -94,6 +98,10 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
     public bool UseBuilderLazyValues(IEnumerable<Metadata> metadata)
         => settings.UseBuilderLazyValues
         && metadata.GetStringValue(MetadataNames.CustomBuilderName, DefaultBuilderName) == DefaultBuilderName;
+
+    public abstract object GetResponseBuilder();
+
+    public abstract bool SourceModelHasNoProperties();
 
     protected TypenameMapping[] GetTypenameMappings(string typeName)
     {

@@ -2,7 +2,7 @@
 
 public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Components.AddConstructorsComponent>
 {
-    public class ProcessAsync : AddConstructorsComponentTests
+    public class ExecuteAsync : AddConstructorsComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             var sut = CreateSut();
 
             // Act & Assert
-            Task a = sut.ProcessAsync(context: null!);
+            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
                 .ParamName.ShouldBe("context");
         }
@@ -23,14 +23,14 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
             var settings = CreateSettingsForReflection(createConstructors: false);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.GetConstructors().ShouldBeEmpty();
+            context.Builder.GetConstructors().ShouldBeEmpty();
         }
 
         [Fact]
@@ -40,10 +40,10 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
             var settings = CreateSettingsForReflection(createConstructors: false);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -57,17 +57,17 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
             var settings = CreateSettingsForReflection(createConstructors: true);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.GetConstructors().Count.ShouldBe(2);
-            context.Request.Builder.GetConstructors().First().Parameters.ShouldBeEmpty();
-            context.Request.Builder.GetConstructors().Last().Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "value" });
-            context.Request.Builder.GetConstructors().Last().Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32" });
+            context.Builder.GetConstructors().Count.ShouldBe(2);
+            context.Builder.GetConstructors().First().Parameters.ShouldBeEmpty();
+            context.Builder.GetConstructors().Last().Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "value" });
+            context.Builder.GetConstructors().Last().Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Int32" });
         }
     }
 }

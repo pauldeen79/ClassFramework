@@ -127,4 +127,17 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
 
         return resultDictionary;
     }
+
+    public async Task<string> CreateEntityChainCallAsync()
+        => Settings.EnableInheritance && Settings.BaseClass is not null
+            ? $"base({GetPropertyNamesConcatenated(Settings.BaseClass.Properties, FormatProvider.ToCultureInfo())})"
+            : (await SourceModel.GetCustomValueForInheritedClassAsync(Settings.EnableInheritance,
+                cls => Task.FromResult(Result.Success<GenericFormattableString>($"base({GetPropertyNamesConcatenated(SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), FormatProvider.ToCultureInfo())})"))).ConfigureAwait(false)).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
+
+    private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
+        => string.Join(", ", properties.Select(x => x.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName()));
+
+    public override object GetResponseBuilder() => Builder;
+
+    public override bool SourceModelHasNoProperties() => SourceModel.Properties.Count == 0;
 }

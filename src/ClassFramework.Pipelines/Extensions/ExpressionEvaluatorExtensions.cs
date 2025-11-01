@@ -69,46 +69,38 @@ public static class ExpressionEvaluatorExtensions
                 .Add(ResultNames.TypeName, () => reflectionContext.MapTypeName(reflectionContext.SourceModel.FullName))
                 .Add(ResultNames.Context, reflectionContext);
         }
-        else if (context is ParentChildContext<PipelineContext<BuilderContext>, Property> parentChildContextBuilder)
+        else if (context is ParentChildContext<BuilderContext, Property> parentChildContextBuilder)
         {
             builder
-                .Add(ResultNames.Class, new ClassModel(parentChildContextBuilder.ParentContext.Request.SourceModel))
+                .Add(ResultNames.Class, new ClassModel(parentChildContextBuilder.ParentContext.SourceModel))
                 .Add(ResultNames.Property, parentChildContextBuilder.ChildContext)
-                .Add(ResultNames.CollectionTypeName, parentChildContextBuilder.ParentContext.Request.CollectionTypeName)
+                .Add(ResultNames.CollectionTypeName, parentChildContextBuilder.ParentContext.CollectionTypeName)
                 .Add(ResultNames.AddMethodNameFormatString, () => parentChildContextBuilder.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add(ResultNames.Settings, parentChildContextBuilder.Settings)
-                .Add(ResultNames.TypeName, () => parentChildContextBuilder.ParentContext.Request.MapTypeName(parentChildContextBuilder.ChildContext.TypeName))
-                .Add(ResultNames.Context, parentChildContextBuilder.ParentContext.Request);
+                .Add(ResultNames.TypeName, () => parentChildContextBuilder.ParentContext.MapTypeName(parentChildContextBuilder.ChildContext.TypeName))
+                .Add(ResultNames.Context, parentChildContextBuilder.ParentContext);
         }
-        else if (context is ParentChildContext<PipelineContext<BuilderExtensionContext>, Property> parentChildContextBuilderExtension)
+        else if (context is ParentChildContext<BuilderExtensionContext, Property> parentChildContextBuilderExtension)
         {
             builder
-                .Add(ResultNames.Class, new ClassModel(parentChildContextBuilderExtension.ParentContext.Request.SourceModel))
+                .Add(ResultNames.Class, new ClassModel(parentChildContextBuilderExtension.ParentContext.SourceModel))
                 .Add(ResultNames.Property, parentChildContextBuilderExtension.ChildContext)
-                .Add(ResultNames.CollectionTypeName, parentChildContextBuilderExtension.ParentContext.Request.CollectionTypeName)
+                .Add(ResultNames.CollectionTypeName, parentChildContextBuilderExtension.ParentContext.CollectionTypeName)
                 .Add(ResultNames.AddMethodNameFormatString, () => parentChildContextBuilderExtension.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add(ResultNames.Settings, parentChildContextBuilderExtension.Settings)
-                .Add(ResultNames.TypeName, () => parentChildContextBuilderExtension.ParentContext.Request.MapTypeName(parentChildContextBuilderExtension.ChildContext.TypeName))
-                .Add(ResultNames.Context, parentChildContextBuilderExtension.ParentContext.Request);
+                .Add(ResultNames.TypeName, () => parentChildContextBuilderExtension.ParentContext.MapTypeName(parentChildContextBuilderExtension.ChildContext.TypeName))
+                .Add(ResultNames.Context, parentChildContextBuilderExtension.ParentContext);
         }
-        else if (context is ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity)
+        else if (context is ParentChildContext<EntityContext, Property> parentChildContextEntity)
         {
             builder
-                .Add(ResultNames.Class, new ClassModel(parentChildContextEntity.ParentContext.Request.SourceModel))
+                .Add(ResultNames.Class, new ClassModel(parentChildContextEntity.ParentContext.SourceModel))
                 .Add(ResultNames.Property, parentChildContextEntity.ChildContext)
-                .Add(ResultNames.CollectionTypeName, parentChildContextEntity.ParentContext.Request.CollectionTypeName)
+                .Add(ResultNames.CollectionTypeName, parentChildContextEntity.ParentContext.CollectionTypeName)
                 .Add(ResultNames.AddMethodNameFormatString, () => parentChildContextEntity.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
                 .Add(ResultNames.Settings, parentChildContextEntity.Settings)
-                .Add(ResultNames.TypeName, () => parentChildContextEntity.ParentContext.Request.MapTypeName(parentChildContextEntity.ChildContext.TypeName))
-                .Add(ResultNames.Context, parentChildContextEntity.ParentContext.Request);
-        }
-        else if (context is PropertyContext propertyContext)
-        {
-            builder
-                .Add(ResultNames.Property, propertyContext.SourceModel)
-                .Add(ResultNames.Settings, propertyContext.Settings)
-                .Add(ResultNames.TypeName, () => propertyContext.MapTypeName(propertyContext.SourceModel.TypeName))
-                .Add(ResultNames.Context, propertyContext);
+                .Add(ResultNames.TypeName, () => parentChildContextEntity.ParentContext.MapTypeName(parentChildContextEntity.ChildContext.TypeName))
+                .Add(ResultNames.Context, parentChildContextEntity.ParentContext);
         }
         else
         {

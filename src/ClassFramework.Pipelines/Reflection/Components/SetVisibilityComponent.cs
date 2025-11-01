@@ -1,27 +1,25 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class SetVisibilityComponent : IPipelineComponent<ReflectionContext>, IOrderContainer
+public class SetVisibilityComponent : IPipelineComponent<ReflectionContext>
 {
-    public int Order => PipelineStage.Process;
-
-    public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
+    public Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            context.Request.Builder.WithVisibility(GetVisibility(context));
+            context.Builder.WithVisibility(GetVisibility(context));
 
             return Result.Success();
         }, token);
 
-    private static Visibility GetVisibility(PipelineContext<ReflectionContext> context)
+    private static Visibility GetVisibility(ReflectionContext context)
     {
-        if (context.Request.SourceModel.IsPublic)
+        if (context.SourceModel.IsPublic)
         {
             return Visibility.Public;
         }
 
-        return context.Request.SourceModel.IsNotPublic
+        return context.SourceModel.IsNotPublic
             ? Visibility.Internal
             : Visibility.Private;
     }

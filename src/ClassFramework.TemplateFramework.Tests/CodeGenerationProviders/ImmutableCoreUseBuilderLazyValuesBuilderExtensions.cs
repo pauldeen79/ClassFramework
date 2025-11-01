@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class ImmutableCoreUseBuilderLazyValuesBuilderExtensions(IPipelineService pipelineService) : ImmutableCSharpClassBase(pipelineService)
+public class ImmutableCoreUseBuilderLazyValuesBuilderExtensions(ICommandService commandService) : ImmutableCSharpClassBase(commandService)
 {
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetBuilderExtensionsAsync(GetCoreModelsAsync(), "Test.Domain.Builders", "Test.Domain", "Test.Domain.Extensions");
 

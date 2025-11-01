@@ -1,20 +1,18 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>, IOrderContainer
+public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public int Order => PipelineStage.Process;
-
-    public async Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Request.Settings.EnableBuilderInheritance
-            && context.Request.IsAbstractBuilder
-            && !context.Request.Settings.IsForAbstractBuilder)
+        if (context.Settings.EnableBuilderInheritance
+            && context.IsAbstractBuilder
+            && !context.Settings.IsForAbstractBuilder)
         {
-            context.Request.Builder.AddConstructors(CreateInheritanceDefaultConstructor(context));
+            context.Builder.AddConstructors(CreateInheritanceDefaultConstructor(context));
         }
         else
         {
@@ -24,13 +22,13 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
                 return defaultConstructorResult;
             }
 
-            context.Request.Builder.AddConstructors(defaultConstructorResult.Value!);
+            context.Builder.AddConstructors(defaultConstructorResult.Value!);
         }
 
         return Result.Success();
     }
 
-    private async Task<Result<ConstructorBuilder>> CreateDefaultConstructorAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    private async Task<Result<ConstructorBuilder>> CreateDefaultConstructorAsync(BuilderContext context, CancellationToken token)
     {
         var constructorInitializerResults = await GetConstructorInitializerResultsAsync(context).ConfigureAwait(false);
 
@@ -41,11 +39,11 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         }
 
         var ctor = new ConstructorBuilder()
-            .WithChainCall(await CreateBuilderClassConstructorChainCallAsync(context.Request.SourceModel, context.Request.Settings).ConfigureAwait(false))
-            .WithProtected(context.Request.IsBuilderForAbstractEntity)
+            .WithChainCall(await CreateBuilderClassConstructorChainCallAsync(context.SourceModel, context.Settings).ConfigureAwait(false))
+            .WithProtected(context.IsBuilderForAbstractEntity)
             .AddCodeStatements(constructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"));
 
-        if (context.Request.Settings.SetDefaultValuesInEntityConstructor)
+        if (context.Settings.SetDefaultValuesInEntityConstructor)
         {
             var defaultValueResults = await GetDefaultValueResultsAsync(context, token).ConfigureAwait(false);
 
@@ -57,7 +55,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
 
             ctor.AddCodeStatements(defaultValueResults.Select(x => x.Value!.ToString()));
 
-            var setDefaultValuesMethodNameResult = await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.SetDefaultValuesMethodName, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
+            var setDefaultValuesMethodNameResult = await _evaluator.EvaluateInterpolatedStringAsync(context.Settings.SetDefaultValuesMethodName, context.FormatProvider, context, token).ConfigureAwait(false);
             if (!setDefaultValuesMethodNameResult.IsSuccessful())
             {
                 return Result.FromExistingResult<ConstructorBuilder>(setDefaultValuesMethodNameResult);
@@ -66,7 +64,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
             if (!string.IsNullOrEmpty(setDefaultValuesMethodNameResult.Value!.ToString()))
             {
                 ctor.AddCodeStatements($"{setDefaultValuesMethodNameResult.Value}();");
-                context.Request.Builder.AddMethods(new MethodBuilder()
+                context.Builder.AddMethods(new MethodBuilder()
                     .WithName(setDefaultValuesMethodNameResult.Value)
                     .WithPartial()
                     .WithVisibility(Visibility.Private)
@@ -77,14 +75,14 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         return Result.Success(ctor);
     }
 
-    private async Task<List<Result<GenericFormattableString>>> GetDefaultValueResultsAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    private async Task<List<Result<GenericFormattableString>>> GetDefaultValueResultsAsync(BuilderContext context, CancellationToken token)
     {
         var defaultValueResults = new List<Result<GenericFormattableString>>();
 
-        foreach (var property in context.Request.GetSourceProperties()
+        foreach (var property in context.GetSourceProperties()
             .Where
             (x => !x.TypeName.FixTypeName().IsCollectionTypeName()
-               && ((!x.IsValueType && !x.IsNullable) || (x.Attributes.Any(y => y.Name == typeof(DefaultValueAttribute).FullName) && context.Request.Settings.UseDefaultValueAttributeValuesForBuilderInitialization))
+               && ((!x.IsValueType && !x.IsNullable) || (x.Attributes.Any(y => y.Name == typeof(DefaultValueAttribute).FullName) && context.Settings.UseDefaultValueAttributeValuesForBuilderInitialization))
             ))
         {
             var result = await GenerateDefaultValueStatementAsync(property, context, token).ConfigureAwait(false);
@@ -98,19 +96,19 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         return defaultValueResults;
     }
 
-    private async Task<List<ConstructorInitializerItem>> GetConstructorInitializerResultsAsync(PipelineContext<BuilderContext> context)
+    private async Task<List<ConstructorInitializerItem>> GetConstructorInitializerResultsAsync(BuilderContext context)
     {
         var constructorInitializerResults = new List<ConstructorInitializerItem>();
 
-        foreach (var property in context.Request.GetSourceProperties()
+        foreach (var property in context.GetSourceProperties()
             .Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var name = property.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo());
+            var name = property.GetBuilderMemberName(context.Settings, context.FormatProvider.ToCultureInfo());
             var result = await property.GetBuilderConstructorInitializerAsync(
-                context.Request,
-                new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
-                context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName),
-                context.Request.Settings.BuilderNewCollectionTypeName,
+                context,
+                new ParentChildContext<BuilderContext, Property>(context, property, context.Settings),
+                context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName),
+                context.Settings.BuilderNewCollectionTypeName,
                 string.Empty,
                 _evaluator).ConfigureAwait(false);
 
@@ -129,19 +127,19 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         => (await instance.GetCustomValueForInheritedClassAsync(settings.EnableInheritance, _ => Task.FromResult(Result.Success<GenericFormattableString>("base()")))
             .ConfigureAwait(false)).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
-    private Task<Result<GenericFormattableString>> GenerateDefaultValueStatementAsync(Property property, PipelineContext<BuilderContext> context, CancellationToken token)
+    private Task<Result<GenericFormattableString>> GenerateDefaultValueStatementAsync(Property property, BuilderContext context, CancellationToken token)
         => _evaluator.EvaluateInterpolatedStringAsync
         (
             "{property.BuilderMemberName} = {property.DefaultValue};",
-            context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
+            context.FormatProvider,
+            new ParentChildContext<BuilderContext, Property>(context, property, context.Settings),
             token
         );
 
-    private static ConstructorBuilder CreateInheritanceDefaultConstructor(PipelineContext<BuilderContext> context)
+    private static ConstructorBuilder CreateInheritanceDefaultConstructor(BuilderContext context)
         => new ConstructorBuilder()
             .WithChainCall("base()")
-            .WithProtected(context.Request.IsBuilderForAbstractEntity);
+            .WithProtected(context.IsBuilderForAbstractEntity);
 
     private sealed class ConstructorInitializerItem
     {

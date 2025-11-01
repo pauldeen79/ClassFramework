@@ -1,26 +1,24 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>, IOrderContainer
+public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
     private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
-    public int Order => PipelineStage.Process;
-
-    public async Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Request.Settings.AddCopyConstructor)
+        if (!context.Settings.AddCopyConstructor)
         {
             return Result.Continue();
         }
 
-        if (context.Request.Settings.EnableBuilderInheritance
-            && context.Request.IsAbstractBuilder
-            && !context.Request.Settings.IsForAbstractBuilder)
+        if (context.Settings.EnableBuilderInheritance
+            && context.IsAbstractBuilder
+            && !context.Settings.IsForAbstractBuilder)
         {
-            context.Request.Builder.AddConstructors(CreateInheritanceCopyConstructor(context));
+            context.Builder.AddConstructors(CreateInheritanceCopyConstructor(context));
         }
         else
         {
@@ -30,18 +28,18 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
                 return copyConstructorResult;
             }
 
-            context.Request.Builder.AddConstructors(copyConstructorResult.Value!);
+            context.Builder.AddConstructors(copyConstructorResult.Value!);
         }
 
         return Result.Success();
     }
 
-    private async Task<Result<ConstructorBuilder>> CreateCopyConstructorAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    private async Task<Result<ConstructorBuilder>> CreateCopyConstructorAsync(BuilderContext context, CancellationToken token)
     {
         var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add("NullCheck.Source", () => _evaluator.EvaluateInterpolatedStringAsync("{SourceNullCheck()}", context.Request.FormatProvider, context.Request, token))
-            .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.EntityNameFormatString, context.Request.FormatProvider, context.Request, token))
-            .Add(ResultNames.Namespace, () => context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.EntityNamespaceFormatString, context.Request.FormatProvider, context.Request, token)))
+            .Add("NullCheck.Source", () => _evaluator.EvaluateInterpolatedStringAsync("{SourceNullCheck()}", context.FormatProvider, context, token))
+            .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(context.Settings.EntityNameFormatString, context.FormatProvider, context, token))
+            .Add(ResultNames.Namespace, () => context.GetMappingMetadata(context.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateInterpolatedStringAsync(context.Settings.EntityNamespaceFormatString, context.FormatProvider, context, token)))
             .Build()
             .ConfigureAwait(false);
 
@@ -70,8 +68,8 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         var nsPlusPrefix = results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".");
 
         return Result.Success(new ConstructorBuilder()
-            .WithChainCall(await CreateBuilderClassCopyConstructorChainCallAsync(context.Request.SourceModel, context.Request.Settings).ConfigureAwait(false))
-            .WithProtected(context.Request.IsBuilderForAbstractEntity)
+            .WithChainCall(await CreateBuilderClassCopyConstructorChainCallAsync(context.SourceModel, context.Settings).ConfigureAwait(false))
+            .WithProtected(context.IsBuilderForAbstractEntity)
             .AddCodeStatements
             (
                 new string[] { results.GetValue("NullCheck.Source") }.Where(x => !string.IsNullOrEmpty(x))
@@ -80,11 +78,11 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName($"{nsPlusPrefix}{name}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+                    .WithTypeName($"{nsPlusPrefix}{name}{context.SourceModel.GetGenericTypeArgumentsString()}")
             )
             .AddParameters
             (
-                context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName())
+                context.GetMappingMetadata(context.SourceModel.GetFullName())
                     .GetValues<Parameter>(MetadataNames.CustomBuilderCopyConstructorParameter)
                     .Select(x => x.ToBuilder())
             )
@@ -93,13 +91,13 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         );
     }
 
-    private async Task<ConstructorPropertyInitializerItem[]> GetInitializationCodeResultsAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    private async Task<ConstructorPropertyInitializerItem[]> GetInitializationCodeResultsAsync(BuilderContext context, CancellationToken token)
     {
         var results = new List<ConstructorPropertyInitializerItem>();
 
-        foreach (var property in context.Request.GetSourceProperties()
+        foreach (var property in context.GetSourceProperties()
             .Where(x => !(x.TypeName.FixTypeName().IsCollectionTypeName()
-                    && context.Request.GetMappingMetadata(x.TypeName).Any(y => y.Name == MetadataNames.CustomBuilderConstructorInitializeExpression))))
+                    && context.GetMappingMetadata(x.TypeName).Any(y => y.Name == MetadataNames.CustomBuilderConstructorInitializeExpression))))
         {
             var result = await CreateBuilderInitializationCodeAsync(property, context, token).ConfigureAwait(false);
 
@@ -114,19 +112,19 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         return results.ToArray();
     }
 
-    private async Task<ConstructorPropertyNameInitializerItem[]> GetConstructorInitializerResultsAsync(PipelineContext<BuilderContext> context)
+    private async Task<ConstructorPropertyNameInitializerItem[]> GetConstructorInitializerResultsAsync(BuilderContext context)
     {
         var results = new List<ConstructorPropertyNameInitializerItem>();
 
-        foreach (var property in context.Request.GetSourceProperties()
+        foreach (var property in context.GetSourceProperties()
             .Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var name = property.GetBuilderMemberName(context.Request.Settings, context.Request.FormatProvider.ToCultureInfo());
+            var name = property.GetBuilderMemberName(context.Settings, context.FormatProvider.ToCultureInfo());
             var result = await property.GetBuilderConstructorInitializerAsync(
-                context.Request,
-                new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
-                context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName),
-                context.Request.Settings.BuilderNewCollectionTypeName,
+                context,
+                new ParentChildContext<BuilderContext, Property>(context, property, context.Settings),
+                context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName),
+                context.Settings.BuilderNewCollectionTypeName,
                 MetadataNames.CustomBuilderConstructorInitializeExpression,
                 _evaluator).ConfigureAwait(false);
 
@@ -141,19 +139,19 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         return results.ToArray();
     }
 
-    private Task<Result<GenericFormattableString>> CreateBuilderInitializationCodeAsync(Property property, PipelineContext<BuilderContext> context, CancellationToken token)
+    private Task<Result<GenericFormattableString>> CreateBuilderInitializationCodeAsync(Property property, BuilderContext context, CancellationToken token)
         => _evaluator.EvaluateInterpolatedStringAsync
         (
-            ProcessCreateBuilderInitializationCode(context.Request.GetMappingMetadata(property.TypeName)
+            ProcessCreateBuilderInitializationCode(context.GetMappingMetadata(property.TypeName)
                 .GetStringValue
                 (
                     MetadataNames.CustomBuilderConstructorInitializeExpression,
                     () => property.TypeName.FixTypeName().IsCollectionTypeName()
-                        ? context.Request.Settings.CollectionInitializationStatementFormatString
-                        : context.Request.Settings.NonCollectionInitializationStatementFormatString
+                        ? context.Settings.CollectionInitializationStatementFormatString
+                        : context.Settings.NonCollectionInitializationStatementFormatString
                 ).Replace(PlaceholderNames.NamePlaceholder, property.Name), property.TypeName.FixTypeName().IsCollectionTypeName()),
-            context.Request.FormatProvider,
-            new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings),
+            context.FormatProvider,
+            new ParentChildContext<BuilderContext, Property>(context, property, context.Settings),
             token
         );
 
@@ -167,7 +165,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         return result;
     }
 
-    private string? GetSourceExpression(string? value, Property sourceProperty, PipelineContext<BuilderContext> context)
+    private string? GetSourceExpression(string? value, Property sourceProperty, BuilderContext context)
     {
         if (value is null || !value.Contains(PlaceholderNames.SourceExpressionPlaceholder))
         {
@@ -179,7 +177,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
             return sourceProperty.Name;
         }
 
-        var sourceExpression = context.Request
+        var sourceExpression = context
             .GetMappingMetadata(sourceProperty.TypeName)
             .GetStringValue(MetadataNames.CustomBuilderSourceExpression, PlaceholderNames.NamePlaceholder);
 
@@ -191,7 +189,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
                 .Replace("[ForcedNullableSuffix]", string.Empty).Replace(".Select(x => x)", string.Empty);
         }
 
-        var suffix = sourceProperty.GetSuffix(context.Request.Settings.EnableNullableReferenceTypes, _csharpExpressionDumper, context.Request);
+        var suffix = sourceProperty.GetSuffix(context.Settings.EnableNullableReferenceTypes, _csharpExpressionDumper, context);
         return value
             .Replace($"source.{PlaceholderNames.SourceExpressionPlaceholder}", $"{sourceExpression.Replace(PlaceholderNames.NamePlaceholder, "source." + sourceProperty.Name)}")
             .Replace(PlaceholderNames.NamePlaceholder, sourceProperty.Name)
@@ -202,22 +200,22 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
     private static async Task<string> CreateBuilderClassCopyConstructorChainCallAsync(IType instance, PipelineSettings settings)
         => (await instance.GetCustomValueForInheritedClassAsync(settings.EnableInheritance, _ => Task.FromResult(Result.Success<GenericFormattableString>("base(source)"))).ConfigureAwait(false)).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
-    private static ConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<BuilderContext> context)
+    private static ConstructorBuilder CreateInheritanceCopyConstructor(BuilderContext context)
     {
-        var typeName = context.Request.SourceModel.GetFullName();
+        var typeName = context.SourceModel.GetFullName();
 
         return new ConstructorBuilder()
             .WithChainCall("base(source)")
-            .WithProtected(context.Request.IsBuilderForAbstractEntity)
+            .WithProtected(context.IsBuilderForAbstractEntity)
             .AddParameters
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName($"{typeName}{context.Request.SourceModel.GetGenericTypeArgumentsString()}")
+                    .WithTypeName($"{typeName}{context.SourceModel.GetGenericTypeArgumentsString()}")
             )
             .AddParameters
             (
-                context.Request.GetMappingMetadata(context.Request.SourceModel.GetFullName())
+                context.GetMappingMetadata(context.SourceModel.GetFullName())
                     .GetValues<Parameter>(MetadataNames.CustomBuilderCopyConstructorParameter)
                     .Select(x => x.ToBuilder())
             );

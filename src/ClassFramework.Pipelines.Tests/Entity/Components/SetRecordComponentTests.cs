@@ -2,7 +2,7 @@
 
 public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetRecordComponent>
 {
-    public class ProcessAsync : SetRecordComponentTests
+    public class ExecuteAsync : SetRecordComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetR
             var sut = CreateSut();
 
             // Act & Assert
-            Task a = sut.ProcessAsync(context: null!);
+            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
                 .ParamName.ShouldBe("context");
         }
@@ -26,14 +26,14 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetR
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(createRecord: createRecordSettingValue);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Record.ShouldBe(expectedRecordValue);
+            context.Builder.Record.ShouldBe(expectedRecordValue);
         }
     }
 }

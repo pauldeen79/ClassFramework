@@ -2,7 +2,7 @@
 
 public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.SetNameComponent>
 {
-    public class ProcessAsync : SetNameComponentTests
+    public class ExecuteAsync : SetNameComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var sut = CreateSut();
 
             // Act & Assert
-            var t = sut.ProcessAsync(context: null!);
+            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -27,11 +27,11 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Name.ShouldBe("MyClass");
+            context.Builder.Name.ShouldBe("MyClass");
         }
 
         [Fact]
@@ -45,11 +45,11 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Namespace.ShouldBe("ClassFramework.Pipelines.Tests.Reflection");
+            context.Builder.Namespace.ShouldBe("ClassFramework.Pipelines.Tests.Reflection");
         }
 
         [Fact]
@@ -63,7 +63,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -81,14 +81,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
             result.ErrorMessage.ShouldBe("Kaboom");
         }
 
-        private static PipelineContext<ReflectionContext> CreateContext(Type sourceModel, PipelineSettingsBuilder settings)
-            => new(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+        private static ReflectionContext CreateContext(Type sourceModel, PipelineSettingsBuilder settings)
+            => new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

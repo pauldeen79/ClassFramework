@@ -1,7 +1,7 @@
 ﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class AbstractBuilders(IPipelineService pipelineService) : ClassFrameworkCSharpClassBase(pipelineService)
+public class AbstractBuilders(ICommandService commandService) : ClassFrameworkCSharpClassBase(commandService)
 {
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetBuildersAsync(GetAbstractModelsAsync(), "ClassFramework.Domain.Builders", "ClassFramework.Domain");
 

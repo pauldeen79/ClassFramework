@@ -1,15 +1,13 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class AddGenericTypeArgumentsComponent : IPipelineComponent<ReflectionContext>, IOrderContainer
+public class AddGenericTypeArgumentsComponent : IPipelineComponent<ReflectionContext>
 {
-    public int Order => PipelineStage.Process;
-
-    public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
+    public Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            context.Request.Builder.AddGenericTypeArguments(context.Request.SourceModel.GetGenericTypeArgumentTypeNames());
+            context.Builder.AddGenericTypeArguments(context.SourceModel.GetGenericTypeArgumentTypeNames());
 
             return Result.Success();
         }, token);

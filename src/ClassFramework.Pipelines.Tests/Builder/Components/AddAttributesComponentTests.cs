@@ -2,7 +2,7 @@
 
 public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components.AddAttributesComponent>
 {
-    public class ProcessAsync : AddAttributesComponentTests
+    public class ExecuteAsync : AddAttributesComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
             var sut = CreateSut();
 
             // Act & Assert
-            Task a= sut.ProcessAsync(context: null!);
+            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
              .ParamName.ShouldBe("context");
         }
@@ -26,11 +26,11 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute") });
+            context.Builder.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute") });
         }
 
         [Fact]
@@ -49,11 +49,11 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute2") });
+            context.Builder.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute2") });
         }
 
         [Fact]
@@ -70,14 +70,14 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Builder.Components
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Attributes.ShouldBeEmpty();
+            context.Builder.Attributes.ShouldBeEmpty();
         }
 
-        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+        private static BuilderContext CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

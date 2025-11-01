@@ -1,28 +1,23 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class AddMethodsComponent : IPipelineComponent<InterfaceContext>, IOrderContainer
+public class AddMethodsComponent : IPipelineComponent<InterfaceContext>
 {
-    public int Order => PipelineStage.Process;
-
-    public Task<Result> ProcessAsync(PipelineContext<InterfaceContext> context, CancellationToken token)
+    public Task<Result> ExecuteAsync(InterfaceContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            if (!context.Request.Settings.CopyMethods)
+            if (!context.Settings.CopyMethods)
             {
                 return Result.Continue();
             }
 
-            context.Request.Builder.AddMethods(context.Request.SourceModel.Methods
-                .Where(x => context.Request.Settings.CopyMethodPredicate is null || context.Request.Settings.CopyMethodPredicate(context.Request.SourceModel, x))
+            context.Builder.AddMethods(context.SourceModel.Methods
+                .Where(x => context.Settings.CopyMethodPredicate is null || context.Settings.CopyMethodPredicate(context.SourceModel, x))
                 .Select(x => x.ToBuilder()
-                    .WithReturnTypeName(context.Request.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(context.Request.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))
-                    .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = context.Request.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
-                    .With(y =>
-                    {
-                        y.WithNew(context.Request.Settings.UseBuilderAbstractionsTypeConversion && context.Request.Builder.Interfaces.Any() && !context.Request.Builder.Interfaces.Contains(y.ReturnTypeName));
-                    })
+                    .WithReturnTypeName(context.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(context.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))
+                    .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = context.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
+                    .With(y => y.WithNew(context.Settings.UseBuilderAbstractionsTypeConversion && context.Builder.Interfaces.Any() && !context.Builder.Interfaces.Contains(y.ReturnTypeName)))
                 ));
 
             return Result.Success();
@@ -73,5 +68,9 @@ internal sealed class TypeContainerWrapperBuilder : ITypeContainerBuilder
     public ObservableCollection<ITypeContainerBuilder> GenericTypeArguments { get; set; }
 
     public ITypeContainer Build()
-        => new TypeContainerWrapper(new MethodBuilder().WithName("Dummy").WithReturnTypeName(TypeName).WithReturnTypeIsNullable(IsNullable).WithReturnTypeIsValueType(IsValueType));
+        => new TypeContainerWrapper(new MethodBuilder()
+            .WithName("Dummy")
+            .WithReturnTypeName(TypeName)
+            .WithReturnTypeIsNullable(IsNullable)
+            .WithReturnTypeIsValueType(IsValueType));
 }

@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class ImmutableCoreBuilders(IPipelineService pipelineService) : ImmutableCSharpClassBase(pipelineService)
+public class ImmutableCoreBuilders(ICommandService commandService) : ImmutableCSharpClassBase(commandService)
 {
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetBuildersAsync(GetCoreModelsAsync(), "Test.Domain.Builders", "Test.Domain");
 

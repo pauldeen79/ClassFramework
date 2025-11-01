@@ -2,7 +2,7 @@
 
 public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.AddGenericsComponent>
 {
-    public class ProcessAsync : AddGenericsComponentTests
+    public class ExecuteAsync : AddGenericsComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.Ad
             var sut = CreateSut();
 
             // Act & Assert
-            Task a = sut.ProcessAsync(context: null!);
+            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
                 .ParamName.ShouldBe("context");
         }
@@ -23,15 +23,15 @@ public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.Ad
             var sourceModel = CreateGenericClass(addProperties: false);
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.GenericTypeArguments.ToArray().ShouldBeEquivalentTo(new[] { "T" });
-            context.Request.Builder.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where T : class" });
+            context.Builder.GenericTypeArguments.ToArray().ShouldBeEquivalentTo(new[] { "T" });
+            context.Builder.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where T : class" });
         }
     }
 }

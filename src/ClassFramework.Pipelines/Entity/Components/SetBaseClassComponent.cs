@@ -1,14 +1,12 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class SetBaseClassComponent : IPipelineComponent<EntityContext>, IOrderContainer
+public class SetBaseClassComponent : IPipelineComponent<EntityContext>
 {
-    public int Order => PipelineStage.Process;
-
-    public async Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public async Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Request.Builder.WithBaseClass(await context.Request.SourceModel.GetEntityBaseClassAsync(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass).ConfigureAwait(false));
+        context.Builder.WithBaseClass(await context.SourceModel.GetEntityBaseClassAsync(context.Settings.EnableInheritance, context.Settings.BaseClass).ConfigureAwait(false));
 
         return Result.Success();
     }

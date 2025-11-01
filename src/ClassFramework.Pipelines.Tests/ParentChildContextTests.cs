@@ -8,12 +8,12 @@ public class ParentChildContextTests : TestBase
         public void Throws_On_Null_ParentContext()
         {
             // Arrange
-            var parentContext = default(PipelineContext<ClassBuilder, TypeBase>);
+            var parentContext = default(BuilderContext);
             var childContext = new PropertyBuilder().WithName("Property").WithType(typeof(int)).Build();
             var settings = new PipelineSettingsBuilder();
 
             // Act & Assert
-            Action a = () => _ = new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, Property>(parentContext!, childContext, settings);
+            Action a = () => _ = new ParentChildContext<BuilderContext, Property>(parentContext!, childContext, settings);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("parentContext");
         }
 
@@ -21,12 +21,12 @@ public class ParentChildContextTests : TestBase
         public void Throws_On_Null_ChildContext()
         {
             // Arrange
-            var parentContext = new PipelineContext<ClassBuilder, TypeBase>(new ClassBuilder(), new ClassBuilder().WithName("MyClass").Build());
+            var parentContext = new BuilderContext(new ClassBuilder().WithName("MyClass").Build(), new PipelineSettingsBuilder(), CultureInfo.CurrentCulture, CancellationToken.None);
             var childContext = default(Property);
             var settings = new PipelineSettingsBuilder();
 
             // Act & Assert
-            Action a = () => _ = new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, Property>(parentContext, childContext!, settings);
+            Action a = () => _ = new ParentChildContext<BuilderContext, Property>(parentContext, childContext!, settings);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("childContext");
         }
 
@@ -34,12 +34,12 @@ public class ParentChildContextTests : TestBase
         public void Throws_On_Null_Settings()
         {
             // Arrange
-            var parentContext = new PipelineContext<ClassBuilder, TypeBase>(new ClassBuilder(), new ClassBuilder().WithName("MyClass").Build());
+            var parentContext = new BuilderContext(new ClassBuilder().WithName("MyClass").Build(), new PipelineSettingsBuilder(), CultureInfo.CurrentCulture, CancellationToken.None);
             var childContext = new PropertyBuilder().WithName("Property").WithType(typeof(int)).Build();
             var settings = default(PipelineSettings);
 
             // Act & Assert
-            Action a = () => _ = new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, Property>(parentContext, childContext, settings!);
+            Action a = () => _ = new ParentChildContext<BuilderContext, Property>(parentContext, childContext, settings!);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("settings");
         }
     }

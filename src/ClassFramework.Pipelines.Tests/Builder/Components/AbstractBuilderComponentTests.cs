@@ -2,7 +2,7 @@
 
 public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Components.AbstractBuilderComponent>
 {
-    public class ProcessAsync : AbstractBuilderComponentTests
+    public class ExecuteAsync : AbstractBuilderComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
             var sut = CreateSut();
 
             // Act & Assert
-            var t = sut.ProcessAsync(context: null!);
+            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -27,13 +27,13 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.GenericTypeArguments.ToArray().ShouldBeEquivalentTo(new[] { "TBuilder", "TEntity" });
-            context.Request.Builder.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where TEntity : SomeNamespace.SomeClass", "where TBuilder : SomeClassBuilder<TBuilder, TEntity>" });
-            context.Request.Builder.Abstract.ShouldBeTrue();
+            context.Builder.GenericTypeArguments.ToArray().ShouldBeEquivalentTo(new[] { "TBuilder", "TEntity" });
+            context.Builder.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where TEntity : SomeNamespace.SomeClass", "where TBuilder : SomeClassBuilder<TBuilder, TEntity>" });
+            context.Builder.Abstract.ShouldBeTrue();
         }
 
         [Fact]
@@ -46,13 +46,13 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.GenericTypeArguments.ShouldBeEmpty();
-            context.Request.Builder.GenericTypeArgumentConstraints.ShouldBeEmpty();
-            context.Request.Builder.Abstract.ShouldBeFalse();
+            context.Builder.GenericTypeArguments.ShouldBeEmpty();
+            context.Builder.GenericTypeArgumentConstraints.ShouldBeEmpty();
+            context.Builder.Abstract.ShouldBeFalse();
         }
 
         [Fact]
@@ -66,14 +66,14 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
             result.ErrorMessage.ShouldBe("Kaboom");
         }
 
-        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+        private static BuilderContext CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

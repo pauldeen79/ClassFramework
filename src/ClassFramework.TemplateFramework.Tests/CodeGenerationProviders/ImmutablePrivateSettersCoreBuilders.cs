@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class ImmutablePrivateSettersCoreBuilders(IPipelineService pipelineService) : ImmutablePrivateSettersCSharpClassBase(pipelineService)
+public class ImmutablePrivateSettersCoreBuilders(ICommandService commandService) : ImmutablePrivateSettersCSharpClassBase(commandService)
 {
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetBuildersAsync(GetCoreModelsAsync(), "Test.Domain.Builders", "Test.Domain");
 

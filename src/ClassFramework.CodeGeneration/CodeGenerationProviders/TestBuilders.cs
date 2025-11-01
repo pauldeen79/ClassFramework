@@ -1,7 +1,7 @@
 ﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class TestBuilders(IPipelineService pipelineService) : ClassFrameworkCSharpClassBase(pipelineService)
+public class TestBuilders(ICommandService commandService) : ClassFrameworkCSharpClassBase(commandService)
 {
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetBuildersAsync(GetTestModelsAsync(), "ClassFramework.TemplateFramework.Tests.Builders", "ClassFramework.TemplateFramework.Tests");
 
