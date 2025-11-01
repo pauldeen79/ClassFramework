@@ -2,7 +2,7 @@
 
 public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components.AddInterfacesComponent>
 {
-    public class ProcessAsync : AddInterfacesComponentTests
+    public class ExecuteAsync : AddInterfacesComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
             var sut = CreateSut();
 
             // Act & Assert
-            var t = sut.ProcessAsync(context: null!);
+            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -30,11 +30,11 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface" });
+            context.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface" });
         }
 
         [Fact]
@@ -53,11 +53,11 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface2" });
+            context.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface2" });
         }
 
         [Fact]
@@ -74,14 +74,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Interfaces.ShouldBeEmpty();
+            context.Builder.Interfaces.ShouldBeEmpty();
         }
 
-        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+        private static BuilderContext CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

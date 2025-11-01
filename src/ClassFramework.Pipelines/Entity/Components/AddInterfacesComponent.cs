@@ -1,24 +1,22 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddInterfacesComponent : IPipelineComponent<EntityContext>, IOrderContainer
+public class AddInterfacesComponent : IPipelineComponent<EntityContext>
 {
-    public int Order => PipelineStage.Process;
-
-    public async Task<Result> ProcessAsync(PipelineContext<EntityContext> context, CancellationToken token)
+    public async Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Request.Settings.CopyInterfaces)
+        if (!context.Settings.CopyInterfaces)
         {
             return Result.Continue();
         }
 
-        var baseClass = await context.Request.SourceModel.GetEntityBaseClassAsync(context.Request.Settings.EnableInheritance, context.Request.Settings.BaseClass).ConfigureAwait(false);
+        var baseClass = await context.SourceModel.GetEntityBaseClassAsync(context.Settings.EnableInheritance, context.Settings.BaseClass).ConfigureAwait(false);
 
-        context.Request.Builder.AddInterfaces(context.Request.SourceModel.Interfaces
-            .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+        context.Builder.AddInterfaces(context.SourceModel.Interfaces
+            .Where(x => context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Where(x => x != baseClass)
-            .Select(x => context.Request.MapTypeName(x.FixTypeName()))
+            .Select(x => context.MapTypeName(x.FixTypeName()))
             .Where(x => !string.IsNullOrEmpty(x)));
 
         return Result.Success();

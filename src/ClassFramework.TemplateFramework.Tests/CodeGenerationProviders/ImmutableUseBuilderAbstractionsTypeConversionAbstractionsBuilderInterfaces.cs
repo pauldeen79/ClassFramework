@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class ImmutableUseBuilderAbstractionsTypeConversionAbstractionsBuilderInterfaces(IPipelineService pipelineService) : ImmutableUseBuilderAbstractionsTypeConversionCSharpClassBase(pipelineService)
+public class ImmutableUseBuilderAbstractionsTypeConversionAbstractionsBuilderInterfaces(ICommandService commandService) : ImmutableUseBuilderAbstractionsTypeConversionCSharpClassBase(commandService)
 {
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetBuilderInterfacesAsync(GetCoreModelsAsync(), "Test.Domain.Builders", "Test.Domain", "Test.Abstractions");
 

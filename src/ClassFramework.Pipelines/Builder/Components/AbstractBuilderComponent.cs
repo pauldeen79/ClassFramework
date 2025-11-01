@@ -1,36 +1,34 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AbstractBuilderComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>, IOrderContainer
+public class AbstractBuilderComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public int Order => PipelineStage.Process;
-
-    public async Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Request.IsBuilderForAbstractEntity)
+        if (!context.IsBuilderForAbstractEntity)
         {
             return Result.Continue();
         }
 
-        return (await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token)
+        return (await _evaluator.EvaluateInterpolatedStringAsync(context.Settings.BuilderNameFormatString, context.FormatProvider, context, token)
             .ConfigureAwait(false))
             .OnSuccess(nameResult =>
             {
-                context.Request.Builder.WithAbstract();
+                context.Builder.WithAbstract();
 
-                if (!context.Request.Settings.IsForAbstractBuilder)
+                if (!context.Settings.IsForAbstractBuilder)
                 {
-                    var generics = context.Request.SourceModel.GetGenericTypeArgumentsString();
+                    var generics = context.SourceModel.GetGenericTypeArgumentsString();
                     var genericsSuffix = string.IsNullOrEmpty(generics)
                         ? string.Empty
-                        : $", {context.Request.SourceModel.GetGenericTypeArgumentsString(false)}";
+                        : $", {context.SourceModel.GetGenericTypeArgumentsString(false)}";
 
-                    context.Request.Builder
+                    context.Builder
                         .AddGenericTypeArguments("TBuilder", "TEntity")
-                        .AddGenericTypeArgumentConstraints($"where TEntity : {context.Request.SourceModel.GetFullName()}{generics}")
+                        .AddGenericTypeArgumentConstraints($"where TEntity : {context.SourceModel.GetFullName()}{generics}")
                         .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity{genericsSuffix}>")
                         .WithAbstract();
                 }

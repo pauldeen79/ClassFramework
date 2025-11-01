@@ -2,7 +2,7 @@
 
 public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.GenericsComponent>
 {
-    public class ProcessAsync : GenericsComponentTests
+    public class ExecuteAsync : GenericsComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
             var sut = CreateSut();
 
             // Act & Assert
-            Task a = sut.ProcessAsync(context: null!);
+            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
              .ParamName.ShouldBe("context");
         }
@@ -30,11 +30,11 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.GenericTypeArguments.ToArray().ShouldBeEquivalentTo(new[] { "T" });
+            context.Builder.GenericTypeArguments.ToArray().ShouldBeEquivalentTo(new[] { "T" });
         }
 
         [Fact]
@@ -52,14 +52,14 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where T : class" });
+            context.Builder.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where T : class" });
         }
 
-        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+        private static BuilderContext CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

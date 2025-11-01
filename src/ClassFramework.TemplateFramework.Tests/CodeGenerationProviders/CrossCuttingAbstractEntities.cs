@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class CrossCuttingAbstractEntities(IPipelineService pipelineService) : CrossCuttingClassBase(pipelineService)
+public class CrossCuttingAbstractEntities(ICommandService commandService) : CrossCuttingClassBase(commandService)
 {
     public override string Path => "CrossCutting.Utilities.Parsers";
 

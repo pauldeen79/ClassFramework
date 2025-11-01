@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Interface;
 
-public class PipelineTests : IntegrationTestBase<IPipeline<InterfaceContext>>
+public class PipelineTests : IntegrationTestBase<ICommandService>
 {
-    public class ProcessAsync : PipelineTests
+    public class ExecuteAsync : PipelineTests
     {
         private static InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, CopyMethodPredicate? copyMethodPredicate = null) => new(
             CreateInterface(addProperties),
@@ -24,7 +24,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<InterfaceContext>>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -40,7 +40,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<InterfaceContext>>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -57,7 +57,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<InterfaceContext>>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -72,7 +72,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<InterfaceContext>>
             var context = CreateContext(copyMethodPredicate: (_, _) => true);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -87,7 +87,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<InterfaceContext>>
             var context = CreateContext(copyMethodPredicate: (_, _) => false);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -102,7 +102,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<InterfaceContext>>
             var context = CreateContext(copyMethods: false);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -117,13 +117,11 @@ public class PipelineTests : IntegrationTestBase<IPipeline<InterfaceContext>>
             var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.ProcessAsync(context);
-            var innerResult = result?.InnerResults.FirstOrDefault();
+            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
 
             // Assert
-            innerResult.ShouldNotBeNull();
-            innerResult!.Status.ShouldBe(ResultStatus.Invalid);
-            innerResult.ErrorMessage.ShouldBe("To create an interface, there must be at least one property");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("There must be at least one property");
         }
     }
 
@@ -142,7 +140,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<InterfaceContext>>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

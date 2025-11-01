@@ -2,6 +2,8 @@
 
 public class ReflectionContext : ContextBase<Type>
 {
+    private readonly TypeBaseBuilderWrapper _wrappedBuilder;
+
     public ReflectionContext(Type sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken)
         : base(sourceModel, settings, formatProvider, cancellationToken)
     {
@@ -12,5 +14,7 @@ public class ReflectionContext : ContextBase<Type>
 
     public TypeBaseBuilder Builder => _wrappedBuilder.Builder;
 
-    private readonly TypeBaseBuilderWrapper _wrappedBuilder;
+    public override object GetResponseBuilder() => Builder;
+
+    public override bool SourceModelHasNoProperties() => SourceModel.GetProperties().Length == 0;
 }

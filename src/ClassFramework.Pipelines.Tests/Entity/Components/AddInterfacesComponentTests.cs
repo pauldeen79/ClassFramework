@@ -2,7 +2,7 @@
 
 public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.AddInterfacesComponent>
 {
-    public class ProcessAsync : AddInterfacesComponentTests
+    public class ExecuteAsync : AddInterfacesComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
 
             // Act & Assert
-            var t = sut.ProcessAsync(context: null!);
+            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -23,14 +23,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").BuildTyped();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyInterfacePredicate: _ => true, copyInterfaces: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface" });
+            context.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface" });
         }
 
         [Fact]
@@ -40,14 +40,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").BuildTyped();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyInterfacePredicate: null, copyInterfaces: true);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface" });
+            context.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface" });
         }
 
         [Fact]
@@ -57,14 +57,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").BuildTyped();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyInterfaces: false);
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Interfaces.ShouldBeEmpty();
+            context.Builder.Interfaces.ShouldBeEmpty();
         }
     }
 }

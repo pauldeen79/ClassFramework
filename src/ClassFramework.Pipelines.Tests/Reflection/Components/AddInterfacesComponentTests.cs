@@ -2,7 +2,7 @@
 
 public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Components.AddInterfacesComponent>
 {
-    public class ProcessAsync : AddInterfacesComponentTests
+    public class ExecuteAsync : AddInterfacesComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
 
             // Act & Assert
-            Task a = sut.ProcessAsync(context: null!);
+            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
                 .ParamName.ShouldBe("context");
         }
@@ -23,14 +23,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection(copyInterfaces: false);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Interfaces.ShouldBeEmpty();
+            context.Builder.Interfaces.ShouldBeEmpty();
         }
 
         [Fact]
@@ -40,14 +40,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection(copyInterfaces: true);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Interfaces.Count.ShouldBe(1);
+            context.Builder.Interfaces.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -57,14 +57,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection(copyInterfaces: false, copyInterfacePredicate: _ => false);
-            var context = new PipelineContext<ReflectionContext>(new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Interfaces.ShouldBeEmpty();
+            context.Builder.Interfaces.ShouldBeEmpty();
         }
     }
 }

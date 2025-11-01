@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(pipelineService)
+public abstract class CrossCuttingClassBase(ICommandService commandService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(commandService)
 {
     public override bool RecurseOnDeleteGeneratedFiles => false;
     public override string LastGeneratedFilesFilename => string.Empty;
@@ -90,7 +90,8 @@ public abstract class CrossCuttingClassBase(IPipelineService pipelineService) : 
                 .WithAddNullChecks(AddNullChecks)
                 .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull);
 
-            return await PipelineService.ProcessAsync(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo, CancellationToken.None)).ConfigureAwait(false);
+            return (await CommandService.ExecuteAsync<EntityContext, ClassBuilder>(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo, CancellationToken.None)).ConfigureAwait(false))
+                .OnSuccess(x => x.Build());
         }).ConfigureAwait(false);
     }
 

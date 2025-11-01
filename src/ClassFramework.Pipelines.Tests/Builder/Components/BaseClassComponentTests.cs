@@ -2,7 +2,7 @@
 
 public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.BaseClassComponent>
 {
-    public class ProcessAsync : BaseClassComponentTests
+    public class ExecuteAsync : BaseClassComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var sut = CreateSut();
 
             // Act & Assert
-            var t = sut.ProcessAsync(context: null!);
+            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -30,11 +30,11 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.BaseClass.ShouldBe("SomeClassBuilder");
+            context.Builder.BaseClass.ShouldBe("SomeClassBuilder");
         }
 
         [Fact]
@@ -52,11 +52,11 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.BaseClass.ShouldBe("SomeClassBuilder");
+            context.Builder.BaseClass.ShouldBe("SomeClassBuilder");
         }
 
         [Fact]
@@ -74,11 +74,11 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.BaseClass.ShouldBe("BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            context.Builder.BaseClass.ShouldBe("BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -97,11 +97,11 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.BaseClass.ShouldBe("BaseBuilders.BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            context.Builder.BaseClass.ShouldBe("BaseBuilders.BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -117,11 +117,11 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.BaseClass.ShouldBe("MyBaseClassBuilder");
+            context.Builder.BaseClass.ShouldBe("MyBaseClassBuilder");
         }
 
         [Fact]
@@ -137,11 +137,11 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.BaseClass.ShouldBe("MyBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            context.Builder.BaseClass.ShouldBe("MyBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -160,11 +160,11 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.BaseClass.ShouldBe("xyz.CustomBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            context.Builder.BaseClass.ShouldBe("xyz.CustomBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -182,14 +182,14 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
             result.ErrorMessage.ShouldBe("Kaboom");
         }
 
-        private static PipelineContext<BuilderContext> CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new(new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+        private static BuilderContext CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

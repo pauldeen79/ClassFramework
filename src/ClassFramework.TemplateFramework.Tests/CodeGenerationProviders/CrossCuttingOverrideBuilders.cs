@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class CrossCuttingOverrideBuilders(IPipelineService pipelineService) : CrossCuttingClassBase(pipelineService)
+public class CrossCuttingOverrideBuilders(ICommandService commandService) : CrossCuttingClassBase(commandService)
 {
     public override string Path => "CrossCutting.Utilities.Parsers/Builders/FunctionCallArguments";
 

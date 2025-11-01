@@ -1,25 +1,23 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class AddInterfacesComponent : IPipelineComponent<ReflectionContext>, IOrderContainer
+public class AddInterfacesComponent : IPipelineComponent<ReflectionContext>
 {
-    public int Order => PipelineStage.Process;
-
-    public Task<Result> ProcessAsync(PipelineContext<ReflectionContext> context, CancellationToken token)
+    public Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            if (!context.Request.Settings.CopyInterfaces)
+            if (!context.Settings.CopyInterfaces)
             {
                 return Result.Continue();
             }
 
-            context.Request.Builder.AddInterfaces(
-                context.Request.SourceModel.GetInterfaces()
-                    .Where(x => !(context.Request.SourceModel.IsRecord() && x.FullName.StartsWith($"System.IEquatable`1[[{context.Request.SourceModel.FullName}")))
-                    .Select(x => context.Request.GetMappedTypeName(x, context.Request.SourceModel))
-                    .Where(x => context.Request.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-                    .Select(x => context.Request.MapTypeName(x))
+            context.Builder.AddInterfaces(
+                context.SourceModel.GetInterfaces()
+                    .Where(x => !(context.SourceModel.IsRecord() && x.FullName.StartsWith($"System.IEquatable`1[[{context.SourceModel.FullName}")))
+                    .Select(x => context.GetMappedTypeName(x, context.SourceModel))
+                    .Where(x => context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+                    .Select(x => context.MapTypeName(x))
             );
 
             return Result.Success();

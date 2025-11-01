@@ -95,14 +95,14 @@ public static class TypeBaseExtensions
 
     public static async Task<IEnumerable<Result<FieldBuilder>>> GetBuilderClassFieldsAsync(
         this IType instance,
-        PipelineContext<BuilderContext> context,
+        BuilderContext context,
         IExpressionEvaluator evaluator,
         CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-        if (!context.Request.HasBackingFields())
+        if (!context.HasBackingFields())
         {
             return Enumerable.Empty<Result<FieldBuilder>>();
         }
@@ -110,10 +110,10 @@ public static class TypeBaseExtensions
         var results = new List<Result<FieldBuilder>>();
 
         foreach (var property in instance.Properties.Where(x =>
-            instance.IsMemberValidForBuilderClass(x, context.Request.Settings)
-            && x.HasBackingFieldOnBuilder(context.Request.Settings)))
+            instance.IsMemberValidForBuilderClass(x, context.Settings)
+            && x.HasBackingFieldOnBuilder(context.Settings)))
         {
-            var builderArgumentTypeResult = await property.GetBuilderArgumentTypeNameAsync(context.Request, new ParentChildContext<PipelineContext<BuilderContext>, Property>(context, property, context.Request.Settings), context.Request.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token).ConfigureAwait(false);
+            var builderArgumentTypeResult = await property.GetBuilderArgumentTypeNameAsync(context, new ParentChildContext<BuilderContext, Property>(context, property, context.Settings), context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token).ConfigureAwait(false);
             if (!builderArgumentTypeResult.IsSuccessful())
             {
                 results.Add(Result.FromExistingResult<FieldBuilder>(builderArgumentTypeResult));
@@ -121,8 +121,8 @@ public static class TypeBaseExtensions
             }
 
             results.Add(Result.Success(new FieldBuilder()
-                .WithName($"_{property.Name.ToCamelCase(context.Request.FormatProvider.ToCultureInfo())}")
-                .WithTypeName(builderArgumentTypeResult.Value!.ToString().FixCollectionTypeName(context.Request.Settings.BuilderNewCollectionTypeName).FixNullableTypeName(property))
+                .WithName($"_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())}")
+                .WithTypeName(builderArgumentTypeResult.Value!.ToString().FixCollectionTypeName(context.Settings.BuilderNewCollectionTypeName).FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
                 .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder()))));

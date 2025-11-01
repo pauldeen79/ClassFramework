@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class ImmutableCoreErrorBuilders(IPipelineService pipelineService) : ImmutableCSharpClassBase(pipelineService)
+public class ImmutableCoreErrorBuilders(ICommandService commandService) : ImmutableCSharpClassBase(commandService)
 {
     protected override string SetMethodNameFormatString => "With{property.Kaboom}";
 

@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class ImmutableInheritFromInterfacesAbstractionsInterfaces(IPipelineService pipelineService) : ImmutableInheritFromInterfacesCSharpClassBase(pipelineService)
+public class ImmutableInheritFromInterfacesAbstractionsInterfaces(ICommandService commandService) : ImmutableInheritFromInterfacesCSharpClassBase(commandService)
 {
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetEntityInterfacesAsync(GetCoreModelsAsync(), "Test.Domain", "Test.Abstractions");
 

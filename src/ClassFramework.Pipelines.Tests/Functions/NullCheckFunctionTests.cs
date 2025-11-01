@@ -13,8 +13,9 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
                 .WithName("NullCheck")
                 .WithMemberType(MemberType.Function)
                 .Build();
-            var context = new PropertyContext(CreateProperty(), new PipelineSettingsBuilder().WithAddNullChecks().Build(), CultureInfo.InvariantCulture, typeof(string).FullName!, typeof(List<>).WithoutGenerics(), CancellationToken.None);
-            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
+            var settings = new PipelineSettingsBuilder().Build();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
+            var context = new TestContext(settings, formatProvider); var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
             var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(context)) } }));
 
@@ -89,6 +90,13 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
+        }
+
+        private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
+        {
+            protected override string NewCollectionTypeName => string.Empty;
+            public override object GetResponseBuilder() => throw new NotImplementedException();
+            public override bool SourceModelHasNoProperties() => throw new NotImplementedException();
         }
     }
 }

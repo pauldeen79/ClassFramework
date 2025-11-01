@@ -1,26 +1,24 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>, IOrderContainer
+public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public int Order => PipelineStage.Process;
-
-    public async Task<Result> ProcessAsync(PipelineContext<BuilderContext> context, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
-        return (await GetBuilderBaseClassAsync(context.Request.SourceModel, context, token)
+        return (await GetBuilderBaseClassAsync(context.SourceModel, context, token)
             .ConfigureAwait(false))
             .OnSuccess(baseClassResult =>
             {
-                context.Request.Builder.WithBaseClass(baseClassResult.Value!);
+                context.Builder.WithBaseClass(baseClassResult.Value!);
             });
     }
 
-    private async Task<Result<GenericFormattableString>> GetBuilderBaseClassAsync(IType instance, PipelineContext<BuilderContext> context, CancellationToken token)
+    private async Task<Result<GenericFormattableString>> GetBuilderBaseClassAsync(IType instance, BuilderContext context, CancellationToken token)
     {
-        var nameResult = await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, context.Request, token).ConfigureAwait(false);
+        var nameResult = await _evaluator.EvaluateInterpolatedStringAsync(context.Settings.BuilderNameFormatString, context.FormatProvider, context, token).ConfigureAwait(false);
         if (!nameResult.IsSuccessful())
         {
             return nameResult;
@@ -28,32 +26,32 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
 
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
-        var isNotForAbstractBuilder = context.Request.Settings.EnableInheritance
-            && context.Request.Settings.EnableBuilderInheritance
-            && context.Request.Settings.BaseClass is null
-            && !context.Request.Settings.IsForAbstractBuilder;
+        var isNotForAbstractBuilder = context.Settings.EnableInheritance
+            && context.Settings.EnableBuilderInheritance
+            && context.Settings.BaseClass is null
+            && !context.Settings.IsForAbstractBuilder;
 
-        var isAbstract = context.Request.Settings.EnableInheritance
-            && context.Request.Settings.EnableBuilderInheritance
-            && context.Request.Settings.BaseClass is not null
-            && !context.Request.Settings.IsForAbstractBuilder
-            && context.Request.Settings.IsAbstract;
+        var isAbstract = context.Settings.EnableInheritance
+            && context.Settings.EnableBuilderInheritance
+            && context.Settings.BaseClass is not null
+            && !context.Settings.IsForAbstractBuilder
+            && context.Settings.IsAbstract;
 
         if (isNotForAbstractBuilder || isAbstract)
         {
             return Result.Success<GenericFormattableString>($"{nameResult.Value}{genericTypeArgumentsString}");
         }
 
-        if (context.Request.Settings.EnableInheritance
-            && context.Request.Settings.EnableBuilderInheritance
-            && context.Request.Settings.BaseClass is not null
-            && !context.Request.Settings.IsForAbstractBuilder) // note that originally, this was only enabled when RemoveDuplicateWithMethods was true. But I don't know why you don't want this... The generics ensure that we don't have to duplicate them, right?
+        if (context.Settings.EnableInheritance
+            && context.Settings.EnableBuilderInheritance
+            && context.Settings.BaseClass is not null
+            && !context.Settings.IsForAbstractBuilder) // note that originally, this was only enabled when RemoveDuplicateWithMethods was true. But I don't know why you don't want this... The generics ensure that we don't have to duplicate them, right?
         {
             var inheritanceNameResult = await _evaluator.EvaluateInterpolatedStringAsync
             (
-                context.Request.Settings.BuilderNameFormatString,
-                context.Request.FormatProvider,
-                new BuilderContext(context.Request.Settings.BaseClass!, context.Request.Settings, context.Request.FormatProvider, CancellationToken.None),
+                context.Settings.BuilderNameFormatString,
+                context.FormatProvider,
+                new BuilderContext(context.Settings.BaseClass!, context.Settings, context.FormatProvider, CancellationToken.None),
                 token
             ).ConfigureAwait(false);
 
@@ -62,12 +60,12 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
                 return inheritanceNameResult;
             }
 
-            return Result.Success<GenericFormattableString>($"{context.Request.Settings.BaseClassBuilderNameSpace.AppendWhenNotNullOrEmpty(".")}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
+            return Result.Success<GenericFormattableString>($"{context.Settings.BaseClassBuilderNameSpace.AppendWhenNotNullOrEmpty(".")}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
         }
 
         return await instance.GetCustomValueForInheritedClass
         (
-            context.Request.Settings.EnableInheritance,
+            context.Settings.EnableInheritance,
             async baseClassContainer =>
             {
                 var baseClassResult = await GetBaseClassNameAsync(context, baseClassContainer, token).ConfigureAwait(false);
@@ -76,27 +74,27 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
                     return baseClassResult;
                 }
 
-                context.Request.Builder.Interfaces
+                context.Builder.Interfaces
                     .Where(x => x.WithoutGenerics() == typeof(IBuilder<object>).WithoutGenerics())
                     .ToList()
-                    .ForEach(x => context.Request.Builder.Interfaces.Remove(x));
+                    .ForEach(x => context.Builder.Interfaces.Remove(x));
 
-                return Result.Success<GenericFormattableString>(context.Request.Settings.EnableBuilderInheritance
+                return Result.Success<GenericFormattableString>(context.Settings.EnableBuilderInheritance
                     ? $"{baseClassResult.Value}{genericTypeArgumentsString}"
                     : $"{baseClassResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
             }
         ).ConfigureAwait(false);
     }
 
-    private async Task<Result<GenericFormattableString>> GetBaseClassNameAsync(PipelineContext<BuilderContext> context, IBaseClassContainer baseClassContainer, CancellationToken token)
+    private async Task<Result<GenericFormattableString>> GetBaseClassNameAsync(BuilderContext context, IBaseClassContainer baseClassContainer, CancellationToken token)
     {
-        var customValue = context.Request.GetMappingMetadata(baseClassContainer.BaseClass).GetStringValue(MetadataNames.CustomBuilderBaseClassTypeName);
+        var customValue = context.GetMappingMetadata(baseClassContainer.BaseClass).GetStringValue(MetadataNames.CustomBuilderBaseClassTypeName);
         if (!string.IsNullOrEmpty(customValue))
         {
             return Result.Success(new GenericFormattableString(customValue));
         }
 
-        return await _evaluator.EvaluateInterpolatedStringAsync(context.Request.Settings.BuilderNameFormatString, context.Request.FormatProvider, new BuilderContext(CreateTypeBase(context.Request.MapTypeName(baseClassContainer.BaseClass!)), context.Request.Settings, context.Request.FormatProvider, token), token).ConfigureAwait(false);
+        return await _evaluator.EvaluateInterpolatedStringAsync(context.Settings.BuilderNameFormatString, context.FormatProvider, new BuilderContext(CreateTypeBase(context.MapTypeName(baseClassContainer.BaseClass!)), context.Settings, context.FormatProvider, token), token).ConfigureAwait(false);
     }
 
     private static TypeBase CreateTypeBase(string baseClass)

@@ -5,6 +5,8 @@ public abstract class IntegrationTestBase<T> : TestBase
 {
     protected T CreateSut() => Scope!.ServiceProvider.GetRequiredService<T>();
 
+    protected ICommandService CommandService => Scope!.ServiceProvider.GetRequiredService<ICommandService>();
+
     protected IntegrationTestBase()
     {
         Provider = new ServiceCollection()

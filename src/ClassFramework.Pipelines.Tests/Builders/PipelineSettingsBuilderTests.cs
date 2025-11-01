@@ -170,6 +170,16 @@ public class PipelineSettingsBuilderTests
         private sealed class TestContext(PipelineSettings settings) : ContextBase<string>(string.Empty, settings, CultureInfo.CurrentCulture, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
+
+            public override object GetResponseBuilder()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override bool SourceModelHasNoProperties()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

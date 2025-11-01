@@ -95,6 +95,10 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         => settings.UseBuilderLazyValues
         && metadata.GetStringValue(MetadataNames.CustomBuilderName, DefaultBuilderName) == DefaultBuilderName;
 
+    public abstract object GetResponseBuilder();
+
+    public abstract bool SourceModelHasNoProperties();
+
     protected TypenameMapping[] GetTypenameMappings(string typeName)
     {
         var typeNameMappings = Settings.TypenameMappings.Where(x => x.SourceTypeName == typeName).ToArray();

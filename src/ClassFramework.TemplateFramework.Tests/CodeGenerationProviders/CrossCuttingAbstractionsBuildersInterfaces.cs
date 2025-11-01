@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class CrossCuttingAbstractionsBuildersInterfaces(IPipelineService pipelineService) : CrossCuttingClassBase(pipelineService)
+public class CrossCuttingAbstractionsBuildersInterfaces(ICommandService commandService) : CrossCuttingClassBase(commandService)
 {
     public override string Path => "CrossCutting.Utilities.Parsers/Builders/Abstractions";
 

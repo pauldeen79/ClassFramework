@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class MultipleInterfacesAbstractBuilders(IPipelineService pipelineService) : MultipleInterfacesBase(pipelineService)
+public class MultipleInterfacesAbstractBuilders(ICommandService commandService) : MultipleInterfacesBase(commandService)
 {
     public override string Path => "ClassFramework.Domain.Builders";
 

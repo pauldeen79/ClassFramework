@@ -2,7 +2,7 @@
 
 public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNameComponent>
 {
-    public class ProcessAsync : SetNameComponentTests
+    public class ExecuteAsync : SetNameComponentTests
     {
         [Fact]
         public async Task Throws_On_Null_Context()
@@ -11,7 +11,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var sut = CreateSut();
 
             // Act & Assert
-            var t = sut.ProcessAsync(context: null!);
+            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -24,14 +24,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Name.ShouldBe("SomeClass");
+            context.Builder.Name.ShouldBe("SomeClass");
         }
 
         [Fact]
@@ -42,14 +42,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "CustomClassName");
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Name.ShouldBe("CustomClassName");
+            context.Builder.Name.ShouldBe("CustomClassName");
         }
 
         [Fact]
@@ -60,14 +60,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Namespace.ShouldBe("SomeNamespace");
+            context.Builder.Namespace.ShouldBe("SomeNamespace");
         }
 
         [Fact]
@@ -78,14 +78,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "CustomNamespace");
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Request.Builder.Namespace.ShouldBe("CustomNamespace");
+            context.Builder.Namespace.ShouldBe("CustomNamespace");
         }
 
         [Fact]
@@ -96,10 +96,10 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "{Error}");
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -114,10 +114,10 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "{Error}");
-            var context = new PipelineContext<EntityContext>(new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

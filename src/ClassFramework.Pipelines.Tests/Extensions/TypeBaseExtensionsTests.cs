@@ -304,7 +304,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
             var settings = CreateSettingsForBuilder();
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act & Assert
             var t = sut.GetBuilderClassFieldsAsync(context, evaluator: null!, CancellationToken.None);
@@ -330,7 +330,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: null,
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
@@ -358,7 +358,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
@@ -387,7 +387,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
@@ -426,7 +426,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                         .AddMetadata(MetadataNames.CustomBuilderArgumentType, "MyCustomType")
                 ]
             );
-            var context = new PipelineContext<BuilderContext>(new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None));
+            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act

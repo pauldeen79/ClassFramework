@@ -2,7 +2,7 @@
 
 [ExcludeFromCodeCoverage]
 #pragma warning disable S125 // Sections of code should not be commented out
-public abstract class ClassFrameworkCSharpClassBase(IPipelineService pipelineService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(pipelineService)
+public abstract class ClassFrameworkCSharpClassBase(ICommandService commandService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(commandService)
 {
     public override bool RecurseOnDeleteGeneratedFiles => false;
     public override string LastGeneratedFilesFilename => string.Empty;

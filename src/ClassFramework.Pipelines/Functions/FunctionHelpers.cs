@@ -39,7 +39,7 @@ internal static class FunctionHelpers
         return ctx.Value switch
         {
             ContextBase contextBase => functionDelegate(contextBase),
-            ParentChildContext<PipelineContext<EntityContext>, Property> parentChildContextEntity => functionDelegate(parentChildContextEntity.ParentContext.Request),
+            ParentChildContext<EntityContext, Property> parentChildContextEntity => functionDelegate(parentChildContextEntity.ParentContext),
             _ => Result.Invalid<T>($"{functionName} function does not support type {ctx.Value?.GetType().FullName ?? "null"}, only ContextBase is supported")
         };
     }

@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public class OverrideTypeEntities(IPipelineService pipelineService) : ImmutableCSharpClassBase(pipelineService)
+public class OverrideTypeEntities(ICommandService commandService) : ImmutableCSharpClassBase(commandService)
 {
     public override string Path => "Test.Domain/Types";
 

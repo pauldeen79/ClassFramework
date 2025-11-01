@@ -1,7 +1,7 @@
 ﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class OverrideTypeBuilders(IPipelineService pipelineService) : ClassFrameworkCSharpClassBase(pipelineService)
+public class OverrideTypeBuilders(ICommandService commandService) : ClassFrameworkCSharpClassBase(commandService)
 {
     public override string Path => "ClassFramework.Domain/Builders/Types";
 

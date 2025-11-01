@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity;
 
-public class PipelineTests : IntegrationTestBase<IPipeline<EntityContext>>
+public class PipelineTests : IntegrationTestBase<ICommandService>
 {
-    public class ProcessAsync : PipelineTests
+    public class ExecuteAsync : PipelineTests
     {
         private static EntityContext CreateContext(bool addProperties = true) => new(
             CreateGenericClass(addProperties),
@@ -22,7 +22,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<EntityContext>>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -37,7 +37,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<EntityContext>>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -53,13 +53,11 @@ public class PipelineTests : IntegrationTestBase<IPipeline<EntityContext>>
             var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.ProcessAsync(context);
-            var innerResult = result?.InnerResults.FirstOrDefault();
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
-            innerResult.ShouldNotBeNull();
-            innerResult!.Status.ShouldBe(ResultStatus.Invalid);
-            innerResult.ErrorMessage.ShouldBe("To create an entity class, there must be at least one property");
+            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.ErrorMessage.ShouldBe("There must be at least one property");
         }
     }
 
@@ -82,7 +80,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<EntityContext>>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -182,7 +180,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<EntityContext>>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -237,7 +235,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<EntityContext>>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -414,7 +412,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<EntityContext>>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -433,7 +431,7 @@ public class PipelineTests : IntegrationTestBase<IPipeline<EntityContext>>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ProcessAsync(context);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
