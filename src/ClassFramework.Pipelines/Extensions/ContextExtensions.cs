@@ -2,16 +2,6 @@
 
 public static class ContextExtensions
 {
-    public static async Task<string> CreateEntityChainCallAsync(this EntityContext context)
-    {
-        context = context.IsNotNull(nameof(context));
-
-        return context.Settings.EnableInheritance && context.Settings.BaseClass is not null
-            ? $"base({GetPropertyNamesConcatenated(context.Settings.BaseClass.Properties, context.FormatProvider.ToCultureInfo())})"
-            : (await context.SourceModel.GetCustomValueForInheritedClassAsync(context.Settings.EnableInheritance,
-                cls => Task.FromResult(Result.Success<GenericFormattableString>($"base({GetPropertyNamesConcatenated(context.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.FormatProvider.ToCultureInfo())})"))).ConfigureAwait(false)).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
-    }
-
     public static async Task<Result> ProcessPropertiesAsync<TContext>(
         this TContext context,
         string methodName,
@@ -50,9 +40,6 @@ public static class ContextExtensions
 
         return Result.Success();
     }
-
-    private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
-        => string.Join(", ", properties.Select(x => x.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName()));
 }
 
 internal sealed class ConstructionMethodParameterInfo
