@@ -19,6 +19,7 @@ global using ClassFramework.Pipelines.Builder;
 global using ClassFramework.Pipelines.BuilderExtension;
 global using ClassFramework.Pipelines.Builders;
 global using ClassFramework.Pipelines.CommandDecorators;
+global using ClassFramework.Pipelines.CommandHandlers;
 global using ClassFramework.Pipelines.Domains;
 global using ClassFramework.Pipelines.Entity;
 global using ClassFramework.Pipelines.Extensions;
