@@ -17,10 +17,7 @@ public class AddMethodsComponent : IPipelineComponent<InterfaceContext>
                 .Select(x => x.ToBuilder()
                     .WithReturnTypeName(context.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(context.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))
                     .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = context.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
-                    .With(y =>
-                    {
-                        y.WithNew(context.Settings.UseBuilderAbstractionsTypeConversion && context.Builder.Interfaces.Any() && !context.Builder.Interfaces.Contains(y.ReturnTypeName));
-                    })
+                    .With(y => y.WithNew(context.Settings.UseBuilderAbstractionsTypeConversion && context.Builder.Interfaces.Any() && !context.Builder.Interfaces.Contains(y.ReturnTypeName)))
                 ));
 
             return Result.Success();
@@ -71,5 +68,9 @@ internal sealed class TypeContainerWrapperBuilder : ITypeContainerBuilder
     public ObservableCollection<ITypeContainerBuilder> GenericTypeArguments { get; set; }
 
     public ITypeContainer Build()
-        => new TypeContainerWrapper(new MethodBuilder().WithName("Dummy").WithReturnTypeName(TypeName).WithReturnTypeIsNullable(IsNullable).WithReturnTypeIsValueType(IsValueType));
+        => new TypeContainerWrapper(new MethodBuilder()
+            .WithName("Dummy")
+            .WithReturnTypeName(TypeName)
+            .WithReturnTypeIsNullable(IsNullable)
+            .WithReturnTypeIsValueType(IsValueType));
 }
