@@ -24,7 +24,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<InterfaceContext, Domain.Types.Interface>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -40,7 +40,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<InterfaceContext, Domain.Types.Interface>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -57,7 +57,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<InterfaceContext, Domain.Types.Interface>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -72,7 +72,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(copyMethodPredicate: (_, _) => true);
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<InterfaceContext, Domain.Types.Interface>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -87,7 +87,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(copyMethodPredicate: (_, _) => false);
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<InterfaceContext, Domain.Types.Interface>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -102,7 +102,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(copyMethods: false);
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<InterfaceContext, Domain.Types.Interface>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -117,7 +117,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<InterfaceContext, Domain.Types.Interface>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -140,7 +140,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<InterfaceContext, Domain.Types.Interface>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

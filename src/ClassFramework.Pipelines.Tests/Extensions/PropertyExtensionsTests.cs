@@ -110,6 +110,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             protected override string NewCollectionTypeName => string.Empty;
             public override object GetResponseBuilder() => throw new NotImplementedException();
+            public override object GetResponseEntity() => throw new NotImplementedException();
             public override bool SourceModelHasNoProperties() => throw new NotImplementedException();
         }
     }
@@ -302,6 +303,11 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
                 throw new NotImplementedException();
             }
 
+            public override object GetResponseEntity()
+            {
+                throw new NotImplementedException();
+            }
+
             public override bool SourceModelHasNoProperties()
             {
                 throw new NotImplementedException();
@@ -381,6 +387,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             protected override string NewCollectionTypeName => string.Empty;
             public override object GetResponseBuilder() => throw new NotImplementedException();
+            public override object GetResponseEntity() => throw new NotImplementedException();
             public override bool SourceModelHasNoProperties() => throw new NotImplementedException();
         }
     }

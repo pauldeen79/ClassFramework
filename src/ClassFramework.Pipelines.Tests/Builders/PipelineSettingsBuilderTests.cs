@@ -176,6 +176,11 @@ public class PipelineSettingsBuilderTests
                 throw new NotImplementedException();
             }
 
+            public override object GetResponseEntity()
+            {
+                throw new NotImplementedException();
+            }
+
             public override bool SourceModelHasNoProperties()
             {
                 throw new NotImplementedException();

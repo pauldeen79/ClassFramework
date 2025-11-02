@@ -1,15 +1,15 @@
 ﻿namespace ClassFramework.Pipelines.CommandHandlers;
 
-public class ContextCommandHandler<TContext, TBuilder> : ICommandHandler<TContext, TBuilder>
+public class ContextCommandHandler<TContext, TEntity> : ICommandHandler<TContext, TEntity>
     where TContext : ContextBase
-    where TBuilder : TypeBaseBuilder
+    where TEntity : TypeBase
 {
-    public async Task<Result<TBuilder>> ExecuteAsync(TContext command, ICommandService commandService, CancellationToken token)
+    public async Task<Result<TEntity>> ExecuteAsync(TContext command, ICommandService commandService, CancellationToken token)
     {
         command = ArgumentGuard.IsNotNull(command, nameof(command));
         commandService = ArgumentGuard.IsNotNull(commandService, nameof(commandService));
 
         return (await commandService.ExecuteAsync(command, token).ConfigureAwait(false))
-            .OnSuccess(_ => Result.Success(command.GetResponseBuilder()).TryCastAllowNull<TBuilder>());
+            .OnSuccess(_ => Result.Success(command.GetResponseEntity()).TryCastAllowNull<TEntity>());
     }
 }

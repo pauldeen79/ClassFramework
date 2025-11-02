@@ -90,8 +90,8 @@ public abstract class CrossCuttingClassBase(ICommandService commandService) : Cs
                 .WithAddNullChecks(AddNullChecks)
                 .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull);
 
-            return (await CommandService.ExecuteAsync<EntityContext, ClassBuilder>(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo, CancellationToken.None)).ConfigureAwait(false))
-                .OnSuccess(x => x.Build());
+            return (await CommandService.ExecuteAsync<EntityContext, Class>(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo, CancellationToken.None)).ConfigureAwait(false))
+                .TryCast<TypeBase>();
         }).ConfigureAwait(false);
     }
 

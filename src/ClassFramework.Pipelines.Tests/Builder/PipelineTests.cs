@@ -27,7 +27,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -42,7 +42,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -58,7 +58,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -75,7 +75,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -92,7 +92,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -117,7 +117,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -142,7 +142,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -157,7 +157,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -172,7 +172,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -187,7 +187,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -207,7 +207,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -227,7 +227,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -248,7 +248,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -291,7 +291,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -319,7 +319,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -350,7 +350,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(createAsObservable: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -366,7 +366,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -389,7 +389,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderContext, Class>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

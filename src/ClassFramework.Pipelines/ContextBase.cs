@@ -101,6 +101,8 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
 
     public abstract object GetResponseBuilder();
 
+    public abstract object GetResponseEntity();
+
     public abstract bool SourceModelHasNoProperties();
 
     protected TypenameMapping[] GetTypenameMappings(string typeName)

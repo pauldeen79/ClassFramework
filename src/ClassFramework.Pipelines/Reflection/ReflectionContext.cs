@@ -16,5 +16,7 @@ public class ReflectionContext : ContextBase<Type>
 
     public override object GetResponseBuilder() => Builder;
 
+    public override object GetResponseEntity() => Builder.Build();
+
     public override bool SourceModelHasNoProperties() => SourceModel.GetProperties().Length == 0;
 }
