@@ -10,6 +10,6 @@ public class ContextCommandHandler<TContext, TEntity> : ICommandHandler<TContext
         commandService = ArgumentGuard.IsNotNull(commandService, nameof(commandService));
 
         return (await commandService.ExecuteAsync(command, token).ConfigureAwait(false))
-            .OnSuccess(_ => Result.Success(command.GetResponseEntity()).TryCastAllowNull<TEntity>());
+            .OnSuccess(_ => Result.Success(command.GetResponseEntity()).TryCast<TEntity>());
     }
 }
