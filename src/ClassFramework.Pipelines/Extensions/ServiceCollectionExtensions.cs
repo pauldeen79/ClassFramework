@@ -43,7 +43,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
             .AddScoped<ICommandHandler, Pipeline<BuilderContext>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<BuilderContext, Class>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<BuilderContext, TypeBase>>()
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AbstractBuilderComponent>()
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddAttributesComponent>()
             .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddBuildMethodComponent>()
@@ -63,7 +63,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddBuilderExtensionPipeline(this IServiceCollection services)
         => services
             .AddScoped<ICommandHandler, Pipeline<BuilderExtensionContext>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<BuilderExtensionContext, Class>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<BuilderExtensionContext, TypeBase>>()
             .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.AddExtensionMethodsForCollectionPropertiesComponent>()
             .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.AddExtensionMethodsForNonCollectionPropertiesComponent>()
             .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.PartialComponent>()
@@ -73,7 +73,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services
             .AddScoped<ICommandHandler, Pipeline<EntityContext>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<EntityContext, Class>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<EntityContext, TypeBase>>()
             .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AbstractEntityComponent>()
             .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddAttributesComponent>()
             .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddEquatableMembersComponent>()
@@ -109,7 +109,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddInterfacePipeline(this IServiceCollection services)
         => services
             .AddScoped<ICommandHandler, Pipeline<InterfaceContext>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<InterfaceContext, Domain.Types.Interface>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<InterfaceContext, TypeBase>>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddAttributesComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddInterfacesComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddMethodsComponent>()

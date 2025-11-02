@@ -22,7 +22,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, Class>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -37,7 +37,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, Class>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -53,7 +53,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, Class>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -80,7 +80,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, Class>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -180,7 +180,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, Class>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -235,7 +235,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, Class>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -412,7 +412,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, Class>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -431,7 +431,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, Class>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

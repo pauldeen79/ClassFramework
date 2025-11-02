@@ -16,7 +16,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             // Act & Assert
             Action a = () =>
             {
-                using var provder = serviceCollection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+                using var provider = serviceCollection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
             };
             a.ShouldNotThrow();
         }
@@ -33,10 +33,10 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<BuilderContext, Class>>().FirstOrDefault();
+            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<BuilderContext, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<BuilderContext, Class>>();
+            builder.ShouldBeOfType<ContextCommandHandler<BuilderContext, TypeBase>>();
         }
 
         [Fact]
@@ -51,10 +51,10 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<BuilderExtensionContext, Class>>().FirstOrDefault();
+            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<BuilderExtensionContext, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<BuilderExtensionContext, Class>>();
+            builder.ShouldBeOfType<ContextCommandHandler<BuilderExtensionContext, TypeBase>>();
         }
 
         [Fact]
@@ -69,10 +69,10 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<EntityContext, Class>>().FirstOrDefault();
+            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<EntityContext, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<EntityContext, Class>>();
+            builder.ShouldBeOfType<ContextCommandHandler<EntityContext, TypeBase>>();
         }
 
         [Fact]
@@ -87,10 +87,10 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<InterfaceContext, Domain.Types.Interface>>().FirstOrDefault();
+            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<InterfaceContext, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<InterfaceContext, Domain.Types.Interface>>();
+            builder.ShouldBeOfType<ContextCommandHandler<InterfaceContext, TypeBase>>();
         }
 
         [Fact]
