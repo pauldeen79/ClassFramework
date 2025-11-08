@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext>
+public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -15,7 +15,7 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
 
         return (await CreateEntityConstructor(context, token)
             .ConfigureAwait(false))
-            .OnSuccess(ctorResult => context.Builder.AddConstructors(ctorResult.Value!));
+            .OnSuccess(ctorResult => response.AddConstructors(ctorResult.Value!));
     }
 
     private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(EntityContext context, CancellationToken token)

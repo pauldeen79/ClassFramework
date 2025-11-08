@@ -1,15 +1,15 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddPropertiesComponent : IPipelineComponent<EntityContext>
+public class AddPropertiesComponent : IPipelineComponent<EntityContext, ClassBuilder>
 {
-    public Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
             var properties = context.GetSourceProperties().ToArray();
 
-            context.Builder.AddProperties(
+            response.AddProperties(
                 properties.Select
                 (
                     property => context.CreatePropertyForEntity(property)
@@ -31,14 +31,14 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext>
 
             if (context.Settings.AddBackingFields || context.Settings.CreateAsObservable)
             {
-                AddBackingFields(context, properties);
+                AddBackingFields(context, response, properties);
             }
 
             return Result.Success();
         }, token);
 
-    private static void AddBackingFields(EntityContext context, Property[] properties)
-        => context.Builder.AddFields
+    private static void AddBackingFields(EntityContext context, ClassBuilder response, Property[] properties)
+        => response.AddFields
         (
             properties
                 .Select

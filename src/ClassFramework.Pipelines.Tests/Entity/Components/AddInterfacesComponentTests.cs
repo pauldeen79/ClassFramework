@@ -9,9 +9,10 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -24,13 +25,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyInterfacePredicate: _ => true, copyInterfaces: true);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface" });
+            response.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface" });
         }
 
         [Fact]
@@ -41,13 +43,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyInterfacePredicate: null, copyInterfaces: true);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface" });
+            response.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface" });
         }
 
         [Fact]
@@ -58,13 +61,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyInterfaces: false);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Interfaces.ShouldBeEmpty();
+            response.Interfaces.ShouldBeEmpty();
         }
     }
 }

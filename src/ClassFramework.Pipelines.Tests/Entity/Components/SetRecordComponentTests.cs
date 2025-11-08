@@ -9,9 +9,10 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetR
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            Task a = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
                 .ParamName.ShouldBe("context");
         }
@@ -27,13 +28,14 @@ public class SetRecordComponentTests : TestBase<Pipelines.Entity.Components.SetR
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(createRecord: createRecordSettingValue);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Record.ShouldBe(expectedRecordValue);
+            response.Record.ShouldBe(expectedRecordValue);
         }
     }
 }

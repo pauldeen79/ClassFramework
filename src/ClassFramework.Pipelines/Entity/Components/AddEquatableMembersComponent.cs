@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext>
+public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -23,7 +23,7 @@ public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPip
                     ? CreateHashCodeStatements(context.SourceModel.Fields, context.NotNullCheck)
                     : CreateHashCodeStatements(context.SourceModel.Properties, context.NotNullCheck);
 
-                context.Builder
+                response
                     .AddInterfaces($"IEquatable<{nameResult.Value}>")
                     .AddMethods(
                         new MethodBuilder()

@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext>
+public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -43,13 +43,13 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
                             && context.Settings.BaseClass is not null
                             && !string.IsNullOrEmpty(typedMethodName))
                         {
-                            context.Builder.AddMethods(operatorMethod
+                            response.AddMethods(operatorMethod
                                 .WithName($"{builderConcreteTypeName}{generics}")
                                 .AddCodeStatements($"return entity.{typedMethodName}();"));
                         }
                         else
                         {
-                            context.Builder.AddMethods(operatorMethod
+                            response.AddMethods(operatorMethod
                                 .WithName($"{builderTypeName}{generics}")
                                 .AddCodeStatements($"return entity.{methodName}();"));
                         }

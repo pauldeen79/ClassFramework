@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class AddInterfacesComponent : IPipelineComponent<InterfaceContext>
+public class AddInterfacesComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
 {
-    public Task<Result> ExecuteAsync(InterfaceContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(InterfaceContext context, InterfaceBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
@@ -12,7 +12,7 @@ public class AddInterfacesComponent : IPipelineComponent<InterfaceContext>
                 return Result.Continue();
             }
 
-            context.Builder.AddInterfaces(context.SourceModel.Interfaces
+            response.AddInterfaces(context.SourceModel.Interfaces
                 .Where(x => context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
                 .Select(x => context.MapTypeName(x.FixTypeName()))
                 .Where(x => !string.IsNullOrEmpty(x)));

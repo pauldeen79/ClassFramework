@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext>
+public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -28,7 +28,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                         var builderTypeName = context.GetBuilderTypeName(customNamespaceResults.GetValue("CustomBuilderInterfaceNamespace"), customNamespaceResults.GetValue("CustomConcreteBuilderNamespace"), builderConcreteName, builderConcreteTypeName, results.GetValue(ResultNames.BuilderName));
                         var returnStatement = customNamespaceResults.GetValue("ReturnStatement");
 
-                        context.Builder
+                        response
                             .AddMethods(new MethodBuilder()
                                 .WithName(methodName)
                                 .WithAbstract(context.IsAbstract)
@@ -43,7 +43,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                             && context.Settings.BaseClass is not null
                             && !string.IsNullOrEmpty(typedMethodName))
                         {
-                            context.Builder
+                            response
                                 .AddMethods(new MethodBuilder()
                                     .WithName(typedMethodName)
                                     .WithReturnTypeName(builderConcreteTypeName)
@@ -53,18 +53,18 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                         else if (context.Settings.UseCrossCuttingInterfaces)
                         {
                             var entityInterface = typeof(IBuildableEntity<object>).ReplaceGenericTypeName(builderTypeName);
-                            if (!context.Builder.Interfaces.Contains(entityInterface))
+                            if (!response.Interfaces.Contains(entityInterface))
                             {
-                                context.Builder.AddInterfaces(entityInterface);
+                                response.AddInterfaces(entityInterface);
                             }
                         }
 
-                        return await AddExplicitInterfaceImplementations(context, methodName, typedMethodName, token).ConfigureAwait(false);
+                        return await AddExplicitInterfaceImplementations(context, response, methodName, typedMethodName, token).ConfigureAwait(false);
                     }).ConfigureAwait(false);
             }).ConfigureAwait(false);
     }
 
-    private async Task<Result> AddExplicitInterfaceImplementations(EntityContext context, string methodName, string typedMethodName, CancellationToken token)
+    private async Task<Result> AddExplicitInterfaceImplementations(EntityContext context, ClassBuilder response, string methodName, string typedMethodName, CancellationToken token)
     {
         if (!context.Settings.UseBuilderAbstractionsTypeConversion)
         {
@@ -118,7 +118,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                 ? typedMethodName
                 : methodName;
 
-        context.Builder.AddMethods(interfaces.Select(x => new MethodBuilder()
+        response.AddMethods(interfaces.Select(x => new MethodBuilder()
             .WithName(methodName)
             .WithReturnTypeName(x.Value!.BuilderName)
             .WithExplicitInterfaceName(x.Value!.EntityName)

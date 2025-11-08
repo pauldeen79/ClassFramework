@@ -22,11 +22,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Partial.ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
+            result.Value.Partial.ShouldBeTrue();
         }
 
         [Fact]
@@ -37,12 +38,13 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Name.ShouldBe("MyClass");
-            context.Builder.Namespace.ShouldBe("MyNamespace");
+            result.Value.ShouldNotBeNull();
+            result.Value.Name.ShouldBe("MyClass");
+            result.Value.Namespace.ShouldBe("MyNamespace");
         }
 
         [Fact]
@@ -53,7 +55,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -80,17 +82,18 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
 
-            context.Builder.Name.ShouldBe("MyClass");
-            context.Builder.Namespace.ShouldBe("MyNamespace");
-            context.Builder.Interfaces.ShouldBeEmpty();
+            result.Value.Name.ShouldBe("MyClass");
+            result.Value.Namespace.ShouldBe("MyNamespace");
+            result.Value.Interfaces.ShouldBeEmpty();
 
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var copyConstructor = context.Builder.Constructors.Single();
+            result.Value.Constructors.Count.ShouldBe(1);
+            var copyConstructor = result.Value.Constructors.Single();
             copyConstructor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
@@ -110,9 +113,9 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                 }
             );
 
-            context.Builder.Fields.ShouldBeEmpty();
+            result.Value.Fields.ShouldBeEmpty();
 
-            context.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo
+            result.Value.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -126,7 +129,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "Property8"
                 }
             );
-            context.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
+            result.Value.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -140,7 +143,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "System.Collections.Generic.IReadOnlyCollection<MyNamespace.MyClass>"
                 }
             );
-            context.Builder.Properties.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo
+            result.Value.Properties.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -154,11 +157,11 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     true
                 }
             );
-            context.Builder.Properties.Select(x => x.HasGetter).ShouldAllBe(x => x == true);
-            context.Builder.Properties.SelectMany(x => x.GetterCodeStatements).ShouldBeEmpty();
-            context.Builder.Properties.Select(x => x.HasInitializer).ShouldAllBe(x => x == false);
-            context.Builder.Properties.Select(x => x.HasSetter).ShouldAllBe(x => x == false);
-            context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).ShouldBeEmpty();
+            result.Value.Properties.Select(x => x.HasGetter).ShouldAllBe(x => x == true);
+            result.Value.Properties.SelectMany(x => x.GetterCodeStatements).ShouldBeEmpty();
+            result.Value.Properties.Select(x => x.HasInitializer).ShouldAllBe(x => x == false);
+            result.Value.Properties.Select(x => x.HasSetter).ShouldAllBe(x => x == false);
+            result.Value.Properties.SelectMany(x => x.SetterCodeStatements).ShouldBeEmpty();
         }
 
         [Fact]
@@ -180,17 +183,18 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
 
-            context.Builder.Name.ShouldBe("MyClass");
-            context.Builder.Namespace.ShouldBe("MyNamespace");
-            context.Builder.Interfaces.ShouldBeEmpty();
+            result.Value.Name.ShouldBe("MyClass");
+            result.Value.Namespace.ShouldBe("MyNamespace");
+            result.Value.Interfaces.ShouldBeEmpty();
 
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var copyConstructor = context.Builder.Constructors.Single();
+            result.Value.Constructors.Count.ShouldBe(1);
+            var copyConstructor = result.Value.Constructors.Single();
             copyConstructor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
@@ -235,17 +239,18 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
 
-            context.Builder.Name.ShouldBe("MyClass");
-            context.Builder.Namespace.ShouldBe("MyNamespace");
-            context.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "System.ComponentModel.INotifyPropertyChanged" });
+            result.Value.Name.ShouldBe("MyClass");
+            result.Value.Namespace.ShouldBe("MyNamespace");
+            result.Value.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "System.ComponentModel.INotifyPropertyChanged" });
 
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var publicParameterlessConstructor = context.Builder.Constructors.Single();
+            result.Value.Constructors.Count.ShouldBe(1);
+            var publicParameterlessConstructor = result.Value.Constructors.Single();
             publicParameterlessConstructor.Parameters.ShouldBeEmpty();
             publicParameterlessConstructor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             publicParameterlessConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
@@ -264,7 +269,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             );
 
             // non collection type properties have a backing field, so we can implement INotifyPropertyChanged
-            context.Builder.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo
+            result.Value.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -279,7 +284,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "PropertyChanged"
                 }
             );
-            context.Builder.Fields.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
+            result.Value.Fields.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -294,7 +299,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "System.ComponentModel.PropertyChangedEventHandler"
                 }
             );
-            context.Builder.Fields.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo
+            result.Value.Fields.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -310,7 +315,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                 }
             );
 
-            context.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo
+            result.Value.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -324,7 +329,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "Property8"
                 }
             );
-            context.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
+            result.Value.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -338,7 +343,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "System.Collections.ObjectModel.ObservableCollection<MyNamespace.MyClass>"
                 }
             );
-            context.Builder.Properties.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo
+            result.Value.Properties.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -352,8 +357,8 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     true
                 }
             );
-            context.Builder.Properties.Select(x => x.HasGetter).ShouldAllBe(x => x == true);
-            context.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
+            result.Value.Properties.Select(x => x.HasGetter).ShouldAllBe(x => x == true);
+            result.Value.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -367,9 +372,9 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "return _property8;"
                 }
             );
-            context.Builder.Properties.Select(x => x.HasInitializer).ShouldAllBe(x => x == false);
-            context.Builder.Properties.Select(x => x.HasSetter).ShouldAllBe(x => x == true);
-            context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
+            result.Value.Properties.Select(x => x.HasInitializer).ShouldAllBe(x => x == false);
+            result.Value.Properties.Select(x => x.HasSetter).ShouldAllBe(x => x == true);
+            result.Value.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -412,12 +417,13 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
 
-            context.Builder.Methods.Count(x => x.Name == "Validate").ShouldBe(1);
+            result.Value.Methods.Count(x => x.Name == "Validate").ShouldBe(1);
         }
 
         [Fact]
@@ -431,12 +437,13 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
 
-            context.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(
+            result.Value.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(
                 new[]
                 {
                     "Equals",

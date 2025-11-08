@@ -72,7 +72,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<EntityContext, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<EntityContext, TypeBase>>();
+            builder.ShouldBeOfType<ContextCommandHandler<EntityContext, ClassBuilder, TypeBase>>();
         }
 
         [Fact]
@@ -90,7 +90,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<InterfaceContext, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<InterfaceContext, TypeBase>>();
+            builder.ShouldBeOfType<ContextCommandHandler<InterfaceContext, InterfaceBuilder, TypeBase>>();
         }
 
         [Fact]

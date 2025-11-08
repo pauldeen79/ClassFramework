@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddInterfacesComponent : IPipelineComponent<EntityContext>
+public class AddInterfacesComponent : IPipelineComponent<EntityContext, ClassBuilder>
 {
-    public async Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -13,7 +13,7 @@ public class AddInterfacesComponent : IPipelineComponent<EntityContext>
 
         var baseClass = await context.SourceModel.GetEntityBaseClassAsync(context.Settings.EnableInheritance, context.Settings.BaseClass).ConfigureAwait(false);
 
-        context.Builder.AddInterfaces(context.SourceModel.Interfaces
+        response.AddInterfaces(context.SourceModel.Interfaces
             .Where(x => context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Where(x => x != baseClass)
             .Select(x => context.MapTypeName(x.FixTypeName()))

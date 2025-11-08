@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class AddAttributesComponent : IPipelineComponent<InterfaceContext>
+public class AddAttributesComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
 {
-    public Task<Result> ExecuteAsync(InterfaceContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(InterfaceContext context, InterfaceBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
@@ -12,7 +12,7 @@ public class AddAttributesComponent : IPipelineComponent<InterfaceContext>
                 return Result.Continue();
             }
 
-            context.Builder.AddAttributes(context.SourceModel.Attributes
+            response.AddAttributes(context.SourceModel.Attributes
                 .Where(x => context.Settings.CopyAttributePredicate?.Invoke(x) ?? true)
                 .Select(x => context.MapAttribute(x).ToBuilder()));
 

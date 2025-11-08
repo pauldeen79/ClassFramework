@@ -1,14 +1,14 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class GenericsComponent : IPipelineComponent<InterfaceContext>
+public class GenericsComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
 {
-    public Task<Result> ExecuteAsync(InterfaceContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(InterfaceContext context, InterfaceBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            context.Builder.AddGenericTypeArguments(context.SourceModel.GenericTypeArguments);
-            context.Builder.AddGenericTypeArgumentConstraints(context.SourceModel.GenericTypeArgumentConstraints);
+            response.AddGenericTypeArguments(context.SourceModel.GenericTypeArguments);
+            response.AddGenericTypeArgumentConstraints(context.SourceModel.GenericTypeArgumentConstraints);
 
             return Result.Success();
         }, token);

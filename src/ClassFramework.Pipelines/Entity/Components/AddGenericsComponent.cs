@@ -1,13 +1,13 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddGenericsComponent : IPipelineComponent<EntityContext>
+public class AddGenericsComponent : IPipelineComponent<EntityContext, ClassBuilder>
 {
-    public Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
 
-            context.Builder
+            response
                 .AddGenericTypeArguments(context.SourceModel.GenericTypeArguments)
                 .AddGenericTypeArgumentConstraints(context.SourceModel.GenericTypeArgumentConstraints);
 

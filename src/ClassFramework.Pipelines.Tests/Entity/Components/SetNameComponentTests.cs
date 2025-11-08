@@ -9,9 +9,10 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -25,13 +26,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Name.ShouldBe("SomeClass");
+            response.Name.ShouldBe("SomeClass");
         }
 
         [Fact]
@@ -43,13 +45,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "CustomClassName");
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Name.ShouldBe("CustomClassName");
+            response.Name.ShouldBe("CustomClassName");
         }
 
         [Fact]
@@ -61,13 +64,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Namespace.ShouldBe("SomeNamespace");
+            response.Namespace.ShouldBe("SomeNamespace");
         }
 
         [Fact]
@@ -79,13 +83,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "CustomNamespace");
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Namespace.ShouldBe("CustomNamespace");
+            response.Namespace.ShouldBe("CustomNamespace");
         }
 
         [Fact]
@@ -97,9 +102,10 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "{Error}");
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -115,9 +121,10 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "{Error}");
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

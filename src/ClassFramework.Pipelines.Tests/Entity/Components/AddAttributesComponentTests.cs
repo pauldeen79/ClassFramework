@@ -9,9 +9,10 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Entity.Components.
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            Task a = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
              .ParamName.ShouldBe("context");
         }
@@ -24,13 +25,14 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyAttributePredicate: _ => true, copyAttributes: true);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute") });
+            response.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute") });
         }
 
         [Fact]
@@ -41,13 +43,14 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyAttributePredicate: null, copyAttributes: true);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute") });
+            response.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute") });
         }
 
         [Fact]
@@ -58,13 +61,14 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyAttributes: false);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Attributes.ShouldBeEmpty();
+            response.Attributes.ShouldBeEmpty();
         }
     }
 }

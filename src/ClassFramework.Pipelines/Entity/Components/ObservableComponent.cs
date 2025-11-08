@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class ObservableComponent : IPipelineComponent<EntityContext>
+public class ObservableComponent : IPipelineComponent<EntityContext, ClassBuilder>
 {
-    public Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
@@ -23,10 +23,10 @@ public class ObservableComponent : IPipelineComponent<EntityContext>
             if (!context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
             {
                 // Only add the interface when it's not present yet :)
-                context.Builder.AddInterfaces(typeof(INotifyPropertyChanged));
+                response.AddInterfaces(typeof(INotifyPropertyChanged));
             }
 
-            context.Builder.AddObservableMembers();
+            response.AddObservableMembers();
 
             return Result.Success();
         }, token);

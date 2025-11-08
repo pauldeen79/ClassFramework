@@ -74,23 +74,23 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services
-            .AddScoped<ICommandHandler, PipelineHandler<EntityContext>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<EntityContext, TypeBase>>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AbstractEntityComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddAttributesComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddEquatableMembersComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddFullConstructorComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddGenericsComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddImplicitOperatorComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddInterfacesComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddPropertiesComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddPublicParameterlessConstructorComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddToBuilderMethodComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.ObservableComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.PartialComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.SetBaseClassComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.SetNameComponent>()
-            .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.SetRecordComponent>();
+            .AddScoped<ICommandHandler, PipelineHandler<EntityContext, ClassBuilder>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<EntityContext, ClassBuilder, TypeBase>>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.AbstractEntityComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.AddAttributesComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.AddEquatableMembersComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.AddFullConstructorComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.AddGenericsComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.AddImplicitOperatorComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.AddInterfacesComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.AddPropertiesComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.AddPublicParameterlessConstructorComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.AddToBuilderMethodComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.ObservableComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.PartialComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.SetBaseClassComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.SetNameComponent>()
+            .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.SetRecordComponent>();
 
     private static IServiceCollection AddReflectionPipeline(this IServiceCollection services)
         => services
@@ -111,15 +111,15 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddInterfacePipeline(this IServiceCollection services)
         => services
-            .AddScoped<ICommandHandler, PipelineHandler<InterfaceContext>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<InterfaceContext, TypeBase>>()
-            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddAttributesComponent>()
-            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddInterfacesComponent>()
-            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddMethodsComponent>()
-            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddPropertiesComponent>()
-            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.GenericsComponent>()
-            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.PartialComponent>()
-            .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.SetNameComponent>();
+            .AddScoped<ICommandHandler, PipelineHandler<InterfaceContext, InterfaceBuilder>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<InterfaceContext, InterfaceBuilder, TypeBase>>()
+            .AddScoped<IPipelineComponent<InterfaceContext, InterfaceBuilder>, Interface.Components.AddAttributesComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext, InterfaceBuilder>, Interface.Components.AddInterfacesComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext, InterfaceBuilder>, Interface.Components.AddMethodsComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext, InterfaceBuilder>, Interface.Components.AddPropertiesComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext, InterfaceBuilder>, Interface.Components.GenericsComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext, InterfaceBuilder>, Interface.Components.PartialComponent>()
+            .AddScoped<IPipelineComponent<InterfaceContext, InterfaceBuilder>, Interface.Components.SetNameComponent>();
 
     private static IServiceCollection AddProcessingPipeline(this IServiceCollection services)
         => services

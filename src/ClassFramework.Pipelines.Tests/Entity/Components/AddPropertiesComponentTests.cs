@@ -9,9 +9,10 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            Task a = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
                 .ParamName.ShouldBe("context");
         }
@@ -24,13 +25,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2", "Property3" });
+            response.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2", "Property3" });
         }
 
         [Fact]
@@ -41,13 +43,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(namespaceMappings: [new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyMappedNamespace")]);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
+            response.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -73,13 +76,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addSetters: addSetters);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Properties.Select(x => x.HasSetter).ToArray().ShouldBeEquivalentTo(new[] { addSetters, addSetters, false }); // not on the collection property!
+            response.Properties.Select(x => x.HasSetter).ToArray().ShouldBeEquivalentTo(new[] { addSetters, addSetters, false }); // not on the collection property!
         }
 
         [Theory]
@@ -94,13 +98,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addSetters: true, setterVisibility: setterVisibility);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Properties.Select(x => x.SetterVisibility).ShouldAllBe(x => x == setterVisibility);
+            response.Properties.Select(x => x.SetterVisibility).ShouldAllBe(x => x == setterVisibility);
         }
 
         [Fact]
@@ -122,13 +127,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyAttributes: true, copyAttributePredicate: a => a.Name.EndsWith('2'));
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "MyAttribute2" });
+            response.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "MyAttribute2" });
         }
 
         [Fact]
@@ -139,13 +145,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Fields.ShouldBeEmpty();
+            response.Fields.ShouldBeEmpty();
         }
 
         [Fact]
@@ -156,13 +163,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Properties.SelectMany(x => x.GetterCodeStatements).ShouldBeEmpty();
+            response.Properties.SelectMany(x => x.GetterCodeStatements).ShouldBeEmpty();
         }
 
         [Fact]
@@ -173,13 +181,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).ShouldBeEmpty();
+            response.Properties.SelectMany(x => x.SetterCodeStatements).ShouldBeEmpty();
         }
 
         [Fact]
@@ -190,13 +199,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1", "_property2", "_property3" });
+            response.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1", "_property2", "_property3" });
         }
 
         [Fact]
@@ -207,13 +217,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
+            response.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -222,7 +233,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
                     "return _property3;"
                 }
             );
-            context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
+            response.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -241,13 +252,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true, createAsObservable: true);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
+            response.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -256,7 +268,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
                     "return _property3;"
                 }
             );
-            context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
+            response.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -281,13 +293,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
+            response.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -306,13 +319,14 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true, addNullChecks: true);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
+            response.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {

@@ -9,9 +9,10 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -27,13 +28,14 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
                 baseClass: null,
                 enableEntityInheritance: true);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.BaseClass.ShouldBeEmpty();
+            response.BaseClass.ShouldBeEmpty();
         }
 
         [Theory]
@@ -49,13 +51,14 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
                 baseClass: new ClassBuilder().WithName("MyBaseClass").WithNamespace("MyBaseNamespace").BuildTyped(),
                 enableEntityInheritance: true);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.BaseClass.ShouldBe("MyBaseNamespace.MyBaseClass");
+            response.BaseClass.ShouldBe("MyBaseNamespace.MyBaseClass");
         }
 
         [Fact]
@@ -69,13 +72,14 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
                 baseClass: null,
                 enableEntityInheritance: true);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.BaseClass.ShouldBe("MyBaseNamespace.MyBaseClass");
+            response.BaseClass.ShouldBe("MyBaseNamespace.MyBaseClass");
         }
     }
 }

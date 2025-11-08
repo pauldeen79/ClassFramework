@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class AddMethodsComponent : IPipelineComponent<InterfaceContext>
+public class AddMethodsComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
 {
-    public Task<Result> ExecuteAsync(InterfaceContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(InterfaceContext context, InterfaceBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
@@ -12,12 +12,12 @@ public class AddMethodsComponent : IPipelineComponent<InterfaceContext>
                 return Result.Continue();
             }
 
-            context.Builder.AddMethods(context.SourceModel.Methods
+            response.AddMethods(context.SourceModel.Methods
                 .Where(x => context.Settings.CopyMethodPredicate is null || context.Settings.CopyMethodPredicate(context.SourceModel, x))
                 .Select(x => x.ToBuilder()
                     .WithReturnTypeName(context.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(context.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))
                     .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = context.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
-                    .With(y => y.WithNew(context.Settings.UseBuilderAbstractionsTypeConversion && context.Builder.Interfaces.Any() && !context.Builder.Interfaces.Contains(y.ReturnTypeName)))
+                    .With(y => y.WithNew(context.Settings.UseBuilderAbstractionsTypeConversion && response.Interfaces.Any() && !response.Interfaces.Contains(y.ReturnTypeName)))
                 ));
 
             return Result.Success();

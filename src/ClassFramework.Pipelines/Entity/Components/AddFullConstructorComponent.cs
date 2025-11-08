@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext>
+public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -17,11 +17,11 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
             .ConfigureAwait(false))
             .OnSuccess(ctorResult =>
             {
-                context.Builder.AddConstructors(ctorResult.Value!);
+                response.AddConstructors(ctorResult.Value!);
 
                 if (context.Settings.AddValidationCode() == ArgumentValidationType.CustomValidationCode)
                 {
-                    context.Builder.AddMethods(new MethodBuilder()
+                    response.AddMethods(new MethodBuilder()
                         .WithName("Validate")
                         .WithPartial()
                         .WithVisibility(Visibility.Private));

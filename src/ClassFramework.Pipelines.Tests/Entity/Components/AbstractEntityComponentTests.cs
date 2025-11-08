@@ -9,9 +9,10 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            Task a = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
              .ParamName.ShouldBe("context");
         }
@@ -26,14 +27,15 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components
                 enableEntityInheritance: true,
                 isAbstract: true);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
-            context.Builder.WithAbstract(false); // we want to make sure that the component updates the property
+            var response = new ClassBuilder();
+            response.WithAbstract(false); // we want to make sure that the component updates the property
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Abstract.ShouldBeTrue();
+            response.Abstract.ShouldBeTrue();
         }
 
         [Fact]
@@ -46,14 +48,15 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components
                 enableEntityInheritance: true,
                 isAbstract: false);
             var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
-            context.Builder.WithAbstract(true); // we want to make sure that the component updates the property
+            var response = new ClassBuilder();
+            response.WithAbstract(true); // we want to make sure that the component updates the property
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Abstract.ShouldBeFalse();
+            response.Abstract.ShouldBeFalse();
         }
     }
 }
