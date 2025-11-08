@@ -27,6 +27,7 @@ global using ClassFramework.Pipelines.Functions;
 global using ClassFramework.Pipelines.InstanceProperties;
 global using ClassFramework.Pipelines.Interface;
 global using ClassFramework.Pipelines.Models;
+global using ClassFramework.Pipelines.PipelineResponseGeneratorComponents;
 global using CrossCutting.Commands;
 global using CrossCutting.Commands.Abstractions;
 global using CrossCutting.Common;

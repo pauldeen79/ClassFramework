@@ -1,6 +1,4 @@
-﻿using ClassFramework.Pipelines.PipelineResponseGeneratorComponents;
-
-namespace ClassFramework.Pipelines.Extensions;
+﻿namespace ClassFramework.Pipelines.Extensions;
 
 public static class ServiceCollectionExtensions
 {
