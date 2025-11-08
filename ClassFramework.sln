@@ -22,8 +22,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TODO.txt = TODO.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.ProcessingPipeline", "..\CrossCutting\src\CrossCutting.ProcessingPipeline\CrossCutting.ProcessingPipeline.csproj", "{16DBF85F-94EE-3A35-EC59-165BF439434B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,10 +55,6 @@ Global
 		{5635C1A7-A52F-4F04-B9C9-1E8070717DF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5635C1A7-A52F-4F04-B9C9-1E8070717DF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5635C1A7-A52F-4F04-B9C9-1E8070717DF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16DBF85F-94EE-3A35-EC59-165BF439434B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16DBF85F-94EE-3A35-EC59-165BF439434B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16DBF85F-94EE-3A35-EC59-165BF439434B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16DBF85F-94EE-3A35-EC59-165BF439434B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
