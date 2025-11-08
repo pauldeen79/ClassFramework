@@ -64,13 +64,13 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddBuilderExtensionPipeline(this IServiceCollection services)
         => services
-            .AddScoped<ICommandHandler, PipelineHandler<BuilderExtensionContext>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<BuilderExtensionContext, TypeBase>>()
-            .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.AddExtensionMethodsForCollectionPropertiesComponent>()
-            .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.AddExtensionMethodsForNonCollectionPropertiesComponent>()
-            .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.PartialComponent>()
-            .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.SetNameComponent>()
-            .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.SetStaticComponent>();
+            .AddScoped<ICommandHandler, PipelineHandler<BuilderExtensionContext, ClassBuilder>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<BuilderExtensionContext, ClassBuilder, TypeBase>>()
+            .AddScoped<IPipelineComponent<BuilderExtensionContext, ClassBuilder>, BuilderExtension.Components.AddExtensionMethodsForCollectionPropertiesComponent>()
+            .AddScoped<IPipelineComponent<BuilderExtensionContext, ClassBuilder>, BuilderExtension.Components.AddExtensionMethodsForNonCollectionPropertiesComponent>()
+            .AddScoped<IPipelineComponent<BuilderExtensionContext, ClassBuilder>, BuilderExtension.Components.PartialComponent>()
+            .AddScoped<IPipelineComponent<BuilderExtensionContext, ClassBuilder>, BuilderExtension.Components.SetNameComponent>()
+            .AddScoped<IPipelineComponent<BuilderExtensionContext, ClassBuilder>, BuilderExtension.Components.SetStaticComponent>();
 
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services

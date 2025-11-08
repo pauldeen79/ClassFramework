@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderExtensionContext>
+public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderExtensionContext, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(BuilderExtensionContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderExtensionContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -13,18 +13,18 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
             context.GetSourceProperties().Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()),
             GetResultsAsync,
             context.GetReturnTypeForFluentMethod,
-            (property, returnType, results, token) => AddMethods(context, property, returnType, results),
+            (property, returnType, results, token) => AddMethods(context, response, property, returnType, results),
             token).ConfigureAwait(false);
     }
 
-    private static void AddMethods(BuilderExtensionContext context, Property property, string returnType, IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
+    private static void AddMethods(BuilderExtensionContext context, ClassBuilder response, Property property, string returnType, IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
     {
-        context.Builder.AddMethods(context.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.TypeName, "EnumerableOverload.", "ArrayOverload."));
+        response.AddMethods(context.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.TypeName, "EnumerableOverload.", "ArrayOverload."));
 
         if (results.NeedNonLazyOverloads())
         {
             //Add overloads for non-func type
-            context.Builder.AddMethods(context.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.NonLazyTypeName, "NonLazyEnumerableOverload.", "NonLazyArrayOverload."));
+            response.AddMethods(context.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.NonLazyTypeName, "NonLazyEnumerableOverload.", "NonLazyArrayOverload."));
         }
     }
 

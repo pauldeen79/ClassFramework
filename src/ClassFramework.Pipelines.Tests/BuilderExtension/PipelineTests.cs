@@ -26,11 +26,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderExtensionContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderExtensionContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Partial.ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
+            result.Value.Partial.ShouldBeTrue();
         }
 
         [Fact]
@@ -41,17 +42,18 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderExtensionContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderExtensionContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count(x => x.Name == "WithProperty1").ShouldBe(1);
-            var method = context.Builder.Methods.Single(x => x.Name == "WithProperty1");
+            result.Value.ShouldNotBeNull();
+            result.Value.Methods.Count(x => x.Name == "WithProperty1").ShouldBe(1);
+            var method = result.Value.Methods.Single(x => x.Name == "WithProperty1");
             method.ReturnTypeName.ShouldBe("T");
             method.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "instance.Property1 = property1;", "return instance;" });
 
-            context.Builder.Methods.Where(x => x.Name == "WithProperty2").ShouldBeEmpty(); //only for the non-collection property
+            result.Value.Methods.Where(x => x.Name == "WithProperty2").ShouldBeEmpty(); //only for the non-collection property
         }
 
         [Fact]
@@ -62,12 +64,13 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderExtensionContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderExtensionContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count(x => x.Name == "WithProperty1").ShouldBe(2);
-            var lazyMethod = context.Builder.Methods.First(x => x.Name == "WithProperty1");
+            result.Value.ShouldNotBeNull();
+            result.Value.Methods.Count(x => x.Name == "WithProperty1").ShouldBe(2);
+            var lazyMethod = result.Value.Methods.First(x => x.Name == "WithProperty1");
             lazyMethod.ReturnTypeName.ShouldBe("T");
             lazyMethod.Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "T", "System.Func<System.String>" });
             lazyMethod.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
@@ -80,7 +83,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "instance.Property1 = property1;",
                     "return instance;"
                 });
-            var nonLazyMethod = context.Builder.Methods.Last(x => x.Name == "WithProperty1");
+            var nonLazyMethod = result.Value.Methods.Last(x => x.Name == "WithProperty1");
             nonLazyMethod.ReturnTypeName.ShouldBe("T");
             nonLazyMethod.Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "T", "System.String" });
             nonLazyMethod.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
@@ -94,7 +97,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "return instance;"
                 });
 
-            context.Builder.Methods.Where(x => x.Name == "WithProperty2").ShouldBeEmpty(); //only for the non-collection property
+            result.Value.Methods.Where(x => x.Name == "WithProperty2").ShouldBeEmpty(); //only for the non-collection property
         }
 
         [Fact]
@@ -105,11 +108,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderExtensionContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderExtensionContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            var methods = context.Builder.Methods.Where(x => x.Name == "AddProperty2").ToArray();
+            result.Value.ShouldNotBeNull();
+            var methods = result.Value.Methods.Where(x => x.Name == "AddProperty2").ToArray();
             methods.Length.ShouldBe(2);
             methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "T");
             methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).ToArray().ShouldBeEquivalentTo(new[] { "T", "System.Collections.Generic.IEnumerable<System.String>", "T", "System.String[]" });
@@ -133,11 +137,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderExtensionContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderExtensionContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            var methods = context.Builder.Methods.Where(x => x.Name == "AddProperty2").ToArray();
+            result.Value.ShouldNotBeNull();
+            var methods = result.Value.Methods.Where(x => x.Name == "AddProperty2").ToArray();
             methods.Length.ShouldBe(4);
             methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "T");
             methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).ToArray().ShouldBeEquivalentTo(new[] { "T", "System.Collections.Generic.IEnumerable<System.Func<System.String>>", "T", "System.Func<System.String>[]", "T", "System.Collections.Generic.IEnumerable<System.String>", "T", "System.String[]" });
@@ -167,7 +172,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var context = CreateContext(addProperties: false);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderExtensionContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<BuilderExtensionContext, ClassBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
