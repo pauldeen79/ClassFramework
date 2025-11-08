@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Extensions;
+﻿using ClassFramework.Pipelines.PipelineResponseGeneratorComponents;
+
+namespace ClassFramework.Pipelines.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -94,6 +96,7 @@ public static class ServiceCollectionExtensions
         => services
             .AddScoped<ICommandHandler, PipelineHandler<Reflection.ReflectionContext>>()
             .AddScoped<ICommandHandler, ContextCommandHandler<Reflection.ReflectionContext, TypeBase>>()
+            .AddScoped<IPipelineResponseGeneratorComponent, ReflectionContextPipelineResponseGeneratorComponent>()
             .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddAttributesComponent>()
             .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddConstructorsComponent>()
             .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddFieldsComponent>()
