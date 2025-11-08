@@ -11,8 +11,6 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
 
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
 
-    public ClassBuilder Builder { get; } = new();
-
     public string GetBuilderTypeName(
         string builderInterfaceNamespace,
         string concreteBuilderNamespace,
@@ -136,10 +134,6 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
 
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName()));
-
-    public override object GetResponseBuilder() => Builder;
-
-    public override object GetResponseEntity() => Builder.Build();
 
     public override bool SourceModelHasNoProperties() => SourceModel.Properties.Count == 0;
 }

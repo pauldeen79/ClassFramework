@@ -9,8 +9,6 @@ public class BuilderExtensionContext(TypeBase sourceModel, PipelineSettings sett
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
 
-    public ClassBuilder Builder { get; } = new();
-
     public string GetReturnTypeForFluentMethod(string builderNamespace, string builderName)
         => $"{builderNamespace.AppendWhenNotNullOrEmpty(".")}{builderName}{SourceModel.GetGenericTypeArgumentsString()}";
 
@@ -57,10 +55,6 @@ public class BuilderExtensionContext(TypeBase sourceModel, PipelineSettings sett
                 "return instance;"
             );
     }
-
-    public override object GetResponseBuilder() => Builder;
-
-    public override object GetResponseEntity() => Builder.Build();
 
     public override bool SourceModelHasNoProperties() => SourceModel.Properties.Count == 0;
 }

@@ -196,8 +196,6 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
         return Result.Success<GenericFormattableString>($"new {ns}{SourceModel.Name}{classNameSuffix}{SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
-    public ClassBuilder Builder { get; } = new();
-
     private string ReturnValue
     {
         get
@@ -345,10 +343,6 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
         => poco
             ? " { "
             : "(";
-
-    public override object GetResponseBuilder() => Builder;
-
-    public override object GetResponseEntity() => Builder.Build();
 
     public override bool SourceModelHasNoProperties() => SourceModel.Properties.Count == 0;
 }

@@ -95,8 +95,6 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
         private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
-            public override object GetResponseBuilder() => throw new NotImplementedException();
-            public override object GetResponseEntity() => throw new NotImplementedException();
             public override bool SourceModelHasNoProperties() => throw new NotImplementedException();
         }
     }

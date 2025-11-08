@@ -12,11 +12,5 @@ public class ReflectionContext : ContextBase<Type>
 
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
 
-    public TypeBaseBuilder Builder => _wrappedBuilder.Builder;
-
-    public override object GetResponseBuilder() => Builder;
-
-    public override object GetResponseEntity() => Builder.Build();
-
     public override bool SourceModelHasNoProperties() => SourceModel.GetProperties().Length == 0;
 }
