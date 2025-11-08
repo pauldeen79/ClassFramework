@@ -1,22 +1,23 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
+public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
+        response = response.IsNotNull(nameof(response));
 
-        return (await GetBuilderBaseClassAsync(context.SourceModel, context, token)
+        return (await GetBuilderBaseClassAsync(context.SourceModel, context, response, token)
             .ConfigureAwait(false))
             .OnSuccess(baseClassResult =>
             {
-                context.Builder.WithBaseClass(baseClassResult.Value!);
+                response.WithBaseClass(baseClassResult.Value!);
             });
     }
 
-    private async Task<Result<GenericFormattableString>> GetBuilderBaseClassAsync(IType instance, BuilderContext context, CancellationToken token)
+    private async Task<Result<GenericFormattableString>> GetBuilderBaseClassAsync(IType instance, BuilderContext context, ClassBuilder response, CancellationToken token)
     {
         var nameResult = await _evaluator.EvaluateInterpolatedStringAsync(context.Settings.BuilderNameFormatString, context.FormatProvider, context, token).ConfigureAwait(false);
         if (!nameResult.IsSuccessful())
@@ -74,10 +75,10 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
                     return baseClassResult;
                 }
 
-                context.Builder.Interfaces
+                response.Interfaces
                     .Where(x => x.WithoutGenerics() == typeof(IBuilder<object>).WithoutGenerics())
                     .ToList()
-                    .ForEach(x => context.Builder.Interfaces.Remove(x));
+                    .ForEach(x => response.Interfaces.Remove(x));
 
                 return Result.Success<GenericFormattableString>(context.Settings.EnableBuilderInheritance
                     ? $"{baseClassResult.Value}{genericTypeArgumentsString}"

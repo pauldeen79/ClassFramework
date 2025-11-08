@@ -1,34 +1,35 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
+public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
+        response = response.IsNotNull(nameof(response));
 
         if (context.Settings.EnableBuilderInheritance
             && context.IsAbstractBuilder
             && !context.Settings.IsForAbstractBuilder)
         {
-            context.Builder.AddConstructors(CreateInheritanceDefaultConstructor(context));
+            response.AddConstructors(CreateInheritanceDefaultConstructor(context));
         }
         else
         {
-            var defaultConstructorResult = await CreateDefaultConstructorAsync(context, token).ConfigureAwait(false);
+            var defaultConstructorResult = await CreateDefaultConstructorAsync(context, response, token).ConfigureAwait(false);
             if (!defaultConstructorResult.IsSuccessful())
             {
                 return defaultConstructorResult;
             }
 
-            context.Builder.AddConstructors(defaultConstructorResult.Value!);
+            response.AddConstructors(defaultConstructorResult.Value!);
         }
 
         return Result.Success();
     }
 
-    private async Task<Result<ConstructorBuilder>> CreateDefaultConstructorAsync(BuilderContext context, CancellationToken token)
+    private async Task<Result<ConstructorBuilder>> CreateDefaultConstructorAsync(BuilderContext context, ClassBuilder response, CancellationToken token)
     {
         var constructorInitializerResults = await GetConstructorInitializerResultsAsync(context).ConfigureAwait(false);
 
@@ -64,7 +65,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
             if (!string.IsNullOrEmpty(setDefaultValuesMethodNameResult.Value!.ToString()))
             {
                 ctor.AddCodeStatements($"{setDefaultValuesMethodNameResult.Value}();");
-                context.Builder.AddMethods(new MethodBuilder()
+                response.AddMethods(new MethodBuilder()
                     .WithName(setDefaultValuesMethodNameResult.Value)
                     .WithPartial()
                     .WithVisibility(Visibility.Private)

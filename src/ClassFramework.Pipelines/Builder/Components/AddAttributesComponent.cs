@@ -1,13 +1,14 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddAttributesComponent : IPipelineComponent<BuilderContext>
+public class AddAttributesComponent : IPipelineComponent<BuilderContext, ClassBuilder>
 {
-    public Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(BuilderContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
-            context.Builder.AddAttributes(context.GetAtributes(context.SourceModel.Attributes));
+            response.AddAttributes(context.GetAtributes(context.SourceModel.Attributes));
 
             return Result.Success();
         }, token);

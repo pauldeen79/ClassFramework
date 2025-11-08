@@ -9,9 +9,10 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -31,14 +32,15 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 addCopyConstructor: false,
                 enableEntityInheritance: true);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBe(expectedProtected);
             ctor.ChainCall.ShouldBe(!hasBaseClass ? "base()" : string.Empty); /// sounds unlogical, but this is the non-abstract base class for the builder, and it needs the base() chaincall to the abstract base class for the builder;
             ctor.Parameters.ShouldBeEmpty();
@@ -73,14 +75,15 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 addCopyConstructor: false,
                 enableEntityInheritance: false);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeFalse();
             ctor.ChainCall.ShouldBeEmpty();
             ctor.Parameters.ShouldBeEmpty();
@@ -110,14 +113,15 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 addCopyConstructor: false,
                 enableEntityInheritance: false);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeFalse();
             ctor.ChainCall.ShouldBeEmpty();
             ctor.Parameters.ShouldBeEmpty();
@@ -146,14 +150,15 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics(),
                 enableEntityInheritance: false);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeFalse();
             ctor.ChainCall.ShouldBeEmpty();
             ctor.Parameters.ShouldBeEmpty();
@@ -181,14 +186,15 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 addCopyConstructor: false,
                 enableEntityInheritance: true);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeTrue();
             ctor.ChainCall.ShouldBe("base()");
             ctor.Parameters.ShouldBeEmpty();
@@ -217,14 +223,15 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 setDefaultValues: false,
                 enableEntityInheritance: false);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeFalse();
             ctor.ChainCall.ShouldBeEmpty();
             ctor.Parameters.ShouldBeEmpty();
@@ -247,14 +254,15 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setDefaultValues: true);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Methods.Count(x => x.Name == "SetDefaultValues").ShouldBe(1);
-            var method = context.Builder.Methods.Single(x => x.Name == "SetDefaultValues");
+            response.Methods.Count(x => x.Name == "SetDefaultValues").ShouldBe(1);
+            var method = response.Methods.Single(x => x.Name == "SetDefaultValues");
             method.Partial.ShouldBeTrue();
             method.Parameters.ShouldBeEmpty();
             method.CodeStatements.ShouldBeEmpty();
@@ -269,13 +277,14 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setDefaultValues: false);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Methods.ShouldNotContain(x => x.Name == "SetDefaultValues");
+            response.Methods.ShouldNotContain(x => x.Name == "SetDefaultValues");
         }
 
         [Fact]
@@ -297,9 +306,10 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                         .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"))
                 ]);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -325,9 +335,10 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                         .AddMetadata(new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal("$\"{Error}\"")))
                 ]);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -346,14 +357,15 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder().AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "Filter = new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder();", "SetDefaultValues();" });
         }
@@ -370,14 +382,15 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder().AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "GroupByFields = new System.Collections.Generic.List<ExpressionFramework.Domain.Builders.ExpressionBuilder>();", "SetDefaultValues();" });
         }

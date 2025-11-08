@@ -36,7 +36,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<BuilderContext, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<BuilderContext, TypeBase>>();
+            builder.ShouldBeOfType<ContextCommandHandler<BuilderContext, ClassBuilder, TypeBase>>();
         }
 
         [Fact]

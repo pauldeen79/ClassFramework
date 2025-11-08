@@ -1,13 +1,14 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
+public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
     private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
-    public async Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
+        response = response.IsNotNull(nameof(response));
 
         if (!context.Settings.AddCopyConstructor)
         {
@@ -18,7 +19,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
             && context.IsAbstractBuilder
             && !context.Settings.IsForAbstractBuilder)
         {
-            context.Builder.AddConstructors(CreateInheritanceCopyConstructor(context));
+            response.AddConstructors(CreateInheritanceCopyConstructor(context));
         }
         else
         {
@@ -28,7 +29,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
                 return copyConstructorResult;
             }
 
-            context.Builder.AddConstructors(copyConstructorResult.Value!);
+            response.AddConstructors(copyConstructorResult.Value!);
         }
 
         return Result.Success();

@@ -1,11 +1,12 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class ObservableComponent : IPipelineComponent<BuilderContext>
+public class ObservableComponent : IPipelineComponent<BuilderContext, ClassBuilder>
 {
-    public Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(BuilderContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
             if (!context.Settings.CreateAsObservable
                 && !context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
@@ -29,10 +30,10 @@ public class ObservableComponent : IPipelineComponent<BuilderContext>
             if (!context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
             {
                 // Only add the interface when it's not present yet :)
-                context.Builder.AddInterfaces(typeof(INotifyPropertyChanged));
+                response.AddInterfaces(typeof(INotifyPropertyChanged));
             }
 
-            context.Builder.AddObservableMembers();
+            response.AddObservableMembers();
 
             return Result.Success();
         }, token);

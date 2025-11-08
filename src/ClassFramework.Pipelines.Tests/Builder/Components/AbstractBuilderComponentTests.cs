@@ -11,7 +11,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
             var sut = CreateSut();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(context: null!, new ClassBuilder(), CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -25,15 +25,16 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(enableEntityInheritance: true);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.GenericTypeArguments.ToArray().ShouldBeEquivalentTo(new[] { "TBuilder", "TEntity" });
-            context.Builder.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where TEntity : SomeNamespace.SomeClass", "where TBuilder : SomeClassBuilder<TBuilder, TEntity>" });
-            context.Builder.Abstract.ShouldBeTrue();
+            response.GenericTypeArguments.ToArray().ShouldBeEquivalentTo(new[] { "TBuilder", "TEntity" });
+            response.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where TEntity : SomeNamespace.SomeClass", "where TBuilder : SomeClassBuilder<TBuilder, TEntity>" });
+            response.Abstract.ShouldBeTrue();
         }
 
         [Fact]
@@ -44,15 +45,16 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.GenericTypeArguments.ShouldBeEmpty();
-            context.Builder.GenericTypeArgumentConstraints.ShouldBeEmpty();
-            context.Builder.Abstract.ShouldBeFalse();
+            response.GenericTypeArguments.ShouldBeEmpty();
+            response.GenericTypeArgumentConstraints.ShouldBeEmpty();
+            response.Abstract.ShouldBeFalse();
         }
 
         [Fact]
@@ -66,7 +68,7 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
             var context = CreateContext(sourceModel, settings);
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, new ClassBuilder(), CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

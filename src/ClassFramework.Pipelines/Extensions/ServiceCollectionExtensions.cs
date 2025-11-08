@@ -10,7 +10,7 @@ public static class ServiceCollectionExtensions
             .AddReflectionPipeline()
             .AddInterfacePipeline()
             .AddSharedPipelineComponents()
-            .AddPipelineService();
+            .AddProcessingPipeline();
 
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
         => services
@@ -42,27 +42,27 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
-            .AddScoped<ICommandHandler, Pipeline<BuilderContext>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<BuilderContext, TypeBase>>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AbstractBuilderComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddAttributesComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddBuildMethodComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddCopyConstructorComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddDefaultConstructorComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddFluentMethodsForCollectionPropertiesComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddFluentMethodsForNonCollectionPropertiesComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddImplicitOperatorComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddInterfacesComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.AddPropertiesComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.BaseClassComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.GenericsComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.ObservableComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.PartialComponent>()
-            .AddScoped<IPipelineComponent<BuilderContext>, Builder.Components.SetNameComponent>();
+            .AddScoped<ICommandHandler, PipelineHandler<BuilderContext, ClassBuilder>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<BuilderContext, ClassBuilder, TypeBase>>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.AbstractBuilderComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.AddAttributesComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.AddBuildMethodComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.AddCopyConstructorComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.AddDefaultConstructorComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.AddFluentMethodsForCollectionPropertiesComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.AddFluentMethodsForNonCollectionPropertiesComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.AddImplicitOperatorComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.AddInterfacesComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.AddPropertiesComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.BaseClassComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.GenericsComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.ObservableComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.PartialComponent>()
+            .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.SetNameComponent>();
 
     private static IServiceCollection AddBuilderExtensionPipeline(this IServiceCollection services)
         => services
-            .AddScoped<ICommandHandler, Pipeline<BuilderExtensionContext>>()
+            .AddScoped<ICommandHandler, PipelineHandler<BuilderExtensionContext>>()
             .AddScoped<ICommandHandler, ContextCommandHandler<BuilderExtensionContext, TypeBase>>()
             .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.AddExtensionMethodsForCollectionPropertiesComponent>()
             .AddScoped<IPipelineComponent<BuilderExtensionContext>, BuilderExtension.Components.AddExtensionMethodsForNonCollectionPropertiesComponent>()
@@ -72,7 +72,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services
-            .AddScoped<ICommandHandler, Pipeline<EntityContext>>()
+            .AddScoped<ICommandHandler, PipelineHandler<EntityContext>>()
             .AddScoped<ICommandHandler, ContextCommandHandler<EntityContext, TypeBase>>()
             .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AbstractEntityComponent>()
             .AddScoped<IPipelineComponent<EntityContext>, Entity.Components.AddAttributesComponent>()
@@ -92,7 +92,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddReflectionPipeline(this IServiceCollection services)
         => services
-            .AddScoped<ICommandHandler, Pipeline<Reflection.ReflectionContext>>()
+            .AddScoped<ICommandHandler, PipelineHandler<Reflection.ReflectionContext>>()
             .AddScoped<ICommandHandler, ContextCommandHandler<Reflection.ReflectionContext, TypeBase>>()
             .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddAttributesComponent>()
             .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddConstructorsComponent>()
@@ -108,7 +108,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddInterfacePipeline(this IServiceCollection services)
         => services
-            .AddScoped<ICommandHandler, Pipeline<InterfaceContext>>()
+            .AddScoped<ICommandHandler, PipelineHandler<InterfaceContext>>()
             .AddScoped<ICommandHandler, ContextCommandHandler<InterfaceContext, TypeBase>>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddAttributesComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.AddInterfacesComponent>()
@@ -118,9 +118,10 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.PartialComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext>, Interface.Components.SetNameComponent>();
 
-    private static IServiceCollection AddPipelineService(this IServiceCollection services)
+    private static IServiceCollection AddProcessingPipeline(this IServiceCollection services)
         => services
             .AddScoped<ICommandService, CommandService>()
             .AddScoped<ICommandDecorator>(_ => new ValidateCommandDecorator(new CrossCutting.Commands.PassThroughDecorator()))
-            .AddScoped<IPipelineComponentDecorator>(_ => new CrossCutting.ProcessingPipeline.PassThroughDecorator());
+            .AddScoped<IPipelineComponentDecorator>(_ => new CrossCutting.ProcessingPipeline.PassThroughDecorator())
+            .AddScoped<IPipelineResponseGenerator, PipelineResponseGenerator>();
 }

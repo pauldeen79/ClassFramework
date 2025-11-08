@@ -9,9 +9,10 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -28,13 +29,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyInterfaces: true);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface" });
+            response.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface" });
         }
 
         [Fact]
@@ -51,13 +53,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyInterfaces: true, copyInterfacePredicate: x => x == "IMyInterface2");
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface2" });
+            response.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "IMyInterface2" });
         }
 
         [Fact]
@@ -72,13 +75,14 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyInterfaces: false);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Interfaces.ShouldBeEmpty();
+            response.Interfaces.ShouldBeEmpty();
         }
 
         private static BuilderContext CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)

@@ -1,12 +1,13 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
+public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
+        response = response.IsNotNull(nameof(response));
 
         if (!context.Settings.AddImplicitOperatorOnBuilder)
         {
@@ -27,7 +28,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
                 {
                     var genericArguments = GetGenericArgumentsForInheritance(context);
 
-                    context.Builder.AddMethods(new MethodBuilder()
+                    response.AddMethods(new MethodBuilder()
                         .WithOperator()
                         .WithStatic()
                         .WithName($"{context.BuildReturnTypeName}{context.SourceModel.GetGenericTypeArgumentsString()}")
@@ -44,7 +45,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
                     ? context.SourceModel.GetGenericTypeArgumentsString()
                     : string.Empty;
 
-                context.Builder.AddMethods(new MethodBuilder()
+                response.AddMethods(new MethodBuilder()
                     .WithOperator()
                     .WithStatic()
                     .WithName($"{context.BuildReturnTypeName}{context.SourceModel.GetGenericTypeArgumentsString()}")

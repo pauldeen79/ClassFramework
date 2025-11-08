@@ -9,9 +9,10 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -24,14 +25,15 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(enableBuilderInheritance: true, isAbstract: true);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Methods.Count.ShouldBe(2);
-            context.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Build", "BuildTyped" });
+            response.Methods.Count.ShouldBe(2);
+            response.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Build", "BuildTyped" });
         }
 
         [Fact]
@@ -43,14 +45,15 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Methods.Count.ShouldBe(1);
-            var method = context.Builder.Methods.Single();
+            response.Methods.Count.ShouldBe(1);
+            var method = response.Methods.Single();
             method.Name.ShouldBe("Build");
             method.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
@@ -71,15 +74,16 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(enableEntityInheritance: true);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Methods.Count.ShouldBe(2);
+            response.Methods.Count.ShouldBe(2);
 
-            var buildMethod = context.Builder.Methods.SingleOrDefault(x => x.Name == "Build");
+            var buildMethod = response.Methods.SingleOrDefault(x => x.Name == "Build");
             buildMethod.ShouldNotBeNull(customMessage: "Build method should exist");
             buildMethod!.Abstract.ShouldBeFalse();
             buildMethod.ReturnTypeName.ShouldBe("SomeNamespace.SomeClass");
@@ -92,7 +96,7 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
                 }
             );
 
-            var buildTypedMethod = context.Builder.Methods.SingleOrDefault(x => x.Name == "BuildTyped");
+            var buildTypedMethod = response.Methods.SingleOrDefault(x => x.Name == "BuildTyped");
             buildTypedMethod.ShouldNotBeNull(customMessage: "BuildTyped method should exist");
             buildTypedMethod!.Abstract.ShouldBeTrue();
             buildTypedMethod.ReturnTypeName.ShouldBe("TEntity");
@@ -114,9 +118,10 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
                     .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("{Error}"))
             ]);
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

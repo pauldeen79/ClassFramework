@@ -9,9 +9,10 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -25,13 +26,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Name.ShouldBe("SomeClassBuilder");
+            response.Name.ShouldBe("SomeClassBuilder");
         }
 
         [Fact]
@@ -43,13 +45,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Namespace.ShouldBe("SomeNamespace.Builders");
+            response.Namespace.ShouldBe("SomeNamespace.Builders");
         }
 
         [Fact]
@@ -61,9 +64,10 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(builderNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -79,9 +83,10 @@ public class SetNameComponentTests : TestBase<Pipelines.Builder.Components.SetNa
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(builderNamespaceFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

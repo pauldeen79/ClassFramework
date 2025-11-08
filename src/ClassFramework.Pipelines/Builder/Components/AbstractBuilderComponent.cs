@@ -1,12 +1,13 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AbstractBuilderComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
+public class AbstractBuilderComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
+        response = response.IsNotNull(nameof(response));
 
         if (!context.IsBuilderForAbstractEntity)
         {
@@ -17,7 +18,7 @@ public class AbstractBuilderComponent(IExpressionEvaluator evaluator) : IPipelin
             .ConfigureAwait(false))
             .OnSuccess(nameResult =>
             {
-                context.Builder.WithAbstract();
+                response.WithAbstract();
 
                 if (!context.Settings.IsForAbstractBuilder)
                 {
@@ -26,7 +27,7 @@ public class AbstractBuilderComponent(IExpressionEvaluator evaluator) : IPipelin
                         ? string.Empty
                         : $", {context.SourceModel.GetGenericTypeArgumentsString(false)}";
 
-                    context.Builder
+                    response
                         .AddGenericTypeArguments("TBuilder", "TEntity")
                         .AddGenericTypeArgumentConstraints($"where TEntity : {context.SourceModel.GetFullName()}{generics}")
                         .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity{genericsSuffix}>")

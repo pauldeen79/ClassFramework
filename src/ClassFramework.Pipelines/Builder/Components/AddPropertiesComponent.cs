@@ -1,12 +1,13 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext>
+public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(BuilderContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
+        response = response.IsNotNull(nameof(response));
 
         if (context.IsAbstractBuilder)
         {
@@ -28,7 +29,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
                 return error;
             }
 
-            context.Builder.AddProperties(new PropertyBuilder()
+            response.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
                 .WithTypeName(results.GetValue(ResultNames.TypeName).ToString()
                     .FixCollectionTypeName(context.Settings.BuilderNewCollectionTypeName)
@@ -47,7 +48,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
 
         // Note that we are not checking the result, because the same formattable string (CustomBuilderArgumentType) has already been checked earlier in this class
         // We can simple use Value with bang operator to keep the compiler happy (the value should be a string, and not be null)
-        context.Builder.AddFields((await context.SourceModel
+        response.AddFields((await context.SourceModel
             .GetBuilderClassFieldsAsync(context, _evaluator, token).ConfigureAwait(false))
             .Select(x => x.Value!));
 
