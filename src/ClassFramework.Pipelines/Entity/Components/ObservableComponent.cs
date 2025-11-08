@@ -6,6 +6,7 @@ public class ObservableComponent : IPipelineComponent<EntityContext, ClassBuilde
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
             if (!context.Settings.CreateAsObservable
                 && !context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))

@@ -7,6 +7,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
     public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
+        response = response.IsNotNull(nameof(response));
 
         return await (await context.GetToBuilderResultsAsync(evaluator, token).ConfigureAwait(false))
             .OnSuccessAsync(async results =>

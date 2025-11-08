@@ -1,13 +1,14 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class AddMethodsComponent : IPipelineComponent<ReflectionContext>
+public class AddMethodsComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
 {
-    public Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(ReflectionContext context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
-            context.Builder.AddMethods(GetMethods(context));
+            response.AddMethods(GetMethods(context));
 
             return Result.Success();
         }, token);

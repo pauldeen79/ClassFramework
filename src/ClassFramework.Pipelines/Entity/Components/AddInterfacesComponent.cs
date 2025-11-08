@@ -5,6 +5,7 @@ public class AddInterfacesComponent : IPipelineComponent<EntityContext, ClassBui
     public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
+        response = response.IsNotNull(nameof(response));
 
         if (!context.Settings.CopyInterfaces)
         {

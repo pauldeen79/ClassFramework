@@ -10,9 +10,10 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            Task a = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
                 .ParamName.ShouldBe("context");
         }
@@ -25,13 +26,14 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(copyAttributePredicate: _ => true, copyAttributes: true);
             var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
+            response.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
         }
 
         [Fact]
@@ -42,13 +44,14 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(copyAttributePredicate: null, copyAttributes: true);
             var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
+            response.Attributes.ToArray().ShouldBeEquivalentTo(new[] { new AttributeBuilder().WithName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute") });
         }
 
         [Fact]
@@ -59,13 +62,14 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(copyAttributes: false);
             var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Attributes.ShouldBeEmpty();
+            response.Attributes.ShouldBeEmpty();
         }
     }
 }

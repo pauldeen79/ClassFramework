@@ -1,14 +1,15 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class AddConstructorsComponent : IPipelineComponent<ReflectionContext>
+public class AddConstructorsComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
 {
-    public Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(ReflectionContext context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
             if (!context.Settings.CreateConstructors
-                || context.Builder is not IConstructorsContainerBuilder constructorsContainerBuilder)
+                || response is not IConstructorsContainerBuilder constructorsContainerBuilder)
             {
                 return Result.Continue();
             }

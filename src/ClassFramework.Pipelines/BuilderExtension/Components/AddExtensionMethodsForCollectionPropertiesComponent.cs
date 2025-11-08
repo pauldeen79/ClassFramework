@@ -7,6 +7,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
     public async Task<Result> ExecuteAsync(BuilderExtensionContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
+        response = response.IsNotNull(nameof(response));
 
         return await context.ProcessPropertiesAsync(
             context.Settings.AddMethodNameFormatString,

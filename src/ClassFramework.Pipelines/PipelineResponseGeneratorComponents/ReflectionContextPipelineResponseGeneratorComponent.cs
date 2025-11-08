@@ -6,9 +6,10 @@ public class ReflectionContextPipelineResponseGeneratorComponent : IPipelineResp
     {
         if (command is Reflection.ReflectionContext reflectionContext && typeof(TypeBaseBuilder).IsAssignableFrom(typeof(T)))
         {
-            return Result.Success<T>((T)Convert.ChangeType(reflectionContext.SourceModel.IsInterface
+            TypeBaseBuilder builder = reflectionContext.SourceModel.IsInterface
                 ? new InterfaceBuilder()
-                : new ClassBuilder(), typeof(T)));
+                : new ClassBuilder();
+            return Result.Success((T)(object)builder);
         }
 
         return Result.Continue<T>();

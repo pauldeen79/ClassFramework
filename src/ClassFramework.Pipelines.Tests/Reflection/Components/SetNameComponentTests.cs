@@ -9,9 +9,10 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -25,13 +26,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var sut = CreateSut();
             var settings = CreateSettingsForReflection();
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Name.ShouldBe("MyClass");
+            response.Name.ShouldBe("MyClass");
         }
 
         [Fact]
@@ -43,13 +45,14 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var sut = CreateSut();
             var settings = CreateSettingsForReflection();
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Namespace.ShouldBe("ClassFramework.Pipelines.Tests.Reflection");
+            response.Namespace.ShouldBe("ClassFramework.Pipelines.Tests.Reflection");
         }
 
         [Fact]
@@ -61,9 +64,10 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(nameFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -79,9 +83,10 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(namespaceFormatString: "{Error}");
             var context = CreateContext(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);

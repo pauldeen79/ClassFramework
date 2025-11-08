@@ -6,6 +6,7 @@ public class AddInterfacesComponent : IPipelineComponent<InterfaceContext, Inter
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
             if (!context.Settings.CopyInterfaces)
             {

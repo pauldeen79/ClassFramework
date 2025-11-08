@@ -1,18 +1,19 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class AddInterfacesComponent : IPipelineComponent<ReflectionContext>
+public class AddInterfacesComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
 {
-    public Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(ReflectionContext context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
             if (!context.Settings.CopyInterfaces)
             {
                 return Result.Continue();
             }
 
-            context.Builder.AddInterfaces(
+            response.AddInterfaces(
                 context.SourceModel.GetInterfaces()
                     .Where(x => !(context.SourceModel.IsRecord() && x.FullName.StartsWith($"System.IEquatable`1[[{context.SourceModel.FullName}")))
                     .Select(x => context.GetMappedTypeName(x, context.SourceModel))

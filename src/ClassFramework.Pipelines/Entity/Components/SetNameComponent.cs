@@ -7,6 +7,7 @@ public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineCompone
     public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
+        response = response.IsNotNull(nameof(response));
 
         return (await new AsyncResultDictionaryBuilder<GenericFormattableString>()
             .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(context.Settings.EntityNameFormatString, context.FormatProvider, context, token))

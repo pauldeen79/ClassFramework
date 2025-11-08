@@ -6,6 +6,7 @@ public class SetRecordComponent : IPipelineComponent<EntityContext, ClassBuilder
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
             response.WithRecord(context.Settings.CreateRecord);
 

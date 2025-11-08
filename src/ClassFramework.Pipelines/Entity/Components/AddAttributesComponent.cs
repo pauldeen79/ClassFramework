@@ -6,6 +6,7 @@ public class AddAttributesComponent : IPipelineComponent<EntityContext, ClassBui
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
             response.AddAttributes(context.GetAtributes(context.SourceModel.Attributes));
 

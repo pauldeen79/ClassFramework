@@ -16,20 +16,21 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<ReflectionContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<ReflectionContext, TypeBaseBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
 
-            context.Builder.Attributes.Count.ShouldBe(1);
-            context.Builder.Attributes.Single().Name.ShouldBe("System.ComponentModel.DisplayNameAttribute");
+            result.Value.Attributes.Count.ShouldBe(1);
+            result.Value.Attributes.Single().Name.ShouldBe("System.ComponentModel.DisplayNameAttribute");
 
-            context.Builder.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "MyNamespace.IMyInterface" });
+            result.Value.Interfaces.ToArray().ShouldBeEquivalentTo(new[] { "MyNamespace.IMyInterface" });
 
-            context.Builder.Name.ShouldBe(nameof(MyClass));
-            context.Builder.Namespace.ShouldBe("MyNamespace");
+            result.Value.Name.ShouldBe(nameof(MyClass));
+            result.Value.Namespace.ShouldBe("MyNamespace");
 
-            context.Builder.Visibility.ShouldBe(Visibility.Public);
+            result.Value.Visibility.ShouldBe(Visibility.Public);
         }
 
         [Fact]
@@ -44,18 +45,19 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<ReflectionContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<ReflectionContext, TypeBaseBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
 
-            context.Builder.Attributes.ShouldBeEmpty();
-            context.Builder.Interfaces.ShouldBeEmpty();
+            result.Value.Attributes.ShouldBeEmpty();
+            result.Value.Interfaces.ShouldBeEmpty();
 
-            context.Builder.Name.ShouldBe(nameof(IMyInterface));
-            context.Builder.Namespace.ShouldBe("MyNamespace");
+            result.Value.Name.ShouldBe(nameof(IMyInterface));
+            result.Value.Namespace.ShouldBe("MyNamespace");
 
-            context.Builder.Visibility.ShouldBe(Visibility.Public);
+            result.Value.Visibility.ShouldBe(Visibility.Public);
         }
 
         [Fact]
@@ -70,18 +72,19 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<ReflectionContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<ReflectionContext, TypeBaseBuilder>(context, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
 
-            context.Builder.Attributes.ShouldBeEmpty();
-            context.Builder.Interfaces.ShouldBeEmpty();
+            result.Value.Attributes.ShouldBeEmpty();
+            result.Value.Interfaces.ShouldBeEmpty();
 
-            context.Builder.Name.ShouldBe(nameof(IMyInternalInterface));
-            context.Builder.Namespace.ShouldBe("MyNamespace");
+            result.Value.Name.ShouldBe(nameof(IMyInternalInterface));
+            result.Value.Namespace.ShouldBe("MyNamespace");
 
-            context.Builder.Visibility.ShouldBe(Visibility.Internal);
+            result.Value.Visibility.ShouldBe(Visibility.Internal);
         }
 
         [Fact]
@@ -94,7 +97,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<ReflectionContext, TypeBase>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<ReflectionContext, TypeBaseBuilder>(context, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

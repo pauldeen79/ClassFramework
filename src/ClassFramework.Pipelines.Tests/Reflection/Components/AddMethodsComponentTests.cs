@@ -9,9 +9,10 @@ public class AddMethodsComponentTests : TestBase<Pipelines.Reflection.Components
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            Task a = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
         }
 
@@ -23,13 +24,14 @@ public class AddMethodsComponentTests : TestBase<Pipelines.Reflection.Components
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection();
             var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Methods.Count.ShouldBe(1);
+            response.Methods.Count.ShouldBe(1);
         }
     }
 }

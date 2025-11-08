@@ -92,20 +92,20 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddReflectionPipeline(this IServiceCollection services)
         => services
-            .AddScoped<ICommandHandler, PipelineHandler<Reflection.ReflectionContext>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<Reflection.ReflectionContext, TypeBase>>()
+            .AddScoped<ICommandHandler, PipelineHandler<Reflection.ReflectionContext, TypeBaseBuilder>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<Reflection.ReflectionContext, TypeBaseBuilder, TypeBase>>()
             .AddScoped<IPipelineResponseGeneratorComponent, ReflectionContextPipelineResponseGeneratorComponent>()
-            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddAttributesComponent>()
-            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddConstructorsComponent>()
-            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddFieldsComponent>()
-            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddGenericTypeArgumentsComponent>()
-            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddInterfacesComponent>()
-            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddMethodsComponent>()
-            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.AddPropertiesComponent>()
-            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.SetBaseClassComponent>()
-            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.SetModifiersComponent>()
-            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.SetNameComponent>()
-            .AddScoped<IPipelineComponent<Reflection.ReflectionContext>, Reflection.Components.SetVisibilityComponent>();
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.Components.AddAttributesComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.Components.AddConstructorsComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.Components.AddFieldsComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.Components.AddGenericTypeArgumentsComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.Components.AddInterfacesComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.Components.AddMethodsComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.Components.AddPropertiesComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.Components.SetBaseClassComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.Components.SetModifiersComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.Components.SetNameComponent>()
+            .AddScoped<IPipelineComponent<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.Components.SetVisibilityComponent>();
 
     private static IServiceCollection AddInterfacePipeline(this IServiceCollection services)
         => services

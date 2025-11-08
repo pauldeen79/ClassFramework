@@ -6,6 +6,7 @@ public class AddGenericsComponent : IPipelineComponent<EntityContext, ClassBuild
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
             response
                 .AddGenericTypeArguments(context.SourceModel.GenericTypeArguments)

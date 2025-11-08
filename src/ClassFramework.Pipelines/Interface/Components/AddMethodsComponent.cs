@@ -6,6 +6,7 @@ public class AddMethodsComponent : IPipelineComponent<InterfaceContext, Interfac
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
             if (!context.Settings.CopyMethods)
             {

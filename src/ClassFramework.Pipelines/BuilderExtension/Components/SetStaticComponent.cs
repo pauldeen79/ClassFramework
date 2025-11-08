@@ -6,6 +6,7 @@ public class SetStaticComponent : IPipelineComponent<BuilderExtensionContext, Cl
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
             response.WithStatic();
 

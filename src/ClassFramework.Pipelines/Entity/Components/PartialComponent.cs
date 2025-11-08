@@ -6,6 +6,7 @@ public class PartialComponent : IPipelineComponent<EntityContext, ClassBuilder>
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
             response.WithPartial(context.Settings.CreateAsPartial);
 

@@ -6,6 +6,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext, ClassBui
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
             var properties = context.GetSourceProperties().ToArray();
 

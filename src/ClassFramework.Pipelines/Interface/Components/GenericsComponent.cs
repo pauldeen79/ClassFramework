@@ -6,6 +6,7 @@ public class GenericsComponent : IPipelineComponent<InterfaceContext, InterfaceB
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
+            response = response.IsNotNull(nameof(response));
 
             response.AddGenericTypeArguments(context.SourceModel.GenericTypeArguments);
             response.AddGenericTypeArgumentConstraints(context.SourceModel.GenericTypeArgumentConstraints);
