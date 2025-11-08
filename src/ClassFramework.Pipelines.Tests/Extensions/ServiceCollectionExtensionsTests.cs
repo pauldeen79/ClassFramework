@@ -36,7 +36,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<BuilderContext, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<BuilderContext, ClassBuilder, TypeBase>>();
+            builder.ShouldBeOfType<ContextCommandHandler<BuilderContext, TypeBase>>();
         }
 
         [Fact]
@@ -54,7 +54,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<BuilderExtensionContext, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<BuilderExtensionContext, ClassBuilder, TypeBase>>();
+            builder.ShouldBeOfType<ContextCommandHandler<BuilderExtensionContext, TypeBase>>();
         }
 
         [Fact]
@@ -72,7 +72,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<EntityContext, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<EntityContext, ClassBuilder, TypeBase>>();
+            builder.ShouldBeOfType<ContextCommandHandler<EntityContext, TypeBase>>();
         }
 
         [Fact]
@@ -90,7 +90,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<InterfaceContext, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<InterfaceContext, InterfaceBuilder, TypeBase>>();
+            builder.ShouldBeOfType<ContextCommandHandler<InterfaceContext, TypeBase>>();
         }
 
         [Fact]
@@ -108,7 +108,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<ReflectionContext, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<ReflectionContext, TypeBaseBuilder, TypeBase>>();
+            builder.ShouldBeOfType<ContextCommandHandler<ReflectionContext, TypeBase>>();
         }
     }
 }

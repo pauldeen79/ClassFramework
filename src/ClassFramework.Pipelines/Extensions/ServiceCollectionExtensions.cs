@@ -43,7 +43,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
             .AddScoped<ICommandHandler, PipelineHandler<BuilderContext, ClassBuilder>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<BuilderContext, ClassBuilder, TypeBase>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<BuilderContext, TypeBase>>()
             .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.AbstractBuilderComponent>()
             .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.AddAttributesComponent>()
             .AddScoped<IPipelineComponent<BuilderContext, ClassBuilder>, Builder.Components.AddBuildMethodComponent>()
@@ -63,7 +63,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddBuilderExtensionPipeline(this IServiceCollection services)
         => services
             .AddScoped<ICommandHandler, PipelineHandler<BuilderExtensionContext, ClassBuilder>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<BuilderExtensionContext, ClassBuilder, TypeBase>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<BuilderExtensionContext, TypeBase>>()
             .AddScoped<IPipelineComponent<BuilderExtensionContext, ClassBuilder>, BuilderExtension.Components.AddExtensionMethodsForCollectionPropertiesComponent>()
             .AddScoped<IPipelineComponent<BuilderExtensionContext, ClassBuilder>, BuilderExtension.Components.AddExtensionMethodsForNonCollectionPropertiesComponent>()
             .AddScoped<IPipelineComponent<BuilderExtensionContext, ClassBuilder>, BuilderExtension.Components.PartialComponent>()
@@ -73,7 +73,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services
             .AddScoped<ICommandHandler, PipelineHandler<EntityContext, ClassBuilder>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<EntityContext, ClassBuilder, TypeBase>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<EntityContext, TypeBase>>()
             .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.AbstractEntityComponent>()
             .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.AddAttributesComponent>()
             .AddScoped<IPipelineComponent<EntityContext, ClassBuilder>, Entity.Components.AddEquatableMembersComponent>()
@@ -93,7 +93,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddReflectionPipeline(this IServiceCollection services)
         => services
             .AddScoped<ICommandHandler, PipelineHandler<Reflection.ReflectionContext, TypeBaseBuilder>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<Reflection.ReflectionContext, TypeBaseBuilder, TypeBase>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<Reflection.ReflectionContext, TypeBase>>()
             .AddScoped<IPipelineResponseGeneratorComponent, ReflectionContextPipelineResponseGeneratorComponent>()
             .AddScoped<IPipelineComponent<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.Components.AddAttributesComponent>()
             .AddScoped<IPipelineComponent<Reflection.ReflectionContext, TypeBaseBuilder>, Reflection.Components.AddConstructorsComponent>()
@@ -110,7 +110,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddInterfacePipeline(this IServiceCollection services)
         => services
             .AddScoped<ICommandHandler, PipelineHandler<InterfaceContext, InterfaceBuilder>>()
-            .AddScoped<ICommandHandler, ContextCommandHandler<InterfaceContext, InterfaceBuilder, TypeBase>>()
+            .AddScoped<ICommandHandler, ContextCommandHandler<InterfaceContext, TypeBase>>()
             .AddScoped<IPipelineComponent<InterfaceContext, InterfaceBuilder>, Interface.Components.AddAttributesComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext, InterfaceBuilder>, Interface.Components.AddInterfacesComponent>()
             .AddScoped<IPipelineComponent<InterfaceContext, InterfaceBuilder>, Interface.Components.AddMethodsComponent>()
