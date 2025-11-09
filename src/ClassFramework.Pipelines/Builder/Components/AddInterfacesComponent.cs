@@ -4,19 +4,19 @@ public class AddInterfacesComponent(IExpressionEvaluator evaluator) : IPipelineC
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(GenerateBuilderCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateBuilderCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
         response = response.IsNotNull(nameof(response));
 
-        if (!context.Settings.CopyInterfaces)
+        if (!command.Settings.CopyInterfaces)
         {
             return Result.Continue();
         }
 
-        var interfaces = await context.GetInterfaceResultsAsync(
+        var interfaces = await command.GetInterfaceResultsAsync(
             (_, x) => x.ToString(),
-            x => context.MapTypeName(x.FixTypeName()),
+            x => command.MapTypeName(x.FixTypeName()),
             _evaluator,
             true,
             token).ConfigureAwait(false);

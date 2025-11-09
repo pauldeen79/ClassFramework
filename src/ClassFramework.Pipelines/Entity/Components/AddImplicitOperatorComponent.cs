@@ -4,17 +4,17 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(GenerateEntityCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateEntityCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
         response = response.IsNotNull(nameof(response));
 
-        if (!context.Settings.AddImplicitOperatorOnEntity)
+        if (!command.Settings.AddImplicitOperatorOnEntity)
         {
             return Result.Continue();
         }
 
-        return (await context.GetToBuilderResultsAsync(_evaluator, token).ConfigureAwait(false))
+        return (await command.GetToBuilderResultsAsync(_evaluator, token).ConfigureAwait(false))
             .OnSuccess(results =>
             {
                 var methodName = results.GetValue("ToBuilderMethodName");
@@ -23,15 +23,15 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
                     return Result.Continue();
                 }
 
-                return context.GetCustomNamespaceResults(results)
+                return command.GetCustomNamespaceResults(results)
                     .OnSuccess(customNamespaceResults =>
                     {
                         var builderConcreteName = customNamespaceResults.GetValue("BuilderConcreteName");
-                        var generics = context.SourceModel.GetGenericTypeArgumentsString();
-                        var builderName = results.GetValue(ResultNames.BuilderName).ToString().Replace(context.SourceModel.Name, builderConcreteName);
+                        var generics = command.SourceModel.GetGenericTypeArgumentsString();
+                        var builderName = results.GetValue(ResultNames.BuilderName).ToString().Replace(command.SourceModel.Name, builderConcreteName);
                         var builderConcreteTypeName = $"{customNamespaceResults.GetValue("CustomBuilderNamespace")}.{builderName}";
-                        var builderTypeName = context.GetBuilderTypeName(customNamespaceResults.GetValue("CustomBuilderInterfaceNamespace"), customNamespaceResults.GetValue("CustomConcreteBuilderNamespace"), builderConcreteName, builderConcreteTypeName, results.GetValue(ResultNames.BuilderName));
-                        var entityFullName = context.GetEntityFullName(results.GetValue(ResultNames.Namespace).ToString(), results.GetValue(ResultNames.Name).ToString());
+                        var builderTypeName = command.GetBuilderTypeName(customNamespaceResults.GetValue("CustomBuilderInterfaceNamespace"), customNamespaceResults.GetValue("CustomConcreteBuilderNamespace"), builderConcreteName, builderConcreteTypeName, results.GetValue(ResultNames.BuilderName));
+                        var entityFullName = command.GetEntityFullName(results.GetValue(ResultNames.Namespace).ToString(), results.GetValue(ResultNames.Name).ToString());
                         var typedMethodName = results.GetValue("ToTypedBuilderMethodName");
 
                         var operatorMethod = new MethodBuilder()
@@ -40,8 +40,8 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
                                 .WithReturnTypeName("implicit")
                                 .AddParameter("entity", $"{entityFullName}{generics}");
 
-                        if (context.Settings.EnableInheritance
-                            && context.Settings.BaseClass is not null
+                        if (command.Settings.EnableInheritance
+                            && command.Settings.BaseClass is not null
                             && !string.IsNullOrEmpty(typedMethodName))
                         {
                             response.AddMethods(operatorMethod

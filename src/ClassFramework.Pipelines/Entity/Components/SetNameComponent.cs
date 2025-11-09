@@ -4,21 +4,21 @@ public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineCompone
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(GenerateEntityCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateEntityCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
         response = response.IsNotNull(nameof(response));
 
         return (await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(context.Settings.EntityNameFormatString, context.FormatProvider, context, token))
-            .Add(ResultNames.Namespace, () => context.GetMappingMetadata(context.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateInterpolatedStringAsync(context.Settings.EntityNamespaceFormatString, context.FormatProvider, context, token)))
+            .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(command.Settings.EntityNameFormatString, command.FormatProvider, command, token))
+            .Add(ResultNames.Namespace, () => command.GetMappingMetadata(command.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateInterpolatedStringAsync(command.Settings.EntityNamespaceFormatString, command.FormatProvider, command, token)))
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(results =>
             {
                 response
                     .WithName(results.GetValue(ResultNames.Name))
-                    .WithNamespace(context.MapNamespace(results.GetValue(ResultNames.Namespace)));
+                    .WithNamespace(command.MapNamespace(results.GetValue(ResultNames.Namespace)));
 
             });
     }

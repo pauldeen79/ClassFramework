@@ -2,24 +2,24 @@
 
 public class SetModifiersComponent : IPipelineComponent<GenerateTypeFromReflectionCommand, TypeBaseBuilder>
 {
-    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand command, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
             response = response.IsNotNull(nameof(response));
 
             if (response is IReferenceTypeBuilder referenceTypeBuilder)
             {
                 referenceTypeBuilder
-                    .WithStatic(context.SourceModel.IsAbstract && context.SourceModel.IsSealed)
-                    .WithSealed(context.SourceModel.IsSealed)
-                    .WithPartial(context.Settings.CreateAsPartial)
-                    .WithAbstract(context.SourceModel.IsAbstract);
+                    .WithStatic(command.SourceModel.IsAbstract && command.SourceModel.IsSealed)
+                    .WithSealed(command.SourceModel.IsSealed)
+                    .WithPartial(command.Settings.CreateAsPartial)
+                    .WithAbstract(command.SourceModel.IsAbstract);
             }
 
             if (response is IRecordContainerBuilder recordContainerBuilder)
             {
-                recordContainerBuilder.WithRecord(context.SourceModel.IsRecord());
+                recordContainerBuilder.WithRecord(command.SourceModel.IsRecord());
             }
 
             return Result.Success();

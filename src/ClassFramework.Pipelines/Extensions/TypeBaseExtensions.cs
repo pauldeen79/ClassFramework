@@ -50,13 +50,13 @@ public static class TypeBaseExtensions
 
     public static IEnumerable<Property> GetBuilderConstructorProperties(
         this IType instance,
-        GenerateBuilderCommand context)
+        GenerateBuilderCommand command)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
 
         if (instance is not IConstructorsContainer constructorsContainer)
         {
-            throw new ArgumentException("Cannot get immutable builder constructor properties for type that does not have constructors", nameof(context));
+            throw new ArgumentException("Cannot get immutable builder constructor properties for type that does not have constructors", nameof(command));
         }
 
         if (constructorsContainer.HasPublicParameterlessConstructor())
@@ -71,13 +71,13 @@ public static class TypeBaseExtensions
             return [];
         }
 
-        if (context.IsBuilderForOverrideEntity && context.Settings.BaseClass is not null)
+        if (command.IsBuilderForOverrideEntity && command.Settings.BaseClass is not null)
         {
             // Try to get property from either the base class c'tor or the class c'tor itself
             return ctor
                 .Parameters
                 .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase))
-                    ?? context.Settings.BaseClass!.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
+                    ?? command.Settings.BaseClass!.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
                 .Where(x => x is not null);
         }
 
@@ -89,14 +89,14 @@ public static class TypeBaseExtensions
 
     public static async Task<IEnumerable<Result<FieldBuilder>>> GetBuilderClassFieldsAsync(
         this IType instance,
-        GenerateBuilderCommand context,
+        GenerateBuilderCommand command,
         IExpressionEvaluator evaluator,
         CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-        if (!context.HasBackingFields())
+        if (!command.HasBackingFields())
         {
             return Enumerable.Empty<Result<FieldBuilder>>();
         }
@@ -104,10 +104,10 @@ public static class TypeBaseExtensions
         var results = new List<Result<FieldBuilder>>();
 
         foreach (var property in instance.Properties.Where(x =>
-            instance.IsMemberValidForBuilderClass(x, context.Settings)
-            && x.HasBackingFieldOnBuilder(context.Settings)))
+            instance.IsMemberValidForBuilderClass(x, command.Settings)
+            && x.HasBackingFieldOnBuilder(command.Settings)))
         {
-            var builderArgumentTypeResult = await property.GetBuilderArgumentTypeNameAsync(context, new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings), context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token).ConfigureAwait(false);
+            var builderArgumentTypeResult = await property.GetBuilderArgumentTypeNameAsync(command, new ParentChildContext<GenerateBuilderCommand, Property>(command, property, command.Settings), command.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token).ConfigureAwait(false);
             if (!builderArgumentTypeResult.IsSuccessful())
             {
                 results.Add(Result.FromExistingResult<FieldBuilder>(builderArgumentTypeResult));
@@ -115,8 +115,8 @@ public static class TypeBaseExtensions
             }
 
             results.Add(Result.Success(new FieldBuilder()
-                .WithName($"_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())}")
-                .WithTypeName(builderArgumentTypeResult.Value!.ToString().FixCollectionTypeName(context.Settings.BuilderNewCollectionTypeName).FixNullableTypeName(property))
+                .WithName($"_{property.Name.ToCamelCase(command.FormatProvider.ToCultureInfo())}")
+                .WithTypeName(builderArgumentTypeResult.Value!.ToString().FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName).FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
                 .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder()))));

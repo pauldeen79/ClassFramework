@@ -2,22 +2,22 @@
 
 public class AddInterfacesComponent : IPipelineComponent<GenerateEntityCommand, ClassBuilder>
 {
-    public async Task<Result> ExecuteAsync(GenerateEntityCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateEntityCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
         response = response.IsNotNull(nameof(response));
 
-        if (!context.Settings.CopyInterfaces)
+        if (!command.Settings.CopyInterfaces)
         {
             return Result.Continue();
         }
 
-        var baseClass = await context.SourceModel.GetEntityBaseClassAsync(context.Settings.EnableInheritance, context.Settings.BaseClass).ConfigureAwait(false);
+        var baseClass = await command.SourceModel.GetEntityBaseClassAsync(command.Settings.EnableInheritance, command.Settings.BaseClass).ConfigureAwait(false);
 
-        response.AddInterfaces(context.SourceModel.Interfaces
-            .Where(x => context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+        response.AddInterfaces(command.SourceModel.Interfaces
+            .Where(x => command.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Where(x => x != baseClass)
-            .Select(x => context.MapTypeName(x.FixTypeName()))
+            .Select(x => command.MapTypeName(x.FixTypeName()))
             .Where(x => !string.IsNullOrEmpty(x)));
 
         return Result.Success();

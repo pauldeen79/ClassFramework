@@ -2,12 +2,12 @@
 
 public class SetBaseClassComponent : IPipelineComponent<GenerateEntityCommand, ClassBuilder>
 {
-    public async Task<Result> ExecuteAsync(GenerateEntityCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateEntityCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
         response = response.IsNotNull(nameof(response));
 
-        response.WithBaseClass(await context.SourceModel.GetEntityBaseClassAsync(context.Settings.EnableInheritance, context.Settings.BaseClass).ConfigureAwait(false));
+        response.WithBaseClass(await command.SourceModel.GetEntityBaseClassAsync(command.Settings.EnableInheritance, command.Settings.BaseClass).ConfigureAwait(false));
 
         return Result.Success();
     }

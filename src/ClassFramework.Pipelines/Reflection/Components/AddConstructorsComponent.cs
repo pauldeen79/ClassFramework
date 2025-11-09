@@ -2,25 +2,25 @@
 
 public class AddConstructorsComponent : IPipelineComponent<GenerateTypeFromReflectionCommand, TypeBaseBuilder>
 {
-    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand command, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
             response = response.IsNotNull(nameof(response));
 
-            if (!context.Settings.CreateConstructors
+            if (!command.Settings.CreateConstructors
                 || response is not IConstructorsContainerBuilder constructorsContainerBuilder)
             {
                 return Result.Continue();
             }
 
-            constructorsContainerBuilder.AddConstructors(GetConstructors(context));
+            constructorsContainerBuilder.AddConstructors(GetConstructors(command));
 
             return Result.Success();
         }, token);
 
-    private static IEnumerable<ConstructorBuilder> GetConstructors(GenerateTypeFromReflectionCommand context)
-        => context.SourceModel.GetConstructors()
+    private static IEnumerable<ConstructorBuilder> GetConstructors(GenerateTypeFromReflectionCommand command)
+        => command.SourceModel.GetConstructors()
             .Select(x => new ConstructorBuilder()
                 .AddParameters
                 (
@@ -30,16 +30,16 @@ public class AddConstructorsComponent : IPipelineComponent<GenerateTypeFromRefle
                         new ParameterBuilder()
                             .WithName(p.Name)
                             .WithTypeName(p.ParameterType.FullName.FixTypeName())
-                            .SetTypeContainerPropertiesFrom(p.IsNullable(), p.ParameterType, context.GetMappedTypeName)
+                            .SetTypeContainerPropertiesFrom(p.IsNullable(), p.ParameterType, command.GetMappedTypeName)
                             .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
-                                x => x.ConvertToDomainAttribute(context.InitializeDelegate),
-                                context.Settings.CopyAttributes,
-                                context.Settings.CopyAttributePredicate))
+                                x => x.ConvertToDomainAttribute(command.InitializeDelegate),
+                                command.Settings.CopyAttributes,
+                                command.Settings.CopyAttributePredicate))
                     )
                 )
                 .AddAttributes(x.GetCustomAttributes(true).ToAttributes(
-                    x => x.ConvertToDomainAttribute(context.InitializeDelegate),
-                    context.Settings.CopyAttributes,
-                    context.Settings.CopyAttributePredicate))
+                    x => x.ConvertToDomainAttribute(command.InitializeDelegate),
+                    command.Settings.CopyAttributes,
+                    command.Settings.CopyAttributePredicate))
         );
 }

@@ -2,13 +2,13 @@
 
 public class AddAttributesComponent : IPipelineComponent<GenerateEntityCommand, ClassBuilder>
 {
-    public Task<Result> ExecuteAsync(GenerateEntityCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateEntityCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
             response = response.IsNotNull(nameof(response));
 
-            response.AddAttributes(context.GetAtributes(context.SourceModel.Attributes));
+            response.AddAttributes(command.GetAtributes(command.SourceModel.Attributes));
 
             return Result.Success();
         }, token);

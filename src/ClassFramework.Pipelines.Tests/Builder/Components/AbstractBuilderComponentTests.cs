@@ -5,15 +5,15 @@ public class AbstractBuilderComponentTests : TestBase<Pipelines.Builder.Componen
     public class ExecuteAsync : AbstractBuilderComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public async Task Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, new ClassBuilder(), CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(command: null!, new ClassBuilder(), CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
-             .ParamName.ShouldBe("context");
+             .ParamName.ShouldBe("command");
         }
 
         [Fact]

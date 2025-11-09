@@ -2,13 +2,13 @@
 
 public class PartialComponent : IPipelineComponent<GenerateBuilderCommand, ClassBuilder>
 {
-    public Task<Result> ExecuteAsync(GenerateBuilderCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateBuilderCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
             response = response.IsNotNull(nameof(response));
 
-            response.WithPartial(context.Settings.CreateAsPartial);
+            response.WithPartial(command.Settings.CreateAsPartial);
 
             return Result.Success();
         }, token);

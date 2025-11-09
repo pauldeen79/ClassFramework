@@ -270,9 +270,9 @@ public static class PropertyExtensions
         }
     }
 
-    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeNameAsync(this Property property, GenerateBuilderCommand context, IExpressionEvaluator evaluator, CancellationToken token)
+    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeNameAsync(this Property property, GenerateBuilderCommand command, IExpressionEvaluator evaluator, CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
         if (string.IsNullOrEmpty(property.ParentTypeFullName))
@@ -280,11 +280,11 @@ public static class PropertyExtensions
             return Result.Success<GenericFormattableString>(property.ParentTypeFullName);
         }
 
-        var metadata = context.GetMappingMetadata(property.ParentTypeFullName).ToArray();
+        var metadata = command.GetMappingMetadata(property.ParentTypeFullName).ToArray();
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeNamespace);
         if (string.IsNullOrEmpty(ns))
         {
-            return Result.Success<GenericFormattableString>(context.MapTypeName(property.ParentTypeFullName.FixTypeName()));
+            return Result.Success<GenericFormattableString>(command.MapTypeName(property.ParentTypeFullName.FixTypeName()));
         }
 
         var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ClassName(property.ParentTypeFullName)}");
@@ -298,8 +298,8 @@ public static class PropertyExtensions
         return await evaluator.EvaluateInterpolatedStringAsync
         (
             newFullName,
-            context.FormatProvider,
-            new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings),
+            command.FormatProvider,
+            new ParentChildContext<GenerateBuilderCommand, Property>(command, property, command.Settings),
             token
         ).ConfigureAwait(false);
     }

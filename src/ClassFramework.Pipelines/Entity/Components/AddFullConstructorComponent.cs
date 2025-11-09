@@ -4,23 +4,23 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(GenerateEntityCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateEntityCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
         response = response.IsNotNull(nameof(response));
 
-        if (!context.Settings.AddFullConstructor)
+        if (!command.Settings.AddFullConstructor)
         {
             return Result.Continue();
         }
 
-        return (await CreateEntityConstructorAsync(context, token)
+        return (await CreateEntityConstructorAsync(command, token)
             .ConfigureAwait(false))
             .OnSuccess(ctorResult =>
             {
                 response.AddConstructors(ctorResult.Value!);
 
-                if (context.Settings.AddValidationCode() == ArgumentValidationType.CustomValidationCode)
+                if (command.Settings.AddValidationCode() == ArgumentValidationType.CustomValidationCode)
                 {
                     response.AddMethods(new MethodBuilder()
                         .WithName("Validate")
@@ -30,13 +30,13 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
             });
     }
 
-    private async Task<Result<ConstructorBuilder>> CreateEntityConstructorAsync(GenerateEntityCommand context, CancellationToken token)
+    private async Task<Result<ConstructorBuilder>> CreateEntityConstructorAsync(GenerateEntityCommand command, CancellationToken token)
     {
         var initializationResults = new List<Result<GenericFormattableString>>();
 
-        foreach (var property in context.GetSourceProperties())
+        foreach (var property in command.GetSourceProperties())
         {
-            var result = await _evaluator.EvaluateInterpolatedStringAsync("this.{property.EntityMemberName} = {property.InitializationExpression};", context.FormatProvider, new ParentChildContext<GenerateEntityCommand, Property>(context, property, context.Settings), token).ConfigureAwait(false);
+            var result = await _evaluator.EvaluateInterpolatedStringAsync("this.{property.EntityMemberName} = {property.InitializationExpression};", command.FormatProvider, new ParentChildContext<GenerateEntityCommand, Property>(command, property, command.Settings), token).ConfigureAwait(false);
 
             initializationResults.Add(result);
             if (!result.IsSuccessful())
@@ -52,16 +52,16 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
         }
 
         return Result.Success(new ConstructorBuilder()
-            .WithProtected(context.Settings.EnableInheritance && context.Settings.IsAbstract)
-            .AddParameters(context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.FormatProvider, n => context.MapTypeName(n, MetadataNames.CustomEntityInterfaceTypeName)))
+            .WithProtected(command.Settings.EnableInheritance && command.Settings.IsAbstract)
+            .AddParameters(command.SourceModel.Properties.CreateImmutableClassCtorParameters(command.FormatProvider, n => command.MapTypeName(n, MetadataNames.CustomEntityInterfaceTypeName)))
             .AddCodeStatements
             (
-                context.GetSourceProperties()
-                    .Where(property => context.Settings.AddNullChecks && context.Settings.AddValidationCode() == ArgumentValidationType.None && context.GetMappingMetadata(property.TypeName).GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
-                    .Select(property => context.CreateArgumentNullException(property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
+                command.GetSourceProperties()
+                    .Where(property => command.Settings.AddNullChecks && command.Settings.AddValidationCode() == ArgumentValidationType.None && command.GetMappingMetadata(property.TypeName).GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
+                    .Select(property => command.CreateArgumentNullException(property.Name.ToCamelCase(command.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
             .AddCodeStatements(initializationResults.Select(x => x.Value!.ToString()))
-            .AddCodeStatements(context.CreateEntityValidationCode())
-            .WithChainCall(await context.CreateEntityChainCallAsync().ConfigureAwait(false)));
+            .AddCodeStatements(command.CreateEntityValidationCode())
+            .WithChainCall(await command.CreateEntityChainCallAsync().ConfigureAwait(false)));
     }
 }

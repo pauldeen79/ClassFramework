@@ -2,25 +2,25 @@
 
 public class SetVisibilityComponent : IPipelineComponent<GenerateTypeFromReflectionCommand, TypeBaseBuilder>
 {
-    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand command, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
             response = response.IsNotNull(nameof(response));
 
-            response.WithVisibility(GetVisibility(context));
+            response.WithVisibility(GetVisibility(command));
 
             return Result.Success();
         }, token);
 
-    private static Visibility GetVisibility(GenerateTypeFromReflectionCommand context)
+    private static Visibility GetVisibility(GenerateTypeFromReflectionCommand command)
     {
-        if (context.SourceModel.IsPublic)
+        if (command.SourceModel.IsPublic)
         {
             return Visibility.Public;
         }
 
-        return context.SourceModel.IsNotPublic
+        return command.SourceModel.IsNotPublic
             ? Visibility.Internal
             : Visibility.Private;
     }

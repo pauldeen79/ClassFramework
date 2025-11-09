@@ -134,14 +134,14 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
     public class GetBuilderConstructorProperties : TypeBaseExtensionsTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public void Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
-            Action a = () => sut.GetBuilderConstructorProperties(context: null!);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
+            Action a = () => sut.GetBuilderConstructorProperties(command: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("command");
         }
 
         [Fact]
@@ -155,8 +155,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             // Act & Assert
             Action a = () => sut.GetBuilderConstructorProperties(command);
             var x = a.ShouldThrow<ArgumentException>();
-            x.ParamName.ShouldBe("context");
-            x.Message.ShouldBe("Cannot get immutable builder constructor properties for type that does not have constructors (Parameter 'context')");
+            x.ParamName.ShouldBe("command");
+            x.Message.ShouldBe("Cannot get immutable builder constructor properties for type that does not have constructors (Parameter 'command')");
         }
 
         [Fact]
@@ -286,16 +286,16 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
     public class GetBuilderClassFields : TypeBaseExtensionsTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public async Task Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderClassFieldsAsync(context: null!, expressionEvaluator, CancellationToken.None);
+            var t = sut.GetBuilderClassFieldsAsync(command: null!, expressionEvaluator, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
-             .ParamName.ShouldBe("context");
+             .ParamName.ShouldBe("command");
         }
 
         [Fact]

@@ -2,20 +2,20 @@
 
 public class AddInterfacesComponent : IPipelineComponent<GenerateInterfaceCommand, InterfaceBuilder>
 {
-    public Task<Result> ExecuteAsync(GenerateInterfaceCommand context, InterfaceBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateInterfaceCommand command, InterfaceBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
             response = response.IsNotNull(nameof(response));
 
-            if (!context.Settings.CopyInterfaces)
+            if (!command.Settings.CopyInterfaces)
             {
                 return Result.Continue();
             }
 
-            response.AddInterfaces(context.SourceModel.Interfaces
-                .Where(x => context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
-                .Select(x => context.MapTypeName(x.FixTypeName()))
+            response.AddInterfaces(command.SourceModel.Interfaces
+                .Where(x => command.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
+                .Select(x => command.MapTypeName(x.FixTypeName()))
                 .Where(x => !string.IsNullOrEmpty(x)));
 
             return Result.Success();

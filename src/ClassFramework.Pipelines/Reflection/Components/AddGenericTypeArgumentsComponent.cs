@@ -2,13 +2,13 @@
 
 public class AddGenericTypeArgumentsComponent : IPipelineComponent<GenerateTypeFromReflectionCommand, TypeBaseBuilder>
 {
-    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand command, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
             response = response.IsNotNull(nameof(response));
 
-            response.AddGenericTypeArguments(context.SourceModel.GetGenericTypeArgumentTypeNames());
+            response.AddGenericTypeArguments(command.SourceModel.GetGenericTypeArgumentTypeNames());
 
             return Result.Success();
         }, token);

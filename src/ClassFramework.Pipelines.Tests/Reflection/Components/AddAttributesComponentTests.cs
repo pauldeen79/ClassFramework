@@ -6,16 +6,16 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
     public class ExecuteAsync : AddAttributesComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public async Task Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut();
             var response = new ClassBuilder();
 
             // Act & Assert
-            Task a = sut.ExecuteAsync(context: null!, response, CommandService, CancellationToken.None);
+            Task a = sut.ExecuteAsync(command: null!, response, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
-                .ParamName.ShouldBe("context");
+                .ParamName.ShouldBe("command");
         }
 
         [Fact]

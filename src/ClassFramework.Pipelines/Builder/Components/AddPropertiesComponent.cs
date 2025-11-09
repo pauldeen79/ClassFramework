@@ -4,21 +4,21 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(GenerateBuilderCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateBuilderCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
         response = response.IsNotNull(nameof(response));
 
-        if (context.IsAbstractBuilder)
+        if (command.IsAbstractBuilder)
         {
             return Result.Continue();
         }
 
-        foreach (var property in context.GetSourceProperties())
+        foreach (var property in command.GetSourceProperties())
         {
             var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-                .Add(ResultNames.TypeName, () => property.GetBuilderArgumentTypeNameAsync(context, new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings), context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token))
-                .Add(ResultNames.ParentTypeName, () => property.GetBuilderParentTypeNameAsync(context, _evaluator, token))
+                .Add(ResultNames.TypeName, () => property.GetBuilderArgumentTypeNameAsync(command, new ParentChildContext<GenerateBuilderCommand, Property>(command, property, command.Settings), command.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token))
+                .Add(ResultNames.ParentTypeName, () => property.GetBuilderParentTypeNameAsync(command, _evaluator, token))
                 .Build()
                 .ConfigureAwait(false);
 
@@ -32,53 +32,53 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
             response.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
                 .WithTypeName(results.GetValue(ResultNames.TypeName).ToString()
-                    .FixCollectionTypeName(context.Settings.BuilderNewCollectionTypeName)
+                    .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)
                     .FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
-                .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder().WithTypeName(context.MapTypeName(x.TypeName))))
+                .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder().WithTypeName(command.MapTypeName(x.TypeName))))
                 .WithParentTypeFullName(results.GetValue(ResultNames.ParentTypeName))
                 .AddAttributes(property.Attributes
-                    .Where(_ => context.Settings.CopyAttributes)
-                    .Select(x => context.MapAttribute(x).ToBuilder()))
-                .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context))
-                .AddSetterCodeStatements(await CreateBuilderPropertySetterStatementsAsync(property, context, token).ConfigureAwait(false))
+                    .Where(_ => command.Settings.CopyAttributes)
+                    .Select(x => command.MapAttribute(x).ToBuilder()))
+                .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, command))
+                .AddSetterCodeStatements(await CreateBuilderPropertySetterStatementsAsync(property, command, token).ConfigureAwait(false))
             );
         }
 
         // Note that we are not checking the result, because the same formattable string (CustomBuilderArgumentType) has already been checked earlier in this class
         // We can simple use Value with bang operator to keep the compiler happy (the value should be a string, and not be null)
-        response.AddFields((await context.SourceModel
-            .GetBuilderClassFieldsAsync(context, _evaluator, token).ConfigureAwait(false))
+        response.AddFields((await command.SourceModel
+            .GetBuilderClassFieldsAsync(command, _evaluator, token).ConfigureAwait(false))
             .Select(x => x.Value!));
 
         return Result.Success();
     }
 
-    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, GenerateBuilderCommand context)
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, GenerateBuilderCommand command)
     {
-        if (property.HasBackingFieldOnBuilder(context.Settings))
+        if (property.HasBackingFieldOnBuilder(command.Settings))
         {
-            yield return new StringCodeStatementBuilder($"return _{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())};");
+            yield return new StringCodeStatementBuilder($"return _{property.Name.ToCamelCase(command.FormatProvider.ToCultureInfo())};");
         }
     }
 
-    private async Task<IEnumerable<CodeStatementBaseBuilder>> CreateBuilderPropertySetterStatementsAsync(Property property, GenerateBuilderCommand context, CancellationToken token)
+    private async Task<IEnumerable<CodeStatementBaseBuilder>> CreateBuilderPropertySetterStatementsAsync(Property property, GenerateBuilderCommand command, CancellationToken token)
     {
         var results = new List<CodeStatementBaseBuilder>();
-        if (property.HasBackingFieldOnBuilder(context.Settings))
+        if (property.HasBackingFieldOnBuilder(command.Settings))
         {
-            if (context.Settings.CreateAsObservable)
+            if (command.Settings.CreateAsObservable)
             {
-                var nullSuffix = context.Settings.EnableNullableReferenceTypes && !property.IsValueType
+                var nullSuffix = command.Settings.EnableNullableReferenceTypes && !property.IsValueType
                     ? "!"
                     : string.Empty;
-                results.Add(new StringCodeStatementBuilder($"bool hasChanged = !{typeof(EqualityComparer<>).WithoutGenerics()}<{(await property.GetBuilderArgumentTypeNameAsync(context, new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings), context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token).ConfigureAwait(false)).Value}>.Default.Equals(_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});"));
+                results.Add(new StringCodeStatementBuilder($"bool hasChanged = !{typeof(EqualityComparer<>).WithoutGenerics()}<{(await property.GetBuilderArgumentTypeNameAsync(command, new ParentChildContext<GenerateBuilderCommand, Property>(command, property, command.Settings), command.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token).ConfigureAwait(false)).Value}>.Default.Equals(_{property.Name.ToCamelCase(command.FormatProvider.ToCultureInfo())}{nullSuffix}, value{nullSuffix});"));
             }
 
-            results.Add(new StringCodeStatementBuilder($"_{property.Name.ToCamelCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks, context.SourceModel)};"));
+            results.Add(new StringCodeStatementBuilder($"_{property.Name.ToCamelCase(command.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", command.Settings.AddNullChecks, command.SourceModel)};"));
 
-            if (context.Settings.CreateAsObservable)
+            if (command.Settings.CreateAsObservable)
             {
                 results.Add(new StringCodeStatementBuilder($"if (hasChanged) HandlePropertyChanged(nameof({property.Name}));"));
             }

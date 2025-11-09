@@ -4,14 +4,14 @@ public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineCompone
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(GenerateBuilderExtensionCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateBuilderExtensionCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
         response = response.IsNotNull(nameof(response));
 
         return (await new AsyncResultDictionaryBuilder<GenericFormattableString>()
-            .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(context.Settings.BuilderExtensionsNameFormatString, context.FormatProvider, context, token))
-            .Add(ResultNames.Namespace, () => _evaluator.EvaluateInterpolatedStringAsync(context.Settings.BuilderExtensionsNamespaceFormatString, context.FormatProvider, context, token))
+            .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(command.Settings.BuilderExtensionsNameFormatString, command.FormatProvider, command, token))
+            .Add(ResultNames.Namespace, () => _evaluator.EvaluateInterpolatedStringAsync(command.Settings.BuilderExtensionsNamespaceFormatString, command.FormatProvider, command, token))
             .Build()
             .ConfigureAwait(false))
             .OnSuccess(results =>

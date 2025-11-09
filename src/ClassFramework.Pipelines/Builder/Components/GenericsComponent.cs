@@ -2,14 +2,14 @@
 
 public class GenericsComponent : IPipelineComponent<GenerateBuilderCommand, ClassBuilder>
 {
-    public Task<Result> ExecuteAsync(GenerateBuilderCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateBuilderCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
             response = response.IsNotNull(nameof(response));
 
-            response.AddGenericTypeArguments(context.SourceModel.GenericTypeArguments);
-            response.AddGenericTypeArgumentConstraints(context.SourceModel.GenericTypeArgumentConstraints);
+            response.AddGenericTypeArguments(command.SourceModel.GenericTypeArguments);
+            response.AddGenericTypeArgumentConstraints(command.SourceModel.GenericTypeArgumentConstraints);
 
             return Result.Success();
         }, token);
