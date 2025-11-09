@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext, ClassBuilder>
+public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<GenerateBuilderCommand, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(BuilderContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateBuilderCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         response = response.IsNotNull(nameof(response));
@@ -18,7 +18,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
             token).ConfigureAwait(false);
     }
 
-    private static void AddMethods(BuilderContext context, ClassBuilder response, Property property, string returnType, IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
+    private static void AddMethods(GenerateBuilderCommand context, ClassBuilder response, Property property, string returnType, IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
     {
         response.AddMethods(context.GetFluentMethodsForNonCollectionProperty(property, results, returnType, ResultNames.TypeName, ResultNames.BuilderWithExpression));
 
@@ -29,9 +29,9 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
         }
     }
 
-    private Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsAsync(BuilderContext context, Property property, CancellationToken token)
+    private Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsAsync(GenerateBuilderCommand context, Property property, CancellationToken token)
         => context.GetResultsForBuilderNonCollectionProperties(
             property,
-            new ParentChildContext<BuilderContext, Property>(context, property, context.Settings),
+            new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings),
             _evaluator);
 }

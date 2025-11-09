@@ -1,11 +1,10 @@
-﻿
-namespace ClassFramework.Pipelines.Tests;
+﻿namespace ClassFramework.Pipelines.Tests;
 
-public class ContextBaseTests : TestBase
+public class CommandBaseTests : TestBase
 {
-    protected static ContextBase<string> CreateSut(PipelineSettings settings) => new TestContext(settings);
+    protected static CommandBase<string> CreateSut(PipelineSettings settings) => new TestCommand(settings);
 
-    public class GetMappingMetadata : ContextBaseTests
+    public class GetMappingMetadata : CommandBaseTests
     {
         [Fact]
         public void Throws_On_Null_TypeName()
@@ -64,7 +63,7 @@ public class ContextBaseTests : TestBase
         }
     }
 
-    public class NullCheck : ContextBaseTests
+    public class NullCheck : CommandBaseTests
     {
         [Theory]
         [InlineData(true, "is null")]
@@ -82,7 +81,7 @@ public class ContextBaseTests : TestBase
         }
     }
 
-    public class NotNullCheck : ContextBaseTests
+    public class NotNullCheck : CommandBaseTests
     {
         [Theory]
         [InlineData(true, "is not null")]
@@ -100,7 +99,7 @@ public class ContextBaseTests : TestBase
         }
     }
 
-    public class InitializeDelegate : ContextBaseTests
+    public class InitializeDelegate : CommandBaseTests
     {
         [Fact]
         public void Throws_On_Unsupported_Attribute()
@@ -111,7 +110,7 @@ public class ContextBaseTests : TestBase
             // Act & Assert
             Action a = () => sut.InitializeDelegate(AttributeWithoutConstructorsAttribute.New());
             a.ShouldThrow<NotSupportedException>()
-             .Message.ShouldBe("Attribute not supported by initializer: ClassFramework.Pipelines.Tests.ContextBaseTests+AttributeWithoutConstructorsAttribute");
+             .Message.ShouldBe("Attribute not supported by initializer: ClassFramework.Pipelines.Tests.CommandBaseTests+AttributeWithoutConstructorsAttribute");
         }
     }
 
@@ -125,7 +124,7 @@ public class ContextBaseTests : TestBase
         public static AttributeWithoutConstructorsAttribute New() => new AttributeWithoutConstructorsAttribute();
     }
 
-    private sealed class TestContext(PipelineSettings settings) : ContextBase<string>(string.Empty, settings, CultureInfo.InvariantCulture, CancellationToken.None)
+    private sealed class TestCommand(PipelineSettings settings) : CommandBase<string>(string.Empty, settings, CultureInfo.InvariantCulture, CancellationToken.None)
     {
         protected override string NewCollectionTypeName => string.Empty;
 

@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.PipelineResponseGeneratorComponents;
 
-public class ReflectionContextPipelineResponseGeneratorComponent : IPipelineResponseGeneratorComponent
+public class GenerateTypeFromReflectionResponseGeneratorComponent : IPipelineResponseGeneratorComponent
 {
     public Result<T> Generate<T>(object command)
     {
-        if (command is Reflection.ReflectionContext reflectionContext && typeof(TypeBaseBuilder).IsAssignableFrom(typeof(T)))
+        if (command is GenerateTypeFromReflectionCommand reflectionContext && typeof(TypeBaseBuilder).IsAssignableFrom(typeof(T)))
         {
             TypeBaseBuilder builder = reflectionContext.SourceModel.IsInterface
                 ? new InterfaceBuilder()

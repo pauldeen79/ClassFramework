@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class SetModifiersComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
+public class SetModifiersComponent : IPipelineComponent<GenerateTypeFromReflectionCommand, TypeBaseBuilder>
 {
-    public Task<Result> ExecuteAsync(ReflectionContext context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));

@@ -25,11 +25,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addMethodNameFormatString: string.Empty);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -44,11 +44,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{property.Name}");
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -84,11 +84,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
                     .WithTargetType(typeof(int))
                     .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue(typeof(IReadOnlyCollection<>).ReplaceGenericTypeName("MyCustomType")))
             ]);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -120,11 +120,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 addMethodNameFormatString: "Add{property.Name}");
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -157,11 +157,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 addMethodNameFormatString: "Add{property.Name}");
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -195,11 +195,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             var settings = CreateSettingsForBuilder(
                 enableEntityInheritance: true,
                 addMethodNameFormatString: "Add{property.Name}");
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -237,11 +237,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
                     .WithTargetType(typeof(int))
                     .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"))
             ]);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -256,11 +256,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(builderNameFormatString: "{Error}");
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -275,11 +275,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addMethodNameFormatString: "{Error}");
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -300,11 +300,11 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
                     .WithTargetType(typeof(List<int>))
                     .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentNullCheckExpression).WithValue("{Error}"))
             ]);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -325,18 +325,18 @@ public class AddFluentMethodsForCollectionPropertiesComponentTests : TestBase<Pi
                     .WithTargetType(typeof(int))
                     .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentNullCheckExpression).WithValue("{Error}"))
             ]);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
             result.ErrorMessage.ShouldBe("Kaboom");
         }
 
-        private static BuilderContext CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+        private static GenerateBuilderCommand CreateCommand(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

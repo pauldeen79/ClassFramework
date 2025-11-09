@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddInterfacesComponent : IPipelineComponent<EntityContext, ClassBuilder>
+public class AddInterfacesComponent : IPipelineComponent<GenerateEntityCommand, ClassBuilder>
 {
-    public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateEntityCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         response = response.IsNotNull(nameof(response));

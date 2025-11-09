@@ -24,11 +24,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -42,11 +42,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClassWithCustomTypeProperties();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(namespaceMappings: [new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyMappedNamespace")]);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -75,11 +75,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addSetters: addSetters);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -97,11 +97,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addSetters: true, setterVisibility: setterVisibility);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -126,11 +126,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
                 ).BuildTyped();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyAttributes: true, copyAttributePredicate: a => a.Name.EndsWith('2'));
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -144,11 +144,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -162,11 +162,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -180,11 +180,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -198,11 +198,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -216,11 +216,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -251,11 +251,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true, createAsObservable: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -292,11 +292,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -318,11 +318,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true, addNullChecks: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

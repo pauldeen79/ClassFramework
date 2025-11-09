@@ -22,12 +22,12 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(false);
-            var context = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var sut = CreateSut();
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
@@ -39,13 +39,13 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
-            var context = new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
             await InitializeExpressionEvaluatorAsync(forceError: true);
             var sut = CreateSut();
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -57,13 +57,13 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
-            var context = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -81,13 +81,13 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
-            var context = new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -108,13 +108,13 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract();
-            var context = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -135,13 +135,13 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract();
-            var context = new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -163,13 +163,13 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract()
                 .WithIsForAbstractBuilder();
-            var context = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -191,13 +191,13 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract()
                 .WithIsForAbstractBuilder();
-            var context = new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -218,13 +218,13 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithBaseClass(new ClassBuilder().WithName("Dummy"));
-            var context = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -245,13 +245,13 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithBaseClass(new ClassBuilder().WithName("Dummy"));
-            var context = new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);

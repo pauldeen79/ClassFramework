@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Interface;
+﻿namespace ClassFramework.Pipelines.Interface.Commands;
 
-public class InterfaceContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
+public class GenerateInterfaceCommand(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : CommandBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
 {
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
 

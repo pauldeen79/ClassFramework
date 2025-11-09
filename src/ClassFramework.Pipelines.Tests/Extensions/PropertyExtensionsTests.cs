@@ -13,10 +13,10 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var csharpExpressionDumper = Fixture.Freeze<ICsharpExpressionDumper>();
             var settings = new PipelineSettingsBuilder().Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var context = new TestContext(settings, formatProvider);
+            var command = new TestCommand(settings, formatProvider);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, command);
 
             // Assert
             result.ShouldBe("default(System.String)");
@@ -31,10 +31,10 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             csharpExpressionDumper.Dump(Arg.Any<IStringLiteral>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<IStringLiteral>(0).Value); // note that we mock the behavior of the real csharp expression dumper here :)
             var settings = new PipelineSettingsBuilder().AddTypenameMappings(new TypenameMappingBuilder().WithSourceType(typeof(string)).WithTargetType(typeof(string)).AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal("custom value"))).Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var context = new TestContext(settings, formatProvider);
+            var command = new TestCommand(settings, formatProvider);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, command);
 
             // Assert
             result.ShouldBe("custom value");
@@ -54,10 +54,10 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
                     .AddMetadata(MetadataNames.CustomBuilderDefaultValue, "custom value"))
                 .Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var context = new TestContext(settings, formatProvider);
+            var command = new TestCommand(settings, formatProvider);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, command);
 
             // Assert
             result.ShouldBe("custom value");
@@ -76,10 +76,10 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             csharpExpressionDumper.Dump(Arg.Any<object?>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
             var settings = new PipelineSettingsBuilder();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var context = new TestContext(settings, formatProvider);
+            var command = new TestCommand(settings, formatProvider);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, command);
 
             // Assert
             result.ShouldBe("custom value");
@@ -98,16 +98,16 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             csharpExpressionDumper.Dump(Arg.Any<IStringLiteral>(), Arg.Any<Type?>()).Returns(x => x.ArgAt<IStringLiteral>(0).Value); // note that we mock the behavior of the real csharp expression dumper here :)
             var settings = new PipelineSettingsBuilder();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var context = new TestContext(settings, formatProvider);
+            var command = new TestCommand(settings, formatProvider);
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, context);
+            var result = sut.GetDefaultValue(csharpExpressionDumper, sut.TypeName, command);
 
             // Assert
             result.ShouldBe("custom value");
         }
 
-        private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
+        private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
             public override Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token) => throw new NotImplementedException();
@@ -222,11 +222,11 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var settings = new PipelineSettingsBuilder();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var context = new TestContext(settings, formatProvider);
+            var command = new TestCommand(settings, formatProvider);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(context, parentChildContext: default!, string.Empty, string.Empty, string.Empty, expressionEvaluator);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, parentChildContext: default!, string.Empty, string.Empty, string.Empty, expressionEvaluator);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("parentChildContext");
         }
@@ -238,11 +238,11 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var settings = new PipelineSettingsBuilder();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var context = new TestContext(settings, formatProvider);
+            var command = new TestCommand(settings, formatProvider);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(context, new object(), mappedTypeName: default!, string.Empty, string.Empty, expressionEvaluator);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), mappedTypeName: default!, string.Empty, string.Empty, expressionEvaluator);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("mappedTypeName");
         }
@@ -254,11 +254,11 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var settings = new PipelineSettingsBuilder();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var context = new TestContext(settings, formatProvider);
+            var command = new TestCommand(settings, formatProvider);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(context, new object(), string.Empty, newCollectionTypeName: default!, string.Empty, expressionEvaluator);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, newCollectionTypeName: default!, string.Empty, expressionEvaluator);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("newCollectionTypeName");
         }
@@ -270,10 +270,10 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var settings = new PipelineSettingsBuilder();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var context = new TestContext(settings, formatProvider);
+            var command = new TestCommand(settings, formatProvider);
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(context, new object(), string.Empty, string.Empty, string.Empty, evaluator: null!);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, string.Empty, string.Empty, evaluator: null!);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("evaluator");
         }
@@ -285,16 +285,16 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var settings = new PipelineSettingsBuilder();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var context = new TestContext(settings, formatProvider);
+            var command = new TestCommand(settings, formatProvider);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(context, new object(), string.Empty, string.Empty, metadataName: null!, expressionEvaluator);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, string.Empty, metadataName: null!, expressionEvaluator);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("metadataName");
         }
 
-        private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
+        private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
             public override Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token) => throw new NotImplementedException();
@@ -320,15 +320,15 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
                     .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderName).WithValue("{NoGenerics(ClassName(property.TypeName))}Builder{GenericArguments(property.TypeName, true)}"))
                 ).Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var context = new TestContext(settings, formatProvider);
-            var parentChildContext = new ParentChildContext<TestContext, Property>(context, sut, settings);
+            var command = new TestCommand(settings, formatProvider);
+            var parentChildContext = new ParentChildContext<TestCommand, Property>(command, sut, settings);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
             expressionEvaluator
                 .EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(x => Result.Success<GenericFormattableString>(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.Substring(2, x.ArgAt<ExpressionEvaluatorContext>(0).Expression.Length - 3)));
 
             // Act
-            var result = await sut.GetBuilderArgumentTypeNameAsync(context, parentChildContext, sut.TypeName, expressionEvaluator, CancellationToken.None);
+            var result = await sut.GetBuilderArgumentTypeNameAsync(command, parentChildContext, sut.TypeName, expressionEvaluator, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -354,15 +354,15 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
                 .WithUseBuilderLazyValues()
                 .Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var context = new TestContext(settings, formatProvider);
-            var parentChildContext = new ParentChildContext<TestContext, Property>(context, sut, settings);
+            var command = new TestCommand(settings, formatProvider);
+            var parentChildContext = new ParentChildContext<TestCommand, Property>(command, sut, settings);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
             expressionEvaluator
                 .EvaluateTypedAsync<GenericFormattableString>(Arg.Any<ExpressionEvaluatorContext>(), Arg.Any<CancellationToken>())
                 .Returns(x => Result.Success<GenericFormattableString>(x.ArgAt<ExpressionEvaluatorContext>(0).Expression.Substring(2, x.ArgAt<ExpressionEvaluatorContext>(0).Expression.Length - 3)));
 
             // Act
-            var result = await sut.GetBuilderArgumentTypeNameAsync(context, parentChildContext, sut.TypeName, expressionEvaluator, CancellationToken.None);
+            var result = await sut.GetBuilderArgumentTypeNameAsync(command, parentChildContext, sut.TypeName, expressionEvaluator, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -370,7 +370,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             result.Value!.ToString().ShouldBe("IReadOnlyCollection<Builders.{NoGenerics(ClassName(GenericArguments(property.TypeName)))}Builder{GenericArguments(CollectionItemType(property.TypeName), true)}>");
         }
 
-        private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
+        private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
             public override Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token) => throw new NotImplementedException();

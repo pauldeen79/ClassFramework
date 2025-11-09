@@ -25,11 +25,11 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection();
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -44,11 +44,11 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection();
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -63,11 +63,11 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(nameFormatString: "{Error}");
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -82,18 +82,18 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(namespaceFormatString: "{Error}");
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
             result.ErrorMessage.ShouldBe("Kaboom");
         }
 
-        private static ReflectionContext CreateContext(Type sourceModel, PipelineSettingsBuilder settings)
-            => new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+        private static GenerateTypeFromReflectionCommand CreateCommand(Type sourceModel, PipelineSettingsBuilder settings)
+            => new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

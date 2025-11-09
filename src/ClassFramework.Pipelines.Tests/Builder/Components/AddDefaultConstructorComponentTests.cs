@@ -31,11 +31,11 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 baseClass: hasBaseClass ? new ClassBuilder().WithName("BaseClass").BuildTyped() : null,
                 addCopyConstructor: false,
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -74,11 +74,11 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 enableBuilderInheritance: false,
                 addCopyConstructor: false,
                 enableEntityInheritance: false);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -112,11 +112,11 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 enableBuilderInheritance: false,
                 addCopyConstructor: false,
                 enableEntityInheritance: false);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -149,11 +149,11 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 addCopyConstructor: false,
                 newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics(),
                 enableEntityInheritance: false);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -185,11 +185,11 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 enableBuilderInheritance: false,
                 addCopyConstructor: false,
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -222,11 +222,11 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                 addCopyConstructor: false,
                 setDefaultValues: false,
                 enableEntityInheritance: false);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -253,11 +253,11 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setDefaultValues: true);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -276,11 +276,11 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(setDefaultValues: false);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -305,11 +305,11 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                         .WithTargetType(typeof(int))
                         .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"))
                 ]);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -334,11 +334,11 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
                         .WithTargetType(typeof(string))
                         .AddMetadata(new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal("$\"{Error}\"")))
                 ]);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -356,11 +356,11 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder().AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -381,11 +381,11 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder().AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -395,7 +395,7 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "GroupByFields = new System.Collections.Generic.List<ExpressionFramework.Domain.Builders.ExpressionBuilder>();", "SetDefaultValues();" });
         }
 
-        private static BuilderContext CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+        private static GenerateBuilderCommand CreateCommand(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

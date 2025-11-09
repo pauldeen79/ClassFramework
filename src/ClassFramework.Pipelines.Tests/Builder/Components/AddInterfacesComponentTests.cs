@@ -28,11 +28,11 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
                 .Build();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyInterfaces: true);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -52,11 +52,11 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
                 .Build();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyInterfaces: true, copyInterfacePredicate: x => x == "IMyInterface2");
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -74,18 +74,18 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
                 .Build();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(copyInterfaces: false);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
             response.Interfaces.ShouldBeEmpty();
         }
 
-        private static BuilderContext CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+        private static GenerateBuilderCommand CreateCommand(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

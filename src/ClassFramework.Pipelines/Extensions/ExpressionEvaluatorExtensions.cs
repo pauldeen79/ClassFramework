@@ -19,7 +19,7 @@ public static class ExpressionEvaluatorExtensions
     {
         var builder = new AsyncResultDictionaryBuilder<object?>();
 
-        if (context is BuilderContext builderContext)
+        if (context is GenerateBuilderCommand builderContext)
         {
             builder
                 .Add(ResultNames.Class, new ClassModel(builderContext.SourceModel))
@@ -29,7 +29,7 @@ public static class ExpressionEvaluatorExtensions
                 .Add(ResultNames.TypeName, () => builderContext.MapTypeName(builderContext.SourceModel.GetFullName()))
                 .Add(ResultNames.Context, builderContext);
         }
-        else if (context is BuilderExtensionContext builderExtensionContext)
+        else if (context is GenerateBuilderExtensionCommand builderExtensionContext)
         {
             builder
                 .Add(ResultNames.Class, new ClassModel(builderExtensionContext.SourceModel))
@@ -39,7 +39,7 @@ public static class ExpressionEvaluatorExtensions
                 .Add(ResultNames.TypeName, () => builderExtensionContext.MapTypeName(builderExtensionContext.SourceModel.GetFullName()))
                 .Add(ResultNames.Context, builderExtensionContext);
         }
-        else if (context is EntityContext entityContext)
+        else if (context is GenerateEntityCommand entityContext)
         {
             builder
                 .Add(ResultNames.Class, new ClassModel(entityContext.SourceModel))
@@ -49,7 +49,7 @@ public static class ExpressionEvaluatorExtensions
                 .Add(ResultNames.TypeName, () => entityContext.MapTypeName(entityContext.SourceModel.GetFullName()))
                 .Add(ResultNames.Context, entityContext);
         }
-        else if (context is InterfaceContext interfaceContext)
+        else if (context is GenerateInterfaceCommand interfaceContext)
         {
             builder
                 .Add(ResultNames.Class, new ClassModel(interfaceContext.SourceModel))
@@ -59,7 +59,7 @@ public static class ExpressionEvaluatorExtensions
                 .Add(ResultNames.TypeName, () => interfaceContext.MapTypeName(interfaceContext.SourceModel.GetFullName()))
                 .Add(ResultNames.Context, interfaceContext);
         }
-        else if (context is Reflection.ReflectionContext reflectionContext)
+        else if (context is GenerateTypeFromReflectionCommand reflectionContext)
         {
             builder
                 .Add(ResultNames.Class, new ClassModel(reflectionContext.SourceModel))
@@ -69,7 +69,7 @@ public static class ExpressionEvaluatorExtensions
                 .Add(ResultNames.TypeName, () => reflectionContext.MapTypeName(reflectionContext.SourceModel.FullName))
                 .Add(ResultNames.Context, reflectionContext);
         }
-        else if (context is ParentChildContext<BuilderContext, Property> parentChildContextBuilder)
+        else if (context is ParentChildContext<GenerateBuilderCommand, Property> parentChildContextBuilder)
         {
             builder
                 .Add(ResultNames.Class, new ClassModel(parentChildContextBuilder.ParentContext.SourceModel))
@@ -80,7 +80,7 @@ public static class ExpressionEvaluatorExtensions
                 .Add(ResultNames.TypeName, () => parentChildContextBuilder.ParentContext.MapTypeName(parentChildContextBuilder.ChildContext.TypeName))
                 .Add(ResultNames.Context, parentChildContextBuilder.ParentContext);
         }
-        else if (context is ParentChildContext<BuilderExtensionContext, Property> parentChildContextBuilderExtension)
+        else if (context is ParentChildContext<GenerateBuilderExtensionCommand, Property> parentChildContextBuilderExtension)
         {
             builder
                 .Add(ResultNames.Class, new ClassModel(parentChildContextBuilderExtension.ParentContext.SourceModel))
@@ -91,7 +91,7 @@ public static class ExpressionEvaluatorExtensions
                 .Add(ResultNames.TypeName, () => parentChildContextBuilderExtension.ParentContext.MapTypeName(parentChildContextBuilderExtension.ChildContext.TypeName))
                 .Add(ResultNames.Context, parentChildContextBuilderExtension.ParentContext);
         }
-        else if (context is ParentChildContext<EntityContext, Property> parentChildContextEntity)
+        else if (context is ParentChildContext<GenerateEntityCommand, Property> parentChildContextEntity)
         {
             builder
                 .Add(ResultNames.Class, new ClassModel(parentChildContextEntity.ParentContext.SourceModel))

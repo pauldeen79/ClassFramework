@@ -24,11 +24,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection();
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -42,11 +42,11 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
             var sourceModel = typeof(MyNullableClass);
             var settings = CreateSettingsForReflection();
-
-            var response = new ClassBuilder(); var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var response = new ClassBuilder();
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

@@ -28,11 +28,11 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
                 .Build();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -51,18 +51,18 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
                 .Build();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
             response.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where T : class" });
         }
 
-        private static BuilderContext CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+        private static GenerateBuilderCommand CreateCommand(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

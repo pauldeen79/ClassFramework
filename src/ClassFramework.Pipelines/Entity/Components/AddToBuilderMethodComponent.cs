@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext, ClassBuilder>
+public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipelineComponent<GenerateEntityCommand, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateEntityCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         response = response.IsNotNull(nameof(response));
@@ -65,7 +65,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
             }).ConfigureAwait(false);
     }
 
-    private async Task<Result> AddExplicitInterfaceImplementations(EntityContext context, ClassBuilder response, string methodName, string typedMethodName, CancellationToken token)
+    private async Task<Result> AddExplicitInterfaceImplementations(GenerateEntityCommand context, ClassBuilder response, string methodName, string typedMethodName, CancellationToken token)
     {
         if (!context.Settings.UseBuilderAbstractionsTypeConversion)
         {
@@ -97,7 +97,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                 (
                     newFullName,
                     context.FormatProvider,
-                    new ParentChildContext<EntityContext, Property>(context, property, context.Settings),
+                    new ParentChildContext<GenerateEntityCommand, Property>(context, property, context.Settings),
                     token
                 ).ConfigureAwait(false)).Transform(y => new NameInfo(GetEntityName(context.Settings, sourceInterface, () => y.ToString()), y.ToString())));
             }

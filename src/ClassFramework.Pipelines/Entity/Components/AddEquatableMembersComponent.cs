@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext, ClassBuilder>
+public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPipelineComponent<GenerateEntityCommand, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateEntityCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         response = response.IsNotNull(nameof(response));

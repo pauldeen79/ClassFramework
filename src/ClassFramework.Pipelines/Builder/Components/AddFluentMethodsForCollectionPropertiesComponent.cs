@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext, ClassBuilder>
+public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<GenerateBuilderCommand, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(BuilderContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateBuilderCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         response = response.IsNotNull(nameof(response));
@@ -18,7 +18,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
             token).ConfigureAwait(false);
     }
 
-    private static void AddMethods(BuilderContext context, ClassBuilder response, Property property, string returnType, IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
+    private static void AddMethods(GenerateBuilderCommand context, ClassBuilder response, Property property, string returnType, IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
     {
         response.AddMethods(context.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.TypeName, "EnumerableOverload.", "ArrayOverload."));
 
@@ -29,9 +29,9 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
         }
     }
 
-    private async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsAsync(BuilderContext context, Property property, CancellationToken token)
+    private async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsAsync(GenerateBuilderCommand context, Property property, CancellationToken token)
     {
-        var parentChildContext = new ParentChildContext<BuilderContext, Property>(context, property, context.Settings);
+        var parentChildContext = new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings);
 
         return await context.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext, _evaluator)
             .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, false, token).ConfigureAwait(false))
@@ -42,7 +42,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
             .ConfigureAwait(false);
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(BuilderContext context, Property property, ParentChildContext<BuilderContext, Property> parentChildContext, bool useBuilderLazyValues, CancellationToken token)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(GenerateBuilderCommand context, Property property, ParentChildContext<GenerateBuilderCommand, Property> parentChildContext, bool useBuilderLazyValues, CancellationToken token)
     {
         if (context.Settings.BuilderNewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
@@ -64,7 +64,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
         return results;
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(BuilderContext context, Property property, bool useBuilderLazyValues, CancellationToken token)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(GenerateBuilderCommand context, Property property, bool useBuilderLazyValues, CancellationToken token)
     {
         var results = new List<Result<GenericFormattableString>>();
 
@@ -74,7 +74,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
             (
                 context.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{ArgumentNullCheck()}"),
                 context.FormatProvider,
-                new ParentChildContext<BuilderContext, Property>(context, property, context.Settings),
+                new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings),
                 token
             ).ConfigureAwait(false);
 
@@ -92,7 +92,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
                     ? context.Settings.NonLazyCollectionCopyStatementFormatString
                     : context.Settings.CollectionCopyStatementFormatString),
             context.FormatProvider,
-            new ParentChildContext<BuilderContext, Property>(context, property, context.Settings),
+            new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings),
             token
         ).ConfigureAwait(false);
 

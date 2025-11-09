@@ -24,11 +24,11 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var sut = CreateSut();
             var sourceModel = typeof(MyBaseClassTestClass);
             var settings = CreateSettingsForReflection();
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -42,11 +42,11 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection();
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder().WithBaseClass("Old value");
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -63,11 +63,11 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
                 useBaseClassFromSourceModel: false,
                 enableEntityInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped());
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -84,11 +84,11 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
                 useBaseClassFromSourceModel: false,
                 enableEntityInheritance: true,
                 baseClass: null);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -102,11 +102,11 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var sut = CreateSut();
             var sourceModel = typeof(MyBaseClassTestClass);
             var settings = CreateSettingsForReflection(useBaseClassFromSourceModel: false);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder().WithBaseClass("Old value");
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

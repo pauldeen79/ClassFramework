@@ -28,7 +28,7 @@ public class PropertyDefaultValueProperty : IProperty
             {
                 var defaultValue = results
                     .GetValue<Property>(Constants.Instance)
-                    .GetDefaultValue(_csharpExpressionDumper, results.GetValue<string>(ResultNames.TypeName), results.GetValue<MappedContextBase>(ResultNames.Context));
+                    .GetDefaultValue(_csharpExpressionDumper, results.GetValue<string>(ResultNames.TypeName), results.GetValue<MappedCommandBase>(ResultNames.Context));
 
                 if (defaultValue.Length >= 3 && defaultValue.StartsWith("$\"") && defaultValue.EndsWith("\""))
                 {

@@ -27,11 +27,11 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
             var settings = CreateSettingsForEntity(
                 baseClass: null,
                 enableEntityInheritance: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -50,11 +50,11 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
             var settings = CreateSettingsForEntity(
                 baseClass: new ClassBuilder().WithName("MyBaseClass").WithNamespace("MyBaseNamespace").BuildTyped(),
                 enableEntityInheritance: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -71,11 +71,11 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
             var settings = CreateSettingsForEntity(
                 baseClass: null,
                 enableEntityInheritance: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

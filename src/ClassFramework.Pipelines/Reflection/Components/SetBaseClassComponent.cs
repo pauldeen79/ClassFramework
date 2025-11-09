@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class SetBaseClassComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
+public class SetBaseClassComponent : IPipelineComponent<GenerateTypeFromReflectionCommand, TypeBaseBuilder>
 {
-    public Task<Result> ExecuteAsync(ReflectionContext context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));

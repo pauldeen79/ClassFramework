@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext, ClassBuilder>
+public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<GenerateEntityCommand, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateEntityCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         response = response.IsNotNull(nameof(response));
@@ -30,13 +30,13 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
             });
     }
 
-    private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(EntityContext context, CancellationToken token)
+    private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(GenerateEntityCommand context, CancellationToken token)
     {
         var initializationResults = new List<Result<GenericFormattableString>>();
 
         foreach (var property in context.GetSourceProperties())
         {
-            var result = await _evaluator.EvaluateInterpolatedStringAsync("this.{property.EntityMemberName} = {property.InitializationExpression};", context.FormatProvider, new ParentChildContext<EntityContext, Property>(context, property, context.Settings), token).ConfigureAwait(false);
+            var result = await _evaluator.EvaluateInterpolatedStringAsync("this.{property.EntityMemberName} = {property.InitializationExpression};", context.FormatProvider, new ParentChildContext<GenerateEntityCommand, Property>(context, property, context.Settings), token).ConfigureAwait(false);
 
             initializationResults.Add(result);
             if (!result.IsSuccessful())

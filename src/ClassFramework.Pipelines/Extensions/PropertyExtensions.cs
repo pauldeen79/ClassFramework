@@ -2,7 +2,7 @@
 
 public static class PropertyExtensions
 {
-    public static string GetDefaultValue(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, MappedContextBase context)
+    public static string GetDefaultValue(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, MappedCommandBase context)
     {
         csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
         context = context.IsNotNull(nameof(context));
@@ -98,7 +98,7 @@ public static class PropertyExtensions
 
     public static async Task<Result<GenericFormattableString>> GetBuilderConstructorInitializerAsync<TSourceModel>(
         this Property property,
-        ContextBase<TSourceModel> context,
+        CommandBase<TSourceModel> context,
         object parentChildContext,
         string mappedTypeName,
         string newCollectionTypeName,
@@ -144,7 +144,7 @@ public static class PropertyExtensions
 
     public static Task<Result<GenericFormattableString>> GetBuilderArgumentTypeNameAsync<TSourceModel>(
         this Property property,
-        ContextBase<TSourceModel> context,
+        CommandBase<TSourceModel> context,
         object parentChildContext,
         string mappedTypeName,
         IExpressionEvaluator evaluator,
@@ -153,7 +153,7 @@ public static class PropertyExtensions
 
     public static async Task<Result<GenericFormattableString>> GetBuilderArgumentTypeNameAsync<TSourceModel>(
         this Property property,
-        ContextBase<TSourceModel> context,
+        CommandBase<TSourceModel> context,
         object parentChildContext,
         string mappedTypeName,
         IExpressionEvaluator evaluator,
@@ -170,7 +170,7 @@ public static class PropertyExtensions
 
         if (!string.IsNullOrEmpty(ns))
         {
-            var builderName = metadata.GetStringValue(MetadataNames.CustomBuilderName, ContextBase.DefaultBuilderName);
+            var builderName = metadata.GetStringValue(MetadataNames.CustomBuilderName, CommandBase.DefaultBuilderName);
             var newFullName = $"{ns}.{builderName}";
             var useBuilderLazyValues = context.UseBuilderLazyValues(metadata);
             if (property.TypeName.FixTypeName().IsCollectionTypeName())
@@ -269,7 +269,7 @@ public static class PropertyExtensions
         }
     }
 
-    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeNameAsync(this Property property, BuilderContext context, IExpressionEvaluator evaluator, CancellationToken token)
+    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeNameAsync(this Property property, GenerateBuilderCommand context, IExpressionEvaluator evaluator, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
@@ -298,18 +298,18 @@ public static class PropertyExtensions
         (
             newFullName,
             context.FormatProvider,
-            new ParentChildContext<BuilderContext, Property>(context, property, context.Settings),
+            new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings),
             token
         ).ConfigureAwait(false);
     }
 
-    public static string GetSuffix<TSourceModel>(this Property source, bool enableNullableReferenceTypes, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<TSourceModel> context)
+    public static string GetSuffix<TSourceModel>(this Property source, bool enableNullableReferenceTypes, ICsharpExpressionDumper csharpExpressionDumper, CommandBase<TSourceModel> context)
         => CollectionIsValidForSuffix(source, enableNullableReferenceTypes)
         || NonCollectionIsValidForSuffix(source, csharpExpressionDumper, context)
             ? "?"
             : string.Empty;
 
-    private static bool NonCollectionIsValidForSuffix<TSourceModel>(Property source, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<TSourceModel> context)
+    private static bool NonCollectionIsValidForSuffix<TSourceModel>(Property source, ICsharpExpressionDumper csharpExpressionDumper, CommandBase<TSourceModel> context)
         => !source.TypeName.IsCollectionTypeName()
         && !source.IsValueType
         && source.GetDefaultValue(csharpExpressionDumper, source.TypeName.FixTypeName(), context).StartsWith("default(");

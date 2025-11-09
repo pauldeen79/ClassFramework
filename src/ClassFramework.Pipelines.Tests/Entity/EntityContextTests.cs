@@ -8,7 +8,7 @@ public class EntityContextTests : TestBase
         public void Throws_On_Null_SourceModel()
         {
             // Act & Assert
-            Action a = () => _ = new EntityContext(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, CancellationToken.None);
+            Action a = () => _ = new GenerateEntityCommand(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, CancellationToken.None);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("sourceModel");
         }
 
@@ -16,7 +16,7 @@ public class EntityContextTests : TestBase
         public void Throws_On_Null_Settings()
         {
             // Act & Assert
-            Action a = () => _ = new EntityContext(sourceModel: CreateClass(), settings: null!, CultureInfo.InvariantCulture, CancellationToken.None);
+            Action a = () => _ = new GenerateEntityCommand(sourceModel: CreateClass(), settings: null!, CultureInfo.InvariantCulture, CancellationToken.None);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("settings");
         }
 
@@ -24,7 +24,7 @@ public class EntityContextTests : TestBase
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            Action a = () => _ = new EntityContext(sourceModel: CreateClass(), new PipelineSettingsBuilder(), formatProvider: null!, CancellationToken.None);
+            Action a = () => _ = new GenerateEntityCommand(sourceModel: CreateClass(), new PipelineSettingsBuilder(), formatProvider: null!, CancellationToken.None);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("formatProvider");
         }
     }
@@ -36,7 +36,7 @@ public class EntityContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false);
-            var sut = new EntityContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var sut = new GenerateEntityCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act & Assert
             Action a = () => sut.MapTypeName(typeName: null!);
@@ -52,7 +52,7 @@ public class EntityContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false);
-            var sut = new EntityContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var sut = new GenerateEntityCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act & Assert
             Action a = () => sut.MapAttribute(attribute: null!);

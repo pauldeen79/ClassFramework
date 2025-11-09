@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class PartialComponent : IPipelineComponent<BuilderExtensionContext, ClassBuilder>
+public class PartialComponent : IPipelineComponent<GenerateBuilderExtensionCommand, ClassBuilder>
 {
-    public Task<Result> ExecuteAsync(BuilderExtensionContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateBuilderExtensionCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));

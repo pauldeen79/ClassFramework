@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.CommandDecorators;
 
-public class ValidateCommandDecorator : ICommandDecorator
+public class ClassFrameworkCommandDecorator : ICommandDecorator
 {
     private readonly ICommandDecorator _decoratee;
 
-    public ValidateCommandDecorator(ICommandDecorator decoratee)
+    public ClassFrameworkCommandDecorator(ICommandDecorator decoratee)
     {
         ArgumentGuard.IsNotNull(decoratee, nameof(decoratee));
 
@@ -16,7 +16,7 @@ public class ValidateCommandDecorator : ICommandDecorator
 
     public async Task<Result<TResponse>> ExecuteAsync<TCommand, TResponse>(ICommandHandler<TCommand, TResponse> handler, TCommand command, ICommandService commandService, CancellationToken token)
     {
-        if (command is ContextBase context
+        if (command is CommandBase context
             && !context.Settings.AllowGenerationWithoutProperties
             && !context.Settings.EnableInheritance
             && context.SourceModelHasNoProperties())

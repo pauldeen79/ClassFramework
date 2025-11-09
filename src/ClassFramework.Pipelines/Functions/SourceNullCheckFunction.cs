@@ -11,11 +11,11 @@ public class SourceNullCheckFunction : IFunction<string>
 
         return (await new AsyncResultDictionaryBuilder()
             .Add(ResultNames.Settings, () => context.GetSettingsAsync())
-            .Add(ResultNames.Context, () => context.Context.State.TryCastValueAsync<ContextBase>(ResultNames.Context))
+            .Add(ResultNames.Context, () => context.Context.State.TryCastValueAsync<CommandBase>(ResultNames.Context))
             .BuildAsync()
             .ConfigureAwait(false))
             .OnSuccess(results => results.GetValue<PipelineSettings>(ResultNames.Settings).AddNullChecks
-                ? results.GetValue<ContextBase>(ResultNames.Context).CreateArgumentNullException("source")
+                ? results.GetValue<CommandBase>(ResultNames.Context).CreateArgumentNullException("source")
                 : string.Empty);
     }
 }

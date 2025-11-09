@@ -1,7 +1,6 @@
-﻿
-namespace ClassFramework.Pipelines;
+﻿namespace ClassFramework.Pipelines;
 
-public abstract class ContextBase(PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken)
+public abstract class CommandBase(PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken)
 {
     public PipelineSettings Settings { get; } = settings.IsNotNull(nameof(settings));
     public IFormatProvider FormatProvider { get; } = formatProvider.IsNotNull(nameof(formatProvider));
@@ -103,7 +102,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
     public abstract bool SourceModelHasNoProperties();
 
     public abstract Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token)
-        where TContext : ContextBase;
+        where TContext : CommandBase;
 
     protected TypenameMapping[] GetTypenameMappings(string typeName)
     {
@@ -146,7 +145,7 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
     }
 }
 
-public abstract class MappedContextBase(PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase(settings, formatProvider, cancellationToken)
+public abstract class MappedCommandBase(PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : CommandBase(settings, formatProvider, cancellationToken)
 {
     protected abstract string NewCollectionTypeName { get; }
 
@@ -161,7 +160,7 @@ public abstract class MappedContextBase(PipelineSettings settings, IFormatProvid
     }
 }
 
-public abstract class ContextBase<TSourceModel>(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : MappedContextBase(settings, formatProvider, cancellationToken)
+public abstract class CommandBase<TSourceModel>(TSourceModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : MappedCommandBase(settings, formatProvider, cancellationToken)
 {
     public TSourceModel SourceModel { get; } = sourceModel.IsNotNull(nameof(sourceModel));
 

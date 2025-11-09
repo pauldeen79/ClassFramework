@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Builder;
+﻿namespace ClassFramework.Pipelines.Builder.Commands;
 
-public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
+public class GenerateBuilderCommand(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : CommandBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
 {
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
@@ -101,7 +101,7 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
                 (
                     newFullName,
                     FormatProvider,
-                    new ParentChildContext<BuilderContext, Property>(this, property, Settings),
+                    new ParentChildContext<GenerateBuilderCommand, Property>(this, property, Settings),
                     token
                 ).ConfigureAwait(false)).Transform(y => namespaceTransformation(@interface, y));
 
@@ -243,7 +243,7 @@ public class BuilderContext(TypeBase sourceModel, PipelineSettings settings, IFo
                     (
                         GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, PlaceholderNames.NamePlaceholder),
                         FormatProvider,
-                        new ParentChildContext<BuilderContext, Property>(this, property, this.Settings),
+                        new ParentChildContext<GenerateBuilderCommand, Property>(this, property, this.Settings),
                         token
                     ).ConfigureAwait(false),
                     GetMappingMetadata

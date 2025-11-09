@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.BuilderExtension;
+﻿namespace ClassFramework.Pipelines.BuilderExtension.Commands;
 
-public class BuilderExtensionContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
+public class GenerateBuilderExtensionCommand(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : CommandBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
 {
     private const string Instance = "instance";
 

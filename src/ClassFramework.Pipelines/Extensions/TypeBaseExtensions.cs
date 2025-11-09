@@ -56,7 +56,7 @@ public static class TypeBaseExtensions
 
     public static IEnumerable<Property> GetBuilderConstructorProperties(
         this IType instance,
-        BuilderContext context)
+        GenerateBuilderCommand context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -95,7 +95,7 @@ public static class TypeBaseExtensions
 
     public static async Task<IEnumerable<Result<FieldBuilder>>> GetBuilderClassFieldsAsync(
         this IType instance,
-        BuilderContext context,
+        GenerateBuilderCommand context,
         IExpressionEvaluator evaluator,
         CancellationToken token)
     {
@@ -113,7 +113,7 @@ public static class TypeBaseExtensions
             instance.IsMemberValidForBuilderClass(x, context.Settings)
             && x.HasBackingFieldOnBuilder(context.Settings)))
         {
-            var builderArgumentTypeResult = await property.GetBuilderArgumentTypeNameAsync(context, new ParentChildContext<BuilderContext, Property>(context, property, context.Settings), context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token).ConfigureAwait(false);
+            var builderArgumentTypeResult = await property.GetBuilderArgumentTypeNameAsync(context, new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings), context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token).ConfigureAwait(false);
             if (!builderArgumentTypeResult.IsSuccessful())
             {
                 results.Add(Result.FromExistingResult<FieldBuilder>(builderArgumentTypeResult));

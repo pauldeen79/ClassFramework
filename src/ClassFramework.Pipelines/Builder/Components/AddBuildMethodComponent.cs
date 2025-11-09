@@ -1,11 +1,11 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext, ClassBuilder>
+public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<GenerateBuilderCommand, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
     private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
-    public async Task<Result> ExecuteAsync(BuilderContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateBuilderCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         response = response.IsNotNull(nameof(response));
@@ -72,7 +72,7 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
         return await AddExplicitInterfaceImplementations(context, response, token).ConfigureAwait(false);
     }
 
-    private async Task<Result> AddExplicitInterfaceImplementations(BuilderContext context, ClassBuilder response, CancellationToken token)
+    private async Task<Result> AddExplicitInterfaceImplementations(GenerateBuilderCommand context, ClassBuilder response, CancellationToken token)
     {
         if (!context.Settings.UseBuilderAbstractionsTypeConversion)
         {
@@ -111,12 +111,12 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
         return Result.Success();
     }
 
-    private static string GetName(BuilderContext context)
+    private static string GetName(GenerateBuilderCommand context)
         => context.IsBuilderForAbstractEntity || context.IsBuilderForOverrideEntity
             ? context.Settings.BuildTypedMethodName
             : context.Settings.BuildMethodName;
 
-    private static string GetBuilderBuildMethodReturnType(BuilderContext context, string returnType)
+    private static string GetBuilderBuildMethodReturnType(GenerateBuilderCommand context, string returnType)
         => context.IsBuilderForAbstractEntity
             ? "TEntity"
             : returnType;

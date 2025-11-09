@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext, ClassBuilder>
+public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<GenerateBuilderCommand, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(BuilderContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateBuilderCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         response = response.IsNotNull(nameof(response));
@@ -55,7 +55,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
                     });
     }
 
-    private static string GetGenericArgumentsForInheritance(BuilderContext context)
+    private static string GetGenericArgumentsForInheritance(GenerateBuilderCommand context)
     {
         if (context.Settings.IsForAbstractBuilder)
         {
@@ -69,7 +69,7 @@ public class AddImplicitOperatorComponent(IExpressionEvaluator evaluator) : IPip
             : "<TBuilder, TEntity>";
     }
 
-    private static string GetName(BuilderContext context)
+    private static string GetName(GenerateBuilderCommand context)
         => context.IsBuilderForAbstractEntity || context.IsBuilderForOverrideEntity
             ? context.Settings.BuildTypedMethodName
             : context.Settings.BuildMethodName;

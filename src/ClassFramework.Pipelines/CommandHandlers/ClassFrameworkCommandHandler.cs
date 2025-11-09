@@ -1,7 +1,7 @@
 ﻿namespace ClassFramework.Pipelines.CommandHandlers;
 
-public class ContextCommandHandler<TContext, TEntity> : ICommandHandler<TContext, TEntity>
-    where TContext : ContextBase
+public class ClassFrameworkCommandHandler<TContext, TEntity> : ICommandHandler<TContext, TEntity>
+    where TContext : CommandBase
     where TEntity : TypeBase
 {
     public async Task<Result<TEntity>> ExecuteAsync(TContext command, ICommandService commandService, CancellationToken token)

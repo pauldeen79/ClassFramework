@@ -4,7 +4,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
 {
     public class ExecuteAsync : PipelineTests
     {
-        private static EntityContext CreateContext(bool addProperties = true) => new(
+        private static GenerateEntityCommand CreateCommand(bool addProperties = true) => new(
             CreateGenericClass(addProperties),
             CreateSettingsForEntity
             (
@@ -19,10 +19,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -35,10 +35,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -52,10 +52,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(addProperties: false);
+            var command = CreateCommand(addProperties: false);
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -77,12 +77,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                 enableNullableReferenceTypes: true,
                 newCollectionTypeName: typeof(IReadOnlyCollection<>).WithoutGenerics(),
                 collectionTypeName: typeof(ReadOnlyValueCollection<>).WithoutGenerics());
-            var context = CreateContext(model, settings);
+            var command = CreateCommand(model, settings);
 
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -178,12 +178,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                 collectionTypeName: typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
                 usePatternMatchingForNullChecks: false
                 );
-            var context = CreateContext(model, settings);
+            var command = CreateCommand(model, settings);
 
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -234,12 +234,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                 addFullConstructor: false,
                 newCollectionTypeName: typeof(ObservableCollection<>).WithoutGenerics(),
                 collectionTypeName: typeof(ObservableValueCollection<>).WithoutGenerics());
-            var context = CreateContext(model, settings);
+            var command = CreateCommand(model, settings);
 
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -412,12 +412,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var settings = CreateSettingsForEntity(
                 addNullChecks: true,
                 validateArguments: ArgumentValidationType.CustomValidationCode);
-            var context = CreateContext(model, settings);
+            var command = CreateCommand(model, settings);
 
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -432,12 +432,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             // Arrange
             var model = CreateClassWithCustomTypeProperties();
             var settings = CreateSettingsForEntity(implementIEquatable: true);
-            var context = CreateContext(model, settings);
+            var command = CreateCommand(model, settings);
 
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<EntityContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -456,7 +456,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                 });
         }
 
-        private static EntityContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
+        private static GenerateEntityCommand CreateCommand(TypeBase model, PipelineSettingsBuilder settings)
             => new(model, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddPropertiesComponent : IPipelineComponent<EntityContext, ClassBuilder>
+public class AddPropertiesComponent : IPipelineComponent<GenerateEntityCommand, ClassBuilder>
 {
-    public Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateEntityCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
@@ -38,7 +38,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext, ClassBui
             return Result.Success();
         }, token);
 
-    private static void AddBackingFields(EntityContext context, ClassBuilder response, Property[] properties)
+    private static void AddBackingFields(GenerateEntityCommand context, ClassBuilder response, Property[] properties)
         => response.AddFields
         (
             properties
@@ -57,7 +57,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext, ClassBui
                 )
         );
 
-    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, EntityContext context)
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, GenerateEntityCommand context)
     {
         if (context.Settings.AddBackingFields || context.Settings.CreateAsObservable)
         {
@@ -65,7 +65,7 @@ public class AddPropertiesComponent : IPipelineComponent<EntityContext, ClassBui
         }
     }
 
-    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(Property property, EntityContext context)
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(Property property, GenerateEntityCommand context)
     {
         if (context.Settings.AddBackingFields || context.Settings.CreateAsObservable)
         {

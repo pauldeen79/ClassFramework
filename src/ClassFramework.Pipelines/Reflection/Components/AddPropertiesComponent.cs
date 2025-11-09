@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class AddPropertiesComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
+public class AddPropertiesComponent : IPipelineComponent<GenerateTypeFromReflectionCommand, TypeBaseBuilder>
 {
-    public Task<Result> ExecuteAsync(ReflectionContext context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
@@ -13,7 +13,7 @@ public class AddPropertiesComponent : IPipelineComponent<ReflectionContext, Type
             return Result.Success();
         }, token);
 
-    private static IEnumerable<PropertyBuilder> GetProperties(ReflectionContext context)
+    private static IEnumerable<PropertyBuilder> GetProperties(GenerateTypeFromReflectionCommand context)
         => context.SourceModel.GetPropertiesRecursively().Select
         (
             property => new PropertyBuilder()

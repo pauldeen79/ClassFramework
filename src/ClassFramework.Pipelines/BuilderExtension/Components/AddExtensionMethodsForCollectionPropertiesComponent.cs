@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.BuilderExtension.Components;
 
-public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderExtensionContext, ClassBuilder>
+public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineComponent<GenerateBuilderExtensionCommand, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(BuilderExtensionContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateBuilderExtensionCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         response = response.IsNotNull(nameof(response));
@@ -18,7 +18,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
             token).ConfigureAwait(false);
     }
 
-    private static void AddMethods(BuilderExtensionContext context, ClassBuilder response, Property property, string returnType, IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
+    private static void AddMethods(GenerateBuilderExtensionCommand context, ClassBuilder response, Property property, string returnType, IReadOnlyDictionary<string, Result<GenericFormattableString>> results)
     {
         response.AddMethods(context.GetFluentMethodsForCollectionProperty(property, results, returnType, ResultNames.TypeName, "EnumerableOverload.", "ArrayOverload."));
 
@@ -29,9 +29,9 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
         }
     }
 
-    private async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsAsync(BuilderExtensionContext context, Property property, CancellationToken token)
+    private async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsAsync(GenerateBuilderExtensionCommand context, Property property, CancellationToken token)
     {
-        var parentChildContext = new ParentChildContext<BuilderExtensionContext, Property>(context, property, context.Settings);
+        var parentChildContext = new ParentChildContext<GenerateBuilderExtensionCommand, Property>(context, property, context.Settings);
 
         return await context.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext, _evaluator)
             .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, token).ConfigureAwait(false))
@@ -41,7 +41,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
             .ConfigureAwait(false);
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(BuilderExtensionContext context, Property property, ParentChildContext<BuilderExtensionContext, Property> parentChildContext, CancellationToken token)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(GenerateBuilderExtensionCommand context, Property property, ParentChildContext<GenerateBuilderExtensionCommand, Property> parentChildContext, CancellationToken token)
     {
         var results = new List<Result<GenericFormattableString>>();
 
@@ -55,7 +55,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
         return results;
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(BuilderExtensionContext context, Property property, bool useBuilderLazyValues, CancellationToken token)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(GenerateBuilderExtensionCommand context, Property property, bool useBuilderLazyValues, CancellationToken token)
     {
         var results = new List<Result<GenericFormattableString>>();
 
@@ -65,7 +65,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
             (
                 context.GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{ArgumentNullCheck()}"),
                 context.FormatProvider,
-                new ParentChildContext<BuilderExtensionContext, Property>(context, property, context.Settings),
+                new ParentChildContext<GenerateBuilderExtensionCommand, Property>(context, property, context.Settings),
                 token
             ).ConfigureAwait(false);
 
@@ -80,7 +80,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
                     ? context.Settings.NonLazyBuilderExtensionsCollectionCopyStatementFormatString
                     : context.Settings.BuilderExtensionsCollectionCopyStatementFormatString),
             context.FormatProvider,
-            new ParentChildContext<BuilderExtensionContext, Property>(context, property, context.Settings),
+            new ParentChildContext<GenerateBuilderExtensionCommand, Property>(context, property, context.Settings),
             token
         ).ConfigureAwait(false);
 

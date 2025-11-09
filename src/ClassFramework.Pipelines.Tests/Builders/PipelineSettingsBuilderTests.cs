@@ -12,7 +12,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder();
 
             // Act
-            var result = new TestContext(sut).InitializeDelegate(typeof(StringLengthClass).GetProperty(nameof(StringLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestCommand(sut).InitializeDelegate(typeof(StringLengthClass).GetProperty(nameof(StringLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.ShouldBe(typeof(StringLengthAttribute).FullName);
@@ -27,7 +27,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder();
 
             // Act
-            var result = new TestContext(sut).InitializeDelegate(typeof(RangeClass).GetProperty(nameof(RangeClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestCommand(sut).InitializeDelegate(typeof(RangeClass).GetProperty(nameof(RangeClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.ShouldBe(typeof(RangeAttribute).FullName);
@@ -42,7 +42,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder();
 
             // Act
-            var result = new TestContext(sut).InitializeDelegate(typeof(MinLengthClass).GetProperty(nameof(MinLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestCommand(sut).InitializeDelegate(typeof(MinLengthClass).GetProperty(nameof(MinLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.ShouldBe(typeof(MinLengthAttribute).FullName);
@@ -57,7 +57,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder();
 
             // Act
-            var result = new TestContext(sut).InitializeDelegate(typeof(MaxLengthClass).GetProperty(nameof(MaxLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestCommand(sut).InitializeDelegate(typeof(MaxLengthClass).GetProperty(nameof(MaxLengthClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.ShouldBe(typeof(MaxLengthAttribute).FullName);
@@ -72,7 +72,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder();
 
             // Act
-            var result = new TestContext(sut).InitializeDelegate(typeof(MinCountClass).GetProperty(nameof(MinCountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestCommand(sut).InitializeDelegate(typeof(MinCountClass).GetProperty(nameof(MinCountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.ShouldBe(typeof(MinCountAttribute).FullName);
@@ -87,7 +87,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder();
 
             // Act
-            var result = new TestContext(sut).InitializeDelegate(typeof(MaxCountClass).GetProperty(nameof(MaxCountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestCommand(sut).InitializeDelegate(typeof(MaxCountClass).GetProperty(nameof(MaxCountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.ShouldBe(typeof(MaxCountAttribute).FullName);
@@ -102,7 +102,7 @@ public class PipelineSettingsBuilderTests
             var sut = new PipelineSettingsBuilder();
 
             // Act
-            var result = new TestContext(sut).InitializeDelegate(typeof(CountClass).GetProperty(nameof(CountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
+            var result = new TestCommand(sut).InitializeDelegate(typeof(CountClass).GetProperty(nameof(CountClass.Property))!.GetCustomAttributes(false).OfType<System.Attribute>().First());
 
             // Assert
             result.Name.ShouldBe(typeof(CountAttribute).FullName);
@@ -168,7 +168,7 @@ public class PipelineSettingsBuilderTests
             public List<int> Property { get; set; } = default!;
         }
 
-        private sealed class TestContext(PipelineSettings settings) : ContextBase<string>(string.Empty, settings, CultureInfo.CurrentCulture, CancellationToken.None)
+        private sealed class TestCommand(PipelineSettings settings) : CommandBase<string>(string.Empty, settings, CultureInfo.CurrentCulture, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
 

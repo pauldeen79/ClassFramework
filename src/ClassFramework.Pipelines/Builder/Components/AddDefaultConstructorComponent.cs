@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<BuilderContext, ClassBuilder>
+public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<GenerateBuilderCommand, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(BuilderContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateBuilderCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         response = response.IsNotNull(nameof(response));
@@ -29,7 +29,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         return Result.Success();
     }
 
-    private async Task<Result<ConstructorBuilder>> CreateDefaultConstructorAsync(BuilderContext context, ClassBuilder response, CancellationToken token)
+    private async Task<Result<ConstructorBuilder>> CreateDefaultConstructorAsync(GenerateBuilderCommand context, ClassBuilder response, CancellationToken token)
     {
         var constructorInitializerResults = await GetConstructorInitializerResultsAsync(context).ConfigureAwait(false);
 
@@ -76,7 +76,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         return Result.Success(ctor);
     }
 
-    private async Task<List<Result<GenericFormattableString>>> GetDefaultValueResultsAsync(BuilderContext context, CancellationToken token)
+    private async Task<List<Result<GenericFormattableString>>> GetDefaultValueResultsAsync(GenerateBuilderCommand context, CancellationToken token)
     {
         var defaultValueResults = new List<Result<GenericFormattableString>>();
 
@@ -97,7 +97,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         return defaultValueResults;
     }
 
-    private async Task<List<ConstructorInitializerItem>> GetConstructorInitializerResultsAsync(BuilderContext context)
+    private async Task<List<ConstructorInitializerItem>> GetConstructorInitializerResultsAsync(GenerateBuilderCommand context)
     {
         var constructorInitializerResults = new List<ConstructorInitializerItem>();
 
@@ -107,7 +107,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
             var name = property.GetBuilderMemberName(context.Settings, context.FormatProvider.ToCultureInfo());
             var result = await property.GetBuilderConstructorInitializerAsync(
                 context,
-                new ParentChildContext<BuilderContext, Property>(context, property, context.Settings),
+                new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings),
                 context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName),
                 context.Settings.BuilderNewCollectionTypeName,
                 string.Empty,
@@ -128,16 +128,16 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         => (await instance.GetCustomValueForInheritedClassAsync(settings.EnableInheritance, _ => Task.FromResult(Result.Success<GenericFormattableString>("base()")))
             .ConfigureAwait(false)).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
-    private Task<Result<GenericFormattableString>> GenerateDefaultValueStatementAsync(Property property, BuilderContext context, CancellationToken token)
+    private Task<Result<GenericFormattableString>> GenerateDefaultValueStatementAsync(Property property, GenerateBuilderCommand context, CancellationToken token)
         => _evaluator.EvaluateInterpolatedStringAsync
         (
             "{property.BuilderMemberName} = {property.DefaultValue};",
             context.FormatProvider,
-            new ParentChildContext<BuilderContext, Property>(context, property, context.Settings),
+            new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings),
             token
         );
 
-    private static ConstructorBuilder CreateInheritanceDefaultConstructor(BuilderContext context)
+    private static ConstructorBuilder CreateInheritanceDefaultConstructor(GenerateBuilderCommand context)
         => new ConstructorBuilder()
             .WithChainCall("base()")
             .WithProtected(context.IsBuilderForAbstractEntity);

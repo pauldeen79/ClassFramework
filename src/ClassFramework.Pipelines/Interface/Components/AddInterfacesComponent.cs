@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class AddInterfacesComponent : IPipelineComponent<InterfaceContext, InterfaceBuilder>
+public class AddInterfacesComponent : IPipelineComponent<GenerateInterfaceCommand, InterfaceBuilder>
 {
-    public Task<Result> ExecuteAsync(InterfaceContext context, InterfaceBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateInterfaceCommand context, InterfaceBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));

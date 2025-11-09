@@ -1,8 +1,8 @@
-﻿namespace ClassFramework.Pipelines.Reflection;
+﻿namespace ClassFramework.Pipelines.Reflection.Commands;
 
-public class ReflectionContext : ContextBase<Type>
+public class GenerateTypeFromReflectionCommand : CommandBase<Type>
 {
-    public ReflectionContext(Type sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken)
+    public GenerateTypeFromReflectionCommand(Type sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken)
         : base(sourceModel, settings, formatProvider, cancellationToken)
     {
     }

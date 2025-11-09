@@ -11,12 +11,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sourceModel = typeof(MyClass);
             var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true, copyInterfaces: true);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<ReflectionContext, TypeBaseBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateTypeFromReflectionCommand, TypeBaseBuilder>(command, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -40,12 +40,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sourceModel = typeof(IMyInterface);
             var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<ReflectionContext, TypeBaseBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateTypeFromReflectionCommand, TypeBaseBuilder>(command, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -67,12 +67,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sourceModel = typeof(IMyInternalInterface);
             var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<ReflectionContext, TypeBaseBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateTypeFromReflectionCommand, TypeBaseBuilder>(command, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -93,11 +93,11 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             // Arrange
             var sourceModel = GetType(); // this unit test class does not have properties
             var settings = CreateSettingsForReflection();
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<ReflectionContext, TypeBaseBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateTypeFromReflectionCommand, TypeBaseBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

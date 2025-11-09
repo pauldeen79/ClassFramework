@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Entity;
+﻿namespace ClassFramework.Pipelines.Entity.Commands;
 
-public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
+public class GenerateEntityCommand(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : CommandBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
 {
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));

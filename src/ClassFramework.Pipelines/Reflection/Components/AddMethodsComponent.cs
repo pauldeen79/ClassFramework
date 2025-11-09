@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class AddMethodsComponent : IPipelineComponent<ReflectionContext, TypeBaseBuilder>
+public class AddMethodsComponent : IPipelineComponent<GenerateTypeFromReflectionCommand, TypeBaseBuilder>
 {
-    public Task<Result> ExecuteAsync(ReflectionContext context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand context, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
             context = context.IsNotNull(nameof(context));
@@ -13,7 +13,7 @@ public class AddMethodsComponent : IPipelineComponent<ReflectionContext, TypeBas
             return Result.Success();
         }, token);
 
-    private static IEnumerable<MethodBuilder> GetMethods(ReflectionContext context)
+    private static IEnumerable<MethodBuilder> GetMethods(GenerateTypeFromReflectionCommand context)
         => context.SourceModel.GetMethodsRecursively()
             .Where(methodInfo =>
                 methodInfo.Name != "<Clone>$"

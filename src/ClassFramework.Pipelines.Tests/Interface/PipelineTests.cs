@@ -4,7 +4,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
 {
     public class ExecuteAsync : PipelineTests
     {
-        private static InterfaceContext CreateContext(bool addProperties = true, bool copyMethods = true, CopyMethodPredicate? copyMethodPredicate = null) => new(
+        private static GenerateInterfaceCommand CreateCommand(bool addProperties = true, bool copyMethods = true, CopyMethodPredicate? copyMethodPredicate = null) => new(
             CreateInterface(addProperties),
             CreateSettingsForInterface
             (
@@ -21,10 +21,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -38,10 +38,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -56,10 +56,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -72,10 +72,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(copyMethodPredicate: (_, _) => true);
+            var command = CreateCommand(copyMethodPredicate: (_, _) => true);
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -88,10 +88,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(copyMethodPredicate: (_, _) => false);
+            var command = CreateCommand(copyMethodPredicate: (_, _) => false);
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -104,10 +104,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(copyMethods: false);
+            var command = CreateCommand(copyMethods: false);
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -120,10 +120,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(addProperties: false);
+            var command = CreateCommand(addProperties: false);
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -141,12 +141,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var namespaceMappings = CreateNamespaceMappings();
             var settings = CreateSettingsForInterface(
                 namespaceMappings: namespaceMappings);
-            var context = CreateContext(model, settings);
+            var command = CreateContext(model, settings);
 
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<InterfaceContext, InterfaceBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -207,7 +207,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             result.Value.Properties.SelectMany(x => x.SetterCodeStatements).ShouldBeEmpty();
         }
 
-        private static InterfaceContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
+        private static GenerateInterfaceCommand CreateContext(TypeBase model, PipelineSettingsBuilder settings)
             => new(model, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

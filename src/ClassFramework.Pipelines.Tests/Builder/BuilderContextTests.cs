@@ -8,7 +8,7 @@ public class BuilderContextTests : TestBase
         public void Throws_On_Null_SourceModel()
         {
             // Act & Assert
-            Action a = () => _ = new BuilderContext(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, CancellationToken.None);
+            Action a = () => _ = new GenerateBuilderCommand(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture, CancellationToken.None);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("sourceModel");
         }
 
@@ -16,7 +16,7 @@ public class BuilderContextTests : TestBase
         public void Throws_On_Null_Settings()
         {
             // Act & Assert
-            Action a = () => _ = new BuilderContext(sourceModel: CreateClass(), settings: null!, CultureInfo.InvariantCulture, CancellationToken.None);
+            Action a = () => _ = new GenerateBuilderCommand(sourceModel: CreateClass(), settings: null!, CultureInfo.InvariantCulture, CancellationToken.None);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("settings");
         }
 
@@ -24,7 +24,7 @@ public class BuilderContextTests : TestBase
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            Action a = () => _ = new BuilderContext(sourceModel: CreateClass(), new PipelineSettingsBuilder(), formatProvider: null!, CancellationToken.None);
+            Action a = () => _ = new GenerateBuilderCommand(sourceModel: CreateClass(), new PipelineSettingsBuilder(), formatProvider: null!, CancellationToken.None);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("formatProvider");
         }
     }
@@ -36,7 +36,7 @@ public class BuilderContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false);
-            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var sut = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
             var result = sut.CreatePragmaWarningDisableStatementsForBuildMethod();
@@ -50,7 +50,7 @@ public class BuilderContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: true);
-            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var sut = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
             var result = sut.CreatePragmaWarningDisableStatementsForBuildMethod();
@@ -74,7 +74,7 @@ public class BuilderContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false);
-            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var sut = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
             var result = sut.CreatePragmaWarningRestoreStatementsForBuildMethod();
@@ -88,7 +88,7 @@ public class BuilderContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: true);
-            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var sut = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act
             var result = sut.CreatePragmaWarningRestoreStatementsForBuildMethod();
@@ -112,7 +112,7 @@ public class BuilderContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false);
-            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var sut = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act & Assert
             Action a = () => sut.MapTypeName(typeName: null!);
@@ -128,7 +128,7 @@ public class BuilderContextTests : TestBase
         {
             // Arrange
             var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false);
-            var sut = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var sut = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
 
             // Act & Assert
             Action a = () => sut.MapAttribute(attribute: null!);

@@ -4,7 +4,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
 {
     public class ExecuteAsync : PipelineTests
     {
-        private static BuilderContext CreateContext(bool addProperties = true, bool createAsObservable = false, bool useBuilderLazyValues = false)
+        private static GenerateBuilderCommand CreateCommand(bool addProperties = true, bool createAsObservable = false, bool useBuilderLazyValues = false)
             => new(
                 CreateGenericClass(addProperties),
                 CreateSettingsForBuilder
@@ -24,10 +24,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -40,10 +40,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -57,10 +57,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -75,10 +75,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(useBuilderLazyValues: true);
+            var command = CreateCommand(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -93,10 +93,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -119,10 +119,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(useBuilderLazyValues: true);
+            var command = CreateCommand(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -145,10 +145,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -161,10 +161,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -177,10 +177,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -193,10 +193,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -214,10 +214,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(useBuilderLazyValues: true);
+            var command = CreateCommand(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -235,10 +235,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -257,10 +257,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(useBuilderLazyValues: true);
+            var command = CreateCommand(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -301,10 +301,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -330,10 +330,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(useBuilderLazyValues: true);
+            var command = CreateCommand(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -362,10 +362,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(createAsObservable: true);
+            var command = CreateCommand(createAsObservable: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -379,10 +379,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(addProperties: false);
+            var command = CreateCommand(addProperties: false);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -400,12 +400,12 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var namespaceMappings = CreateNamespaceMappings();
             var typenameMappings = CreateTypenameMappings();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true, typenameMappings: typenameMappings, namespaceMappings: namespaceMappings, addNullChecks: true, enableNullableReferenceTypes: true);
-            var context = CreateContext(model, settings);
+            var command = CreateContext(model, settings);
 
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -505,7 +505,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             );
         }
 
-        private static BuilderContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
+        private static GenerateBuilderCommand CreateContext(TypeBase model, PipelineSettingsBuilder settings)
             => new(model, settings, CultureInfo.InvariantCulture, CancellationToken.None);
     }
 }

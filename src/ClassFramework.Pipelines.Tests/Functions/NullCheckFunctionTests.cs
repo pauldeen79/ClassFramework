@@ -16,9 +16,9 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
                 .Build();
             var settings = new PipelineSettingsBuilder().Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var context = new TestContext(settings, formatProvider); var evaluator = Fixture.Freeze<IExpressionEvaluator>();
+            var command = new TestCommand(settings, formatProvider); var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(command)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
@@ -93,7 +93,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
-        private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
+        private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
             public override Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token) => throw new NotImplementedException();

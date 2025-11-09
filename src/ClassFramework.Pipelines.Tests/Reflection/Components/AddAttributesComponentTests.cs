@@ -25,11 +25,11 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sourceModel = GetType();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(copyAttributePredicate: _ => true, copyAttributes: true);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -43,11 +43,11 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sourceModel = GetType();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(copyAttributePredicate: null, copyAttributes: true);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -61,11 +61,11 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sourceModel = GetType();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(copyAttributes: false);
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
             var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, response, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

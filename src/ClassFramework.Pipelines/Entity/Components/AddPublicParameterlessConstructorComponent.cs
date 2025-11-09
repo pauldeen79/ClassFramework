@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext, ClassBuilder>
+public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator evaluator) : IPipelineComponent<GenerateEntityCommand, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(EntityContext context, ClassBuilder response, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateEntityCommand context, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
         context = context.IsNotNull(nameof(context));
         response = response.IsNotNull(nameof(response));
@@ -19,7 +19,7 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
             .OnSuccess(ctorResult => response.AddConstructors(ctorResult.Value!));
     }
 
-    private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(EntityContext context, CancellationToken token)
+    private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(GenerateEntityCommand context, CancellationToken token)
     {
         var initializationStatements = new List<Result<string>>();
 
@@ -43,14 +43,14 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
             .AddCodeStatements(initializationStatements.Select(x => x.Value!)));
     }
 
-    private async Task<Result<string>> GenerateDefaultValueStatement(Property property, EntityContext context, CancellationToken token)
+    private async Task<Result<string>> GenerateDefaultValueStatement(Property property, GenerateEntityCommand context, CancellationToken token)
         => (await _evaluator.EvaluateInterpolatedStringAsync
         (
             property.TypeName.FixTypeName().IsCollectionTypeName()
                 ? "{property.EntityMemberName} = new {collectionTypeName}<{GenericArguments(property.TypeName)}>();"
                 : "{property.EntityMemberName} = {property.DefaultValue};",
             context.FormatProvider,
-            new ParentChildContext<EntityContext, Property>(context, property, context.Settings),
+            new ParentChildContext<GenerateEntityCommand, Property>(context, property, context.Settings),
             token
         ).ConfigureAwait(false)).Transform(x => x.ToString());
 }
