@@ -125,7 +125,6 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
                 context,
                 new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings),
                 context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName),
-                context.Settings.BuilderNewCollectionTypeName,
                 MetadataNames.CustomBuilderConstructorInitializeExpression,
                 _evaluator,
                 cancellationToken).ConfigureAwait(false);

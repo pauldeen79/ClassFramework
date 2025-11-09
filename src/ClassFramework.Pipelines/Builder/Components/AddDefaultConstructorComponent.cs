@@ -109,7 +109,6 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
                 context,
                 new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings),
                 context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName),
-                context.Settings.BuilderNewCollectionTypeName,
                 string.Empty,
                 _evaluator,
                 cancellationToken).ConfigureAwait(false);

@@ -210,7 +210,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync<string>(context: default!, new object(), string.Empty, string.Empty, string.Empty, expressionEvaluator, CancellationToken.None);
+            var t = sut.GetBuilderConstructorInitializerAsync<string>(context: default!, new object(), string.Empty, string.Empty, expressionEvaluator, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -226,7 +226,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(command, parentChildContext: default!, string.Empty, string.Empty, string.Empty, expressionEvaluator, CancellationToken.None);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, parentChildContext: default!, string.Empty, string.Empty, expressionEvaluator, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("parentChildContext");
         }
@@ -242,25 +242,9 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), mappedTypeName: default!, string.Empty, string.Empty, expressionEvaluator, CancellationToken.None);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), mappedTypeName: default!, string.Empty, expressionEvaluator, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("mappedTypeName");
-        }
-
-        [Fact]
-        public async Task Throws_On_Null_NewCollectionTypeName()
-        {
-            // Arrange
-            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var settings = new PipelineSettingsBuilder();
-            var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var command = new TestCommand(settings, formatProvider);
-            var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
-
-            // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, newCollectionTypeName: default!, string.Empty, expressionEvaluator, CancellationToken.None);
-            (await Should.ThrowAsync<ArgumentNullException>(t))
-             .ParamName.ShouldBe("newCollectionTypeName");
         }
 
         [Fact]
@@ -273,7 +257,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var command = new TestCommand(settings, formatProvider);
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, string.Empty, string.Empty, evaluator: null!, CancellationToken.None);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, string.Empty, evaluator: null!, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("evaluator");
         }
@@ -289,7 +273,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, string.Empty, metadataName: null!, expressionEvaluator, CancellationToken.None);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, metadataName: null!, expressionEvaluator, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("metadataName");
         }

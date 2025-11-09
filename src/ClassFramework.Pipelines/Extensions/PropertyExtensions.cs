@@ -101,7 +101,6 @@ public static class PropertyExtensions
         CommandBase<TSourceModel> context,
         object parentChildContext,
         string mappedTypeName,
-        string newCollectionTypeName,
         string metadataName,
         IExpressionEvaluator evaluator,
         CancellationToken cancellationToken)
@@ -109,11 +108,11 @@ public static class PropertyExtensions
         context = context.IsNotNull(nameof(context));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
-        newCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
         metadataName = metadataName.IsNotNull(nameof(metadataName));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-        var builderArgumentTypeResult = await GetBuilderArgumentTypeNameAsync(property, context, parentChildContext, mappedTypeName, evaluator, cancellationToken).ConfigureAwait(false);
+        var builderArgumentTypeResult = await GetBuilderArgumentTypeNameAsync(property, context, parentChildContext, mappedTypeName, evaluator, cancellationToken)
+            .ConfigureAwait(false);
         if (!builderArgumentTypeResult.IsSuccessful())
         {
             return builderArgumentTypeResult;
@@ -125,14 +124,15 @@ public static class PropertyExtensions
                 .GetMappingMetadata(property.TypeName)
                 .GetStringValue(metadataName);
 
-        var result = await evaluator.EvaluateInterpolatedStringAsync(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext, cancellationToken).ConfigureAwait(false);
+        var result = await evaluator.EvaluateInterpolatedStringAsync(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext, cancellationToken)
+            .ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
         }
 
         return Result.Success<GenericFormattableString>(builderArgumentTypeResult.Value!.ToString()
-            .FixCollectionTypeName(newCollectionTypeName)
+            .FixCollectionTypeName(context.Settings.BuilderNewCollectionTypeName)
             .GetCollectionInitializeStatement(result.Value?.ToString().Replace($"source.{PlaceholderNames.NamePlaceholder}", "x").Replace(PlaceholderNames.NamePlaceholder, property.Name) ?? string.Empty).Replace(PlaceholderNames.NamePlaceholder, property.Name)
             .GetCsharpFriendlyTypeName());
     }
