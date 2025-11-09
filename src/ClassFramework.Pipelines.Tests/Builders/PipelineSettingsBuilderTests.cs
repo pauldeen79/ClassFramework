@@ -1,4 +1,5 @@
-﻿namespace ClassFramework.Pipelines.Tests.Builders;
+﻿
+namespace ClassFramework.Pipelines.Tests.Builders;
 
 public class PipelineSettingsBuilderTests
 {
@@ -170,6 +171,11 @@ public class PipelineSettingsBuilderTests
         private sealed class TestContext(PipelineSettings settings) : ContextBase<string>(string.Empty, settings, CultureInfo.CurrentCulture, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
+
+            public override Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token)
+            {
+                throw new NotImplementedException();
+            }
 
             public override bool SourceModelHasNoProperties()
             {

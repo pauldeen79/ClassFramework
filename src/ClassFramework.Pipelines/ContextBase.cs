@@ -1,4 +1,5 @@
-﻿namespace ClassFramework.Pipelines;
+﻿
+namespace ClassFramework.Pipelines;
 
 public abstract class ContextBase(PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken)
 {
@@ -100,6 +101,9 @@ public abstract class ContextBase(PipelineSettings settings, IFormatProvider for
         && metadata.GetStringValue(MetadataNames.CustomBuilderName, DefaultBuilderName) == DefaultBuilderName;
 
     public abstract bool SourceModelHasNoProperties();
+
+    public abstract Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token)
+        where TContext : ContextBase;
 
     protected TypenameMapping[] GetTypenameMappings(string typeName)
     {

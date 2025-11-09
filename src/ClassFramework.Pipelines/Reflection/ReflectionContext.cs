@@ -10,4 +10,12 @@ public class ReflectionContext : ContextBase<Type>
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
 
     public override bool SourceModelHasNoProperties() => SourceModel.GetProperties().Length == 0;
+
+    public override async Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token)
+    {
+        commandService = ArgumentGuard.IsNotNull(commandService, nameof(commandService));
+        command = ArgumentGuard.IsNotNull(command, nameof(command));
+
+        return await commandService.ExecuteAsync<TContext, TypeBaseBuilder>(command, token).ConfigureAwait(false);
+    }
 }

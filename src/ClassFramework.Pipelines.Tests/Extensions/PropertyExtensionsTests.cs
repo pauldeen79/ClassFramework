@@ -1,4 +1,5 @@
-﻿namespace ClassFramework.Pipelines.Tests.Extensions;
+﻿
+namespace ClassFramework.Pipelines.Tests.Extensions;
 
 public class PropertyExtensionsTests : TestBase<PropertyBuilder>
 {
@@ -109,6 +110,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
+            public override Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token) => throw new NotImplementedException();
             public override bool SourceModelHasNoProperties() => throw new NotImplementedException();
         }
     }
@@ -295,11 +297,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
-
-            public override bool SourceModelHasNoProperties()
-            {
-                throw new NotImplementedException();
-            }
+            public override Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token) => throw new NotImplementedException();
+            public override bool SourceModelHasNoProperties() => throw new NotImplementedException();
         }
     }
 
@@ -374,6 +373,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         private sealed class TestContext(PipelineSettings settings, IFormatProvider formatProvider) : ContextBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
         {
             protected override string NewCollectionTypeName => string.Empty;
+            public override Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token) => throw new NotImplementedException();
             public override bool SourceModelHasNoProperties() => throw new NotImplementedException();
         }
     }
