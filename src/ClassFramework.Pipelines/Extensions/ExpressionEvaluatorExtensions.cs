@@ -19,55 +19,48 @@ public static class ExpressionEvaluatorExtensions
     {
         var builder = new AsyncResultDictionaryBuilder<object?>();
 
-        if (context is GenerateBuilderCommand builderCommand)
+        if (context is CommandBase commandBase)
         {
             builder
-                .Add(ResultNames.Class, new ClassModel(builderCommand.SourceModel))
-                .Add(ResultNames.CollectionTypeName, builderCommand.CollectionTypeName)
-                .Add(ResultNames.AddMethodNameFormatString, () => builderCommand.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add(ResultNames.Settings, builderCommand.Settings)
-                .Add(ResultNames.TypeName, () => builderCommand.MapTypeName(builderCommand.SourceModel.GetFullName()))
-                .Add(ResultNames.Context, builderCommand);
-        }
-        else if (context is GenerateBuilderExtensionCommand builderExtensionCommand)
-        {
-            builder
-                .Add(ResultNames.Class, new ClassModel(builderExtensionCommand.SourceModel))
-                .Add(ResultNames.CollectionTypeName, builderExtensionCommand.CollectionTypeName)
-                .Add(ResultNames.AddMethodNameFormatString, () => builderExtensionCommand.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add(ResultNames.Settings, builderExtensionCommand.Settings)
-                .Add(ResultNames.TypeName, () => builderExtensionCommand.MapTypeName(builderExtensionCommand.SourceModel.GetFullName()))
-                .Add(ResultNames.Context, builderExtensionCommand);
-        }
-        else if (context is GenerateEntityCommand entityCommand)
-        {
-            builder
-                .Add(ResultNames.Class, new ClassModel(entityCommand.SourceModel))
-                .Add(ResultNames.CollectionTypeName, entityCommand.CollectionTypeName)
-                .Add(ResultNames.AddMethodNameFormatString, () => entityCommand.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add(ResultNames.Settings, entityCommand.Settings)
-                .Add(ResultNames.TypeName, () => entityCommand.MapTypeName(entityCommand.SourceModel.GetFullName()))
-                .Add(ResultNames.Context, entityCommand);
-        }
-        else if (context is GenerateInterfaceCommand interfaceCommand)
-        {
-            builder
-                .Add(ResultNames.Class, new ClassModel(interfaceCommand.SourceModel))
-                .Add(ResultNames.CollectionTypeName, interfaceCommand.CollectionTypeName)
-                .Add(ResultNames.AddMethodNameFormatString, () => interfaceCommand.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add(ResultNames.Settings, interfaceCommand.Settings)
-                .Add(ResultNames.TypeName, () => interfaceCommand.MapTypeName(interfaceCommand.SourceModel.GetFullName()))
-                .Add(ResultNames.Context, interfaceCommand);
-        }
-        else if (context is GenerateTypeFromReflectionCommand reflectionCommand)
-        {
-            builder
-                .Add(ResultNames.Class, new ClassModel(reflectionCommand.SourceModel))
-                .Add(ResultNames.CollectionTypeName, reflectionCommand.CollectionTypeName)
-                .Add(ResultNames.AddMethodNameFormatString, () => reflectionCommand.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add(ResultNames.Settings, reflectionCommand.Settings)
-                .Add(ResultNames.TypeName, () => reflectionCommand.MapTypeName(reflectionCommand.SourceModel.FullName))
-                .Add(ResultNames.Context, reflectionCommand);
+                .Add(ResultNames.CollectionTypeName, commandBase.CollectionTypeName)
+                .Add(ResultNames.AddMethodNameFormatString, () => commandBase.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
+                .Add(ResultNames.Settings, commandBase.Settings);
+
+            if (context is GenerateBuilderCommand builderCommand)
+            {
+                builder
+                    .Add(ResultNames.Class, new ClassModel(builderCommand.SourceModel))
+                    .Add(ResultNames.TypeName, () => builderCommand.MapTypeName(builderCommand.SourceModel.GetFullName()))
+                    .Add(ResultNames.Context, builderCommand);
+            }
+            else if (context is GenerateBuilderExtensionCommand builderExtensionCommand)
+            {
+                builder
+                    .Add(ResultNames.Class, new ClassModel(builderExtensionCommand.SourceModel))
+                    .Add(ResultNames.TypeName, () => builderExtensionCommand.MapTypeName(builderExtensionCommand.SourceModel.GetFullName()))
+                    .Add(ResultNames.Context, builderExtensionCommand);
+            }
+            else if (context is GenerateEntityCommand entityCommand)
+            {
+                builder
+                    .Add(ResultNames.Class, new ClassModel(entityCommand.SourceModel))
+                    .Add(ResultNames.TypeName, () => entityCommand.MapTypeName(entityCommand.SourceModel.GetFullName()))
+                    .Add(ResultNames.Context, entityCommand);
+            }
+            else if (context is GenerateInterfaceCommand interfaceCommand)
+            {
+                builder
+                    .Add(ResultNames.Class, new ClassModel(interfaceCommand.SourceModel))
+                    .Add(ResultNames.TypeName, () => interfaceCommand.MapTypeName(interfaceCommand.SourceModel.GetFullName()))
+                    .Add(ResultNames.Context, interfaceCommand);
+            }
+            else if (context is GenerateTypeFromReflectionCommand reflectionCommand)
+            {
+                builder
+                    .Add(ResultNames.Class, new ClassModel(reflectionCommand.SourceModel))
+                    .Add(ResultNames.TypeName, () => reflectionCommand.MapTypeName(reflectionCommand.SourceModel.FullName))
+                    .Add(ResultNames.Context, reflectionCommand);
+            }
         }
         else if (context is ParentChildContext<GenerateBuilderCommand, Property> parentChildContextBuilder)
         {
