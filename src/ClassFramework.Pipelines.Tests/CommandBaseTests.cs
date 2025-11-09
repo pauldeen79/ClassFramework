@@ -124,7 +124,7 @@ public class CommandBaseTests : TestBase
         public static AttributeWithoutConstructorsAttribute New() => new AttributeWithoutConstructorsAttribute();
     }
 
-    private sealed class TestCommand(PipelineSettings settings) : CommandBase<string>(string.Empty, settings, CultureInfo.InvariantCulture, CancellationToken.None)
+    private sealed class TestCommand(PipelineSettings settings) : CommandBase<string>(string.Empty, settings, CultureInfo.InvariantCulture)
     {
         protected override string NewCollectionTypeName => string.Empty;
 

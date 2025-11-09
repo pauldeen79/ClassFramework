@@ -24,7 +24,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var sut = CreateSut();
             var sourceModel = typeof(MyBaseClassTestClass);
             var settings = CreateSettingsForReflection();
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -42,7 +42,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection();
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder().WithBaseClass("Old value");
 
             // Act
@@ -63,7 +63,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
                 useBaseClassFromSourceModel: false,
                 enableEntityInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped());
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -84,7 +84,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
                 useBaseClassFromSourceModel: false,
                 enableEntityInheritance: true,
                 baseClass: null);
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -102,7 +102,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
             var sut = CreateSut();
             var sourceModel = typeof(MyBaseClassTestClass);
             var settings = CreateSettingsForReflection(useBaseClassFromSourceModel: false);
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder().WithBaseClass("Old value");
 
             // Act

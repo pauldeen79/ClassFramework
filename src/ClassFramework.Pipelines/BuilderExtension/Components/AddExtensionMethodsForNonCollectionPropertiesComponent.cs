@@ -33,5 +33,6 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
         => context.GetResultsForBuilderNonCollectionProperties(
             property,
             new ParentChildContext<GenerateBuilderExtensionCommand, Property>(context, property, context.Settings),
-            _evaluator);
+            _evaluator,
+            token);
 }

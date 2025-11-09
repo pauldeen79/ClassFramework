@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Commands;
 
-public class GenerateBuilderCommand(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : CommandBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
+public class GenerateBuilderCommand(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<TypeBase>(sourceModel, settings, formatProvider)
 {
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));

@@ -482,6 +482,6 @@ public class AddFluentMethodsForNonCollectionPropertiesComponentTests : TestBase
         }
 
         private static GenerateBuilderCommand CreateCommand(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture);
     }
 }

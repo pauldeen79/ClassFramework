@@ -27,7 +27,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
             var settings = CreateSettingsForEntity(
                 baseClass: null,
                 enableEntityInheritance: true);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -50,7 +50,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
             var settings = CreateSettingsForEntity(
                 baseClass: new ClassBuilder().WithName("MyBaseClass").WithNamespace("MyBaseNamespace").BuildTyped(),
                 enableEntityInheritance: true);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -71,7 +71,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Entity.Components.S
             var settings = CreateSettingsForEntity(
                 baseClass: null,
                 enableEntityInheritance: true);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act

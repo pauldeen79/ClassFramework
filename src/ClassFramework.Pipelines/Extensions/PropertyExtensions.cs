@@ -103,7 +103,8 @@ public static class PropertyExtensions
         string mappedTypeName,
         string newCollectionTypeName,
         string metadataName,
-        IExpressionEvaluator evaluator)
+        IExpressionEvaluator evaluator,
+        CancellationToken cancellationToken)
     {
         context = context.IsNotNull(nameof(context));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
@@ -112,7 +113,7 @@ public static class PropertyExtensions
         metadataName = metadataName.IsNotNull(nameof(metadataName));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-        var builderArgumentTypeResult = await GetBuilderArgumentTypeNameAsync(property, context, parentChildContext, mappedTypeName, evaluator, context.CancellationToken).ConfigureAwait(false);
+        var builderArgumentTypeResult = await GetBuilderArgumentTypeNameAsync(property, context, parentChildContext, mappedTypeName, evaluator, cancellationToken).ConfigureAwait(false);
         if (!builderArgumentTypeResult.IsSuccessful())
         {
             return builderArgumentTypeResult;
@@ -124,7 +125,7 @@ public static class PropertyExtensions
                 .GetMappingMetadata(property.TypeName)
                 .GetStringValue(metadataName);
 
-        var result = await evaluator.EvaluateInterpolatedStringAsync(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext, context.CancellationToken).ConfigureAwait(false);
+        var result = await evaluator.EvaluateInterpolatedStringAsync(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext, cancellationToken).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;

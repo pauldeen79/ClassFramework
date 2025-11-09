@@ -14,8 +14,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     copyAttributes: true,
                     useBuilderLazyValues: useBuilderLazyValues
                 ),
-                CultureInfo.InvariantCulture,
-                CancellationToken.None
+                CultureInfo.InvariantCulture
             );
 
         [Fact]

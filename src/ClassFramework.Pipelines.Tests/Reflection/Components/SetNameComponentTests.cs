@@ -94,6 +94,6 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
         }
 
         private static GenerateTypeFromReflectionCommand CreateCommand(Type sourceModel, PipelineSettingsBuilder settings)
-            => new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            => new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
     }
 }

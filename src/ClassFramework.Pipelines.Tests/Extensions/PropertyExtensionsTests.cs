@@ -107,7 +107,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             result.ShouldBe("custom value");
         }
 
-        private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
+        private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider)
         {
             protected override string NewCollectionTypeName => string.Empty;
             public override Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token) => throw new NotImplementedException();
@@ -210,7 +210,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync<string>(context: default!, new object(), string.Empty, string.Empty, string.Empty, expressionEvaluator);
+            var t = sut.GetBuilderConstructorInitializerAsync<string>(context: default!, new object(), string.Empty, string.Empty, string.Empty, expressionEvaluator, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("context");
         }
@@ -226,7 +226,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(command, parentChildContext: default!, string.Empty, string.Empty, string.Empty, expressionEvaluator);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, parentChildContext: default!, string.Empty, string.Empty, string.Empty, expressionEvaluator, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("parentChildContext");
         }
@@ -242,7 +242,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), mappedTypeName: default!, string.Empty, string.Empty, expressionEvaluator);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), mappedTypeName: default!, string.Empty, string.Empty, expressionEvaluator, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("mappedTypeName");
         }
@@ -258,7 +258,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, newCollectionTypeName: default!, string.Empty, expressionEvaluator);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, newCollectionTypeName: default!, string.Empty, expressionEvaluator, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("newCollectionTypeName");
         }
@@ -273,7 +273,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var command = new TestCommand(settings, formatProvider);
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, string.Empty, string.Empty, evaluator: null!);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, string.Empty, string.Empty, evaluator: null!, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("evaluator");
         }
@@ -289,12 +289,12 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, string.Empty, metadataName: null!, expressionEvaluator);
+            var t = sut.GetBuilderConstructorInitializerAsync(command, new object(), string.Empty, string.Empty, metadataName: null!, expressionEvaluator, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("metadataName");
         }
 
-        private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
+        private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider)
         {
             protected override string NewCollectionTypeName => string.Empty;
             public override Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token) => throw new NotImplementedException();
@@ -370,7 +370,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             result.Value!.ToString().ShouldBe("IReadOnlyCollection<Builders.{NoGenerics(ClassName(GenericArguments(property.TypeName)))}Builder{GenericArguments(CollectionItemType(property.TypeName), true)}>");
         }
 
-        private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
+        private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider)
         {
             protected override string NewCollectionTypeName => string.Empty;
             public override Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token) => throw new NotImplementedException();

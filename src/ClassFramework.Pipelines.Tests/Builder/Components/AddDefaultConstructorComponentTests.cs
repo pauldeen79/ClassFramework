@@ -396,6 +396,6 @@ public class AddDefaultConstructorComponentTests : TestBase<Pipelines.Builder.Co
         }
 
         private static GenerateBuilderCommand CreateCommand(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture);
     }
 }

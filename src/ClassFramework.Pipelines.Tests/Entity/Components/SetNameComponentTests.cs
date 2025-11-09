@@ -25,7 +25,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -44,7 +44,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "CustomClassName");
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -63,7 +63,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -82,7 +82,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "CustomNamespace");
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -101,7 +101,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "{Error}");
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -120,7 +120,7 @@ public class SetNameComponentTests : TestBase<Pipelines.Entity.Components.SetNam
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNamespaceFormatString: "{Error}");
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act

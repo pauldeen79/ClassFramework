@@ -24,7 +24,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -42,7 +42,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClassWithCustomTypeProperties();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(namespaceMappings: [new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyMappedNamespace")]);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -75,7 +75,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addSetters: addSetters);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -97,7 +97,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addSetters: true, setterVisibility: setterVisibility);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -126,7 +126,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
                 ).BuildTyped();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(copyAttributes: true, copyAttributePredicate: a => a.Name.EndsWith('2'));
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -144,7 +144,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -162,7 +162,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -180,7 +180,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: false);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -198,7 +198,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -216,7 +216,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -251,7 +251,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true, createAsObservable: true);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -292,7 +292,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -318,7 +318,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Entity.Components.
             var sourceModel = CreateClass();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addBackingFields: true, addNullChecks: true);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act

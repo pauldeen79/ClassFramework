@@ -332,6 +332,6 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
         }
 
         private static GenerateBuilderCommand CreateCommand(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture);
     }
 }

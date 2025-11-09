@@ -2,8 +2,8 @@
 
 public class GenerateTypeFromReflectionCommand : CommandBase<Type>
 {
-    public GenerateTypeFromReflectionCommand(Type sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken)
-        : base(sourceModel, settings, formatProvider, cancellationToken)
+    public GenerateTypeFromReflectionCommand(Type sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
+        : base(sourceModel, settings, formatProvider)
     {
     }
 

@@ -63,6 +63,6 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
         }
 
         private static GenerateBuilderCommand CreateCommand(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture);
     }
 }

@@ -24,7 +24,7 @@ public class AddFieldsComponentTests : TestBase<Pipelines.Reflection.Components.
             var sut = CreateSut();
             var sourceModel = typeof(MyFieldTestClass);
             var settings = CreateSettingsForReflection(copyAttributes: true);
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act

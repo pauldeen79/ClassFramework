@@ -93,7 +93,7 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
             result.Status.ShouldBe(ResultStatus.Invalid);
         }
 
-        private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider, CancellationToken.None)
+        private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider)
         {
             protected override string NewCollectionTypeName => string.Empty;
             public override Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token) => throw new NotImplementedException();

@@ -21,7 +21,7 @@ public class ParentChildContextTests : TestBase
         public void Throws_On_Null_ChildContext()
         {
             // Arrange
-            var parentContext = new GenerateBuilderCommand(new ClassBuilder().WithName("MyClass").Build(), new PipelineSettingsBuilder(), CultureInfo.CurrentCulture, CancellationToken.None);
+            var parentContext = new GenerateBuilderCommand(new ClassBuilder().WithName("MyClass").Build(), new PipelineSettingsBuilder(), CultureInfo.CurrentCulture);
             var childContext = default(Property);
             var settings = new PipelineSettingsBuilder();
 
@@ -34,7 +34,7 @@ public class ParentChildContextTests : TestBase
         public void Throws_On_Null_Settings()
         {
             // Arrange
-            var parentContext = new GenerateBuilderCommand(new ClassBuilder().WithName("MyClass").Build(), new PipelineSettingsBuilder(), CultureInfo.CurrentCulture, CancellationToken.None);
+            var parentContext = new GenerateBuilderCommand(new ClassBuilder().WithName("MyClass").Build(), new PipelineSettingsBuilder(), CultureInfo.CurrentCulture);
             var childContext = new PropertyBuilder().WithName("Property").WithType(typeof(int)).Build();
             var settings = default(PipelineSettings);
 

@@ -150,7 +150,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             // Arrange
             var sut = new InterfaceBuilder().WithName("MyClass").Build();
             var settings = CreateSettingsForBuilder();
-            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
             Action a = () => sut.GetBuilderConstructorProperties(command);
@@ -172,7 +172,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 )
                 .Build();
             var settings = CreateSettingsForBuilder();
-            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(command);
@@ -195,7 +195,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 .AddConstructors(new ConstructorBuilder().WithVisibility(Visibility.Private)) // only private constructor present :)
                 .Build();
             var settings = CreateSettingsForBuilder();
-            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(command);
@@ -219,7 +219,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(int))).BuildTyped(),
                 enableEntityInheritance: true
             );
-            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(command);
@@ -246,7 +246,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: null,
                 enableEntityInheritance: true
             );
-            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(command);
@@ -273,7 +273,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: null,
                 enableEntityInheritance: true
             );
-            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(command);
@@ -304,7 +304,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
             var settings = CreateSettingsForBuilder();
-            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
             var t = sut.GetBuilderClassFieldsAsync(command, evaluator: null!, CancellationToken.None);
@@ -330,7 +330,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: null,
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
-            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
@@ -358,7 +358,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
-            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
@@ -387,7 +387,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
-            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
@@ -426,7 +426,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                         .AddMetadata(MetadataNames.CustomBuilderArgumentType, "MyCustomType")
                 ]
             );
-            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act

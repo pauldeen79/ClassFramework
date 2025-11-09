@@ -33,5 +33,6 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
         => context.GetResultsForBuilderNonCollectionProperties(
             property,
             new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings),
-            _evaluator);
+            _evaluator,
+            token);
 }

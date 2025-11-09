@@ -168,7 +168,7 @@ public class PipelineSettingsBuilderTests
             public List<int> Property { get; set; } = default!;
         }
 
-        private sealed class TestCommand(PipelineSettings settings) : CommandBase<string>(string.Empty, settings, CultureInfo.CurrentCulture, CancellationToken.None)
+        private sealed class TestCommand(PipelineSettings settings) : CommandBase<string>(string.Empty, settings, CultureInfo.CurrentCulture)
         {
             protected override string NewCollectionTypeName => string.Empty;
 

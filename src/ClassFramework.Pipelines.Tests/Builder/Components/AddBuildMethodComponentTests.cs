@@ -129,6 +129,6 @@ public class AddBuildMethodComponentTests : TestBase<Pipelines.Builder.Component
         }
 
         private static GenerateBuilderCommand CreateCommand(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture);
     }
 }

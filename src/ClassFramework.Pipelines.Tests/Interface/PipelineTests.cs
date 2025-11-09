@@ -12,8 +12,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                 copyMethods: copyMethods,
                 copyMethodPredicate: copyMethodPredicate
             ).Build(),
-            CultureInfo.InvariantCulture,
-            CancellationToken.None
+            CultureInfo.InvariantCulture
         );
 
         [Fact]
@@ -208,6 +207,6 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         }
 
         private static GenerateInterfaceCommand CreateContext(TypeBase model, PipelineSettingsBuilder settings)
-            => new(model, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            => new(model, settings, CultureInfo.InvariantCulture);
     }
 }

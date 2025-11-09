@@ -11,7 +11,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sourceModel = typeof(MyClass);
             var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true, copyInterfaces: true);
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
 
             var sut = CreateSut();
 
@@ -40,7 +40,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sourceModel = typeof(IMyInterface);
             var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true);
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
 
             var sut = CreateSut();
 
@@ -67,7 +67,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sourceModel = typeof(IMyInternalInterface);
             var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
             var settings = CreateSettingsForReflection(namespaceMappings: namespaceMappings, copyAttributes: true);
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
 
             var sut = CreateSut();
 
@@ -93,7 +93,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             // Arrange
             var sourceModel = GetType(); // this unit test class does not have properties
             var settings = CreateSettingsForReflection();
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var sut = CreateSut();
 
             // Act

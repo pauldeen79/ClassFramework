@@ -22,7 +22,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(false);
-            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
             var sut = CreateSut();
             var response = new ClassBuilder();
 
@@ -39,7 +39,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
-            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync(forceError: true);
             var sut = CreateSut();
             var response = new ClassBuilder();
@@ -57,7 +57,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
-            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
@@ -81,7 +81,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
-            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
@@ -108,7 +108,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract();
-            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
@@ -135,7 +135,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract();
-            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
@@ -163,7 +163,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract()
                 .WithIsForAbstractBuilder();
-            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
@@ -191,7 +191,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract()
                 .WithIsForAbstractBuilder();
-            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
@@ -218,7 +218,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithBaseClass(new ClassBuilder().WithName("Dummy"));
-            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();
@@ -245,7 +245,7 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithBaseClass(new ClassBuilder().WithName("Dummy"));
-            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var response = new ClassBuilder();

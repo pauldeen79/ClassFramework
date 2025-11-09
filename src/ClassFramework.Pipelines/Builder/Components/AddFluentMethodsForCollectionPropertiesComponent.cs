@@ -33,7 +33,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
     {
         var parentChildContext = new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings);
 
-        return await context.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext, _evaluator)
+        return await context.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext, _evaluator, token)
             .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, false, token).ConfigureAwait(false))
             .AddRange("ArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, false, token).ConfigureAwait(false))
             .AddRange("NonLazyArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, true, token).ConfigureAwait(false))

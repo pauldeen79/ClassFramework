@@ -10,8 +10,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             (
                 allowGenerationWithoutProperties: false
             ).Build(),
-            CultureInfo.InvariantCulture,
-            CancellationToken.None
+            CultureInfo.InvariantCulture
         );
 
         [Fact]
@@ -457,6 +456,6 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         }
 
         private static GenerateEntityCommand CreateCommand(TypeBase model, PipelineSettingsBuilder settings)
-            => new(model, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            => new(model, settings, CultureInfo.InvariantCulture);
     }
 }

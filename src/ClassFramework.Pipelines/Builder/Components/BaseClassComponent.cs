@@ -52,7 +52,7 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
             (
                 context.Settings.BuilderNameFormatString,
                 context.FormatProvider,
-                new GenerateBuilderCommand(context.Settings.BaseClass!, context.Settings, context.FormatProvider, CancellationToken.None),
+                new GenerateBuilderCommand(context.Settings.BaseClass!, context.Settings, context.FormatProvider),
                 token
             ).ConfigureAwait(false);
 
@@ -95,7 +95,7 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
             return Result.Success(new GenericFormattableString(customValue));
         }
 
-        return await _evaluator.EvaluateInterpolatedStringAsync(context.Settings.BuilderNameFormatString, context.FormatProvider, new GenerateBuilderCommand(CreateTypeBase(context.MapTypeName(baseClassContainer.BaseClass!)), context.Settings, context.FormatProvider, token), token).ConfigureAwait(false);
+        return await _evaluator.EvaluateInterpolatedStringAsync(context.Settings.BuilderNameFormatString, context.FormatProvider, new GenerateBuilderCommand(CreateTypeBase(context.MapTypeName(baseClassContainer.BaseClass!)), context.Settings, context.FormatProvider), token).ConfigureAwait(false);
     }
 
     private static TypeBase CreateTypeBase(string baseClass)

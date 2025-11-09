@@ -24,7 +24,7 @@ public class AddGenericsComponentTests : TestBase<Pipelines.Entity.Components.Ad
             var sourceModel = CreateGenericClass(addProperties: false);
             var sut = CreateSut();
             var settings = CreateSettingsForEntity();
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act

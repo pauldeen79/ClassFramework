@@ -24,7 +24,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
             var settings = CreateSettingsForReflection(createConstructors: false);
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -42,7 +42,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
             var settings = CreateSettingsForReflection(createConstructors: false);
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -60,7 +60,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
             var settings = CreateSettingsForReflection(createConstructors: true);
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act

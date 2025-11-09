@@ -58,7 +58,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
             return Result.FromExistingResult<ConstructorBuilder>(initializationCodeErrorResult.Result);
         }
 
-        var constructorInitializerResults = await GetConstructorInitializerResultsAsync(context).ConfigureAwait(false);
+        var constructorInitializerResults = await GetConstructorInitializerResultsAsync(context, token).ConfigureAwait(false);
         var initializerErrorResult = Array.Find(constructorInitializerResults, x => !x.Result.IsSuccessful());
         if (initializerErrorResult is not null)
         {
@@ -113,7 +113,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         return results.ToArray();
     }
 
-    private async Task<ConstructorPropertyNameInitializerItem[]> GetConstructorInitializerResultsAsync(GenerateBuilderCommand context)
+    private async Task<ConstructorPropertyNameInitializerItem[]> GetConstructorInitializerResultsAsync(GenerateBuilderCommand context, CancellationToken cancellationToken)
     {
         var results = new List<ConstructorPropertyNameInitializerItem>();
 
@@ -127,7 +127,8 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
                 context.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName),
                 context.Settings.BuilderNewCollectionTypeName,
                 MetadataNames.CustomBuilderConstructorInitializeExpression,
-                _evaluator).ConfigureAwait(false);
+                _evaluator,
+                cancellationToken).ConfigureAwait(false);
 
             results.Add(new ConstructorPropertyNameInitializerItem(name, result));
             

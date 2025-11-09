@@ -24,7 +24,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection();
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -43,7 +43,7 @@ public class AddPropertiesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sourceModel = typeof(MyNullableClass);
             var settings = CreateSettingsForReflection();
             var response = new ClassBuilder();
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
 
             // Act
             var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);

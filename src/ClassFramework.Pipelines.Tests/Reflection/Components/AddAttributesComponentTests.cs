@@ -25,7 +25,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sourceModel = GetType();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(copyAttributePredicate: _ => true, copyAttributes: true);
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -43,7 +43,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sourceModel = GetType();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(copyAttributePredicate: null, copyAttributes: true);
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act
@@ -61,7 +61,7 @@ public class AddAttributesComponentTests : TestBase<Pipelines.Reflection.Compone
             var sourceModel = GetType();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(copyAttributes: false);
-            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
 
             // Act

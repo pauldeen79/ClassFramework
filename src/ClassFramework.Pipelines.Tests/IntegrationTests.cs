@@ -11,7 +11,7 @@ public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
         var pipelineSettings = new PipelineSettingsBuilder();
         var formatProvider = Fixture.Freeze<IFormatProvider>();
-        var context = new ParentChildContext<GenerateEntityCommand, Property>(new GenerateEntityCommand(new ClassBuilder().WithName("Dummy").Build(), pipelineSettings, formatProvider, CancellationToken.None), property, pipelineSettings);
+        var context = new ParentChildContext<GenerateEntityCommand, Property>(new GenerateEntityCommand(new ClassBuilder().WithName("Dummy").Build(), pipelineSettings, formatProvider), property, pipelineSettings);
 
         // Act
         var result = await sut.EvaluateInterpolatedStringAsync(formatString, CultureInfo.InvariantCulture, context, CancellationToken.None);
@@ -30,7 +30,7 @@ public class IntegrationTests : IntegrationTestBase<IExpressionEvaluator>
         var property = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
         var pipelineSettings = new PipelineSettingsBuilder();
         var formatProvider = Fixture.Freeze<IFormatProvider>();
-        var context = new ParentChildContext<GenerateEntityCommand, Property>(new GenerateEntityCommand(new ClassBuilder().WithName("Dummy").Build(), pipelineSettings, formatProvider, CancellationToken.None), property, pipelineSettings);
+        var context = new ParentChildContext<GenerateEntityCommand, Property>(new GenerateEntityCommand(new ClassBuilder().WithName("Dummy").Build(), pipelineSettings, formatProvider), property, pipelineSettings);
 
         // Act
         var result = await sut.EvaluateInterpolatedStringAsync(formatString, CultureInfo.InvariantCulture, context, CancellationToken.None);

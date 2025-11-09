@@ -99,7 +99,7 @@ public abstract class CrossCuttingClassBase(ICommandService commandService) : Cs
                 .WithAddNullChecks(AddNullChecks)
                 .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull);
 
-            return await CommandService.ExecuteAsync<GenerateEntityCommand, TypeBase>(new GenerateEntityCommand(typeBaseResult!, entitySettings, Settings.CultureInfo, CancellationToken.None)).ConfigureAwait(false);
+            return await CommandService.ExecuteAsync<GenerateEntityCommand, TypeBase>(new GenerateEntityCommand(typeBaseResult!, entitySettings, Settings.CultureInfo)).ConfigureAwait(false);
         }).ConfigureAwait(false);
     }
 

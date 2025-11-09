@@ -26,7 +26,7 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components
             var settings = CreateSettingsForEntity(
                 enableEntityInheritance: true,
                 isAbstract: true);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
             response.WithAbstract(false); // we want to make sure that the component updates the property
 
@@ -47,7 +47,7 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components
             var settings = CreateSettingsForEntity(
                 enableEntityInheritance: true,
                 isAbstract: false);
-            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
             var response = new ClassBuilder();
             response.WithAbstract(true); // we want to make sure that the component updates the property
 
