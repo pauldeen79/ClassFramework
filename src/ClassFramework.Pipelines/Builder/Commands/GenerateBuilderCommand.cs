@@ -346,12 +346,12 @@ public class GenerateBuilderCommand(TypeBase sourceModel, PipelineSettings setti
 
     public override bool SourceModelHasNoProperties() => SourceModel.Properties.Count == 0;
 
-    public override async Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token)
+    public override async Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TCommand>(ICommandService commandService, TCommand command, CancellationToken token)
     {
         commandService = ArgumentGuard.IsNotNull(commandService, nameof(commandService));
         command = ArgumentGuard.IsNotNull(command, nameof(command));
 
-        return (await commandService.ExecuteAsync<TContext, ClassBuilder>(command, token).ConfigureAwait(false))
+        return (await commandService.ExecuteAsync<TCommand, ClassBuilder>(command, token).ConfigureAwait(false))
             .TryCast<TypeBaseBuilder>();
     }
 }

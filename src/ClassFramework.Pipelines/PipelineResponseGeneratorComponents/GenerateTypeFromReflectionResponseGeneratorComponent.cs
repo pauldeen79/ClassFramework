@@ -4,9 +4,10 @@ public class GenerateTypeFromReflectionResponseGeneratorComponent : IPipelineRes
 {
     public Result<T> Generate<T>(object command)
     {
-        if (command is GenerateTypeFromReflectionCommand reflectionContext && typeof(TypeBaseBuilder).IsAssignableFrom(typeof(T)))
+        if (command is GenerateTypeFromReflectionCommand reflectionCommand
+            && typeof(TypeBaseBuilder).IsAssignableFrom(typeof(T)))
         {
-            TypeBaseBuilder builder = reflectionContext.SourceModel.IsInterface
+            TypeBaseBuilder builder = reflectionCommand.SourceModel.IsInterface
                 ? new InterfaceBuilder()
                 : new ClassBuilder();
             return Result.Success((T)(object)builder);

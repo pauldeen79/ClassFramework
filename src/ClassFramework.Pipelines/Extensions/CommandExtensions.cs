@@ -1,17 +1,17 @@
 ﻿namespace ClassFramework.Pipelines.Extensions;
 
-public static class ContextExtensions
+public static class CommandExtensions
 {
-    public static async Task<Result> ProcessPropertiesAsync<TContext>(
-        this TContext context,
+    public static async Task<Result> ProcessPropertiesAsync<TCommand>(
+        this TCommand command,
         string methodName,
         IEnumerable<Property> properties,
-        Func<TContext, Property, CancellationToken, Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>>> getResultsDelegate,
+        Func<TCommand, Property, CancellationToken, Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>>> getResultsDelegate,
         Func<string, string, string> getReturnTypeDelegate,
         Action<Property, string, IReadOnlyDictionary<string, Result<GenericFormattableString>>, string> processDelegate,
         CancellationToken token)
     {
-        context = ArgumentGuard.IsNotNull(context, nameof(context));
+        command = ArgumentGuard.IsNotNull(command, nameof(command));
         properties = ArgumentGuard.IsNotNull(properties, nameof(properties));
         getResultsDelegate = ArgumentGuard.IsNotNull(getResultsDelegate, nameof(getResultsDelegate));
         getReturnTypeDelegate = ArgumentGuard.IsNotNull(getReturnTypeDelegate, nameof(getReturnTypeDelegate));
@@ -24,7 +24,7 @@ public static class ContextExtensions
 
         foreach (var property in properties)
         {
-            var results = await getResultsDelegate(context, property, token).ConfigureAwait(false);
+            var results = await getResultsDelegate(command, property, token).ConfigureAwait(false);
 
             var error = results.GetError();
             if (error is not null)

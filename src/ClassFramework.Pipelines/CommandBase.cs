@@ -100,8 +100,8 @@ public abstract class CommandBase(PipelineSettings settings, IFormatProvider for
 
     public abstract bool SourceModelHasNoProperties();
 
-    public abstract Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TContext>(ICommandService commandService, TContext command, CancellationToken token)
-        where TContext : CommandBase;
+    public abstract Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TCommand>(ICommandService commandService, TCommand command, CancellationToken token)
+        where TCommand : CommandBase;
 
     protected TypenameMapping[] GetTypenameMappings(string typeName)
     {
