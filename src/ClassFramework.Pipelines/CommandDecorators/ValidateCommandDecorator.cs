@@ -11,18 +11,8 @@ public class ValidateCommandDecorator : ICommandDecorator
         _decoratee = decoratee;
     }
 
-    public async Task<Result> ExecuteAsync<TCommand>(ICommandHandler<TCommand> handler, TCommand command, ICommandService commandService, CancellationToken token)
-    {
-        if (command is ContextBase context
-            && !context.Settings.AllowGenerationWithoutProperties
-            && !context.Settings.EnableInheritance
-            && context.SourceModelHasNoProperties())
-        {
-            return Result.Invalid("There must be at least one property");
-        }
-
-        return await _decoratee.ExecuteAsync(handler, command, commandService, token).ConfigureAwait(false);
-    }
+    public Task<Result> ExecuteAsync<TCommand>(ICommandHandler<TCommand> handler, TCommand command, ICommandService commandService, CancellationToken token)
+        => _decoratee.ExecuteAsync(handler, command, commandService, token);
 
     public async Task<Result<TResponse>> ExecuteAsync<TCommand, TResponse>(ICommandHandler<TCommand, TResponse> handler, TCommand command, ICommandService commandService, CancellationToken token)
     {
