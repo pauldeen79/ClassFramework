@@ -1,14 +1,14 @@
-﻿namespace ClassFramework.Pipelines.Tests.Entity;
+﻿namespace ClassFramework.Pipelines.Tests.Interface.Commands;
 
-public class EntityContextTests : TestBase
+public class GenerateInterfaceCommandTests : TestBase
 {
-    public class Constructor : EntityContextTests
+    public class Constructor : GenerateInterfaceCommandTests
     {
         [Fact]
         public void Throws_On_Null_SourceModel()
         {
             // Act & Assert
-            Action a = () => _ = new GenerateEntityCommand(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture);
+            Action a = () => _ = new GenerateInterfaceCommand(sourceModel: null!, new PipelineSettingsBuilder(), CultureInfo.InvariantCulture);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("sourceModel");
         }
 
@@ -16,7 +16,7 @@ public class EntityContextTests : TestBase
         public void Throws_On_Null_Settings()
         {
             // Act & Assert
-            Action a = () => _ = new GenerateEntityCommand(sourceModel: CreateClass(), settings: null!, CultureInfo.InvariantCulture);
+            Action a = () => _ = new GenerateInterfaceCommand(sourceModel: CreateClass(), settings: null!, CultureInfo.InvariantCulture);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("settings");
         }
 
@@ -24,19 +24,19 @@ public class EntityContextTests : TestBase
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            Action a = () => _ = new GenerateEntityCommand(sourceModel: CreateClass(), new PipelineSettingsBuilder(), formatProvider: null!);
+            Action a = () => _ = new GenerateInterfaceCommand(sourceModel: CreateClass(), new PipelineSettingsBuilder(), formatProvider: null!);
             a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("formatProvider");
         }
     }
 
-    public class MapTypeName : EntityContextTests
+    public class MapTypeName : GenerateInterfaceCommandTests
     {
         [Fact]
         public void Throws_On_Null_TypeName()
         {
             // Arrange
-            var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false);
-            var sut = new GenerateEntityCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
+            var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false).Build();
+            var sut = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
             Action a = () => sut.MapTypeName(typeName: null!);
@@ -45,14 +45,14 @@ public class EntityContextTests : TestBase
         }
     }
 
-    public class MapAttribute : EntityContextTests
+    public class MapAttribute : GenerateInterfaceCommandTests
     {
         [Fact]
         public void Throws_On_Null_TypeName()
         {
             // Arrange
-            var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false);
-            var sut = new GenerateEntityCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
+            var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false).Build();
+            var sut = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
             Action a = () => sut.MapAttribute(attribute: null!);

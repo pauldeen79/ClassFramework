@@ -23,7 +23,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -40,7 +40,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -58,7 +58,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -74,7 +74,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand(copyMethodPredicate: (_, _) => true);
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -90,7 +90,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand(copyMethodPredicate: (_, _) => false);
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -106,7 +106,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand(copyMethods: false);
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -122,7 +122,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand(addProperties: false);
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -145,7 +145,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateInterfaceCommand, InterfaceBuilder>(command);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();

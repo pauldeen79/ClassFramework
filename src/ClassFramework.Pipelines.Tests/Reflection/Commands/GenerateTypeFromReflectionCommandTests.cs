@@ -1,8 +1,8 @@
-﻿namespace ClassFramework.Pipelines.Tests.Reflection;
+﻿namespace ClassFramework.Pipelines.Tests.Reflection.Commands;
 
-public class ReflectionContextTests : TestBase
+public class GenerateTypeFromReflectionCommandTests : TestBase
 {
-    public class Constructor : ReflectionContextTests
+    public class Constructor : GenerateTypeFromReflectionCommandTests
     {
         [Fact]
         public void Throws_On_Null_SourceModel()
@@ -29,7 +29,7 @@ public class ReflectionContextTests : TestBase
         }
     }
 
-    public class MapTypeName : ReflectionContextTests
+    public class MapTypeName : GenerateTypeFromReflectionCommandTests
     {
         [Fact]
         public void Throws_On_Null_TypeName()
@@ -45,7 +45,7 @@ public class ReflectionContextTests : TestBase
         }
     }
 
-    public class MapAttribute : ReflectionContextTests
+    public class MapAttribute : GenerateTypeFromReflectionCommandTests
     {
         [Fact]
         public void Throws_On_Null_TypeName()

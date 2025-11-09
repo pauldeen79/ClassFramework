@@ -25,7 +25,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateBuilderExtensionCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderExtensionCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -41,7 +41,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateBuilderExtensionCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderExtensionCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -63,7 +63,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateBuilderExtensionCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderExtensionCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -107,7 +107,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateBuilderExtensionCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderExtensionCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -136,7 +136,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateBuilderExtensionCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderExtensionCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -171,7 +171,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand(addProperties: false);
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateBuilderExtensionCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderExtensionCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);

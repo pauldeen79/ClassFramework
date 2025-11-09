@@ -1,8 +1,8 @@
-﻿namespace ClassFramework.Pipelines.Tests.Builder;
+﻿namespace ClassFramework.Pipelines.Tests.Builder.Commands;
 
-public class BuilderContextTests : TestBase
+public class GenerateBuilderCommandTests : TestBase
 {
-    public class Constructor : BuilderContextTests
+    public class Constructor : GenerateBuilderCommandTests
     {
         [Fact]
         public void Throws_On_Null_SourceModel()
@@ -29,7 +29,7 @@ public class BuilderContextTests : TestBase
         }
     }
 
-    public class CreatePragmaWarningDisableStatements : BuilderContextTests
+    public class CreatePragmaWarningDisableStatements : GenerateBuilderCommandTests
     {
         [Fact]
         public void Returns_Empty_Array_When_Pragmas_Are_Not_Needed()
@@ -67,7 +67,7 @@ public class BuilderContextTests : TestBase
         }
     }
 
-    public class CreatePragmaWarningRestoreStatements : BuilderContextTests
+    public class CreatePragmaWarningRestoreStatements : GenerateBuilderCommandTests
     {
         [Fact]
         public void Returns_Empty_Array_When_Pragmas_Are_Not_Needed()
@@ -105,7 +105,7 @@ public class BuilderContextTests : TestBase
         }
     }
 
-    public class MapTypeName : BuilderContextTests
+    public class MapTypeName : GenerateBuilderCommandTests
     {
         [Fact]
         public void Throws_On_Null_TypeName()
@@ -121,7 +121,7 @@ public class BuilderContextTests : TestBase
         }
     }
 
-    public class MapAttribute : BuilderContextTests
+    public class MapAttribute : GenerateBuilderCommandTests
     {
         [Fact]
         public void Throws_On_Null_TypeName()

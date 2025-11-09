@@ -21,7 +21,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -37,7 +37,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
@@ -54,7 +54,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var command = CreateCommand(addProperties: false);
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -81,7 +81,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -182,7 +182,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -238,7 +238,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -416,7 +416,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
@@ -436,7 +436,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateEntityCommand, ClassBuilder>(command);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
