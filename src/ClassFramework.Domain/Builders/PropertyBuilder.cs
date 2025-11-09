@@ -1,6 +1,5 @@
 ﻿namespace ClassFramework.Domain.Builders;
 
-[CustomValidation(typeof(PropertyValidator), nameof(PropertyValidator.Validate))]
 public partial class PropertyBuilder
 {
     public PropertyBuilder WithParentType(Type parentType) => this.WithParentTypeFullName(parentType.IsNotNull(nameof(parentType)).FullName.FixTypeName());

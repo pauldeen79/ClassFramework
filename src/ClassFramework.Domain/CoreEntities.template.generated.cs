@@ -841,6 +841,7 @@ namespace ClassFramework.Domain
             return ToBuilder();
         }
     }
+    [ClassFramework.Domain.Validation.ValidPropertyAttribute]
     public partial record Property : ClassFramework.Domain.Abstractions.IModifiersContainer, ClassFramework.Domain.Abstractions.IVisibilityContainer, ClassFramework.Domain.Abstractions.INameContainer, ClassFramework.Domain.Abstractions.IAttributesContainer, ClassFramework.Domain.Abstractions.ITypeContainer, ClassFramework.Domain.Abstractions.IDefaultValueContainer, ClassFramework.Domain.Abstractions.IExplicitInterfaceNameContainer, ClassFramework.Domain.Abstractions.IParentTypeContainer, CrossCutting.Common.Abstractions.IBuildableEntity<ClassFramework.Domain.Builders.PropertyBuilder>
     {
         [System.ComponentModel.DefaultValueAttribute(true)]

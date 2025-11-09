@@ -2024,6 +2024,7 @@ namespace ClassFramework.Domain.Builders
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
+    [ClassFramework.Domain.Validation.ValidPropertyAttribute]
     public partial class PropertyBuilder : ClassFramework.Domain.Builders.Abstractions.IModifiersContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IVisibilityContainerBuilder, ClassFramework.Domain.Builders.Abstractions.INameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IAttributesContainerBuilder, ClassFramework.Domain.Builders.Abstractions.ITypeContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IDefaultValueContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IExplicitInterfaceNameContainerBuilder, ClassFramework.Domain.Builders.Abstractions.IParentTypeContainerBuilder, System.ComponentModel.INotifyPropertyChanged, CrossCutting.Common.Abstractions.IBuilder<ClassFramework.Domain.Property>
     {
         private bool _hasGetter;
