@@ -34,14 +34,14 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
         var parentChildContext = new ParentChildContext<GenerateBuilderExtensionCommand, Property>(context, property, context.Settings);
 
         return await context.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext, _evaluator, token)
-            .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, token).ConfigureAwait(false))
-            .AddRange("ArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, false, token).ConfigureAwait(false))
-            .AddRange("NonLazyArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, true, token).ConfigureAwait(false))
+            .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverloadAsync(context, property, parentChildContext, token).ConfigureAwait(false))
+            .AddRange("ArrayOverload.{0}", await GetCodeStatementsForArrayOverloadAsync(context, property, false, token).ConfigureAwait(false))
+            .AddRange("NonLazyArrayOverload.{0}", await GetCodeStatementsForArrayOverloadAsync(context, property, true, token).ConfigureAwait(false))
             .Build()
             .ConfigureAwait(false);
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(GenerateBuilderExtensionCommand context, Property property, ParentChildContext<GenerateBuilderExtensionCommand, Property> parentChildContext, CancellationToken token)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverloadAsync(GenerateBuilderExtensionCommand context, Property property, ParentChildContext<GenerateBuilderExtensionCommand, Property> parentChildContext, CancellationToken token)
     {
         var results = new List<Result<GenericFormattableString>>();
 
@@ -55,7 +55,7 @@ public class AddExtensionMethodsForCollectionPropertiesComponent(IExpressionEval
         return results;
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(GenerateBuilderExtensionCommand context, Property property, bool useBuilderLazyValues, CancellationToken token)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverloadAsync(GenerateBuilderExtensionCommand context, Property property, bool useBuilderLazyValues, CancellationToken token)
     {
         var results = new List<Result<GenericFormattableString>>();
 

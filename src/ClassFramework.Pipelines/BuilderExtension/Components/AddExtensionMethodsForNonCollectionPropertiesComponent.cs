@@ -30,7 +30,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesComponent(IExpressionE
     }
 
     private Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsAsync(GenerateBuilderExtensionCommand context, Property property, CancellationToken token)
-        => context.GetResultsForBuilderNonCollectionProperties(
+        => context.GetResultsForBuilderNonCollectionPropertiesAsync(
             property,
             new ParentChildContext<GenerateBuilderExtensionCommand, Property>(context, property, context.Settings),
             _evaluator,

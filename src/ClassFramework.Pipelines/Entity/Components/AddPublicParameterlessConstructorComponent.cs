@@ -14,18 +14,18 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
             return Result.Continue();
         }
 
-        return (await CreateEntityConstructor(context, token)
+        return (await CreateEntityConstructorAsync(context, token)
             .ConfigureAwait(false))
             .OnSuccess(ctorResult => response.AddConstructors(ctorResult.Value!));
     }
 
-    private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(GenerateEntityCommand context, CancellationToken token)
+    private async Task<Result<ConstructorBuilder>> CreateEntityConstructorAsync(GenerateEntityCommand context, CancellationToken token)
     {
         var initializationStatements = new List<Result<string>>();
 
         foreach (var property in context.GetSourceProperties())
         {
-            var result = await GenerateDefaultValueStatement(property, context, token).ConfigureAwait(false);
+            var result = await GenerateDefaultValueStatementAsync(property, context, token).ConfigureAwait(false);
             initializationStatements.Add(result);
             if (!result.IsSuccessful())
             {
@@ -43,7 +43,7 @@ public class AddPublicParameterlessConstructorComponent(IExpressionEvaluator eva
             .AddCodeStatements(initializationStatements.Select(x => x.Value!)));
     }
 
-    private async Task<Result<string>> GenerateDefaultValueStatement(Property property, GenerateEntityCommand context, CancellationToken token)
+    private async Task<Result<string>> GenerateDefaultValueStatementAsync(Property property, GenerateEntityCommand context, CancellationToken token)
         => (await _evaluator.EvaluateInterpolatedStringAsync
         (
             property.TypeName.FixTypeName().IsCollectionTypeName()

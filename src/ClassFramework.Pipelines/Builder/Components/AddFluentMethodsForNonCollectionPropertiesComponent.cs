@@ -30,7 +30,7 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
     }
 
     private Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsAsync(GenerateBuilderCommand context, Property property, CancellationToken token)
-        => context.GetResultsForBuilderNonCollectionProperties(
+        => context.GetResultsForBuilderNonCollectionPropertiesAsync(
             property,
             new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings),
             _evaluator,

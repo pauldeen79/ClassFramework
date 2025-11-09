@@ -64,7 +64,7 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
             return Result.Success<GenericFormattableString>($"{context.Settings.BaseClassBuilderNameSpace.AppendWhenNotNullOrEmpty(".")}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
         }
 
-        return await instance.GetCustomValueForInheritedClass
+        return await instance.GetCustomValueForInheritedClassAsync
         (
             context.Settings.EnableInheritance,
             async baseClassContainer =>

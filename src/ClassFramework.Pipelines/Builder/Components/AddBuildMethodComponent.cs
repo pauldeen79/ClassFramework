@@ -35,7 +35,7 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
                     .WithReturnTypeName("TEntity"));
             }
 
-            return await AddExplicitInterfaceImplementations(context, response, token).ConfigureAwait(false);
+            return await AddExplicitInterfaceImplementationsAsync(context, response, token).ConfigureAwait(false);
         }
 
         var instanciationResult = await context.CreateEntityInstanciationAsync(_evaluator, _csharpExpressionDumper, string.Empty, token).ConfigureAwait(false);
@@ -69,10 +69,10 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
                 .AddCodeStatements($"return {context.Settings.BuildTypedMethodName}();"));
         }
 
-        return await AddExplicitInterfaceImplementations(context, response, token).ConfigureAwait(false);
+        return await AddExplicitInterfaceImplementationsAsync(context, response, token).ConfigureAwait(false);
     }
 
-    private async Task<Result> AddExplicitInterfaceImplementations(GenerateBuilderCommand context, ClassBuilder response, CancellationToken token)
+    private async Task<Result> AddExplicitInterfaceImplementationsAsync(GenerateBuilderCommand context, ClassBuilder response, CancellationToken token)
     {
         if (!context.Settings.UseBuilderAbstractionsTypeConversion)
         {

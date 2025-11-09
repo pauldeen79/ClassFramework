@@ -20,13 +20,7 @@ public static class TypeBaseExtensions
         return parentTypeContainer.IsDefinedOn(parent, settings.InheritanceComparisonDelegate);
     }
 
-    public static Task<Result<GenericFormattableString>> GetCustomValueForInheritedClassAsync(
-        this IType instance,
-        bool enableInheritance,
-        Func<IBaseClassContainer, Task<Result<GenericFormattableString>>> customValue)
-        => instance.GetCustomValueForInheritedClass(enableInheritance, customValue);
-
-    public static async Task<Result<GenericFormattableString>> GetCustomValueForInheritedClass(
+    public static async Task<Result<GenericFormattableString>> GetCustomValueForInheritedClassAsync(
         this IType instance,
         bool enableInheritance,
         Func<IBaseClassContainer, Task<Result<GenericFormattableString>>> customValue)

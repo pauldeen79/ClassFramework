@@ -47,7 +47,7 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
             }
         }
 
-        return (await RenderTypeBase(generationEnvironment, cancellationToken).ConfigureAwait(false))
+        return (await RenderTypeBaseAsync(generationEnvironment, cancellationToken).ConfigureAwait(false))
             .OnSuccess(() => generationEnvironment.Builder.AppendLineWithCondition("}", Model.ShouldRenderNamespaceScope)); // end namespace
     }
 
@@ -57,10 +57,10 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
         Guard.IsNotNull(Model);
 
         var generationEnvironment = new StringBuilderEnvironment(builder);
-        return await RenderTypeBase(generationEnvironment, cancellationToken).ConfigureAwait(false);
+        return await RenderTypeBaseAsync(generationEnvironment, cancellationToken).ConfigureAwait(false);
     }
 
-    private async Task<Result> RenderTypeBase(StringBuilderEnvironment generationEnvironment, CancellationToken cancellationToken)
+    private async Task<Result> RenderTypeBaseAsync(StringBuilderEnvironment generationEnvironment, CancellationToken cancellationToken)
     {
         generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
 

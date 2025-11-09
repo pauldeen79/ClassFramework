@@ -34,20 +34,20 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
         var parentChildContext = new ParentChildContext<GenerateBuilderCommand, Property>(context, property, context.Settings);
 
         return await context.GetResultDictionaryForBuilderCollectionProperties(property, parentChildContext, _evaluator, token)
-            .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, false, token).ConfigureAwait(false))
-            .AddRange("ArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, false, token).ConfigureAwait(false))
-            .AddRange("NonLazyArrayOverload.{0}", await GetCodeStatementsForArrayOverload(context, property, true, token).ConfigureAwait(false))
-            .AddRange("NonLazyEnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverload(context, property, parentChildContext, true, token).ConfigureAwait(false))
+            .AddRange("EnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverloadAsync(context, property, parentChildContext, false, token).ConfigureAwait(false))
+            .AddRange("ArrayOverload.{0}", await GetCodeStatementsForArrayOverloadAsync(context, property, false, token).ConfigureAwait(false))
+            .AddRange("NonLazyArrayOverload.{0}", await GetCodeStatementsForArrayOverloadAsync(context, property, true, token).ConfigureAwait(false))
+            .AddRange("NonLazyEnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverloadAsync(context, property, parentChildContext, true, token).ConfigureAwait(false))
             .Build()
             .ConfigureAwait(false);
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverload(GenerateBuilderCommand context, Property property, ParentChildContext<GenerateBuilderCommand, Property> parentChildContext, bool useBuilderLazyValues, CancellationToken token)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForEnumerableOverloadAsync(GenerateBuilderCommand context, Property property, ParentChildContext<GenerateBuilderCommand, Property> parentChildContext, bool useBuilderLazyValues, CancellationToken token)
     {
         if (context.Settings.BuilderNewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
             // When using IEnumerable<>, do not call ToArray because we want lazy evaluation
-            return await GetCodeStatementsForArrayOverload(context, property, useBuilderLazyValues, token).ConfigureAwait(false);
+            return await GetCodeStatementsForArrayOverloadAsync(context, property, useBuilderLazyValues, token).ConfigureAwait(false);
         }
 
         var results = new List<Result<GenericFormattableString>>();
@@ -64,7 +64,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
         return results;
     }
 
-    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverload(GenerateBuilderCommand context, Property property, bool useBuilderLazyValues, CancellationToken token)
+    private async Task<IEnumerable<Result<GenericFormattableString>>> GetCodeStatementsForArrayOverloadAsync(GenerateBuilderCommand context, Property property, bool useBuilderLazyValues, CancellationToken token)
     {
         var results = new List<Result<GenericFormattableString>>();
 

@@ -14,7 +14,7 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
             return Result.Continue();
         }
 
-        return (await CreateEntityConstructor(context, token)
+        return (await CreateEntityConstructorAsync(context, token)
             .ConfigureAwait(false))
             .OnSuccess(ctorResult =>
             {
@@ -30,7 +30,7 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
             });
     }
 
-    private async Task<Result<ConstructorBuilder>> CreateEntityConstructor(GenerateEntityCommand context, CancellationToken token)
+    private async Task<Result<ConstructorBuilder>> CreateEntityConstructorAsync(GenerateEntityCommand context, CancellationToken token)
     {
         var initializationResults = new List<Result<GenericFormattableString>>();
 

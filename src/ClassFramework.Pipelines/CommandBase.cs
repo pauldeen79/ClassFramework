@@ -222,7 +222,7 @@ public abstract class CommandBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .Add(ResultNames.NonLazyTypeName, () => property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, true, cancellationToken));
     }
 
-    public async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsForBuilderNonCollectionProperties(
+    public async Task<IReadOnlyDictionary<string, Result<GenericFormattableString>>> GetResultsForBuilderNonCollectionPropertiesAsync(
         Property property,
         object parentChildContext,
         IExpressionEvaluator evaluator,

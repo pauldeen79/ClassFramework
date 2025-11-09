@@ -27,7 +27,6 @@ public abstract class MappedCSharpClassBase(ICommandService commandService) : Cs
             .AddMetadata(CreateTypenameMappingMetadata(typeof(IMyMappedType)));
     }
 
-    protected async Task<Result<IEnumerable<TypeBase>>> GetTypeNamedModels()
-    => await GetNonCoreModelsAsync($"{CodeGenerationRootNamespace}.SomeNamespace").ConfigureAwait(false);
-
+    protected Task<Result<IEnumerable<TypeBase>>> GetTypeNamedModelsAsync()
+        => GetNonCoreModelsAsync($"{CodeGenerationRootNamespace}.SomeNamespace");
 }

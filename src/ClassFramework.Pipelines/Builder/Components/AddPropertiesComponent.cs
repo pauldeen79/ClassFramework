@@ -42,7 +42,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
                     .Where(_ => context.Settings.CopyAttributes)
                     .Select(x => context.MapAttribute(x).ToBuilder()))
                 .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context))
-                .AddSetterCodeStatements(await CreateBuilderPropertySetterStatements(property, context, token).ConfigureAwait(false))
+                .AddSetterCodeStatements(await CreateBuilderPropertySetterStatementsAsync(property, context, token).ConfigureAwait(false))
             );
         }
 
@@ -63,7 +63,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
         }
     }
 
-    private async Task<IEnumerable<CodeStatementBaseBuilder>> CreateBuilderPropertySetterStatements(Property property, GenerateBuilderCommand context, CancellationToken token)
+    private async Task<IEnumerable<CodeStatementBaseBuilder>> CreateBuilderPropertySetterStatementsAsync(Property property, GenerateBuilderCommand context, CancellationToken token)
     {
         var results = new List<CodeStatementBaseBuilder>();
         if (property.HasBackingFieldOnBuilder(context.Settings))

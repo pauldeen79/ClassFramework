@@ -60,12 +60,12 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                             }
                         }
 
-                        return await AddExplicitInterfaceImplementations(context, response, methodName, typedMethodName, token).ConfigureAwait(false);
+                        return await AddExplicitInterfaceImplementationsAsync(context, response, methodName, typedMethodName, token).ConfigureAwait(false);
                     }).ConfigureAwait(false);
             }).ConfigureAwait(false);
     }
 
-    private async Task<Result> AddExplicitInterfaceImplementations(GenerateEntityCommand context, ClassBuilder response, string methodName, string typedMethodName, CancellationToken token)
+    private async Task<Result> AddExplicitInterfaceImplementationsAsync(GenerateEntityCommand context, ClassBuilder response, string methodName, string typedMethodName, CancellationToken token)
     {
         if (!context.Settings.UseBuilderAbstractionsTypeConversion)
         {
