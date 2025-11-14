@@ -7,7 +7,6 @@ public class ClassFrameworkCommandHandler<TCommand, TEntity> : ICommandHandler<T
     public async Task<Result<TEntity>> ExecuteAsync(TCommand command, ICommandService commandService, CancellationToken token)
     {
         command = ArgumentGuard.IsNotNull(command, nameof(command));
-        commandService = ArgumentGuard.IsNotNull(commandService, nameof(commandService));
 
         return (await command.ExecuteCommandAsync(commandService, command, token).ConfigureAwait(false))
             .OnSuccess(result => (TEntity)(object)result.Build());
