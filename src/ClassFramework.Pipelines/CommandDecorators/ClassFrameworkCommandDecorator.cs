@@ -16,10 +16,19 @@ public class ClassFrameworkCommandDecorator : ICommandDecorator
 
     public async Task<Result<TResponse>> ExecuteAsync<TCommand, TResponse>(ICommandHandler<TCommand, TResponse> handler, TCommand command, ICommandService commandService, CancellationToken token)
     {
-        if (command is CommandBase commansBase
-            && !commansBase.Settings.AllowGenerationWithoutProperties
-            && !commansBase.Settings.EnableInheritance
-            && commansBase.SourceModelHasNoProperties())
+        if (command is CommandBase commandBase)
+        {
+            return await ExecuteClassFrameworkCommand(handler, command, commandService, commandBase, token).ConfigureAwait(false);
+        }
+
+        return await _decoratee.ExecuteAsync(handler, command, commandService, token).ConfigureAwait(false);
+    }
+
+    private async Task<Result<TResponse>> ExecuteClassFrameworkCommand<TCommand, TResponse>(ICommandHandler<TCommand, TResponse> handler, TCommand command, ICommandService commandService, CommandBase commandBase, CancellationToken token)
+    {
+        if (!commandBase.Settings.AllowGenerationWithoutProperties
+            && !commandBase.Settings.EnableInheritance
+            && commandBase.SourceModelHasNoProperties())
         {
             return Result.Invalid<TResponse>("There must be at least one property");
         }
