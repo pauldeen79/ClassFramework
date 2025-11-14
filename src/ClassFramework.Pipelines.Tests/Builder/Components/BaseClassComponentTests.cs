@@ -5,15 +5,16 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
     public class ExecuteAsync : BaseClassComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public async Task Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(command: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
-             .ParamName.ShouldBe("context");
+             .ParamName.ShouldBe("command");
         }
 
         [Fact]
@@ -27,14 +28,15 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
                 enableBuilderInheritance: true,
                 baseClass: null,
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.BaseClass.ShouldBe("SomeClassBuilder");
+            response.BaseClass.ShouldBe("SomeClassBuilder");
         }
 
         [Fact]
@@ -49,14 +51,15 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
                 baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(),
                 isAbstract: true,
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.BaseClass.ShouldBe("SomeClassBuilder");
+            response.BaseClass.ShouldBe("SomeClassBuilder");
         }
 
         [Fact]
@@ -71,14 +74,15 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
                 baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(),
                 isAbstract: false,
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.BaseClass.ShouldBe("BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            response.BaseClass.ShouldBe("BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -94,14 +98,15 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
                 isAbstract: false,
                 baseClassBuilderNameSpace: "BaseBuilders",
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.BaseClass.ShouldBe("BaseBuilders.BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            response.BaseClass.ShouldBe("BaseBuilders.BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -114,14 +119,15 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 enableEntityInheritance: true).WithIsForAbstractBuilder();
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.BaseClass.ShouldBe("MyBaseClassBuilder");
+            response.BaseClass.ShouldBe("MyBaseClassBuilder");
         }
 
         [Fact]
@@ -134,14 +140,15 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
             var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 enableEntityInheritance: true).WithIsForAbstractBuilder();
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.BaseClass.ShouldBe("MyBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            response.BaseClass.ShouldBe("MyBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -157,14 +164,15 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
                 .WithIsForAbstractBuilder()
                 .AddTypenameMappings(new TypenameMappingBuilder("MyBaseClass")
                     .AddMetadata(MetadataNames.CustomBuilderBaseClassTypeName, "xyz.CustomBaseClassBuilder"));
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.BaseClass.ShouldBe("xyz.CustomBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
+            response.BaseClass.ShouldBe("xyz.CustomBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
         [Fact]
@@ -179,17 +187,18 @@ public class BaseClassComponentTests : TestBase<Pipelines.Builder.Components.Bas
                 baseClass: null,
                 enableEntityInheritance: true,
                 builderNameFormatString: "{Error}");
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
             result.ErrorMessage.ShouldBe("Kaboom");
         }
 
-        private static BuilderContext CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+        private static GenerateBuilderCommand CreateCommand(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture);
     }
 }

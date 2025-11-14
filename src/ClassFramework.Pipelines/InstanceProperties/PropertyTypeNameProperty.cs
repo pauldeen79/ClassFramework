@@ -14,6 +14,6 @@ public class PropertyTypeNameProperty : IProperty
             .Add(ResultNames.Context, () => context.GetMappedContextBaseAsync())
             .BuildAsync()
             .ConfigureAwait(false))
-            .OnSuccess(results => results.GetValue<MappedContextBase>(ResultNames.Context).MapTypeName(results.GetValue<Property>(Constants.Instance).TypeName));
+            .OnSuccess(results => results.GetValue<MappedCommandBase>(ResultNames.Context).MapTypeName(results.GetValue<Property>(Constants.Instance).TypeName));
     }
 }

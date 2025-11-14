@@ -5,14 +5,15 @@ public class AddMethodsComponentTests : TestBase<Pipelines.Reflection.Components
     public class ExecuteAsync : AddMethodsComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public async Task Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
-            (await a.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("context");
+            Task a = sut.ExecuteAsync(command: null!, response, CommandService, CancellationToken.None);
+            (await a.ShouldThrowAsync<ArgumentNullException>()).ParamName.ShouldBe("command");
         }
 
         [Fact]
@@ -22,14 +23,15 @@ public class AddMethodsComponentTests : TestBase<Pipelines.Reflection.Components
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var settings = CreateSettingsForReflection();
-            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Methods.Count.ShouldBe(1);
+            response.Methods.Count.ShouldBe(1);
         }
     }
 }

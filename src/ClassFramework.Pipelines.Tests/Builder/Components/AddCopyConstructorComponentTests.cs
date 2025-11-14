@@ -5,15 +5,16 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
     public class ExecuteAsync : AddCopyConstructorComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public async Task Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(command: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
-             .ParamName.ShouldBe("context");
+             .ParamName.ShouldBe("command");
         }
 
         [Theory]
@@ -31,15 +32,16 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
                 isAbstract: hasBaseClass,
                 addCopyConstructor: true,
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeTrue();
             ctor.ChainCall.ShouldBe("base(source)");
             ctor.Parameters.Count.ShouldBe(1);
@@ -60,15 +62,16 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeFalse();
             ctor.ChainCall.ShouldBeEmpty();
             ctor.Parameters.Count.ShouldBe(1);
@@ -99,15 +102,16 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: true);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeTrue();
             ctor.ChainCall.ShouldBe("base(source)");
             ctor.Parameters.Count.ShouldBe(1);
@@ -139,15 +143,16 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeFalse();
             ctor.ChainCall.ShouldBeEmpty();
             ctor.Parameters.Count.ShouldBe(1);
@@ -186,10 +191,11 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
                         .WithTargetType(typeof(int))
                         .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderConstructorInitializeExpression).WithValue("{Error}"))
                 ]);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -214,10 +220,11 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
                         .WithTargetType(typeof(int))
                         .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"))
                 ]);
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -235,15 +242,16 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true).AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "Filter = new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.Filter);" });
         }
@@ -259,15 +267,16 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true, addNullChecks: true).AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "if (source is null) throw new System.ArgumentNullException(nameof(source));", "_filter = new ExpressionFramework.Domain.Builders.Evaluatables.ComposedEvaluatableBuilder(source.Filter);" });
         }
@@ -283,15 +292,16 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true).AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "GroupByFields = new System.Collections.Generic.List<ExpressionFramework.Domain.Builders.ExpressionBuilder>(source.GroupByFields.Select(x => ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(x)));" });
         }
@@ -307,20 +317,21 @@ public class AddCopyConstructorComponentTests : TestBase<Pipelines.Builder.Compo
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true, addNullChecks: true).AddTypenameMappings(CreateExpressionFrameworkTypenameMappings());
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "if (source is null) throw new System.ArgumentNullException(nameof(source));", "_groupByFields = new System.Collections.Generic.List<ExpressionFramework.Domain.Builders.ExpressionBuilder>(source.GroupByFields.Select(x => ExpressionFramework.Domain.Builders.ExpressionBuilderFactory.Create(x)));" });
         }
 
-        private static BuilderContext CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+        private static GenerateBuilderCommand CreateCommand(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture);
     }
 }

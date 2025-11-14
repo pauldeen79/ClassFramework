@@ -5,15 +5,16 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
     public class ExecuteAsync : AddImplicitOperatorComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public async Task Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(command: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
-             .ParamName.ShouldBe("context");
+             .ParamName.ShouldBe("command");
         }
 
         [Fact]
@@ -21,15 +22,16 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(false);
-            var context = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Continue);
-            context.Builder.Methods.ShouldBeEmpty();
+            response.Methods.ShouldBeEmpty();
         }
 
         [Fact]
@@ -37,12 +39,13 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
-            var context = new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync(forceError: true);
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -54,22 +57,23 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
-            var context = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
-            context.Builder.Methods.Single().Operator.ShouldBeTrue();
-            context.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
-            context.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder");
-            context.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
+            response.Methods.Count.ShouldBe(1);
+            response.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
+            response.Methods.Single().Operator.ShouldBeTrue();
+            response.Methods.Single().Parameters.Count.ShouldBe(1);
+            response.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
+            response.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder");
+            response.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -77,22 +81,23 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
         {
             // Arrange
             var settings = new PipelineSettingsBuilder().WithAddImplicitOperatorOnBuilder(true);
-            var context = new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
-            context.Builder.Methods.Single().Operator.ShouldBeTrue();
-            context.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
-            context.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder<T>");
-            context.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
+            response.Methods.Count.ShouldBe(1);
+            response.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
+            response.Methods.Single().Operator.ShouldBeTrue();
+            response.Methods.Single().Parameters.Count.ShouldBe(1);
+            response.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
+            response.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder<T>");
+            response.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -103,22 +108,23 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract();
-            var context = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
-            context.Builder.Methods.Single().Operator.ShouldBeTrue();
-            context.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
-            context.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder<TBuilder, TEntity>");
-            context.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
+            response.Methods.Count.ShouldBe(1);
+            response.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
+            response.Methods.Single().Operator.ShouldBeTrue();
+            response.Methods.Single().Parameters.Count.ShouldBe(1);
+            response.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
+            response.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder<TBuilder, TEntity>");
+            response.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -129,22 +135,23 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract();
-            var context = new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
-            context.Builder.Methods.Single().Operator.ShouldBeTrue();
-            context.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
-            context.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder<TBuilder, TEntity, T>");
-            context.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
+            response.Methods.Count.ShouldBe(1);
+            response.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
+            response.Methods.Single().Operator.ShouldBeTrue();
+            response.Methods.Single().Parameters.Count.ShouldBe(1);
+            response.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
+            response.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder<TBuilder, TEntity, T>");
+            response.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -156,22 +163,23 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract()
                 .WithIsForAbstractBuilder();
-            var context = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
-            context.Builder.Methods.Single().Operator.ShouldBeTrue();
-            context.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
-            context.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder");
-            context.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
+            response.Methods.Count.ShouldBe(1);
+            response.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
+            response.Methods.Single().Operator.ShouldBeTrue();
+            response.Methods.Single().Parameters.Count.ShouldBe(1);
+            response.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
+            response.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder");
+            response.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -183,22 +191,23 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithEnableBuilderInheritance()
                 .WithIsAbstract()
                 .WithIsForAbstractBuilder();
-            var context = new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
-            context.Builder.Methods.Single().Operator.ShouldBeTrue();
-            context.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
-            context.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder");
-            context.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
+            response.Methods.Count.ShouldBe(1);
+            response.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
+            response.Methods.Single().Operator.ShouldBeTrue();
+            response.Methods.Single().Parameters.Count.ShouldBe(1);
+            response.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
+            response.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder");
+            response.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -209,22 +218,23 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithBaseClass(new ClassBuilder().WithName("Dummy"));
-            var context = new BuilderContext(CreateClass(), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateClass(), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
-            context.Builder.Methods.Single().Operator.ShouldBeTrue();
-            context.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
-            context.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder");
-            context.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
+            response.Methods.Count.ShouldBe(1);
+            response.Methods.Single().Name.ShouldBe("SomeNamespace.SomeClass");
+            response.Methods.Single().Operator.ShouldBeTrue();
+            response.Methods.Single().Parameters.Count.ShouldBe(1);
+            response.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
+            response.Methods.Single().Parameters.Single().TypeName.ShouldBe("SomeClassBuilder");
+            response.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
 
         [Fact]
@@ -235,22 +245,23 @@ public class AddImplicitOperatorComponentTests : TestBase<Pipelines.Builder.Comp
                 .WithAddImplicitOperatorOnBuilder(true)
                 .WithEnableBuilderInheritance()
                 .WithBaseClass(new ClassBuilder().WithName("Dummy"));
-            var context = new BuilderContext(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(CreateGenericClass(addProperties: false), settings, CultureInfo.InvariantCulture);
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
-            context.Builder.Methods.Single().Operator.ShouldBeTrue();
-            context.Builder.Methods.Single().Parameters.Count.ShouldBe(1);
-            context.Builder.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
-            context.Builder.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder<T>");
-            context.Builder.Methods.Single().ReturnTypeName.ShouldBe("implicit");
+            response.Methods.Count.ShouldBe(1);
+            response.Methods.Single().Name.ShouldBe("MyNamespace.MyClass<T>");
+            response.Methods.Single().Operator.ShouldBeTrue();
+            response.Methods.Single().Parameters.Count.ShouldBe(1);
+            response.Methods.Single().Parameters.Single().Name.ShouldBe("builder");
+            response.Methods.Single().Parameters.Single().TypeName.ShouldBe("MyClassBuilder<T>");
+            response.Methods.Single().ReturnTypeName.ShouldBe("implicit");
         }
     }
 }

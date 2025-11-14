@@ -1,23 +1,24 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class AddMethodsComponent : IPipelineComponent<InterfaceContext>
+public class AddMethodsComponent : IPipelineComponent<GenerateInterfaceCommand, InterfaceBuilder>
 {
-    public Task<Result> ExecuteAsync(InterfaceContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateInterfaceCommand command, InterfaceBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
+            response = response.IsNotNull(nameof(response));
 
-            if (!context.Settings.CopyMethods)
+            if (!command.Settings.CopyMethods)
             {
                 return Result.Continue();
             }
 
-            context.Builder.AddMethods(context.SourceModel.Methods
-                .Where(x => context.Settings.CopyMethodPredicate is null || context.Settings.CopyMethodPredicate(context.SourceModel, x))
+            response.AddMethods(command.SourceModel.Methods
+                .Where(x => command.Settings.CopyMethodPredicate is null || command.Settings.CopyMethodPredicate(command.SourceModel, x))
                 .Select(x => x.ToBuilder()
-                    .WithReturnTypeName(context.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(context.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))
-                    .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = context.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
-                    .With(y => y.WithNew(context.Settings.UseBuilderAbstractionsTypeConversion && context.Builder.Interfaces.Any() && !context.Builder.Interfaces.Contains(y.ReturnTypeName)))
+                    .WithReturnTypeName(command.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(command.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))
+                    .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = command.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
+                    .With(y => y.WithNew(command.Settings.UseBuilderAbstractionsTypeConversion && response.Interfaces.Any() && !response.Interfaces.Contains(y.ReturnTypeName)))
                 ));
 
             return Result.Success();

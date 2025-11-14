@@ -1,20 +1,21 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class AddPropertiesComponent : IPipelineComponent<InterfaceContext>
+public class AddPropertiesComponent : IPipelineComponent<GenerateInterfaceCommand, InterfaceBuilder>
 {
-    public Task<Result> ExecuteAsync(InterfaceContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateInterfaceCommand command, InterfaceBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
+            response = response.IsNotNull(nameof(response));
 
-            context.Builder.AddProperties
+            response.AddProperties
             (
-                context.GetSourceProperties().Select
+                command.GetSourceProperties().Select
                 (
-                    property => context.CreatePropertyForEntity(property, context.Settings.BuilderAbstractionsTypeConversionMetadataName)
+                    property => command.CreatePropertyForEntity(property, command.Settings.BuilderAbstractionsTypeConversionMetadataName)
                         .WithHasGetter(property.HasGetter)
                         .WithHasInitializer(false)
-                        .WithHasSetter(property.HasSetter && context.Settings.AddSetters)
+                        .WithHasSetter(property.HasSetter && command.Settings.AddSetters)
                 )
             );
 

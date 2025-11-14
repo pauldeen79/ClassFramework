@@ -5,15 +5,16 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
     public class ExecuteAsync : GenericsComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public async Task Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            Task a = sut.ExecuteAsync(command: null!, response, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
-             .ParamName.ShouldBe("context");
+             .ParamName.ShouldBe("command");
         }
 
         [Fact]
@@ -27,14 +28,15 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
                 .Build();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.GenericTypeArguments.ToArray().ShouldBeEquivalentTo(new[] { "T" });
+            response.GenericTypeArguments.ToArray().ShouldBeEquivalentTo(new[] { "T" });
         }
 
         [Fact]
@@ -49,17 +51,18 @@ public class GenericsComponentTests : TestBase<Pipelines.Builder.Components.Gene
                 .Build();
             var sut = CreateSut();
             var settings = CreateSettingsForBuilder();
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where T : class" });
+            response.GenericTypeArgumentConstraints.ToArray().ShouldBeEquivalentTo(new[] { "where T : class" });
         }
 
-        private static BuilderContext CreateContext(TypeBase sourceModel, PipelineSettingsBuilder settings)
-            => new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+        private static GenerateBuilderCommand CreateCommand(TypeBase sourceModel, PipelineSettingsBuilder settings)
+            => new GenerateBuilderCommand(sourceModel, settings, CultureInfo.InvariantCulture);
     }
 }

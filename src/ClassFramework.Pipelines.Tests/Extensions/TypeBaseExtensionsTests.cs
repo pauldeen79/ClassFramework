@@ -134,14 +134,14 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
     public class GetBuilderConstructorProperties : TypeBaseExtensionsTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public void Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
-            Action a = () => sut.GetBuilderConstructorProperties(context: null!);
-            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("context");
+            Action a = () => sut.GetBuilderConstructorProperties(command: null!);
+            a.ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("command");
         }
 
         [Fact]
@@ -150,13 +150,13 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             // Arrange
             var sut = new InterfaceBuilder().WithName("MyClass").Build();
             var settings = CreateSettingsForBuilder();
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
-            Action a = () => sut.GetBuilderConstructorProperties(context);
+            Action a = () => sut.GetBuilderConstructorProperties(command);
             var x = a.ShouldThrow<ArgumentException>();
-            x.ParamName.ShouldBe("context");
-            x.Message.ShouldBe("Cannot get immutable builder constructor properties for type that does not have constructors (Parameter 'context')");
+            x.ParamName.ShouldBe("command");
+            x.Message.ShouldBe("Cannot get immutable builder constructor properties for type that does not have constructors (Parameter 'command')");
         }
 
         [Fact]
@@ -172,10 +172,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 )
                 .Build();
             var settings = CreateSettingsForBuilder();
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
-            var result = sut.GetBuilderConstructorProperties(context);
+            var result = sut.GetBuilderConstructorProperties(command);
 
             // Assert
             result.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
@@ -195,10 +195,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 .AddConstructors(new ConstructorBuilder().WithVisibility(Visibility.Private)) // only private constructor present :)
                 .Build();
             var settings = CreateSettingsForBuilder();
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
-            var result = sut.GetBuilderConstructorProperties(context);
+            var result = sut.GetBuilderConstructorProperties(command);
 
             // Assert
             result.Select(x => x.Name).ShouldBeEmpty();
@@ -219,10 +219,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(int))).BuildTyped(),
                 enableEntityInheritance: true
             );
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
-            var result = sut.GetBuilderConstructorProperties(context);
+            var result = sut.GetBuilderConstructorProperties(command);
 
             // Assert
             result.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
@@ -246,10 +246,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: null,
                 enableEntityInheritance: true
             );
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
-            var result = sut.GetBuilderConstructorProperties(context);
+            var result = sut.GetBuilderConstructorProperties(command);
 
             // Assert
             result.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
@@ -273,10 +273,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: null,
                 enableEntityInheritance: true
             );
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
-            var result = sut.GetBuilderConstructorProperties(context);
+            var result = sut.GetBuilderConstructorProperties(command);
 
             // Assert
             result.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
@@ -286,16 +286,16 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
     public class GetBuilderClassFields : TypeBaseExtensionsTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public async Task Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act & Assert
-            var t = sut.GetBuilderClassFieldsAsync(context: null!, expressionEvaluator, CancellationToken.None);
+            var t = sut.GetBuilderClassFieldsAsync(command: null!, expressionEvaluator, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
-             .ParamName.ShouldBe("context");
+             .ParamName.ShouldBe("command");
         }
 
         [Fact]
@@ -304,10 +304,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
             var settings = CreateSettingsForBuilder();
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
-            var t = sut.GetBuilderClassFieldsAsync(context, evaluator: null!, CancellationToken.None);
+            var t = sut.GetBuilderClassFieldsAsync(command, evaluator: null!, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
              .ParamName.ShouldBe("evaluator");
         }
@@ -330,11 +330,11 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: null,
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = (await sut.GetBuilderClassFieldsAsync(context, expressionEvaluator, CancellationToken.None)).ToArray();
+            var result = (await sut.GetBuilderClassFieldsAsync(command, expressionEvaluator, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ShouldBeEmpty();
@@ -358,11 +358,11 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = (await sut.GetBuilderClassFieldsAsync(context, expressionEvaluator, CancellationToken.None)).ToArray();
+            var result = (await sut.GetBuilderClassFieldsAsync(command, expressionEvaluator, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ShouldBeEmpty();
@@ -387,11 +387,11 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
                 validateArguments: ArgumentValidationType.IValidatableObject
             );
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = (await sut.GetBuilderClassFieldsAsync(context, expressionEvaluator, CancellationToken.None)).ToArray();
+            var result = (await sut.GetBuilderClassFieldsAsync(command, expressionEvaluator, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1" });
@@ -426,11 +426,11 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                         .AddMetadata(MetadataNames.CustomBuilderArgumentType, "MyCustomType")
                 ]
             );
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateBuilderCommand(sut, settings, CultureInfo.InvariantCulture);
             var expressionEvaluator = Fixture.Freeze<IExpressionEvaluator>();
 
             // Act
-            var result = (await sut.GetBuilderClassFieldsAsync(context, expressionEvaluator, CancellationToken.None)).ToArray();
+            var result = (await sut.GetBuilderClassFieldsAsync(command, expressionEvaluator, CancellationToken.None)).ToArray();
 
             // Assert
             result.Select(x => x.Value!.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1", "_property2" });

@@ -5,15 +5,16 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
     public class ExecuteAsync : AddEquatableMembersComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public async Task Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(command: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
-             .ParamName.ShouldBe("context");
+             .ParamName.ShouldBe("command");
         }
 
         [Fact]
@@ -24,14 +25,15 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: false);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Methods.ShouldBeEmpty();
+            response.Methods.ShouldBeEmpty();
         }
 
         [Fact]
@@ -42,10 +44,11 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(entityNameFormatString: "{Error}", implementIEquatable: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -60,14 +63,15 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Equals", "Equals", "GetHashCode", "==", "!=" });
+            response.Methods.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Equals", "Equals", "GetHashCode", "==", "!=" });
         }
 
         [Fact]
@@ -78,16 +82,17 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true, iEquatableItemType: IEquatableItemType.Properties);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Methods.Count(x => x.Name == nameof(GetHashCode)).ShouldBe(1);
-            context.Builder.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
-            context.Builder.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(
+            response.Methods.Count(x => x.Name == nameof(GetHashCode)).ShouldBe(1);
+            response.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            response.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(
                 new[]
                 {
                     "unchecked",
@@ -115,16 +120,17 @@ public class AddEquatableMembersComponentTests : TestBase<Pipelines.Entity.Compo
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(implementIEquatable: true, iEquatableItemType: IEquatableItemType.Fields);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Methods.Count(x => x.Name == nameof(GetHashCode)).ShouldBe(1);
-            context.Builder.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
-            context.Builder.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(
+            response.Methods.Count(x => x.Name == nameof(GetHashCode)).ShouldBe(1);
+            response.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
+            response.Methods.Single(x => x.Name == nameof(GetHashCode)).CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(
                 new[]
                 {
                     "unchecked",

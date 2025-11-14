@@ -1,13 +1,14 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class PartialComponent : IPipelineComponent<InterfaceContext>
+public class PartialComponent : IPipelineComponent<GenerateInterfaceCommand, InterfaceBuilder>
 {
-    public Task<Result> ExecuteAsync(InterfaceContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateInterfaceCommand command, InterfaceBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
+            response = response.IsNotNull(nameof(response));
 
-            context.Builder.WithPartial(context.Settings.CreateAsPartial);
+            response.WithPartial(command.Settings.CreateAsPartial);
 
             return Result.Success();
         }, token);

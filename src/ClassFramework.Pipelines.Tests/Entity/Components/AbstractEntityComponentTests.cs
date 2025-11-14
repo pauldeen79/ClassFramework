@@ -5,15 +5,16 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components
     public class ExecuteAsync : AbstractEntityComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public async Task Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            Task a = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            Task a = sut.ExecuteAsync(command: null!, response, CommandService, CancellationToken.None);
             (await a.ShouldThrowAsync<ArgumentNullException>())
-             .ParamName.ShouldBe("context");
+             .ParamName.ShouldBe("command");
         }
 
         [Fact]
@@ -25,15 +26,16 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components
             var settings = CreateSettingsForEntity(
                 enableEntityInheritance: true,
                 isAbstract: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
-            context.Builder.WithAbstract(false); // we want to make sure that the component updates the property
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
+            response.WithAbstract(false); // we want to make sure that the component updates the property
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Abstract.ShouldBeTrue();
+            response.Abstract.ShouldBeTrue();
         }
 
         [Fact]
@@ -45,15 +47,16 @@ public class AbstractEntityComponentTests : TestBase<Pipelines.Entity.Components
             var settings = CreateSettingsForEntity(
                 enableEntityInheritance: true,
                 isAbstract: false);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
-            context.Builder.WithAbstract(true); // we want to make sure that the component updates the property
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
+            response.WithAbstract(true); // we want to make sure that the component updates the property
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Abstract.ShouldBeFalse();
+            response.Abstract.ShouldBeFalse();
         }
     }
 }

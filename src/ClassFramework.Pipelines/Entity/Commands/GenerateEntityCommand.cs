@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Entity;
+﻿namespace ClassFramework.Pipelines.Entity.Commands;
 
-public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
+public class GenerateEntityCommand(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<TypeBase>(sourceModel, settings, formatProvider)
 {
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
@@ -10,8 +10,6 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
         && Settings.IsAbstract;
 
     protected override string NewCollectionTypeName => Settings.EntityNewCollectionTypeName;
-
-    public ClassBuilder Builder { get; } = new();
 
     public string GetBuilderTypeName(
         string builderInterfaceNamespace,
@@ -137,7 +135,14 @@ public class EntityContext(TypeBase sourceModel, PipelineSettings settings, IFor
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToCamelCase(cultureInfo).GetCsharpFriendlyName()));
 
-    public override object GetResponseBuilder() => Builder;
-
     public override bool SourceModelHasNoProperties() => SourceModel.Properties.Count == 0;
+
+    public override async Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TCommand>(ICommandService commandService, TCommand command, CancellationToken token)
+    {
+        commandService = ArgumentGuard.IsNotNull(commandService, nameof(commandService));
+        command = ArgumentGuard.IsNotNull(command, nameof(command));
+
+        return (await commandService.ExecuteAsync<TCommand, ClassBuilder>(command, token).ConfigureAwait(false))
+            .TryCast<TypeBaseBuilder>();
+    }
 }

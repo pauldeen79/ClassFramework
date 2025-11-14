@@ -1,13 +1,14 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class PartialComponent : IPipelineComponent<EntityContext>
+public class PartialComponent : IPipelineComponent<GenerateEntityCommand, ClassBuilder>
 {
-    public Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateEntityCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
+            response = response.IsNotNull(nameof(response));
 
-            context.Builder.WithPartial(context.Settings.CreateAsPartial);
+            response.WithPartial(command.Settings.CreateAsPartial);
 
             return Result.Success();
         }, token);

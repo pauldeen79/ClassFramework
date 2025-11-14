@@ -1,13 +1,14 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class AddGenericTypeArgumentsComponent : IPipelineComponent<ReflectionContext>
+public class AddGenericTypeArgumentsComponent : IPipelineComponent<GenerateTypeFromReflectionCommand, TypeBaseBuilder>
 {
-    public Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand command, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
+            response = response.IsNotNull(nameof(response));
 
-            context.Builder.AddGenericTypeArguments(context.SourceModel.GetGenericTypeArgumentTypeNames());
+            response.AddGenericTypeArguments(command.SourceModel.GetGenericTypeArgumentTypeNames());
 
             return Result.Success();
         }, token);

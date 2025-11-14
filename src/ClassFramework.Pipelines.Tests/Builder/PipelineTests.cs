@@ -4,7 +4,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
 {
     public class ExecuteAsync : PipelineTests
     {
-        private static BuilderContext CreateContext(bool addProperties = true, bool createAsObservable = false, bool useBuilderLazyValues = false)
+        private static GenerateBuilderCommand CreateCommand(bool addProperties = true, bool createAsObservable = false, bool useBuilderLazyValues = false)
             => new(
                 CreateGenericClass(addProperties),
                 CreateSettingsForBuilder
@@ -15,8 +15,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     createAsObservable: createAsObservable,
                     useBuilderLazyValues: useBuilderLazyValues
                 ),
-                CultureInfo.InvariantCulture,
-                CancellationToken.None
+                CultureInfo.InvariantCulture
             );
 
         [Fact]
@@ -24,14 +23,15 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Partial.ShouldBeTrue();
+            result.Value.ShouldNotBeNull();
+            result.Value.Partial.ShouldBeTrue();
         }
 
         [Fact]
@@ -39,15 +39,16 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Name.ShouldBe("MyClassBuilder");
-            context.Builder.Namespace.ShouldBe("MyNamespace.Builders");
+            result.Value.ShouldNotBeNull();
+            result.Value.Name.ShouldBe("MyClassBuilder");
+            result.Value.Namespace.ShouldBe("MyNamespace.Builders");
         }
 
         [Fact]
@@ -55,16 +56,17 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Properties.Select(x => x.HasSetter).ShouldAllBe(x => x == true);
-            context.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
-            context.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.String", "System.Collections.Generic.List<System.String>" });
+            result.Value.ShouldNotBeNull();
+            result.Value.Properties.Select(x => x.HasSetter).ShouldAllBe(x => x == true);
+            result.Value.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
+            result.Value.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.String", "System.Collections.Generic.List<System.String>" });
         }
 
         [Fact]
@@ -72,16 +74,17 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(useBuilderLazyValues: true);
+            var command = CreateCommand(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Properties.Select(x => x.HasSetter).ShouldAllBe(x => x == true);
-            context.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
-            context.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Func<System.String>", "System.Collections.Generic.List<System.Func<System.String>>" });
+            result.Value.ShouldNotBeNull();
+            result.Value.Properties.Select(x => x.HasSetter).ShouldAllBe(x => x == true);
+            result.Value.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "Property1", "Property2" });
+            result.Value.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Func<System.String>", "System.Collections.Generic.List<System.Func<System.String>>" });
         }
 
         [Fact]
@@ -89,15 +92,16 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Constructors.ShouldHaveSingleItem();
-            context.Builder.Constructors.Single().CodeStatements
+            result.Value.ShouldNotBeNull();
+            result.Value.Constructors.ShouldHaveSingleItem();
+            result.Value.Constructors.Single().CodeStatements
                 .OfType<StringCodeStatementBuilder>()
                 .Select(x => x.Statement)
                 .ToArray()
@@ -114,15 +118,16 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(useBuilderLazyValues: true);
+            var command = CreateCommand(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Constructors.ShouldHaveSingleItem();
-            context.Builder.Constructors.Single().CodeStatements
+            result.Value.ShouldNotBeNull();
+            result.Value.Constructors.ShouldHaveSingleItem();
+            result.Value.Constructors.Single().CodeStatements
                 .OfType<StringCodeStatementBuilder>()
                 .Select(x => x.Statement)
                 .ToArray()
@@ -139,14 +144,15 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.GenericTypeArguments.ShouldNotBeEmpty();
+            result.Value.ShouldNotBeNull();
+            result.Value.GenericTypeArguments.ShouldNotBeEmpty();
         }
 
         [Fact]
@@ -154,14 +160,15 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.GenericTypeArgumentConstraints.ShouldNotBeEmpty();
+            result.Value.ShouldNotBeNull();
+            result.Value.GenericTypeArgumentConstraints.ShouldNotBeEmpty();
         }
 
         [Fact]
@@ -169,14 +176,15 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Attributes.ShouldNotBeEmpty();
+            result.Value.ShouldNotBeNull();
+            result.Value.Attributes.ShouldNotBeEmpty();
         }
 
         [Fact]
@@ -184,15 +192,16 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count(x => x.Name == "Build").ShouldBe(1);
-            var method = context.Builder.Methods.Single(x => x.Name == "Build");
+            result.Value.ShouldNotBeNull();
+            result.Value.Methods.Count(x => x.Name == "Build").ShouldBe(1);
+            var method = result.Value.Methods.Single(x => x.Name == "Build");
             method.ReturnTypeName.ShouldBe("MyNamespace.MyClass");
             method.ReturnTypeGenericTypeArguments.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "T" });
             method.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
@@ -204,15 +213,16 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(useBuilderLazyValues: true);
+            var command = CreateCommand(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count(x => x.Name == "Build").ShouldBe(1);
-            var method = context.Builder.Methods.Single(x => x.Name == "Build");
+            result.Value.ShouldNotBeNull();
+            result.Value.Methods.Count(x => x.Name == "Build").ShouldBe(1);
+            var method = result.Value.Methods.Single(x => x.Name == "Build");
             method.ReturnTypeName.ShouldBe("MyNamespace.MyClass");
             method.ReturnTypeGenericTypeArguments.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "T" });
             method.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
@@ -224,20 +234,21 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count(x => x.Name == "WithProperty1").ShouldBe(1);
-            var method = context.Builder.Methods.Single(x => x.Name == "WithProperty1");
+            result.Value.ShouldNotBeNull();
+            result.Value.Methods.Count(x => x.Name == "WithProperty1").ShouldBe(1);
+            var method = result.Value.Methods.Single(x => x.Name == "WithProperty1");
             method.ReturnTypeName.ShouldBe("MyNamespace.Builders.MyClassBuilder<T>");
             method.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "Property1 = property1;", "return this;" });
 
-            context.Builder.Methods.Where(x => x.Name == "WithProperty2").ShouldBeEmpty(); //only for the non-collection property
+            result.Value.Methods.Where(x => x.Name == "WithProperty2").ShouldBeEmpty(); //only for the non-collection property
         }
 
         [Fact]
@@ -245,15 +256,16 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(useBuilderLazyValues: true);
+            var command = CreateCommand(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Methods.Count(x => x.Name == "WithProperty1").ShouldBe(2);
-            var lazyMethod = context.Builder.Methods.First(x => x.Name == "WithProperty1");
+            result.Value.ShouldNotBeNull();
+            result.Value.Methods.Count(x => x.Name == "WithProperty1").ShouldBe(2);
+            var lazyMethod = result.Value.Methods.First(x => x.Name == "WithProperty1");
             lazyMethod.ReturnTypeName.ShouldBe("MyNamespace.Builders.MyClassBuilder<T>");
             lazyMethod.Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.Func<System.String>" });
             lazyMethod.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
@@ -266,7 +278,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "Property1 = property1;",
                     "return this;"
                 });
-            var nonLazyMethod = context.Builder.Methods.Last(x => x.Name == "WithProperty1");
+            var nonLazyMethod = result.Value.Methods.Last(x => x.Name == "WithProperty1");
             nonLazyMethod.ReturnTypeName.ShouldBe("MyNamespace.Builders.MyClassBuilder<T>");
             nonLazyMethod.Parameters.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo(new[] { "System.String" });
             nonLazyMethod.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
@@ -280,7 +292,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "return this;"
                 });
 
-            context.Builder.Methods.Where(x => x.Name == "WithProperty2").ShouldBeEmpty(); //only for the non-collection property
+            result.Value.Methods.Where(x => x.Name == "WithProperty2").ShouldBeEmpty(); //only for the non-collection property
         }
 
         [Fact]
@@ -288,14 +300,15 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext();
+            var command = CreateCommand();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            var methods = context.Builder.Methods.Where(x => x.Name == "AddProperty2").ToArray();
+            result.Value.ShouldNotBeNull();
+            var methods = result.Value.Methods.Where(x => x.Name == "AddProperty2").ToArray();
             methods.Count(x => x.Name == "AddProperty2").ShouldBe(2);
             methods.Select(x => x.ReturnTypeName).ToArray().ShouldBeEquivalentTo(new[] { "MyNamespace.Builders.MyClassBuilder<T>", "MyNamespace.Builders.MyClassBuilder<T>" });
             methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).ToArray().ShouldBeEquivalentTo(new[] { "System.Collections.Generic.IEnumerable<System.String>", "System.String[]" });
@@ -316,14 +329,15 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(useBuilderLazyValues: true);
+            var command = CreateCommand(useBuilderLazyValues: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            var methods = context.Builder.Methods.Where(x => x.Name == "AddProperty2").ToArray();
+            result.Value.ShouldNotBeNull();
+            var methods = result.Value.Methods.Where(x => x.Name == "AddProperty2").ToArray();
             methods.Count(x => x.Name == "AddProperty2").ShouldBe(4);
             methods.Select(x => x.ReturnTypeName).ShouldAllBe(x => x == "MyNamespace.Builders.MyClassBuilder<T>");
             methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).ToArray().ShouldBeEquivalentTo(new[] { "System.Collections.Generic.IEnumerable<System.Func<System.String>>", "System.Func<System.String>[]", "System.Collections.Generic.IEnumerable<System.String>", "System.String[]" });
@@ -347,15 +361,16 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(createAsObservable: true);
+            var command = CreateCommand(createAsObservable: true);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            context.Builder.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1", "_property2", "PropertyChanged" });
-            context.Builder.Methods.Count(x => x.Name == "HandlePropertyChanged").ShouldBe(1);
+            result.Value.ShouldNotBeNull();
+            result.Value.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "_property1", "_property2", "PropertyChanged" });
+            result.Value.Methods.Count(x => x.Name == "HandlePropertyChanged").ShouldBe(1);
         }
 
         [Fact]
@@ -363,10 +378,10 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
         {
             // Arrange
             var sut = CreateSut();
-            var context = CreateContext(addProperties: false);
+            var command = CreateCommand(addProperties: false);
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Invalid);
@@ -384,26 +399,27 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             var namespaceMappings = CreateNamespaceMappings();
             var typenameMappings = CreateTypenameMappings();
             var settings = CreateSettingsForBuilder(addCopyConstructor: true, typenameMappings: typenameMappings, namespaceMappings: namespaceMappings, addNullChecks: true, enableNullableReferenceTypes: true);
-            var context = CreateContext(model, settings);
+            var command = CreateContext(model, settings);
 
             var sut = CreateSut();
 
             // Act
-            var result = await sut.ExecuteAsync<BuilderContext, ClassBuilder>(context, CancellationToken.None);
+            var result = await sut.ExecuteAsync<GenerateBuilderCommand, ClassBuilder>(command);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
 
-            context.Builder.Name.ShouldBe("MyClassBuilder");
-            context.Builder.Namespace.ShouldBe("MyNamespace.Builders");
+            result.Value.ShouldNotBeNull();
+            result.Value.Name.ShouldBe("MyClassBuilder");
+            result.Value.Namespace.ShouldBe("MyNamespace.Builders");
 
-            context.Builder.Methods.Count(x => x.Name == "Build").ShouldBe(1);
-            var buildMethod = context.Builder.Methods.Single(x => x.Name == "Build");
+            result.Value.Methods.Count(x => x.Name == "Build").ShouldBe(1);
+            var buildMethod = result.Value.Methods.Single(x => x.Name == "Build");
             buildMethod.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             buildMethod.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo(new[] { "return new MyNamespace.MyClass { Property1 = Property1, Property2 = Property2, Property3 = Property3, Property4 = Property4, Property5 = Property5?.Build()!, Property6 = Property6?.Build()!, Property7 = new System.Collections.Generic.List<MySourceNamespace.MyClass>(Property7.Select(x => x.Build()!)), Property8 = new System.Collections.Generic.List<MySourceNamespace.MyClass>(Property8.Select(x => x.Build()!)) };" });
 
-            context.Builder.Constructors.Count(x => x.Parameters.Count == 1).ShouldBe(1);
-            var copyConstructor = context.Builder.Constructors.Single(x => x.Parameters.Count == 1);
+            result.Value.Constructors.Count(x => x.Parameters.Count == 1).ShouldBe(1);
+            var copyConstructor = result.Value.Constructors.Single(x => x.Parameters.Count == 1);
             copyConstructor.CodeStatements.ShouldAllBe(x => x is StringCodeStatementBuilder);
             copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).ToArray().ShouldBeEquivalentTo
             (
@@ -424,7 +440,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             );
 
             // non-nullable non-value type properties have a backing field, so we can do null checks
-            context.Builder.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo
+            result.Value.Fields.Select(x => x.Name).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -433,7 +449,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "_property7"
                 }
             );
-            context.Builder.Fields.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
+            result.Value.Fields.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -442,9 +458,9 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "System.Collections.Generic.List<MyNamespace.Builders.MyClassBuilder>"
                 }
             );
-            context.Builder.Fields.Select(x => x.IsNullable).ShouldAllBe(x => x == false);
+            result.Value.Fields.Select(x => x.IsNullable).ShouldAllBe(x => x == false);
 
-            context.Builder.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo
+            result.Value.Properties.Select(x => x.Name).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -458,7 +474,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "Property8"
                 }
             );
-            context.Builder.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
+            result.Value.Properties.Select(x => x.TypeName).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -472,7 +488,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
                     "System.Collections.Generic.List<MyNamespace.Builders.MyClassBuilder>"
                 }
             );
-            context.Builder.Properties.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo
+            result.Value.Properties.Select(x => x.IsNullable).ToArray().ShouldBeEquivalentTo
             (
                 new[]
                 {
@@ -488,7 +504,7 @@ public class PipelineTests : IntegrationTestBase<ICommandService>
             );
         }
 
-        private static BuilderContext CreateContext(TypeBase model, PipelineSettingsBuilder settings)
-            => new(model, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+        private static GenerateBuilderCommand CreateContext(TypeBase model, PipelineSettingsBuilder settings)
+            => new(model, settings, CultureInfo.InvariantCulture);
     }
 }

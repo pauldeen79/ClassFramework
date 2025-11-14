@@ -1,25 +1,26 @@
 ﻿namespace ClassFramework.Pipelines.Reflection.Components;
 
-public class SetVisibilityComponent : IPipelineComponent<ReflectionContext>
+public class SetVisibilityComponent : IPipelineComponent<GenerateTypeFromReflectionCommand, TypeBaseBuilder>
 {
-    public Task<Result> ExecuteAsync(ReflectionContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateTypeFromReflectionCommand command, TypeBaseBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
+            response = response.IsNotNull(nameof(response));
 
-            context.Builder.WithVisibility(GetVisibility(context));
+            response.WithVisibility(GetVisibility(command));
 
             return Result.Success();
         }, token);
 
-    private static Visibility GetVisibility(ReflectionContext context)
+    private static Visibility GetVisibility(GenerateTypeFromReflectionCommand command)
     {
-        if (context.SourceModel.IsPublic)
+        if (command.SourceModel.IsPublic)
         {
             return Visibility.Public;
         }
 
-        return context.SourceModel.IsNotPublic
+        return command.SourceModel.IsNotPublic
             ? Visibility.Internal
             : Visibility.Private;
     }

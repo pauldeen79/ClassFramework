@@ -1,90 +1,91 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Components;
 
-public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<BuilderContext>
+public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpressionDumper csharpExpressionDumper) : IPipelineComponent<GenerateBuilderCommand, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
     private readonly ICsharpExpressionDumper _csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
 
-    public async Task<Result> ExecuteAsync(BuilderContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateBuilderCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
+        response = response.IsNotNull(nameof(response));
 
-        if (context.Settings.EnableBuilderInheritance && context.Settings.IsAbstract)
+        if (command.Settings.EnableBuilderInheritance && command.Settings.IsAbstract)
         {
-            if (context.Settings.IsForAbstractBuilder)
+            if (command.Settings.IsForAbstractBuilder)
             {
-                context.Builder.AddMethods(new MethodBuilder()
-                    .WithName(context.Settings.BuildMethodName)
+                response.AddMethods(new MethodBuilder()
+                    .WithName(command.Settings.BuildMethodName)
                     .WithAbstract()
-                    .WithReturnTypeName(context.BuildReturnTypeName)
-                    .AddReturnTypeGenericTypeArguments(context.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x))));
+                    .WithReturnTypeName(command.BuildReturnTypeName)
+                    .AddReturnTypeGenericTypeArguments(command.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x))));
             }
             else
             {
-                context.Builder.AddMethods(new MethodBuilder()
-                    .WithName(context.Settings.BuildMethodName)
+                response.AddMethods(new MethodBuilder()
+                    .WithName(command.Settings.BuildMethodName)
                     .WithOverride()
-                    .WithReturnTypeName(context.BuildReturnTypeName)
-                    .AddReturnTypeGenericTypeArguments(context.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
-                    .AddCodeStatements($"return {context.Settings.BuildTypedMethodName}();"));
+                    .WithReturnTypeName(command.BuildReturnTypeName)
+                    .AddReturnTypeGenericTypeArguments(command.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
+                    .AddCodeStatements($"return {command.Settings.BuildTypedMethodName}();"));
 
-                context.Builder.AddMethods(new MethodBuilder()
-                    .WithName(context.Settings.BuildTypedMethodName)
+                response.AddMethods(new MethodBuilder()
+                    .WithName(command.Settings.BuildTypedMethodName)
                     .WithAbstract()
                     .WithReturnTypeName("TEntity"));
             }
 
-            return await AddExplicitInterfaceImplementations(context, token).ConfigureAwait(false);
+            return await AddExplicitInterfaceImplementationsAsync(command, response, token).ConfigureAwait(false);
         }
 
-        var instanciationResult = await context.CreateEntityInstanciationAsync(_evaluator, _csharpExpressionDumper, string.Empty, token).ConfigureAwait(false);
+        var instanciationResult = await command.CreateEntityInstanciationAsync(_evaluator, _csharpExpressionDumper, string.Empty, token).ConfigureAwait(false);
         if (!instanciationResult.IsSuccessful())
         {
             return instanciationResult;
         }
 
-        context.Builder.AddMethods(new MethodBuilder()
-            .WithName(GetName(context))
-            .WithAbstract(context.IsBuilderForAbstractEntity)
-            .WithOverride(context.IsBuilderForOverrideEntity)
-            .WithReturnTypeName(GetBuilderBuildMethodReturnType(context, context.BuildReturnTypeName))
-            .AddReturnTypeGenericTypeArguments(context.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
-            .AddCodeStatements(context.CreatePragmaWarningDisableStatementsForBuildMethod())
+        response.AddMethods(new MethodBuilder()
+            .WithName(GetName(command))
+            .WithAbstract(command.IsBuilderForAbstractEntity)
+            .WithOverride(command.IsBuilderForOverrideEntity)
+            .WithReturnTypeName(GetBuilderBuildMethodReturnType(command, command.BuildReturnTypeName))
+            .AddReturnTypeGenericTypeArguments(command.SourceModel.GenericTypeArguments.Select(x => new PropertyBuilder().WithName("Dummy").WithTypeName(x)))
+            .AddCodeStatements(command.CreatePragmaWarningDisableStatementsForBuildMethod())
             .AddCodeStatements
             (
-                context.IsBuilderForAbstractEntity
+                command.IsBuilderForAbstractEntity
                     ? []
                     : [$"return {instanciationResult.Value};"]
             )
-            .AddCodeStatements(context.CreatePragmaWarningRestoreStatementsForBuildMethod()));
+            .AddCodeStatements(command.CreatePragmaWarningRestoreStatementsForBuildMethod()));
 
-        if (context.IsBuilderForAbstractEntity)
+        if (command.IsBuilderForAbstractEntity)
         {
-            var baseClass = context.Settings.BaseClass ?? context.SourceModel;
-            context.Builder.AddMethods(new MethodBuilder()
-                .WithName(context.Settings.BuildMethodName)
+            var baseClass = command.Settings.BaseClass ?? command.SourceModel;
+            response.AddMethods(new MethodBuilder()
+                .WithName(command.Settings.BuildMethodName)
                 .WithOverride()
                 .WithReturnTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}")
-                .AddCodeStatements($"return {context.Settings.BuildTypedMethodName}();"));
+                .AddCodeStatements($"return {command.Settings.BuildTypedMethodName}();"));
         }
 
-        return await AddExplicitInterfaceImplementations(context, token).ConfigureAwait(false);
+        return await AddExplicitInterfaceImplementationsAsync(command, response, token).ConfigureAwait(false);
     }
 
-    private async Task<Result> AddExplicitInterfaceImplementations(BuilderContext context, CancellationToken token)
+    private async Task<Result> AddExplicitInterfaceImplementationsAsync(GenerateBuilderCommand command, ClassBuilder response, CancellationToken token)
     {
-        if (!context.Settings.UseBuilderAbstractionsTypeConversion)
+        if (!command.Settings.UseBuilderAbstractionsTypeConversion)
         {
             return Result.Success();
         }
 
-        var interfaces = await context.GetInterfaceResultsAsync(
-            (x, y) => new { EntityName = x, BuilderName = context.Settings.UseCrossCuttingInterfaces
+        var interfaces = await command.GetInterfaceResultsAsync(
+            (x, y) => new { EntityName = x, BuilderName = command.Settings.UseCrossCuttingInterfaces
                 ? typeof(IBuilder<object>).ReplaceGenericTypeName(x)
                 : y.ToString() },
-            x => new { EntityName = x, BuilderName = context.Settings.UseCrossCuttingInterfaces
+            x => new { EntityName = x, BuilderName = command.Settings.UseCrossCuttingInterfaces
                 ? typeof(IBuilder<object>).ReplaceGenericTypeName(x)
-                : context.MapTypeName(x.FixTypeName()) },
+                : command.MapTypeName(x.FixTypeName()) },
             _evaluator,
             false,
             token).ConfigureAwait(false);
@@ -95,14 +96,14 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
             return error;
         }
 
-        var methodName = context.Settings.EnableBuilderInheritance
-            && context.Settings.IsAbstract
-            && context.Settings.IsForAbstractBuilder
-                ? context.Settings.BuildMethodName
-                : GetName(context);
+        var methodName = command.Settings.EnableBuilderInheritance
+            && command.Settings.IsAbstract
+            && command.Settings.IsForAbstractBuilder
+                ? command.Settings.BuildMethodName
+                : GetName(command);
 
-        context.Builder.AddMethods(interfaces.Select(x => new MethodBuilder()
-            .WithName(context.Settings.BuildMethodName)
+        response.AddMethods(interfaces.Select(x => new MethodBuilder()
+            .WithName(command.Settings.BuildMethodName)
             .WithReturnTypeName(x.Value!.EntityName)
             .WithExplicitInterfaceName(x.Value!.BuilderName)
             .AddCodeStatements($"return {methodName}();")));
@@ -110,13 +111,13 @@ public class AddBuildMethodComponent(IExpressionEvaluator evaluator, ICsharpExpr
         return Result.Success();
     }
 
-    private static string GetName(BuilderContext context)
-        => context.IsBuilderForAbstractEntity || context.IsBuilderForOverrideEntity
-            ? context.Settings.BuildTypedMethodName
-            : context.Settings.BuildMethodName;
+    private static string GetName(GenerateBuilderCommand command)
+        => command.IsBuilderForAbstractEntity || command.IsBuilderForOverrideEntity
+            ? command.Settings.BuildTypedMethodName
+            : command.Settings.BuildMethodName;
 
-    private static string GetBuilderBuildMethodReturnType(BuilderContext context, string returnType)
-        => context.IsBuilderForAbstractEntity
+    private static string GetBuilderBuildMethodReturnType(GenerateBuilderCommand command, string returnType)
+        => command.IsBuilderForAbstractEntity
             ? "TEntity"
             : returnType;
 }

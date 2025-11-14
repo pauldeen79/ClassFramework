@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines.BuilderExtension;
+﻿namespace ClassFramework.Pipelines.BuilderExtension.Commands;
 
-public class BuilderExtensionContext(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider, CancellationToken cancellationToken) : ContextBase<TypeBase>(sourceModel, settings, formatProvider, cancellationToken)
+public class GenerateBuilderExtensionCommand(TypeBase sourceModel, PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<TypeBase>(sourceModel, settings, formatProvider)
 {
     private const string Instance = "instance";
 
@@ -8,8 +8,6 @@ public class BuilderExtensionContext(TypeBase sourceModel, PipelineSettings sett
 
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
-
-    public ClassBuilder Builder { get; } = new();
 
     public string GetReturnTypeForFluentMethod(string builderNamespace, string builderName)
         => $"{builderNamespace.AppendWhenNotNullOrEmpty(".")}{builderName}{SourceModel.GetGenericTypeArgumentsString()}";
@@ -58,7 +56,14 @@ public class BuilderExtensionContext(TypeBase sourceModel, PipelineSettings sett
             );
     }
 
-    public override object GetResponseBuilder() => Builder;
-
     public override bool SourceModelHasNoProperties() => SourceModel.Properties.Count == 0;
+
+    public override async Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TCommand>(ICommandService commandService, TCommand command, CancellationToken token)
+    {
+        commandService = ArgumentGuard.IsNotNull(commandService, nameof(commandService));
+        command = ArgumentGuard.IsNotNull(command, nameof(command));
+
+        return (await commandService.ExecuteAsync<TCommand, ClassBuilder>(command, token).ConfigureAwait(false))
+            .TryCast<TypeBaseBuilder>();
+    }
 }

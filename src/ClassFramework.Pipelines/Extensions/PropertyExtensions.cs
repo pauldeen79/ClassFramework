@@ -2,12 +2,12 @@
 
 public static class PropertyExtensions
 {
-    public static string GetDefaultValue(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, MappedContextBase context)
+    public static string GetDefaultValue(this Property property, ICsharpExpressionDumper csharpExpressionDumper, string typeName, MappedCommandBase command)
     {
         csharpExpressionDumper = csharpExpressionDumper.IsNotNull(nameof(csharpExpressionDumper));
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
 
-        var suffix = !property.IsValueType && !property.IsNullable && context.Settings.EnableNullableReferenceTypes
+        var suffix = !property.IsValueType && !property.IsNullable && command.Settings.EnableNullableReferenceTypes
             ? "!"
             : string.Empty;
 
@@ -23,7 +23,7 @@ public static class PropertyExtensions
             return $"{csharpExpressionDumper.Dump(value)}{suffix}";
         }
 
-        var metadata = context.GetMappingMetadata(property.TypeName).ToArray();
+        var metadata = command.GetMappingMetadata(property.TypeName).ToArray();
 
         var md = metadata.LastOrDefault(x => x.Name == MetadataNames.CustomBuilderDefaultValue);
         if (md is not null && md.Value is not null)
@@ -38,11 +38,11 @@ public static class PropertyExtensions
             return $"{csharpExpressionDumper.Dump(value)}{suffix}";
         }
 
-        var useBuilderLazyValues = context.UseBuilderLazyValues(metadata);
+        var useBuilderLazyValues = command.UseBuilderLazyValues(metadata);
         var lazyPrefix = useBuilderLazyValues.GetLazyPrefix(typeName);
         var lazySuffix = useBuilderLazyValues.GetLazySuffix();
 
-        return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, context.Settings.EnableNullableReferenceTypes, lazyPrefix, lazySuffix);
+        return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, command.Settings.EnableNullableReferenceTypes, lazyPrefix, lazySuffix);
     }
 
     public static string GetNullCheckSuffix(this Property property, string name, bool addNullChecks, IType sourceModel)
@@ -98,21 +98,21 @@ public static class PropertyExtensions
 
     public static async Task<Result<GenericFormattableString>> GetBuilderConstructorInitializerAsync<TSourceModel>(
         this Property property,
-        ContextBase<TSourceModel> context,
+        CommandBase<TSourceModel> command,
         object parentChildContext,
         string mappedTypeName,
-        string newCollectionTypeName,
         string metadataName,
-        IExpressionEvaluator evaluator)
+        IExpressionEvaluator evaluator,
+        CancellationToken cancellationToken)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
-        newCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
         metadataName = metadataName.IsNotNull(nameof(metadataName));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-        var builderArgumentTypeResult = await GetBuilderArgumentTypeNameAsync(property, context, parentChildContext, mappedTypeName, evaluator, context.CancellationToken).ConfigureAwait(false);
+        var builderArgumentTypeResult = await GetBuilderArgumentTypeNameAsync(property, command, parentChildContext, mappedTypeName, evaluator, cancellationToken)
+            .ConfigureAwait(false);
         if (!builderArgumentTypeResult.IsSuccessful())
         {
             return builderArgumentTypeResult;
@@ -120,18 +120,19 @@ public static class PropertyExtensions
 
         var customBuilderConstructorInitializeExpression = string.IsNullOrEmpty(metadataName)
             ? string.Empty
-            : context
+            : command
                 .GetMappingMetadata(property.TypeName)
                 .GetStringValue(metadataName);
 
-        var result = await evaluator.EvaluateInterpolatedStringAsync(customBuilderConstructorInitializeExpression, context.FormatProvider, parentChildContext, context.CancellationToken).ConfigureAwait(false);
+        var result = await evaluator.EvaluateInterpolatedStringAsync(customBuilderConstructorInitializeExpression, command.FormatProvider, parentChildContext, cancellationToken)
+            .ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
         }
 
         return Result.Success<GenericFormattableString>(builderArgumentTypeResult.Value!.ToString()
-            .FixCollectionTypeName(newCollectionTypeName)
+            .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)
             .GetCollectionInitializeStatement(result.Value?.ToString().Replace($"source.{PlaceholderNames.NamePlaceholder}", "x").Replace(PlaceholderNames.NamePlaceholder, property.Name) ?? string.Empty).Replace(PlaceholderNames.NamePlaceholder, property.Name)
             .GetCsharpFriendlyTypeName());
     }
@@ -144,35 +145,35 @@ public static class PropertyExtensions
 
     public static Task<Result<GenericFormattableString>> GetBuilderArgumentTypeNameAsync<TSourceModel>(
         this Property property,
-        ContextBase<TSourceModel> context,
+        CommandBase<TSourceModel> command,
         object parentChildContext,
         string mappedTypeName,
         IExpressionEvaluator evaluator,
         CancellationToken token)
-        => GetBuilderArgumentTypeNameAsync(property, context, parentChildContext, mappedTypeName, evaluator, false, token);
+        => GetBuilderArgumentTypeNameAsync(property, command, parentChildContext, mappedTypeName, evaluator, false, token);
 
     public static async Task<Result<GenericFormattableString>> GetBuilderArgumentTypeNameAsync<TSourceModel>(
         this Property property,
-        ContextBase<TSourceModel> context,
+        CommandBase<TSourceModel> command,
         object parentChildContext,
         string mappedTypeName,
         IExpressionEvaluator evaluator,
         bool forceNonLazy,
         CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-        var metadata = context.GetMappingMetadata(property.TypeName).ToArray();
+        var metadata = command.GetMappingMetadata(property.TypeName).ToArray();
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderNamespace);
 
         if (!string.IsNullOrEmpty(ns))
         {
-            var builderName = metadata.GetStringValue(MetadataNames.CustomBuilderName, ContextBase.DefaultBuilderName);
+            var builderName = metadata.GetStringValue(MetadataNames.CustomBuilderName, CommandBase.DefaultBuilderName);
             var newFullName = $"{ns}.{builderName}";
-            var useBuilderLazyValues = context.UseBuilderLazyValues(metadata);
+            var useBuilderLazyValues = command.UseBuilderLazyValues(metadata);
             if (property.TypeName.FixTypeName().IsCollectionTypeName())
             {
                 newFullName = GetFullNameForCollectionPropertyWithCustomBuilderNamespace(property, newFullName, useBuilderLazyValues);
@@ -185,13 +186,13 @@ public static class PropertyExtensions
             return await evaluator.EvaluateInterpolatedStringAsync
             (
                 newFullName,
-                context.FormatProvider,
+                command.FormatProvider,
                 parentChildContext,
                 token
             ).ConfigureAwait(false);
         }
 
-        if (!forceNonLazy && context.UseBuilderLazyValues(metadata))
+        if (!forceNonLazy && command.UseBuilderLazyValues(metadata))
         {
             var builderArgumentType = metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, DefaultBuilderArgumentType);
             if (property.TypeName.FixTypeName().IsCollectionTypeName())
@@ -206,7 +207,7 @@ public static class PropertyExtensions
             return await evaluator.EvaluateInterpolatedStringAsync
             (
                 builderArgumentType,
-                context.FormatProvider,
+                command.FormatProvider,
                 parentChildContext,
                 token
             ).ConfigureAwait(false);
@@ -216,7 +217,7 @@ public static class PropertyExtensions
         return await evaluator.EvaluateInterpolatedStringAsync
         (
             metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, mappedTypeName),
-            context.FormatProvider,
+            command.FormatProvider,
             parentChildContext,
             token
         ).ConfigureAwait(false);
@@ -269,9 +270,9 @@ public static class PropertyExtensions
         }
     }
 
-    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeNameAsync(this Property property, BuilderContext context, IExpressionEvaluator evaluator, CancellationToken token)
+    public static async Task<Result<GenericFormattableString>> GetBuilderParentTypeNameAsync(this Property property, GenerateBuilderCommand command, IExpressionEvaluator evaluator, CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
 
         if (string.IsNullOrEmpty(property.ParentTypeFullName))
@@ -279,11 +280,11 @@ public static class PropertyExtensions
             return Result.Success<GenericFormattableString>(property.ParentTypeFullName);
         }
 
-        var metadata = context.GetMappingMetadata(property.ParentTypeFullName).ToArray();
+        var metadata = command.GetMappingMetadata(property.ParentTypeFullName).ToArray();
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeNamespace);
         if (string.IsNullOrEmpty(ns))
         {
-            return Result.Success<GenericFormattableString>(context.MapTypeName(property.ParentTypeFullName.FixTypeName()));
+            return Result.Success<GenericFormattableString>(command.MapTypeName(property.ParentTypeFullName.FixTypeName()));
         }
 
         var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ClassName(property.ParentTypeFullName)}");
@@ -297,19 +298,19 @@ public static class PropertyExtensions
         return await evaluator.EvaluateInterpolatedStringAsync
         (
             newFullName,
-            context.FormatProvider,
-            new ParentChildContext<BuilderContext, Property>(context, property, context.Settings),
+            command.FormatProvider,
+            new ParentChildContext<GenerateBuilderCommand, Property>(command, property, command.Settings),
             token
         ).ConfigureAwait(false);
     }
 
-    public static string GetSuffix<TSourceModel>(this Property source, bool enableNullableReferenceTypes, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<TSourceModel> context)
+    public static string GetSuffix<TSourceModel>(this Property source, bool enableNullableReferenceTypes, ICsharpExpressionDumper csharpExpressionDumper, CommandBase<TSourceModel> context)
         => CollectionIsValidForSuffix(source, enableNullableReferenceTypes)
         || NonCollectionIsValidForSuffix(source, csharpExpressionDumper, context)
             ? "?"
             : string.Empty;
 
-    private static bool NonCollectionIsValidForSuffix<TSourceModel>(Property source, ICsharpExpressionDumper csharpExpressionDumper, ContextBase<TSourceModel> context)
+    private static bool NonCollectionIsValidForSuffix<TSourceModel>(Property source, ICsharpExpressionDumper csharpExpressionDumper, CommandBase<TSourceModel> context)
         => !source.TypeName.IsCollectionTypeName()
         && !source.IsValueType
         && source.GetDefaultValue(csharpExpressionDumper, source.TypeName.FixTypeName(), context).StartsWith("default(");

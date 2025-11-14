@@ -1,20 +1,21 @@
 ﻿namespace ClassFramework.Pipelines.Interface.Components;
 
-public class AddAttributesComponent : IPipelineComponent<InterfaceContext>
+public class AddAttributesComponent : IPipelineComponent<GenerateInterfaceCommand, InterfaceBuilder>
 {
-    public Task<Result> ExecuteAsync(InterfaceContext context, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync(GenerateInterfaceCommand command, InterfaceBuilder response, ICommandService commandService, CancellationToken token)
         => Task.Run(() =>
         {
-            context = context.IsNotNull(nameof(context));
+            command = command.IsNotNull(nameof(command));
+            response = response.IsNotNull(nameof(response));
 
-            if (!context.Settings.CopyAttributes)
+            if (!command.Settings.CopyAttributes)
             {
                 return Result.Continue();
             }
 
-            context.Builder.AddAttributes(context.SourceModel.Attributes
-                .Where(x => context.Settings.CopyAttributePredicate?.Invoke(x) ?? true)
-                .Select(x => context.MapAttribute(x).ToBuilder()));
+            response.AddAttributes(command.SourceModel.Attributes
+                .Where(x => command.Settings.CopyAttributePredicate?.Invoke(x) ?? true)
+                .Select(x => command.MapAttribute(x).ToBuilder()));
 
             return Result.Success();
         }, token);

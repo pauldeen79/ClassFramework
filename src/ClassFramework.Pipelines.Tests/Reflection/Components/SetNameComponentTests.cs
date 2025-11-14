@@ -5,15 +5,16 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
     public class ExecuteAsync : SetNameComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public async Task Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(command: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
-             .ParamName.ShouldBe("context");
+             .ParamName.ShouldBe("command");
         }
 
         [Fact]
@@ -24,14 +25,15 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection();
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Name.ShouldBe("MyClass");
+            response.Name.ShouldBe("MyClass");
         }
 
         [Fact]
@@ -42,14 +44,15 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection();
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Namespace.ShouldBe("ClassFramework.Pipelines.Tests.Reflection");
+            response.Namespace.ShouldBe("ClassFramework.Pipelines.Tests.Reflection");
         }
 
         [Fact]
@@ -60,10 +63,11 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(nameFormatString: "{Error}");
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
@@ -78,17 +82,18 @@ public class SetNameComponentTests : TestBase<Pipelines.Reflection.Components.Se
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForReflection(namespaceFormatString: "{Error}");
-            var context = CreateContext(sourceModel, settings);
+            var command = CreateCommand(sourceModel, settings);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Error);
             result.ErrorMessage.ShouldBe("Kaboom");
         }
 
-        private static ReflectionContext CreateContext(Type sourceModel, PipelineSettingsBuilder settings)
-            => new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+        private static GenerateTypeFromReflectionCommand CreateCommand(Type sourceModel, PipelineSettingsBuilder settings)
+            => new GenerateTypeFromReflectionCommand(sourceModel, settings, CultureInfo.InvariantCulture);
     }
 }

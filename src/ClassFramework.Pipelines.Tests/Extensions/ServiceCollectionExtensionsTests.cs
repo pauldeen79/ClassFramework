@@ -16,7 +16,7 @@ public class ServiceCollectionExtensionsTests : TestBase
             // Act & Assert
             Action a = () =>
             {
-                using var provder = serviceCollection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+                using var provider = serviceCollection.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
             };
             a.ShouldNotThrow();
         }
@@ -33,10 +33,10 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<BuilderContext, ClassBuilder>>().FirstOrDefault();
+            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<GenerateBuilderCommand, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<BuilderContext, ClassBuilder>>();
+            builder.ShouldBeOfType<ClassFrameworkCommandHandler<GenerateBuilderCommand, TypeBase>>();
         }
 
         [Fact]
@@ -51,10 +51,10 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<BuilderExtensionContext, ClassBuilder>>().FirstOrDefault();
+            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<GenerateBuilderExtensionCommand, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<BuilderExtensionContext, ClassBuilder>>();
+            builder.ShouldBeOfType<ClassFrameworkCommandHandler<GenerateBuilderExtensionCommand, TypeBase>>();
         }
 
         [Fact]
@@ -69,10 +69,10 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<EntityContext, ClassBuilder>>().FirstOrDefault();
+            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<GenerateEntityCommand, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<EntityContext, ClassBuilder>>();
+            builder.ShouldBeOfType<ClassFrameworkCommandHandler<GenerateEntityCommand, TypeBase>>();
         }
 
         [Fact]
@@ -87,10 +87,10 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<InterfaceContext, InterfaceBuilder>>().FirstOrDefault();
+            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<GenerateInterfaceCommand, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<InterfaceContext, InterfaceBuilder>>();
+            builder.ShouldBeOfType<ClassFrameworkCommandHandler<GenerateInterfaceCommand, TypeBase>>();
         }
 
         [Fact]
@@ -105,10 +105,10 @@ public class ServiceCollectionExtensionsTests : TestBase
             using var scope = provider.CreateScope();
 
             // Act
-            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<ReflectionContext, TypeBaseBuilder>>().FirstOrDefault();
+            var builder = scope.ServiceProvider.GetServices<ICommandHandler>().OfType<ICommandHandler<GenerateTypeFromReflectionCommand, TypeBase>>().FirstOrDefault();
 
             // Assert
-            builder.ShouldBeOfType<ContextCommandHandler<ReflectionContext, TypeBaseBuilder>>();
+            builder.ShouldBeOfType<ClassFrameworkCommandHandler<GenerateTypeFromReflectionCommand, TypeBase>>();
         }
     }
 }

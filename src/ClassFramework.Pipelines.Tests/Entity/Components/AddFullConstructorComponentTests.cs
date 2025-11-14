@@ -5,15 +5,16 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
     public class ExecuteAsync : AddFullConstructorComponentTests
     {
         [Fact]
-        public async Task Throws_On_Null_Context()
+        public async Task Throws_On_Null_Command()
         {
             // Arrange
             var sut = CreateSut();
+            var response = new ClassBuilder();
 
             // Act & Assert
-            var t = sut.ExecuteAsync(context: null!, CommandService, CancellationToken.None);
+            var t = sut.ExecuteAsync(command: null!, response, CommandService, CancellationToken.None);
             (await Should.ThrowAsync<ArgumentNullException>(t))
-             .ParamName.ShouldBe("context");
+             .ParamName.ShouldBe("command");
         }
 
         [Fact]
@@ -24,15 +25,16 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addNullChecks: false);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeFalse();
             ctor.ChainCall.ShouldBeEmpty();
             ctor.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2", "property3" });
@@ -57,15 +59,16 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addNullChecks: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeFalse();
             ctor.ChainCall.ShouldBeEmpty();
             ctor.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2", "property3" });
@@ -92,15 +95,16 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addNullChecks: true, useExceptionThrowIfNull: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeFalse();
             ctor.ChainCall.ShouldBeEmpty();
             ctor.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2", "property3" });
@@ -127,15 +131,16 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(addNullChecks: true, addBackingFields: true);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeFalse();
             ctor.ChainCall.ShouldBeEmpty();
             ctor.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2", "property3" });
@@ -162,15 +167,16 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(validateArguments: ArgumentValidationType.IValidatableObject);
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeFalse();
             ctor.ChainCall.ShouldBeEmpty();
             ctor.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo(new[] { "property1", "property2", "property3" });
@@ -196,15 +202,16 @@ public class AddFullConstructorComponentTests : TestBase<Pipelines.Entity.Compon
             await InitializeExpressionEvaluatorAsync();
             var sut = CreateSut();
             var settings = CreateSettingsForEntity(namespaceMappings: CreateNamespaceMappings());
-            var context = new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture, CancellationToken.None);
+            var command = new GenerateEntityCommand(sourceModel, settings, CultureInfo.InvariantCulture);
+            var response = new ClassBuilder();
 
             // Act
-            var result = await sut.ExecuteAsync(context, CommandService, CancellationToken.None);
+            var result = await sut.ExecuteAsync(command, response, CommandService, CancellationToken.None);
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            context.Builder.Constructors.Count.ShouldBe(1);
-            var ctor = context.Builder.Constructors.Single();
+            response.Constructors.Count.ShouldBe(1);
+            var ctor = response.Constructors.Single();
             ctor.Protected.ShouldBeFalse();
             ctor.ChainCall.ShouldBeEmpty();
             ctor.Parameters.Select(x => x.Name).ToArray().ShouldBeEquivalentTo

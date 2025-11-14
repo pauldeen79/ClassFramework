@@ -27,14 +27,20 @@ public abstract class CrossCuttingClassBase(ICommandService commandService) : Cs
 
     protected static Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingAbstractModelsAsync()
     {
-        var modelsResult = GetCrossCuttingModels().Where(x => x.Name.EndsWith("Base")).Select(x => Result.Success(x.Build())).ToArray();
+        var modelsResult = GetCrossCuttingModels()
+            .Where(x => x.Name.EndsWith("Base"))
+            .Select(x => Result.Success(x.Build()))
+            .ToArray();
 
         return Task.FromResult(Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract models. See the inner results for more details.")));
     }
 
     protected Task<Result<IEnumerable<TypeBase>>> GetCrossCuttingAbstractionsInterfacesAsync()
     {
-        var modelsResult = GetCrossCuttingModels().Where(x => x.Namespace == $"{CoreNamespace}.Abstractions").Select(x => Result.Success(x.Build())).ToArray();
+        var modelsResult = GetCrossCuttingModels()
+            .Where(x => x.Namespace == $"{CoreNamespace}.Abstractions")
+            .Select(x => Result.Success(x.Build()))
+            .ToArray();
 
         return Task.FromResult(Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create abstract interfaces. See the inner results for more details.")));
     }
@@ -43,7 +49,10 @@ public abstract class CrossCuttingClassBase(ICommandService commandService) : Cs
     {
         Guard.IsNotNull(abstractTypeName);
 
-        var modelsResult = GetCrossCuttingModels().Where(x => x.Interfaces.Any(y => y.WithoutGenerics() == abstractTypeName.WithoutGenerics())).Select(x => Result.Success(x.Build())).ToArray();
+        var modelsResult = GetCrossCuttingModels()
+            .Where(x => x.Interfaces.Any(y => y.WithoutGenerics() == abstractTypeName.WithoutGenerics()))
+            .Select(x => Result.Success(x.Build()))
+            .ToArray();
 
         return Task.FromResult(Result.Aggregate(modelsResult, Result.Success(modelsResult.Select(x => x.Value!)), x => Result.Error<IEnumerable<TypeBase>>(x, "Could not create override models. See the inner results for more details.")));
     }
@@ -90,8 +99,7 @@ public abstract class CrossCuttingClassBase(ICommandService commandService) : Cs
                 .WithAddNullChecks(AddNullChecks)
                 .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull);
 
-            return (await CommandService.ExecuteAsync<EntityContext, ClassBuilder>(new EntityContext(typeBaseResult!, entitySettings, Settings.CultureInfo, CancellationToken.None)).ConfigureAwait(false))
-                .OnSuccess(x => x.Build());
+            return await CommandService.ExecuteAsync<GenerateEntityCommand, TypeBase>(new GenerateEntityCommand(typeBaseResult!, entitySettings, Settings.CultureInfo)).ConfigureAwait(false);
         }).ConfigureAwait(false);
     }
 

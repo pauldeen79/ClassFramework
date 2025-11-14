@@ -1,29 +1,30 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Components;
 
-public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPipelineComponent<EntityContext>
+public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPipelineComponent<GenerateEntityCommand, ClassBuilder>
 {
     private readonly IExpressionEvaluator _evaluator = evaluator.IsNotNull(nameof(evaluator));
 
-    public async Task<Result> ExecuteAsync(EntityContext context, ICommandService commandService, CancellationToken token)
+    public async Task<Result> ExecuteAsync(GenerateEntityCommand command, ClassBuilder response, ICommandService commandService, CancellationToken token)
     {
-        context = context.IsNotNull(nameof(context));
+        command = command.IsNotNull(nameof(command));
+        response = response.IsNotNull(nameof(response));
 
-        if (!context.Settings.ImplementIEquatable)
+        if (!command.Settings.ImplementIEquatable)
         {
             return Result.Continue();
         }
 
-        return (await _evaluator.EvaluateInterpolatedStringAsync(context.Settings.EntityNameFormatString, context.FormatProvider, context, token)
+        return (await _evaluator.EvaluateInterpolatedStringAsync(command.Settings.EntityNameFormatString, command.FormatProvider, command, token)
             .ConfigureAwait(false))
             .OnSuccess(nameResult =>
             {
 
                 var getHashCodeStatements =
-                    context.Settings.IEquatableItemType == IEquatableItemType.Fields
-                    ? CreateHashCodeStatements(context.SourceModel.Fields, context.NotNullCheck)
-                    : CreateHashCodeStatements(context.SourceModel.Properties, context.NotNullCheck);
+                    command.Settings.IEquatableItemType == IEquatableItemType.Fields
+                    ? CreateHashCodeStatements(command.SourceModel.Fields, command.NotNullCheck)
+                    : CreateHashCodeStatements(command.SourceModel.Properties, command.NotNullCheck);
 
-                context.Builder
+                response
                     .AddInterfaces($"IEquatable<{nameResult.Value}>")
                     .AddMethods(
                         new MethodBuilder()
@@ -38,8 +39,8 @@ public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPip
                             .WithName(nameof(IEquatable<object>.Equals))
                             .AddParameter("other", nameResult.Value!)
                             .AddCodeStatements(
-                                $"if (other {context.NullCheck}) return false;",
-                                $"return {CreateEqualsCode(context.Settings.IEquatableItemType == IEquatableItemType.Fields ? context.SourceModel.Fields : context.SourceModel.Properties)};"),
+                                $"if (other {command.NullCheck}) return false;",
+                                $"return {CreateEqualsCode(command.Settings.IEquatableItemType == IEquatableItemType.Fields ? command.SourceModel.Fields : command.SourceModel.Properties)};"),
 
                         new MethodBuilder()
                             .WithReturnType(typeof(int))
@@ -60,17 +61,17 @@ public class AddEquatableMembersComponent(IExpressionEvaluator evaluator) : IPip
                             .WithReturnType(typeof(bool))
                             .WithStatic()
                             .WithOperator()
-                            .AddParameter("left", context.SourceModel.Name)
-                            .AddParameter("right", context.SourceModel.Name)
-                            .AddCodeStatements($"return {typeof(EqualityComparer<>).WithoutGenerics()}<{context.SourceModel.Name}>.Default.Equals(left, right);"),
+                            .AddParameter("left", command.SourceModel.Name)
+                            .AddParameter("right", command.SourceModel.Name)
+                            .AddCodeStatements($"return {typeof(EqualityComparer<>).WithoutGenerics()}<{command.SourceModel.Name}>.Default.Equals(left, right);"),
 
                         new MethodBuilder()
                             .WithName("!=")
                             .WithReturnType(typeof(bool))
                             .WithStatic()
                             .WithOperator()
-                            .AddParameter("left", context.SourceModel.Name)
-                            .AddParameter("right", context.SourceModel.Name)
+                            .AddParameter("left", command.SourceModel.Name)
+                            .AddParameter("right", command.SourceModel.Name)
                             .AddCodeStatements("return !(left == right);"));
 
             });

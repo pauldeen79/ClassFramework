@@ -19,57 +19,50 @@ public static class ExpressionEvaluatorExtensions
     {
         var builder = new AsyncResultDictionaryBuilder<object?>();
 
-        if (context is BuilderContext builderContext)
+        if (context is CommandBase commandBase)
         {
             builder
-                .Add(ResultNames.Class, new ClassModel(builderContext.SourceModel))
-                .Add(ResultNames.CollectionTypeName, builderContext.CollectionTypeName)
-                .Add(ResultNames.AddMethodNameFormatString, () => builderContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add(ResultNames.Settings, builderContext.Settings)
-                .Add(ResultNames.TypeName, () => builderContext.MapTypeName(builderContext.SourceModel.GetFullName()))
-                .Add(ResultNames.Context, builderContext);
+                .Add(ResultNames.CollectionTypeName, commandBase.CollectionTypeName)
+                .Add(ResultNames.AddMethodNameFormatString, () => commandBase.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
+                .Add(ResultNames.Settings, commandBase.Settings);
+
+            if (context is GenerateBuilderCommand builderCommand)
+            {
+                builder
+                    .Add(ResultNames.Class, new ClassModel(builderCommand.SourceModel))
+                    .Add(ResultNames.TypeName, () => builderCommand.MapTypeName(builderCommand.SourceModel.GetFullName()))
+                    .Add(ResultNames.Context, builderCommand);
+            }
+            else if (context is GenerateBuilderExtensionCommand builderExtensionCommand)
+            {
+                builder
+                    .Add(ResultNames.Class, new ClassModel(builderExtensionCommand.SourceModel))
+                    .Add(ResultNames.TypeName, () => builderExtensionCommand.MapTypeName(builderExtensionCommand.SourceModel.GetFullName()))
+                    .Add(ResultNames.Context, builderExtensionCommand);
+            }
+            else if (context is GenerateEntityCommand entityCommand)
+            {
+                builder
+                    .Add(ResultNames.Class, new ClassModel(entityCommand.SourceModel))
+                    .Add(ResultNames.TypeName, () => entityCommand.MapTypeName(entityCommand.SourceModel.GetFullName()))
+                    .Add(ResultNames.Context, entityCommand);
+            }
+            else if (context is GenerateInterfaceCommand interfaceCommand)
+            {
+                builder
+                    .Add(ResultNames.Class, new ClassModel(interfaceCommand.SourceModel))
+                    .Add(ResultNames.TypeName, () => interfaceCommand.MapTypeName(interfaceCommand.SourceModel.GetFullName()))
+                    .Add(ResultNames.Context, interfaceCommand);
+            }
+            else if (context is GenerateTypeFromReflectionCommand reflectionCommand)
+            {
+                builder
+                    .Add(ResultNames.Class, new ClassModel(reflectionCommand.SourceModel))
+                    .Add(ResultNames.TypeName, () => reflectionCommand.MapTypeName(reflectionCommand.SourceModel.FullName))
+                    .Add(ResultNames.Context, reflectionCommand);
+            }
         }
-        else if (context is BuilderExtensionContext builderExtensionContext)
-        {
-            builder
-                .Add(ResultNames.Class, new ClassModel(builderExtensionContext.SourceModel))
-                .Add(ResultNames.CollectionTypeName, builderExtensionContext.CollectionTypeName)
-                .Add(ResultNames.AddMethodNameFormatString, () => builderExtensionContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add(ResultNames.Settings, builderExtensionContext.Settings)
-                .Add(ResultNames.TypeName, () => builderExtensionContext.MapTypeName(builderExtensionContext.SourceModel.GetFullName()))
-                .Add(ResultNames.Context, builderExtensionContext);
-        }
-        else if (context is EntityContext entityContext)
-        {
-            builder
-                .Add(ResultNames.Class, new ClassModel(entityContext.SourceModel))
-                .Add(ResultNames.CollectionTypeName, entityContext.CollectionTypeName)
-                .Add(ResultNames.AddMethodNameFormatString, () => entityContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add(ResultNames.Settings, entityContext.Settings)
-                .Add(ResultNames.TypeName, () => entityContext.MapTypeName(entityContext.SourceModel.GetFullName()))
-                .Add(ResultNames.Context, entityContext);
-        }
-        else if (context is InterfaceContext interfaceContext)
-        {
-            builder
-                .Add(ResultNames.Class, new ClassModel(interfaceContext.SourceModel))
-                .Add(ResultNames.CollectionTypeName, interfaceContext.CollectionTypeName)
-                .Add(ResultNames.AddMethodNameFormatString, () => interfaceContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add(ResultNames.Settings, interfaceContext.Settings)
-                .Add(ResultNames.TypeName, () => interfaceContext.MapTypeName(interfaceContext.SourceModel.GetFullName()))
-                .Add(ResultNames.Context, interfaceContext);
-        }
-        else if (context is Reflection.ReflectionContext reflectionContext)
-        {
-            builder
-                .Add(ResultNames.Class, new ClassModel(reflectionContext.SourceModel))
-                .Add(ResultNames.CollectionTypeName, reflectionContext.CollectionTypeName)
-                .Add(ResultNames.AddMethodNameFormatString, () => reflectionContext.Settings.AddMethodNameFormatString.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics()))
-                .Add(ResultNames.Settings, reflectionContext.Settings)
-                .Add(ResultNames.TypeName, () => reflectionContext.MapTypeName(reflectionContext.SourceModel.FullName))
-                .Add(ResultNames.Context, reflectionContext);
-        }
-        else if (context is ParentChildContext<BuilderContext, Property> parentChildContextBuilder)
+        else if (context is ParentChildContext<GenerateBuilderCommand, Property> parentChildContextBuilder)
         {
             builder
                 .Add(ResultNames.Class, new ClassModel(parentChildContextBuilder.ParentContext.SourceModel))
@@ -80,7 +73,7 @@ public static class ExpressionEvaluatorExtensions
                 .Add(ResultNames.TypeName, () => parentChildContextBuilder.ParentContext.MapTypeName(parentChildContextBuilder.ChildContext.TypeName))
                 .Add(ResultNames.Context, parentChildContextBuilder.ParentContext);
         }
-        else if (context is ParentChildContext<BuilderExtensionContext, Property> parentChildContextBuilderExtension)
+        else if (context is ParentChildContext<GenerateBuilderExtensionCommand, Property> parentChildContextBuilderExtension)
         {
             builder
                 .Add(ResultNames.Class, new ClassModel(parentChildContextBuilderExtension.ParentContext.SourceModel))
@@ -91,7 +84,7 @@ public static class ExpressionEvaluatorExtensions
                 .Add(ResultNames.TypeName, () => parentChildContextBuilderExtension.ParentContext.MapTypeName(parentChildContextBuilderExtension.ChildContext.TypeName))
                 .Add(ResultNames.Context, parentChildContextBuilderExtension.ParentContext);
         }
-        else if (context is ParentChildContext<EntityContext, Property> parentChildContextEntity)
+        else if (context is ParentChildContext<GenerateEntityCommand, Property> parentChildContextEntity)
         {
             builder
                 .Add(ResultNames.Class, new ClassModel(parentChildContextEntity.ParentContext.SourceModel))
