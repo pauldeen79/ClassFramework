@@ -9,7 +9,7 @@ We are using the following dependencies:
 - CrossCutting.Utilities.ExpressionEvaluator, for parsing named format strings like ``{$property.Name}Builder``
 - TemplateFramework, to translate the domain model to actual c# code files
 
-The Domain and Pipelines packages target .NET Standard 2.0, so you can use it anywhere. Because of the dependency to TemplateFramework, we target some projects to .NET 9.0.
+The Domain and Pipelines packages target .NET Standard 2.0, so you can use it anywhere. Because of the dependency to TemplateFramework, we target some projects to .NET 10.0.
 
 # Background
 
