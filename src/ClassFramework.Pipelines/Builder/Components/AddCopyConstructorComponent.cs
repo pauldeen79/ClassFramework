@@ -41,7 +41,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
             .Add("NullCheck.Source", () => _evaluator.EvaluateInterpolatedStringAsync("{SourceNullCheck()}", command.FormatProvider, command, token))
             .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(command.Settings.EntityNameFormatString, command.FormatProvider, command, token))
             .Add(ResultNames.Namespace, () => command.GetMappingMetadata(command.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomEntityNamespace, _evaluator.EvaluateInterpolatedStringAsync(command.Settings.EntityNamespaceFormatString, command.FormatProvider, command, token)))
-            .Build()
+            .BuildAsync(token)
             .ConfigureAwait(false);
 
         var error = results.GetError();

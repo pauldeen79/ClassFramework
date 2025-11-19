@@ -12,7 +12,7 @@ public class SetNameComponent(IExpressionEvaluator evaluator) : IPipelineCompone
         return (await new AsyncResultDictionaryBuilder<GenericFormattableString>()
             .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(command.Settings.BuilderNameFormatString, command.FormatProvider, command, token))
             .Add(ResultNames.Namespace, () => command.GetMappingMetadata(command.SourceModel.GetFullName()).GetGenericFormattableStringAsync(MetadataNames.CustomBuilderNamespace, _evaluator.EvaluateInterpolatedStringAsync(command.Settings.BuilderNamespaceFormatString, command.FormatProvider, command, token)))
-            .Build()
+            .BuildAsync(token)
             .ConfigureAwait(false))
             .OnSuccess(results =>
             {

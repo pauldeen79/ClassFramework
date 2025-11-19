@@ -89,7 +89,7 @@ public class GenerateEntityCommand(TypeBase sourceModel, PipelineSettings settin
             .Add("ToBuilderMethodName", () => evaluator.EvaluateInterpolatedStringAsync(Settings.ToBuilderFormatString, FormatProvider, this, token))
             .Add("ToTypedBuilderMethodName", () => evaluator.EvaluateInterpolatedStringAsync(Settings.ToTypedBuilderFormatString, FormatProvider, this, token))
             .Add(ResultNames.BuilderName, () => evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNameFormatString, FormatProvider, this, token))
-            .Build()
+            .BuildAsync(token)
             .ConfigureAwait(false);
     }
 

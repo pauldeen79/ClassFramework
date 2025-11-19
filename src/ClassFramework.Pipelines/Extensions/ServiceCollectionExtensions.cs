@@ -122,7 +122,6 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddProcessingPipeline(this IServiceCollection services)
         => services
             .AddScoped<ICommandService, CommandService>()
-            .AddScoped<ICommandDecorator>(_ => new ClassFrameworkCommandDecorator(new CrossCutting.Commands.PassThroughDecorator()))
-            .AddScoped<IPipelineComponentDecorator>(_ => new CrossCutting.ProcessingPipeline.PassThroughDecorator())
+            .AddScoped<ICommandInterceptor>(_ => new ClassFrameworkCommandInterceptor())
             .AddScoped<IPipelineResponseGenerator, PipelineResponseGenerator>();
 }
