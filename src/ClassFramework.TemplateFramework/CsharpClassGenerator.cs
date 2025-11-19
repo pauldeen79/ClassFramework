@@ -48,20 +48,20 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
             }).ConfigureAwait(false);
     }
 
-    private async Task<Result> RenderHeaderAsync(IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
+    private async Task<Result> RenderHeaderAsync(IGenerationEnvironment generationEnvironment, CancellationToken token)
     {
-        return await (await RenderChildTemplateByModelAsync(Model.CodeGenerationHeaderModel, generationEnvironment, cancellationToken).ConfigureAwait(false))
+        return await (await RenderChildTemplateByModelAsync(Model.CodeGenerationHeaderModel, generationEnvironment, token).ConfigureAwait(false))
             .OnSuccessAsync(async () =>
             {
                 if (!Model.Settings.EnableGlobalUsings)
                 {
-                    return await RenderChildTemplateByModelAsync(Model.Usings, generationEnvironment, cancellationToken).ConfigureAwait(false);
+                    return await RenderChildTemplateByModelAsync(Model.Usings, generationEnvironment, token).ConfigureAwait(false);
                 }
                 return Result.Success();
             }).ConfigureAwait(false);
     }
 
-    private async Task<Result> RenderNamespaceHierarchyAsync(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder, CancellationToken cancellationToken)
+    private async Task<Result> RenderNamespaceHierarchyAsync(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder, CancellationToken token)
     {
         foreach (var @namespace in Model.Namespaces)
         {
@@ -71,7 +71,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
                 singleStringBuilder.AppendLine("{"); // open namespace
             }
 
-            var result = await RenderChildTemplatesByModelAsync(Model.GetTypes(@namespace), generationEnvironment, cancellationToken).ConfigureAwait(false);
+            var result = await RenderChildTemplatesByModelAsync(Model.GetTypes(@namespace), generationEnvironment, token).ConfigureAwait(false);
 
             if (!result.IsSuccessful())
             {

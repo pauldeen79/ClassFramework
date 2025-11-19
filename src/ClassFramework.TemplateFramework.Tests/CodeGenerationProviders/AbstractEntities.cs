@@ -2,7 +2,7 @@
 
 public class AbstractEntities(ICommandService commandService) : ImmutableCSharpClassBase(commandService)
 {
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetEntitiesAsync(GetAbstractModelsAsync(), "Test.Domain");
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token) => GetEntitiesAsync(GetAbstractModelsAsync(), "Test.Domain");
 
     public override string Path => "Test.Domain";
 

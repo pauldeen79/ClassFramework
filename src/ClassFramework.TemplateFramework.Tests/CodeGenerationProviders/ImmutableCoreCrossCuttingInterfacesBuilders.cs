@@ -4,7 +4,7 @@ public class ImmutableCoreCrossCuttingInterfacesBuilders(ICommandService command
 {
     protected override bool UseCrossCuttingInterfaces => true;
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetBuildersAsync(GetCoreModelsAsync(), "Test.Domain.Builders", "Test.Domain");
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token) => GetBuildersAsync(GetCoreModelsAsync(), "Test.Domain.Builders", "Test.Domain");
 
     public override string Path => "Test.Domain/Builders";
 }

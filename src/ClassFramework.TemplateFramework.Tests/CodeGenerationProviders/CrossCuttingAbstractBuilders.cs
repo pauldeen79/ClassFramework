@@ -13,6 +13,6 @@ public class CrossCuttingAbstractBuilders(ICommandService commandService) : Cros
     protected override string AddMethodNameFormatString => string.Empty;
     protected override bool AddImplicitOperatorOnBuilder => false; // does not work when using builder abstraction interfaces
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetBuildersAsync(GetCrossCuttingAbstractModelsAsync(), CurrentNamespace, CurrentNamespace.GetParentNamespace());
 }

@@ -2,7 +2,7 @@
 
 public class MultipleInterfacesAbstractionsBuildersInterfaces(ICommandService commandService) : MultipleInterfacesBase(commandService)
 {
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetBuilderInterfacesAsync(GetAbstractionsTypesAsync(), CurrentNamespace, "ClassFramework.Domain.Abstractions", CurrentNamespace);
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token) => GetBuilderInterfacesAsync(GetAbstractionsTypesAsync(), CurrentNamespace, "ClassFramework.Domain.Abstractions", CurrentNamespace);
 
     public override string Path => "ClassFramework.Domain/Builders/Abstractions";
 

@@ -113,7 +113,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         return results.ToArray();
     }
 
-    private async Task<ConstructorPropertyNameInitializerItem[]> GetConstructorInitializerResultsAsync(GenerateBuilderCommand command, CancellationToken cancellationToken)
+    private async Task<ConstructorPropertyNameInitializerItem[]> GetConstructorInitializerResultsAsync(GenerateBuilderCommand command, CancellationToken token)
     {
         var results = new List<ConstructorPropertyNameInitializerItem>();
 
@@ -127,7 +127,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
                 command.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName),
                 MetadataNames.CustomBuilderConstructorInitializeExpression,
                 _evaluator,
-                cancellationToken).ConfigureAwait(false);
+                token).ConfigureAwait(false);
 
             results.Add(new ConstructorPropertyNameInitializerItem(name, result));
             

@@ -8,6 +8,6 @@ public class OverrideTypeBuilders(ICommandService commandService) : ImmutableCSh
     protected override bool CreateAsObservable => true;
     protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(IAbstractBase), "Test.Domain");
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetBuildersAsync(GetOverrideModelsAsync(typeof(IAbstractBase)), "Test.Domain.Builders.Types", "Test.Domain.Types");
 }

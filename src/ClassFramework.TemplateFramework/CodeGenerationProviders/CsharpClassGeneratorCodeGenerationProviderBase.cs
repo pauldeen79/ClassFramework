@@ -32,7 +32,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
             ? new MultipleStringContentBuilderEnvironment()
             : new StringBuilderEnvironment();
 
-    public abstract Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken);
+    public abstract Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token);
     public abstract CsharpClassGeneratorSettings Settings { get; }
 
     protected virtual string CurrentNamespace => Path.Replace('/', '.');

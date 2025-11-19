@@ -9,7 +9,7 @@ public class CrossCuttingOverrideBuilders(ICommandService commandService) : Cros
     protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateCrossCuttingBaseClassAsync("CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase", "CrossCutting.Utilities.Parsers");
     protected override string BaseClassBuilderNamespace => "CrossCutting.Utilities.Parsers.Builders";
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetBuildersAsync(
             GetCrossCuttingOverrideModelsAsync("CrossCutting.Utilities.Parsers.IFunctionCallArgumentBase"),
             CurrentNamespace,

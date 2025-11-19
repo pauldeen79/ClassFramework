@@ -8,6 +8,6 @@ public class MultipleInterfacesOverrideBuilders(ICommandService commandService) 
     protected override bool CreateAsObservable => true;
     protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(GetAbstractTypeAsync(), "ClassFramework.Domain");
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetBuildersAsync(GetOverrideTypesAsync(), "ClassFramework.Domain.Builders.Types", "ClassFramework.Domain.Types");
 }
