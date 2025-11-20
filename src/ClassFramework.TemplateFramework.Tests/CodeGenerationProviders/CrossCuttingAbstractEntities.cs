@@ -8,6 +8,6 @@ public class CrossCuttingAbstractEntities(ICommandService commandService) : Cros
     protected override bool IsAbstract => true;
     protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.None; // not needed for abstract entities, because each derived class will do its own validation
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetEntitiesAsync(GetCrossCuttingAbstractModelsAsync(), CurrentNamespace);
 }

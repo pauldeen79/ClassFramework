@@ -2,7 +2,7 @@
 
 public class ImmutableInheritFromInterfacesCoreEntities(ICommandService commandService) : ImmutableInheritFromInterfacesCSharpClassBase(commandService)
 {
-    public override async Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => await GetEntitiesAsync(GetInheritFromInterfacesModelsAsync(), "Test.Domain").ConfigureAwait(false);
+    public override async Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token) => await GetEntitiesAsync(GetInheritFromInterfacesModelsAsync(), "Test.Domain").ConfigureAwait(false);
 
     public override string Path => "Test.Domain";
 }

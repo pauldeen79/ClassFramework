@@ -19,7 +19,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
             var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
                 .Add(ResultNames.TypeName, () => property.GetBuilderArgumentTypeNameAsync(command, new ParentChildContext<GenerateBuilderCommand, Property>(command, property, command.Settings), command.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token))
                 .Add(ResultNames.ParentTypeName, () => property.GetBuilderParentTypeNameAsync(command, _evaluator, token))
-                .Build()
+                .BuildAsync(token)
                 .ConfigureAwait(false);
 
             var error = results.GetError();

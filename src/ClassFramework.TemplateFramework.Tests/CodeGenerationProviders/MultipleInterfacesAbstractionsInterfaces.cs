@@ -4,7 +4,7 @@ public class MultipleInterfacesAbstractionsInterfaces(ICommandService commandSer
 {
     public override string Path => "ClassFramework.Domain/Abstractions";
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetEntityInterfacesAsync(GetAbstractionsTypesAsync(), CurrentNamespace.GetParentNamespace(), CurrentNamespace);
 
     protected override bool EnableEntityInheritance => true;

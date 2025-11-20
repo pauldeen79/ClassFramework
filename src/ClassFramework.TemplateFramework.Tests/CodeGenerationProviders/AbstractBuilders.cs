@@ -2,7 +2,7 @@
 
 public class AbstractBuilders(ICommandService commandService) : ImmutableCSharpClassBase(commandService)
 {
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetBuildersAsync(GetAbstractModelsAsync(), "Test.Domain.Builders", "Test.Domain");
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token) => GetBuildersAsync(GetAbstractModelsAsync(), "Test.Domain.Builders", "Test.Domain");
 
     public override string Path => "Test.Domain/Builders";
 

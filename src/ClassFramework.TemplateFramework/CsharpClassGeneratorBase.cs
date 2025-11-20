@@ -23,18 +23,18 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
 
     public TModel Model { get; set; } = default!;
 
-    protected async Task<Result> RenderChildTemplateByModelAsync(object model, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
+    protected async Task<Result> RenderChildTemplateByModelAsync(object model, IGenerationEnvironment generationEnvironment, CancellationToken token)
     {
         Guard.IsNotNull(Context);
-        return await Context.Engine.RenderChildTemplateAsync(model, generationEnvironment, Context, new TemplateByModelIdentifier(model), cancellationToken).ConfigureAwait(false);
+        return await Context.Engine.RenderChildTemplateAsync(model, generationEnvironment, Context, new TemplateByModelIdentifier(model), token).ConfigureAwait(false);
     }
 
-    protected Task<Result> RenderChildTemplatesByModelAsync(IEnumerable models, StringBuilder builder, CancellationToken cancellationToken)
-        => RenderChildTemplatesByModelAsync(models, new StringBuilderEnvironment(builder), cancellationToken);
+    protected Task<Result> RenderChildTemplatesByModelAsync(IEnumerable models, StringBuilder builder, CancellationToken token)
+        => RenderChildTemplatesByModelAsync(models, new StringBuilderEnvironment(builder), token);
 
-    protected async Task<Result> RenderChildTemplatesByModelAsync(IEnumerable models, IGenerationEnvironment generationEnvironment, CancellationToken cancellationToken)
+    protected async Task<Result> RenderChildTemplatesByModelAsync(IEnumerable models, IGenerationEnvironment generationEnvironment, CancellationToken token)
     {
         Guard.IsNotNull(Context);
-        return await Context.Engine.RenderChildTemplatesAsync(models, generationEnvironment, Context, model => new TemplateByModelIdentifier(model), cancellationToken).ConfigureAwait(false);
+        return await Context.Engine.RenderChildTemplatesAsync(models, generationEnvironment, Context, model => new TemplateByModelIdentifier(model), token).ConfigureAwait(false);
     }
 }

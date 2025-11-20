@@ -4,7 +4,7 @@ public class MultipleInterfacesAbstractBuilders(ICommandService commandService) 
 {
     public override string Path => "ClassFramework.Domain.Builders";
 
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken)
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
         => GetBuildersAsync(GetAbstractTypesAsync(), CurrentNamespace, CurrentNamespace.GetParentNamespace());
 
     protected override bool AddNullChecks => false; // not needed for abstract builders, because each derived class will do its own validation

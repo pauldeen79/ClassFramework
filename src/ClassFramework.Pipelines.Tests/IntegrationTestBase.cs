@@ -1,4 +1,5 @@
-﻿namespace ClassFramework.Pipelines.Tests;
+﻿
+namespace ClassFramework.Pipelines.Tests;
 
 public abstract class IntegrationTestBase<T> : TestBase
     where T : class
@@ -11,30 +12,30 @@ public abstract class IntegrationTestBase<T> : TestBase
             .AddExpressionEvaluator()
             .AddClassFrameworkPipelines()
             .AddCsharpExpressionDumper()
-            .AddScoped<IPipelineComponentDecorator>(_ => new FixBuilderDecorator())
+            .AddScoped<IPipelineComponentInterceptor>(_ => new FixBuilderInterceptor())
             .BuildServiceProvider();
         Scope = Provider.CreateScope();
     }
 }
 
-public class FixBuilderDecorator : IPipelineComponentDecorator
+public class FixBuilderInterceptor : IPipelineComponentInterceptor
 {
-    public Task<Result> ExecuteAsync<TCommand>(IPipelineComponent<TCommand> component, TCommand command, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync<TCommand>(TCommand command, ICommandService commandService, Func<Task<Result>> next, CancellationToken token)
     {
-        component = ArgumentGuard.IsNotNull(component, nameof(component));
+        next = ArgumentGuard.IsNotNull(next, nameof(next));
 
-        return component.ExecuteAsync(command, commandService, token);
+        return next();
     }
 
-    public Task<Result> ExecuteAsync<TCommand, TResponse>(IPipelineComponent<TCommand, TResponse> component, TCommand command, TResponse response, ICommandService commandService, CancellationToken token)
+    public Task<Result> ExecuteAsync<TCommand, TResponse>(TCommand command, TResponse response, ICommandService commandService, Func<Task<Result>> next, CancellationToken token)
     {
-        component = ArgumentGuard.IsNotNull(component, nameof(component));
+        next = ArgumentGuard.IsNotNull(next, nameof(next));
 
         if (response is TypeBaseBuilder typeBaseBuilder && string.IsNullOrEmpty(typeBaseBuilder.Name))
         {
             typeBaseBuilder.Name = "Dummy";
         }
 
-        return component.ExecuteAsync(command, response, commandService, token);
+        return next();
     }
 }

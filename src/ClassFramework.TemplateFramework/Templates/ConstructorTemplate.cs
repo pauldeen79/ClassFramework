@@ -2,12 +2,12 @@
 
 public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel>, IBuilderTemplate<StringBuilder>
 {
-    public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken cancellationToken)
+    public async Task<Result> RenderAsync(StringBuilder builder, CancellationToken token)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        var result = await RenderChildTemplatesByModelAsync(Model.Attributes, builder, cancellationToken).ConfigureAwait(false);
+        var result = await RenderChildTemplatesByModelAsync(Model.Attributes, builder, token).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -23,7 +23,7 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
         builder.Append(Model.Name);
         builder.Append("(");
 
-        result = await RenderChildTemplatesByModelAsync(Model.Parameters, builder, cancellationToken).ConfigureAwait(false);
+        result = await RenderChildTemplatesByModelAsync(Model.Parameters, builder, token).ConfigureAwait(false);
         if (!result.IsSuccessful())
         {
             return result;
@@ -38,7 +38,7 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
         }
         else
         {
-            result = await builder.RenderMethodBody(Model.CreateIndentation(1), () => RenderChildTemplatesByModelAsync(Model.CodeStatements, builder, cancellationToken)).ConfigureAwait(false);
+            result = await builder.RenderMethodBody(Model.CreateIndentation(1), () => RenderChildTemplatesByModelAsync(Model.CodeStatements, builder, token)).ConfigureAwait(false);
             if (!result.IsSuccessful())
             {
                 return result;

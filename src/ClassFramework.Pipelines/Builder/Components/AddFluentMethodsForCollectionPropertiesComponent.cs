@@ -38,7 +38,7 @@ public class AddFluentMethodsForCollectionPropertiesComponent(IExpressionEvaluat
             .AddRange("ArrayOverload.{0}", await GetCodeStatementsForArrayOverloadAsync(command, property, false, token).ConfigureAwait(false))
             .AddRange("NonLazyArrayOverload.{0}", await GetCodeStatementsForArrayOverloadAsync(command, property, true, token).ConfigureAwait(false))
             .AddRange("NonLazyEnumerableOverload.{0}", await GetCodeStatementsForEnumerableOverloadAsync(command, property, parentChildContext, true, token).ConfigureAwait(false))
-            .Build()
+            .BuildAsync(token)
             .ConfigureAwait(false);
     }
 

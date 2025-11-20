@@ -97,7 +97,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
         return defaultValueResults;
     }
 
-    private async Task<List<ConstructorInitializerItem>> GetConstructorInitializerResultsAsync(GenerateBuilderCommand command,CancellationToken cancellationToken)
+    private async Task<List<ConstructorInitializerItem>> GetConstructorInitializerResultsAsync(GenerateBuilderCommand command,CancellationToken token)
     {
         var constructorInitializerResults = new List<ConstructorInitializerItem>();
 
@@ -111,7 +111,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
                 command.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName),
                 string.Empty,
                 _evaluator,
-                cancellationToken).ConfigureAwait(false);
+                token).ConfigureAwait(false);
 
             constructorInitializerResults.Add(new ConstructorInitializerItem(name, result));
 

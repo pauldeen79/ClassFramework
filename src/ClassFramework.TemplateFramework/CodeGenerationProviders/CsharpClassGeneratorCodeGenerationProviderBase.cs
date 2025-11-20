@@ -7,13 +7,13 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     public abstract string LastGeneratedFilesFilename { get; }
     public abstract Encoding Encoding { get; }
 
-    public Task<Result<object?>> CreateAdditionalParametersAsync(CancellationToken cancellationToken) => Task.FromResult(Result.Success(default(object?)));
+    public Task<Result<object?>> CreateAdditionalParametersAsync(CancellationToken token) => Task.FromResult(Result.Success(default(object?)));
 
     public Type GetGeneratorType() => typeof(CsharpClassGenerator);
 
-    public async Task<Result<object?>> CreateModelAsync(CancellationToken cancellationToken)
+    public async Task<Result<object?>> CreateModelAsync(CancellationToken token)
     {
-        var modelResult = await GetModelAsync(cancellationToken).ConfigureAwait(false);
+        var modelResult = await GetModelAsync(token).ConfigureAwait(false);
         if (!modelResult.EnsureValue().IsSuccessful())
         {
             return modelResult;
@@ -32,7 +32,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
             ? new MultipleStringContentBuilderEnvironment()
             : new StringBuilderEnvironment();
 
-    public abstract Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken);
+    public abstract Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token);
     public abstract CsharpClassGeneratorSettings Settings { get; }
 
     protected virtual string CurrentNamespace => Path.Replace('/', '.');

@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractNonGenericBuilders(ICommandService commandService) : ClassFrameworkCSharpClassBase(commandService)
 {
-    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken cancellationToken) => GetNonGenericBuildersAsync(GetAbstractModelsAsync(), "ClassFramework.Domain.Builders", "ClassFramework.Domain");
+    public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token) => GetNonGenericBuildersAsync(GetAbstractModelsAsync(), "ClassFramework.Domain.Builders", "ClassFramework.Domain");
 
     public override string Path => "ClassFramework.Domain/Builders";
 
