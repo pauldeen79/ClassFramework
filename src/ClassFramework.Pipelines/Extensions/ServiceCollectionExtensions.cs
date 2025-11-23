@@ -9,10 +9,10 @@ public static class ServiceCollectionExtensions
             .AddEntityPipeline()
             .AddReflectionPipeline()
             .AddInterfacePipeline()
-            .AddSharedPipelineComponents()
+            .AddExpressionFrameworkComponents()
             .AddProcessingPipeline();
 
-    private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
+    private static IServiceCollection AddExpressionFrameworkComponents(this IServiceCollection services)
         => services
             .AddSingleton<IMember, ClassNameProperty>()
             .AddSingleton<IMember, ClassNamespaceProperty>()
