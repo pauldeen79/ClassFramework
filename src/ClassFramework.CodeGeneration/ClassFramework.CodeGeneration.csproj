@@ -10,9 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsharpExpressionDumper.Core" Version="1.5.13" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
-    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="3.1.3" />
+    <PackageReference Include="CsharpExpressionDumper.Core" Version="1.5.*" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.*" />
+    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="3.1.*" />
   </ItemGroup>
 
   <ItemGroup>
