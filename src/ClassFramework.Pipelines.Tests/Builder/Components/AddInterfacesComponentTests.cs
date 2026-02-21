@@ -48,6 +48,7 @@ public class AddInterfacesComponentTests : TestBase<Pipelines.Builder.Components
                 .WithNamespace("SomeNamespace")
                 .AddInterfaces(
                     "IMyInterface1",
+                    "IMyInterface2",
                     "IMyInterface2")
                 .Build();
             var sut = CreateSut();
