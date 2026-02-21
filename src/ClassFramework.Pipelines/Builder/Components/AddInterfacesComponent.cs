@@ -27,7 +27,7 @@ public class AddInterfacesComponent(IExpressionEvaluator evaluator) : IPipelineC
             return error;
         }
 
-        response.AddInterfaces(interfaces.Select(x => x.Value!));
+        response.AddInterfaces(interfaces.Select(x => x.Value!).Distinct());
 
         return Result.Success();
     }
