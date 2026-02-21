@@ -110,6 +110,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     protected virtual string[] GetBuilderAbstractionsTypeConversionNamespaces() => [AbstractionsNamespace];
     protected virtual string[] GetCodeGenerationBuilderAbstractionsTypeConversionNamespaces() => [$"{CodeGenerationRootNamespace}.Models.Abstractions"];
+    protected virtual Predicate<Type> BuilderAbstractionTypeConversionTypenameMappingPredicate => _ => true;
     protected virtual string[] GetSkipNamespacesOnFluentBuilderMethods() => [AbstractionsNamespace];
 
     protected virtual IEnumerable<Type> GetPureAbstractModels()
@@ -397,7 +398,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 && x.IsInterface
                 && !string.IsNullOrEmpty(x.Namespace)
                 && GetCodeGenerationBuilderAbstractionsTypeConversionNamespaces().Contains(x.Namespace)
-                && x.FullName is not null)
+                && x.FullName is not null
+                && BuilderAbstractionTypeConversionTypenameMappingPredicate(x))
             .SelectMany(x => CreateBuilderAbstractionTypeConversionTypenameMappings(x.GetEntityClassName(), x.GetGenericTypeArgumentsString()));
 
     protected TypenameMappingBuilder[] CreateBuilderAbstractionTypeConversionTypenameMappings(string entityClassName, string genericTypeArgumentsString)
