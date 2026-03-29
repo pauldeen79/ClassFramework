@@ -92,7 +92,7 @@ public class BaseClassComponent(IExpressionEvaluator evaluator) : IPipelineCompo
         var customValue = command.GetMappingMetadata(baseClassContainer.BaseClass).GetStringValue(MetadataNames.CustomBuilderBaseClassTypeName);
         if (!string.IsNullOrEmpty(customValue))
         {
-            return Result.Success(new GenericFormattableString(customValue));
+            return new GenericFormattableString(customValue);
         }
 
         return await _evaluator.EvaluateInterpolatedStringAsync(command.Settings.BuilderNameFormatString, command.FormatProvider, new GenerateBuilderCommand(CreateTypeBase(command.MapTypeName(baseClassContainer.BaseClass!)), command.Settings, command.FormatProvider), token).ConfigureAwait(false);

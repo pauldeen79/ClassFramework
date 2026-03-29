@@ -105,22 +105,22 @@ public class GenerateEntityCommand(TypeBase sourceModel, PipelineSettings settin
         var metadata = GetMappingMetadata(entityFullName).ToArray();
 
         var resultDictionary = new ResultDictionaryBuilder<string>()
-            .Add("CustomBuilderNamespace", () => metadata.GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders")))
-            .Add("CustomBuilderInterfaceNamespace", () => metadata.GetStringResult(MetadataNames.CustomBuilderInterfaceNamespace, () => Result.Success(GetBuilderInterfaceNamespace(results.GetValue("BuilderInterfaceNamespace").ToString(), ns))))
-            .Add("CustomConcreteBuilderNamespace", () => GetMappingMetadata(entityConcreteFullName).GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{ns.AppendWhenNotNullOrEmpty(".")}Builders")))
-            .Add("BuilderConcreteName", () => Result.Success(Settings.EnableInheritance && Settings.BaseClass is null
+            .Add("CustomBuilderNamespace", () => metadata.GetStringResult(MetadataNames.CustomBuilderNamespace, () => $"{ns.AppendWhenNotNullOrEmpty(".")}Builders"))
+            .Add("CustomBuilderInterfaceNamespace", () => metadata.GetStringResult(MetadataNames.CustomBuilderInterfaceNamespace, () => GetBuilderInterfaceNamespace(results.GetValue("BuilderInterfaceNamespace").ToString(), ns)))
+            .Add("CustomConcreteBuilderNamespace", () => GetMappingMetadata(entityConcreteFullName).GetStringResult(MetadataNames.CustomBuilderNamespace, () => $"{ns.AppendWhenNotNullOrEmpty(".")}Builders"))
+            .Add("BuilderConcreteName", () => Settings.EnableInheritance && Settings.BaseClass is null
                 ? name
-                : name.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)))
+                : name.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal))
             .Build()
             .ToDictionary(x => x.Key, x => x.Value);
 
         if (resultDictionary.GetError() is null)
         {
-            resultDictionary.Add("ReturnStatement", Result.Success(Settings.EnableInheritance
-                    && Settings.BaseClass is not null
-                    && !string.IsNullOrEmpty(typedMethodName)
-                        ? $"return {typedMethodName}();"
-                        : $"return new {resultDictionary.GetValue("CustomBuilderNamespace")}.{results.GetValue(ResultNames.BuilderName).ToString().Replace(SourceModel.Name, resultDictionary.GetValue("BuilderConcreteName"))}{SourceModel.GetGenericTypeArgumentsString()}(this);"));
+            resultDictionary.Add("ReturnStatement", Settings.EnableInheritance
+                && Settings.BaseClass is not null
+                && !string.IsNullOrEmpty(typedMethodName)
+                    ? $"return {typedMethodName}();"
+                    : $"return new {resultDictionary.GetValue("CustomBuilderNamespace")}.{results.GetValue(ResultNames.BuilderName).ToString().Replace(SourceModel.Name, resultDictionary.GetValue("BuilderConcreteName"))}{SourceModel.GetGenericTypeArgumentsString()}(this);");
         }
 
         return resultDictionary;

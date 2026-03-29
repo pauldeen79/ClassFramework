@@ -73,7 +73,7 @@ public class AddDefaultConstructorComponent(IExpressionEvaluator evaluator) : IP
             }
         }
 
-        return Result.Success(ctor);
+        return ctor;
     }
 
     private async Task<List<Result<GenericFormattableString>>> GetDefaultValueResultsAsync(GenerateBuilderCommand command, CancellationToken token)

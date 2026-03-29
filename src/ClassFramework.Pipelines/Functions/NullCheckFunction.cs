@@ -9,6 +9,6 @@ public class NullCheckFunction : IFunction<string>
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return FunctionHelpers.ParseFromContextAsync(context, "NullCheck", c => Result.Success(c.NullCheck));
+        return FunctionHelpers.ParseFromContextAsync(context, "NullCheck", c => c.NullCheck);
     }
 }

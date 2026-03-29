@@ -10,6 +10,6 @@ public class NamespaceFunction : IFunction<string>
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return FunctionHelpers.ParseFromStringArgumentAsync(context, "Namespace", s => Result.Success(s.GetNamespaceWithDefault()), token);
+        return FunctionHelpers.ParseFromStringArgumentAsync(context, "Namespace", s => s.GetNamespaceWithDefault(), token);
     }
 }

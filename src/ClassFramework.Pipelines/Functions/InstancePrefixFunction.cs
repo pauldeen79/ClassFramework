@@ -14,6 +14,6 @@ public class InstancePrefixFunction : IFunction<string>
             ? "instance."
             : string.Empty;
 
-        return Result.Success(value);
+        return value;
     }
 }

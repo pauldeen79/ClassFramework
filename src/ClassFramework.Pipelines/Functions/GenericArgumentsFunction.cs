@@ -34,6 +34,6 @@ public class GenericArgumentsFunction : IFunction<string>
             addBrackets = addBracketsValue;
         }
 
-        return Result.Success(expressionResult.Value.GetGenericArguments(addBrackets));
+        return expressionResult.Value.GetGenericArguments(addBrackets);
     }
 }
