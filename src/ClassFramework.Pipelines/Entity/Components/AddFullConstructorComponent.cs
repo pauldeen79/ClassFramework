@@ -51,7 +51,7 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
             return Result.FromExistingResult<ConstructorBuilder>(error);
         }
 
-        return Result.Success(new ConstructorBuilder()
+        return new ConstructorBuilder()
             .WithProtected(command.Settings.EnableInheritance && command.Settings.IsAbstract)
             .AddParameters(command.SourceModel.Properties.CreateImmutableClassCtorParameters(command.FormatProvider, n => command.MapTypeName(n, MetadataNames.CustomEntityInterfaceTypeName)))
             .AddCodeStatements
@@ -62,6 +62,6 @@ public class AddFullConstructorComponent(IExpressionEvaluator evaluator) : IPipe
             )
             .AddCodeStatements(initializationResults.Select(x => x.Value!.ToString()))
             .AddCodeStatements(command.CreateEntityValidationCode())
-            .WithChainCall(await command.CreateEntityChainCallAsync().ConfigureAwait(false)));
+            .WithChainCall(await command.CreateEntityChainCallAsync().ConfigureAwait(false));
     }
 }

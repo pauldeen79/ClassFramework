@@ -16,7 +16,7 @@ public static class EnumerableOfMetadataExtensions
 
         return string.IsNullOrEmpty(value)
             ? defaultValueDelegate()
-            : Result.Success(value);
+            : value;
     }
 
     public static async Task<Result<GenericFormattableString>> GetGenericFormattableStringAsync(this IEnumerable<Metadata> metadata, string metadataName, Task<Result<GenericFormattableString>> defaultValueDelegate)

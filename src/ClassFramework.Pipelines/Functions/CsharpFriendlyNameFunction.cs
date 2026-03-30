@@ -7,5 +7,5 @@ public class CsharpFriendlyNameFunction : IFunction<string>
         => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
     public Task<Result<string>> EvaluateTypedAsync(FunctionCallContext context, CancellationToken token)
-        => FunctionHelpers.ParseFromStringArgumentAsync(context.IsNotNull(nameof(context)), "CsharpFriendlyName", s => Result.Success(s.GetCsharpFriendlyName()), token);
+        => FunctionHelpers.ParseFromStringArgumentAsync(context.IsNotNull(nameof(context)), "CsharpFriendlyName", s => s.GetCsharpFriendlyName(), token);
 }

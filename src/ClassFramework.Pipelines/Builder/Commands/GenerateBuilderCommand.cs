@@ -114,7 +114,7 @@ public class GenerateBuilderCommand(TypeBase sourceModel, PipelineSettings setti
             }
             else
             {
-                results.Add(Result.Success(noNamespaceTransformation(@interface)));
+                results.Add(noNamespaceTransformation(@interface));
             }
         }
 

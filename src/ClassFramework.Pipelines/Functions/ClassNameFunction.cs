@@ -7,5 +7,5 @@ public class ClassNameFunction : IFunction<string>
         => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
     public Task<Result<string>> EvaluateTypedAsync(FunctionCallContext context, CancellationToken token)
-        => FunctionHelpers.ParseFromStringArgumentAsync(context.IsNotNull(nameof(context)), "ClassName", s => Result.Success(s.GetClassName()), token);
+        => FunctionHelpers.ParseFromStringArgumentAsync(context.IsNotNull(nameof(context)), "ClassName", s => s.GetClassName(), token);
 }

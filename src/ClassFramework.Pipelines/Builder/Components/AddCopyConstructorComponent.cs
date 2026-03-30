@@ -68,7 +68,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
         var name = results.GetValue(ResultNames.Name).ToString();
         var nsPlusPrefix = results.GetValue(ResultNames.Namespace).ToString().AppendWhenNotNullOrEmpty(".");
 
-        return Result.Success(new ConstructorBuilder()
+        return new ConstructorBuilder()
             .WithChainCall(await CreateBuilderClassCopyConstructorChainCallAsync(command.SourceModel, command.Settings).ConfigureAwait(false))
             .WithProtected(command.IsBuilderForAbstractEntity)
             .AddCodeStatements
@@ -88,8 +88,7 @@ public class AddCopyConstructorComponent(IExpressionEvaluator evaluator, ICsharp
                     .Select(x => x.ToBuilder())
             )
             .AddCodeStatements(constructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"))
-            .AddCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Result.Value!, x.Property, command)};"))
-        );
+            .AddCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Result.Value!, x.Property, command)};"));
     }
 
     private async Task<ConstructorPropertyInitializerItem[]> GetInitializationCodeResultsAsync(GenerateBuilderCommand command, CancellationToken token)

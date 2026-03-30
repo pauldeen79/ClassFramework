@@ -10,6 +10,6 @@ public class NoInterfacePrefixFunction : IFunction<string>
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return FunctionHelpers.ParseFromStringArgumentAsync(context, "NoInterfacePrefix", s => Result.Success(s.WithoutInterfacePrefix()), token);
+        return FunctionHelpers.ParseFromStringArgumentAsync(context, "NoInterfacePrefix", s => s.WithoutInterfacePrefix(), token);
     }
 }

@@ -103,7 +103,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
             }
             else
             {
-                interfaces.Add(Result.Success(new NameInfo(GetEntityName(command.Settings, sourceInterface, () => command.MapTypeName(sourceInterface.FixTypeName())), command.MapTypeName(sourceInterface.FixTypeName()))));
+                interfaces.Add(new NameInfo(GetEntityName(command.Settings, sourceInterface, () => command.MapTypeName(sourceInterface.FixTypeName())), command.MapTypeName(sourceInterface.FixTypeName())));
             }
         }
 

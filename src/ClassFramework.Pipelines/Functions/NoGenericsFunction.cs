@@ -10,6 +10,6 @@ public class NoGenericsFunction : IFunction<string>
     {
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
-        return FunctionHelpers.ParseFromStringArgumentAsync(context, "NoGenerics", s => Result.Success(s.WithoutGenerics()), token);
+        return FunctionHelpers.ParseFromStringArgumentAsync(context, "NoGenerics", s => s.WithoutGenerics(), token);
     }
 }

@@ -7,5 +7,5 @@ public class CollectionItemTypeFunction : IFunction<string>
         => await EvaluateTypedAsync(context, token).ConfigureAwait(false);
 
     public Task<Result<string>> EvaluateTypedAsync(FunctionCallContext context, CancellationToken token)
-        => FunctionHelpers.ParseFromStringArgumentAsync(context.IsNotNull(nameof(context)), "CollectionItemType", s => Result.Success(s.GetCollectionItemType()), token);
+        => FunctionHelpers.ParseFromStringArgumentAsync(context.IsNotNull(nameof(context)), "CollectionItemType", s => s.GetCollectionItemType(), token);
 }

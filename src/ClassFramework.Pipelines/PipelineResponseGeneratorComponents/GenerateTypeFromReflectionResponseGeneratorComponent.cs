@@ -10,7 +10,7 @@ public class GenerateTypeFromReflectionResponseGeneratorComponent : IPipelineRes
             TypeBaseBuilder builder = reflectionCommand.SourceModel.IsInterface
                 ? new InterfaceBuilder()
                 : new ClassBuilder();
-            return Result.Success((T)(object)builder);
+            return (T)(object)builder;
         }
 
         return Result.Continue<T>();
