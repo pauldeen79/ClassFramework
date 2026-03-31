@@ -19,12 +19,12 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
             return modelResult;
         }
 
-        return Result.Success<object?>(new CsharpClassGeneratorViewModel
+        return new CsharpClassGeneratorViewModel
         {
             Model = modelResult.Value!,
             Settings = Settings
             //Context is filled in base class, on the property setter of Context (propagated to Model)
-        });
+        };
     }
 
     public IGenerationEnvironment CreateGenerationEnvironment()
