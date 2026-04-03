@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
-          java-version: '121'
+          java-version: '21'
       - name: Ensure Sonar cache directory exists
         run: mkdir -p ~/.sonar/cache
         shell: bash
