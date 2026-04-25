@@ -452,7 +452,7 @@ using System.Text;
 namespace Test.Domain
 {
 #nullable enable
-    public partial class Generic<T> : CrossCutting.Common.Abstractions.IBuildableEntity<Test.Domain.Builders.GenericBuilder>
+    public partial class Generic<T> : CrossCutting.Common.Abstractions.IBuildableEntity<Test.Domain.Builders.GenericBuilder<T>>
     {
         public T MyProperty
         {
