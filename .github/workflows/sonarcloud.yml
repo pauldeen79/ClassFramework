@@ -42,11 +42,11 @@ jobs:
         run: |
           dotnet-sonarscanner begin /k:"pauldeen79_ClassFramework" /n:"ClassFramework" /o:"pauldeen79" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
           # dotnet run src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj
-          dotnet build ClassFramework.sln
+          dotnet build
       - name: Run tests
         continue-on-error: true
         run: |
-          dotnet test ClassFramework.sln --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+          dotnet test --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
       - name: Finalize analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
