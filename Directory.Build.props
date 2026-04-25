@@ -16,7 +16,7 @@
   <PropertyGroup Condition="'$(IsTestProject)' != 'true'">
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>14.0</LangVersion>
-    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisLevel>latest-All</AnalysisLevel>
     <RepositoryUrl>https://github.com/pauldeen79/CrossCutting</RepositoryUrl>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>

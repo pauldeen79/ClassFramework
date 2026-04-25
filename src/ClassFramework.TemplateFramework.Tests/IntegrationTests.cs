@@ -20,7 +20,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddExpressionEvaluator()
             .AddClassFrameworkPipelines()
             .AddClassFrameworkTemplates()
-            .AddClassFrameworkCodeGenerators(typeof(IntegrationTests).GetAssemblyGeneratorTypes<CrossCuttingClassBase>())
+            .AddClassFrameworkCodeGenerators(typeof(IntegrationTests).GetAssemblyGeneratorTypes<CrossCuttingTestClassBase>())
             .AddClassFrameworkCodeGenerators(typeof(IntegrationTests).GetAssemblyGeneratorTypes<ImmutableCSharpClassBase>())
             .AddClassFrameworkCodeGenerators(typeof(IntegrationTests).GetAssemblyGeneratorTypes<ImmutableInheritFromInterfacesCSharpClassBase>())
             .AddClassFrameworkCodeGenerators(typeof(IntegrationTests).GetAssemblyGeneratorTypes<ImmutableNoToBuilderMethodCSharpClassBase>())

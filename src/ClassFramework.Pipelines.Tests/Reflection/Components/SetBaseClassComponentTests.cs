@@ -115,18 +115,14 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
     }
 }
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes
 #pragma warning disable S2094 // Classes should not be empty
 internal sealed class MyBaseClassTestClass : MyBaseClassTestClassBase
-#pragma warning restore CA1812 // Avoid uninstantiated internal classes
 #pragma warning restore S2094 // Classes should not be empty
 {
 }
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes
 #pragma warning disable S2094 // Classes should not be empty
 internal class MyBaseClassTestClassBase
-#pragma warning restore CA1812 // Avoid uninstantiated internal classes
 #pragma warning restore S2094 // Classes should not be empty
 {
 }
