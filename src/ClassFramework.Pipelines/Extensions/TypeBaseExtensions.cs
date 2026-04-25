@@ -116,10 +116,12 @@ public static class TypeBaseExtensions
 
             results.Add(new FieldBuilder()
                 .WithName($"_{property.Name.ToCamelCase(command.FormatProvider.ToCultureInfo())}")
-                .WithTypeName(builderArgumentTypeResult.Value!.ToString().FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName).FixNullableTypeName(property))
+                .WithTypeName(builderArgumentTypeResult.Value!.ToString()
+                    .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)
+                    .FixNullableTypeName(property)
+                    .AppendGenerics(property.GenericTypeArguments))
                 .WithIsNullable(property.IsNullable)
-                .WithIsValueType(property.IsValueType)
-                .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder())));
+                .WithIsValueType(property.IsValueType));
         }
 
         return results;

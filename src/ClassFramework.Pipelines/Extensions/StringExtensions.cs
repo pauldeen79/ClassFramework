@@ -106,6 +106,19 @@ public static class StringExtensions
     public static string WrapDelegate(this string typeName)
         => typeof(Func<object>).ReplaceGenericTypeName(typeName);
 
+    public static string AppendGenerics(this string typeName, IReadOnlyCollection<ITypeContainer> genericTypeArguments)
+    {
+        genericTypeArguments = ArgumentGuard.IsNotNull(genericTypeArguments, nameof(genericTypeArguments));
+
+        if (genericTypeArguments.Count == 0 || typeName.EndsWith(">") || typeName.EndsWith(">?"))
+        {
+            return typeName;
+        }
+
+        var generics = string.Join(", ", genericTypeArguments.Select(x => x.TypeName.AppendGenerics(x.GenericTypeArguments)));
+        return $"{typeName}<{generics}>";
+    }
+
     private static string MapTypeUsingGenerics(string typeName, PipelineSettings settings, string newCollectionTypeName, string alternateTypeMetadataName, string genericArguments)
     {
         var mappedGenericArgumentsBuilder = new StringBuilder();
