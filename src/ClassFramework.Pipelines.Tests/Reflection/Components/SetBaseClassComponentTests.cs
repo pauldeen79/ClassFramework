@@ -32,7 +32,7 @@ public class SetBaseClassComponentTests : TestBase<Pipelines.Reflection.Componen
 
             // Assert
             result.IsSuccessful().ShouldBeTrue();
-            ((ClassBuilder)response).BaseClass.ShouldBe("ClassFramework.Pipelines.Tests.Reflection.Components.MyBaseClassTestClassBase");
+            response.BaseClass.ShouldBe("ClassFramework.Pipelines.Tests.Reflection.Components.MyBaseClassTestClassBase");
         }
 
         [Fact]
