@@ -2843,7 +2843,7 @@ using System.Text;
 namespace Test.Domain.Builders.Types
 {
 #nullable enable
-    public partial class MyGenericOverrideBuilder<T> : AbstractBaseBuilder<MyGenericOverrideBuilder<T>, Test.Domain.Types.MyGenericOverride<T>>, Test.Domain.Abstractions.Builders.IAbstractBaseBuilder
+    public partial class MyGenericOverrideBuilder<T> : AbstractBaseBuilder<MyGenericOverrideBuilder<T>, Test.Domain.Types.MyGenericOverride<T>>, Test.Domain.Abstractions.Builders.IAbstractBaseBuilder<T>
     {
         private T _myOverrideProperty;
 
