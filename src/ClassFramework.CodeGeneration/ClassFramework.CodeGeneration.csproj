@@ -1,22 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AnalysisLevel>latest-All</AnalysisLevel>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="CsharpExpressionDumper.Core" Version="1.5.14" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.*" />
-    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="3.1.5" />
+    <PackageReference Include="CsharpExpressionDumper.Core" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\ClassFramework.TemplateFramework\ClassFramework.TemplateFramework.csproj" />
   </ItemGroup>
-
 </Project>

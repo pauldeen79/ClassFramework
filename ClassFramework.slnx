@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="TODO.txt" />
+  </Folder>
+  <Project Path="src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj">
+    <Build Solution="Release|*" Project="false" />
+  </Project>
+  <Project Path="src/ClassFramework.Domain.Tests/ClassFramework.Domain.Tests.csproj" />
+  <Project Path="src/ClassFramework.Domain/ClassFramework.Domain.csproj" />
+  <Project Path="src/ClassFramework.Pipelines.Tests/ClassFramework.Pipelines.Tests.csproj" />
+  <Project Path="src/ClassFramework.Pipelines/ClassFramework.Pipelines.csproj" />
+  <Project Path="src/ClassFramework.TemplateFramework.Tests/ClassFramework.TemplateFramework.Tests.csproj" />
+  <Project Path="src/ClassFramework.TemplateFramework/ClassFramework.TemplateFramework.csproj" />
+</Solution>
