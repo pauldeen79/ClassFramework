@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Tests.CodeGenerationProviders;
 
-public abstract class CrossCuttingClassBase(ICommandService commandService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(commandService)
+public abstract class CrossCuttingTestClassBase(ICommandService commandService) : CsharpClassGeneratorPipelineCodeGenerationProviderBase(commandService)
 {
     public override bool RecurseOnDeleteGeneratedFiles => false;
     public override string LastGeneratedFilesFilename => string.Empty;
@@ -104,9 +104,7 @@ public abstract class CrossCuttingClassBase(ICommandService commandService) : Cs
     }
 
     protected static IEnumerable<TypeBaseBuilder> GetCrossCuttingModels()
-    {
-#pragma warning disable CA1861 // Avoid constant arrays as arguments
-        return new[]
+        =>new[]
         {
             new InterfaceBuilder
             {
@@ -1267,8 +1265,6 @@ public abstract class CrossCuttingClassBase(ICommandService commandService) : Cs
                 SuppressWarningCodes = new ObservableCollection<System.String>(),
             },
         };
-#pragma warning restore CA1861 // Avoid constant arrays as arguments
-    }
 
     private static async Task<Result<T>> ProcessCrossCuttingBaseClassResultAsync<T>(Task<Result<TypeBase>> baseClassResultTask, Func<TypeBase?, Task<Result<T>>> successTask)
     {

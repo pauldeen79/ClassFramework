@@ -20,7 +20,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddExpressionEvaluator()
             .AddClassFrameworkPipelines()
             .AddClassFrameworkTemplates()
-            .AddClassFrameworkCodeGenerators(typeof(IntegrationTests).GetAssemblyGeneratorTypes<CrossCuttingClassBase>())
+            .AddClassFrameworkCodeGenerators(typeof(IntegrationTests).GetAssemblyGeneratorTypes<CrossCuttingTestClassBase>())
             .AddClassFrameworkCodeGenerators(typeof(IntegrationTests).GetAssemblyGeneratorTypes<ImmutableCSharpClassBase>())
             .AddClassFrameworkCodeGenerators(typeof(IntegrationTests).GetAssemblyGeneratorTypes<ImmutableInheritFromInterfacesCSharpClassBase>())
             .AddClassFrameworkCodeGenerators(typeof(IntegrationTests).GetAssemblyGeneratorTypes<ImmutableNoToBuilderMethodCSharpClassBase>())
@@ -452,7 +452,7 @@ using System.Text;
 namespace Test.Domain
 {
 #nullable enable
-    public partial class Generic<T> : CrossCutting.Common.Abstractions.IBuildableEntity<Test.Domain.Builders.GenericBuilder>
+    public partial class Generic<T> : CrossCutting.Common.Abstractions.IBuildableEntity<Test.Domain.Builders.GenericBuilder<T>>
     {
         public T MyProperty
         {
@@ -2843,7 +2843,7 @@ using System.Text;
 namespace Test.Domain.Builders.Types
 {
 #nullable enable
-    public partial class MyGenericOverrideBuilder<T> : AbstractBaseBuilder<MyGenericOverrideBuilder<T>, Test.Domain.Types.MyGenericOverride<T>>, Test.Domain.Abstractions.Builders.IAbstractBaseBuilder
+    public partial class MyGenericOverrideBuilder<T> : AbstractBaseBuilder<MyGenericOverrideBuilder<T>, Test.Domain.Types.MyGenericOverride<T>>, Test.Domain.Abstractions.Builders.IAbstractBaseBuilder<T>
     {
         private T _myOverrideProperty;
 

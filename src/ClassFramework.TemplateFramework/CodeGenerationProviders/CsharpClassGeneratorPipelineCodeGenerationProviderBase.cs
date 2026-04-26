@@ -355,16 +355,16 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                         .AddMetadata
                         (
                             new MetadataBuilder(MetadataNames.CustomBuilderNamespace, $"{CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}"),
-                            new MetadataBuilder(MetadataNames.CustomBuilderName, $"{x.GetEntityClassName()}Builder"),
+                            new MetadataBuilder(MetadataNames.CustomBuilderName, $"{x.GetEntityClassName()}Builder{x.GetGenericTypeArgumentsString()}"),
                             new MetadataBuilder(MetadataNames.CustomBuilderInterfaceNamespace, $"{AbstractionsNamespace}.Builders"),
-                            new MetadataBuilder(MetadataNames.CustomBuilderInterfaceName, $"I{x.GetEntityClassName()}Builder"),
-                            new MetadataBuilder(MetadataNames.CustomBuilderInterfaceTypeName, $"{AbstractionsNamespace}.Builders.I{x.GetEntityClassName()}Builder"),
+                            new MetadataBuilder(MetadataNames.CustomBuilderInterfaceName, $"I{x.GetEntityClassName()}Builder{x.GetGenericTypeArgumentsString()}"),
+                            new MetadataBuilder(MetadataNames.CustomBuilderInterfaceTypeName, $"{AbstractionsNamespace}.Builders.I{x.GetEntityClassName()}Builder{x.GetGenericTypeArgumentsString()}"),
                             new MetadataBuilder(MetadataNames.CustomBuilderSourceExpression, x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
-                                ? $"new {CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder([Name])"
+                                ? $"new {CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder{x.GetGenericTypeArgumentsString()}([Name])"
                                 : "[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]"),
                             new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && IsAbstractType(x)
-                                ? new Literal($"default({CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder)")
-                                : new Literal($"new {CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder()")),
+                                ? new Literal($"default({CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder{x.GetGenericTypeArgumentsString()})")
+                                : new Literal($"new {CoreNamespace}.Builders{x.Namespace.ReplaceStartNamespace($"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder{x.GetGenericTypeArgumentsString()}()")),
                             new MetadataBuilder(MetadataNames.CustomBuilderMethodParameterExpression, x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions" && Array.Exists(x.GetInterfaces(), IsAbstractType)
                                 ? "[Name][NullableSuffix].BuildTyped()[ForcedNullableSuffix]"
                                 : "[Name][NullableSuffix].Build()[ForcedNullableSuffix]"),
@@ -412,14 +412,14 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .AddMetadata
                 (
                     new MetadataBuilder(MetadataNames.CustomBuilderNamespace, builderAbstractionsNamespace),
-                    new MetadataBuilder(MetadataNames.CustomBuilderName, $"I{entityClassName.WithoutGenerics()}Builder"),
+                    new MetadataBuilder(MetadataNames.CustomBuilderName, $"I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString}"),
                     new MetadataBuilder(MetadataNames.CustomBuilderInterfaceNamespace, builderAbstractionsNamespace),
                     new MetadataBuilder(MetadataNames.CustomBuilderInterfaceName, $"I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString}"),
                     new MetadataBuilder(MetadataNames.CustomBuilderInterfaceTypeName, $"{builderAbstractionsNamespace}.I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString}"),
                     new MetadataBuilder(MetadataNames.CustomBuilderSourceExpression, "[Name][NullableSuffix].ToBuilder()[ForcedNullableSuffix]"),
                     new MetadataBuilder(MetadataNames.CustomBuilderDefaultValue, new Literal($"default({builderAbstractionsNamespace}.I{entityClassName.WithoutGenerics()}Builder{genericTypeArgumentsString})")),
                     new MetadataBuilder(MetadataNames.CustomBuilderMethodParameterExpression, "[Name][NullableSuffix].Build()[ForcedNullableSuffix]"),
-                    new MetadataBuilder(MetadataNames.CustomEntityInterfaceTypeName, $"{abstractionsNamespace}.I{entityClassName}")
+                    new MetadataBuilder(MetadataNames.CustomEntityInterfaceTypeName, $"{abstractionsNamespace}.I{entityClassName}{genericTypeArgumentsString}")
                 ),
             //Temporary fix for flaw in abstractions typename mapping
             new TypenameMappingBuilder($"{coreNamespace}.Builders.I{entityClassName}Builder", $"{builderAbstractionsNamespace}.I{entityClassName}Builder"),

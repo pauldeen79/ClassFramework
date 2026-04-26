@@ -76,9 +76,7 @@ public class AddConstructorsComponentTests : TestBase<Pipelines.Reflection.Compo
     }
 }
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes
 internal sealed class MyConstructorTestClass
-#pragma warning restore CA1812 // Avoid uninstantiated internal classes
 {
     public MyConstructorTestClass()
     {

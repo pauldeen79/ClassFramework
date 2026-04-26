@@ -53,7 +53,7 @@ public class AddToBuilderMethodComponent(IExpressionEvaluator evaluator) : IPipe
                         }
                         else if (command.Settings.UseCrossCuttingInterfaces)
                         {
-                            var entityInterface = typeof(IBuildableEntity<object>).ReplaceGenericTypeName(builderTypeName);
+                            var entityInterface = typeof(IBuildableEntity<object>).ReplaceGenericTypeName($"{builderTypeName}{generics}");
                             if (!response.Interfaces.Contains(entityInterface))
                             {
                                 response.AddInterfaces(entityInterface);

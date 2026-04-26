@@ -318,12 +318,10 @@ public class TypeExtensionsTests
 
 #pragma warning disable S1144 // Unused private types or members should be removed
 #pragma warning disable S2094 // Classes should not be empty
-#pragma warning disable CA1812
         private sealed class MyClass { }
         private struct MyStruct { }
         private interface IMyInterface { }
         private sealed record MyRecord { }
-#pragma warning restore CA1812
 #pragma warning restore S2094 // Classes should not be empty
 #pragma warning restore S1144 // Unused private types or members should be removed
     }

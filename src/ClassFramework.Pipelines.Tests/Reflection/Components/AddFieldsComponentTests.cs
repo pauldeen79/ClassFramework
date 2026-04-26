@@ -45,13 +45,9 @@ public class AddFieldsComponentTests : TestBase<Pipelines.Reflection.Components.
     }
 }
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes
 internal sealed class MyFieldTestClass
-#pragma warning restore CA1812 // Avoid uninstantiated internal classes
 {
     [Required]
-#pragma warning disable CS0649 // Field 'MyFieldTestClass.myField' is never assigned to, and will always have its default value 0 / null
     public int myField;
     public readonly string? myReadOnlyField;
-#pragma warning restore CS0649 // Field 'MyFieldTestClass.myField' is never assigned to, and will always have its default value 0 / null
 }

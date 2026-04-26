@@ -9,7 +9,8 @@ public class PropertyViewModel(ICsharpExpressionDumper csharpExpressionDumper) :
         => Model.TypeName
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(Model.IsNullable, Settings.EnableNullableContext, Model.IsValueType)
-            .AbbreviateNamespaces(Context.GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate);
+            .AbbreviateNamespaces(Context.GetCsharpClassGeneratorSettings().IsNotNull(nameof(CsharpClassGeneratorSettings)).NamespacesToAbbreviate)
+            .AppendGenerics(Model.GenericTypeArguments);
 
     public string Name
         => Model.Name.Sanitize().GetCsharpFriendlyName();
