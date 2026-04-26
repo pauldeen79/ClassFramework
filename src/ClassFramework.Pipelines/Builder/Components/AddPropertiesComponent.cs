@@ -37,6 +37,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
                     .AppendGenerics(property.GenericTypeArguments))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
+                .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder()))
                 .WithParentTypeFullName(results.GetValue(ResultNames.ParentTypeName))
                 .AddAttributes(property.Attributes
                     .Where(_ => command.Settings.CopyAttributes)

@@ -121,7 +121,8 @@ public static class TypeBaseExtensions
                     .FixNullableTypeName(property)
                     .AppendGenerics(property.GenericTypeArguments))
                 .WithIsNullable(property.IsNullable)
-                .WithIsValueType(property.IsValueType));
+                .WithIsValueType(property.IsValueType)
+                .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder())));
         }
 
         return results;
