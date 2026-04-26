@@ -6,7 +6,7 @@ public static class StringExtensions
     {
         genericTypeArguments = ArgumentGuard.IsNotNull(genericTypeArguments, nameof(genericTypeArguments));
 
-        if (genericTypeArguments.Count == 0 || typeName.EndsWith('>') || typeName.EndsWith(">?"))
+        if (genericTypeArguments.Count == 0 || typeName.EndsWith('>') || typeName.EndsWith(">?") || typeName.EndsWith(']'))
         {
             return typeName;
         }
