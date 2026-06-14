@@ -80,6 +80,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool EnableNullablePragmas => true;
     protected virtual bool EnableGlobalUsings => false;
     protected virtual bool UseCrossCuttingInterfaces => false;
+    protected virtual bool AddProperties => true;
     protected virtual CultureInfo CultureInfo => CultureInfo.InvariantCulture;
     protected virtual Predicate<Domain.Attribute>? CopyAttributePredicate => null;
     protected virtual Predicate<string>? CopyInterfacePredicate => null;
@@ -262,6 +263,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             var entitySettings = new PipelineSettingsBuilder()
                 .WithAddSetters(AddSetters)
                 .WithAddBackingFields(AddBackingFields)
+                .WithAddProperties(AddProperties)
                 .WithSetterVisibility(SetterVisibility)
                 .WithCreateAsObservable(CreateAsObservable)
                 .WithCreateRecord(CreateRecord)
@@ -565,6 +567,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithBaseClassBuilderNameSpace(BaseClassBuilderNamespace)
                 .WithAddCopyConstructor(AddCopyConstructor)
                 .WithAddImplicitOperatorOnBuilder(AddImplicitOperatorOnBuilder)
+                .WithAddProperties(AddProperties)
                 .WithSetDefaultValuesInEntityConstructor(SetDefaultValues)
                 .WithUseBuilderLazyValues(UseBuilderLazyValues)
                 .AddSkipNamespacesOnFluentBuilderMethods(GetSkipNamespacesOnFluentBuilderMethods())
