@@ -14,7 +14,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
             return Result.Continue();
         }
 
-        foreach (var property in command.GetSourceProperties())
+        foreach (var property in command.GetSourceProperties().Where(_ => command.AddProperties))
         {
             var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
                 .Add(ResultNames.TypeName, () => property.GetBuilderArgumentTypeNameAsync(command, new ParentChildContext<GenerateBuilderCommand, Property>(command, property, command.Settings), command.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token))

@@ -8,6 +8,7 @@ public class GenerateBuilderCommand(TypeBase sourceModel, PipelineSettings setti
     public bool IsBuilderForAbstractEntity => Settings.EnableInheritance && (Settings.BaseClass is null || Settings.IsAbstract);
     public bool IsBuilderForOverrideEntity => Settings.EnableInheritance && Settings.BaseClass is not null;
     public bool IsAbstractBuilder => Settings.EnableBuilderInheritance && (Settings.BaseClass is null || Settings.IsAbstract) && !Settings.IsForAbstractBuilder;
+    public bool AddProperties => Settings.AddProperties;
 
     protected override string NewCollectionTypeName => Settings.BuilderNewCollectionTypeName;
 
