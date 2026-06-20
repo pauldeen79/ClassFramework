@@ -10,6 +10,6 @@ public class PropertyEntityMemberNameProperty : IProperty
         context = ArgumentGuard.IsNotNull(context, nameof(context));
 
         return await context.EvaluateForProperty(
-            (property, settings) => property.GetEntityMemberName(settings.AddBackingFields || settings.CreateAsObservable, context.Context.Settings.FormatProvider.ToCultureInfo())).ConfigureAwait(false);
+            (property, settings) => property.GetEntityMemberName(settings.AddBackingFields || settings.CreateAsObservable || !settings.AddProperties, context.Context.Settings.FormatProvider.ToCultureInfo())).ConfigureAwait(false);
     }
 }

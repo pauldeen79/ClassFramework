@@ -18,8 +18,8 @@ public class AddPropertiesComponent : IPipelineComponent<GenerateEntityCommand, 
                         .WithAbstract(property.Abstract)
                         .WithProtected(property.Protected)
                         .WithOverride(property.Override)
-                        .WithHasInitializer(property.HasInitializer && !(command.Settings.AddSetters || command.Settings.AddBackingFields || command.Settings.CreateAsObservable))
-                        .WithHasSetter(((command.Settings.AddSetters || command.Settings.AddBackingFields) && !property.TypeName.IsCollectionTypeName()) || command.Settings.CreateAsObservable)
+                        .WithHasInitializer(property.HasInitializer && !(command.Settings.AddSetters || command.Settings.AddBackingFields || command.Settings.CreateAsObservable || !command.Settings.AddProperties))
+                        .WithHasSetter(((command.Settings.AddSetters || command.Settings.AddBackingFields) && !property.TypeName.IsCollectionTypeName()) || command.Settings.CreateAsObservable || !command.Settings.AddProperties)
                         .WithGetterVisibility(property.GetterVisibility)
                         .WithSetterVisibility(command.Settings.SetterVisibility)
                         .WithInitializerVisibility(property.InitializerVisibility)
@@ -30,7 +30,7 @@ public class AddPropertiesComponent : IPipelineComponent<GenerateEntityCommand, 
                 )
             );
 
-            if (command.Settings.AddBackingFields || command.Settings.CreateAsObservable)
+            if (command.Settings.AddBackingFields || command.Settings.CreateAsObservable || !command.Settings.AddProperties)
             {
                 AddBackingFields(command, response, properties);
             }
@@ -59,7 +59,7 @@ public class AddPropertiesComponent : IPipelineComponent<GenerateEntityCommand, 
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, GenerateEntityCommand command)
     {
-        if (command.Settings.AddBackingFields || command.Settings.CreateAsObservable)
+        if (command.Settings.AddBackingFields || command.Settings.CreateAsObservable || !command.Settings.AddProperties)
         {
             yield return new StringCodeStatementBuilder($"return _{property.Name.ToCamelCase(command.FormatProvider.ToCultureInfo())};");
         }
@@ -67,7 +67,7 @@ public class AddPropertiesComponent : IPipelineComponent<GenerateEntityCommand, 
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(Property property, GenerateEntityCommand command)
     {
-        if (command.Settings.AddBackingFields || command.Settings.CreateAsObservable)
+        if (command.Settings.AddBackingFields || command.Settings.CreateAsObservable || !command.Settings.AddProperties)
         {
             if (command.Settings.CreateAsObservable)
             {

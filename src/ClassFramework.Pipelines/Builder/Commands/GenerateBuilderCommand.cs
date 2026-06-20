@@ -33,7 +33,8 @@ public class GenerateBuilderCommand(TypeBase sourceModel, PipelineSettings setti
     public bool HasBackingFields()
         => !(IsAbstractBuilder || !Settings.AddNullChecks)
         || Settings.AddBackingFields
-        || Settings.CreateAsObservable;
+        || Settings.CreateAsObservable
+        || !Settings.AddProperties;
 
     public bool IsValidForFluentMethod(Property property)
     {
