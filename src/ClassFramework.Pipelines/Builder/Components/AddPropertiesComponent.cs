@@ -14,10 +14,11 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
             return Result.Continue();
         }
 
-        foreach (var property in command.GetSourceProperties().Where(_ => command.Settings.AddProperties))
+        foreach (var property in command.GetSourceProperties())
         {
             var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
                 .Add(ResultNames.TypeName, () => property.GetBuilderArgumentTypeNameAsync(command, new ParentChildContext<GenerateBuilderCommand, Property>(command, property, command.Settings), command.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token))
+                .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(command.Settings.BuilderNameFormatString, command.FormatProvider, command, token))
                 .Add(ResultNames.ParentTypeName, () => property.GetBuilderParentTypeNameAsync(command, _evaluator, token))
                 .BuildAsync(token)
                 .ConfigureAwait(false);
@@ -29,21 +30,39 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
                 return error;
             }
 
-            response.AddProperties(new PropertyBuilder()
-                .WithName(property.Name)
-                .WithTypeName(results.GetValue(ResultNames.TypeName).ToString()
-                    .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)
-                    .FixNullableTypeName(property))
-                .WithIsNullable(property.IsNullable)
-                .WithIsValueType(property.IsValueType)
-                .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder()))
-                .WithParentTypeFullName(results.GetValue(ResultNames.ParentTypeName))
-                .AddAttributes(property.Attributes
-                    .Where(_ => command.Settings.CopyAttributes)
-                    .Select(x => command.MapAttribute(x).ToBuilder()))
-                .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, command))
-                .AddSetterCodeStatements(await CreateBuilderPropertySetterStatementsAsync(property, command, token).ConfigureAwait(false))
-            );
+            if (command.Settings.AddProperties)
+            {
+                response.AddProperties(new PropertyBuilder()
+                    .WithName(property.Name)
+                    .WithTypeName(results.GetValue(ResultNames.TypeName).ToString()
+                        .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)
+                        .FixNullableTypeName(property))
+                    .WithIsNullable(property.IsNullable)
+                    .WithIsValueType(property.IsValueType)
+                    .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder()))
+                    .WithParentTypeFullName(results.GetValue(ResultNames.ParentTypeName))
+                    .AddAttributes(property.Attributes
+                        .Where(_ => command.Settings.CopyAttributes)
+                        .Select(x => command.MapAttribute(x).ToBuilder()))
+                    .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, command))
+                    .AddSetterCodeStatements(await CreateBuilderPropertySetterStatementsAsync(property, command, token).ConfigureAwait(false))
+                );
+            }
+            else
+            {
+                // Add a getter method only.
+                // Setter methods will be added using With and Add methods.
+                response.AddMethods(new MethodBuilder()
+                    .WithName(property.Name)
+                    .WithReturnTypeName(results.GetValue(ResultNames.TypeName).ToString()
+                        .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)
+                        .FixNullableTypeName(property))
+                    .WithReturnTypeIsNullable(property.IsNullable)
+                    .WithReturnTypeIsValueType(property.IsValueType)
+                    //.AddReturnTypeGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder()))
+                    .AddCodeStatements(CreateBuilderPropertyGetterStatements(property, command))
+                );
+            }
         }
 
         // Note that we are not checking the result, because the same formattable string (CustomBuilderArgumentType) has already been checked earlier in this class
