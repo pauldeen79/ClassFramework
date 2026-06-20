@@ -226,13 +226,11 @@ public abstract class CommandBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         Property property,
         object parentChildContext,
         IExpressionEvaluator evaluator,
-        PipelineSettings settings,
         CancellationToken token)
     {
         property = property.IsNotNull(nameof(property));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
-        settings = settings.IsNotNull(nameof(settings));
 
         return await new AsyncResultDictionaryBuilder<GenericFormattableString>()
             .Add(ResultNames.TypeName, () => property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token))

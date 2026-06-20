@@ -34,6 +34,5 @@ public class AddFluentMethodsForNonCollectionPropertiesComponent(IExpressionEval
             property,
             new ParentChildContext<GenerateBuilderCommand, Property>(command, property, command.Settings),
             _evaluator,
-            command.Settings,
             token);
 }
