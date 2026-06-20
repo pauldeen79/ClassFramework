@@ -37,6 +37,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IMember, NoGenericsFunction>()
             .AddSingleton<IMember, NoInterfacePrefixFunction>()
             .AddSingleton<IMember, NullCheckFunction>()
+            .AddSingleton<IMember, PropertyNameFunction>()
             .AddSingleton<IMember, SourceArgumentNullCheckFunction>()
             .AddSingleton<IMember, SourceNullCheckFunction>();
 
