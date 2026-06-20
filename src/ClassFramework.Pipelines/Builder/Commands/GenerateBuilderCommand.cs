@@ -278,7 +278,7 @@ public class GenerateBuilderCommand(TypeBase sourceModel, PipelineSettings setti
             ? $"{propertyName} = "
             : string.Empty;
 
-    private static string? GetBuilderPropertyExpression(string? value, Property sourceProperty, string collectionInitializer, string suffix, bool useBuilderLazyValues)
+    private string? GetBuilderPropertyExpression(string? value, Property sourceProperty, string collectionInitializer, string suffix, bool useBuilderLazyValues)
     {
         if (value is null || !value.Contains(PlaceholderNames.NamePlaceholder))
         {
@@ -287,9 +287,13 @@ public class GenerateBuilderCommand(TypeBase sourceModel, PipelineSettings setti
 
         var lazySuffix = GetLazySuffix(sourceProperty, useBuilderLazyValues);
 
+        var name = Settings.AddBackingFields || !Settings.AddProperties
+            ? "_" + sourceProperty.Name.ToCamelCase(FormatProvider.ToCultureInfo())
+            : sourceProperty.Name;
+
         if (value == PlaceholderNames.NamePlaceholder)
         {
-            return sourceProperty.Name + lazySuffix;
+            return name + lazySuffix;
         }
 
         if (sourceProperty.TypeName.FixTypeName().IsCollectionTypeName())
@@ -304,12 +308,12 @@ public class GenerateBuilderCommand(TypeBase sourceModel, PipelineSettings setti
             return collectionInitializer
                 .Replace("[Type]", sourceProperty.TypeName.FixTypeName().WithoutGenerics())
                 .Replace("[Generics]", sourceProperty.TypeName.FixTypeName().GetGenericArguments(addBrackets: true))
-                .Replace("[Expression]", $"{sourceProperty.Name}{suffix}.Select(x => {valueExpression}{lazySuffix})");
+                .Replace("[Expression]", $"{name}{suffix}.Select(x => {valueExpression}{lazySuffix})");
         }
         else
         {
             var valueExpression = value!
-                .Replace(PlaceholderNames.NamePlaceholder, sourceProperty.Name)
+                .Replace(PlaceholderNames.NamePlaceholder, name)
                 .Replace("[NullableSuffix]", suffix)
                 .Replace("[ForcedNullableSuffix]", string.IsNullOrEmpty(suffix)
                     ? string.Empty
