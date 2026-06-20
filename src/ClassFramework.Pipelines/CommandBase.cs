@@ -226,11 +226,17 @@ public abstract class CommandBase<TSourceModel>(TSourceModel sourceModel, Pipeli
         Property property,
         object parentChildContext,
         IExpressionEvaluator evaluator,
+        PipelineSettings settings,
         CancellationToken token)
     {
         property = property.IsNotNull(nameof(property));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         evaluator = evaluator.IsNotNull(nameof(evaluator));
+        settings = settings.IsNotNull(nameof(settings));
+
+        var propertyNameString = !settings.AddProperties
+            ? "_{property.Name.ToCamelCase()}"
+            : "{property.Name}";
 
         return await new AsyncResultDictionaryBuilder<GenericFormattableString>()
             .Add(ResultNames.TypeName, () => property.GetBuilderArgumentTypeNameAsync(this, parentChildContext, MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), evaluator, token))
@@ -239,8 +245,8 @@ public abstract class CommandBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .Add("MethodName", () => evaluator.EvaluateInterpolatedStringAsync(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext, token))
             .Add(ResultNames.BuilderName, () => evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, token))
             .Add("ArgumentNullCheck", () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{ArgumentNullCheck()}"), FormatProvider, parentChildContext, token))
-            .Add(ResultNames.BuilderWithExpression, () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{property.Name} = {CsharpFriendlyName(property.Name.ToCamelCase())};"), FormatProvider, parentChildContext, token))
-            .Add(ResultNames.BuilderNonLazyWithExpression, () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{property.Name} = {property.BuilderFuncPrefix}{CsharpFriendlyName(property.Name.ToCamelCase())}{property.BuilderFuncSuffix};"), FormatProvider, parentChildContext, token))
+            .Add(ResultNames.BuilderWithExpression, () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}" + propertyNameString + " = {CsharpFriendlyName(property.Name.ToCamelCase())};"), FormatProvider, parentChildContext, token))
+            .Add(ResultNames.BuilderNonLazyWithExpression, () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}" + propertyNameString + " = {property.BuilderFuncPrefix}{CsharpFriendlyName(property.Name.ToCamelCase())}{property.BuilderFuncSuffix};"), FormatProvider, parentChildContext, token))
             .BuildAsync(token)
             .ConfigureAwait(false);
     }

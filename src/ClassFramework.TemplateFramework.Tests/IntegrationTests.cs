@@ -2014,7 +2014,7 @@ namespace Test.Domain.Builders
 
         public Test.Domain.Generic<T> Build()
         {
-            return new Test.Domain.Generic<T> { MyProperty = MyProperty };
+            return new Test.Domain.Generic<T> { MyProperty = _myProperty };
         }
 
         partial void SetDefaultValues();
@@ -2093,7 +2093,7 @@ namespace Test.Domain.Builders
 
         public Test.Domain.Literal Build()
         {
-            return new Test.Domain.Literal { Value = Value, OriginalValue = OriginalValue };
+            return new Test.Domain.Literal { Value = _value, OriginalValue = _originalValue };
         }
 
         partial void SetDefaultValues();
