@@ -8,5 +8,5 @@ public class CoreBuilders(ICommandService commandService) : ClassFrameworkCSharp
     public override string Path => "ClassFramework.Domain/Builders";
 
     protected override bool CreateAsObservable => true;
-    // protected override bool AddProperties => false;
+    protected override bool AddProperties => false;
 }

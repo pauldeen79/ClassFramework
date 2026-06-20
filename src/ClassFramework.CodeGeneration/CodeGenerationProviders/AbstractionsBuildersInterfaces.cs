@@ -8,4 +8,5 @@ public class AbstractionsBuildersInterfaces(ICommandService commandService) : Cl
     public override string Path => "ClassFramework.Domain/Builders/Abstractions";
     
     protected override bool EnableEntityInheritance => true;
+    protected override bool AddProperties => false;
 }

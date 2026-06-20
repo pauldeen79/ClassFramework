@@ -8,4 +8,5 @@ public class PipelineBuilders(ICommandService commandService) : ClassFrameworkCS
     public override string Path => "ClassFramework.Pipelines/Builders";
 
     protected override bool CreateAsObservable => true;
+    protected override bool AddProperties => false;
 }
