@@ -131,7 +131,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return await ProcessModelsResultAsync(modelsResultTask, async x => await CreateInterfaceAsync(await CreateEntityAsync(x, entitiesNamespace, false).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{class.Name}", string.Empty, (t, m) => m.Name == ToBuilderFormatString && (UseBuilderAbstractionsTypeConversion && !UseCrossCuttingInterfaces)).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
+        return await ProcessModelsResultAsync(modelsResultTask, async x => await CreateInterfaceAsync(await CreateEntityAsync(x, entitiesNamespace, false).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{class.Name}", string.Empty, (t, m) => (m.Name == ToBuilderFormatString && UseBuilderAbstractionsTypeConversion && !UseCrossCuttingInterfaces) || x.Properties.Select(p => p.Name).Contains(m.Name)).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
     }
 
     protected Task<Result<IEnumerable<TypeBase>>> GetBuildersAsync(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
