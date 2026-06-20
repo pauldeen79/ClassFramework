@@ -1,5 +1,4 @@
-﻿
-namespace ClassFramework.Pipelines.Tests.Functions;
+﻿namespace ClassFramework.Pipelines.Tests.Functions;
 
 public class NullCheckFunctionTests : TestBase<NullCheckFunction>
 {
