@@ -287,7 +287,7 @@ public class GenerateBuilderCommand(TypeBase sourceModel, PipelineSettings setti
         var lazySuffix = GetLazySuffix(sourceProperty, useBuilderLazyValues);
 
         var name = Settings.AddBackingFields || !Settings.AddProperties
-            ? "_" + sourceProperty.Name.ToCamelCase(FormatProvider.ToCultureInfo())
+            ? sourceProperty.Name + "()"
             : sourceProperty.Name;
 
         if (value == PlaceholderNames.NamePlaceholder)
