@@ -28,7 +28,7 @@ public abstract class ClassFrameworkCSharpClassBase(ICommandService commandServi
     protected override bool AddProperties => false;
     // Fluent set accessors
     protected override string SetMethodNameFormatString => "{property.Name}";
-    protected override string AddMethodNameFormatString => "{property.Name}";
+    //protected override string AddMethodNameFormatString => "{property.Name}"; // this does not work on abstract builder extension methods
 
     protected Task<Result<IEnumerable<TypeBase>>> GetPipelineModelsAsync()
         => GetNonCoreModelsAsync($"{CodeGenerationRootNamespace}.Models.Pipelines");
