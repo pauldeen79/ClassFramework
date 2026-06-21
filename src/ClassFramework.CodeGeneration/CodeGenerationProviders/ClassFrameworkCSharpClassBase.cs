@@ -23,6 +23,7 @@ public abstract class ClassFrameworkCSharpClassBase(ICommandService commandServi
     //protected override string ToTypedBuilderFormatString => string.Empty;
     //protected override bool AddCopyConstructor => false;
     protected override bool UseCrossCuttingInterfaces => true;
+    protected override bool AddProperties => false;
 
     protected Task<Result<IEnumerable<TypeBase>>> GetPipelineModelsAsync()
         => GetNonCoreModelsAsync($"{CodeGenerationRootNamespace}.Models.Pipelines");

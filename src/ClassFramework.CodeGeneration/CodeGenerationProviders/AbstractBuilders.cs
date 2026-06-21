@@ -13,7 +13,6 @@ public class AbstractBuilders(ICommandService commandService) : ClassFrameworkCS
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;
     protected override bool IsAbstract => true;
-    protected override bool AddProperties => false;
 
     // Do not generate 'With' methods. Do this on the interfaces instead.
     protected override string SetMethodNameFormatString => string.Empty;

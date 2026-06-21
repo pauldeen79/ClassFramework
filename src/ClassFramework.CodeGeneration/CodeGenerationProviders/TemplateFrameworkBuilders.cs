@@ -8,5 +8,4 @@ public class TemplateFrameworkBuilders(ICommandService commandService) : ClassFr
     public override string Path => "ClassFramework.TemplateFramework/Builders";
 
     protected override bool CreateAsObservable => true;
-    protected override bool AddProperties => false;
 }

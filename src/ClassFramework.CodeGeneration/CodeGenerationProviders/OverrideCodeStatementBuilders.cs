@@ -7,7 +7,6 @@ public class OverrideCodeStatementBuilders(ICommandService commandService) : Cla
 
     protected override bool EnableEntityInheritance => true;
     protected override bool CreateAsObservable => true;
-    protected override bool AddProperties => false;
     protected override Task<Result<TypeBase>> GetBaseClassAsync() => CreateBaseClassAsync(typeof(ICodeStatementBase), "ClassFramework.Domain");
 
     public override Task<Result<IEnumerable<TypeBase>>> GetModelAsync(CancellationToken token)
