@@ -239,8 +239,12 @@ public abstract class CommandBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .Add("MethodName", () => evaluator.EvaluateInterpolatedStringAsync(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext, token))
             .Add(ResultNames.BuilderName, () => evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, token))
             .Add("ArgumentNullCheck", () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{ArgumentNullCheck()}"), FormatProvider, parentChildContext, token))
-            .Add(ResultNames.BuilderWithExpression, () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{PropertyName()} = {CsharpFriendlyName(property.Name.ToCamelCase())};"), FormatProvider, parentChildContext, token))
-            .Add(ResultNames.BuilderNonLazyWithExpression, () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{PropertyName()} = {property.BuilderFuncPrefix}{CsharpFriendlyName(property.Name.ToCamelCase())}{property.BuilderFuncSuffix};"), FormatProvider, parentChildContext, token))
+            .Add(ResultNames.BuilderWithExpression, () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, Settings.AddProperties
+                ? "{InstancePrefix()}{PropertyName()} = {CsharpFriendlyName(property.Name.ToCamelCase())};"
+                : "{InstancePrefix()}{property.Name}({CsharpFriendlyName(property.Name.ToCamelCase())});"), FormatProvider, parentChildContext, token))
+            .Add(ResultNames.BuilderNonLazyWithExpression, () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, Settings.AddProperties
+                ? "{InstancePrefix()}{PropertyName()} = {property.BuilderFuncPrefix}{CsharpFriendlyName(property.Name.ToCamelCase())}{property.BuilderFuncSuffix};"
+                : "{InstancePrefix()}{property.Name}({property.BuilderFuncPrefix}{CsharpFriendlyName(property.Name.ToCamelCase())}{property.BuilderFuncSuffix});"), FormatProvider, parentChildContext, token))
             .BuildAsync(token)
             .ConfigureAwait(false);
     }
