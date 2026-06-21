@@ -10,13 +10,13 @@ public partial class PipelineSettingsBuilder
         BuilderNameFormatString = "{class.Name}Builder";
         BuilderNewCollectionTypeName = typeof(IReadOnlyCollection<>).WithoutGenerics();
         CollectionInitializationStatementFormatString = "{SourceArgumentNullCheck()}foreach (var item in source.[SourceExpression]) {property.BuilderMemberName}.Add({property.BuilderFuncPrefix}item{property.BuilderFuncSuffix})";
-        CollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(property.Name.ToCamelCase())}) {InstancePrefix()}{PropertyName()}.Add(item);";
-        NonLazyCollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(property.Name.ToCamelCase())}) {InstancePrefix()}{PropertyName()}.Add(() => item);";
+        CollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(property.Name.ToCamelCase())}) {InstancePrefix()}{PropertyName(true)}.Add(item);";
+        NonLazyCollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(property.Name.ToCamelCase())}) {InstancePrefix()}{PropertyName(true)}.Add(() => item);";
         NonCollectionInitializationStatementFormatString = "{property.BuilderFuncPrefix}source.[SourceExpression]{property.BuilderFuncSuffix}";
         BuilderExtensionsNamespaceFormatString = "{class.Namespace}.Builders.Extensions";
         BuilderExtensionsNameFormatString = "{NoInterfacePrefix(class.Name)}BuilderExtensions";
-        BuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(property.Name.ToCamelCase())}) {InstancePrefix()}{PropertyName()}.Add(item);";
-        NonLazyBuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(property.Name.ToCamelCase())}) {InstancePrefix()}{PropertyName()}.Add(() => item);";
+        BuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(property.Name.ToCamelCase())}) {InstancePrefix()}{PropertyName(true)}.Add(item);";
+        NonLazyBuilderExtensionsCollectionCopyStatementFormatString = "foreach (var item in {CsharpFriendlyName(property.Name.ToCamelCase())}) {InstancePrefix()}{PropertyName(true)}.Add(() => item);";
         EntityNamespaceFormatString = "{class.Namespace}";
         EntityNameFormatString = "{class.Name}";
         EntityNewCollectionTypeName = typeof(List<>).WithoutGenerics();
