@@ -578,6 +578,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private Task<Result<PipelineSettings>> CreateBuilderInterfacePipelineSettingsAsync(string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
         => ProcessSettingsResultAsync(CreateEntityPipelineSettingsAsync(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()),
             settings => Task.FromResult(Result.Success(new PipelineSettingsBuilder(settings)
+                .WithAddProperties(AddProperties)
                 .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
                 .WithBuilderNamespaceFormatString(buildersNamespace)
                 .WithBuilderExtensionsNamespaceFormatString(buildersExtensionsNamespace)
