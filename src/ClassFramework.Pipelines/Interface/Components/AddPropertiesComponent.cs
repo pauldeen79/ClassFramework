@@ -8,17 +8,26 @@ public class AddPropertiesComponent : IPipelineComponent<GenerateInterfaceComman
             command = command.IsNotNull(nameof(command));
             response = response.IsNotNull(nameof(response));
 
-            response.AddProperties
+            var properties = command.GetSourceProperties().Select
             (
-                command.GetSourceProperties().Select
-                (
-                    property => command.CreatePropertyForEntity(property, command.Settings.BuilderAbstractionsTypeConversionMetadataName)
-                        .WithHasGetter(property.HasGetter)
-                        .WithHasInitializer(false)
-                        .WithHasSetter(property.HasSetter && command.Settings.AddSetters)
-                )
+                property => command.CreatePropertyForEntity(property, command.Settings.BuilderAbstractionsTypeConversionMetadataName)
+                    .WithHasGetter(property.HasGetter)
+                    .WithHasInitializer(false)
+                    .WithHasSetter(property.HasSetter && command.Settings.AddSetters)
             );
 
+            if (command.Settings.AddProperties)
+            {
+                response.AddProperties(properties);
+            }
+            else
+            {
+                response.AddMethods(properties.SelectMany(property => command.ConvertPropertyToMethods(
+                    property,
+                    property.TypeName,
+                    property.IsNullable,
+                    property.IsValueType)));
+            }
             return Result.Success();
         }, token);
 }

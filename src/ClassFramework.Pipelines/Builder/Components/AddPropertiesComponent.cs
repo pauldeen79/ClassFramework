@@ -30,38 +30,34 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
                 return error;
             }
 
+            var propertyBuilder = new PropertyBuilder()
+                .WithName(property.Name)
+                .WithTypeName(results.GetValue(ResultNames.TypeName).ToString()
+                    .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)
+                    .FixNullableTypeName(property))
+                .WithIsNullable(property.IsNullable)
+                .WithIsValueType(property.IsValueType)
+                .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder()))
+                .WithParentTypeFullName(results.GetValue(ResultNames.ParentTypeName))
+                .AddAttributes(property.Attributes
+                    .Where(_ => command.Settings.CopyAttributes)
+                    .Select(x => command.MapAttribute(x).ToBuilder()))
+                .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, command))
+                .AddSetterCodeStatements(await CreateBuilderPropertySetterStatementsAsync(property, command, token).ConfigureAwait(false));
+
             if (command.Settings.AddProperties)
             {
-                response.AddProperties(new PropertyBuilder()
-                    .WithName(property.Name)
-                    .WithTypeName(results.GetValue(ResultNames.TypeName).ToString()
-                        .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)
-                        .FixNullableTypeName(property))
-                    .WithIsNullable(property.IsNullable)
-                    .WithIsValueType(property.IsValueType)
-                    .AddGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder()))
-                    .WithParentTypeFullName(results.GetValue(ResultNames.ParentTypeName))
-                    .AddAttributes(property.Attributes
-                        .Where(_ => command.Settings.CopyAttributes)
-                        .Select(x => command.MapAttribute(x).ToBuilder()))
-                    .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, command))
-                    .AddSetterCodeStatements(await CreateBuilderPropertySetterStatementsAsync(property, command, token).ConfigureAwait(false))
-                );
+                response.AddProperties(propertyBuilder);
             }
             else
             {
-                // Add a getter method only.
-                // Setter methods will be added using With and Add methods.
-                response.AddMethods(new MethodBuilder()
-                    .WithName(property.Name)
-                    .WithReturnTypeName(results.GetValue(ResultNames.TypeName).ToString()
+                response.AddMethods(command.ConvertPropertyToMethods(
+                    propertyBuilder,
+                    results.GetValue(ResultNames.TypeName).ToString()
                         .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)
-                        .FixNullableTypeName(property))
-                    .WithReturnTypeIsNullable(property.IsNullable)
-                    .WithReturnTypeIsValueType(property.IsValueType)
-                    //.AddReturnTypeGenericTypeArguments(property.GenericTypeArguments.Select(x => x.ToBuilder()))
-                    .AddCodeStatements(CreateBuilderPropertyGetterStatements(property, command))
-                );
+                        .FixNullableTypeName(property),
+                    property.IsNullable,
+                    property.IsValueType));
             }
         }
 

@@ -98,6 +98,34 @@ public abstract class CommandBase(PipelineSettings settings, IFormatProvider for
         => settings.UseBuilderLazyValues
         && metadata.GetStringValue(MetadataNames.CustomBuilderName, DefaultBuilderName) == DefaultBuilderName;
 
+    public IEnumerable<MethodBuilder> ConvertPropertyToMethods(PropertyBuilder propertyBuilder, string returnTypeName, bool returnTypeIsNullable, bool returnTypeIsValueType)
+    {
+        propertyBuilder = ArgumentGuard.IsNotNull(propertyBuilder, nameof(propertyBuilder));
+
+        if (propertyBuilder.HasGetter)
+        {
+            yield return new MethodBuilder()
+                .WithAbstract(propertyBuilder.Abstract)
+                .WithExplicitInterfaceName(propertyBuilder.ExplicitInterfaceName)
+                .WithName(propertyBuilder.Name)
+                .WithNew(propertyBuilder.New)
+                .WithOverride(propertyBuilder.Override)
+                .WithParentTypeFullName(propertyBuilder.ParentTypeFullName)
+                .WithProtected(propertyBuilder.Protected)
+                .WithReturnTypeName(returnTypeName)
+                .WithReturnTypeIsNullable(returnTypeIsNullable)
+                .WithReturnTypeIsValueType(returnTypeIsValueType)
+                .WithVirtual(propertyBuilder.Virtual)
+                .WithVisibility(propertyBuilder.Visibility)
+                .AddCodeStatements(propertyBuilder.GetterCodeStatements);
+        }
+
+        if (propertyBuilder.HasSetter)
+        {
+            
+        }
+    }
+
     public abstract bool SourceModelHasNoProperties();
 
     public abstract Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TCommand>(ICommandService commandService, TCommand command, CancellationToken token)
