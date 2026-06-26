@@ -12,10 +12,12 @@ public class PropertyNameFunctionTests : TestBase<PropertyNameFunction>
             var functionCall = new FunctionCallBuilder()
                 .WithName("PropertyName")
                 .WithMemberType(MemberType.Function)
+                .AddArguments("false")
                 .Build();
             var settings = new PipelineSettingsBuilder().WithAddProperties(true).Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var command = new TestCommand(settings, formatProvider); var evaluator = Fixture.Freeze<IExpressionEvaluator>();
+            var command = new TestCommand(settings, formatProvider);
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
             var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(command)) } }));
 
@@ -35,10 +37,12 @@ public class PropertyNameFunctionTests : TestBase<PropertyNameFunction>
             var functionCall = new FunctionCallBuilder()
                 .WithName("PropertyName")
                 .WithMemberType(MemberType.Function)
+                .AddArguments("false")
                 .Build();
             var settings = new PipelineSettingsBuilder().WithAddProperties(false).Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var command = new TestCommand(settings, formatProvider); var evaluator = Fixture.Freeze<IExpressionEvaluator>();
+            var command = new TestCommand(settings, formatProvider);
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
             var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(command)) } }));
 
@@ -48,6 +52,56 @@ public class PropertyNameFunctionTests : TestBase<PropertyNameFunction>
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
             result.Value.ShouldBe("_{property.Name.ToCamelCase()}");
+        }
+
+        [Fact]
+        public async Task Returns_MethodCall_When_AddProperties_Is_False_And_Setter_Is_True()
+        {
+            // Arrange
+            await InitializeExpressionEvaluatorAsync();
+            var functionCall = new FunctionCallBuilder()
+                .WithName("PropertyName")
+                .WithMemberType(MemberType.Function)
+                .AddArguments("true")
+                .Build();
+            var settings = new PipelineSettingsBuilder().WithAddProperties(false).Build();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
+            var command = new TestCommand(settings, formatProvider);
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
+            var sut = CreateSut();
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(command)) } }));
+
+            // Act
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("{property.Name}()");
+        }
+
+        [Fact]
+        public async Task Returns_Error_On_Non_Successful_Result()
+        {
+            // Arrange
+            await InitializeExpressionEvaluatorAsync();
+            var functionCall = new FunctionCallBuilder()
+                .WithName("PropertyName")
+                .WithMemberType(MemberType.Function)
+                .AddArguments("Error")
+                .Build();
+            var settings = new PipelineSettingsBuilder().WithAddProperties(false).Build();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
+            var command = new TestCommand(settings, formatProvider);
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
+            var sut = CreateSut();
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(command)) } }));
+
+            // Act
+            var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
+
+            // Assert
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider)

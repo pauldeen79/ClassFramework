@@ -15,7 +15,8 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
                 .Build();
             var settings = new PipelineSettingsBuilder().Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
-            var command = new TestCommand(settings, formatProvider); var evaluator = Fixture.Freeze<IExpressionEvaluator>();
+            var command = new TestCommand(settings, formatProvider);
+            var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
             var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(command)) } }));
 
