@@ -190,10 +190,17 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return await ProcessModelsResultAsync
         (
             GetBuildersAsync(modelsResultTask, buildersNamespace, entitiesNamespace, false),
-            async x => await CreateInterfaceAsync(x.ToBuilder().Chain(y => { var itemsToDelete = y.GenericTypeArguments.Where(z => z == "TEntity" || z == "TBuilder").ToList(); itemsToDelete.ForEach(z => y.GenericTypeArguments.Remove(z)); y.GenericTypeArgumentConstraints.Clear(); }).Build(), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{class.Name}", MetadataNames.CustomBuilderInterfaceTypeName, (t, m) => (m.Name == BuildMethodName && UseBuilderAbstractionsTypeConversion && !UseCrossCuttingInterfaces) || x.Properties.Select(p => p.Name).Contains(m.Name)).ConfigureAwait(false),
+            async x => await CreateInterfaceAsync(x.ToBuilder().Chain(y => { var itemsToDelete = y.GenericTypeArguments.Where(z => z == "TEntity" || z == "TBuilder").ToList(); itemsToDelete.ForEach(z => y.GenericTypeArguments.Remove(z)); y.GenericTypeArgumentConstraints.Clear(); }).Build(), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{class.Name}", MetadataNames.CustomBuilderInterfaceTypeName, (t, m) => (m.Name == BuildMethodName && UseBuilderAbstractionsTypeConversion && !UseCrossCuttingInterfaces) || IsNonInternalReturnType(m.ReturnTypeName, m.Name, BuildMethodName, ToBuilderFormatString, AddProperties)).ConfigureAwait(false),
             "builder interfaces"
         ).ConfigureAwait(false);
     }
+
+    private bool IsNonInternalReturnType(string methodReturnTypeName, string methodName, string buildMethodName, string toBuilderMethodName, bool addProperties)
+        => !addProperties
+        && !string.IsNullOrEmpty(methodReturnTypeName)
+        && methodReturnTypeName != "TEntity"
+        && methodName != buildMethodName
+        && methodName != toBuilderMethodName;
 
     protected async Task<Result<IEnumerable<TypeBase>>> GetCoreModelsAsync()
     {

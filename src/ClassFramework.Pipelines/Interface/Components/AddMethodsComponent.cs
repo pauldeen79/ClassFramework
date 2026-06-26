@@ -18,11 +18,18 @@ public class AddMethodsComponent : IPipelineComponent<GenerateInterfaceCommand, 
                 .Select(x => x.ToBuilder()
                     .WithReturnTypeName(command.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(command.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))
                     .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = command.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
-                    .With(y => y.WithNew(command.Settings.UseBuilderAbstractionsTypeConversion && response.Interfaces.Any() && !response.Interfaces.Contains(y.ReturnTypeName)))
+                    .With(y => y.WithNew(command.Settings.UseBuilderAbstractionsTypeConversion && response.Interfaces.Any() && !response.Interfaces.Contains(y.ReturnTypeName) && !IsNonInternalReturnType(y.ReturnTypeName, y.Name, command.Settings.BuildMethodName, command.Settings.ToBuilderFormatString, command.Settings.AddProperties)))
                 ));
 
             return Result.Success();
         }, token);
+
+    private bool IsNonInternalReturnType(string methodReturnTypeName, string methodName, string buildMethodName, string toBuilderMethodName, bool addProperties)
+        => !addProperties
+        && !string.IsNullOrEmpty(methodReturnTypeName)
+        && methodReturnTypeName != "TEntity"
+        && methodName != buildMethodName
+        && methodName != toBuilderMethodName;
 }
 
 [ExcludeFromCodeCoverage]
