@@ -135,9 +135,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     }
 
     protected Task<Result<IEnumerable<TypeBase>>> GetBuildersAsync(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
-        => GetBuildersAsync(modelsResultTask, buildersNamespace, entitiesNamespace, null);
+        => GetBuildersAsync(modelsResultTask, buildersNamespace, entitiesNamespace, null, null);
 
-    private async Task<Result<IEnumerable<TypeBase>>> GetBuildersAsync(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion)
+    private async Task<Result<IEnumerable<TypeBase>>> GetBuildersAsync(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion, bool? addProperties)
     {
         Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(buildersNamespace);
@@ -147,7 +147,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         {
             var command = new GenerateEntityCommand(x, settings, Settings.CultureInfo);
             var entityResult = await CommandService.ExecuteAsync<GenerateEntityCommand, TypeBase>(command).ConfigureAwait(false);
-            return await CreateBuilderClassAsync(entityResult, buildersNamespace, entitiesNamespace, useBuilderAbstractionsTypeConversion).ConfigureAwait(false);
+            return await CreateBuilderClassAsync(entityResult, buildersNamespace, entitiesNamespace, useBuilderAbstractionsTypeConversion, addProperties).ConfigureAwait(false);
         }, "builders").ConfigureAwait(false);
     }
 
@@ -189,7 +189,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
         return await ProcessModelsResultAsync
         (
-            GetBuildersAsync(modelsResultTask, buildersNamespace, entitiesNamespace, false),
+            GetBuildersAsync(modelsResultTask, buildersNamespace, entitiesNamespace, false, true),
             async x => await CreateInterfaceAsync(x.ToBuilder().Chain(y => { var itemsToDelete = y.GenericTypeArguments.Where(z => z == "TEntity" || z == "TBuilder").ToList(); itemsToDelete.ForEach(z => y.GenericTypeArguments.Remove(z)); y.GenericTypeArgumentConstraints.Clear(); }).Build(), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{class.Name}", MetadataNames.CustomBuilderInterfaceTypeName, (t, m) => (m.Name == BuildMethodName && UseBuilderAbstractionsTypeConversion && !UseCrossCuttingInterfaces) || IsNonInternalReturnType(m.ReturnTypeName, m.Name, BuildMethodName, ToBuilderFormatString, AddProperties)).ConfigureAwait(false),
             "builder interfaces"
         ).ConfigureAwait(false);
@@ -564,7 +564,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .AddBuilderAbstractionsTypeConversionNamespaces(GetBuilderAbstractionsTypeConversionNamespaces())
             .Build())));
 
-    private Task<Result<PipelineSettings>> CreateBuilderPipelineSettingsAsync(string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion = null)
+    private Task<Result<PipelineSettings>> CreateBuilderPipelineSettingsAsync(string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion = null, bool? addProperties = null)
         => ProcessSettingsResultAsync(CreateEntityPipelineSettingsAsync(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks(), useBuilderAbstractionsTypeConversion: useBuilderAbstractionsTypeConversion),
             settings => Task.FromResult(Result.Success(new PipelineSettingsBuilder(settings)
                 .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
@@ -575,7 +575,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithBaseClassBuilderNameSpace(BaseClassBuilderNamespace)
                 .WithAddCopyConstructor(AddCopyConstructor)
                 .WithAddImplicitOperatorOnBuilder(AddImplicitOperatorOnBuilder)
-                .WithAddProperties(AddProperties)
+                .WithAddProperties(addProperties ?? AddProperties)
                 .WithSetDefaultValuesInEntityConstructor(SetDefaultValues)
                 .WithUseBuilderLazyValues(UseBuilderLazyValues)
                 .AddSkipNamespacesOnFluentBuilderMethods(GetSkipNamespacesOnFluentBuilderMethods())
@@ -601,10 +601,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             CreateEntityPipelineSettingsAsync(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{NoInterfacePrefix(class.Name)}", useBuilderAbstractionsTypeConversion: useBuilderAbstractionsTypeConversion),
             async settings => await CommandService.ExecuteAsync<GenerateEntityCommand, TypeBase>(new GenerateEntityCommand(typeBase, settings, Settings.CultureInfo)).ConfigureAwait(false));
 
-    private Task<Result<TypeBase>> CreateBuilderClassAsync(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion = null)
+    private Task<Result<TypeBase>> CreateBuilderClassAsync(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion = null, bool? addProperties = null)
         => typeBaseResult.OnSuccessAsync(
             () => ProcessSettingsResultAsync(
-                CreateBuilderPipelineSettingsAsync(buildersNamespace, entitiesNamespace, useBuilderAbstractionsTypeConversion),
+                CreateBuilderPipelineSettingsAsync(buildersNamespace, entitiesNamespace, useBuilderAbstractionsTypeConversion, addProperties),
                 async settings => await CommandService.ExecuteAsync<GenerateBuilderCommand, TypeBase>(new GenerateBuilderCommand(typeBaseResult.Value!, settings, Settings.CultureInfo)).ConfigureAwait(false))
             );
 
