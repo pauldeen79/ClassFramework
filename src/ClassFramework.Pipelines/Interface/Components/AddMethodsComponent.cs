@@ -16,7 +16,7 @@ public class AddMethodsComponent : IPipelineComponent<GenerateInterfaceCommand, 
             response.AddMethods(command.SourceModel.Methods
                 .Where(x => command.Settings.CopyMethodPredicate is null || command.Settings.CopyMethodPredicate(command.SourceModel, x))
                 .Select(x => x.ToBuilder()
-                    .WithReturnTypeName(command.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(command.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))
+                    .WithReturnTypeName(command.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(command.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), !command.Settings.AddProperties && IsNonInternalReturnType(x.ReturnTypeName, x.Name, command.Settings.BuildMethodName, command.Settings.ToBuilderFormatString, command.Settings.AddProperties) ? command.Settings.BuilderAbstractionsTypeConversionMetadataName : MetadataNames.CustomEntityInterfaceTypeName))
                     .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = command.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
                     .With(y => y.WithNew(command.Settings.UseBuilderAbstractionsTypeConversion && response.Interfaces.Any() && !response.Interfaces.Contains(y.ReturnTypeName) && !IsNonInternalReturnType(y.ReturnTypeName, y.Name, command.Settings.BuildMethodName, command.Settings.ToBuilderFormatString, command.Settings.AddProperties)))
                 ));
