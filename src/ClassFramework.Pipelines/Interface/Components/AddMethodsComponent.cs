@@ -16,20 +16,13 @@ public class AddMethodsComponent : IPipelineComponent<GenerateInterfaceCommand, 
             response.AddMethods(command.SourceModel.Methods
                 .Where(x => command.Settings.CopyMethodPredicate is null || command.Settings.CopyMethodPredicate(command.SourceModel, x))
                 .Select(x => x.ToBuilder()
-                    .WithReturnTypeName(command.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(command.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), !command.Settings.AddProperties && IsNonInternalReturnType(x.ReturnTypeName, x.Name, command.Settings.BuildMethodName, command.Settings.ToBuilderFormatString, command.Settings.AddProperties) ? command.Settings.BuilderAbstractionsTypeConversionMetadataName : MetadataNames.CustomEntityInterfaceTypeName))
+                    .WithReturnTypeName(command.MapTypeName(x.ReturnTypeName.FixCollectionTypeName(command.Settings.EntityNewCollectionTypeName).FixNullableTypeName(new TypeContainerWrapper(x)), MetadataNames.CustomEntityInterfaceTypeName))
                     .With(y => y.Parameters.ToList().ForEach(z => z.TypeName = command.MapTypeName(z.TypeName, MetadataNames.CustomEntityInterfaceTypeName)))
-                    .With(y => y.WithNew(command.Settings.UseBuilderAbstractionsTypeConversion && response.Interfaces.Any() && !response.Interfaces.Contains(y.ReturnTypeName) && !IsNonInternalReturnType(y.ReturnTypeName, y.Name, command.Settings.BuildMethodName, command.Settings.ToBuilderFormatString, command.Settings.AddProperties)))
+                    .With(y => y.WithNew(command.Settings.UseBuilderAbstractionsTypeConversion && response.Interfaces.Any() && !response.Interfaces.Contains(y.ReturnTypeName)))
                 ));
 
             return Result.Success();
         }, token);
-
-    private bool IsNonInternalReturnType(string methodReturnTypeName, string methodName, string buildMethodName, string toBuilderMethodName, bool addProperties)
-        => !addProperties
-        && !string.IsNullOrEmpty(methodReturnTypeName)
-        && methodReturnTypeName != "TEntity"
-        && methodName != buildMethodName
-        && methodName != toBuilderMethodName;
 }
 
 [ExcludeFromCodeCoverage]
