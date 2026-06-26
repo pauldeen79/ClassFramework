@@ -122,7 +122,18 @@ public abstract class CommandBase(PipelineSettings settings, IFormatProvider for
 
         if (propertyBuilder.HasSetter)
         {
-            
+            yield return new MethodBuilder()
+                .WithAbstract(propertyBuilder.Abstract)
+                .WithExplicitInterfaceName(propertyBuilder.ExplicitInterfaceName)
+                .WithName(propertyBuilder.Name)
+                .WithNew(propertyBuilder.New)
+                .WithOverride(propertyBuilder.Override)
+                .WithParentTypeFullName(propertyBuilder.ParentTypeFullName)
+                .WithProtected(propertyBuilder.Protected)
+                .AddParameter("value", returnTypeName, returnTypeIsNullable)
+                .WithVirtual(propertyBuilder.Virtual)
+                .WithVisibility(propertyBuilder.Visibility)
+                .AddCodeStatements(propertyBuilder.GetterCodeStatements);            
         }
     }
 
