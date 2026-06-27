@@ -94,7 +94,7 @@ public static class PropertyExtensions
         return (settings.AddNullChecks && !property.IsValueType && !property.IsNullable(settings.EnableNullableReferenceTypes))
             || settings.AddBackingFields
             || settings.CreateAsObservable
-            || !settings.AddProperties;
+            || settings.FluentBuilderMethods;
     }
 
     public static async Task<Result<GenericFormattableString>> GetBuilderConstructorInitializerAsync<TSourceModel>(

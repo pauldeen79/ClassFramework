@@ -33,7 +33,7 @@ public class GenerateBuilderCommand(TypeBase sourceModel, PipelineSettings setti
         => !(IsAbstractBuilder || !Settings.AddNullChecks)
         || Settings.AddBackingFields
         || Settings.CreateAsObservable
-        || !Settings.AddProperties;
+        || Settings.FluentBuilderMethods;
 
     public bool IsValidForFluentMethod(Property property)
     {
@@ -286,7 +286,7 @@ public class GenerateBuilderCommand(TypeBase sourceModel, PipelineSettings setti
 
         var lazySuffix = GetLazySuffix(sourceProperty, useBuilderLazyValues);
 
-        var name = Settings.AddBackingFields || !Settings.AddProperties
+        var name = Settings.AddBackingFields || Settings.FluentBuilderMethods
             ? sourceProperty.Name + "()"
             : sourceProperty.Name;
 

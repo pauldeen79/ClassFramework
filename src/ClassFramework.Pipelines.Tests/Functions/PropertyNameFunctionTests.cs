@@ -14,7 +14,7 @@ public class PropertyNameFunctionTests : TestBase<PropertyNameFunction>
                 .WithMemberType(MemberType.Function)
                 .AddArguments("false")
                 .Build();
-            var settings = new PipelineSettingsBuilder().WithAddProperties(true).Build();
+            var settings = new PipelineSettingsBuilder().WithFluentBuilderMethods(false).Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var command = new TestCommand(settings, formatProvider);
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
@@ -39,7 +39,7 @@ public class PropertyNameFunctionTests : TestBase<PropertyNameFunction>
                 .WithMemberType(MemberType.Function)
                 .AddArguments("false")
                 .Build();
-            var settings = new PipelineSettingsBuilder().WithAddProperties(false).Build();
+            var settings = new PipelineSettingsBuilder().WithFluentBuilderMethods(true).Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var command = new TestCommand(settings, formatProvider);
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
@@ -64,7 +64,7 @@ public class PropertyNameFunctionTests : TestBase<PropertyNameFunction>
                 .WithMemberType(MemberType.Function)
                 .AddArguments("true")
                 .Build();
-            var settings = new PipelineSettingsBuilder().WithAddProperties(false).Build();
+            var settings = new PipelineSettingsBuilder().WithFluentBuilderMethods(true).Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var command = new TestCommand(settings, formatProvider);
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
@@ -89,7 +89,7 @@ public class PropertyNameFunctionTests : TestBase<PropertyNameFunction>
                 .WithMemberType(MemberType.Function)
                 .AddArguments("Error")
                 .Build();
-            var settings = new PipelineSettingsBuilder().WithAddProperties(false).Build();
+            var settings = new PipelineSettingsBuilder().WithFluentBuilderMethods(true).Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var command = new TestCommand(settings, formatProvider);
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();

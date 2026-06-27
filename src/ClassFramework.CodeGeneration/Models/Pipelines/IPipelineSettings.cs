@@ -72,6 +72,6 @@ internal interface IPipelineSettings
     [DefaultValue(true)] bool UseDefaultValueAttributeValuesForBuilderInitialization { get; }
     bool UseExceptionThrowIfNull { get; }
     [DefaultValue(true)] bool UsePatternMatchingForNullChecks { get; }
-    [DefaultValue(true)] bool AddProperties { get; }
+    bool FluentBuilderMethods { get; }
     ArgumentValidationType ValidateArguments { get; }
 }

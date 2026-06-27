@@ -23,12 +23,13 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
                         .WithHasSetter(property.HasSetter && command.Settings.AddSetters)
                 );
 
-                if (command.Settings.AddProperties)
+                if (!command.Settings.FluentBuilderMethods)
                 {
                     response.AddProperties(properties);
                 }
                 else
                 {
+                    //TODO: Add {Name}Property properties so validation and POCO style editing keeps working
                     response.AddMethods(properties.SelectMany(property => command.ConvertPropertyToMethods(
                         property,
                         property.TypeName,

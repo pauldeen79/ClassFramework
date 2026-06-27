@@ -45,12 +45,13 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
                 .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, command))
                 .AddSetterCodeStatements(await CreateBuilderPropertySetterStatementsAsync(property, command, token).ConfigureAwait(false));
 
-            if (command.Settings.AddProperties)
+            if (!command.Settings.FluentBuilderMethods)
             {
                 response.AddProperties(propertyBuilder);
             }
             else
             {
+                //TODO: Add {Name}Property properties so validation and POCO style editing keeps working
                 response.AddMethods(command.ConvertPropertyToMethods(
                     propertyBuilder,
                     results.GetValue(ResultNames.TypeName).ToString()

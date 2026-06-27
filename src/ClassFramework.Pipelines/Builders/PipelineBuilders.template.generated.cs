@@ -347,7 +347,7 @@ namespace ClassFramework.Pipelines.Builders
 
         private bool _usePatternMatchingForNullChecks;
 
-        private bool _addProperties;
+        private bool _fluentBuilderMethods;
 
         private ClassFramework.Pipelines.Domains.ArgumentValidationType _validateArguments;
 
@@ -1381,17 +1381,17 @@ namespace ClassFramework.Pipelines.Builders
         }
 
         [System.ComponentModel.DefaultValueAttribute(true)]
-        public bool AddProperties
+        public bool FluentBuilderMethods
         {
             get
             {
-                return _addProperties;
+                return _fluentBuilderMethods;
             }
             set
             {
-                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_addProperties, value);
-                _addProperties = value;
-                if (hasChanged) HandlePropertyChanged(nameof(AddProperties));
+                bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Boolean>.Default.Equals(_fluentBuilderMethods, value);
+                _fluentBuilderMethods = value;
+                if (hasChanged) HandlePropertyChanged(nameof(FluentBuilderMethods));
             }
         }
 
@@ -1487,7 +1487,7 @@ namespace ClassFramework.Pipelines.Builders
             _useDefaultValueAttributeValuesForBuilderInitialization = source.UseDefaultValueAttributeValuesForBuilderInitialization;
             _useExceptionThrowIfNull = source.UseExceptionThrowIfNull;
             _usePatternMatchingForNullChecks = source.UsePatternMatchingForNullChecks;
-            _addProperties = source.AddProperties;
+            _fluentBuilderMethods = source.FluentBuilderMethods;
             _validateArguments = source.ValidateArguments;
         }
 
@@ -1534,13 +1534,12 @@ namespace ClassFramework.Pipelines.Builders
             _useBuilderAbstractionsTypeConversion = true;
             _useDefaultValueAttributeValuesForBuilderInitialization = true;
             _usePatternMatchingForNullChecks = true;
-            _addProperties = true;
             SetDefaultValues();
         }
 
         public ClassFramework.Pipelines.PipelineSettings Build()
         {
-            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddImplicitOperatorOnBuilder, AddImplicitOperatorOnEntity, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderAbstractionsTypeConversionMetadataName, BuilderAbstractionsTypeConversionNamespaces, BuilderExtensionsCollectionCopyStatementFormatString, NonLazyBuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuilderNewCollectionTypeName, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, NonLazyCollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, CreateAsObservable, CreateAsPartial, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, EntityNewCollectionTypeName, IEquatableItemType, ImplementIEquatable, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, InheritFromInterfaces, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), NonCollectionInitializationStatementFormatString, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, SkipNamespacesOnFluentBuilderMethods, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseBuilderAbstractionsTypeConversion, UseBuilderLazyValues, UseCrossCuttingInterfaces, UseDefaultValueAttributeValuesForBuilderInitialization, UseExceptionThrowIfNull, UsePatternMatchingForNullChecks, AddProperties, ValidateArguments);
+            return new ClassFramework.Pipelines.PipelineSettings(AddBackingFields, AddCopyConstructor, AddFullConstructor, AddImplicitOperatorOnBuilder, AddImplicitOperatorOnEntity, AddMethodNameFormatString, AddNullChecks, AddPublicParameterlessConstructor, AddSetters, AllowGenerationWithoutProperties, AttributeInitializers, BaseClass?.Build()!, BaseClassBuilderNameSpace, BuilderAbstractionsTypeConversionMetadataName, BuilderAbstractionsTypeConversionNamespaces, BuilderExtensionsCollectionCopyStatementFormatString, NonLazyBuilderExtensionsCollectionCopyStatementFormatString, BuilderExtensionsNameFormatString, BuilderExtensionsNamespaceFormatString, BuilderNameFormatString, BuilderNamespaceFormatString, BuilderNewCollectionTypeName, BuildMethodName, BuildTypedMethodName, CollectionCopyStatementFormatString, NonLazyCollectionCopyStatementFormatString, CollectionInitializationStatementFormatString, CollectionTypeName, CopyAttributePredicate, CopyAttributes, CopyInterfacePredicate, CopyInterfaces, CopyMethodPredicate, CopyMethods, CreateAsObservable, CreateAsPartial, CreateConstructors, CreateRecord, EnableBuilderInheritance, EnableInheritance, EnableNullableReferenceTypes, EntityNameFormatString, EntityNamespaceFormatString, EntityNewCollectionTypeName, IEquatableItemType, ImplementIEquatable, InheritanceComparisonDelegate, InheritanceComparisonDelegateForReflection, InheritFromInterfaces, IsAbstract, IsForAbstractBuilder, NameFormatString, NamespaceFormatString, NamespaceMappings.Select(x => x.Build()!).ToList().AsReadOnly(), NonCollectionInitializationStatementFormatString, SetDefaultValuesInEntityConstructor, SetDefaultValuesMethodName, SetMethodNameFormatString, SetterVisibility, SkipNamespacesOnFluentBuilderMethods, ToBuilderFormatString, ToTypedBuilderFormatString, TypenameMappings.Select(x => x.Build()!).ToList().AsReadOnly(), UseBaseClassFromSourceModel, UseBuilderAbstractionsTypeConversion, UseBuilderLazyValues, UseCrossCuttingInterfaces, UseDefaultValueAttributeValuesForBuilderInitialization, UseExceptionThrowIfNull, UsePatternMatchingForNullChecks, FluentBuilderMethods, ValidateArguments);
         }
 
         partial void SetDefaultValues();
@@ -2026,9 +2025,9 @@ namespace ClassFramework.Pipelines.Builders
             return this;
         }
 
-        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithAddProperties(bool addProperties = true)
+        public ClassFramework.Pipelines.Builders.PipelineSettingsBuilder WithFluentBuilderMethods(bool fluentBuilderMethods = true)
         {
-            AddProperties = addProperties;
+            FluentBuilderMethods = fluentBuilderMethods;
             return this;
         }
 

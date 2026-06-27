@@ -7,9 +7,9 @@ public class GenerateBuilderExtensionCommand(TypeBase sourceModel, PipelineSetti
     protected override string NewCollectionTypeName => Settings.BuilderNewCollectionTypeName;
 
     public IEnumerable<Property> GetSourceProperties()
-        => Settings.AddProperties
-        ? SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings))
-        : ConvertSetterMethodsToProperties(SourceModel.Methods).Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
+        => !Settings.FluentBuilderMethods
+            ? SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings))
+            : ConvertSetterMethodsToProperties(SourceModel.Methods).Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
 
     public string GetReturnTypeForFluentMethod(string builderNamespace, string builderName)
         => $"{builderNamespace.AppendWhenNotNullOrEmpty(".")}{builderName}{SourceModel.GetGenericTypeArgumentsString()}";
