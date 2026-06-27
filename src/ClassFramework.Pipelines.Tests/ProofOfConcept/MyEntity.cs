@@ -15,9 +15,9 @@ public record MyEntity
 
 public class MyEntityBuilder
 {
-    private int _id;
-    [field: Required(AllowEmptyStrings = false)]
-    private string _name;
+    public int IdProperty { get; set; }
+    [Required(AllowEmptyStrings = false)]
+    public string NameProperty { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public MyEntityBuilder()
@@ -33,28 +33,28 @@ public class MyEntityBuilder
 
     public int Id()
     {
-        return _id;
+        return IdProperty;
     }
 
     public MyEntityBuilder Id(int id)
     {
-        _id = id;
+        IdProperty = id;
         return this;
     }
 
     public string Name()
     {
-        return _name;
+        return NameProperty;
     }
 
     public MyEntityBuilder Name(string name)
     {
-        _name = name;
+        NameProperty = name;
         return this;
     }
 
     public MyEntity Build()
     {
-        return new MyEntity(_id, _name);
+        return new MyEntity(IdProperty, NameProperty);
     }
 }

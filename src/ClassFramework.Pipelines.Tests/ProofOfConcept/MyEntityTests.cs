@@ -24,7 +24,7 @@ public class MyEntityTests
     }
 
     [Fact]
-    public void Can_Not_Validate_Builder()
+    public void Can_Validate_Builder()
     {
         // Arrange
         var sut = new MyEntityBuilder();
@@ -34,7 +34,7 @@ public class MyEntityTests
         var validationResult = sut.TryValidate(validationResults);
 
         // Assert
-        validationResult.ShouldBeTrue(); // We're expecting false because the name is required... But we can't see because validation only works with properties.
-        validationResults.Count.ShouldBe(0);
+        validationResult.ShouldBeFalse();
+        validationResults.Count.ShouldBe(1);
     }
 }
