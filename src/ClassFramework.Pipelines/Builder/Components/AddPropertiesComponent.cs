@@ -57,7 +57,8 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
                         .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)
                         .FixNullableTypeName(property),
                     property.IsNullable,
-                    property.IsValueType));
+                    property.IsValueType,
+                    string.Empty /*property.ParentTypeFullName.WhenNullOrEmpty(() => results.GetValue(ResultNames.Name))*/));
             }
         }
 

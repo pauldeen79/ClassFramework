@@ -98,7 +98,7 @@ public abstract class CommandBase(PipelineSettings settings, IFormatProvider for
         => settings.UseBuilderLazyValues
         && metadata.GetStringValue(MetadataNames.CustomBuilderName, DefaultBuilderName) == DefaultBuilderName;
 
-    public IEnumerable<MethodBuilder> ConvertPropertyToMethods(PropertyBuilder propertyBuilder, string returnTypeName, bool returnTypeIsNullable, bool returnTypeIsValueType)
+    public IEnumerable<MethodBuilder> ConvertPropertyToMethods(PropertyBuilder propertyBuilder, string returnTypeName, bool returnTypeIsNullable, bool returnTypeIsValueType, string setterReturnTypeName)
     {
         propertyBuilder = ArgumentGuard.IsNotNull(propertyBuilder, nameof(propertyBuilder));
 
@@ -125,15 +125,23 @@ public abstract class CommandBase(PipelineSettings settings, IFormatProvider for
             yield return new MethodBuilder()
                 .WithAbstract(propertyBuilder.Abstract)
                 .WithExplicitInterfaceName(propertyBuilder.ExplicitInterfaceName)
-                .WithName(propertyBuilder.Name)
+                .WithName($"Set{propertyBuilder.Name}")
                 .WithNew(propertyBuilder.New)
                 .WithOverride(propertyBuilder.Override)
                 .WithParentTypeFullName(propertyBuilder.ParentTypeFullName)
                 .WithProtected(propertyBuilder.Protected)
-                .AddParameter("value", returnTypeName, returnTypeIsNullable)
+                .WithReturnTypeName(setterReturnTypeName)
                 .WithVirtual(propertyBuilder.Virtual)
                 .WithVisibility(propertyBuilder.Visibility)
-                .AddCodeStatements(propertyBuilder.SetterCodeStatements);            
+                .AddParameter("value", returnTypeName, returnTypeIsNullable)
+                .AddCodeStatements(propertyBuilder.SetterCodeStatements)
+                .With(builder =>
+                {
+                    if (!string.IsNullOrEmpty(setterReturnTypeName))
+                    {
+                        builder.AddCodeStatements("return this;");
+                    }
+                });
         }
     }
 

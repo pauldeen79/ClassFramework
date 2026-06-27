@@ -26,10 +26,9 @@ public abstract class ClassFrameworkCSharpClassBase(ICommandService commandServi
 
     // Fluent get and set accessors
     protected override bool AddProperties => false;
-    // Disable method generation
-    // TODO: Automatically skip this when AddProperties is false
-    protected override string SetMethodNameFormatString => string.Empty;
-    protected override string AddMethodNameFormatString => string.Empty;
+    // Fluent extension methods
+    protected override string SetMethodNameFormatString => "{property.Name}";
+    // protected override string AddMethodNameFormatString => string.Empty;
 
     protected Task<Result<IEnumerable<TypeBase>>> GetPipelineModelsAsync()
         => GetNonCoreModelsAsync($"{CodeGenerationRootNamespace}.Models.Pipelines");
