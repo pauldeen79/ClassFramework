@@ -483,7 +483,6 @@ namespace ClassFramework.Pipelines
             get;
         }
 
-        [System.ComponentModel.DefaultValueAttribute(true)]
         public bool FluentBuilderMethods
         {
             get;

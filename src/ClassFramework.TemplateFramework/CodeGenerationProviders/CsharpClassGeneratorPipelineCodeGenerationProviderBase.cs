@@ -82,7 +82,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool EnableNullablePragmas => true;
     protected virtual bool EnableGlobalUsings => false;
     protected virtual bool UseCrossCuttingInterfaces => false;
-    protected virtual bool AddProperties => true;
+    protected virtual bool FluentBuilderMethods => false;
     protected virtual CultureInfo CultureInfo => CultureInfo.InvariantCulture;
     protected virtual Predicate<Domain.Attribute>? CopyAttributePredicate => null;
     protected virtual Predicate<string>? CopyInterfacePredicate => null;
@@ -133,13 +133,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return await ProcessModelsResultAsync(modelsResultTask, async x => await CreateInterfaceAsync(await CreateEntityAsync(x, entitiesNamespace, false).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{class.Name}", string.Empty, true, (t, m) => m.Name == ToBuilderFormatString && UseBuilderAbstractionsTypeConversion && !UseCrossCuttingInterfaces).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
+        return await ProcessModelsResultAsync(modelsResultTask, async x => await CreateInterfaceAsync(await CreateEntityAsync(x, entitiesNamespace, false).ConfigureAwait(false), interfacesNamespace, string.Empty, true, "I{class.Name}", string.Empty, false, (t, m) => m.Name == ToBuilderFormatString && UseBuilderAbstractionsTypeConversion && !UseCrossCuttingInterfaces).ConfigureAwait(false), "interfaces").ConfigureAwait(false);
     }
 
     protected Task<Result<IEnumerable<TypeBase>>> GetBuildersAsync(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace)
         => GetBuildersAsync(modelsResultTask, buildersNamespace, entitiesNamespace, null, null);
 
-    private async Task<Result<IEnumerable<TypeBase>>> GetBuildersAsync(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion, bool? addProperties)
+    private async Task<Result<IEnumerable<TypeBase>>> GetBuildersAsync(Task<Result<IEnumerable<TypeBase>>> modelsResultTask, string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion, bool? fluentBuilderMethods)
     {
         Guard.IsNotNull(modelsResultTask);
         Guard.IsNotNull(buildersNamespace);
@@ -149,7 +149,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         {
             var command = new GenerateEntityCommand(x, settings, Settings.CultureInfo);
             var entityResult = await CommandService.ExecuteAsync<GenerateEntityCommand, TypeBase>(command).ConfigureAwait(false);
-            return await CreateBuilderClassAsync(entityResult, buildersNamespace, entitiesNamespace, useBuilderAbstractionsTypeConversion, addProperties).ConfigureAwait(false);
+            return await CreateBuilderClassAsync(entityResult, buildersNamespace, entitiesNamespace, useBuilderAbstractionsTypeConversion, fluentBuilderMethods).ConfigureAwait(false);
         }, "builders").ConfigureAwait(false);
     }
 
@@ -160,7 +160,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(buildersExtensionsNamespace);
 
-        return await ProcessBaseClassResultAsync(baseClass => ProcessModelsResultAsync(modelsResultTask, CreateInterfacePipelineSettingsAsync(entitiesNamespace, string.Empty, CreateInheritanceComparisonDelegate(baseClass), null, true), async (settings, x) =>
+        return await ProcessBaseClassResultAsync(baseClass => ProcessModelsResultAsync(modelsResultTask, CreateInterfacePipelineSettingsAsync(entitiesNamespace, string.Empty, CreateInheritanceComparisonDelegate(baseClass), null, false), async (settings, x) =>
         {
             var command = new GenerateInterfaceCommand(x, settings, Settings.CultureInfo);
             var interfaceResult = await CommandService.ExecuteAsync<GenerateInterfaceCommand, TypeBase>(command).ConfigureAwait(false);
@@ -191,8 +191,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
         return await ProcessModelsResultAsync
         (
-            GetBuildersAsync(modelsResultTask, buildersNamespace, entitiesNamespace, false, true),
-            async x => await CreateInterfaceAsync(x.ToBuilder().Chain(y => { var itemsToDelete = y.GenericTypeArguments.Where(z => z == "TEntity" || z == "TBuilder").ToList(); itemsToDelete.ForEach(z => y.GenericTypeArguments.Remove(z)); y.GenericTypeArgumentConstraints.Clear(); }).Build(), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{class.Name}", MetadataNames.CustomBuilderInterfaceTypeName, AddProperties, (t, m) => (m.Name == BuildMethodName && UseBuilderAbstractionsTypeConversion && !UseCrossCuttingInterfaces)).ConfigureAwait(false),
+            GetBuildersAsync(modelsResultTask, buildersNamespace, entitiesNamespace, false, false),
+            async x => await CreateInterfaceAsync(x.ToBuilder().Chain(y => { var itemsToDelete = y.GenericTypeArguments.Where(z => z == "TEntity" || z == "TBuilder").ToList(); itemsToDelete.ForEach(z => y.GenericTypeArguments.Remove(z)); y.GenericTypeArgumentConstraints.Clear(); }).Build(), interfacesNamespace, BuilderCollectionType.WithoutGenerics(), true, "I{class.Name}", MetadataNames.CustomBuilderInterfaceTypeName, FluentBuilderMethods, (t, m) => m.Name == BuildMethodName && UseBuilderAbstractionsTypeConversion && !UseCrossCuttingInterfaces).ConfigureAwait(false),
             "builder interfaces"
         ).ConfigureAwait(false);
     }
@@ -265,7 +265,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             var entitySettings = new PipelineSettingsBuilder()
                 .WithAddSetters(AddSetters)
                 .WithAddBackingFields(AddBackingFields)
-                .WithFluentBuilderMethods(!AddProperties)
+                .WithFluentBuilderMethods(FluentBuilderMethods)
                 .WithSetterVisibility(SetterVisibility)
                 .WithCreateAsObservable(CreateAsObservable)
                 .WithCreateRecord(CreateRecord)
@@ -533,7 +533,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         bool addSetters,
         string nameFormatString = "{class.Name}",
         string builderAbstractionsTypeConversionMetadataName = "",
-        bool? addProperties = null)
+        bool? fluentBuilderMethods = null)
         => ProcessBaseClassResultAsync(baseClass => Task.FromResult(Result.Success(new PipelineSettingsBuilder()
             .WithNamespaceFormatString(interfacesNamespace)
             .WithNameFormatString(nameFormatString)
@@ -550,7 +550,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCopyInterfacePredicate(CopyInterfacePredicate)
             .WithCopyMethodPredicate(copyMethodPredicate ?? CopyMethodPredicate)
             .WithAddSetters(addSetters)
-            .WithFluentBuilderMethods(! (addProperties ?? AddProperties))
+            .WithFluentBuilderMethods(fluentBuilderMethods ?? FluentBuilderMethods)
             .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
             .WithUseBuilderAbstractionsTypeConversion(UseBuilderAbstractionsTypeConversion)
             .WithBuilderAbstractionsTypeConversionMetadataName(builderAbstractionsTypeConversionMetadataName)
@@ -560,7 +560,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .AddBuilderAbstractionsTypeConversionNamespaces(GetBuilderAbstractionsTypeConversionNamespaces())
             .Build())));
 
-    private Task<Result<PipelineSettings>> CreateBuilderPipelineSettingsAsync(string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion = null, bool? addProperties = null)
+    private Task<Result<PipelineSettings>> CreateBuilderPipelineSettingsAsync(string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion = null, bool? fluentBuilderMethods = null)
         => ProcessSettingsResultAsync(CreateEntityPipelineSettingsAsync(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks(), useBuilderAbstractionsTypeConversion: useBuilderAbstractionsTypeConversion),
             settings => Task.FromResult(Result.Success(new PipelineSettingsBuilder(settings)
                 .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
@@ -571,7 +571,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithBaseClassBuilderNameSpace(BaseClassBuilderNamespace)
                 .WithAddCopyConstructor(AddCopyConstructor)
                 .WithAddImplicitOperatorOnBuilder(AddImplicitOperatorOnBuilder)
-                .WithFluentBuilderMethods(! (addProperties ?? AddProperties))
+                .WithFluentBuilderMethods(fluentBuilderMethods ?? FluentBuilderMethods)
                 .WithSetDefaultValuesInEntityConstructor(SetDefaultValues)
                 .WithUseBuilderLazyValues(UseBuilderLazyValues)
                 .AddSkipNamespacesOnFluentBuilderMethods(GetSkipNamespacesOnFluentBuilderMethods())
@@ -581,7 +581,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private Task<Result<PipelineSettings>> CreateBuilderInterfacePipelineSettingsAsync(string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
         => ProcessSettingsResultAsync(CreateEntityPipelineSettingsAsync(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()),
             settings => Task.FromResult(Result.Success(new PipelineSettingsBuilder(settings)
-                .WithFluentBuilderMethods(!AddProperties)
+                .WithFluentBuilderMethods(FluentBuilderMethods)
                 .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
                 .WithBuilderNamespaceFormatString(buildersNamespace)
                 .WithBuilderExtensionsNamespaceFormatString(buildersExtensionsNamespace)
@@ -597,10 +597,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             CreateEntityPipelineSettingsAsync(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{NoInterfacePrefix(class.Name)}", useBuilderAbstractionsTypeConversion: useBuilderAbstractionsTypeConversion),
             async settings => await CommandService.ExecuteAsync<GenerateEntityCommand, TypeBase>(new GenerateEntityCommand(typeBase, settings, Settings.CultureInfo)).ConfigureAwait(false));
 
-    private Task<Result<TypeBase>> CreateBuilderClassAsync(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion = null, bool? addProperties = null)
+    private Task<Result<TypeBase>> CreateBuilderClassAsync(Result<TypeBase> typeBaseResult, string buildersNamespace, string entitiesNamespace, bool? useBuilderAbstractionsTypeConversion = null, bool? fluentBuilderMethods = null)
         => typeBaseResult.OnSuccessAsync(
             () => ProcessSettingsResultAsync(
-                CreateBuilderPipelineSettingsAsync(buildersNamespace, entitiesNamespace, useBuilderAbstractionsTypeConversion, addProperties),
+                CreateBuilderPipelineSettingsAsync(buildersNamespace, entitiesNamespace, useBuilderAbstractionsTypeConversion, fluentBuilderMethods),
                 async settings => await CommandService.ExecuteAsync<GenerateBuilderCommand, TypeBase>(new GenerateBuilderCommand(typeBaseResult.Value!, settings, Settings.CultureInfo)).ConfigureAwait(false))
             );
 
@@ -638,11 +638,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         bool addSetters,
         string nameFormatString = "{class.Name}",
         string builderAbstractionsTypeConversionMetadataName = "",
-        bool? addProperties = null,
+        bool? fluentBuilderMethods = null,
         CopyMethodPredicate? copyMethodPredicate = null)
             => typeBaseResult.OnSuccessAsync(
                 () => ProcessBaseClassResultAsync(
-                    baseClass => ProcessSettingsResultAsync(CreateInterfacePipelineSettingsAsync(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(baseClass), copyMethodPredicate, addSetters, nameFormatString, builderAbstractionsTypeConversionMetadataName, addProperties), async settings =>
+                    baseClass => ProcessSettingsResultAsync(CreateInterfacePipelineSettingsAsync(interfacesNamespace, newCollectionTypeName, CreateInheritanceComparisonDelegate(baseClass), copyMethodPredicate, addSetters, nameFormatString, builderAbstractionsTypeConversionMetadataName, fluentBuilderMethods), async settings =>
                         await CommandService.ExecuteAsync<GenerateInterfaceCommand, TypeBase>(new GenerateInterfaceCommand(typeBaseResult.Value!, settings, Settings.CultureInfo)).ConfigureAwait(false)
                     )
                 )

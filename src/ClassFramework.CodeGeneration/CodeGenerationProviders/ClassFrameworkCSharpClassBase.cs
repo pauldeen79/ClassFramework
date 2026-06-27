@@ -25,7 +25,7 @@ public abstract class ClassFrameworkCSharpClassBase(ICommandService commandServi
     protected override bool UseCrossCuttingInterfaces => true;
 
     // Fluent get and set accessors
-    protected override bool AddProperties => false;
+    protected override bool FluentBuilderMethods => true;
     // Fluent extension methods
     protected override string SetMethodNameFormatString => "{property.Name}";
     // protected override string AddMethodNameFormatString => string.Empty;
