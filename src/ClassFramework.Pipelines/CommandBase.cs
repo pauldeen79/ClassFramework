@@ -133,7 +133,7 @@ public abstract class CommandBase(PipelineSettings settings, IFormatProvider for
                 .AddParameter("value", returnTypeName, returnTypeIsNullable)
                 .WithVirtual(propertyBuilder.Virtual)
                 .WithVisibility(propertyBuilder.Visibility)
-                .AddCodeStatements(propertyBuilder.GetterCodeStatements);            
+                .AddCodeStatements(propertyBuilder.SetterCodeStatements);            
         }
     }
 
