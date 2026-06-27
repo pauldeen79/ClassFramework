@@ -20,7 +20,7 @@ public class PropertyNameFunction : IFunction<string>
             ? "{property.Name}()"
             : "_{property.Name.ToCamelCase()}";
 
-        return await FunctionHelpers.ParseFromContextAsync(context, "NullCheck", c => Result.From(c.Settings.FluentBuilderMethods
+        return await FunctionHelpers.ParseFromContextAsync(context, "PropertyName", c => Result.From(c.Settings.FluentBuilderMethods
             ? noAddPropertiesResult
             : "{property.Name}")).ConfigureAwait(false);
     }
