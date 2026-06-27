@@ -22,4 +22,19 @@ public class MyEntityTests
         entity.Id.ShouldBe(1);
         entity.Name.ShouldBe("John Doe");
     }
+
+    [Fact]
+    public void Can_Not_Validate_Builder()
+    {
+        // Arrange
+        var sut = new MyEntityBuilder();
+
+        // Act
+        var validationResults = new List<ValidationResult>();
+        var validationResult = sut.TryValidate(validationResults);
+
+        // Assert
+        validationResult.ShouldBeTrue(); // We're expecting false because the name is required... But we can't see because validation only works with properties.
+        validationResults.Count.ShouldBe(0);
+    }
 }
