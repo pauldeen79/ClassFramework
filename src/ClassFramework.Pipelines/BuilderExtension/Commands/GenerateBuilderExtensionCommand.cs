@@ -7,7 +7,9 @@ public class GenerateBuilderExtensionCommand(TypeBase sourceModel, PipelineSetti
     protected override string NewCollectionTypeName => Settings.BuilderNewCollectionTypeName;
 
     public IEnumerable<Property> GetSourceProperties()
-        => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
+        => Settings.AddProperties
+        ? SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings))
+        : ConvertSetterMethodsToProperties(SourceModel.Methods).Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
 
     public string GetReturnTypeForFluentMethod(string builderNamespace, string builderName)
         => $"{builderNamespace.AppendWhenNotNullOrEmpty(".")}{builderName}{SourceModel.GetGenericTypeArgumentsString()}";
@@ -66,4 +68,21 @@ public class GenerateBuilderExtensionCommand(TypeBase sourceModel, PipelineSetti
         return (await commandService.ExecuteAsync<TCommand, ClassBuilder>(command, token).ConfigureAwait(false))
             .TryCast<TypeBaseBuilder>();
     }
+
+    private static IEnumerable<Property> ConvertSetterMethodsToProperties(IReadOnlyCollection<Method> methods)
+        => methods.Select(method =>
+            new PropertyBuilder()
+                .WithAbstract(method.Abstract)
+                .WithExplicitInterfaceName(method.ExplicitInterfaceName)
+                .WithIsNullable(method.ReturnTypeIsNullable)
+                .WithIsValueType(method.ReturnTypeIsValueType)
+                .WithName(method.Name)
+                .WithNew(method.New)
+                .WithOverride(method.Override)
+                .WithParentTypeFullName(method.ParentTypeFullName)
+                .WithProtected(method.Protected)
+                .WithTypeName(method.ReturnTypeName)
+                .WithVirtual(method.Virtual)
+                .WithVisibility(method.Visibility)
+                .Build());
 }
