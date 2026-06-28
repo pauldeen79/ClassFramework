@@ -98,7 +98,7 @@ public abstract class CommandBase(PipelineSettings settings, IFormatProvider for
         => settings.UseBuilderLazyValues
         && metadata.GetStringValue(MetadataNames.CustomBuilderName, DefaultBuilderName) == DefaultBuilderName;
 
-    public IEnumerable<MethodBuilder> ConvertPropertyToMethods(PropertyBuilder propertyBuilder, string returnTypeName, bool returnTypeIsNullable, bool returnTypeIsValueType, string setterReturnTypeName)
+    public IEnumerable<MethodBuilder> ConvertPropertyToMethods(PropertyBuilder propertyBuilder, string returnTypeName, bool returnTypeIsNullable, bool returnTypeIsValueType)
     {
         propertyBuilder = ArgumentGuard.IsNotNull(propertyBuilder, nameof(propertyBuilder));
 
@@ -130,18 +130,10 @@ public abstract class CommandBase(PipelineSettings settings, IFormatProvider for
                 .WithOverride(propertyBuilder.Override)
                 .WithParentTypeFullName(propertyBuilder.ParentTypeFullName)
                 .WithProtected(propertyBuilder.Protected)
-                .WithReturnTypeName(setterReturnTypeName)
                 .WithVirtual(propertyBuilder.Virtual)
                 .WithVisibility(propertyBuilder.Visibility)
                 .AddParameter("value", returnTypeName, returnTypeIsNullable)
-                .AddCodeStatements(propertyBuilder.SetterCodeStatements)
-                .With(builder =>
-                {
-                    if (!string.IsNullOrEmpty(setterReturnTypeName))
-                    {
-                        builder.AddCodeStatements("return this;");
-                    }
-                });
+                .AddCodeStatements(propertyBuilder.SetterCodeStatements);
         }
     }
 

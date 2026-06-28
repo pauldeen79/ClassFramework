@@ -18,7 +18,6 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
         {
             var results = await new AsyncResultDictionaryBuilder<GenericFormattableString>()
                 .Add(ResultNames.TypeName, () => property.GetBuilderArgumentTypeNameAsync(command, new ParentChildContext<GenerateBuilderCommand, Property>(command, property, command.Settings), command.MapTypeName(property.TypeName, MetadataNames.CustomEntityInterfaceTypeName), _evaluator, token))
-                .Add(ResultNames.Name, () => _evaluator.EvaluateInterpolatedStringAsync(command.Settings.BuilderNameFormatString, command.FormatProvider, command, token))
                 .Add(ResultNames.ParentTypeName, () => property.GetBuilderParentTypeNameAsync(command, _evaluator, token))
                 .BuildAsync(token)
                 .ConfigureAwait(false);
@@ -51,15 +50,16 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
             }
             else
             {
-                //TODO: Add {Name}Property properties so validation and POCO style editing keeps working
+                response.AddProperties(propertyBuilder.Build().ToBuilder()
+                    .With(p => p.SetterCodeStatements.OfType<StringCodeStatementBuilder>().ToList().ForEach(s => s.Statement = s.Statement.Replace($"nameof({p.Name})", $"nameof({p.Name}Property)")))
+                    .WithName(propertyBuilder.Name + "Property"));
                 response.AddMethods(command.ConvertPropertyToMethods(
                     propertyBuilder,
                     results.GetValue(ResultNames.TypeName).ToString()
                         .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)
                         .FixNullableTypeName(property),
                     property.IsNullable,
-                    property.IsValueType,
-                    string.Empty /*property.ParentTypeFullName.WhenNullOrEmpty(() => results.GetValue(ResultNames.Name))*/));
+                    property.IsValueType));
             }
         }
 
