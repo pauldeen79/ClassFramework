@@ -3196,6 +3196,41 @@ namespace Test.Domain.Builders
     }
 
     [Fact]
+    public async Task Can_Generate_Code_For_CrossCutting_Abstractions_Builders_Extensions()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<CrossCuttingAbstractionsBuildersExtensions>();
+        var generationEnvironment = (MultipleStringContentBuilderEnvironment)codeGenerationProvider.CreateGenerationEnvironment();
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+
+        // Act
+        var result = await engine.GenerateAsync(codeGenerationProvider, generationEnvironment, codeGenerationSettings, CancellationToken.None);
+
+        // Assert
+        result.Status.ShouldBe(ResultStatus.Ok);
+        generationEnvironment.Builder.Contents.Count().ShouldBe(2);
+        generationEnvironment.Builder.Contents.ElementAt(0).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.Abstractions
+{
+#nullable enable
+    public static partial class FunctionCallArgumentBuilderExtensions
+    {
+    }
+#nullable restore
+}
+");
+        generationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().ShouldBe(@"namespace CrossCutting.Utilities.Parsers.Builders.Abstractions
+{
+#nullable enable
+    public static partial class FunctionCallArgumentBuilderExtensions
+    {
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
     public async Task Can_Generate_Code_For_CrossCutting_Abstractions_Builders_Interfaces()
     {
         // Arrange
