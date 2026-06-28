@@ -29,7 +29,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
                 return error;
             }
 
-            response.AddProperties(new PropertyBuilder()
+            var propertyBuilder = new PropertyBuilder()
                 .WithName(property.Name)
                 .WithTypeName(results.GetValue(ResultNames.TypeName).ToString()
                     .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)
@@ -42,8 +42,25 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
                     .Where(_ => command.Settings.CopyAttributes)
                     .Select(x => command.MapAttribute(x).ToBuilder()))
                 .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, command))
-                .AddSetterCodeStatements(await CreateBuilderPropertySetterStatementsAsync(property, command, token).ConfigureAwait(false))
-            );
+                .AddSetterCodeStatements(await CreateBuilderPropertySetterStatementsAsync(property, command, token).ConfigureAwait(false));
+
+            if (!command.Settings.FluentBuilderMethods)
+            {
+                response.AddProperties(propertyBuilder);
+            }
+            else
+            {
+                response.AddProperties(propertyBuilder.Build().ToBuilder()
+                    .With(p => p.SetterCodeStatements.OfType<StringCodeStatementBuilder>().ToList().ForEach(s => s.Statement = s.Statement.Replace($"nameof({p.Name})", $"nameof({p.Name}Property)")))
+                    .WithName(propertyBuilder.Name + "Property"));
+                response.AddMethods(CommandBase.ConvertPropertyToMethods(
+                    propertyBuilder,
+                    results.GetValue(ResultNames.TypeName).ToString()
+                        .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)
+                        .FixNullableTypeName(property),
+                    property.IsNullable,
+                    property.IsValueType));
+            }
         }
 
         // Note that we are not checking the result, because the same formattable string (CustomBuilderArgumentType) has already been checked earlier in this class

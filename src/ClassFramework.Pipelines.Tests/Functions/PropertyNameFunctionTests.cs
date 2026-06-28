@@ -1,19 +1,20 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Functions;
 
-public class NullCheckFunctionTests : TestBase<NullCheckFunction>
+public class PropertyNameFunctionTests : TestBase<PropertyNameFunction>
 {
-    public class Evaluate : NullCheckFunctionTests
+    public class Evaluate : PropertyNameFunctionTests
     {
         [Fact]
-        public async Task Returns_Success_On_Context_Of_Type_ContextBase()
+        public async Task Returns_Plain_Property_Name_When_AddProperties_Is_True()
         {
             // Arrange
             await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
-                .WithName("NullCheck")
+                .WithName("PropertyName")
                 .WithMemberType(MemberType.Function)
+                .AddArguments("false")
                 .Build();
-            var settings = new PipelineSettingsBuilder().Build();
+            var settings = new PipelineSettingsBuilder().WithFluentBuilderMethods(false).Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var command = new TestCommand(settings, formatProvider);
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
@@ -25,72 +26,82 @@ public class NullCheckFunctionTests : TestBase<NullCheckFunction>
 
             // Assert
             result.Status.ShouldBe(ResultStatus.Ok);
-            result.Value.ShouldBe("is null");
+            result.Value.ShouldBe("{property.Name}");
         }
 
         [Fact]
-        public async Task Returns_Invalid_On_Unsupported_Context_Type()
+        public async Task Returns_BackingField_Name_When_AddProperties_Is_False()
         {
             // Arrange
             await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
-                .WithName("NullCheck")
+                .WithName("PropertyName")
                 .WithMemberType(MemberType.Function)
+                .AddArguments("false")
                 .Build();
-            var context = this;
+            var settings = new PipelineSettingsBuilder().WithFluentBuilderMethods(true).Build();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
+            var command = new TestCommand(settings, formatProvider);
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(command)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("NullCheck function does not support type ClassFramework.Pipelines.Tests.Functions.NullCheckFunctionTests+Evaluate, only ContextBase is supported");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("_{property.Name.ToCamelCase()}");
         }
 
         [Fact]
-        public async Task Returns_Invalid_On_Null_Context()
+        public async Task Returns_MethodCall_When_AddProperties_Is_False_And_Setter_Is_True()
         {
             // Arrange
             await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
-                .WithName("NullCheck")
+                .WithName("PropertyName")
                 .WithMemberType(MemberType.Function)
+                .AddArguments("true")
                 .Build();
-            object? context = null;
+            var settings = new PipelineSettingsBuilder().WithFluentBuilderMethods(true).Build();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
+            var command = new TestCommand(settings, formatProvider);
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(command)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Invalid);
-            result.ErrorMessage.ShouldBe("NullCheck function does not support type null, only ContextBase is supported");
+            result.Status.ShouldBe(ResultStatus.Ok);
+            result.Value.ShouldBe("{property.Name}()");
         }
 
         [Fact]
-        public async Task Returns_Invalid_On_Wrong_FunctionName()
+        public async Task Returns_Error_On_Non_Successful_Result()
         {
             // Arrange
             await InitializeExpressionEvaluatorAsync();
             var functionCall = new FunctionCallBuilder()
-                .WithName("WrongFunctionName")
+                .WithName("PropertyName")
                 .WithMemberType(MemberType.Function)
+                .AddArguments("Error")
                 .Build();
-            object? context = null;
+            var settings = new PipelineSettingsBuilder().WithFluentBuilderMethods(true).Build();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
+            var command = new TestCommand(settings, formatProvider);
             var evaluator = Fixture.Freeze<IExpressionEvaluator>();
             var sut = CreateSut();
-            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success(context)) } }));
+            var functionCallContext = new FunctionCallContext(functionCall, new ExpressionEvaluatorContext("Dummy", new ExpressionEvaluatorSettingsBuilder(), evaluator, new Dictionary<string, Func<Task<Result<object?>>>> { { "context", () => Task.FromResult(Result.Success<object?>(command)) } }));
 
             // Act
             var result = await sut.EvaluateAsync(functionCallContext, CancellationToken.None);
 
             // Assert
-            result.Status.ShouldBe(ResultStatus.Invalid);
+            result.Status.ShouldBe(ResultStatus.Error);
+            result.ErrorMessage.ShouldBe("Kaboom");
         }
 
         private sealed class TestCommand(PipelineSettings settings, IFormatProvider formatProvider) : CommandBase<string>(string.Empty, settings, formatProvider)

@@ -17,6 +17,8 @@ public abstract class CrossCuttingTestClassBase(ICommandService commandService) 
     protected override bool CreateRecord => true;
     protected override bool EnableGlobalUsings => true;
     protected override bool CreateCodeGenerationHeader => false;
+    protected override bool FluentBuilderMethods => true;
+    protected override string SetMethodNameFormatString => "{property.Name}";
 
     protected override bool IsAbstractType(Type type)
     {

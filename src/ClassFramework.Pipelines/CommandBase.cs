@@ -98,6 +98,45 @@ public abstract class CommandBase(PipelineSettings settings, IFormatProvider for
         => settings.UseBuilderLazyValues
         && metadata.GetStringValue(MetadataNames.CustomBuilderName, DefaultBuilderName) == DefaultBuilderName;
 
+    public static IEnumerable<MethodBuilder> ConvertPropertyToMethods(PropertyBuilder propertyBuilder, string returnTypeName, bool returnTypeIsNullable, bool returnTypeIsValueType)
+    {
+        propertyBuilder = ArgumentGuard.IsNotNull(propertyBuilder, nameof(propertyBuilder));
+
+        if (propertyBuilder.HasGetter)
+        {
+            yield return new MethodBuilder()
+                .WithAbstract(propertyBuilder.Abstract)
+                .WithExplicitInterfaceName(propertyBuilder.ExplicitInterfaceName)
+                .WithName(propertyBuilder.Name)
+                .WithNew(propertyBuilder.New)
+                .WithOverride(propertyBuilder.Override)
+                .WithParentTypeFullName(propertyBuilder.ParentTypeFullName)
+                .WithProtected(propertyBuilder.Protected)
+                .WithReturnTypeName(returnTypeName)
+                .WithReturnTypeIsNullable(returnTypeIsNullable)
+                .WithReturnTypeIsValueType(returnTypeIsValueType)
+                .WithVirtual(propertyBuilder.Virtual)
+                .WithVisibility(propertyBuilder.Visibility)
+                .AddCodeStatements(propertyBuilder.GetterCodeStatements);
+        }
+
+        if (propertyBuilder.HasSetter)
+        {
+            yield return new MethodBuilder()
+                .WithAbstract(propertyBuilder.Abstract)
+                .WithExplicitInterfaceName(propertyBuilder.ExplicitInterfaceName)
+                .WithName($"Set{propertyBuilder.Name}")
+                .WithNew(propertyBuilder.New)
+                .WithOverride(propertyBuilder.Override)
+                .WithParentTypeFullName(propertyBuilder.ParentTypeFullName)
+                .WithProtected(propertyBuilder.Protected)
+                .WithVirtual(propertyBuilder.Virtual)
+                .WithVisibility(propertyBuilder.Visibility)
+                .AddParameter("value", returnTypeName, returnTypeIsNullable)
+                .AddCodeStatements(propertyBuilder.SetterCodeStatements);
+        }
+    }
+
     public abstract bool SourceModelHasNoProperties();
 
     public abstract Task<Result<TypeBaseBuilder>> ExecuteCommandAsync<TCommand>(ICommandService commandService, TCommand command, CancellationToken token)
@@ -239,8 +278,12 @@ public abstract class CommandBase<TSourceModel>(TSourceModel sourceModel, Pipeli
             .Add("MethodName", () => evaluator.EvaluateInterpolatedStringAsync(Settings.SetMethodNameFormatString, FormatProvider, parentChildContext, token))
             .Add(ResultNames.BuilderName, () => evaluator.EvaluateInterpolatedStringAsync(Settings.BuilderNameFormatString, FormatProvider, parentChildContext, token))
             .Add("ArgumentNullCheck", () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{ArgumentNullCheck()}"), FormatProvider, parentChildContext, token))
-            .Add(ResultNames.BuilderWithExpression, () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{property.Name} = {CsharpFriendlyName(property.Name.ToCamelCase())};"), FormatProvider, parentChildContext, token))
-            .Add(ResultNames.BuilderNonLazyWithExpression, () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, "{InstancePrefix()}{property.Name} = {property.BuilderFuncPrefix}{CsharpFriendlyName(property.Name.ToCamelCase())}{property.BuilderFuncSuffix};"), FormatProvider, parentChildContext, token))
+            .Add(ResultNames.BuilderWithExpression, () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, !Settings.FluentBuilderMethods
+                ? "{InstancePrefix()}{PropertyName()} = {CsharpFriendlyName(property.Name.ToCamelCase())};"
+                : "{InstancePrefix()}Set{property.Name}({CsharpFriendlyName(property.Name.ToCamelCase())});"), FormatProvider, parentChildContext, token))
+            .Add(ResultNames.BuilderNonLazyWithExpression, () => evaluator.EvaluateInterpolatedStringAsync(GetMappingMetadata(property.TypeName).GetStringValue(MetadataNames.CustomBuilderWithExpression, !Settings.FluentBuilderMethods
+                ? "{InstancePrefix()}{PropertyName()} = {property.BuilderFuncPrefix}{CsharpFriendlyName(property.Name.ToCamelCase())}{property.BuilderFuncSuffix};"
+                : "{InstancePrefix()}Set{property.Name}({property.BuilderFuncPrefix}{CsharpFriendlyName(property.Name.ToCamelCase())}{property.BuilderFuncSuffix});"), FormatProvider, parentChildContext, token))
             .BuildAsync(token)
             .ConfigureAwait(false);
     }

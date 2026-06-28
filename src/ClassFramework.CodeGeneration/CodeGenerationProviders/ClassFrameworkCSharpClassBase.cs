@@ -24,6 +24,11 @@ public abstract class ClassFrameworkCSharpClassBase(ICommandService commandServi
     //protected override bool AddCopyConstructor => false;
     protected override bool UseCrossCuttingInterfaces => true;
 
+    // Fluent get and set accessors
+    // protected override bool FluentBuilderMethods => true;
+    // Fluent extension methods
+    // protected override string SetMethodNameFormatString => "{property.Name}";
+
     protected Task<Result<IEnumerable<TypeBase>>> GetPipelineModelsAsync()
         => GetNonCoreModelsAsync($"{CodeGenerationRootNamespace}.Models.Pipelines");
 

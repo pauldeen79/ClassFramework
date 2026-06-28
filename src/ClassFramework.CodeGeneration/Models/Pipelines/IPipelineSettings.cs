@@ -3,7 +3,7 @@
 internal interface IPipelineSettings
 {
     bool AddBackingFields { get; }
-    bool AddCopyConstructor { get; }
+    [DefaultValue(true)] bool AddCopyConstructor { get; }
     bool AddFullConstructor { get; }
     [DefaultValue(true)] bool AddImplicitOperatorOnBuilder { get; }
     [DefaultValue(true)] bool AddImplicitOperatorOnEntity { get; }
@@ -24,8 +24,8 @@ internal interface IPipelineSettings
     [Required(AllowEmptyStrings = true)] string BuilderNameFormatString { get; }
     [Required(AllowEmptyStrings = true)] string BuilderNamespaceFormatString { get; }
     [Required(AllowEmptyStrings = true)] string BuilderNewCollectionTypeName { get; }
-    [Required(AllowEmptyStrings = true)] string BuildMethodName { get; }
-    [Required(AllowEmptyStrings = true)] string BuildTypedMethodName { get; }
+    [Required(AllowEmptyStrings = true)] [DefaultValue("Build")] string BuildMethodName { get; }
+    [Required(AllowEmptyStrings = true)] [DefaultValue("BuildTyped")] string BuildTypedMethodName { get; }
     [Required(AllowEmptyStrings = true)] string CollectionCopyStatementFormatString { get; }
     [Required(AllowEmptyStrings = true)] string NonLazyCollectionCopyStatementFormatString { get; }
     [Required(AllowEmptyStrings = true)] string CollectionInitializationStatementFormatString { get; }
@@ -37,8 +37,8 @@ internal interface IPipelineSettings
     CopyMethodPredicate? CopyMethodPredicate { get; }
     bool CopyMethods { get; }
     bool CreateAsObservable { get; }
-    bool CreateAsPartial { get; }
-    bool CreateConstructors { get; }
+    [DefaultValue(true)] bool CreateAsPartial { get; }
+    [DefaultValue(true)] bool CreateConstructors { get; }
     bool CreateRecord { get; }
     bool EnableBuilderInheritance { get; }
     bool EnableInheritance { get; }
@@ -57,20 +57,21 @@ internal interface IPipelineSettings
     [Required(AllowEmptyStrings = true)] string NamespaceFormatString { get; }
     [Required] IReadOnlyCollection<INamespaceMapping> NamespaceMappings { get; }
     [Required(AllowEmptyStrings = true)] string NonCollectionInitializationStatementFormatString { get; }
-    bool SetDefaultValuesInEntityConstructor { get; }
-    [Required(AllowEmptyStrings = true)] string SetDefaultValuesMethodName { get; }
+    [DefaultValue(true)] bool SetDefaultValuesInEntityConstructor { get; }
+    [Required(AllowEmptyStrings = true)] [DefaultValue("SetDefaultValues")] string SetDefaultValuesMethodName { get; }
     [Required(AllowEmptyStrings = true)] string SetMethodNameFormatString { get; }
     SubVisibility SetterVisibility { get; }
     [Required] IReadOnlyCollection<string> SkipNamespacesOnFluentBuilderMethods { get; }
-    [Required(AllowEmptyStrings = true)] string ToBuilderFormatString { get; }
-    [Required(AllowEmptyStrings = true)] string ToTypedBuilderFormatString { get; }
+    [Required(AllowEmptyStrings = true)] [DefaultValue("ToBuilder")] string ToBuilderFormatString { get; }
+    [Required(AllowEmptyStrings = true)] [DefaultValue("ToTypedBuilder")] string ToTypedBuilderFormatString { get; }
     [Required] IReadOnlyCollection<ITypenameMapping> TypenameMappings { get; }
-    bool UseBaseClassFromSourceModel { get; }
+    [DefaultValue(true)] bool UseBaseClassFromSourceModel { get; }
     [DefaultValue(true)] bool UseBuilderAbstractionsTypeConversion { get; }
     bool UseBuilderLazyValues { get; }
     bool UseCrossCuttingInterfaces { get; }
-    bool UseDefaultValueAttributeValuesForBuilderInitialization { get; }
+    [DefaultValue(true)] bool UseDefaultValueAttributeValuesForBuilderInitialization { get; }
     bool UseExceptionThrowIfNull { get; }
     [DefaultValue(true)] bool UsePatternMatchingForNullChecks { get; }
+    bool FluentBuilderMethods { get; }
     ArgumentValidationType ValidateArguments { get; }
 }
