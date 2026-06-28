@@ -98,7 +98,7 @@ public abstract class CommandBase(PipelineSettings settings, IFormatProvider for
         => settings.UseBuilderLazyValues
         && metadata.GetStringValue(MetadataNames.CustomBuilderName, DefaultBuilderName) == DefaultBuilderName;
 
-    public IEnumerable<MethodBuilder> ConvertPropertyToMethods(PropertyBuilder propertyBuilder, string returnTypeName, bool returnTypeIsNullable, bool returnTypeIsValueType)
+    public static IEnumerable<MethodBuilder> ConvertPropertyToMethods(PropertyBuilder propertyBuilder, string returnTypeName, bool returnTypeIsNullable, bool returnTypeIsValueType)
     {
         propertyBuilder = ArgumentGuard.IsNotNull(propertyBuilder, nameof(propertyBuilder));
 

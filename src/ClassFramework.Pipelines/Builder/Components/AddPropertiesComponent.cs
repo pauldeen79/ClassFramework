@@ -53,7 +53,7 @@ public class AddPropertiesComponent(IExpressionEvaluator evaluator) : IPipelineC
                 response.AddProperties(propertyBuilder.Build().ToBuilder()
                     .With(p => p.SetterCodeStatements.OfType<StringCodeStatementBuilder>().ToList().ForEach(s => s.Statement = s.Statement.Replace($"nameof({p.Name})", $"nameof({p.Name}Property)")))
                     .WithName(propertyBuilder.Name + "Property"));
-                response.AddMethods(command.ConvertPropertyToMethods(
+                response.AddMethods(CommandBase.ConvertPropertyToMethods(
                     propertyBuilder,
                     results.GetValue(ResultNames.TypeName).ToString()
                         .FixCollectionTypeName(command.Settings.BuilderNewCollectionTypeName)

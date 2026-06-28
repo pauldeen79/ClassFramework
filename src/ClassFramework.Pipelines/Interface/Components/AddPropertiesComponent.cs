@@ -22,7 +22,7 @@ public class AddPropertiesComponent : IPipelineComponent<GenerateInterfaceComman
             }
             else
             {
-                response.AddMethods(properties.SelectMany(property => command.ConvertPropertyToMethods(
+                response.AddMethods(properties.SelectMany(property => CommandBase.ConvertPropertyToMethods(
                     property,
                     property.TypeName,
                     property.IsNullable,
