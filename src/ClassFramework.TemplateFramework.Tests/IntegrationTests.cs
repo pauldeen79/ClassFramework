@@ -3293,7 +3293,7 @@ namespace Test.Domain.Builders
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
-        public string MyBaseProperty
+        public string MyBasePropertyProperty
         {
             get
             {
@@ -3303,7 +3303,7 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_myBaseProperty!, value!);
                 _myBaseProperty = value;
-                if (hasChanged) HandlePropertyChanged(nameof(MyBaseProperty));
+                if (hasChanged) HandlePropertyChanged(nameof(MyBasePropertyProperty));
             }
         }
 
@@ -3321,6 +3321,18 @@ namespace Test.Domain.Builders
         public abstract CrossCutting.Utilities.Parsers.AbstractBase Build();
 
         partial void SetDefaultValues();
+
+        public string MyBaseProperty()
+        {
+            return _myBaseProperty;
+        }
+
+        public void SetMyBaseProperty(string value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_myBaseProperty!, value!);
+            _myBaseProperty = value;
+            if (hasChanged) HandlePropertyChanged(nameof(MyBaseProperty));
+        }
 
         protected void HandlePropertyChanged(string propertyName)
         {
@@ -3382,7 +3394,7 @@ namespace Test.Domain.Builders
     {
         private object? _value;
 
-        public object? Value
+        public object? ValueProperty
         {
             get
             {
@@ -3392,7 +3404,7 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Object>.Default.Equals(_value!, value!);
                 _value = value;
-                if (hasChanged) HandlePropertyChanged(nameof(Value));
+                if (hasChanged) HandlePropertyChanged(nameof(ValueProperty));
             }
         }
 
@@ -3409,7 +3421,7 @@ namespace Test.Domain.Builders
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument(Value);
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument(Value());
         }
 
         CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
@@ -3419,15 +3431,27 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder WithValue(object? value)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder Value(object? value)
         {
-            Value = value;
+            SetValue(value);
             return this;
         }
 
         public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument(ConstantArgumentBuilder builder)
         {
             return builder.BuildTyped();
+        }
+
+        public object? Value()
+        {
+            return _value;
+        }
+
+        public void SetValue(object? value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Object>.Default.Equals(_value!, value!);
+            _value = value;
+            if (hasChanged) HandlePropertyChanged(nameof(Value));
         }
     }
 #nullable restore
@@ -3440,7 +3464,7 @@ namespace Test.Domain.Builders
     {
         private T _value;
 
-        public T Value
+        public T ValueProperty
         {
             get
             {
@@ -3450,7 +3474,7 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<T>.Default.Equals(_value!, value!);
                 _value = value;
-                if (hasChanged) HandlePropertyChanged(nameof(Value));
+                if (hasChanged) HandlePropertyChanged(nameof(ValueProperty));
             }
         }
 
@@ -3468,7 +3492,7 @@ namespace Test.Domain.Builders
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument<T> BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument<T>(Value);
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument<T>(Value());
         }
 
         CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
@@ -3483,15 +3507,27 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder<T> WithValue(T value)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantArgumentBuilder<T> Value(T value)
         {
-            Value = value;
+            SetValue(value);
             return this;
         }
 
         public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantArgument<T>(ConstantArgumentBuilder<T> builder)
         {
             return builder.BuildTyped();
+        }
+
+        public T Value()
+        {
+            return _value;
+        }
+
+        public void SetValue(T value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<T>.Default.Equals(_value!, value!);
+            _value = value;
+            if (hasChanged) HandlePropertyChanged(nameof(Value));
         }
     }
 #nullable restore
@@ -3504,7 +3540,7 @@ namespace Test.Domain.Builders
     {
         private CrossCutting.Common.Results.Result<object?> _result;
 
-        public CrossCutting.Common.Results.Result<object?> Result
+        public CrossCutting.Common.Results.Result<object?> ResultProperty
         {
             get
             {
@@ -3514,7 +3550,7 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Common.Results.Result<System.Object?>>.Default.Equals(_result!, value!);
                 _result = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Result));
+                if (hasChanged) HandlePropertyChanged(nameof(ResultProperty));
             }
         }
 
@@ -3532,7 +3568,7 @@ namespace Test.Domain.Builders
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument(Result);
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument(Result());
         }
 
         CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
@@ -3542,16 +3578,28 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantResultArgumentBuilder WithResult(CrossCutting.Common.Results.Result<object?> result)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantResultArgumentBuilder Result(CrossCutting.Common.Results.Result<object?> result)
         {
             if (result is null) throw new System.ArgumentNullException(nameof(result));
-            Result = result;
+            SetResult(result);
             return this;
         }
 
         public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument(ConstantResultArgumentBuilder builder)
         {
             return builder.BuildTyped();
+        }
+
+        public CrossCutting.Common.Results.Result<object?> Result()
+        {
+            return _result;
+        }
+
+        public void SetResult(CrossCutting.Common.Results.Result<object?> value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Common.Results.Result<System.Object?>>.Default.Equals(_result!, value!);
+            _result = value ?? throw new System.ArgumentNullException(nameof(value));
+            if (hasChanged) HandlePropertyChanged(nameof(Result));
         }
     }
 #nullable restore
@@ -3564,7 +3612,7 @@ namespace Test.Domain.Builders
     {
         private CrossCutting.Common.Results.Result<T> _result;
 
-        public CrossCutting.Common.Results.Result<T> Result
+        public CrossCutting.Common.Results.Result<T> ResultProperty
         {
             get
             {
@@ -3574,7 +3622,7 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Common.Results.Result<T>>.Default.Equals(_result!, value!);
                 _result = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Result));
+                if (hasChanged) HandlePropertyChanged(nameof(ResultProperty));
             }
         }
 
@@ -3592,7 +3640,7 @@ namespace Test.Domain.Builders
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument<T> BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument<T>(Result);
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument<T>(Result());
         }
 
         CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
@@ -3607,16 +3655,28 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantResultArgumentBuilder<T> WithResult(CrossCutting.Common.Results.Result<T> result)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ConstantResultArgumentBuilder<T> Result(CrossCutting.Common.Results.Result<T> result)
         {
             if (result is null) throw new System.ArgumentNullException(nameof(result));
-            Result = result;
+            SetResult(result);
             return this;
         }
 
         public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ConstantResultArgument<T>(ConstantResultArgumentBuilder<T> builder)
         {
             return builder.BuildTyped();
+        }
+
+        public CrossCutting.Common.Results.Result<T> Result()
+        {
+            return _result;
+        }
+
+        public void SetResult(CrossCutting.Common.Results.Result<T> value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Common.Results.Result<T>>.Default.Equals(_result!, value!);
+            _result = value ?? throw new System.ArgumentNullException(nameof(value));
+            if (hasChanged) HandlePropertyChanged(nameof(Result));
         }
     }
 #nullable restore
@@ -3631,7 +3691,7 @@ namespace Test.Domain.Builders
 
         private System.Func<System.Type>? _validationDelegate;
 
-        public System.Func<object?> Delegate
+        public System.Func<object?> DelegateProperty
         {
             get
             {
@@ -3641,11 +3701,11 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<System.Object?>>.Default.Equals(_delegate!, value!);
                 _delegate = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Delegate));
+                if (hasChanged) HandlePropertyChanged(nameof(DelegateProperty));
             }
         }
 
-        public System.Func<System.Type>? ValidationDelegate
+        public System.Func<System.Type>? ValidationDelegateProperty
         {
             get
             {
@@ -3655,7 +3715,7 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<System.Type>?>.Default.Equals(_validationDelegate!, value!);
                 _validationDelegate = value;
-                if (hasChanged) HandlePropertyChanged(nameof(ValidationDelegate));
+                if (hasChanged) HandlePropertyChanged(nameof(ValidationDelegateProperty));
             }
         }
 
@@ -3674,7 +3734,7 @@ namespace Test.Domain.Builders
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument(Delegate, ValidationDelegate);
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument(Delegate(), ValidationDelegate());
         }
 
         CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
@@ -3684,22 +3744,46 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder WithDelegate(System.Func<object?> @delegate)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder Delegate(System.Func<object?> @delegate)
         {
             if (@delegate is null) throw new System.ArgumentNullException(nameof(@delegate));
-            Delegate = @delegate;
+            SetDelegate(@delegate);
             return this;
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder WithValidationDelegate(System.Func<System.Type>? validationDelegate)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder ValidationDelegate(System.Func<System.Type>? validationDelegate)
         {
-            ValidationDelegate = validationDelegate;
+            SetValidationDelegate(validationDelegate);
             return this;
         }
 
         public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument(DelegateArgumentBuilder builder)
         {
             return builder.BuildTyped();
+        }
+
+        public System.Func<object?> Delegate()
+        {
+            return _delegate;
+        }
+
+        public void SetDelegate(System.Func<object?> value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<System.Object?>>.Default.Equals(_delegate!, value!);
+            _delegate = value ?? throw new System.ArgumentNullException(nameof(value));
+            if (hasChanged) HandlePropertyChanged(nameof(Delegate));
+        }
+
+        public System.Func<System.Type>? ValidationDelegate()
+        {
+            return _validationDelegate;
+        }
+
+        public void SetValidationDelegate(System.Func<System.Type>? value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<System.Type>?>.Default.Equals(_validationDelegate!, value!);
+            _validationDelegate = value;
+            if (hasChanged) HandlePropertyChanged(nameof(ValidationDelegate));
         }
     }
 #nullable restore
@@ -3714,7 +3798,7 @@ namespace Test.Domain.Builders
 
         private System.Func<System.Type>? _validationDelegate;
 
-        public System.Func<T> Delegate
+        public System.Func<T> DelegateProperty
         {
             get
             {
@@ -3724,11 +3808,11 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<T>>.Default.Equals(_delegate!, value!);
                 _delegate = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Delegate));
+                if (hasChanged) HandlePropertyChanged(nameof(DelegateProperty));
             }
         }
 
-        public System.Func<System.Type>? ValidationDelegate
+        public System.Func<System.Type>? ValidationDelegateProperty
         {
             get
             {
@@ -3738,7 +3822,7 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<System.Type>?>.Default.Equals(_validationDelegate!, value!);
                 _validationDelegate = value;
-                if (hasChanged) HandlePropertyChanged(nameof(ValidationDelegate));
+                if (hasChanged) HandlePropertyChanged(nameof(ValidationDelegateProperty));
             }
         }
 
@@ -3757,7 +3841,7 @@ namespace Test.Domain.Builders
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument<T> BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument<T>(Delegate, ValidationDelegate);
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument<T>(Delegate(), ValidationDelegate());
         }
 
         CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
@@ -3772,22 +3856,46 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder<T> WithDelegate(System.Func<T> @delegate)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder<T> Delegate(System.Func<T> @delegate)
         {
             if (@delegate is null) throw new System.ArgumentNullException(nameof(@delegate));
-            Delegate = @delegate;
+            SetDelegate(@delegate);
             return this;
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder<T> WithValidationDelegate(System.Func<System.Type>? validationDelegate)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateArgumentBuilder<T> ValidationDelegate(System.Func<System.Type>? validationDelegate)
         {
-            ValidationDelegate = validationDelegate;
+            SetValidationDelegate(validationDelegate);
             return this;
         }
 
         public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateArgument<T>(DelegateArgumentBuilder<T> builder)
         {
             return builder.BuildTyped();
+        }
+
+        public System.Func<T> Delegate()
+        {
+            return _delegate;
+        }
+
+        public void SetDelegate(System.Func<T> value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<T>>.Default.Equals(_delegate!, value!);
+            _delegate = value ?? throw new System.ArgumentNullException(nameof(value));
+            if (hasChanged) HandlePropertyChanged(nameof(Delegate));
+        }
+
+        public System.Func<System.Type>? ValidationDelegate()
+        {
+            return _validationDelegate;
+        }
+
+        public void SetValidationDelegate(System.Func<System.Type>? value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<System.Type>?>.Default.Equals(_validationDelegate!, value!);
+            _validationDelegate = value;
+            if (hasChanged) HandlePropertyChanged(nameof(ValidationDelegate));
         }
     }
 #nullable restore
@@ -3802,7 +3910,7 @@ namespace Test.Domain.Builders
 
         private System.Func<CrossCutting.Common.Results.Result<System.Type>>? _validationDelegate;
 
-        public System.Func<CrossCutting.Common.Results.Result<object?>> Delegate
+        public System.Func<CrossCutting.Common.Results.Result<object?>> DelegateProperty
         {
             get
             {
@@ -3812,11 +3920,11 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<CrossCutting.Common.Results.Result<System.Object?>>>.Default.Equals(_delegate!, value!);
                 _delegate = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Delegate));
+                if (hasChanged) HandlePropertyChanged(nameof(DelegateProperty));
             }
         }
 
-        public System.Func<CrossCutting.Common.Results.Result<System.Type>>? ValidationDelegate
+        public System.Func<CrossCutting.Common.Results.Result<System.Type>>? ValidationDelegateProperty
         {
             get
             {
@@ -3826,7 +3934,7 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<CrossCutting.Common.Results.Result<System.Type>>?>.Default.Equals(_validationDelegate!, value!);
                 _validationDelegate = value;
-                if (hasChanged) HandlePropertyChanged(nameof(ValidationDelegate));
+                if (hasChanged) HandlePropertyChanged(nameof(ValidationDelegateProperty));
             }
         }
 
@@ -3845,7 +3953,7 @@ namespace Test.Domain.Builders
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument(Delegate, ValidationDelegate);
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument(Delegate(), ValidationDelegate());
         }
 
         CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
@@ -3855,22 +3963,46 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder WithDelegate(System.Func<CrossCutting.Common.Results.Result<object?>> @delegate)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder Delegate(System.Func<CrossCutting.Common.Results.Result<object?>> @delegate)
         {
             if (@delegate is null) throw new System.ArgumentNullException(nameof(@delegate));
-            Delegate = @delegate;
+            SetDelegate(@delegate);
             return this;
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder WithValidationDelegate(System.Func<CrossCutting.Common.Results.Result<System.Type>>? validationDelegate)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder ValidationDelegate(System.Func<CrossCutting.Common.Results.Result<System.Type>>? validationDelegate)
         {
-            ValidationDelegate = validationDelegate;
+            SetValidationDelegate(validationDelegate);
             return this;
         }
 
         public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument(DelegateResultArgumentBuilder builder)
         {
             return builder.BuildTyped();
+        }
+
+        public System.Func<CrossCutting.Common.Results.Result<object?>> Delegate()
+        {
+            return _delegate;
+        }
+
+        public void SetDelegate(System.Func<CrossCutting.Common.Results.Result<object?>> value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<CrossCutting.Common.Results.Result<System.Object?>>>.Default.Equals(_delegate!, value!);
+            _delegate = value ?? throw new System.ArgumentNullException(nameof(value));
+            if (hasChanged) HandlePropertyChanged(nameof(Delegate));
+        }
+
+        public System.Func<CrossCutting.Common.Results.Result<System.Type>>? ValidationDelegate()
+        {
+            return _validationDelegate;
+        }
+
+        public void SetValidationDelegate(System.Func<CrossCutting.Common.Results.Result<System.Type>>? value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<CrossCutting.Common.Results.Result<System.Type>>?>.Default.Equals(_validationDelegate!, value!);
+            _validationDelegate = value;
+            if (hasChanged) HandlePropertyChanged(nameof(ValidationDelegate));
         }
     }
 #nullable restore
@@ -3885,7 +4017,7 @@ namespace Test.Domain.Builders
 
         private System.Func<CrossCutting.Common.Results.Result<System.Type>>? _validationDelegate;
 
-        public System.Func<CrossCutting.Common.Results.Result<T>> Delegate
+        public System.Func<CrossCutting.Common.Results.Result<T>> DelegateProperty
         {
             get
             {
@@ -3895,11 +4027,11 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<CrossCutting.Common.Results.Result<T>>>.Default.Equals(_delegate!, value!);
                 _delegate = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Delegate));
+                if (hasChanged) HandlePropertyChanged(nameof(DelegateProperty));
             }
         }
 
-        public System.Func<CrossCutting.Common.Results.Result<System.Type>>? ValidationDelegate
+        public System.Func<CrossCutting.Common.Results.Result<System.Type>>? ValidationDelegateProperty
         {
             get
             {
@@ -3909,7 +4041,7 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<CrossCutting.Common.Results.Result<System.Type>>?>.Default.Equals(_validationDelegate!, value!);
                 _validationDelegate = value;
-                if (hasChanged) HandlePropertyChanged(nameof(ValidationDelegate));
+                if (hasChanged) HandlePropertyChanged(nameof(ValidationDelegateProperty));
             }
         }
 
@@ -3928,7 +4060,7 @@ namespace Test.Domain.Builders
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument<T> BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument<T>(Delegate, ValidationDelegate);
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument<T>(Delegate(), ValidationDelegate());
         }
 
         CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
@@ -3943,22 +4075,46 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder<T> WithDelegate(System.Func<CrossCutting.Common.Results.Result<T>> @delegate)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder<T> Delegate(System.Func<CrossCutting.Common.Results.Result<T>> @delegate)
         {
             if (@delegate is null) throw new System.ArgumentNullException(nameof(@delegate));
-            Delegate = @delegate;
+            SetDelegate(@delegate);
             return this;
         }
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder<T> WithValidationDelegate(System.Func<CrossCutting.Common.Results.Result<System.Type>>? validationDelegate)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.DelegateResultArgumentBuilder<T> ValidationDelegate(System.Func<CrossCutting.Common.Results.Result<System.Type>>? validationDelegate)
         {
-            ValidationDelegate = validationDelegate;
+            SetValidationDelegate(validationDelegate);
             return this;
         }
 
         public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.DelegateResultArgument<T>(DelegateResultArgumentBuilder<T> builder)
         {
             return builder.BuildTyped();
+        }
+
+        public System.Func<CrossCutting.Common.Results.Result<T>> Delegate()
+        {
+            return _delegate;
+        }
+
+        public void SetDelegate(System.Func<CrossCutting.Common.Results.Result<T>> value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<CrossCutting.Common.Results.Result<T>>>.Default.Equals(_delegate!, value!);
+            _delegate = value ?? throw new System.ArgumentNullException(nameof(value));
+            if (hasChanged) HandlePropertyChanged(nameof(Delegate));
+        }
+
+        public System.Func<CrossCutting.Common.Results.Result<System.Type>>? ValidationDelegate()
+        {
+            return _validationDelegate;
+        }
+
+        public void SetValidationDelegate(System.Func<CrossCutting.Common.Results.Result<System.Type>>? value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<System.Func<CrossCutting.Common.Results.Result<System.Type>>?>.Default.Equals(_validationDelegate!, value!);
+            _validationDelegate = value;
+            if (hasChanged) HandlePropertyChanged(nameof(ValidationDelegate));
         }
     }
 #nullable restore
@@ -4046,7 +4202,7 @@ namespace Test.Domain.Builders
     {
         private string _value;
 
-        public string Value
+        public string ValueProperty
         {
             get
             {
@@ -4056,7 +4212,7 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_value!, value!);
                 _value = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Value));
+                if (hasChanged) HandlePropertyChanged(nameof(ValueProperty));
             }
         }
 
@@ -4074,7 +4230,7 @@ namespace Test.Domain.Builders
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(Value);
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(Value());
         }
 
         CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
@@ -4084,16 +4240,28 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ExpressionArgumentBuilder WithValue(string value)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.ExpressionArgumentBuilder Value(string value)
         {
             if (value is null) throw new System.ArgumentNullException(nameof(value));
-            Value = value;
+            SetValue(value);
             return this;
         }
 
         public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.ExpressionArgument(ExpressionArgumentBuilder builder)
         {
             return builder.BuildTyped();
+        }
+
+        public string Value()
+        {
+            return _value;
+        }
+
+        public void SetValue(string value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<System.String>.Default.Equals(_value!, value!);
+            _value = value ?? throw new System.ArgumentNullException(nameof(value));
+            if (hasChanged) HandlePropertyChanged(nameof(Value));
         }
     }
 #nullable restore
@@ -4106,7 +4274,7 @@ namespace Test.Domain.Builders
     {
         private CrossCutting.Utilities.Parsers.IFunctionCall _function;
 
-        public CrossCutting.Utilities.Parsers.IFunctionCall Function
+        public CrossCutting.Utilities.Parsers.IFunctionCall FunctionProperty
         {
             get
             {
@@ -4116,7 +4284,7 @@ namespace Test.Domain.Builders
             {
                 bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.Parsers.IFunctionCall>.Default.Equals(_function!, value!);
                 _function = value ?? throw new System.ArgumentNullException(nameof(value));
-                if (hasChanged) HandlePropertyChanged(nameof(Function));
+                if (hasChanged) HandlePropertyChanged(nameof(FunctionProperty));
             }
         }
 
@@ -4134,7 +4302,7 @@ namespace Test.Domain.Builders
 
         public override CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument BuildTyped()
         {
-            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument(Function);
+            return new CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument(Function());
         }
 
         CrossCutting.Utilities.Parsers.Abstractions.IFunctionCallArgument CrossCutting.Utilities.Parsers.Builders.Abstractions.IFunctionCallArgumentBuilder.Build()
@@ -4144,16 +4312,28 @@ namespace Test.Domain.Builders
 
         partial void SetDefaultValues();
 
-        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.FunctionArgumentBuilder WithFunction(CrossCutting.Utilities.Parsers.IFunctionCall function)
+        public CrossCutting.Utilities.Parsers.Builders.FunctionCallArguments.FunctionArgumentBuilder Function(CrossCutting.Utilities.Parsers.IFunctionCall function)
         {
             if (function is null) throw new System.ArgumentNullException(nameof(function));
-            Function = function;
+            SetFunction(function);
             return this;
         }
 
         public static implicit operator CrossCutting.Utilities.Parsers.FunctionCallArguments.FunctionArgument(FunctionArgumentBuilder builder)
         {
             return builder.BuildTyped();
+        }
+
+        public CrossCutting.Utilities.Parsers.IFunctionCall Function()
+        {
+            return _function;
+        }
+
+        public void SetFunction(CrossCutting.Utilities.Parsers.IFunctionCall value)
+        {
+            bool hasChanged = !System.Collections.Generic.EqualityComparer<CrossCutting.Utilities.Parsers.IFunctionCall>.Default.Equals(_function!, value!);
+            _function = value ?? throw new System.ArgumentNullException(nameof(value));
+            if (hasChanged) HandlePropertyChanged(nameof(Function));
         }
     }
 #nullable restore
