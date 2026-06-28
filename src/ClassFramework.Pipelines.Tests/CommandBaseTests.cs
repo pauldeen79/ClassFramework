@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests;
+﻿using NSubstitute.Core;
+
+namespace ClassFramework.Pipelines.Tests;
 
 public class CommandBaseTests : TestBase
 {
@@ -111,6 +113,119 @@ public class CommandBaseTests : TestBase
             Action a = () => sut.InitializeDelegate(AttributeWithoutConstructorsAttribute.New());
             a.ShouldThrow<NotSupportedException>()
              .Message.ShouldBe("Attribute not supported by initializer: ClassFramework.Pipelines.Tests.CommandBaseTests+AttributeWithoutConstructorsAttribute");
+        }
+    }
+
+    public class ConvertPropertyToMethods : CommandBaseTests
+    {
+        [Fact]
+        public void Returns_Correct_Methods_For_Nullable_ReturnType()
+        {
+            // Arrange
+            var propertyBuilder = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable(true).WithIsValueType(false);
+
+            // Act
+            var methods = CommandBase.ConvertPropertyToMethods(propertyBuilder, propertyBuilder.TypeName, propertyBuilder.IsNullable, propertyBuilder.IsValueType).ToArray();
+
+            // Assert
+            methods.Length.ShouldBe(2);
+            methods[0].Name.ShouldBe("MyProperty");
+            methods[0].ReturnTypeName.ShouldBe(typeof(string).FullName);
+            methods[0].ReturnTypeIsNullable.ShouldBe(true);
+            methods[0].ReturnTypeIsValueType.ShouldBe(false);
+            methods[0].Parameters.Count.ShouldBe(0);
+            methods[1].Name.ShouldBe("SetMyProperty");
+            methods[1].ReturnTypeName.ShouldBeEmpty();
+            methods[1].Parameters.Count.ShouldBe(1);
+            methods[1].Parameters[0].Name.ShouldBe("value");
+            methods[1].Parameters[0].TypeName.ShouldBe(typeof(string).FullName);
+        }
+
+        [Fact]
+        public void Returns_Correct_Methods_For_ValueType_ReturnType()
+        {
+            // Arrange
+            var propertyBuilder = new PropertyBuilder().WithName("MyProperty").WithType(typeof(int)).WithIsNullable(false).WithIsValueType(true);
+
+            // Act
+            var methods = CommandBase.ConvertPropertyToMethods(propertyBuilder, propertyBuilder.TypeName, propertyBuilder.IsNullable, propertyBuilder.IsValueType).ToArray();
+
+            // Assert
+            methods.Length.ShouldBe(2);
+            methods[0].Name.ShouldBe("MyProperty");
+            methods[0].ReturnTypeName.ShouldBe(typeof(int).FullName);
+            methods[0].ReturnTypeIsNullable.ShouldBe(false);
+            methods[0].ReturnTypeIsValueType.ShouldBe(true);
+            methods[0].Parameters.Count.ShouldBe(0);
+            methods[1].Name.ShouldBe("SetMyProperty");
+            methods[1].ReturnTypeName.ShouldBeEmpty();
+            methods[1].Parameters.Count.ShouldBe(1);
+            methods[1].Parameters[0].Name.ShouldBe("value");
+            methods[1].Parameters[0].TypeName.ShouldBe(typeof(int).FullName);
+        }
+
+        [Fact]
+        public void Returns_Correct_Methods_For_Nullable_ValueType_ReturnType()
+        {
+            // Arrange
+            var propertyBuilder = new PropertyBuilder().WithName("MyProperty").WithType(typeof(int)).WithIsNullable(true).WithIsValueType(true);
+
+            // Act
+            var methods = CommandBase.ConvertPropertyToMethods(propertyBuilder, propertyBuilder.TypeName, propertyBuilder.IsNullable, propertyBuilder.IsValueType).ToArray();
+
+            // Assert
+            methods.Length.ShouldBe(2);
+            methods[0].Name.ShouldBe("MyProperty");
+            methods[0].ReturnTypeName.ShouldBe(typeof(int).FullName);
+            methods[0].ReturnTypeIsNullable.ShouldBe(true);
+            methods[0].ReturnTypeIsValueType.ShouldBe(true);
+            methods[0].Parameters.Count.ShouldBe(0);
+            methods[1].Name.ShouldBe("SetMyProperty");
+            methods[1].ReturnTypeName.ShouldBeEmpty();
+            methods[1].Parameters.Count.ShouldBe(1);
+            methods[1].Parameters[0].Name.ShouldBe("value");
+            methods[1].Parameters[0].TypeName.ShouldBe(typeof(int).FullName);
+        }
+
+        [Fact]
+        public void Returns_Correct_Methods_For_Non_Nullable_Non_ValueType_ReturnType()
+        {
+            // Arrange
+            var propertyBuilder = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable(false).WithIsValueType(false);
+
+            // Act
+            var methods = CommandBase.ConvertPropertyToMethods(propertyBuilder, propertyBuilder.TypeName, propertyBuilder.IsNullable, propertyBuilder.IsValueType).ToArray();
+
+            // Assert
+            methods.Length.ShouldBe(2);
+            methods[0].Name.ShouldBe("MyProperty");
+            methods[0].ReturnTypeName.ShouldBe(typeof(string).FullName);
+            methods[0].ReturnTypeIsNullable.ShouldBe(false);
+            methods[0].ReturnTypeIsValueType.ShouldBe(false);
+            methods[0].Parameters.Count.ShouldBe(0);
+            methods[1].Name.ShouldBe("SetMyProperty");
+            methods[1].ReturnTypeName.ShouldBeEmpty();
+            methods[1].Parameters.Count.ShouldBe(1);
+            methods[1].Parameters[0].Name.ShouldBe("value");
+            methods[1].Parameters[0].TypeName.ShouldBe(typeof(string).FullName);            
+        }
+
+        [Fact]
+        public void Returns_Correct_Methods_For_Non_Nullable_Non_ValueType_ReadOnly_ReturnType()
+        {
+            // Arrange
+            var propertyBuilder = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable(false).WithIsValueType(false).WithHasSetter(false);
+
+            // Act
+            var methods = CommandBase.ConvertPropertyToMethods(propertyBuilder, propertyBuilder.TypeName, propertyBuilder.IsNullable, propertyBuilder.IsValueType).ToArray();
+
+            // Assert
+            methods.Length.ShouldBe(1);
+            methods[0].Name.ShouldBe("MyProperty");
+            methods[0].ReturnTypeName.ShouldBe(typeof(string).FullName);
+            methods[0].ReturnTypeIsNullable.ShouldBe(false);
+            methods[0].ReturnTypeIsValueType.ShouldBe(false);
+            methods[0].Parameters.Count.ShouldBe(0);
         }
     }
 
